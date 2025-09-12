@@ -12,7 +12,7 @@ const services = [
   {
     icon: RefreshCw,
     title: 'Refinancing',
-    description: 'Lower your monthly payments or access your home equity with our streamlined refinancing process and competitive rates.',
+    description: 'Lower your monthly payments or access your home equity with our streamlined refinancing process. Low rates and expert guidance for your home financing needs.',
     features: ['Rate & term refinance', 'Cash-out refinance', 'Streamline refinance', 'Investment property refi']
   },
   {
@@ -29,11 +29,8 @@ export default function ServicesSection() {
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold font-serif mb-4" data-testid="text-services-title">
-            Our Lending Solutions
+            Prime Lending Solutions
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto" data-testid="text-services-description">
-            From purchase to refinance, we offer comprehensive mortgage solutions tailored to your unique financial situation
-          </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
