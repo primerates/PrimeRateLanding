@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calculator, Phone, X } from 'lucide-react';
-import heroImage from '@assets/generated_images/Happy_family_outside_home_374959f2.png';
+import heroImage from '@assets/generated_images/Bright_white_family_room_4f4419e6.png';
 
 export default function HeroSection() {
   const [loanAmount, setLoanAmount] = useState('400000');
@@ -34,7 +34,7 @@ export default function HeroSection() {
       <div className="absolute inset-0 z-0">
         <img 
           src={heroImage} 
-          alt="Happy family outside their dream home"
+          alt="Family enjoying their beautiful bright home interior"
           className="w-full h-full object-cover"
           data-testid="img-hero-background"
         />
