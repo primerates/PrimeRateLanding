@@ -46,7 +46,7 @@ const testimonials = [
 
 export default function TestimonialsSection() {
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
-  const testimonialsPerPage = 2;
+  const testimonialsPerPage = 4;
   const maxIndex = Math.ceil(testimonials.length / testimonialsPerPage) - 1;
 
   const nextTestimonials = () => {
@@ -63,7 +63,7 @@ export default function TestimonialsSection() {
   );
 
   return (
-    <section className="py-16 bg-muted/30">
+    <section className="py-16 bg-muted/30 relative">
       <div className="container mx-auto px-6">
         {/* Testimonials */}
         <div className="max-w-4xl mx-auto">
@@ -71,31 +71,31 @@ export default function TestimonialsSection() {
             What Our Clients Say
           </h2>
           
-          <div className="relative">
-            {/* Navigation Arrows */}
-            <Button
-              variant="outline"
-              size="icon"
-              className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-md hover-elevate"
-              onClick={prevTestimonials}
-              data-testid="button-prev-testimonials"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            
-            <Button
-              variant="outline"
-              size="icon"
-              className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-md hover-elevate"
-              onClick={nextTestimonials}
-              data-testid="button-next-testimonials"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </Button>
+          {/* Navigation Arrows - positioned at screen edges */}
+          <Button
+            variant="outline"
+            size="icon"
+            className="fixed left-4 top-1/2 transform -translate-y-1/2 z-20 bg-white shadow-md hover-elevate"
+            onClick={prevTestimonials}
+            data-testid="button-prev-testimonials"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </Button>
+          
+          <Button
+            variant="outline"
+            size="icon"
+            className="fixed right-4 top-1/2 transform -translate-y-1/2 z-20 bg-white shadow-md hover-elevate"
+            onClick={nextTestimonials}
+            data-testid="button-next-testimonials"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </Button>
 
+          <div className="relative">
             {/* Testimonials Container */}
-            <div className="px-12">
-              <div className="grid md:grid-cols-2 gap-8">
+            <div className="px-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
                 {currentTestimonials.map((testimonial, index) => (
                   <Card 
                     key={`${currentTestimonialIndex}-${index}`}
