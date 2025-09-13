@@ -33,7 +33,7 @@ export default function ContactSection() {
             Say Hello & Save More
           </h2>
           <p className="text-lg text-muted-foreground" data-testid="text-contact-description">
-            Contact us today for a personalized consultation
+            Discover your prime rate and save more.
           </p>
         </div>
 
@@ -41,7 +41,7 @@ export default function ContactSection() {
           {/* Contact Information */}
           <div>
             
-            <div className="space-y-6">
+            <div className="space-y-8 flex flex-col justify-between h-full">
               <Card className="hover-elevate">
                 <CardContent className="p-6">
                   <div className="flex items-start space-x-4">

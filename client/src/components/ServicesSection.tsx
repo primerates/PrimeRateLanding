@@ -40,8 +40,8 @@ export default function ServicesSection() {
               className="hover-elevate transition-all duration-300 h-full"
               data-testid={`card-service-${index}`}
             >
-              <CardHeader className="text-center">
-                <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
+              <CardHeader>
+                <div className="mb-4 p-3 bg-primary/10 rounded-full w-fit">
                   <service.icon className="w-8 h-8 text-primary" />
                 </div>
                 <CardTitle className="text-xl font-serif" data-testid={`text-service-title-${index}`}>
@@ -52,18 +52,6 @@ export default function ServicesSection() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2 mb-6">
-                  {service.features.map((feature, featureIndex) => (
-                    <li 
-                      key={featureIndex} 
-                      className="flex items-center text-sm"
-                      data-testid={`text-service-feature-${index}-${featureIndex}`}
-                    >
-                      <div className="w-1.5 h-1.5 bg-success rounded-full mr-3"></div>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
               </CardContent>
             </Card>
           ))}
