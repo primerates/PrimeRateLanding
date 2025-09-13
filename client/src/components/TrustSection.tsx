@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Star, Award, Users, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import heroImage from '@assets/generated_images/Bright_white_family_room_4f4419e6.png';
 
 // todo: remove mock functionality - replace with real testimonials
 const testimonials = [
@@ -44,11 +45,6 @@ const testimonials = [
   }
 ];
 
-const stats = [
-  { icon: Users, label: 'Happy Families Served', value: '15,000+' },
-  { icon: Clock, label: 'Years of Experience', value: '25+' },
-  { icon: Award, label: 'Loans Funded', value: '$3.2B+' },
-];
 
 export default function TrustSection() {
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
@@ -68,43 +64,28 @@ export default function TrustSection() {
     (currentTestimonialIndex + 1) * testimonialsPerPage
   );
   return (
-    <section className="py-16 bg-background">
-      <div className="container mx-auto px-6">
-        {/* Stats Section */}
+    <section className="relative py-16 bg-background">
+      {/* Hero background with gradient overlay */}
+      <div className="absolute inset-0 z-0">
+        <img 
+          src={heroImage} 
+          alt="Family enjoying their beautiful home"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30"></div>
+      </div>
+      
+      <div className="relative z-10 container mx-auto px-6">
+        {/* Title Section */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold font-serif mb-4" data-testid="text-trust-title">
-            Trusted by Thousands of Families
+          <h2 className="text-3xl lg:text-4xl font-bold font-serif mb-4 text-white" data-testid="text-trust-title">
+            Trusted by Thousands of Homeowners and Real Estate Professionals
           </h2>
-          <p className="text-lg text-muted-foreground" data-testid="text-trust-description">
-            Our track record speaks for itself
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          {stats.map((stat, index) => (
-            <Card 
-              key={index}
-              className="text-center hover-elevate"
-              data-testid={`card-stat-${index}`}
-            >
-              <CardContent className="p-6">
-                <div className="mx-auto mb-4 p-3 bg-success/10 rounded-full w-fit">
-                  <stat.icon className="w-8 h-8 text-success" />
-                </div>
-                <div className="text-3xl font-bold text-primary mb-2" data-testid={`text-stat-value-${index}`}>
-                  {stat.value}
-                </div>
-                <div className="text-muted-foreground" data-testid={`text-stat-label-${index}`}>
-                  {stat.label}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
         </div>
 
         {/* Testimonials */}
         <div className="max-w-4xl mx-auto">
-          <h3 className="text-2xl font-bold font-serif text-center mb-8" data-testid="text-testimonials-title">
+          <h3 className="text-2xl font-bold font-serif text-center mb-8 text-white" data-testid="text-testimonials-title">
             What Our Clients Say
           </h3>
           
@@ -136,7 +117,7 @@ export default function TrustSection() {
                 {currentTestimonials.map((testimonial, index) => (
                   <Card 
                     key={`${currentTestimonialIndex}-${index}`}
-                    className="hover-elevate"
+                    className="hover-elevate bg-white/95 backdrop-blur-sm shadow-xl"
                     data-testid={`card-testimonial-${currentTestimonialIndex * testimonialsPerPage + index}`}
                   >
                     <CardContent className="p-6">
@@ -189,30 +170,6 @@ export default function TrustSection() {
             </div>
           </div>
 
-          {/* Why Choose Us */}
-          <div className="mt-16 text-center">
-            <h3 className="text-2xl font-bold font-serif mb-8" data-testid="text-why-choose-title">
-              Why Choose Prime Rate Home Loans?
-            </h3>
-            
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                'Licensed in 50 states',
-                'Same-day pre-approval',
-                'No hidden fees',
-                'Expert loan officers'
-              ].map((feature, index) => (
-                <div 
-                  key={index} 
-                  className="flex items-center justify-center p-4 bg-muted/50 rounded-md"
-                  data-testid={`text-feature-${index}`}
-                >
-                  <div className="w-2 h-2 bg-success rounded-full mr-3"></div>
-                  <span className="font-medium">{feature}</span>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     </section>

@@ -51,7 +51,7 @@ export default function ContactSection() {
                     <div>
                       <h4 className="font-semibold mb-2" data-testid="text-phone-title">Call Us</h4>
                       <p className="text-2xl font-bold text-primary" data-testid="text-phone-number">
-                        (555) 123-LOAN
+                        800-223-5057
                       </p>
                       <p className="text-sm text-muted-foreground">Mon-Fri 8AM-8PM, Sat 9AM-5PM</p>
                     </div>
