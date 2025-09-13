@@ -30,7 +30,7 @@ export default function ContactSection() {
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold font-serif mb-4" data-testid="text-contact-title">
-            Say Hello & Save more
+            Say Hello & Save More
           </h2>
           <p className="text-lg text-muted-foreground" data-testid="text-contact-description">
             Contact us today for a personalized consultation
@@ -40,9 +40,6 @@ export default function ContactSection() {
         <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
           {/* Contact Information */}
           <div>
-            <h3 className="text-2xl font-bold mb-8" data-testid="text-contact-info-title">
-              Get in Touch
-            </h3>
             
             <div className="space-y-6">
               <Card className="hover-elevate">
@@ -81,18 +78,25 @@ export default function ContactSection() {
 
               <Card className="hover-elevate">
                 <CardContent className="p-6">
-                  <div className="flex items-start space-x-4">
-                    <div className="p-3 bg-primary/10 rounded-full">
-                      <MapPin className="w-6 h-6 text-primary" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold mb-2" data-testid="text-location-title">Visit Our Office</h4>
-                      <p className="font-medium" data-testid="text-office-address">
-                        123 Main Street, Suite 200<br />
-                        Downtown Financial District<br />
-                        Your City, ST 12345
-                      </p>
-                    </div>
+                  <div className="space-y-4">
+                    <Button 
+                      size="lg" 
+                      className="w-full"
+                      data-testid="button-apply-now-card"
+                      onClick={() => console.log('Apply Now clicked')}
+                    >
+                      Apply Now
+                    </Button>
+                    <Button 
+                      size="lg" 
+                      variant="outline"
+                      className="w-full"
+                      data-testid="button-schedule-call-card"
+                      onClick={() => console.log('Schedule Call clicked')}
+                    >
+                      <Clock className="w-4 h-4 mr-2" />
+                      Schedule Call
+                    </Button>
                   </div>
                 </CardContent>
               </Card>

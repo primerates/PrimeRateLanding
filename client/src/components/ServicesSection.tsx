@@ -29,7 +29,7 @@ export default function ServicesSection() {
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold font-serif mb-4" data-testid="text-services-title">
-            Prime Refinance & Purchase Conventional, FHA, and VA Loans
+            Prime VA, FHA, Conventional, and jumbo Refinance & Purchase Loans
           </h2>
         </div>
 
