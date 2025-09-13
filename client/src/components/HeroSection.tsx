@@ -84,10 +84,13 @@ export default function HeroSection() {
             <h1 className="text-4xl lg:text-6xl font-bold font-serif mb-4" data-testid="text-hero-title">
               Prime Rate Home Loans
             </h1>
-            <p className="text-xl lg:text-2xl mb-2" data-testid="text-hero-subtitle">
+            <p className="text-xl lg:text-2xl mb-4" data-testid="text-hero-subtitle">
               Prime Rates . Lower Payments
             </p>
-            <p className="text-xl lg:text-2xl mb-4" data-testid="text-hero-phone">
+          </div>
+          
+          <div className="mb-6">
+            <p className="text-2xl lg:text-3xl font-semibold" data-testid="text-hero-phone">
               800-223-5057
             </p>
           </div>

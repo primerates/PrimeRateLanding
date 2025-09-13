@@ -6,7 +6,7 @@ const services = [
   {
     icon: Lock,
     title: 'Lock Assurance',
-    description: 'Rates can be unpredictable. If they drop below your locked rate, we\'ve got you covered — we\'ll roll down your lock so you don\'t miss out.',
+    description: 'Rates can be unpredictable. If they drop below your locked rate, we\'ve got you covered - we\'ll roll down your lock so you don\'t miss out on extra savings.',
     features: ['Conventional loans', 'Jumbo loans', 'First-time buyer programs', 'Down payment assistance']
   },
   {
@@ -29,7 +29,7 @@ export default function ServicesSection() {
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold font-serif mb-4" data-testid="text-services-title">
-            Prime VA, FHA, Conventional, and Jumbo Refinance & Purchase Loans
+            Prime Rates on VA, FHA, Conventional & Jumbo Loans
           </h2>
         </div>
 

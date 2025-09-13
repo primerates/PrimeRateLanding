@@ -33,7 +33,7 @@ export default function ContactSection() {
             Say Hello & Save More
           </h2>
           <p className="text-lg text-muted-foreground" data-testid="text-contact-description">
-            Discover your prime rate and save more.
+            Discover your prime rate and save more today
           </p>
         </div>
 
