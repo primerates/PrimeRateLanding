@@ -51,9 +51,6 @@ export default function HeroSection() {
             <p className="text-xl lg:text-2xl mb-2" data-testid="text-hero-subtitle">
               Prime Rates . Lower Payments
             </p>
-            <p className="text-lg text-white/90" data-testid="text-hero-description">
-              Competitive rates, expert guidance, and personalized service for your home financing needs
-            </p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-8">

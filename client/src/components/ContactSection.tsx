@@ -30,7 +30,7 @@ export default function ContactSection() {
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold font-serif mb-4" data-testid="text-contact-title">
-            Ready to Get Started?
+            Say Hello & Save more
           </h2>
           <p className="text-lg text-muted-foreground" data-testid="text-contact-description">
             Contact us today for a personalized consultation
