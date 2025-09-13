@@ -1,24 +1,24 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Lock, Zap, X } from 'lucide-react';
+import { Lock, Zap, Ban } from 'lucide-react';
 
 const services = [
   {
     icon: Lock,
     title: 'Lock Assurance',
-    description: 'Market rates can be unpredictable. If they drop below your locked rate, we\'ve got you covered—we\'ll roll down your lock so you don\'t miss out.',
+    description: 'Rates can be unpredictable. If they drop below your locked rate, we\'ve got you covered — we\'ll roll down your lock so you don\'t miss out.',
     features: ['Conventional loans', 'Jumbo loans', 'First-time buyer programs', 'Down payment assistance']
   },
   {
     icon: Zap,
     title: 'Choose Simplicity',
-    description: 'Work and family life can be a handful; your refinance shouldn\'t be - with expert guidance, real-time loan status updates and a simplified loan process, Choose simplicity.',
+    description: 'Work and family life can be a handful; your loan shouldn\'t be - with expert guidance, real-time status updates and a simplified loan process, Choose simplicity.',
     features: ['Rate & term refinance', 'Cash-out refinance', 'Streamline refinance', 'Investment property refi']
   },
   {
-    icon: X,
+    icon: Ban,
     title: 'No Junk Fees',
-    description: 'We keep it honest and transparent—with zero application, rate lock, or junk fees—so you save more every step of the way.',
+    description: 'We earn your trust with honest, transparent quotes and disclosures — no application, rate lock, or junk fees, so you save more every step of the way.',
     features: ['FHA loans (3.5% down)', 'VA loans (0% down)', 'USDA rural loans', 'State-specific programs']
   }
 ];
@@ -40,8 +40,8 @@ export default function ServicesSection() {
               className="hover-elevate transition-all duration-300 h-full"
               data-testid={`card-service-${index}`}
             >
-              <CardHeader>
-                <div className="mb-4 p-3 bg-primary/10 rounded-full w-fit">
+              <CardHeader className="text-center">
+                <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
                   <service.icon className="w-8 h-8 text-primary" />
                 </div>
                 <CardTitle className="text-xl font-serif" data-testid={`text-service-title-${index}`}>
