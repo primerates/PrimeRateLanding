@@ -1,23 +1,23 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Home, RefreshCw, Shield } from 'lucide-react';
+import { Lock, Zap, X } from 'lucide-react';
 
 const services = [
   {
-    icon: Home,
-    title: 'Purchase Loans',
+    icon: Lock,
+    title: 'Lock Assurance',
     description: 'Whether you\'re a first-time buyer or moving up, we offer competitive rates and personalized guidance to help you secure your dream home.',
     features: ['Conventional loans', 'Jumbo loans', 'First-time buyer programs', 'Down payment assistance']
   },
   {
-    icon: RefreshCw,
-    title: 'Refinancing',
+    icon: Zap,
+    title: 'Choose Simplicity',
     description: 'Lower your monthly payments or access your home equity with our streamlined refinancing process. Low rates and expert guidance for your home financing needs.',
     features: ['Rate & term refinance', 'Cash-out refinance', 'Streamline refinance', 'Investment property refi']
   },
   {
-    icon: Shield,
-    title: 'FHA & VA Loans',
+    icon: X,
+    title: 'No Junk Fees',
     description: 'Specialized government-backed loan programs designed to help more people achieve homeownership with flexible requirements.',
     features: ['FHA loans (3.5% down)', 'VA loans (0% down)', 'USDA rural loans', 'State-specific programs']
   }
@@ -29,7 +29,7 @@ export default function ServicesSection() {
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold font-serif mb-4" data-testid="text-services-title">
-            Prime VA, FHA, Conventional, and jumbo Refinance & Purchase Loans
+            Prime VA, FHA, Conventional, and Jumbo Refinance & Purchase Loans
           </h2>
         </div>
 

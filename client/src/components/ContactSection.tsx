@@ -102,27 +102,6 @@ export default function ContactSection() {
               </Card>
             </div>
 
-            {/* Quick Actions */}
-            <div className="mt-8 grid grid-cols-2 gap-4">
-              <Button 
-                size="lg" 
-                className="w-full"
-                data-testid="button-apply-now"
-                onClick={() => console.log('Apply Now clicked')}
-              >
-                Apply Now
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline"
-                className="w-full"
-                data-testid="button-schedule-call"
-                onClick={() => console.log('Schedule Call clicked')}
-              >
-                <Clock className="w-4 h-4 mr-2" />
-                Schedule Call
-              </Button>
-            </div>
           </div>
 
           {/* Contact Form */}
