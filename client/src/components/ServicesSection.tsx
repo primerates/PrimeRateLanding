@@ -6,19 +6,19 @@ const services = [
   {
     icon: Lock,
     title: 'Lock Assurance',
-    description: 'Whether you\'re a first-time buyer or moving up, we offer competitive rates and personalized guidance to help you secure your dream home.',
+    description: 'Market rates can be unpredictable. If they drop below your locked rate, we\'ve got you covered—we\'ll roll down your lock so you don\'t miss out.',
     features: ['Conventional loans', 'Jumbo loans', 'First-time buyer programs', 'Down payment assistance']
   },
   {
     icon: Zap,
     title: 'Choose Simplicity',
-    description: 'Lower your monthly payments or access your home equity with our streamlined refinancing process. Low rates and expert guidance for your home financing needs.',
+    description: 'Work and family life can be a handful; your refinance shouldn\'t be - with expert guidance, real-time loan status updates and a simplified loan process, Choose simplicity.',
     features: ['Rate & term refinance', 'Cash-out refinance', 'Streamline refinance', 'Investment property refi']
   },
   {
     icon: X,
     title: 'No Junk Fees',
-    description: 'Specialized government-backed loan programs designed to help more people achieve homeownership with flexible requirements.',
+    description: 'We keep it honest and transparent—with zero application, rate lock, or junk fees—so you save more every step of the way.',
     features: ['FHA loans (3.5% down)', 'VA loans (0% down)', 'USDA rural loans', 'State-specific programs']
   }
 ];
@@ -64,14 +64,6 @@ export default function ServicesSection() {
                     </li>
                   ))}
                 </ul>
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  data-testid={`button-learn-more-${index}`}
-                  onClick={() => console.log(`Learn more about ${service.title} clicked`)}
-                >
-                  Learn More
-                </Button>
               </CardContent>
             </Card>
           ))}
