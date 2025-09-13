@@ -67,30 +67,32 @@ export default function TestimonialsSection() {
       <div className="container mx-auto px-6">
         {/* Testimonials */}
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl lg:text-4xl font-bold font-serif text-center mb-8" data-testid="text-testimonials-title">
+          <h2 className="text-3xl lg:text-4xl font-bold font-serif text-center mb-4" data-testid="text-testimonials-title">
             What Our Clients Say
           </h2>
           
-          {/* Navigation Arrows - positioned at screen edges */}
-          <Button
-            variant="outline"
-            size="icon"
-            className="fixed left-4 top-1/2 transform -translate-y-1/2 z-20 bg-white shadow-md hover-elevate"
-            onClick={prevTestimonials}
-            data-testid="button-prev-testimonials"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </Button>
-          
-          <Button
-            variant="outline"
-            size="icon"
-            className="fixed right-4 top-1/2 transform -translate-y-1/2 z-20 bg-white shadow-md hover-elevate"
-            onClick={nextTestimonials}
-            data-testid="button-next-testimonials"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </Button>
+          {/* Navigation Arrows - centered below heading */}
+          <div className="flex justify-center items-center gap-4 mb-8">
+            <Button
+              variant="outline"
+              size="icon"
+              className="bg-white shadow-md hover-elevate"
+              onClick={prevTestimonials}
+              data-testid="button-prev-testimonials"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="icon"
+              className="bg-white shadow-md hover-elevate"
+              onClick={nextTestimonials}
+              data-testid="button-next-testimonials"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
 
           <div className="relative">
             {/* Testimonials Container */}

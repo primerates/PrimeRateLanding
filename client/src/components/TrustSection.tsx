@@ -23,7 +23,7 @@ export default function TrustSection() {
             alt="Happy family standing outside their beautiful home"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/15 to-black/10"></div>
         </div>
         
         <div className="relative z-10 container mx-auto px-6">
