@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calculator, Phone, X } from 'lucide-react';
+import { Calculator, X } from 'lucide-react';
 import heroImage from '@assets/generated_images/Bright_white_family_room_4f4419e6.png';
 
 export default function HeroSection() {
@@ -41,6 +41,42 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/20"></div>
       </div>
 
+      {/* Top Right Menu Options */}
+      <div className="absolute top-6 right-6 z-20 hidden lg:flex gap-3">
+        <Button 
+          size="sm" 
+          className="bg-primary text-white hover-elevate"
+          data-testid="button-menu-loan-status"
+          onClick={() => console.log('Loan Status clicked')}
+        >
+          Loan Status
+        </Button>
+        <Button 
+          size="sm" 
+          className="bg-primary text-white hover-elevate"
+          data-testid="button-menu-rate-tracker"
+          onClick={() => console.log('Rate Tracker clicked')}
+        >
+          Rate Tracker
+        </Button>
+        <Button 
+          size="sm" 
+          className="bg-primary text-white hover-elevate"
+          data-testid="button-menu-mortgage-calculator"
+          onClick={() => setShowCalculator(true)}
+        >
+          Mortgage Calculator
+        </Button>
+        <Button 
+          size="sm" 
+          className="bg-primary text-white hover-elevate"
+          data-testid="button-menu-get-preapproved"
+          onClick={() => console.log('Get Pre-Approved clicked')}
+        >
+          Get Pre-Approved
+        </Button>
+      </div>
+
       <div className="relative z-10 container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
         {/* Hero Content */}
         <div className="text-white">
@@ -51,43 +87,11 @@ export default function HeroSection() {
             <p className="text-xl lg:text-2xl mb-2" data-testid="text-hero-subtitle">
               Prime Rates . Lower Payments
             </p>
+            <p className="text-xl lg:text-2xl mb-4" data-testid="text-hero-phone">
+              800-223-5057
+            </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 mb-8">
-            <Button 
-              size="lg" 
-              variant="default"
-              className="bg-primary hover-elevate"
-              data-testid="button-get-preapproved"
-              onClick={() => console.log('Get Pre-Approved clicked')}
-            >
-              Get Pre-Approved Today
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline"
-              className="border-white text-white bg-white/10 backdrop-blur-sm hover-elevate"
-              data-testid="button-call-now"
-              onClick={() => console.log('Call Now clicked')}
-            >
-              <Phone className="w-4 h-4 mr-2" />
-              Call (555) 123-LOAN
-            </Button>
-          </div>
-
-          {/* Calculator Toggle Button */}
-          {!showCalculator && (
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white text-white bg-white/10 backdrop-blur-sm hover-elevate"
-              data-testid="button-show-calculator"
-              onClick={() => setShowCalculator(true)}
-            >
-              <Calculator className="w-4 h-4 mr-2" />
-              Open Mortgage Calculator
-            </Button>
-          )}
         </div>
 
         {/* Mortgage Calculator Card */}
