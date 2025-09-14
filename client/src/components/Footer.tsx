@@ -10,12 +10,9 @@ export default function Footer() {
             <h3 className="text-2xl font-bold font-serif mb-4" data-testid="text-footer-company">
               Prime Rate Home Loans
             </h3>
-            <p className="text-primary-foreground/80 mb-4" data-testid="text-footer-description">
-              Your trusted mortgage partner for over 25 years. We're committed to helping you achieve homeownership with competitive rates and exceptional service.
-            </p>
             <div className="space-y-2">
               <p className="font-semibold" data-testid="text-footer-license">
-                NMLS #123456 | Licensed in all 50 states
+                NMLS #123456
               </p>
               <p className="text-primary-foreground/80" data-testid="text-footer-address">
                 123 Main Street, Suite 200, Del Ray Beach, FL 33445
