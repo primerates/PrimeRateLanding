@@ -14,6 +14,7 @@ export default function HeroSection() {
   const [loanTerm, setLoanTerm] = useState('30');
   const [showCalculator, setShowCalculator] = useState(false);
   const [showRateTracker, setShowRateTracker] = useState(false);
+  const [showPreApproval, setShowPreApproval] = useState(false);
   const [rateTrackerData, setRateTrackerData] = useState({
     fullName: '',
     email: '',
@@ -23,6 +24,24 @@ export default function HeroSection() {
     loanType: '',
     trackInterestRate: '',
     message: ''
+  });
+  const [preApprovalData, setPreApprovalData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    employmentStatus: '',
+    annualIncome: '',
+    yearsAtJob: '',
+    monthlyDebts: '',
+    assets: '',
+    desiredLoanAmount: '',
+    downPayment: '',
+    propertyValue: '',
+    propertyType: '',
+    intendedUse: '',
+    state: '',
+    timelineToPurchase: '',
+    additionalInfo: ''
   });
 
   const formatPhoneNumber = (value: string) => {
@@ -42,6 +61,11 @@ export default function HeroSection() {
   const handlePhoneChange = (value: string) => {
     const formatted = formatPhoneNumber(value);
     setRateTrackerData(prev => ({ ...prev, phone: formatted }));
+  };
+
+  const handlePreApprovalPhoneChange = (value: string) => {
+    const formatted = formatPhoneNumber(value);
+    setPreApprovalData(prev => ({ ...prev, phone: formatted }));
   };
 
   const calculatePayment = () => {
@@ -102,7 +126,7 @@ export default function HeroSection() {
           size="sm" 
           className="bg-primary text-white hover-elevate"
           data-testid="button-menu-get-preapproved"
-          onClick={() => console.log('Get Pre-Approved clicked')}
+          onClick={() => setShowPreApproval(true)}
         >
           Get Pre-Approved
         </Button>
@@ -399,6 +423,322 @@ export default function HeroSection() {
                     data-testid="button-submit-rate-tracker"
                   >
                     Send Message
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Pre-Approval Modal */}
+        {showPreApproval && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <Card className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto" data-testid="card-pre-approval">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold font-serif" data-testid="text-pre-approval-title">
+                    Get Pre-Approved
+                  </h2>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    data-testid="button-close-pre-approval"
+                    onClick={() => setShowPreApproval(false)}
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+
+                <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); console.log('Pre-Approval submitted:', preApprovalData); }}>
+                  {/* Personal Information */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 text-primary">Personal Information</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Full Name</label>
+                        <Input
+                          type="text"
+                          value={preApprovalData.fullName}
+                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, fullName: e.target.value }))}
+                          placeholder="Enter your full name"
+                          data-testid="input-pre-approval-name"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Email</label>
+                        <Input
+                          type="email"
+                          value={preApprovalData.email}
+                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, email: e.target.value }))}
+                          placeholder="Enter your email"
+                          data-testid="input-pre-approval-email"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Phone Number</label>
+                        <Input
+                          type="tel"
+                          value={preApprovalData.phone}
+                          onChange={(e) => handlePreApprovalPhoneChange(e.target.value)}
+                          placeholder="(xxx) xxx-xxxx"
+                          data-testid="input-pre-approval-phone"
+                          required
+                          maxLength={14}
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-2">State</label>
+                        <Select value={preApprovalData.state} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, state: value }))}>
+                          <SelectTrigger data-testid="select-pre-approval-state">
+                            <SelectValue placeholder="Select state" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="AL">Alabama</SelectItem>
+                            <SelectItem value="AK">Alaska</SelectItem>
+                            <SelectItem value="AZ">Arizona</SelectItem>
+                            <SelectItem value="AR">Arkansas</SelectItem>
+                            <SelectItem value="CA">California</SelectItem>
+                            <SelectItem value="CO">Colorado</SelectItem>
+                            <SelectItem value="CT">Connecticut</SelectItem>
+                            <SelectItem value="DE">Delaware</SelectItem>
+                            <SelectItem value="FL">Florida</SelectItem>
+                            <SelectItem value="GA">Georgia</SelectItem>
+                            <SelectItem value="HI">Hawaii</SelectItem>
+                            <SelectItem value="ID">Idaho</SelectItem>
+                            <SelectItem value="IL">Illinois</SelectItem>
+                            <SelectItem value="IN">Indiana</SelectItem>
+                            <SelectItem value="IA">Iowa</SelectItem>
+                            <SelectItem value="KS">Kansas</SelectItem>
+                            <SelectItem value="KY">Kentucky</SelectItem>
+                            <SelectItem value="LA">Louisiana</SelectItem>
+                            <SelectItem value="ME">Maine</SelectItem>
+                            <SelectItem value="MD">Maryland</SelectItem>
+                            <SelectItem value="MA">Massachusetts</SelectItem>
+                            <SelectItem value="MI">Michigan</SelectItem>
+                            <SelectItem value="MN">Minnesota</SelectItem>
+                            <SelectItem value="MS">Mississippi</SelectItem>
+                            <SelectItem value="MO">Missouri</SelectItem>
+                            <SelectItem value="MT">Montana</SelectItem>
+                            <SelectItem value="NE">Nebraska</SelectItem>
+                            <SelectItem value="NV">Nevada</SelectItem>
+                            <SelectItem value="NH">New Hampshire</SelectItem>
+                            <SelectItem value="NJ">New Jersey</SelectItem>
+                            <SelectItem value="NM">New Mexico</SelectItem>
+                            <SelectItem value="NY">New York</SelectItem>
+                            <SelectItem value="NC">North Carolina</SelectItem>
+                            <SelectItem value="ND">North Dakota</SelectItem>
+                            <SelectItem value="OH">Ohio</SelectItem>
+                            <SelectItem value="OK">Oklahoma</SelectItem>
+                            <SelectItem value="OR">Oregon</SelectItem>
+                            <SelectItem value="PA">Pennsylvania</SelectItem>
+                            <SelectItem value="RI">Rhode Island</SelectItem>
+                            <SelectItem value="SC">South Carolina</SelectItem>
+                            <SelectItem value="SD">South Dakota</SelectItem>
+                            <SelectItem value="TN">Tennessee</SelectItem>
+                            <SelectItem value="TX">Texas</SelectItem>
+                            <SelectItem value="UT">Utah</SelectItem>
+                            <SelectItem value="VT">Vermont</SelectItem>
+                            <SelectItem value="VA">Virginia</SelectItem>
+                            <SelectItem value="WA">Washington</SelectItem>
+                            <SelectItem value="WV">West Virginia</SelectItem>
+                            <SelectItem value="WI">Wisconsin</SelectItem>
+                            <SelectItem value="WY">Wyoming</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Employment & Income */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 text-primary">Employment & Income</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Employment Status</label>
+                        <Select value={preApprovalData.employmentStatus} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, employmentStatus: value }))}>
+                          <SelectTrigger data-testid="select-employment-status">
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="employed">Employed</SelectItem>
+                            <SelectItem value="self-employed">Self-Employed</SelectItem>
+                            <SelectItem value="retired">Retired</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Annual Income</label>
+                        <Input
+                          type="number"
+                          value={preApprovalData.annualIncome}
+                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, annualIncome: e.target.value }))}
+                          placeholder="$75,000"
+                          data-testid="input-annual-income"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Years at Current Job</label>
+                        <Input
+                          type="number"
+                          value={preApprovalData.yearsAtJob}
+                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, yearsAtJob: e.target.value }))}
+                          placeholder="2"
+                          data-testid="input-years-at-job"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Financial Information */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 text-primary">Financial Information</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Monthly Debts</label>
+                        <Input
+                          type="number"
+                          value={preApprovalData.monthlyDebts}
+                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, monthlyDebts: e.target.value }))}
+                          placeholder="$500"
+                          data-testid="input-monthly-debts"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Assets/Savings</label>
+                        <Input
+                          type="number"
+                          value={preApprovalData.assets}
+                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, assets: e.target.value }))}
+                          placeholder="$50,000"
+                          data-testid="input-assets"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Loan Details */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 text-primary">Loan Details</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Desired Loan Amount</label>
+                        <Input
+                          type="number"
+                          value={preApprovalData.desiredLoanAmount}
+                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, desiredLoanAmount: e.target.value }))}
+                          placeholder="$400,000"
+                          data-testid="input-loan-amount"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Down Payment</label>
+                        <Input
+                          type="number"
+                          value={preApprovalData.downPayment}
+                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, downPayment: e.target.value }))}
+                          placeholder="$80,000"
+                          data-testid="input-down-payment"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Property Value</label>
+                        <Input
+                          type="number"
+                          value={preApprovalData.propertyValue}
+                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, propertyValue: e.target.value }))}
+                          placeholder="$480,000"
+                          data-testid="input-property-value"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Property Information */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 text-primary">Property Information</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Property Type</label>
+                        <Select value={preApprovalData.propertyType} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, propertyType: value }))}>
+                          <SelectTrigger data-testid="select-property-type">
+                            <SelectValue placeholder="Select type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="single-family">Single Family Home</SelectItem>
+                            <SelectItem value="condo">Condominium</SelectItem>
+                            <SelectItem value="townhouse">Townhouse</SelectItem>
+                            <SelectItem value="multi-family">Multi-Family</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Intended Use</label>
+                        <Select value={preApprovalData.intendedUse} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, intendedUse: value }))}>
+                          <SelectTrigger data-testid="select-intended-use">
+                            <SelectValue placeholder="Select use" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="primary">Primary Residence</SelectItem>
+                            <SelectItem value="secondary">Secondary Home</SelectItem>
+                            <SelectItem value="investment">Investment Property</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Timeline to Purchase</label>
+                        <Select value={preApprovalData.timelineToPurchase} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, timelineToPurchase: value }))}>
+                          <SelectTrigger data-testid="select-timeline">
+                            <SelectValue placeholder="Select timeline" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="immediate">Immediately</SelectItem>
+                            <SelectItem value="1-3months">1-3 Months</SelectItem>
+                            <SelectItem value="3-6months">3-6 Months</SelectItem>
+                            <SelectItem value="6-12months">6-12 Months</SelectItem>
+                            <SelectItem value="12months+">12+ Months</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Additional Information</label>
+                    <Textarea
+                      value={preApprovalData.additionalInfo}
+                      onChange={(e) => setPreApprovalData(prev => ({ ...prev, additionalInfo: e.target.value }))}
+                      placeholder="Tell us anything else that might be relevant to your pre-approval..."
+                      rows={4}
+                      data-testid="textarea-additional-info"
+                    />
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    size="lg"
+                    data-testid="button-submit-pre-approval"
+                  >
+                    Submit Pre-Approval Application
                   </Button>
                 </form>
               </CardContent>
