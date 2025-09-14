@@ -392,9 +392,16 @@ export default function HeroSection() {
             <Card className="bg-white w-full max-w-lg max-h-[90vh] overflow-y-auto" data-testid="card-rate-tracker">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold font-serif" data-testid="text-rate-tracker-title">
-                    Rate Tracker
-                  </h2>
+                  <div className="flex items-center gap-3">
+                    <h2 className="text-2xl font-bold font-serif" data-testid="text-rate-tracker-title">
+                      Rate Tracker
+                    </h2>
+                    {rateTrackerSubmitted && (
+                      <span className="text-green-600 font-medium text-sm bg-green-50 px-2 py-1 rounded" data-testid="status-rate-tracker-submitted">
+                        Request Submitted
+                      </span>
+                    )}
+                  </div>
                   <Button
                     variant="ghost"
                     size="icon"
@@ -405,13 +412,6 @@ export default function HeroSection() {
                   </Button>
                 </div>
 
-                {rateTrackerSubmitted ? (
-                  <div className="text-center py-8" data-testid="success-rate-tracker">
-                    <div className="text-green-600 text-2xl mb-4">✓</div>
-                    <h3 className="text-xl font-semibold mb-2">Request Sent</h3>
-                    <p className="text-gray-600">Thank you! Your rate tracker request has been forwarded to our team. We'll contact you soon.</p>
-                  </div>
-                ) : (
                   <form className="space-y-4" onSubmit={submitRateTracker} noValidate>
                   <div>
                     <label className="block text-sm font-medium mb-2">Full Name</label>
@@ -579,7 +579,6 @@ export default function HeroSection() {
                     {rateTrackerSubmitting ? 'Sending...' : 'Send Message'}
                   </Button>
                 </form>
-                )}
               </CardContent>
             </Card>
           </div>
@@ -591,9 +590,16 @@ export default function HeroSection() {
             <Card className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto" data-testid="card-pre-approval">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold font-serif" data-testid="text-pre-approval-title">
-                    Get Pre-Approved
-                  </h2>
+                  <div className="flex items-center gap-3">
+                    <h2 className="text-2xl font-bold font-serif" data-testid="text-pre-approval-title">
+                      Get Pre-Approved
+                    </h2>
+                    {preApprovalSubmitted && (
+                      <span className="text-green-600 font-medium text-sm bg-green-50 px-2 py-1 rounded" data-testid="status-pre-approval-submitted">
+                        Request Submitted
+                      </span>
+                    )}
+                  </div>
                   <Button
                     variant="ghost"
                     size="icon"
@@ -1095,23 +1101,15 @@ export default function HeroSection() {
                     </div>
                   )}
 
-                  {preApprovalSubmitted ? (
-                    <div className="text-center py-8" data-testid="success-pre-approval">
-                      <div className="text-green-600 text-2xl mb-4">✓</div>
-                      <h3 className="text-xl font-semibold mb-2">Request Sent</h3>
-                      <p className="text-gray-600">Thank you! Your pre-approval application has been forwarded to our team. We'll contact you soon.</p>
-                    </div>
-                  ) : (
-                    <Button 
-                      type="submit" 
-                      className="w-full" 
-                      size="lg"
-                      data-testid="button-submit-pre-approval"
-                      disabled={preApprovalSubmitting}
-                    >
-                      {preApprovalSubmitting ? 'Submitting...' : 'Submit Pre-Approval Application'}
-                    </Button>
-                  )}
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    size="lg"
+                    data-testid="button-submit-pre-approval"
+                    disabled={preApprovalSubmitting}
+                  >
+                    {preApprovalSubmitting ? 'Submitting...' : 'Submit Pre-Approval Application'}
+                  </Button>
                 </form>
               </CardContent>
             </Card>
