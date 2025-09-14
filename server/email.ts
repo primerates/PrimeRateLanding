@@ -1,4 +1,4 @@
-import { MailService } from '@sendgrid/mail';
+import sgMail from '@sendgrid/mail';
 import client from '@sendgrid/client';
 
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
@@ -7,12 +7,10 @@ if (!SENDGRID_API_KEY) {
   throw new Error("SENDGRID_API_KEY environment variable must be set");
 }
 
-// Configure SendGrid client for EU data residency
+// Configure SendGrid for EU data residency
 client.setApiKey(SENDGRID_API_KEY);
 client.setDefaultRequest('baseUrl', 'https://api.eu.sendgrid.com/');
-
-const mailService = new MailService();
-mailService.setClient(client);
+sgMail.setClient(client);
 
 interface EmailParams {
   to: string;
@@ -38,7 +36,7 @@ export async function sendEmail(params: EmailParams): Promise<boolean> {
       emailData.html = params.html;
     }
     
-    await mailService.send(emailData);
+    await sgMail.send(emailData);
     return true;
   } catch (error) {
     console.error('SendGrid email error:', error);
