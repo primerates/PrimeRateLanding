@@ -57,7 +57,7 @@ export default function HeroSection() {
       <div className="absolute top-6 right-6 z-20 hidden lg:flex gap-3">
         <Button 
           size="sm" 
-          className="bg-blue-600 text-white hover-elevate"
+          className="bg-primary text-white hover-elevate"
           data-testid="button-menu-loan-status"
           onClick={() => console.log('Loan Status clicked')}
         >
@@ -65,7 +65,7 @@ export default function HeroSection() {
         </Button>
         <Button 
           size="sm" 
-          className="bg-blue-600 text-white hover-elevate"
+          className="bg-primary text-white hover-elevate"
           data-testid="button-menu-rate-tracker"
           onClick={() => setShowRateTracker(true)}
         >
@@ -73,7 +73,7 @@ export default function HeroSection() {
         </Button>
         <Button 
           size="sm" 
-          className="bg-blue-600 text-white hover-elevate"
+          className="bg-primary text-white hover-elevate"
           data-testid="button-menu-mortgage-calculator"
           onClick={() => setShowCalculator(true)}
         >
@@ -81,7 +81,7 @@ export default function HeroSection() {
         </Button>
         <Button 
           size="sm" 
-          className="bg-blue-600 text-white hover-elevate"
+          className="bg-primary text-white hover-elevate"
           data-testid="button-menu-get-preapproved"
           onClick={() => console.log('Get Pre-Approved clicked')}
         >
