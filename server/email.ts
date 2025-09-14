@@ -1,4 +1,5 @@
 import { MailService } from '@sendgrid/mail';
+import client from '@sendgrid/client';
 
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
 
@@ -6,9 +7,12 @@ if (!SENDGRID_API_KEY) {
   throw new Error("SENDGRID_API_KEY environment variable must be set");
 }
 
+// Configure SendGrid client for EU data residency
+client.setApiKey(SENDGRID_API_KEY);
+client.setDefaultRequest('baseUrl', 'https://api.eu.sendgrid.com/');
 
 const mailService = new MailService();
-mailService.setApiKey(SENDGRID_API_KEY);
+mailService.setClient(client);
 
 interface EmailParams {
   to: string;
