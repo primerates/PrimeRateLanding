@@ -41,7 +41,19 @@ export default function HeroSection() {
     intendedUse: '',
     state: '',
     timelineToPurchase: '',
-    additionalInfo: ''
+    additionalInfo: '',
+    addCoBorrower: 'no'
+  });
+  const [coBorrowerData, setCoBorrowerData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    employmentStatus: '',
+    annualIncome: '',
+    yearsAtJob: '',
+    monthlyDebts: '',
+    assets: '',
+    state: ''
   });
 
   const formatPhoneNumber = (value: string) => {
@@ -66,6 +78,11 @@ export default function HeroSection() {
   const handlePreApprovalPhoneChange = (value: string) => {
     const formatted = formatPhoneNumber(value);
     setPreApprovalData(prev => ({ ...prev, phone: formatted }));
+  };
+
+  const handleCoBorrowerPhoneChange = (value: string) => {
+    const formatted = formatPhoneNumber(value);
+    setCoBorrowerData(prev => ({ ...prev, phone: formatted }));
   };
 
   const calculatePayment = () => {
@@ -450,9 +467,9 @@ export default function HeroSection() {
                 </div>
 
                 <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); console.log('Pre-Approval submitted:', preApprovalData); }}>
-                  {/* Personal Information */}
+                  {/* Borrower Information */}
                   <div>
-                    <h3 className="text-lg font-semibold mb-4 text-primary">Personal Information</h3>
+                    <h3 className="text-lg font-semibold mb-4 text-primary">Borrower Information</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium mb-2">Full Name</label>
@@ -731,6 +748,214 @@ export default function HeroSection() {
                       data-testid="textarea-additional-info"
                     />
                   </div>
+
+                  {/* Add Co-Borrower Option */}
+                  <div>
+                    <label className="block text-sm font-medium mb-4">Add a Spouse or Co-Borrower?</label>
+                    <div className="flex gap-6">
+                      <label className="flex items-center">
+                        <input
+                          type="radio"
+                          name="addCoBorrower"
+                          value="yes"
+                          checked={preApprovalData.addCoBorrower === 'yes'}
+                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, addCoBorrower: e.target.value }))}
+                          className="mr-2"
+                          data-testid="radio-co-borrower-yes"
+                        />
+                        Yes
+                      </label>
+                      <label className="flex items-center">
+                        <input
+                          type="radio"
+                          name="addCoBorrower"
+                          value="no"
+                          checked={preApprovalData.addCoBorrower === 'no'}
+                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, addCoBorrower: e.target.value }))}
+                          className="mr-2"
+                          data-testid="radio-co-borrower-no"
+                        />
+                        No
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Co-Borrower Information (conditional) */}
+                  {preApprovalData.addCoBorrower === 'yes' && (
+                    <div className="border-t pt-6">
+                      {/* Co-Borrower Personal Information */}
+                      <div>
+                        <h3 className="text-lg font-semibold mb-4 text-primary">Co-Borrower Information</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium mb-2">Full Name</label>
+                            <Input
+                              type="text"
+                              value={coBorrowerData.fullName}
+                              onChange={(e) => setCoBorrowerData(prev => ({ ...prev, fullName: e.target.value }))}
+                              placeholder="Enter co-borrower's full name"
+                              data-testid="input-co-borrower-name"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium mb-2">Email</label>
+                            <Input
+                              type="email"
+                              value={coBorrowerData.email}
+                              onChange={(e) => setCoBorrowerData(prev => ({ ...prev, email: e.target.value }))}
+                              placeholder="Enter co-borrower's email"
+                              data-testid="input-co-borrower-email"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium mb-2">Phone Number</label>
+                            <Input
+                              type="tel"
+                              value={coBorrowerData.phone}
+                              onChange={(e) => handleCoBorrowerPhoneChange(e.target.value)}
+                              placeholder="(xxx) xxx-xxxx"
+                              data-testid="input-co-borrower-phone"
+                              maxLength={14}
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium mb-2">State</label>
+                            <Select value={coBorrowerData.state} onValueChange={(value) => setCoBorrowerData(prev => ({ ...prev, state: value }))}>
+                              <SelectTrigger data-testid="select-co-borrower-state">
+                                <SelectValue placeholder="Select state" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="AL">Alabama</SelectItem>
+                                <SelectItem value="AK">Alaska</SelectItem>
+                                <SelectItem value="AZ">Arizona</SelectItem>
+                                <SelectItem value="AR">Arkansas</SelectItem>
+                                <SelectItem value="CA">California</SelectItem>
+                                <SelectItem value="CO">Colorado</SelectItem>
+                                <SelectItem value="CT">Connecticut</SelectItem>
+                                <SelectItem value="DE">Delaware</SelectItem>
+                                <SelectItem value="FL">Florida</SelectItem>
+                                <SelectItem value="GA">Georgia</SelectItem>
+                                <SelectItem value="HI">Hawaii</SelectItem>
+                                <SelectItem value="ID">Idaho</SelectItem>
+                                <SelectItem value="IL">Illinois</SelectItem>
+                                <SelectItem value="IN">Indiana</SelectItem>
+                                <SelectItem value="IA">Iowa</SelectItem>
+                                <SelectItem value="KS">Kansas</SelectItem>
+                                <SelectItem value="KY">Kentucky</SelectItem>
+                                <SelectItem value="LA">Louisiana</SelectItem>
+                                <SelectItem value="ME">Maine</SelectItem>
+                                <SelectItem value="MD">Maryland</SelectItem>
+                                <SelectItem value="MA">Massachusetts</SelectItem>
+                                <SelectItem value="MI">Michigan</SelectItem>
+                                <SelectItem value="MN">Minnesota</SelectItem>
+                                <SelectItem value="MS">Mississippi</SelectItem>
+                                <SelectItem value="MO">Missouri</SelectItem>
+                                <SelectItem value="MT">Montana</SelectItem>
+                                <SelectItem value="NE">Nebraska</SelectItem>
+                                <SelectItem value="NV">Nevada</SelectItem>
+                                <SelectItem value="NH">New Hampshire</SelectItem>
+                                <SelectItem value="NJ">New Jersey</SelectItem>
+                                <SelectItem value="NM">New Mexico</SelectItem>
+                                <SelectItem value="NY">New York</SelectItem>
+                                <SelectItem value="NC">North Carolina</SelectItem>
+                                <SelectItem value="ND">North Dakota</SelectItem>
+                                <SelectItem value="OH">Ohio</SelectItem>
+                                <SelectItem value="OK">Oklahoma</SelectItem>
+                                <SelectItem value="OR">Oregon</SelectItem>
+                                <SelectItem value="PA">Pennsylvania</SelectItem>
+                                <SelectItem value="RI">Rhode Island</SelectItem>
+                                <SelectItem value="SC">South Carolina</SelectItem>
+                                <SelectItem value="SD">South Dakota</SelectItem>
+                                <SelectItem value="TN">Tennessee</SelectItem>
+                                <SelectItem value="TX">Texas</SelectItem>
+                                <SelectItem value="UT">Utah</SelectItem>
+                                <SelectItem value="VT">Vermont</SelectItem>
+                                <SelectItem value="VA">Virginia</SelectItem>
+                                <SelectItem value="WA">Washington</SelectItem>
+                                <SelectItem value="WV">West Virginia</SelectItem>
+                                <SelectItem value="WI">Wisconsin</SelectItem>
+                                <SelectItem value="WY">Wyoming</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Co-Borrower Employment & Income */}
+                      <div className="mt-6">
+                        <h4 className="text-md font-semibold mb-4 text-primary">Co-Borrower Employment & Income</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium mb-2">Employment Status</label>
+                            <Select value={coBorrowerData.employmentStatus} onValueChange={(value) => setCoBorrowerData(prev => ({ ...prev, employmentStatus: value }))}>
+                              <SelectTrigger data-testid="select-co-borrower-employment-status">
+                                <SelectValue placeholder="Select status" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="employed">Employed</SelectItem>
+                                <SelectItem value="self-employed">Self-Employed</SelectItem>
+                                <SelectItem value="retired">Retired</SelectItem>
+                                <SelectItem value="other">Other</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium mb-2">Annual Income</label>
+                            <Input
+                              type="number"
+                              value={coBorrowerData.annualIncome}
+                              onChange={(e) => setCoBorrowerData(prev => ({ ...prev, annualIncome: e.target.value }))}
+                              placeholder="$75,000"
+                              data-testid="input-co-borrower-annual-income"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium mb-2">Years at Current Job</label>
+                            <Input
+                              type="number"
+                              value={coBorrowerData.yearsAtJob}
+                              onChange={(e) => setCoBorrowerData(prev => ({ ...prev, yearsAtJob: e.target.value }))}
+                              placeholder="2"
+                              data-testid="input-co-borrower-years-at-job"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Co-Borrower Financial Information */}
+                      <div className="mt-6">
+                        <h4 className="text-md font-semibold mb-4 text-primary">Co-Borrower Financial Information</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium mb-2">Monthly Debts</label>
+                            <Input
+                              type="number"
+                              value={coBorrowerData.monthlyDebts}
+                              onChange={(e) => setCoBorrowerData(prev => ({ ...prev, monthlyDebts: e.target.value }))}
+                              placeholder="$500"
+                              data-testid="input-co-borrower-monthly-debts"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium mb-2">Assets/Savings</label>
+                            <Input
+                              type="number"
+                              value={coBorrowerData.assets}
+                              onChange={(e) => setCoBorrowerData(prev => ({ ...prev, assets: e.target.value }))}
+                              placeholder="$50,000"
+                              data-testid="input-co-borrower-assets"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   <Button 
                     type="submit" 
