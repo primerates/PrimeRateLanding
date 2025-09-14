@@ -56,6 +56,12 @@ export default function HeroSection() {
     state: ''
   });
 
+  // Form submission states
+  const [rateTrackerSubmitting, setRateTrackerSubmitting] = useState(false);
+  const [rateTrackerSubmitted, setRateTrackerSubmitted] = useState(false);
+  const [preApprovalSubmitting, setPreApprovalSubmitting] = useState(false);
+  const [preApprovalSubmitted, setPreApprovalSubmitted] = useState(false);
+
   const formatPhoneNumber = (value: string) => {
     // Remove all non-digits
     const digits = value.replace(/\D/g, '');
@@ -98,6 +104,56 @@ export default function HeroSection() {
       currency: 'USD',
       maximumFractionDigits: 0 
     });
+  };
+
+  // API submission functions
+  const submitRateTracker = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setRateTrackerSubmitting(true);
+
+    try {
+      const response = await fetch('/api/rate-tracker', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(rateTrackerData)
+      });
+
+      if (response.ok) {
+        setRateTrackerSubmitted(true);
+      } else {
+        console.error('Rate tracker submission failed');
+      }
+    } catch (error) {
+      console.error('Rate tracker submission error:', error);
+    } finally {
+      setRateTrackerSubmitting(false);
+    }
+  };
+
+  const submitPreApproval = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPreApprovalSubmitting(true);
+
+    try {
+      const response = await fetch('/api/pre-approval', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          preApprovalData, 
+          coBorrowerData: preApprovalData.addCoBorrower === 'yes' ? coBorrowerData : null 
+        })
+      });
+
+      if (response.ok) {
+        setPreApprovalSubmitted(true);
+      } else {
+        console.error('Pre-approval submission failed');
+      }
+    } catch (error) {
+      console.error('Pre-approval submission error:', error);
+    } finally {
+      setPreApprovalSubmitting(false);
+    }
   };
 
   return (
@@ -280,7 +336,14 @@ export default function HeroSection() {
                   </Button>
                 </div>
 
-                <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); console.log('Rate Tracker submitted:', rateTrackerData); }}>
+                {rateTrackerSubmitted ? (
+                  <div className="text-center py-8" data-testid="success-rate-tracker">
+                    <div className="text-green-600 text-2xl mb-4">✓</div>
+                    <h3 className="text-xl font-semibold mb-2">Request Sent</h3>
+                    <p className="text-gray-600">Thank you! Your rate tracker request has been forwarded to our team. We'll contact you soon.</p>
+                  </div>
+                ) : (
+                  <form className="space-y-4" onSubmit={submitRateTracker}>
                   <div>
                     <label className="block text-sm font-medium mb-2">Full Name</label>
                     <Input
@@ -438,10 +501,12 @@ export default function HeroSection() {
                     className="w-full" 
                     size="lg"
                     data-testid="button-submit-rate-tracker"
+                    disabled={rateTrackerSubmitting}
                   >
-                    Send Message
+                    {rateTrackerSubmitting ? 'Sending...' : 'Send Message'}
                   </Button>
                 </form>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -466,7 +531,7 @@ export default function HeroSection() {
                   </Button>
                 </div>
 
-                <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); console.log('Pre-Approval submitted:', preApprovalData); }}>
+                <form className="space-y-6" onSubmit={submitPreApproval}>
                   {/* Borrower Information */}
                   <div>
                     <h3 className="text-lg font-semibold mb-4 text-primary">Borrower Information</h3>
@@ -957,14 +1022,23 @@ export default function HeroSection() {
                     </div>
                   )}
 
-                  <Button 
-                    type="submit" 
-                    className="w-full" 
-                    size="lg"
-                    data-testid="button-submit-pre-approval"
-                  >
-                    Submit Pre-Approval Application
-                  </Button>
+                  {preApprovalSubmitted ? (
+                    <div className="text-center py-8" data-testid="success-pre-approval">
+                      <div className="text-green-600 text-2xl mb-4">✓</div>
+                      <h3 className="text-xl font-semibold mb-2">Request Sent</h3>
+                      <p className="text-gray-600">Thank you! Your pre-approval application has been forwarded to our team. We'll contact you soon.</p>
+                    </div>
+                  ) : (
+                    <Button 
+                      type="submit" 
+                      className="w-full" 
+                      size="lg"
+                      data-testid="button-submit-pre-approval"
+                      disabled={preApprovalSubmitting}
+                    >
+                      {preApprovalSubmitting ? 'Submitting...' : 'Submit Pre-Approval Application'}
+                    </Button>
+                  )}
                 </form>
               </CardContent>
             </Card>

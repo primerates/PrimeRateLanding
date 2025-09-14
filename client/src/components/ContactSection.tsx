@@ -61,14 +61,88 @@ export default function ContactSection() {
     message: ''
   });
 
+  // Form submission states
+  const [contactSubmitting, setContactSubmitting] = useState(false);
+  const [contactSubmitted, setContactSubmitted] = useState(false);
+  const [preApprovalSubmitting, setPreApprovalSubmitting] = useState(false);
+  const [preApprovalSubmitted, setPreApprovalSubmitted] = useState(false);
+  const [scheduleCallSubmitting, setScheduleCallSubmitting] = useState(false);
+  const [scheduleCallSubmitted, setScheduleCallSubmitted] = useState(false);
+
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Contact form submitted:', formData);
-    // todo: remove mock functionality - implement real form submission
+    setContactSubmitting(true);
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        setContactSubmitted(true);
+      } else {
+        console.error('Contact form submission failed');
+      }
+    } catch (error) {
+      console.error('Contact form submission error:', error);
+    } finally {
+      setContactSubmitting(false);
+    }
+  };
+
+  const submitPreApproval = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPreApprovalSubmitting(true);
+
+    try {
+      const response = await fetch('/api/pre-approval', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          preApprovalData, 
+          coBorrowerData: preApprovalData.addCoBorrower === 'yes' ? coBorrowerData : null 
+        })
+      });
+
+      if (response.ok) {
+        setPreApprovalSubmitted(true);
+      } else {
+        console.error('Pre-approval submission failed');
+      }
+    } catch (error) {
+      console.error('Pre-approval submission error:', error);
+    } finally {
+      setPreApprovalSubmitting(false);
+    }
+  };
+
+  const submitScheduleCall = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setScheduleCallSubmitting(true);
+
+    try {
+      const response = await fetch('/api/schedule-call', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(scheduleCallData)
+      });
+
+      if (response.ok) {
+        setScheduleCallSubmitted(true);
+      } else {
+        console.error('Schedule call submission failed');
+      }
+    } catch (error) {
+      console.error('Schedule call submission error:', error);
+    } finally {
+      setScheduleCallSubmitting(false);
+    }
   };
 
   // Phone number formatting
@@ -250,14 +324,23 @@ export default function ContactSection() {
                   />
                 </div>
 
-                <Button 
-                  type="submit" 
-                  className="w-full" 
-                  size="lg"
-                  data-testid="button-submit-contact"
-                >
-                  Send Message
-                </Button>
+                {contactSubmitted ? (
+                  <div className="text-center py-8" data-testid="success-contact">
+                    <div className="text-green-600 text-2xl mb-4">✓</div>
+                    <h3 className="text-xl font-semibold mb-2">Request Sent</h3>
+                    <p className="text-gray-600">Thank you! Your message has been forwarded to our team. We'll contact you soon.</p>
+                  </div>
+                ) : (
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    size="lg"
+                    data-testid="button-submit-contact"
+                    disabled={contactSubmitting}
+                  >
+                    {contactSubmitting ? 'Sending...' : 'Send Message'}
+                  </Button>
+                )}
               </form>
             </CardContent>
           </Card>
@@ -282,7 +365,7 @@ export default function ContactSection() {
                   </Button>
                 </div>
 
-                <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); console.log('Pre-Approval submitted:', { preApprovalData, coBorrowerData }); }}>
+                <form className="space-y-6" onSubmit={submitPreApproval}>
                   {/* Borrower Information */}
                   <div>
                     <h3 className="text-lg font-semibold mb-4 text-primary">Borrower Information</h3>
@@ -772,14 +855,23 @@ export default function ContactSection() {
                     </div>
                   )}
 
-                  <Button 
-                    type="submit" 
-                    className="w-full" 
-                    size="lg"
-                    data-testid="button-submit-contact-pre-approval"
-                  >
-                    Submit Pre-Approval Application
-                  </Button>
+                  {preApprovalSubmitted ? (
+                    <div className="text-center py-8" data-testid="success-contact-pre-approval">
+                      <div className="text-green-600 text-2xl mb-4">✓</div>
+                      <h3 className="text-xl font-semibold mb-2">Request Sent</h3>
+                      <p className="text-gray-600">Thank you! Your pre-approval application has been forwarded to our team. We'll contact you soon.</p>
+                    </div>
+                  ) : (
+                    <Button 
+                      type="submit" 
+                      className="w-full" 
+                      size="lg"
+                      data-testid="button-submit-contact-pre-approval"
+                      disabled={preApprovalSubmitting}
+                    >
+                      {preApprovalSubmitting ? 'Submitting...' : 'Submit Pre-Approval Application'}
+                    </Button>
+                  )}
                 </form>
               </CardContent>
             </Card>
@@ -805,7 +897,7 @@ export default function ContactSection() {
                   </Button>
                 </div>
 
-                <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); console.log('Schedule Call submitted:', scheduleCallData); }}>
+                <form className="space-y-4" onSubmit={submitScheduleCall}>
                   <div>
                     <label className="block text-sm font-medium mb-2">Full Name</label>
                     <Input
@@ -910,14 +1002,23 @@ export default function ContactSection() {
                     />
                   </div>
 
-                  <Button 
-                    type="submit" 
-                    className="w-full" 
-                    size="lg"
-                    data-testid="button-submit-schedule-call"
-                  >
-                    Schedule Call
-                  </Button>
+                  {scheduleCallSubmitted ? (
+                    <div className="text-center py-8" data-testid="success-schedule-call">
+                      <div className="text-green-600 text-2xl mb-4">✓</div>
+                      <h3 className="text-xl font-semibold mb-2">Request Sent</h3>
+                      <p className="text-gray-600">Thank you! Your call scheduling request has been forwarded to our team. We'll contact you soon.</p>
+                    </div>
+                  ) : (
+                    <Button 
+                      type="submit" 
+                      className="w-full" 
+                      size="lg"
+                      data-testid="button-submit-schedule-call"
+                      disabled={scheduleCallSubmitting}
+                    >
+                      {scheduleCallSubmitting ? 'Scheduling...' : 'Schedule Call'}
+                    </Button>
+                  )}
                 </form>
               </CardContent>
             </Card>
