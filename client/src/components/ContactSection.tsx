@@ -356,7 +356,7 @@ export default function ContactSection() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4" noValidate>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Full Name</label>
@@ -366,6 +366,7 @@ export default function ContactSection() {
                       onChange={(e) => handleInputChange('name', e.target.value)}
                       placeholder="John Doe"
                       data-testid="input-contact-name"
+                      aria-invalid={contactErrors.name || false}
                       required
                     />
                   </div>
@@ -377,6 +378,7 @@ export default function ContactSection() {
                       onChange={(e) => handleInputChange('email', e.target.value)}
                       placeholder="john@example.com"
                       data-testid="input-contact-email"
+                      aria-invalid={contactErrors.email || false}
                       required
                     />
                   </div>
@@ -387,9 +389,10 @@ export default function ContactSection() {
                   <Input
                     type="tel"
                     value={formData.phone}
-                    onChange={(e) => handleInputChange('phone', e.target.value)}
+                    onChange={(e) => handleContactPhoneChange(e.target.value)}
                     placeholder="(555) 123-4567"
                     data-testid="input-contact-phone"
+                    aria-invalid={contactErrors.phone || false}
                     required
                   />
                 </div>
@@ -397,7 +400,7 @@ export default function ContactSection() {
                 <div>
                   <label className="block text-sm font-medium mb-2">Loan Type</label>
                   <Select value={formData.loanType} onValueChange={(value) => handleInputChange('loanType', value)}>
-                    <SelectTrigger data-testid="select-loan-type">
+                    <SelectTrigger data-testid="select-loan-type" aria-invalid={contactErrors.loanType || false}>
                       <SelectValue placeholder="Select loan type" />
                     </SelectTrigger>
                     <SelectContent>
@@ -418,6 +421,8 @@ export default function ContactSection() {
                     placeholder="Tell us about your home financing needs..."
                     rows={4}
                     data-testid="textarea-contact-message"
+                    aria-invalid={contactErrors.message || false}
+                    required
                   />
                 </div>
 
@@ -462,7 +467,7 @@ export default function ContactSection() {
                   </Button>
                 </div>
 
-                <form className="space-y-6" onSubmit={submitPreApproval}>
+                <form className="space-y-6" onSubmit={submitPreApproval} noValidate>
                   {/* Borrower Information */}
                   <div>
                     <h3 className="text-lg font-semibold mb-4 text-primary">Borrower Information</h3>
@@ -994,7 +999,7 @@ export default function ContactSection() {
                   </Button>
                 </div>
 
-                <form className="space-y-4" onSubmit={submitScheduleCall}>
+                <form className="space-y-4" onSubmit={submitScheduleCall} noValidate>
                   <div>
                     <label className="block text-sm font-medium mb-2">Full Name</label>
                     <Input

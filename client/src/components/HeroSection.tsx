@@ -412,7 +412,7 @@ export default function HeroSection() {
                     <p className="text-gray-600">Thank you! Your rate tracker request has been forwarded to our team. We'll contact you soon.</p>
                   </div>
                 ) : (
-                  <form className="space-y-4" onSubmit={submitRateTracker}>
+                  <form className="space-y-4" onSubmit={submitRateTracker} noValidate>
                   <div>
                     <label className="block text-sm font-medium mb-2">Full Name</label>
                     <Input
@@ -604,7 +604,7 @@ export default function HeroSection() {
                   </Button>
                 </div>
 
-                <form className="space-y-6" onSubmit={submitPreApproval}>
+                <form className="space-y-6" onSubmit={submitPreApproval} noValidate>
                   {/* Borrower Information */}
                   <div>
                     <h3 className="text-lg font-semibold mb-4 text-primary">Borrower Information</h3>
