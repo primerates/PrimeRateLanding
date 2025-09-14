@@ -69,80 +69,14 @@ export default function ContactSection() {
   const [scheduleCallSubmitting, setScheduleCallSubmitting] = useState(false);
   const [scheduleCallSubmitted, setScheduleCallSubmitted] = useState(false);
 
+  // Form validation states
+  const [contactErrors, setContactErrors] = useState<{[key: string]: boolean}>({});
+  const [preApprovalErrors, setPreApprovalErrors] = useState<{[key: string]: boolean}>({});
+  const [coBorrowerErrors, setCoBorrowerErrors] = useState<{[key: string]: boolean}>({});
+  const [scheduleCallErrors, setScheduleCallErrors] = useState<{[key: string]: boolean}>({});
+
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setContactSubmitting(true);
-
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-
-      if (response.ok) {
-        setContactSubmitted(true);
-      } else {
-        console.error('Contact form submission failed');
-      }
-    } catch (error) {
-      console.error('Contact form submission error:', error);
-    } finally {
-      setContactSubmitting(false);
-    }
-  };
-
-  const submitPreApproval = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setPreApprovalSubmitting(true);
-
-    try {
-      const response = await fetch('/api/pre-approval', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          preApprovalData, 
-          coBorrowerData: preApprovalData.addCoBorrower === 'yes' ? coBorrowerData : null 
-        })
-      });
-
-      if (response.ok) {
-        setPreApprovalSubmitted(true);
-      } else {
-        console.error('Pre-approval submission failed');
-      }
-    } catch (error) {
-      console.error('Pre-approval submission error:', error);
-    } finally {
-      setPreApprovalSubmitting(false);
-    }
-  };
-
-  const submitScheduleCall = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setScheduleCallSubmitting(true);
-
-    try {
-      const response = await fetch('/api/schedule-call', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(scheduleCallData)
-      });
-
-      if (response.ok) {
-        setScheduleCallSubmitted(true);
-      } else {
-        console.error('Schedule call submission failed');
-      }
-    } catch (error) {
-      console.error('Schedule call submission error:', error);
-    } finally {
-      setScheduleCallSubmitting(false);
-    }
   };
 
   // Phone number formatting
@@ -155,6 +89,11 @@ export default function ContactSection() {
     } else {
       return digits;
     }
+  };
+
+  const handleContactPhoneChange = (value: string) => {
+    const formatted = formatPhoneNumber(value);
+    setFormData(prev => ({ ...prev, phone: formatted }));
   };
 
   const handlePreApprovalPhoneChange = (value: string) => {
@@ -171,6 +110,164 @@ export default function ContactSection() {
     const formatted = formatPhoneNumber(value);
     setScheduleCallData(prev => ({ ...prev, phone: formatted }));
   };
+
+  // Form validation functions
+  const validateContactForm = () => {
+    const errors: {[key: string]: boolean} = {};
+    const required = ['name', 'email', 'phone', 'loanType', 'message'];
+    
+    required.forEach(field => {
+      if (!formData[field as keyof typeof formData]?.trim()) {
+        errors[field] = true;
+      }
+    });
+
+    setContactErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const validatePreApproval = () => {
+    const errors: {[key: string]: boolean} = {};
+    const required = ['fullName', 'email', 'phone', 'employmentStatus', 'annualIncome', 'yearsAtJob', 
+                     'monthlyDebts', 'assets', 'desiredLoanAmount', 'downPayment', 'propertyValue', 
+                     'propertyType', 'intendedUse', 'state', 'timelineToPurchase'];
+    
+    required.forEach(field => {
+      if (!preApprovalData[field as keyof typeof preApprovalData]?.trim()) {
+        errors[field] = true;
+      }
+    });
+
+    setPreApprovalErrors(errors);
+
+    // Validate co-borrower if added
+    let coBorrowerValid = true;
+    if (preApprovalData.addCoBorrower === 'yes') {
+      const coBorrowerErrs: {[key: string]: boolean} = {};
+      const coBorrowerRequired = ['fullName', 'email', 'phone', 'employmentStatus', 'annualIncome', 
+                                 'yearsAtJob', 'monthlyDebts', 'assets', 'state'];
+      
+      coBorrowerRequired.forEach(field => {
+        if (!coBorrowerData[field as keyof typeof coBorrowerData]?.trim()) {
+          coBorrowerErrs[field] = true;
+        }
+      });
+
+      setCoBorrowerErrors(coBorrowerErrs);
+      coBorrowerValid = Object.keys(coBorrowerErrs).length === 0;
+    }
+
+    return Object.keys(errors).length === 0 && coBorrowerValid;
+  };
+
+  const validateScheduleCall = () => {
+    const errors: {[key: string]: boolean} = {};
+    const required = ['name', 'email', 'phone', 'preferredDate', 'preferredTime', 'timeZone', 'callReason'];
+    
+    required.forEach(field => {
+      if (!scheduleCallData[field as keyof typeof scheduleCallData]?.trim()) {
+        errors[field] = true;
+      }
+    });
+
+    setScheduleCallErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validate form before submitting
+    if (!validateContactForm()) {
+      return; // Don't submit if validation fails
+    }
+
+    setContactSubmitting(true);
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        setContactSubmitted(true);
+        setContactErrors({}); // Clear errors on success
+      } else {
+        console.error('Contact form submission failed');
+      }
+    } catch (error) {
+      console.error('Contact form submission error:', error);
+    } finally {
+      setContactSubmitting(false);
+    }
+  };
+
+  const submitPreApproval = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validate form before submitting
+    if (!validatePreApproval()) {
+      return; // Don't submit if validation fails
+    }
+
+    setPreApprovalSubmitting(true);
+
+    try {
+      const response = await fetch('/api/pre-approval', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          preApprovalData, 
+          coBorrowerData: preApprovalData.addCoBorrower === 'yes' ? coBorrowerData : null 
+        })
+      });
+
+      if (response.ok) {
+        setPreApprovalSubmitted(true);
+        setPreApprovalErrors({}); // Clear errors on success
+        setCoBorrowerErrors({}); // Clear co-borrower errors on success
+      } else {
+        console.error('Pre-approval submission failed');
+      }
+    } catch (error) {
+      console.error('Pre-approval submission error:', error);
+    } finally {
+      setPreApprovalSubmitting(false);
+    }
+  };
+
+  const submitScheduleCall = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validate form before submitting
+    if (!validateScheduleCall()) {
+      return; // Don't submit if validation fails
+    }
+
+    setScheduleCallSubmitting(true);
+
+    try {
+      const response = await fetch('/api/schedule-call', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(scheduleCallData)
+      });
+
+      if (response.ok) {
+        setScheduleCallSubmitted(true);
+        setScheduleCallErrors({}); // Clear errors on success
+      } else {
+        console.error('Schedule call submission failed');
+      }
+    } catch (error) {
+      console.error('Schedule call submission error:', error);
+    } finally {
+      setScheduleCallSubmitting(false);
+    }
+  };
+
 
   return (
     <section className="py-16 bg-primary/5">

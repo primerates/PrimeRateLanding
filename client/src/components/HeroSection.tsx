@@ -62,6 +62,11 @@ export default function HeroSection() {
   const [preApprovalSubmitting, setPreApprovalSubmitting] = useState(false);
   const [preApprovalSubmitted, setPreApprovalSubmitted] = useState(false);
 
+  // Form validation states
+  const [rateTrackerErrors, setRateTrackerErrors] = useState<{[key: string]: boolean}>({});
+  const [preApprovalErrors, setPreApprovalErrors] = useState<{[key: string]: boolean}>({});
+  const [coBorrowerErrors, setCoBorrowerErrors] = useState<{[key: string]: boolean}>({});
+
   const formatPhoneNumber = (value: string) => {
     // Remove all non-digits
     const digits = value.replace(/\D/g, '');
@@ -106,9 +111,64 @@ export default function HeroSection() {
     });
   };
 
+  // Form validation functions
+  const validateRateTracker = () => {
+    const errors: {[key: string]: boolean} = {};
+    const required = ['fullName', 'email', 'phone', 'propertyType', 'state', 'loanType', 'trackInterestRate'];
+    
+    required.forEach(field => {
+      if (!rateTrackerData[field as keyof typeof rateTrackerData]?.trim()) {
+        errors[field] = true;
+      }
+    });
+
+    setRateTrackerErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const validatePreApproval = () => {
+    const errors: {[key: string]: boolean} = {};
+    const required = ['fullName', 'email', 'phone', 'employmentStatus', 'annualIncome', 'yearsAtJob', 
+                     'monthlyDebts', 'assets', 'desiredLoanAmount', 'downPayment', 'propertyValue', 
+                     'propertyType', 'intendedUse', 'state', 'timelineToPurchase'];
+    
+    required.forEach(field => {
+      if (!preApprovalData[field as keyof typeof preApprovalData]?.trim()) {
+        errors[field] = true;
+      }
+    });
+
+    setPreApprovalErrors(errors);
+
+    // Validate co-borrower if added
+    let coBorrowerValid = true;
+    if (preApprovalData.addCoBorrower === 'yes') {
+      const coBorrowerErrs: {[key: string]: boolean} = {};
+      const coBorrowerRequired = ['fullName', 'email', 'phone', 'employmentStatus', 'annualIncome', 
+                                 'yearsAtJob', 'monthlyDebts', 'assets', 'state'];
+      
+      coBorrowerRequired.forEach(field => {
+        if (!coBorrowerData[field as keyof typeof coBorrowerData]?.trim()) {
+          coBorrowerErrs[field] = true;
+        }
+      });
+
+      setCoBorrowerErrors(coBorrowerErrs);
+      coBorrowerValid = Object.keys(coBorrowerErrs).length === 0;
+    }
+
+    return Object.keys(errors).length === 0 && coBorrowerValid;
+  };
+
   // API submission functions
   const submitRateTracker = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form before submitting
+    if (!validateRateTracker()) {
+      return; // Don't submit if validation fails
+    }
+
     setRateTrackerSubmitting(true);
 
     try {
@@ -120,6 +180,7 @@ export default function HeroSection() {
 
       if (response.ok) {
         setRateTrackerSubmitted(true);
+        setRateTrackerErrors({}); // Clear errors on success
       } else {
         console.error('Rate tracker submission failed');
       }
@@ -132,6 +193,12 @@ export default function HeroSection() {
 
   const submitPreApproval = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form before submitting
+    if (!validatePreApproval()) {
+      return; // Don't submit if validation fails
+    }
+
     setPreApprovalSubmitting(true);
 
     try {
@@ -146,6 +213,8 @@ export default function HeroSection() {
 
       if (response.ok) {
         setPreApprovalSubmitted(true);
+        setPreApprovalErrors({}); // Clear errors on success
+        setCoBorrowerErrors({}); // Clear co-borrower errors on success
       } else {
         console.error('Pre-approval submission failed');
       }
@@ -352,6 +421,7 @@ export default function HeroSection() {
                       onChange={(e) => setRateTrackerData(prev => ({ ...prev, fullName: e.target.value }))}
                       placeholder="Enter your full name"
                       data-testid="input-rate-tracker-name"
+                      aria-invalid={rateTrackerErrors.fullName || false}
                       required
                     />
                   </div>
@@ -364,6 +434,7 @@ export default function HeroSection() {
                       onChange={(e) => setRateTrackerData(prev => ({ ...prev, email: e.target.value }))}
                       placeholder="Enter your email"
                       data-testid="input-rate-tracker-email"
+                      aria-invalid={rateTrackerErrors.email || false}
                       required
                     />
                   </div>
@@ -376,6 +447,7 @@ export default function HeroSection() {
                       onChange={(e) => handlePhoneChange(e.target.value)}
                       placeholder="(xxx) xxx-xxxx"
                       data-testid="input-rate-tracker-phone"
+                      aria-invalid={rateTrackerErrors.phone || false}
                       required
                       maxLength={14}
                     />
@@ -384,7 +456,7 @@ export default function HeroSection() {
                   <div>
                     <label className="block text-sm font-medium mb-2">Property Type</label>
                     <Select value={rateTrackerData.propertyType} onValueChange={(value) => setRateTrackerData(prev => ({ ...prev, propertyType: value }))}>
-                      <SelectTrigger data-testid="select-rate-tracker-property-type">
+                      <SelectTrigger data-testid="select-rate-tracker-property-type" aria-invalid={rateTrackerErrors.propertyType || false}>
                         <SelectValue placeholder="Select property type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -399,7 +471,7 @@ export default function HeroSection() {
                   <div>
                     <label className="block text-sm font-medium mb-2">State</label>
                     <Select value={rateTrackerData.state} onValueChange={(value) => setRateTrackerData(prev => ({ ...prev, state: value }))}>
-                      <SelectTrigger data-testid="select-rate-tracker-state">
+                      <SelectTrigger data-testid="select-rate-tracker-state" aria-invalid={rateTrackerErrors.state || false}>
                         <SelectValue placeholder="Select state" />
                       </SelectTrigger>
                       <SelectContent>
@@ -460,7 +532,7 @@ export default function HeroSection() {
                   <div>
                     <label className="block text-sm font-medium mb-2">Loan Type</label>
                     <Select value={rateTrackerData.loanType} onValueChange={(value) => setRateTrackerData(prev => ({ ...prev, loanType: value }))}>
-                      <SelectTrigger data-testid="select-rate-tracker-loan-type">
+                      <SelectTrigger data-testid="select-rate-tracker-loan-type" aria-invalid={rateTrackerErrors.loanType || false}>
                         <SelectValue placeholder="Select loan type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -481,6 +553,7 @@ export default function HeroSection() {
                       onChange={(e) => setRateTrackerData(prev => ({ ...prev, trackInterestRate: e.target.value }))}
                       placeholder="e.g., 30-year fixed, 15-year fixed"
                       data-testid="input-rate-tracker-interest-rate"
+                      aria-invalid={rateTrackerErrors.trackInterestRate || false}
                       required
                     />
                   </div>
