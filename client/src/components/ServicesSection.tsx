@@ -12,7 +12,7 @@ const services = [
   {
     icon: Zap,
     title: 'Choose Simplicity',
-    description: 'Work and family life can be a handful; your loan shouldn\'t be - with expert guidance, real-time status updates and a simplified loan process, Choose simplicity.',
+    description: 'Work and family life can be a handful; your loan shouldn\'t be - with expert guidance, real-time updates and a simplified loan process, Choose simplicity.',
     features: ['Rate & term refinance', 'Cash-out refinance', 'Streamline refinance', 'Investment property refi']
   },
   {

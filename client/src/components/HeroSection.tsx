@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calculator, X } from 'lucide-react';
 import heroImage from '@assets/generated_images/Bright_white_family_room_4f4419e6.png';
@@ -12,6 +13,17 @@ export default function HeroSection() {
   const [interestRate, setInterestRate] = useState('6.5');
   const [loanTerm, setLoanTerm] = useState('30');
   const [showCalculator, setShowCalculator] = useState(false);
+  const [showRateTracker, setShowRateTracker] = useState(false);
+  const [rateTrackerData, setRateTrackerData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    propertyType: '',
+    state: '',
+    loanType: '',
+    trackInterestRate: '',
+    message: ''
+  });
 
   const calculatePayment = () => {
     const principal = parseFloat(loanAmount) - parseFloat(downPayment);
@@ -45,7 +57,7 @@ export default function HeroSection() {
       <div className="absolute top-6 right-6 z-20 hidden lg:flex gap-3">
         <Button 
           size="sm" 
-          className="bg-primary text-white hover-elevate"
+          className="bg-blue-600 text-white hover-elevate"
           data-testid="button-menu-loan-status"
           onClick={() => console.log('Loan Status clicked')}
         >
@@ -53,15 +65,15 @@ export default function HeroSection() {
         </Button>
         <Button 
           size="sm" 
-          className="bg-primary text-white hover-elevate"
+          className="bg-blue-600 text-white hover-elevate"
           data-testid="button-menu-rate-tracker"
-          onClick={() => console.log('Rate Tracker clicked')}
+          onClick={() => setShowRateTracker(true)}
         >
           Rate Tracker
         </Button>
         <Button 
           size="sm" 
-          className="bg-primary text-white hover-elevate"
+          className="bg-blue-600 text-white hover-elevate"
           data-testid="button-menu-mortgage-calculator"
           onClick={() => setShowCalculator(true)}
         >
@@ -69,7 +81,7 @@ export default function HeroSection() {
         </Button>
         <Button 
           size="sm" 
-          className="bg-primary text-white hover-elevate"
+          className="bg-blue-600 text-white hover-elevate"
           data-testid="button-menu-get-preapproved"
           onClick={() => console.log('Get Pre-Approved clicked')}
         >
@@ -90,7 +102,7 @@ export default function HeroSection() {
           </div>
           
           <div className="mb-6">
-            <p className="text-2xl lg:text-3xl font-semibold" data-testid="text-hero-phone">
+            <p className="text-3xl lg:text-4xl font-semibold" data-testid="text-hero-phone">
               800-223-5057
             </p>
           </div>
@@ -187,6 +199,146 @@ export default function HeroSection() {
               </div>
             </CardContent>
           </Card>
+        )}
+
+        {/* Rate Tracker Modal */}
+        {showRateTracker && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <Card className="bg-white w-full max-w-lg max-h-[90vh] overflow-y-auto" data-testid="card-rate-tracker">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold font-serif" data-testid="text-rate-tracker-title">
+                    Rate Tracker
+                  </h2>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    data-testid="button-close-rate-tracker"
+                    onClick={() => setShowRateTracker(false)}
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+
+                <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); console.log('Rate Tracker submitted:', rateTrackerData); }}>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Full Name</label>
+                    <Input
+                      type="text"
+                      value={rateTrackerData.fullName}
+                      onChange={(e) => setRateTrackerData(prev => ({ ...prev, fullName: e.target.value }))}
+                      placeholder="Enter your full name"
+                      data-testid="input-rate-tracker-name"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Email</label>
+                    <Input
+                      type="email"
+                      value={rateTrackerData.email}
+                      onChange={(e) => setRateTrackerData(prev => ({ ...prev, email: e.target.value }))}
+                      placeholder="Enter your email"
+                      data-testid="input-rate-tracker-email"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Phone Number</label>
+                    <Input
+                      type="tel"
+                      value={rateTrackerData.phone}
+                      onChange={(e) => setRateTrackerData(prev => ({ ...prev, phone: e.target.value }))}
+                      placeholder="Enter your phone number"
+                      data-testid="input-rate-tracker-phone"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Property Type</label>
+                    <Select value={rateTrackerData.propertyType} onValueChange={(value) => setRateTrackerData(prev => ({ ...prev, propertyType: value }))}>
+                      <SelectTrigger data-testid="select-rate-tracker-property-type">
+                        <SelectValue placeholder="Select property type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="single-family">Single Family Home</SelectItem>
+                        <SelectItem value="condo">Condominium</SelectItem>
+                        <SelectItem value="townhouse">Townhouse</SelectItem>
+                        <SelectItem value="multi-family">Multi-Family</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">State</label>
+                    <Select value={rateTrackerData.state} onValueChange={(value) => setRateTrackerData(prev => ({ ...prev, state: value }))}>
+                      <SelectTrigger data-testid="select-rate-tracker-state">
+                        <SelectValue placeholder="Select state" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="CA">California</SelectItem>
+                        <SelectItem value="TX">Texas</SelectItem>
+                        <SelectItem value="FL">Florida</SelectItem>
+                        <SelectItem value="NY">New York</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Loan Type</label>
+                    <Select value={rateTrackerData.loanType} onValueChange={(value) => setRateTrackerData(prev => ({ ...prev, loanType: value }))}>
+                      <SelectTrigger data-testid="select-rate-tracker-loan-type">
+                        <SelectValue placeholder="Select loan type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="conventional">Conventional</SelectItem>
+                        <SelectItem value="fha">FHA</SelectItem>
+                        <SelectItem value="va">VA</SelectItem>
+                        <SelectItem value="jumbo">Jumbo</SelectItem>
+                        <SelectItem value="usda">USDA</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Track Interest Rate Of</label>
+                    <Input
+                      type="text"
+                      value={rateTrackerData.trackInterestRate}
+                      onChange={(e) => setRateTrackerData(prev => ({ ...prev, trackInterestRate: e.target.value }))}
+                      placeholder="e.g., 30-year fixed, 15-year fixed"
+                      data-testid="input-rate-tracker-interest-rate"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Message</label>
+                    <Textarea
+                      value={rateTrackerData.message}
+                      onChange={(e) => setRateTrackerData(prev => ({ ...prev, message: e.target.value }))}
+                      placeholder="Additional details about your rate tracking needs..."
+                      rows={4}
+                      data-testid="textarea-rate-tracker-message"
+                    />
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    size="lg"
+                    data-testid="button-submit-rate-tracker"
+                  >
+                    Send Message
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
         )}
       </div>
     </section>
