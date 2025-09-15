@@ -102,7 +102,10 @@ export function formatRateTrackerEmail(data: any) {
     <p><strong>Phone:</strong> ${data.phone}</p>
     <p><strong>State:</strong> ${data.state}</p>
     <p><strong>Property Type:</strong> ${data.propertyType}</p>
+    <p><strong>Property Use:</strong> ${data.propertyUse}</p>
     <p><strong>Loan Type:</strong> ${data.loanType}</p>
+    <p><strong>Loan Purpose:</strong> ${data.loanPurpose}</p>
+    <p><strong>Current Rate:</strong> ${data.currentRate}</p>
     <p><strong>Track Interest Rate Of:</strong> ${data.trackInterestRate}</p>
     
     ${data.message ? `<p><strong>Message:</strong> ${data.message}</p>` : ''}

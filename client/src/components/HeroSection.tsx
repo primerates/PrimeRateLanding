@@ -20,8 +20,11 @@ export default function HeroSection() {
     email: '',
     phone: '',
     propertyType: '',
+    propertyUse: '',
     state: '',
     loanType: '',
+    loanPurpose: '',
+    currentRate: '',
     trackInterestRate: '',
     message: ''
   });
@@ -114,7 +117,7 @@ export default function HeroSection() {
   // Form validation functions
   const validateRateTracker = () => {
     const errors: {[key: string]: boolean} = {};
-    const required = ['fullName', 'email', 'phone', 'propertyType', 'state', 'loanType', 'trackInterestRate'];
+    const required = ['fullName', 'email', 'phone', 'propertyType', 'propertyUse', 'state', 'loanType', 'loanPurpose', 'currentRate', 'trackInterestRate'];
     
     required.forEach(field => {
       if (!rateTrackerData[field as keyof typeof rateTrackerData]?.trim()) {
@@ -469,6 +472,20 @@ export default function HeroSection() {
                   </div>
 
                   <div>
+                    <label className="block text-sm font-medium mb-2">Property Use</label>
+                    <Select value={rateTrackerData.propertyUse} onValueChange={(value) => setRateTrackerData(prev => ({ ...prev, propertyUse: value }))}>
+                      <SelectTrigger data-testid="select-rate-tracker-property-use" aria-invalid={rateTrackerErrors.propertyUse || false}>
+                        <SelectValue placeholder="Select property use" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="primary-residence">Primary Residence</SelectItem>
+                        <SelectItem value="second-home">Second Home</SelectItem>
+                        <SelectItem value="investment-property">Investment Property</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
                     <label className="block text-sm font-medium mb-2">State</label>
                     <Select value={rateTrackerData.state} onValueChange={(value) => setRateTrackerData(prev => ({ ...prev, state: value }))}>
                       <SelectTrigger data-testid="select-rate-tracker-state" aria-invalid={rateTrackerErrors.state || false}>
@@ -543,6 +560,32 @@ export default function HeroSection() {
                         <SelectItem value="usda">USDA</SelectItem>
                       </SelectContent>
                     </Select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Loan Purpose</label>
+                    <Select value={rateTrackerData.loanPurpose} onValueChange={(value) => setRateTrackerData(prev => ({ ...prev, loanPurpose: value }))}>
+                      <SelectTrigger data-testid="select-rate-tracker-loan-purpose" aria-invalid={rateTrackerErrors.loanPurpose || false}>
+                        <SelectValue placeholder="Select loan purpose" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="home-purchase">Home Purchase</SelectItem>
+                        <SelectItem value="refinance">Refinance</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Current Rate</label>
+                    <Input
+                      type="text"
+                      value={rateTrackerData.currentRate}
+                      onChange={(e) => setRateTrackerData(prev => ({ ...prev, currentRate: e.target.value }))}
+                      placeholder="e.g., 6.25%, 7.0%"
+                      data-testid="input-rate-tracker-current-rate"
+                      aria-invalid={rateTrackerErrors.currentRate || false}
+                      required
+                    />
                   </div>
 
                   <div>
