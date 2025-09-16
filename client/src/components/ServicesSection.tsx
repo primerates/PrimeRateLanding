@@ -4,16 +4,16 @@ import { Lock, Zap, Ban, TrendingDown } from 'lucide-react';
 
 const services = [
   {
+    icon: TrendingDown,
+    title: 'Prime Rates',
+    description: 'We shop banks and lenders every day to secure the most competitive rates for you—and we\'ll beat any comparable offer. Lower payments start with Prime Rates.',
+    features: []
+  },
+  {
     icon: Lock,
     title: 'Lock Assurance',
     description: 'Rates can be unpredictable. If they drop below your locked rate, we\'ve got you covered - we\'ll roll down your rate lock so you don\'t miss out on extra savings.',
     features: ['Conventional loans', 'Jumbo loans', 'First-time buyer programs', 'Down payment assistance']
-  },
-  {
-    icon: Zap,
-    title: 'Choose Simplicity',
-    description: 'Work and family life can be a handful; your loan shouldn\'t be - with expert guidance, real-time updates and a simplified loan process, Choose simplicity.',
-    features: ['Rate & term refinance', 'Cash-out refinance', 'Streamline refinance', 'Investment property refi']
   },
   {
     icon: Ban,
@@ -22,10 +22,10 @@ const services = [
     features: ['FHA loans (3.5% down)', 'VA loans (0% down)', 'USDA rural loans', 'State-specific programs']
   },
   {
-    icon: TrendingDown,
-    title: 'Prime Rates',
-    description: 'We shop banks and lenders every day to secure the most competitive rates for you—and we\'ll beat any comparable offer. Lower payments start with Prime Rates.',
-    features: []
+    icon: Zap,
+    title: 'Choose Simplicity',
+    description: 'Work and family life can be a handful; your loan shouldn\'t be - with expert guidance, real-time updates and a simplified loan process, Choose simplicity.',
+    features: ['Rate & term refinance', 'Cash-out refinance', 'Streamline refinance', 'Investment property refi']
   }
 ];
 
