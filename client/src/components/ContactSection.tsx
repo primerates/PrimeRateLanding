@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -64,6 +65,21 @@ export default function ContactSection() {
   // Form submission states
   const [contactSubmitting, setContactSubmitting] = useState(false);
   const [showPlaneAnimation, setShowPlaneAnimation] = useState(false);
+  
+  // Paper plane animation path generator
+  const randomPath = () => {
+    const x = [0];
+    const y = [0];
+    const rotate = [0];
+    for (let i = 1; i <= 6; i++) {
+      x.push(x[i - 1] + (Math.random() * 180 - 90));
+      y.push(y[i - 1] - (Math.random() * 60 + 30));
+      rotate.push(rotate[i - 1] + (Math.random() * 45 - 22.5));
+    }
+    return { x, y, rotate };
+  };
+  
+  const [planePath, setPlanePath] = useState(randomPath());
   const [contactSubmitted, setContactSubmitted] = useState(false);
   const [preApprovalSubmitting, setPreApprovalSubmitting] = useState(false);
   const [preApprovalSubmitted, setPreApprovalSubmitted] = useState(false);
@@ -434,30 +450,64 @@ export default function ContactSection() {
                   />
                 </div>
 
-                <Button 
-                  type="submit" 
-                  className="w-full relative overflow-visible" 
-                  size="lg"
-                  data-testid="button-submit-contact"
-                  disabled={contactSubmitting}
-                  onClick={() => {
-                    if (!contactSubmitting) {
-                      setShowPlaneAnimation(true);
-                      setTimeout(() => setShowPlaneAnimation(false), 3000);
-                    }
-                  }}
-                >
-                  <div className="flex items-center justify-center gap-2">
-                    {contactSubmitting ? 'Sending...' : 'Send Message'}
-                    <Send 
-                      className={`w-4 h-4 ${
-                        showPlaneAnimation 
-                          ? 'animate-paper-plane-flight' 
-                          : 'transform translate-x-0 translate-y-0 scale-100 opacity-100'
-                      }`} 
-                    />
-                  </div>
-                </Button>
+                <div className="relative">
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    size="lg"
+                    data-testid="button-submit-contact"
+                    disabled={contactSubmitting}
+                    onClick={() => {
+                      if (!contactSubmitting) {
+                        setPlanePath(randomPath());
+                        setShowPlaneAnimation(true);
+                      }
+                    }}
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      {contactSubmitting ? 'Sending...' : 'Send Message'}
+                      {!showPlaneAnimation && <Send className="w-4 h-4" />}
+                    </div>
+                  </Button>
+
+                  {/* Framer Motion Paper Plane Animation */}
+                  <AnimatePresence>
+                    {showPlaneAnimation && (
+                      <motion.div
+                        initial={{ x: 0, y: 0, rotate: 0, opacity: 1, scale: 1 }}
+                        animate={{
+                          x: planePath.x,
+                          y: planePath.y,
+                          rotate: planePath.rotate,
+                          opacity: [1, 1, 0.9, 0.8, 0.6, 0.3, 0],
+                          scale: [1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6],
+                        }}
+                        transition={{ duration: 4, ease: "easeInOut" }}
+                        exit={{ opacity: 0 }}
+                        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-50"
+                        onAnimationComplete={() => setShowPlaneAnimation(false)}
+                      >
+                        {/* Realistic Folded Paper Plane SVG */}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 64 64"
+                          className="w-8 h-8 drop-shadow-lg"
+                        >
+                          <path 
+                            d="M2 30L62 2 38 62 28 38 2 30z" 
+                            fill="hsl(225, 85%, 35%)" 
+                            stroke="hsl(225, 85%, 25%)" 
+                            strokeWidth="1.5" 
+                          />
+                          <path 
+                            d="M28 38L62 2 24 34z" 
+                            fill="hsl(225, 85%, 45%)" 
+                          />
+                        </svg>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </form>
             </CardContent>
           </Card>
