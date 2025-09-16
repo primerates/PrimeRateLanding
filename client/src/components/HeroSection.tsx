@@ -281,8 +281,9 @@ export default function HeroSection() {
         {/* Hero Content */}
         <div className="text-white">
           <div className="mb-6">
-            <h1 className="text-4xl lg:text-6xl font-black italic mb-4" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="text-hero-title">
-              Prime Rate Home Loans
+            <h1 className="text-4xl lg:text-6xl font-black italic mb-4 leading-tight" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="text-hero-title">
+              <div>Prime Rate</div>
+              <div>Home Loans</div>
             </h1>
             <p className="text-xl lg:text-2xl mb-4" data-testid="text-hero-subtitle">
               Prime Rates . Lower Payments
