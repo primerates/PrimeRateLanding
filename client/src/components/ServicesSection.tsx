@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Lock, Zap, Ban } from 'lucide-react';
+import { Lock, Zap, Ban, TrendingDown } from 'lucide-react';
 
 const services = [
   {
@@ -20,6 +20,12 @@ const services = [
     title: 'No Junk Fees',
     description: 'We earn your trust with honest, transparent quotes and disclosures — no application, rate lock, or junk fees, so you save more every step of the way.',
     features: ['FHA loans (3.5% down)', 'VA loans (0% down)', 'USDA rural loans', 'State-specific programs']
+  },
+  {
+    icon: TrendingDown,
+    title: 'Prime Rates',
+    description: 'We shop banks and lenders every day to secure the most competitive rates for you—and we\'ll beat any comparable offer. Lower payments start with Prime Rates.',
+    features: []
   }
 ];
 
@@ -33,7 +39,7 @@ export default function ServicesSection() {
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {services.map((service, index) => (
             <Card 
               key={index}
