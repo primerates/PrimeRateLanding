@@ -6,7 +6,7 @@ const services = [
   {
     icon: TrendingDown,
     title: 'Prime Rates',
-    description: 'We shop banks and lenders every day to secure the most competitive rates for you—and we\'ll beat any comparable offer. Lower payments start with Prime Rates.',
+    description: 'We shop banks and lenders every day to secure the most competitive rates for you, and we\'ll beat any comparable offer. Lower payments start with Prime Rates.',
     features: []
   },
   {
@@ -18,7 +18,7 @@ const services = [
   {
     icon: Ban,
     title: 'No Junk Fees',
-    description: 'We earn your trust with honest, transparent quotes and disclosures — no application, rate lock, or junk fees, so you save more every step of the way.',
+    description: 'We earn your trust with honest, transparent quotes and disclosures - no application, rate lock, or junk fees, so you save more every step of the way.',
     features: ['FHA loans (3.5% down)', 'VA loans (0% down)', 'USDA rural loans', 'State-specific programs']
   },
   {

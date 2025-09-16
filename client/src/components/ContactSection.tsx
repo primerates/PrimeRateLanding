@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Phone, Mail, MapPin, Clock, X } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, X, Send } from 'lucide-react';
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -63,6 +63,7 @@ export default function ContactSection() {
 
   // Form submission states
   const [contactSubmitting, setContactSubmitting] = useState(false);
+  const [showPlaneAnimation, setShowPlaneAnimation] = useState(false);
   const [contactSubmitted, setContactSubmitted] = useState(false);
   const [preApprovalSubmitting, setPreApprovalSubmitting] = useState(false);
   const [preApprovalSubmitted, setPreApprovalSubmitted] = useState(false);
@@ -435,12 +436,27 @@ export default function ContactSection() {
 
                 <Button 
                   type="submit" 
-                  className="w-full" 
+                  className="w-full relative overflow-hidden" 
                   size="lg"
                   data-testid="button-submit-contact"
                   disabled={contactSubmitting}
+                  onClick={() => {
+                    if (!contactSubmitting) {
+                      setShowPlaneAnimation(true);
+                      setTimeout(() => setShowPlaneAnimation(false), 1000);
+                    }
+                  }}
                 >
-                  {contactSubmitting ? 'Sending...' : 'Send Message'}
+                  <div className="flex items-center justify-center gap-2">
+                    {contactSubmitting ? 'Sending...' : 'Send Message'}
+                    <Send 
+                      className={`w-4 h-4 transition-all duration-1000 ${
+                        showPlaneAnimation 
+                          ? 'transform translate-x-20 translate-y-[-20px] scale-110 opacity-0' 
+                          : 'transform translate-x-0 translate-y-0 scale-100 opacity-100'
+                      }`} 
+                    />
+                  </div>
                 </Button>
               </form>
             </CardContent>
