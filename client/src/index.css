@@ -79,6 +79,9 @@
   --font-sans: Inter, sans-serif;
   --font-serif: Lora, serif;
   --font-mono: Menlo, monospace;
+  
+  /* Custom Segoe UI Black Italic for logo testing */
+  --font-segoe-black-italic: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   --radius: .5rem; /* 8px */
   --shadow-2xs: 0px 2px 0px 0px hsl(220 10% 10% / 0.05);
   --shadow-xs: 0px 2px 0px 0px hsl(220 10% 10% / 0.05);
