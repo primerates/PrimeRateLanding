@@ -436,23 +436,23 @@ export default function ContactSection() {
 
                 <Button 
                   type="submit" 
-                  className="w-full relative overflow-hidden" 
+                  className="w-full relative overflow-visible" 
                   size="lg"
                   data-testid="button-submit-contact"
                   disabled={contactSubmitting}
                   onClick={() => {
                     if (!contactSubmitting) {
                       setShowPlaneAnimation(true);
-                      setTimeout(() => setShowPlaneAnimation(false), 1000);
+                      setTimeout(() => setShowPlaneAnimation(false), 2500);
                     }
                   }}
                 >
                   <div className="flex items-center justify-center gap-2">
                     {contactSubmitting ? 'Sending...' : 'Send Message'}
                     <Send 
-                      className={`w-4 h-4 transition-all duration-1000 ${
+                      className={`w-4 h-4 ${
                         showPlaneAnimation 
-                          ? 'transform translate-x-20 translate-y-[-20px] scale-110 opacity-0' 
+                          ? 'animate-paper-plane-flight' 
                           : 'transform translate-x-0 translate-y-0 scale-100 opacity-100'
                       }`} 
                     />
