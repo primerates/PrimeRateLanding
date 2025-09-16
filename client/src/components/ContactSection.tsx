@@ -443,7 +443,7 @@ export default function ContactSection() {
                   onClick={() => {
                     if (!contactSubmitting) {
                       setShowPlaneAnimation(true);
-                      setTimeout(() => setShowPlaneAnimation(false), 2500);
+                      setTimeout(() => setShowPlaneAnimation(false), 3000);
                     }
                   }}
                 >
