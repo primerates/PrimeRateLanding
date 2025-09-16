@@ -66,20 +66,24 @@ export default function ContactSection() {
   const [contactSubmitting, setContactSubmitting] = useState(false);
   const [showPlaneAnimation, setShowPlaneAnimation] = useState(false);
   
-  // Paper plane animation path generator
-  const randomPath = () => {
-    const x = [0];
-    const y = [0];
-    const rotate = [0];
-    for (let i = 1; i <= 6; i++) {
-      x.push(x[i - 1] + (Math.random() * 180 - 90));
-      y.push(y[i - 1] - (Math.random() * 60 + 30));
-      rotate.push(rotate[i - 1] + (Math.random() * 45 - 22.5));
+  // Create a circular looping path (roundabout effect)
+  const circlePath = () => {
+    const x = [];
+    const y = [];
+    const radius = 120;
+    const loops = 2; // how many times it circles
+    const steps = 40; // smoothness
+
+    for (let i = 0; i <= loops * steps; i++) {
+      const angle = (i / steps) * 2 * Math.PI;
+      x.push(Math.cos(angle) * radius);
+      y.push(Math.sin(angle) * radius * 0.6 - i * 3); // tilt downward slightly as it circles
     }
-    return { x, y, rotate };
+
+    return { x, y };
   };
   
-  const [planePath, setPlanePath] = useState(randomPath());
+  const [planePath, setPlanePath] = useState(circlePath());
   const [contactSubmitted, setContactSubmitted] = useState(false);
   const [preApprovalSubmitting, setPreApprovalSubmitting] = useState(false);
   const [preApprovalSubmitted, setPreApprovalSubmitted] = useState(false);
@@ -459,7 +463,7 @@ export default function ContactSection() {
                     disabled={contactSubmitting}
                     onClick={() => {
                       if (!contactSubmitting) {
-                        setPlanePath(randomPath());
+                        setPlanePath(circlePath());
                         setShowPlaneAnimation(true);
                       }
                     }}
@@ -473,38 +477,52 @@ export default function ContactSection() {
                   {/* Framer Motion Paper Plane Animation */}
                   <AnimatePresence>
                     {showPlaneAnimation && (
-                      <motion.div
-                        initial={{ x: 0, y: 0, rotate: 0, opacity: 1, scale: 1 }}
-                        animate={{
-                          x: planePath.x,
-                          y: planePath.y,
-                          rotate: planePath.rotate,
-                          opacity: [1, 1, 0.9, 0.8, 0.6, 0.3, 0],
-                          scale: [1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6],
-                        }}
-                        transition={{ duration: 4, ease: "easeInOut" }}
-                        exit={{ opacity: 0 }}
-                        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-50"
-                        onAnimationComplete={() => setShowPlaneAnimation(false)}
-                      >
-                        {/* Realistic Folded Paper Plane SVG */}
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 64 64"
-                          className="w-8 h-8 drop-shadow-lg"
+                      <>
+                        {/* Swoosh trail */}
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: [0, 0.6, 0.3, 0] }}
+                          transition={{ duration: 6, ease: "easeInOut" }}
+                          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-40"
                         >
-                          <path 
-                            d="M2 30L62 2 38 62 28 38 2 30z" 
-                            fill="hsl(225, 85%, 35%)" 
-                            stroke="hsl(225, 85%, 25%)" 
-                            strokeWidth="1.5" 
-                          />
-                          <path 
-                            d="M28 38L62 2 24 34z" 
-                            fill="hsl(225, 85%, 45%)" 
-                          />
-                        </svg>
-                      </motion.div>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 200 200"
+                            className="w-64 h-64 opacity-40 text-blue-600"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          >
+                            <path d="M10 150 C 60 100, 140 100, 190 50" />
+                          </svg>
+                        </motion.div>
+
+                        <motion.div
+                          initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+                          animate={{
+                            x: planePath.x,
+                            y: planePath.y,
+                            opacity: [1, 1, 0.9, 0.7, 0],
+                            scale: [1, 1, 0.9, 0.8, 0.6],
+                          }}
+                          transition={{ duration: 6, ease: "easeInOut" }}
+                          exit={{ opacity: 0 }}
+                          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-50"
+                          onAnimationComplete={() => setShowPlaneAnimation(false)}
+                        >
+                          {/* Realistic Paper Plane SVG */}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 64 64"
+                            fill="currentColor"
+                            className="w-16 h-16 text-white drop-shadow-lg"
+                          >
+                            <path d="M2 30L62 2 38 62 28 38 2 30z" fill="white" stroke="black" strokeWidth="1.5" />
+                            <path d="M28 38L62 2 24 34z" fill="#e5e5e5" />
+                          </svg>
+                        </motion.div>
+                      </>
                     )}
                   </AnimatePresence>
                 </div>
