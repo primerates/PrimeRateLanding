@@ -95,6 +95,10 @@ export default function AdminAddClient() {
   const [isCoBorrowerDisabilityIncomeOpen, setIsCoBorrowerDisabilityIncomeOpen] = useState(true);
   const [isCoBorrowerOtherIncomeOpen, setIsCoBorrowerOtherIncomeOpen] = useState(true);
 
+  // Pension income collapsible state
+  const [isPensionIncomeOpen, setIsPensionIncomeOpen] = useState(true);
+  const [isCoBorrowerPensionIncomeOpen, setIsCoBorrowerPensionIncomeOpen] = useState(true);
+
   const form = useForm<InsertClient>({
     resolver: zodResolver(insertClientSchema),
     defaultValues: {
@@ -468,6 +472,43 @@ export default function AdminAddClient() {
     
     // Format as currency
     return `$${householdTotal.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+  };
+
+  // Pension management helper functions
+  const generateUniqueId = (): string => {
+    return `pension-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  };
+
+  const addBorrowerPension = () => {
+    const currentPensions = form.watch('income.pensions') || [];
+    const newPension = {
+      id: generateUniqueId(),
+      payerName: '',
+      monthlyAmount: '',
+    };
+    form.setValue('income.pensions', [...currentPensions, newPension]);
+  };
+
+  const removeBorrowerPension = (pensionId: string) => {
+    const currentPensions = form.watch('income.pensions') || [];
+    const updatedPensions = currentPensions.filter(pension => pension.id !== pensionId);
+    form.setValue('income.pensions', updatedPensions);
+  };
+
+  const addCoBorrowerPension = () => {
+    const currentPensions = form.watch('coBorrowerIncome.pensions') || [];
+    const newPension = {
+      id: generateUniqueId(),
+      payerName: '',
+      monthlyAmount: '',
+    };
+    form.setValue('coBorrowerIncome.pensions', [...currentPensions, newPension]);
+  };
+
+  const removeCoBorrowerPension = (pensionId: string) => {
+    const currentPensions = form.watch('coBorrowerIncome.pensions') || [];
+    const updatedPensions = currentPensions.filter(pension => pension.id !== pensionId);
+    form.setValue('coBorrowerIncome.pensions', updatedPensions);
   };
 
   return (
@@ -1596,7 +1637,84 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
-              {/* Pension Income Card - TODO: Implement multiple pensions */}
+              {/* Pension Income Card */}
+              {form.watch('income.incomeTypes.pension') && (
+                <Card>
+                  <Collapsible open={isPensionIncomeOpen} onOpenChange={setIsPensionIncomeOpen}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Pension Income</CardTitle>
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" size="sm" data-testid="button-toggle-pension-income">
+                            {isPensionIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                          </Button>
+                        </CollapsibleTrigger>
+                      </div>
+                    </CardHeader>
+                    <CollapsibleContent>
+                      <CardContent className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-base font-semibold">Pension Entries</Label>
+                          <Button 
+                            type="button" 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={addBorrowerPension}
+                            data-testid="button-add-borrower-pension"
+                          >
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Pension
+                          </Button>
+                        </div>
+                        
+                        {(form.watch('income.pensions') || []).map((pension, index) => (
+                          <Card key={pension.id || index} className="p-4">
+                            <div className="flex items-center justify-between mb-4">
+                              <h4 className="text-sm font-medium">Pension {index + 1}</h4>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => removeBorrowerPension(pension.id!)}
+                                data-testid={`button-remove-borrower-pension-${index}`}
+                              >
+                                <Minus className="h-4 w-4" />
+                              </Button>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label htmlFor={`income-pension-${index}-payerName`}>Payer Name</Label>
+                                <Input
+                                  id={`income-pension-${index}-payerName`}
+                                  {...form.register(`income.pensions.${index}.payerName`)}
+                                  placeholder="e.g., Federal Retirement Fund"
+                                  data-testid={`input-income-pension-${index}-payerName`}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label htmlFor={`income-pension-${index}-monthlyAmount`}>Monthly Amount</Label>
+                                <Input
+                                  id={`income-pension-${index}-monthlyAmount`}
+                                  {...form.register(`income.pensions.${index}.monthlyAmount`)}
+                                  placeholder="$0.00"
+                                  data-testid={`input-income-pension-${index}-monthlyAmount`}
+                                />
+                              </div>
+                            </div>
+                          </Card>
+                        ))}
+                        
+                        {(!form.watch('income.pensions') || form.watch('income.pensions')?.length === 0) && (
+                          <div className="text-center text-muted-foreground py-8">
+                            <p>No pension entries added yet.</p>
+                            <p className="text-sm">Click "Add Pension" to get started.</p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </Card>
+              )}
 
               {/* Social Security Income Card */}
               {form.watch('income.incomeTypes.socialSecurity') && (
@@ -2308,7 +2426,84 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
-              {/* Co-Borrower Pension Income Card - TODO: Implement multiple pensions */}
+              {/* Co-Borrower Pension Income Card */}
+              {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.pension') && (
+                <Card>
+                  <Collapsible open={isCoBorrowerPensionIncomeOpen} onOpenChange={setIsCoBorrowerPensionIncomeOpen}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Co-Borrower Pension Income</CardTitle>
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" size="sm" data-testid="button-toggle-coborrower-pension-income">
+                            {isCoBorrowerPensionIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                          </Button>
+                        </CollapsibleTrigger>
+                      </div>
+                    </CardHeader>
+                    <CollapsibleContent>
+                      <CardContent className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-base font-semibold">Pension Entries</Label>
+                          <Button 
+                            type="button" 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={addCoBorrowerPension}
+                            data-testid="button-add-coborrower-pension"
+                          >
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Pension
+                          </Button>
+                        </div>
+                        
+                        {(form.watch('coBorrowerIncome.pensions') || []).map((pension, index) => (
+                          <Card key={pension.id || index} className="p-4">
+                            <div className="flex items-center justify-between mb-4">
+                              <h4 className="text-sm font-medium">Pension {index + 1}</h4>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => removeCoBorrowerPension(pension.id!)}
+                                data-testid={`button-remove-coborrower-pension-${index}`}
+                              >
+                                <Minus className="h-4 w-4" />
+                              </Button>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label htmlFor={`coBorrowerIncome-pension-${index}-payerName`}>Payer Name</Label>
+                                <Input
+                                  id={`coBorrowerIncome-pension-${index}-payerName`}
+                                  {...form.register(`coBorrowerIncome.pensions.${index}.payerName`)}
+                                  placeholder="e.g., Federal Retirement Fund"
+                                  data-testid={`input-coborrowerIncome-pension-${index}-payerName`}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label htmlFor={`coBorrowerIncome-pension-${index}-monthlyAmount`}>Monthly Amount</Label>
+                                <Input
+                                  id={`coBorrowerIncome-pension-${index}-monthlyAmount`}
+                                  {...form.register(`coBorrowerIncome.pensions.${index}.monthlyAmount`)}
+                                  placeholder="$0.00"
+                                  data-testid={`input-coborrowerIncome-pension-${index}-monthlyAmount`}
+                                />
+                              </div>
+                            </div>
+                          </Card>
+                        ))}
+                        
+                        {(!form.watch('coBorrowerIncome.pensions') || form.watch('coBorrowerIncome.pensions')?.length === 0) && (
+                          <div className="text-center text-muted-foreground py-8">
+                            <p>No pension entries added yet.</p>
+                            <p className="text-sm">Click "Add Pension" to get started.</p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </Card>
+              )}
 
               {/* Co-Borrower Social Security Income Card */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.socialSecurity') && (
