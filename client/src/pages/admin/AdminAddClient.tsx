@@ -403,7 +403,7 @@ export default function AdminAddClient() {
               {/* Borrower Information */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Primary Borrower Information</CardTitle>
+                  <CardTitle>Borrower Information</CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div className="space-y-2">
@@ -632,6 +632,7 @@ export default function AdminAddClient() {
                         variant="outline"
                         size="sm"
                         onClick={copyResidenceToSubjectProperty}
+                        className="hover:bg-yellow-500"
                         data-testid="button-same-address"
                       >
                         Same
@@ -716,6 +717,7 @@ export default function AdminAddClient() {
                       variant="outline"
                       size="sm"
                       onClick={addCoBorrower}
+                      className="hover:bg-yellow-500"
                       data-testid="button-add-coborrower"
                     >
                       <Plus className="h-4 w-4 mr-2" />
