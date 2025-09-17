@@ -167,6 +167,7 @@ export default function AdminAddClient() {
       coBorrowerIncome: {
         incomeTypes: {
           employment: false,
+          secondEmployment: false,
           selfEmployment: false,
           pension: false,
           socialSecurity: false,
@@ -963,13 +964,12 @@ export default function AdminAddClient() {
 
             {/* Income Tab */}
             <TabsContent value="income" className="space-y-6">
-              {/* Primary Borrower Income */}
+              {/* Income Type Selection */}
               <Card>
                 <CardHeader>
                   <CardTitle>Borrower Income</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                  {/* Income Type Selection */}
+                <CardContent>
                   <div className="space-y-4">
                     <Label className="text-base font-semibold">Income Types</Label>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -1047,153 +1047,173 @@ export default function AdminAddClient() {
                       </div>
                     </div>
                   </div>
+                </CardContent>
+              </Card>
 
-                  {/* Employment Income Section */}
-                  {form.watch('income.incomeTypes.employment') && (
-                    <div className="space-y-4 border-t pt-4">
-                      <Label className="text-base font-semibold">Employment Income</Label>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="income-employerName">Employer Name</Label>
-                          <Input
-                            id="income-employerName"
-                            {...form.register('income.employerName')}
-                            data-testid="input-income-employerName"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="income-jobTitle">Job Title</Label>
-                          <Input
-                            id="income-jobTitle"
-                            {...form.register('income.jobTitle')}
-                            data-testid="input-income-jobTitle"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="income-monthlyIncome">Monthly Income</Label>
-                          <Input
-                            id="income-monthlyIncome"
-                            {...form.register('income.monthlyIncome')}
-                            placeholder="$0.00"
-                            data-testid="input-income-monthlyIncome"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label>Years Employed</Label>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <Label htmlFor="income-years">Years Employed</Label>
-                              <Input
-                                id="income-years"
-                                type="number"
-                                min="0"
-                                max="99"
-                                {...form.register('income.yearsEmployedYears')}
-                                data-testid="input-income-years"
-                              />
-                            </div>
-                            <div>
-                              <Label htmlFor="income-months">Months</Label>
-                              <Input
-                                id="income-months"
-                                type="number"
-                                min="0"
-                                max="11"
-                                placeholder="0"
-                                {...form.register('income.yearsEmployedMonths')}
-                                data-testid="input-income-months"
-                              />
-                            </div>
+              {/* Employment Income Card */}
+              {form.watch('income.incomeTypes.employment') && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Employment Income</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="income-employerName">Employer Name</Label>
+                        <Input
+                          id="income-employerName"
+                          {...form.register('income.employerName')}
+                          data-testid="input-income-employerName"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="income-jobTitle">Job Title</Label>
+                        <Input
+                          id="income-jobTitle"
+                          {...form.register('income.jobTitle')}
+                          data-testid="input-income-jobTitle"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="income-monthlyIncome">Monthly Income</Label>
+                        <Input
+                          id="income-monthlyIncome"
+                          {...form.register('income.monthlyIncome')}
+                          placeholder="$0.00"
+                          data-testid="input-income-monthlyIncome"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2 md:col-span-2">
+                        <Label>Years Employed</Label>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="income-years">Years Employed</Label>
+                            <Input
+                              id="income-years"
+                              type="number"
+                              min="0"
+                              max="99"
+                              {...form.register('income.yearsEmployedYears')}
+                              data-testid="input-income-years"
+                            />
                           </div>
-                        </div>
-                        
-                        <div className="space-y-2 md:col-span-3">
-                          <Label className="text-base font-semibold">Employer Address</Label>
-                          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                            <div className="space-y-2 md:col-span-4">
-                              <Label htmlFor="income-employer-street">Street Address</Label>
-                              <Input
-                                id="income-employer-street"
-                                placeholder="123 Main St"
-                                {...form.register('income.employerAddress.street')}
-                                data-testid="input-income-employer-street"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="income-employer-unit">Unit/Apt</Label>
-                              <Input
-                                id="income-employer-unit"
-                                {...form.register('income.employerAddress.unit')}
-                                data-testid="input-income-employer-unit"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="income-employer-city">City</Label>
-                              <Input
-                                id="income-employer-city"
-                                {...form.register('income.employerAddress.city')}
-                                data-testid="input-income-employer-city"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="income-employer-state">State</Label>
-                              <Select onValueChange={(value) => form.setValue('income.employerAddress.state', value)}>
-                                <SelectTrigger data-testid="select-income-employer-state">
-                                  <SelectValue placeholder="State" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {US_STATES.map((state) => (
-                                    <SelectItem key={state.value} value={state.value}>
-                                      {state.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="income-employer-zip">ZIP Code</Label>
-                              <Input
-                                id="income-employer-zip"
-                                {...form.register('income.employerAddress.zip')}
-                                data-testid="input-income-employer-zip"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="income-employer-county">County</Label>
-                              <Input
-                                id="income-employer-county"
-                                {...form.register('income.employerAddress.county')}
-                                data-testid="input-income-employer-county"
-                              />
-                            </div>
+                          <div>
+                            <Label htmlFor="income-months">Months</Label>
+                            <Input
+                              id="income-months"
+                              type="number"
+                              min="0"
+                              max="11"
+                              placeholder="0"
+                              {...form.register('income.yearsEmployedMonths')}
+                              data-testid="input-income-months"
+                            />
                           </div>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="income-employer-phone">Employer Phone</Label>
-                          <Input
-                            id="income-employer-phone"
-                            placeholder="(XXX) XXX-XXXX"
-                            value={form.watch('income.employerPhone') || ''}
-                            onChange={(e) => handlePhoneChange('income.employerPhone', e.target.value)}
-                            data-testid="input-income-employer-phone"
-                          />
                         </div>
                       </div>
                     </div>
-                  )}
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Employer Address Card */}
+              {form.watch('income.incomeTypes.employment') && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Employer Address</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                      <div className="space-y-2 md:col-span-4">
+                        <Label htmlFor="income-employer-street">Street Address</Label>
+                        <Input
+                          id="income-employer-street"
+                          placeholder="123 Main St"
+                          {...form.register('income.employerAddress.street')}
+                          data-testid="input-income-employer-street"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2 md:col-span-2">
+                        <Label htmlFor="income-employer-unit">Unit/Apt</Label>
+                        <Input
+                          id="income-employer-unit"
+                          {...form.register('income.employerAddress.unit')}
+                          data-testid="input-income-employer-unit"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2 md:col-span-2">
+                        <Label htmlFor="income-employer-city">City</Label>
+                        <Input
+                          id="income-employer-city"
+                          {...form.register('income.employerAddress.city')}
+                          data-testid="input-income-employer-city"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="income-employer-state">State</Label>
+                        <Select onValueChange={(value) => form.setValue('income.employerAddress.state', value)}>
+                          <SelectTrigger data-testid="select-income-employer-state">
+                            <SelectValue placeholder="State" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {US_STATES.map((state) => (
+                              <SelectItem key={state.value} value={state.value}>
+                                {state.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="income-employer-zip">ZIP Code</Label>
+                        <Input
+                          id="income-employer-zip"
+                          {...form.register('income.employerAddress.zip')}
+                          data-testid="input-income-employer-zip"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2 md:col-span-2">
+                        <Label htmlFor="income-employer-county">County</Label>
+                        <Input
+                          id="income-employer-county"
+                          {...form.register('income.employerAddress.county')}
+                          data-testid="input-income-employer-county"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="income-employer-phone">Employer Phone</Label>
+                        <Input
+                          id="income-employer-phone"
+                          placeholder="(XXX) XXX-XXXX"
+                          value={form.watch('income.employerPhone') || ''}
+                          onChange={(e) => handlePhoneChange('income.employerPhone', e.target.value)}
+                          data-testid="input-income-employer-phone"
+                        />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Other Income Sections Card */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Additional Income Sources</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
 
                   {/* Second Employment Income Section */}
                   {form.watch('income.incomeTypes.secondEmployment') && (
-                    <div className="space-y-4 border-t pt-4">
+                    <div className="space-y-4">
                       <Label className="text-base font-semibold">Second Employment Income</Label>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="space-y-2">
@@ -1339,7 +1359,7 @@ export default function AdminAddClient() {
 
                   {/* Self-Employment Income Section */}
                   {form.watch('income.incomeTypes.selfEmployment') && (
-                    <div className="space-y-4 border-t pt-4">
+                    <div className="space-y-4">
                       <Label className="text-base font-semibold">Self-Employment Income</Label>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="space-y-2">
@@ -1473,7 +1493,7 @@ export default function AdminAddClient() {
 
                   {/* Pension Income Section */}
                   {form.watch('income.incomeTypes.pension') && (
-                    <div className="space-y-4 border-t pt-4">
+                    <div className="space-y-4">
                       <Label className="text-base font-semibold">Pension Income</Label>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
@@ -1499,7 +1519,7 @@ export default function AdminAddClient() {
 
                   {/* Social Security Income Section */}
                   {form.watch('income.incomeTypes.socialSecurity') && (
-                    <div className="space-y-4 border-t pt-4">
+                    <div className="space-y-4">
                       <Label className="text-base font-semibold">Social Security Income</Label>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
@@ -1517,7 +1537,7 @@ export default function AdminAddClient() {
 
                   {/* VA Benefits Income Section */}
                   {form.watch('income.incomeTypes.vaBenefits') && (
-                    <div className="space-y-4 border-t pt-4">
+                    <div className="space-y-4">
                       <Label className="text-base font-semibold">VA Benefits Income</Label>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
@@ -1535,7 +1555,7 @@ export default function AdminAddClient() {
 
                   {/* Disability Income Section */}
                   {form.watch('income.incomeTypes.disability') && (
-                    <div className="space-y-4 border-t pt-4">
+                    <div className="space-y-4">
                       <Label className="text-base font-semibold">Disability Income</Label>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
@@ -1561,7 +1581,7 @@ export default function AdminAddClient() {
 
                   {/* Other Income Section */}
                   {form.watch('income.incomeTypes.other') && (
-                    <div className="space-y-4 border-t pt-4">
+                    <div className="space-y-4">
                       <Label className="text-base font-semibold">Other Income</Label>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
