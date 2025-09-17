@@ -33,9 +33,21 @@ export default function AdminAddClient() {
         maritalStatus: 'single',
         dateOfBirth: '',
         ssn: '',
-        residenceAddress: '',
+        residenceAddress: {
+          street: '',
+          unit: '',
+          city: '',
+          state: '',
+          zip: '',
+        },
         yearsAtAddress: '',
-        subjectProperty: '',
+        subjectProperty: {
+          street: '',
+          unit: '',
+          city: '',
+          state: '',
+          zip: '',
+        },
         leadRef: '',
         callDate: '',
         startDate: '',
@@ -58,7 +70,13 @@ export default function AdminAddClient() {
         incomeSource: '',
       },
       property: {
-        propertyAddress: '',
+        propertyAddress: {
+          street: '',
+          unit: '',
+          city: '',
+          state: '',
+          zip: '',
+        },
         propertyType: '',
         propertyValue: '',
         propertyUse: '',
@@ -134,9 +152,21 @@ export default function AdminAddClient() {
       maritalStatus: 'single',
       dateOfBirth: '',
       ssn: '',
-      residenceAddress: '',
+      residenceAddress: {
+        street: '',
+        unit: '',
+        city: '',
+        state: '',
+        zip: '',
+      },
       yearsAtAddress: '',
-      subjectProperty: '',
+      subjectProperty: {
+        street: '',
+        unit: '',
+        city: '',
+        state: '',
+        zip: '',
+      },
       leadRef: '',
       callDate: '',
       startDate: '',
@@ -147,6 +177,11 @@ export default function AdminAddClient() {
     setHasCoBorrower(false);
     form.setValue('coBorrower', undefined);
     form.setValue('coBorrowerIncome', undefined);
+  };
+
+  const copyResidenceToSubjectProperty = () => {
+    const residenceAddress = form.getValues('borrower.residenceAddress');
+    form.setValue('borrower.subjectProperty', residenceAddress);
   };
 
   return (
@@ -173,7 +208,7 @@ export default function AdminAddClient() {
             <Button
               onClick={form.handleSubmit(onSubmit)}
               disabled={addClientMutation.isPending}
-              className="bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+              className="bg-primary-foreground text-primary hover:bg-green-700"
               data-testid="button-save-client"
             >
               <Save className="h-4 w-4 mr-2" />
@@ -306,16 +341,67 @@ export default function AdminAddClient() {
                     )}
                   </div>
                   
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="borrower-residenceAddress">Residence Address *</Label>
-                    <Input
-                      id="borrower-residenceAddress"
-                      {...form.register('borrower.residenceAddress')}
-                      data-testid="input-borrower-residenceAddress"
-                    />
-                    {form.formState.errors.borrower?.residenceAddress && (
-                      <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.message}</p>
-                    )}
+                  {/* Residence Address Fields */}
+                  <div className="md:col-span-3 space-y-4">
+                    <Label className="text-base font-semibold">Residence Address *</Label>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2 md:col-span-2">
+                        <Label htmlFor="borrower-residence-street">Street Address *</Label>
+                        <Input
+                          id="borrower-residence-street"
+                          {...form.register('borrower.residenceAddress.street')}
+                          data-testid="input-borrower-residence-street"
+                        />
+                        {form.formState.errors.borrower?.residenceAddress?.street && (
+                          <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.street.message}</p>
+                        )}
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="borrower-residence-unit">Unit/Apt</Label>
+                        <Input
+                          id="borrower-residence-unit"
+                          {...form.register('borrower.residenceAddress.unit')}
+                          data-testid="input-borrower-residence-unit"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="borrower-residence-city">City *</Label>
+                        <Input
+                          id="borrower-residence-city"
+                          {...form.register('borrower.residenceAddress.city')}
+                          data-testid="input-borrower-residence-city"
+                        />
+                        {form.formState.errors.borrower?.residenceAddress?.city && (
+                          <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.city.message}</p>
+                        )}
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="borrower-residence-state">State *</Label>
+                        <Input
+                          id="borrower-residence-state"
+                          {...form.register('borrower.residenceAddress.state')}
+                          data-testid="input-borrower-residence-state"
+                        />
+                        {form.formState.errors.borrower?.residenceAddress?.state && (
+                          <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.state.message}</p>
+                        )}
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="borrower-residence-zip">ZIP Code *</Label>
+                        <Input
+                          id="borrower-residence-zip"
+                          {...form.register('borrower.residenceAddress.zip')}
+                          data-testid="input-borrower-residence-zip"
+                        />
+                        {form.formState.errors.borrower?.residenceAddress?.zip && (
+                          <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.zip.message}</p>
+                        )}
+                      </div>
+                    </div>
                   </div>
                   
                   <div className="space-y-2">
@@ -330,13 +416,66 @@ export default function AdminAddClient() {
                     )}
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="borrower-subjectProperty">Subject Property</Label>
-                    <Input
-                      id="borrower-subjectProperty"
-                      {...form.register('borrower.subjectProperty')}
-                      data-testid="input-borrower-subjectProperty"
-                    />
+                  {/* Subject Property Address Fields */}
+                  <div className="md:col-span-3 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-base font-semibold">Subject Property Address</Label>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={copyResidenceToSubjectProperty}
+                        data-testid="button-same-address"
+                      >
+                        Same
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2 md:col-span-2">
+                        <Label htmlFor="borrower-subject-street">Street Address</Label>
+                        <Input
+                          id="borrower-subject-street"
+                          {...form.register('borrower.subjectProperty.street')}
+                          data-testid="input-borrower-subject-street"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="borrower-subject-unit">Unit/Apt</Label>
+                        <Input
+                          id="borrower-subject-unit"
+                          {...form.register('borrower.subjectProperty.unit')}
+                          data-testid="input-borrower-subject-unit"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="borrower-subject-city">City</Label>
+                        <Input
+                          id="borrower-subject-city"
+                          {...form.register('borrower.subjectProperty.city')}
+                          data-testid="input-borrower-subject-city"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="borrower-subject-state">State</Label>
+                        <Input
+                          id="borrower-subject-state"
+                          {...form.register('borrower.subjectProperty.state')}
+                          data-testid="input-borrower-subject-state"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="borrower-subject-zip">ZIP Code</Label>
+                        <Input
+                          id="borrower-subject-zip"
+                          {...form.register('borrower.subjectProperty.zip')}
+                          data-testid="input-borrower-subject-zip"
+                        />
+                      </div>
+                    </div>
                   </div>
                   
                   <div className="space-y-2">
@@ -483,13 +622,55 @@ export default function AdminAddClient() {
                       />
                     </div>
                     
-                    <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor="coBorrower-residenceAddress">Residence Address</Label>
-                      <Input
-                        id="coBorrower-residenceAddress"
-                        {...form.register('coBorrower.residenceAddress')}
-                        data-testid="input-coborrower-residenceAddress"
-                      />
+                    {/* Co-Borrower Residence Address Fields */}
+                    <div className="md:col-span-3 space-y-4">
+                      <Label className="text-base font-semibold">Residence Address</Label>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2 md:col-span-2">
+                          <Label htmlFor="coBorrower-residence-street">Street Address</Label>
+                          <Input
+                            id="coBorrower-residence-street"
+                            {...form.register('coBorrower.residenceAddress.street')}
+                            data-testid="input-coborrower-residence-street"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="coBorrower-residence-unit">Unit/Apt</Label>
+                          <Input
+                            id="coBorrower-residence-unit"
+                            {...form.register('coBorrower.residenceAddress.unit')}
+                            data-testid="input-coborrower-residence-unit"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="coBorrower-residence-city">City</Label>
+                          <Input
+                            id="coBorrower-residence-city"
+                            {...form.register('coBorrower.residenceAddress.city')}
+                            data-testid="input-coborrower-residence-city"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="coBorrower-residence-state">State</Label>
+                          <Input
+                            id="coBorrower-residence-state"
+                            {...form.register('coBorrower.residenceAddress.state')}
+                            data-testid="input-coborrower-residence-state"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="coBorrower-residence-zip">ZIP Code</Label>
+                          <Input
+                            id="coBorrower-residence-zip"
+                            {...form.register('coBorrower.residenceAddress.zip')}
+                            data-testid="input-coborrower-residence-zip"
+                          />
+                        </div>
+                      </div>
                     </div>
                     
                     <div className="space-y-2">
@@ -645,13 +826,55 @@ export default function AdminAddClient() {
                   <CardTitle>Property Information</CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="property-propertyAddress">Property Address</Label>
-                    <Input
-                      id="property-propertyAddress"
-                      {...form.register('property.propertyAddress')}
-                      data-testid="input-property-propertyAddress"
-                    />
+                  {/* Property Address Fields */}
+                  <div className="md:col-span-3 space-y-4">
+                    <Label className="text-base font-semibold">Property Address</Label>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2 md:col-span-2">
+                        <Label htmlFor="property-street">Street Address</Label>
+                        <Input
+                          id="property-street"
+                          {...form.register('property.propertyAddress.street')}
+                          data-testid="input-property-street"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="property-unit">Unit/Apt</Label>
+                        <Input
+                          id="property-unit"
+                          {...form.register('property.propertyAddress.unit')}
+                          data-testid="input-property-unit"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="property-city">City</Label>
+                        <Input
+                          id="property-city"
+                          {...form.register('property.propertyAddress.city')}
+                          data-testid="input-property-city"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="property-state">State</Label>
+                        <Input
+                          id="property-state"
+                          {...form.register('property.propertyAddress.state')}
+                          data-testid="input-property-state"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="property-zip">ZIP Code</Label>
+                        <Input
+                          id="property-zip"
+                          {...form.register('property.propertyAddress.zip')}
+                          data-testid="input-property-zip"
+                        />
+                      </div>
+                    </div>
                   </div>
                   
                   <div className="space-y-2">
