@@ -106,6 +106,7 @@ export default function AdminAddClient() {
       income: {
         incomeTypes: {
           employment: false,
+          secondEmployment: false,
           selfEmployment: false,
           pension: false,
           socialSecurity: false,
@@ -127,6 +128,20 @@ export default function AdminAddClient() {
           county: ''
         },
         employerPhone: '',
+        secondEmployerName: '',
+        secondJobTitle: '',
+        secondMonthlyIncome: '',
+        secondYearsEmployedYears: '',
+        secondYearsEmployedMonths: '',
+        secondEmployerAddress: {
+          street: '',
+          unit: '',
+          city: '',
+          state: '',
+          zip: '',
+          county: ''
+        },
+        secondEmployerPhone: '',
         businessName: '',
         businessMonthlyIncome: '',
         yearsInBusinessYears: '',
@@ -173,6 +188,20 @@ export default function AdminAddClient() {
           county: ''
         },
         employerPhone: '',
+        secondEmployerName: '',
+        secondJobTitle: '',
+        secondMonthlyIncome: '',
+        secondYearsEmployedYears: '',
+        secondYearsEmployedMonths: '',
+        secondEmployerAddress: {
+          street: '',
+          unit: '',
+          city: '',
+          state: '',
+          zip: '',
+          county: ''
+        },
+        secondEmployerPhone: '',
         businessName: '',
         businessMonthlyIncome: '',
         yearsInBusinessYears: '',
@@ -956,6 +985,15 @@ export default function AdminAddClient() {
                       </div>
                       <div className="flex items-center space-x-2">
                         <Checkbox
+                          id="income-type-secondEmployment"
+                          checked={form.watch('income.incomeTypes.secondEmployment') || false}
+                          onCheckedChange={(checked) => form.setValue('income.incomeTypes.secondEmployment', !!checked)}
+                          data-testid="checkbox-secondEmployment"
+                        />
+                        <Label htmlFor="income-type-secondEmployment">Second Employment</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
                           id="income-type-selfEmployment"
                           checked={form.watch('income.incomeTypes.selfEmployment') || false}
                           onCheckedChange={(checked) => form.setValue('income.incomeTypes.selfEmployment', !!checked)}
@@ -1148,6 +1186,152 @@ export default function AdminAddClient() {
                             value={form.watch('income.employerPhone') || ''}
                             onChange={(e) => handlePhoneChange('income.employerPhone', e.target.value)}
                             data-testid="input-income-employer-phone"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Second Employment Income Section */}
+                  {form.watch('income.incomeTypes.secondEmployment') && (
+                    <div className="space-y-4 border-t pt-4">
+                      <Label className="text-base font-semibold">Second Employment Income</Label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="income-secondEmployerName">Employer Name</Label>
+                          <Input
+                            id="income-secondEmployerName"
+                            {...form.register('income.secondEmployerName')}
+                            data-testid="input-income-secondEmployerName"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="income-secondJobTitle">Job Title</Label>
+                          <Input
+                            id="income-secondJobTitle"
+                            {...form.register('income.secondJobTitle')}
+                            data-testid="input-income-secondJobTitle"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="income-secondMonthlyIncome">Monthly Income</Label>
+                          <Input
+                            id="income-secondMonthlyIncome"
+                            {...form.register('income.secondMonthlyIncome')}
+                            placeholder="$0.00"
+                            data-testid="input-income-secondMonthlyIncome"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label>Years Employed</Label>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="income-second-years">Years Employed</Label>
+                              <Input
+                                id="income-second-years"
+                                type="number"
+                                min="0"
+                                max="99"
+                                {...form.register('income.secondYearsEmployedYears')}
+                                data-testid="input-income-second-years"
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="income-second-months">Months</Label>
+                              <Input
+                                id="income-second-months"
+                                type="number"
+                                min="0"
+                                max="11"
+                                placeholder="0"
+                                {...form.register('income.secondYearsEmployedMonths')}
+                                data-testid="input-income-second-months"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2 md:col-span-3">
+                          <Label className="text-base font-semibold">Second Employer Address</Label>
+                          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                            <div className="space-y-2 md:col-span-4">
+                              <Label htmlFor="income-second-employer-street">Street Address</Label>
+                              <Input
+                                id="income-second-employer-street"
+                                placeholder="123 Main St"
+                                {...form.register('income.secondEmployerAddress.street')}
+                                data-testid="input-income-second-employer-street"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="income-second-employer-unit">Unit/Apt</Label>
+                              <Input
+                                id="income-second-employer-unit"
+                                {...form.register('income.secondEmployerAddress.unit')}
+                                data-testid="input-income-second-employer-unit"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="income-second-employer-city">City</Label>
+                              <Input
+                                id="income-second-employer-city"
+                                {...form.register('income.secondEmployerAddress.city')}
+                                data-testid="input-income-second-employer-city"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-second-employer-state">State</Label>
+                              <Select
+                                value={form.watch('income.secondEmployerAddress.state') || ''}
+                                onValueChange={(value) => form.setValue('income.secondEmployerAddress.state', value)}
+                              >
+                                <SelectTrigger data-testid="select-income-second-employer-state">
+                                  <SelectValue placeholder="State" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {US_STATES.map((state) => (
+                                    <SelectItem key={state.value} value={state.value}>
+                                      {state.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-second-employer-zip">ZIP Code</Label>
+                              <Input
+                                id="income-second-employer-zip"
+                                {...form.register('income.secondEmployerAddress.zip')}
+                                data-testid="input-income-second-employer-zip"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="income-second-employer-county">County</Label>
+                              <Input
+                                id="income-second-employer-county"
+                                {...form.register('income.secondEmployerAddress.county')}
+                                data-testid="input-income-second-employer-county"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="income-second-employer-phone">Employer Phone</Label>
+                          <Input
+                            id="income-second-employer-phone"
+                            placeholder="(XXX) XXX-XXXX"
+                            value={form.watch('income.secondEmployerPhone') || ''}
+                            onChange={(e) => handlePhoneChange('income.secondEmployerPhone', e.target.value)}
+                            data-testid="input-income-second-employer-phone"
                           />
                         </div>
                       </div>

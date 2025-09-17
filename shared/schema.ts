@@ -50,6 +50,7 @@ export const incomeSchema = z.object({
   // Income type selections
   incomeTypes: z.object({
     employment: z.boolean().optional(),
+    secondEmployment: z.boolean().optional(),
     selfEmployment: z.boolean().optional(),
     pension: z.boolean().optional(),
     socialSecurity: z.boolean().optional(),
@@ -66,6 +67,15 @@ export const incomeSchema = z.object({
   yearsEmployedMonths: z.string().optional(),
   employerAddress: addressSchema.partial().optional(),
   employerPhone: z.string().optional(),
+  
+  // Second Employment fields
+  secondEmployerName: z.string().optional(),
+  secondJobTitle: z.string().optional(),
+  secondMonthlyIncome: z.string().optional(),
+  secondYearsEmployedYears: z.string().optional(),
+  secondYearsEmployedMonths: z.string().optional(),
+  secondEmployerAddress: addressSchema.partial().optional(),
+  secondEmployerPhone: z.string().optional(),
   
   // Self-Employment fields
   businessName: z.string().optional(),
