@@ -17,6 +17,15 @@ export const insertUserSchema = createInsertSchema(users).pick({
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 
+// Address schema for reusable address components
+export const addressSchema = z.object({
+  street: z.string().min(1, "Street address is required"),
+  unit: z.string().optional(),
+  city: z.string().min(1, "City is required"),
+  state: z.string().min(1, "State is required"),
+  zip: z.string().min(1, "ZIP code is required"),
+});
+
 // Client Management Schema
 export const borrowerInfoSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -27,9 +36,9 @@ export const borrowerInfoSchema = z.object({
   maritalStatus: z.enum(["single", "married", "divorced", "widowed"]),
   dateOfBirth: z.string().min(1, "Date of birth is required"),
   ssn: z.string().min(1, "SSN is required"),
-  residenceAddress: z.string().min(1, "Residence address is required"),
+  residenceAddress: addressSchema,
   yearsAtAddress: z.string().min(1, "Years at address is required"),
-  subjectProperty: z.string().optional(),
+  subjectProperty: addressSchema.optional(),
   leadRef: z.string().optional(),
   callDate: z.string().optional(),
   startDate: z.string().optional(),
@@ -45,7 +54,7 @@ export const incomeSchema = z.object({
 });
 
 export const propertySchema = z.object({
-  propertyAddress: z.string().optional(),
+  propertyAddress: addressSchema.optional(),
   propertyType: z.enum(["single-family", "condo", "townhouse", "multi-family", "land", ""]).optional(),
   propertyValue: z.string().optional(),
   propertyUse: z.enum(["primary", "secondary", "investment", ""]).optional(),
@@ -98,6 +107,7 @@ export const clientSchema = z.object({
   status: z.enum(["active", "closed", "on-hold"]).default("active"),
 });
 
+export type Address = z.infer<typeof addressSchema>;
 export type BorrowerInfo = z.infer<typeof borrowerInfoSchema>;
 export type Income = z.infer<typeof incomeSchema>;
 export type Property = z.infer<typeof propertySchema>;
