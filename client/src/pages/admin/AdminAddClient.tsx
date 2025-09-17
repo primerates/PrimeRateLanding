@@ -80,6 +80,7 @@ export default function AdminAddClient() {
   
   // Borrower income section collapsible states
   const [isEmploymentIncomeOpen, setIsEmploymentIncomeOpen] = useState(true);
+  const [isSecondEmploymentIncomeOpen, setIsSecondEmploymentIncomeOpen] = useState(true);
   const [isSelfEmploymentIncomeOpen, setIsSelfEmploymentIncomeOpen] = useState(true);
   const [isSocialSecurityIncomeOpen, setIsSocialSecurityIncomeOpen] = useState(true);
   const [isVaBenefitsIncomeOpen, setIsVaBenefitsIncomeOpen] = useState(true);
@@ -1191,62 +1192,141 @@ export default function AdminAddClient() {
                     </CardHeader>
                     <CollapsibleContent>
                       <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="income-employerName">Employer Name</Label>
-                        <Input
-                          id="income-employerName"
-                          {...form.register('income.employerName')}
-                          data-testid="input-income-employerName"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="income-jobTitle">Job Title</Label>
-                        <Input
-                          id="income-jobTitle"
-                          {...form.register('income.jobTitle')}
-                          data-testid="input-income-jobTitle"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="income-monthlyIncome">Monthly Income</Label>
-                        <Input
-                          id="income-monthlyIncome"
-                          {...form.register('income.monthlyIncome')}
-                          placeholder="$0.00"
-                          data-testid="input-income-monthlyIncome"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2 md:col-span-2">
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <Label htmlFor="income-years">Years Employed</Label>
-                            <Input
-                              id="income-years"
-                              type="number"
-                              min="0"
-                              max="99"
-                              {...form.register('income.yearsEmployedYears')}
-                              data-testid="input-income-years"
-                            />
+                        <div className="space-y-6">
+                          {/* Basic Employment Information */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="income-employerName">Employer Name</Label>
+                              <Input
+                                id="income-employerName"
+                                {...form.register('income.employerName')}
+                                data-testid="input-income-employerName"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-jobTitle">Job Title</Label>
+                              <Input
+                                id="income-jobTitle"
+                                {...form.register('income.jobTitle')}
+                                data-testid="input-income-jobTitle"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-monthlyIncome">Monthly Income</Label>
+                              <Input
+                                id="income-monthlyIncome"
+                                {...form.register('income.monthlyIncome')}
+                                placeholder="$0.00"
+                                data-testid="input-income-monthlyIncome"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                  <Label htmlFor="income-years">Years Employed</Label>
+                                  <Input
+                                    id="income-years"
+                                    type="number"
+                                    min="0"
+                                    max="99"
+                                    {...form.register('income.yearsEmployedYears')}
+                                    data-testid="input-income-years"
+                                  />
+                                </div>
+                                <div>
+                                  <Label htmlFor="income-months">Months Employed</Label>
+                                  <Input
+                                    id="income-months"
+                                    type="number"
+                                    min="0"
+                                    max="11"
+                                    placeholder="0"
+                                    {...form.register('income.yearsEmployedMonths')}
+                                    data-testid="input-income-months"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-employer-phone">Employer Phone</Label>
+                              <Input
+                                id="income-employer-phone"
+                                placeholder="(XXX) XXX-XXXX"
+                                value={form.watch('income.employerPhone') || ''}
+                                onChange={(e) => handlePhoneChange('income.employerPhone', e.target.value)}
+                                data-testid="input-income-employer-phone"
+                              />
+                            </div>
                           </div>
-                          <div>
-                            <Label htmlFor="income-months">Months Employed</Label>
-                            <Input
-                              id="income-months"
-                              type="number"
-                              min="0"
-                              max="11"
-                              placeholder="0"
-                              {...form.register('income.yearsEmployedMonths')}
-                              data-testid="input-income-months"
-                            />
+                          
+                          {/* Employer Address */}
+                          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                            <div className="space-y-2 md:col-span-4">
+                              <Label htmlFor="income-employer-street">Street Address</Label>
+                              <Input
+                                id="income-employer-street"
+                                placeholder="123 Main St"
+                                {...form.register('income.employerAddress.street')}
+                                data-testid="input-income-employer-street"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="income-employer-unit">Unit/Apt</Label>
+                              <Input
+                                id="income-employer-unit"
+                                {...form.register('income.employerAddress.unit')}
+                                data-testid="input-income-employer-unit"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="income-employer-city">City</Label>
+                              <Input
+                                id="income-employer-city"
+                                {...form.register('income.employerAddress.city')}
+                                data-testid="input-income-employer-city"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-employer-state">State</Label>
+                              <Select onValueChange={(value) => form.setValue('income.employerAddress.state', value)}>
+                                <SelectTrigger data-testid="select-income-employer-state">
+                                  <SelectValue placeholder="State" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {US_STATES.map((state) => (
+                                    <SelectItem key={state.value} value={state.value}>
+                                      {state.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-employer-zip">ZIP Code</Label>
+                              <Input
+                                id="income-employer-zip"
+                                {...form.register('income.employerAddress.zip')}
+                                data-testid="input-income-employer-zip"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="income-employer-county">County</Label>
+                              <Input
+                                id="income-employer-county"
+                                {...form.register('income.employerAddress.county')}
+                                data-testid="input-income-employer-county"
+                              />
+                            </div>
                           </div>
-                        </div>
-                      </div>
                         </div>
                       </CardContent>
                     </CollapsibleContent>
@@ -1254,157 +1334,95 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
-              {/* Employer Address Card */}
-              {form.watch('income.incomeTypes.employment') && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Employer Address</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                      <div className="space-y-2 md:col-span-4">
-                        <Label htmlFor="income-employer-street">Street Address</Label>
-                        <Input
-                          id="income-employer-street"
-                          placeholder="123 Main St"
-                          {...form.register('income.employerAddress.street')}
-                          data-testid="input-income-employer-street"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="income-employer-unit">Unit/Apt</Label>
-                        <Input
-                          id="income-employer-unit"
-                          {...form.register('income.employerAddress.unit')}
-                          data-testid="input-income-employer-unit"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="income-employer-city">City</Label>
-                        <Input
-                          id="income-employer-city"
-                          {...form.register('income.employerAddress.city')}
-                          data-testid="input-income-employer-city"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="income-employer-state">State</Label>
-                        <Select onValueChange={(value) => form.setValue('income.employerAddress.state', value)}>
-                          <SelectTrigger data-testid="select-income-employer-state">
-                            <SelectValue placeholder="State" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {US_STATES.map((state) => (
-                              <SelectItem key={state.value} value={state.value}>
-                                {state.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="income-employer-zip">ZIP Code</Label>
-                        <Input
-                          id="income-employer-zip"
-                          {...form.register('income.employerAddress.zip')}
-                          data-testid="input-income-employer-zip"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="income-employer-county">County</Label>
-                        <Input
-                          id="income-employer-county"
-                          {...form.register('income.employerAddress.county')}
-                          data-testid="input-income-employer-county"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="income-employer-phone">Employer Phone</Label>
-                        <Input
-                          id="income-employer-phone"
-                          placeholder="(XXX) XXX-XXXX"
-                          value={form.watch('income.employerPhone') || ''}
-                          onChange={(e) => handlePhoneChange('income.employerPhone', e.target.value)}
-                          data-testid="input-income-employer-phone"
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
 
               {/* Second Employment Income Card */}
               {form.watch('income.incomeTypes.secondEmployment') && (
                 <Card>
-                  <CardHeader>
-                    <CardTitle>Second Employment Income</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="income-secondEmployerName">Employer Name</Label>
-                          <Input
-                            id="income-secondEmployerName"
-                            {...form.register('income.secondEmployerName')}
-                            data-testid="input-income-secondEmployerName"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="income-secondJobTitle">Job Title</Label>
-                          <Input
-                            id="income-secondJobTitle"
-                            {...form.register('income.secondJobTitle')}
-                            data-testid="input-income-secondJobTitle"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="income-secondMonthlyIncome">Monthly Income</Label>
-                          <Input
-                            id="income-secondMonthlyIncome"
-                            {...form.register('income.secondMonthlyIncome')}
-                            placeholder="$0.00"
-                            data-testid="input-income-secondMonthlyIncome"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <Label htmlFor="income-second-years">Years Employed</Label>
+                  <Collapsible open={isSecondEmploymentIncomeOpen} onOpenChange={setIsSecondEmploymentIncomeOpen}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Second Employment Income</CardTitle>
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" size="sm" data-testid="button-toggle-second-employment-income">
+                            {isSecondEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                          </Button>
+                        </CollapsibleTrigger>
+                      </div>
+                    </CardHeader>
+                    <CollapsibleContent>
+                      <CardContent>
+                        <div className="space-y-6">
+                          {/* Basic Employment Information */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="income-secondEmployerName">Employer Name</Label>
                               <Input
-                                id="income-second-years"
-                                type="number"
-                                min="0"
-                                max="99"
-                                {...form.register('income.secondYearsEmployedYears')}
-                                data-testid="input-income-second-years"
+                                id="income-secondEmployerName"
+                                {...form.register('income.secondEmployerName')}
+                                data-testid="input-income-secondEmployerName"
                               />
                             </div>
-                            <div>
-                              <Label htmlFor="income-second-months">Months</Label>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-secondJobTitle">Job Title</Label>
                               <Input
-                                id="income-second-months"
-                                type="number"
-                                min="0"
-                                max="11"
-                                placeholder="0"
-                                {...form.register('income.secondYearsEmployedMonths')}
-                                data-testid="input-income-second-months"
+                                id="income-secondJobTitle"
+                                {...form.register('income.secondJobTitle')}
+                                data-testid="input-income-secondJobTitle"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-secondMonthlyIncome">Monthly Income</Label>
+                              <Input
+                                id="income-secondMonthlyIncome"
+                                {...form.register('income.secondMonthlyIncome')}
+                                placeholder="$0.00"
+                                data-testid="input-income-secondMonthlyIncome"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                  <Label htmlFor="income-second-years">Years Employed</Label>
+                                  <Input
+                                    id="income-second-years"
+                                    type="number"
+                                    min="0"
+                                    max="99"
+                                    {...form.register('income.secondYearsEmployedYears')}
+                                    data-testid="input-income-second-years"
+                                  />
+                                </div>
+                                <div>
+                                  <Label htmlFor="income-second-months">Months Employed</Label>
+                                  <Input
+                                    id="income-second-months"
+                                    type="number"
+                                    min="0"
+                                    max="11"
+                                    placeholder="0"
+                                    {...form.register('income.secondYearsEmployedMonths')}
+                                    data-testid="input-income-second-months"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-second-employer-phone">Employer Phone</Label>
+                              <Input
+                                id="income-second-employer-phone"
+                                placeholder="(XXX) XXX-XXXX"
+                                value={form.watch('income.secondEmployerPhone') || ''}
+                                onChange={(e) => handlePhoneChange('income.secondEmployerPhone', e.target.value)}
+                                data-testid="input-income-second-employer-phone"
                               />
                             </div>
                           </div>
-                        </div>
-                        
-                        <div className="space-y-2 md:col-span-3">
-                          <Label className="text-base font-semibold">Second Employer Address</Label>
+                          
+                          {/* Employer Address */}
                           <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                             <div className="space-y-2 md:col-span-4">
                               <Label htmlFor="income-second-employer-street">Street Address</Label>
@@ -1472,19 +1490,9 @@ export default function AdminAddClient() {
                             </div>
                           </div>
                         </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="income-second-employer-phone">Employer Phone</Label>
-                          <Input
-                            id="income-second-employer-phone"
-                            placeholder="(XXX) XXX-XXXX"
-                            value={form.watch('income.secondEmployerPhone') || ''}
-                            onChange={(e) => handlePhoneChange('income.secondEmployerPhone', e.target.value)}
-                            data-testid="input-income-second-employer-phone"
-                          />
-                        </div>
-                      </div>
-                  </CardContent>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
                 </Card>
               )}
 
@@ -1703,13 +1711,6 @@ export default function AdminAddClient() {
                             </div>
                           </Card>
                         ))}
-                        
-                        {(!form.watch('income.pensions') || form.watch('income.pensions')?.length === 0) && (
-                          <div className="text-center text-muted-foreground py-8">
-                            <p>No pension entries added yet.</p>
-                            <p className="text-sm">Click "Add Pension" to get started.</p>
-                          </div>
-                        )}
                       </CardContent>
                     </CollapsibleContent>
                   </Collapsible>
@@ -1969,153 +1970,148 @@ export default function AdminAddClient() {
                     </CardHeader>
                     <CollapsibleContent>
                       <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="coBorrowerIncome-employerName">Employer Name</Label>
-                        <Input
-                          id="coBorrowerIncome-employerName"
-                          {...form.register('coBorrowerIncome.employerName')}
-                          data-testid="input-coborrowerIncome-employerName"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="coBorrowerIncome-jobTitle">Job Title</Label>
-                        <Input
-                          id="coBorrowerIncome-jobTitle"
-                          {...form.register('coBorrowerIncome.jobTitle')}
-                          data-testid="input-coborrowerIncome-jobTitle"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="coBorrowerIncome-monthlyIncome">Monthly Income</Label>
-                        <Input
-                          id="coBorrowerIncome-monthlyIncome"
-                          {...form.register('coBorrowerIncome.monthlyIncome')}
-                          placeholder="$0.00"
-                          data-testid="input-coborrowerIncome-monthlyIncome"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2 md:col-span-2">
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <Label htmlFor="coBorrowerIncome-years">Years Employed</Label>
-                            <Input
-                              id="coBorrowerIncome-years"
-                              type="number"
-                              min="0"
-                              max="99"
-                              {...form.register('coBorrowerIncome.yearsEmployedYears')}
-                              data-testid="input-coborrowerIncome-years"
-                            />
+                        <div className="space-y-6">
+                          {/* Basic Employment Information */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-employerName">Employer Name</Label>
+                              <Input
+                                id="coBorrowerIncome-employerName"
+                                {...form.register('coBorrowerIncome.employerName')}
+                                data-testid="input-coborrowerIncome-employerName"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-jobTitle">Job Title</Label>
+                              <Input
+                                id="coBorrowerIncome-jobTitle"
+                                {...form.register('coBorrowerIncome.jobTitle')}
+                                data-testid="input-coborrowerIncome-jobTitle"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-monthlyIncome">Monthly Income</Label>
+                              <Input
+                                id="coBorrowerIncome-monthlyIncome"
+                                {...form.register('coBorrowerIncome.monthlyIncome')}
+                                placeholder="$0.00"
+                                data-testid="input-coborrowerIncome-monthlyIncome"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                  <Label htmlFor="coBorrowerIncome-years">Years Employed</Label>
+                                  <Input
+                                    id="coBorrowerIncome-years"
+                                    type="number"
+                                    min="0"
+                                    max="99"
+                                    {...form.register('coBorrowerIncome.yearsEmployedYears')}
+                                    data-testid="input-coborrowerIncome-years"
+                                  />
+                                </div>
+                                <div>
+                                  <Label htmlFor="coBorrowerIncome-months">Months Employed</Label>
+                                  <Input
+                                    id="coBorrowerIncome-months"
+                                    type="number"
+                                    min="0"
+                                    max="11"
+                                    placeholder="0"
+                                    {...form.register('coBorrowerIncome.yearsEmployedMonths')}
+                                    data-testid="input-coborrowerIncome-months"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-employer-phone">Employer Phone</Label>
+                              <Input
+                                id="coBorrowerIncome-employer-phone"
+                                placeholder="(XXX) XXX-XXXX"
+                                value={form.watch('coBorrowerIncome.employerPhone') || ''}
+                                onChange={(e) => handlePhoneChange('coBorrowerIncome.employerPhone', e.target.value)}
+                                data-testid="input-coborrowerIncome-employer-phone"
+                              />
+                            </div>
                           </div>
-                          <div>
-                            <Label htmlFor="coBorrowerIncome-months">Months Employed</Label>
-                            <Input
-                              id="coBorrowerIncome-months"
-                              type="number"
-                              min="0"
-                              max="11"
-                              placeholder="0"
-                              {...form.register('coBorrowerIncome.yearsEmployedMonths')}
-                              data-testid="input-coborrowerIncome-months"
-                            />
+                          
+                          {/* Employer Address */}
+                          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                            <div className="space-y-2 md:col-span-4">
+                              <Label htmlFor="coBorrowerIncome-employer-street">Street Address</Label>
+                              <Input
+                                id="coBorrowerIncome-employer-street"
+                                placeholder="123 Main St"
+                                {...form.register('coBorrowerIncome.employerAddress.street')}
+                                data-testid="input-coborrowerIncome-employer-street"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="coBorrowerIncome-employer-unit">Unit/Apt</Label>
+                              <Input
+                                id="coBorrowerIncome-employer-unit"
+                                {...form.register('coBorrowerIncome.employerAddress.unit')}
+                                data-testid="input-coborrowerIncome-employer-unit"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="coBorrowerIncome-employer-city">City</Label>
+                              <Input
+                                id="coBorrowerIncome-employer-city"
+                                {...form.register('coBorrowerIncome.employerAddress.city')}
+                                data-testid="input-coborrowerIncome-employer-city"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-employer-state">State</Label>
+                              <Select onValueChange={(value) => form.setValue('coBorrowerIncome.employerAddress.state', value)}>
+                                <SelectTrigger data-testid="select-coborrowerIncome-employer-state">
+                                  <SelectValue placeholder="State" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {US_STATES.map((state) => (
+                                    <SelectItem key={state.value} value={state.value}>
+                                      {state.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-employer-zip">ZIP Code</Label>
+                              <Input
+                                id="coBorrowerIncome-employer-zip"
+                                {...form.register('coBorrowerIncome.employerAddress.zip')}
+                                data-testid="input-coborrowerIncome-employer-zip"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="coBorrowerIncome-employer-county">County</Label>
+                              <Input
+                                id="coBorrowerIncome-employer-county"
+                                {...form.register('coBorrowerIncome.employerAddress.county')}
+                                data-testid="input-coborrowerIncome-employer-county"
+                              />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                    </CardContent>
+                      </CardContent>
                   </CollapsibleContent>
                 </Collapsible>
                 </Card>
               )}
 
-              {/* Co-Borrower Employer Address Card */}
-              {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.employment') && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Co-Borrower Employer Address</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                      <div className="space-y-2 md:col-span-4">
-                        <Label htmlFor="coBorrowerIncome-employer-street">Street Address</Label>
-                        <Input
-                          id="coBorrowerIncome-employer-street"
-                          placeholder="123 Main St"
-                          {...form.register('coBorrowerIncome.employerAddress.street')}
-                          data-testid="input-coborrowerIncome-employer-street"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="coBorrowerIncome-employer-unit">Unit/Apt</Label>
-                        <Input
-                          id="coBorrowerIncome-employer-unit"
-                          {...form.register('coBorrowerIncome.employerAddress.unit')}
-                          data-testid="input-coborrowerIncome-employer-unit"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="coBorrowerIncome-employer-city">City</Label>
-                        <Input
-                          id="coBorrowerIncome-employer-city"
-                          {...form.register('coBorrowerIncome.employerAddress.city')}
-                          data-testid="input-coborrowerIncome-employer-city"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="coBorrowerIncome-employer-state">State</Label>
-                        <Select onValueChange={(value) => form.setValue('coBorrowerIncome.employerAddress.state', value)}>
-                          <SelectTrigger data-testid="select-coborrowerIncome-employer-state">
-                            <SelectValue placeholder="State" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {US_STATES.map((state) => (
-                              <SelectItem key={state.value} value={state.value}>
-                                {state.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="coBorrowerIncome-employer-zip">ZIP Code</Label>
-                        <Input
-                          id="coBorrowerIncome-employer-zip"
-                          {...form.register('coBorrowerIncome.employerAddress.zip')}
-                          data-testid="input-coborrowerIncome-employer-zip"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="coBorrowerIncome-employer-county">County</Label>
-                        <Input
-                          id="coBorrowerIncome-employer-county"
-                          {...form.register('coBorrowerIncome.employerAddress.county')}
-                          data-testid="input-coborrowerIncome-employer-county"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="coBorrowerIncome-employer-phone">Employer Phone</Label>
-                        <Input
-                          id="coBorrowerIncome-employer-phone"
-                          placeholder="(XXX) XXX-XXXX"
-                          value={form.watch('coBorrowerIncome.employerPhone') || ''}
-                          onChange={(e) => handlePhoneChange('coBorrowerIncome.employerPhone', e.target.value)}
-                          data-testid="input-coborrowerIncome-employer-phone"
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
 
               {/* Co-Borrower Second Employment Income Card */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.secondEmployment') && (
@@ -2132,66 +2128,79 @@ export default function AdminAddClient() {
                       </div>
                     </CardHeader>
                     <CollapsibleContent>
-                      <CardContent className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="coBorrowerIncome-secondEmployerName">Employer Name</Label>
-                          <Input
-                            id="coBorrowerIncome-secondEmployerName"
-                            {...form.register('coBorrowerIncome.secondEmployerName')}
-                            data-testid="input-coborrowerIncome-secondEmployerName"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="coBorrowerIncome-secondJobTitle">Job Title</Label>
-                          <Input
-                            id="coBorrowerIncome-secondJobTitle"
-                            {...form.register('coBorrowerIncome.secondJobTitle')}
-                            data-testid="input-coborrowerIncome-secondJobTitle"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="coBorrowerIncome-secondMonthlyIncome">Monthly Income</Label>
-                          <Input
-                            id="coBorrowerIncome-secondMonthlyIncome"
-                            {...form.register('coBorrowerIncome.secondMonthlyIncome')}
-                            placeholder="$0.00"
-                            data-testid="input-coborrowerIncome-secondMonthlyIncome"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <Label htmlFor="coBorrowerIncome-second-years">Years Employed</Label>
+                      <CardContent>
+                        <div className="space-y-6">
+                          {/* Basic Employment Information */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-secondEmployerName">Employer Name</Label>
                               <Input
-                                id="coBorrowerIncome-second-years"
-                                type="number"
-                                min="0"
-                                max="99"
-                                {...form.register('coBorrowerIncome.secondYearsEmployedYears')}
-                                data-testid="input-coborrowerIncome-second-years"
+                                id="coBorrowerIncome-secondEmployerName"
+                                {...form.register('coBorrowerIncome.secondEmployerName')}
+                                data-testid="input-coborrowerIncome-secondEmployerName"
                               />
                             </div>
-                            <div>
-                              <Label htmlFor="coBorrowerIncome-second-months">Months</Label>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-secondJobTitle">Job Title</Label>
                               <Input
-                                id="coBorrowerIncome-second-months"
-                                type="number"
-                                min="0"
-                                max="11"
-                                placeholder="0"
-                                {...form.register('coBorrowerIncome.secondYearsEmployedMonths')}
-                                data-testid="input-coborrowerIncome-second-months"
+                                id="coBorrowerIncome-secondJobTitle"
+                                {...form.register('coBorrowerIncome.secondJobTitle')}
+                                data-testid="input-coborrowerIncome-secondJobTitle"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-secondMonthlyIncome">Monthly Income</Label>
+                              <Input
+                                id="coBorrowerIncome-secondMonthlyIncome"
+                                {...form.register('coBorrowerIncome.secondMonthlyIncome')}
+                                placeholder="$0.00"
+                                data-testid="input-coborrowerIncome-secondMonthlyIncome"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                  <Label htmlFor="coBorrowerIncome-second-years">Years Employed</Label>
+                                  <Input
+                                    id="coBorrowerIncome-second-years"
+                                    type="number"
+                                    min="0"
+                                    max="99"
+                                    {...form.register('coBorrowerIncome.secondYearsEmployedYears')}
+                                    data-testid="input-coborrowerIncome-second-years"
+                                  />
+                                </div>
+                                <div>
+                                  <Label htmlFor="coBorrowerIncome-second-months">Months Employed</Label>
+                                  <Input
+                                    id="coBorrowerIncome-second-months"
+                                    type="number"
+                                    min="0"
+                                    max="11"
+                                    placeholder="0"
+                                    {...form.register('coBorrowerIncome.secondYearsEmployedMonths')}
+                                    data-testid="input-coborrowerIncome-second-months"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-second-employer-phone">Employer Phone</Label>
+                              <Input
+                                id="coBorrowerIncome-second-employer-phone"
+                                placeholder="(XXX) XXX-XXXX"
+                                value={form.watch('coBorrowerIncome.secondEmployerPhone') || ''}
+                                onChange={(e) => handlePhoneChange('coBorrowerIncome.secondEmployerPhone', e.target.value)}
+                                data-testid="input-coborrowerIncome-second-employer-phone"
                               />
                             </div>
                           </div>
-                        </div>
-                        
-                        <div className="space-y-2 md:col-span-3">
-                          <Label className="text-base font-semibold">Second Employer Address</Label>
+                          
+                          {/* Employer Address */}
                           <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                             <div className="space-y-2 md:col-span-4">
                               <Label htmlFor="coBorrowerIncome-second-employer-street">Street Address</Label>
@@ -2259,18 +2268,6 @@ export default function AdminAddClient() {
                             </div>
                           </div>
                         </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="coBorrowerIncome-second-employer-phone">Employer Phone</Label>
-                          <Input
-                            id="coBorrowerIncome-second-employer-phone"
-                            placeholder="(XXX) XXX-XXXX"
-                            value={form.watch('coBorrowerIncome.secondEmployerPhone') || ''}
-                            onChange={(e) => handlePhoneChange('coBorrowerIncome.secondEmployerPhone', e.target.value)}
-                            data-testid="input-coborrowerIncome-second-employer-phone"
-                          />
-                        </div>
-                      </div>
                       </CardContent>
                     </CollapsibleContent>
                   </Collapsible>
@@ -2492,13 +2489,6 @@ export default function AdminAddClient() {
                             </div>
                           </Card>
                         ))}
-                        
-                        {(!form.watch('coBorrowerIncome.pensions') || form.watch('coBorrowerIncome.pensions')?.length === 0) && (
-                          <div className="text-center text-muted-foreground py-8">
-                            <p>No pension entries added yet.</p>
-                            <p className="text-sm">Click "Add Pension" to get started.</p>
-                          </div>
-                        )}
                       </CardContent>
                     </CollapsibleContent>
                   </Collapsible>
