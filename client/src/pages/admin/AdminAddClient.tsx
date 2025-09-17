@@ -384,12 +384,11 @@ export default function AdminAddClient() {
       <div className="container mx-auto px-6 py-8">
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <Tabs defaultValue="client" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-6">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="client" data-testid="tab-client">Client</TabsTrigger>
               <TabsTrigger value="income" data-testid="tab-income">Income</TabsTrigger>
               <TabsTrigger value="property" data-testid="tab-property">Property</TabsTrigger>
-              <TabsTrigger value="current-loan" data-testid="tab-current-loan">Current Loan</TabsTrigger>
-              <TabsTrigger value="new-loan" data-testid="tab-new-loan">New Loan</TabsTrigger>
+              <TabsTrigger value="loan" data-testid="tab-loan">Loan</TabsTrigger>
               <TabsTrigger value="vendors" data-testid="tab-vendors">Vendors</TabsTrigger>
             </TabsList>
 
@@ -1086,7 +1085,7 @@ export default function AdminAddClient() {
                           <Label>Years Employed</Label>
                           <div className="grid grid-cols-2 gap-4">
                             <div>
-                              <Label htmlFor="income-years">Years</Label>
+                              <Label htmlFor="income-years">Years Employed</Label>
                               <Input
                                 id="income-years"
                                 type="number"
@@ -1756,8 +1755,10 @@ export default function AdminAddClient() {
               </Card>
             </TabsContent>
 
-            {/* Current Loan Tab */}
-            <TabsContent value="current-loan" className="space-y-6">
+
+            {/* New Loan Tab */}
+            <TabsContent value="loan" className="space-y-6">
+              {/* Current Loan Information */}
               <Card>
                 <CardHeader>
                   <CardTitle>Current Loan Information</CardTitle>
@@ -1822,10 +1823,8 @@ export default function AdminAddClient() {
                   </div>
                 </CardContent>
               </Card>
-            </TabsContent>
 
-            {/* New Loan Tab */}
-            <TabsContent value="new-loan" className="space-y-6">
+              {/* New Loan Information */}
               <Card>
                 <CardHeader>
                   <CardTitle>New Loan Information</CardTitle>
