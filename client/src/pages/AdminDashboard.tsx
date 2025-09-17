@@ -61,7 +61,13 @@ export default function AdminDashboard() {
                 PRIME RATE HOME LOANS
               </h1>
               <Separator orientation="vertical" className="h-6 bg-primary-foreground/20" />
-              <span className="text-primary-foreground/80">Admin Dashboard</span>
+              <button 
+                onClick={() => setLocation('/')}
+                className="text-primary-foreground/80 hover:text-primary-foreground cursor-pointer transition-colors"
+                data-testid="button-back-to-website"
+              >
+                Back to Website
+              </button>
             </div>
             
             <div className="flex items-center space-x-4">
@@ -88,11 +94,8 @@ export default function AdminDashboard() {
       <div className="container mx-auto px-6 py-8">
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-2" data-testid="text-dashboard-welcome">
-            Welcome to Admin Dashboard
+            Dashboard
           </h2>
-          <p className="text-muted-foreground">
-            Select an option below to manage your loan operations
-          </p>
         </div>
 
         {/* Menu Grid */}
@@ -127,37 +130,6 @@ export default function AdminDashboard() {
           })}
         </div>
 
-        {/* Quick Actions */}
-        <div className="mt-12">
-          <h3 className="text-xl font-semibold mb-6" data-testid="text-quick-actions">
-            Quick Actions
-          </h3>
-          <div className="flex flex-wrap gap-4">
-            <Button 
-              onClick={() => setLocation('/admin/add-client')}
-              className="bg-green-600 hover:bg-green-700"
-              data-testid="button-quick-add-client"
-            >
-              <UserPlus className="h-4 w-4 mr-2" />
-              Add New Client
-            </Button>
-            <Button 
-              onClick={() => setLocation('/admin/search')}
-              variant="outline"
-              data-testid="button-quick-search"
-            >
-              <Search className="h-4 w-4 mr-2" />
-              Search Records
-            </Button>
-            <Button 
-              onClick={() => setLocation('/')}
-              variant="outline"
-              data-testid="button-back-to-site"
-            >
-              ← Back to Website
-            </Button>
-          </div>
-        </div>
       </div>
     </div>
   );
