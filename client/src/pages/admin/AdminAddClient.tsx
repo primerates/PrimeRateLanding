@@ -15,6 +15,60 @@ import { ArrowLeft, Plus, Save } from 'lucide-react';
 import { insertClientSchema, type InsertClient } from '@shared/schema';
 import { apiRequest } from '@/lib/queryClient';
 
+// US States for dropdown
+const US_STATES = [
+  { value: 'AL', label: 'Alabama' },
+  { value: 'AK', label: 'Alaska' },
+  { value: 'AZ', label: 'Arizona' },
+  { value: 'AR', label: 'Arkansas' },
+  { value: 'CA', label: 'California' },
+  { value: 'CO', label: 'Colorado' },
+  { value: 'CT', label: 'Connecticut' },
+  { value: 'DE', label: 'Delaware' },
+  { value: 'FL', label: 'Florida' },
+  { value: 'GA', label: 'Georgia' },
+  { value: 'HI', label: 'Hawaii' },
+  { value: 'ID', label: 'Idaho' },
+  { value: 'IL', label: 'Illinois' },
+  { value: 'IN', label: 'Indiana' },
+  { value: 'IA', label: 'Iowa' },
+  { value: 'KS', label: 'Kansas' },
+  { value: 'KY', label: 'Kentucky' },
+  { value: 'LA', label: 'Louisiana' },
+  { value: 'ME', label: 'Maine' },
+  { value: 'MD', label: 'Maryland' },
+  { value: 'MA', label: 'Massachusetts' },
+  { value: 'MI', label: 'Michigan' },
+  { value: 'MN', label: 'Minnesota' },
+  { value: 'MS', label: 'Mississippi' },
+  { value: 'MO', label: 'Missouri' },
+  { value: 'MT', label: 'Montana' },
+  { value: 'NE', label: 'Nebraska' },
+  { value: 'NV', label: 'Nevada' },
+  { value: 'NH', label: 'New Hampshire' },
+  { value: 'NJ', label: 'New Jersey' },
+  { value: 'NM', label: 'New Mexico' },
+  { value: 'NY', label: 'New York' },
+  { value: 'NC', label: 'North Carolina' },
+  { value: 'ND', label: 'North Dakota' },
+  { value: 'OH', label: 'Ohio' },
+  { value: 'OK', label: 'Oklahoma' },
+  { value: 'OR', label: 'Oregon' },
+  { value: 'PA', label: 'Pennsylvania' },
+  { value: 'RI', label: 'Rhode Island' },
+  { value: 'SC', label: 'South Carolina' },
+  { value: 'SD', label: 'South Dakota' },
+  { value: 'TN', label: 'Tennessee' },
+  { value: 'TX', label: 'Texas' },
+  { value: 'UT', label: 'Utah' },
+  { value: 'VT', label: 'Vermont' },
+  { value: 'VA', label: 'Virginia' },
+  { value: 'WA', label: 'Washington' },
+  { value: 'WV', label: 'West Virginia' },
+  { value: 'WI', label: 'Wisconsin' },
+  { value: 'WY', label: 'Wyoming' }
+];
+
 export default function AdminAddClient() {
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
@@ -41,6 +95,7 @@ export default function AdminAddClient() {
           zip: '',
         },
         yearsAtAddress: '',
+        monthsAtAddress: '',
         subjectProperty: undefined,
         leadRef: '',
         callDate: '',
@@ -148,6 +203,7 @@ export default function AdminAddClient() {
         zip: '',
       },
       yearsAtAddress: '',
+      monthsAtAddress: '',
       subjectProperty: undefined,
       leadRef: '',
       callDate: '',
@@ -164,6 +220,28 @@ export default function AdminAddClient() {
   const copyResidenceToSubjectProperty = () => {
     const residenceAddress = form.getValues('borrower.residenceAddress');
     form.setValue('borrower.subjectProperty', residenceAddress);
+  };
+
+  // Phone number formatting
+  const formatPhoneNumber = (value: string) => {
+    // Remove all non-numeric characters
+    const phoneNumber = value.replace(/\D/g, '');
+    
+    // Format as (XXX) XXX-XXXX
+    if (phoneNumber.length >= 10) {
+      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
+    } else if (phoneNumber.length >= 6) {
+      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6)}`;
+    } else if (phoneNumber.length >= 3) {
+      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
+    }
+    
+    return phoneNumber;
+  };
+
+  const handlePhoneChange = (fieldName: string, value: string) => {
+    const formatted = formatPhoneNumber(value);
+    form.setValue(fieldName as any, formatted);
   };
 
   return (
@@ -215,6 +293,40 @@ export default function AdminAddClient() {
 
             {/* Client Tab */}
             <TabsContent value="client" className="space-y-6">
+              {/* Lead Information Fields */}
+              <Card>
+                <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="borrower-leadRef">Lead Reference</Label>
+                    <Input
+                      id="borrower-leadRef"
+                      {...form.register('borrower.leadRef')}
+                      data-testid="input-borrower-leadRef"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="borrower-callDate">Call Date</Label>
+                    <Input
+                      id="borrower-callDate"
+                      type="date"
+                      {...form.register('borrower.callDate')}
+                      data-testid="input-borrower-callDate"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="borrower-startDate">Start Date</Label>
+                    <Input
+                      id="borrower-startDate"
+                      type="date"
+                      {...form.register('borrower.startDate')}
+                      data-testid="input-borrower-startDate"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+              
               {/* Borrower Information */}
               <Card>
                 <CardHeader>
@@ -258,7 +370,9 @@ export default function AdminAddClient() {
                     <Label htmlFor="borrower-phone">Phone *</Label>
                     <Input
                       id="borrower-phone"
-                      {...form.register('borrower.phone')}
+                      value={form.watch('borrower.phone') || ''}
+                      onChange={(e) => handlePhoneChange('borrower.phone', e.target.value)}
+                      placeholder="(XXX) XXX-XXXX"
                       data-testid="input-borrower-phone"
                     />
                     {form.formState.errors.borrower?.phone && (
@@ -362,11 +476,21 @@ export default function AdminAddClient() {
                       
                       <div className="space-y-2">
                         <Label htmlFor="borrower-residence-state">State *</Label>
-                        <Input
-                          id="borrower-residence-state"
-                          {...form.register('borrower.residenceAddress.state')}
-                          data-testid="input-borrower-residence-state"
-                        />
+                        <Select
+                          value={form.watch('borrower.residenceAddress.state') || ''}
+                          onValueChange={(value) => form.setValue('borrower.residenceAddress.state', value)}
+                        >
+                          <SelectTrigger data-testid="select-borrower-residence-state">
+                            <SelectValue placeholder="Select state" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {US_STATES.map((state) => (
+                              <SelectItem key={state.value} value={state.value}>
+                                {state.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         {form.formState.errors.borrower?.residenceAddress?.state && (
                           <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.state.message}</p>
                         )}
@@ -387,12 +511,31 @@ export default function AdminAddClient() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="borrower-yearsAtAddress">Years at Address *</Label>
-                    <Input
-                      id="borrower-yearsAtAddress"
-                      {...form.register('borrower.yearsAtAddress')}
-                      data-testid="input-borrower-yearsAtAddress"
-                    />
+                    <Label>Years at Address *</Label>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="borrower-years">Years</Label>
+                        <Input
+                          id="borrower-years"
+                          type="number"
+                          min="0"
+                          max="99"
+                          {...form.register('borrower.yearsAtAddress')}
+                          data-testid="input-borrower-years"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="borrower-months">Months</Label>
+                        <Input
+                          id="borrower-months"
+                          type="number"
+                          min="0"
+                          max="11"
+                          {...form.register('borrower.monthsAtAddress')}
+                          data-testid="input-borrower-months"
+                        />
+                      </div>
+                    </div>
                     {form.formState.errors.borrower?.yearsAtAddress && (
                       <p className="text-sm text-destructive">{form.formState.errors.borrower.yearsAtAddress.message}</p>
                     )}
@@ -442,11 +585,21 @@ export default function AdminAddClient() {
                       
                       <div className="space-y-2">
                         <Label htmlFor="borrower-subject-state">State</Label>
-                        <Input
-                          id="borrower-subject-state"
-                          {...form.register('borrower.subjectProperty.state')}
-                          data-testid="input-borrower-subject-state"
-                        />
+                        <Select
+                          value={form.watch('borrower.subjectProperty.state') || ''}
+                          onValueChange={(value) => form.setValue('borrower.subjectProperty.state', value)}
+                        >
+                          <SelectTrigger data-testid="select-borrower-subject-state">
+                            <SelectValue placeholder="Select state" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {US_STATES.map((state) => (
+                              <SelectItem key={state.value} value={state.value}>
+                                {state.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                       
                       <div className="space-y-2">
@@ -458,35 +611,6 @@ export default function AdminAddClient() {
                         />
                       </div>
                     </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="borrower-leadRef">Lead Reference</Label>
-                    <Input
-                      id="borrower-leadRef"
-                      {...form.register('borrower.leadRef')}
-                      data-testid="input-borrower-leadRef"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="borrower-callDate">Call Date</Label>
-                    <Input
-                      id="borrower-callDate"
-                      type="date"
-                      {...form.register('borrower.callDate')}
-                      data-testid="input-borrower-callDate"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="borrower-startDate">Start Date</Label>
-                    <Input
-                      id="borrower-startDate"
-                      type="date"
-                      {...form.register('borrower.startDate')}
-                      data-testid="input-borrower-startDate"
-                    />
                   </div>
                 </CardContent>
               </Card>
@@ -551,7 +675,9 @@ export default function AdminAddClient() {
                       <Label htmlFor="coBorrower-phone">Phone</Label>
                       <Input
                         id="coBorrower-phone"
-                        {...form.register('coBorrower.phone')}
+                        value={form.watch('coBorrower.phone') || ''}
+                        onChange={(e) => handlePhoneChange('coBorrower.phone', e.target.value)}
+                        placeholder="(XXX) XXX-XXXX"
                         data-testid="input-coborrower-phone"
                       />
                     </div>
@@ -637,11 +763,21 @@ export default function AdminAddClient() {
                         
                         <div className="space-y-2">
                           <Label htmlFor="coBorrower-residence-state">State</Label>
-                          <Input
-                            id="coBorrower-residence-state"
-                            {...form.register('coBorrower.residenceAddress.state')}
-                            data-testid="input-coborrower-residence-state"
-                          />
+                          <Select
+                            value={form.watch('coBorrower.residenceAddress.state') || ''}
+                            onValueChange={(value) => form.setValue('coBorrower.residenceAddress.state', value)}
+                          >
+                            <SelectTrigger data-testid="select-coborrower-residence-state">
+                              <SelectValue placeholder="Select state" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {US_STATES.map((state) => (
+                                <SelectItem key={state.value} value={state.value}>
+                                  {state.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </div>
                         
                         <div className="space-y-2">
@@ -656,12 +792,31 @@ export default function AdminAddClient() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="coBorrower-yearsAtAddress">Years at Address</Label>
-                      <Input
-                        id="coBorrower-yearsAtAddress"
-                        {...form.register('coBorrower.yearsAtAddress')}
-                        data-testid="input-coborrower-yearsAtAddress"
-                      />
+                      <Label>Years at Address</Label>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="coBorrower-years">Years</Label>
+                          <Input
+                            id="coBorrower-years"
+                            type="number"
+                            min="0"
+                            max="99"
+                            {...form.register('coBorrower.yearsAtAddress')}
+                            data-testid="input-coborrower-years"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="coBorrower-months">Months</Label>
+                          <Input
+                            id="coBorrower-months"
+                            type="number"
+                            min="0"
+                            max="11"
+                            {...form.register('coBorrower.monthsAtAddress')}
+                            data-testid="input-coborrower-months"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </CardContent>
                 )}

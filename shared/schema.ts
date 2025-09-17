@@ -38,6 +38,7 @@ export const borrowerInfoSchema = z.object({
   ssn: z.string().min(1, "SSN is required"),
   residenceAddress: addressSchema,
   yearsAtAddress: z.string().min(1, "Years at address is required"),
+  monthsAtAddress: z.string().optional(),
   subjectProperty: addressSchema.partial().optional(),
   leadRef: z.string().optional(),
   callDate: z.string().optional(),
