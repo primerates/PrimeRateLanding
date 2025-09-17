@@ -264,7 +264,10 @@ export default function AdminAddClient() {
                   
                   <div className="space-y-2">
                     <Label htmlFor="borrower-maritalStatus">Marital Status *</Label>
-                    <Select onValueChange={(value) => form.setValue('borrower.maritalStatus', value as any)}>
+                    <Select 
+                      value={form.watch('borrower.maritalStatus') || 'single'}
+                      onValueChange={(value) => form.setValue('borrower.maritalStatus', value as any)}
+                    >
                       <SelectTrigger data-testid="select-borrower-maritalStatus">
                         <SelectValue placeholder="Select status" />
                       </SelectTrigger>
@@ -444,7 +447,10 @@ export default function AdminAddClient() {
                     
                     <div className="space-y-2">
                       <Label htmlFor="coBorrower-maritalStatus">Marital Status</Label>
-                      <Select onValueChange={(value) => form.setValue('coBorrower.maritalStatus', value as any)}>
+                      <Select 
+                        value={form.watch('coBorrower.maritalStatus') || 'single'}
+                        onValueChange={(value) => form.setValue('coBorrower.maritalStatus', value as any)}
+                      >
                         <SelectTrigger data-testid="select-coborrower-maritalStatus">
                           <SelectValue placeholder="Select status" />
                         </SelectTrigger>
@@ -650,7 +656,10 @@ export default function AdminAddClient() {
                   
                   <div className="space-y-2">
                     <Label htmlFor="property-propertyType">Property Type</Label>
-                    <Select onValueChange={(value) => form.setValue('property.propertyType', value as any)}>
+                    <Select 
+                      value={form.watch('property.propertyType') || ''}
+                      onValueChange={(value) => form.setValue('property.propertyType', value as any)}
+                    >
                       <SelectTrigger data-testid="select-property-propertyType">
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
@@ -676,7 +685,10 @@ export default function AdminAddClient() {
                   
                   <div className="space-y-2">
                     <Label htmlFor="property-propertyUse">Property Use</Label>
-                    <Select onValueChange={(value) => form.setValue('property.propertyUse', value as any)}>
+                    <Select 
+                      value={form.watch('property.propertyUse') || ''}
+                      onValueChange={(value) => form.setValue('property.propertyUse', value as any)}
+                    >
                       <SelectTrigger data-testid="select-property-propertyUse">
                         <SelectValue placeholder="Select use" />
                       </SelectTrigger>
@@ -827,7 +839,10 @@ export default function AdminAddClient() {
                   
                   <div className="space-y-2">
                     <Label htmlFor="newLoan-loanPurpose">Loan Purpose</Label>
-                    <Select onValueChange={(value) => form.setValue('newLoan.loanPurpose', value as any)}>
+                    <Select 
+                      value={form.watch('newLoan.loanPurpose') || ''}
+                      onValueChange={(value) => form.setValue('newLoan.loanPurpose', value as any)}
+                    >
                       <SelectTrigger data-testid="select-newLoan-loanPurpose">
                         <SelectValue placeholder="Select purpose" />
                       </SelectTrigger>

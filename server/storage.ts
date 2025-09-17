@@ -13,7 +13,7 @@ export interface IStorage {
   createClient(client: Client): Promise<Client>;
   getClient(id: string): Promise<Client | undefined>;
   getClients(): Promise<Client[]>;
-  updateClient(id: string, client: Client): Promise<Client | undefined>;
+  updateClient(id: string, patch: Partial<Client>): Promise<Client | undefined>;
   deleteClient(id: string): Promise<boolean>;
   searchClients(query: string): Promise<Client[]>;
 }
@@ -61,12 +61,57 @@ export class MemStorage implements IStorage {
     return Array.from(this.clients.values());
   }
 
-  async updateClient(id: string, client: Client): Promise<Client | undefined> {
-    if (this.clients.has(id)) {
-      this.clients.set(id, client);
-      return client;
+  async updateClient(id: string, patch: Partial<Client>): Promise<Client | undefined> {
+    const existing = this.clients.get(id);
+    if (!existing) {
+      return undefined;
     }
-    return undefined;
+
+    // Deep merge the patch with existing client data
+    const updatedClient: Client = {
+      ...existing,
+      ...patch,
+      id: existing.id, // Always preserve the original ID
+      status: patch.status ?? existing.status ?? 'active',
+      updatedAt: new Date().toISOString(),
+      // Deep merge borrower (required field)
+      borrower: {
+        ...existing.borrower,
+        ...(patch.borrower ?? {}),
+      },
+      // Deep merge optional nested objects
+      coBorrower: patch.coBorrower !== undefined ? {
+        ...existing.coBorrower,
+        ...patch.coBorrower,
+      } : existing.coBorrower,
+      income: patch.income !== undefined ? {
+        ...existing.income,
+        ...patch.income,
+      } : existing.income,
+      coBorrowerIncome: patch.coBorrowerIncome !== undefined ? {
+        ...existing.coBorrowerIncome,
+        ...patch.coBorrowerIncome,
+      } : existing.coBorrowerIncome,
+      property: patch.property !== undefined ? {
+        ...existing.property,
+        ...patch.property,
+      } : existing.property,
+      currentLoan: patch.currentLoan !== undefined ? {
+        ...existing.currentLoan,
+        ...patch.currentLoan,
+      } : existing.currentLoan,
+      newLoan: patch.newLoan !== undefined ? {
+        ...existing.newLoan,
+        ...patch.newLoan,
+      } : existing.newLoan,
+      vendors: patch.vendors !== undefined ? {
+        ...existing.vendors,
+        ...patch.vendors,
+      } : existing.vendors,
+    };
+
+    this.clients.set(id, updatedClient);
+    return updatedClient;
   }
 
   async deleteClient(id: string): Promise<boolean> {

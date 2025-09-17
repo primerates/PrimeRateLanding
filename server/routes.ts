@@ -2,6 +2,8 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { sendEmail, formatPreApprovalEmail, formatRateTrackerEmail, formatScheduleCallEmail, formatContactEmail } from "./email";
+import { insertClientSchema, clientSchema } from "@shared/schema";
+import { ZodError } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const TARGET_EMAIL = "polo.perry@yahoo.com";
@@ -132,8 +134,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           maxAge: 2 * 60 * 60 * 1000 // 2 hours for better security
         });
         
-        console.log("Login successful, cookie set for:", email);
-        console.log("Cookie headers being sent:", res.getHeaders()['set-cookie']);
+        console.log("Admin login successful");
         res.json({ success: true, message: "Login successful" });
       } else {
         res.status(401).json({ success: false, message: "Invalid credentials" });
@@ -148,10 +149,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const adminSession = req.cookies?.admin_session;
       
-      // Debug logging to see what we're getting
-      console.log("Verify request cookies:", req.cookies);
-      console.log("Verify request headers:", req.headers.cookie);
-      console.log("Admin session cookie:", adminSession);
+      // Verify admin session without logging sensitive data
       
       if (adminSession === 'authenticated') {
         res.json({ success: true, authenticated: true });
@@ -183,7 +181,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ success: false, message: "Unauthorized" });
       }
 
-      const clientData = req.body;
+      // Validate request body with Zod schema
+      const validationResult = insertClientSchema.safeParse(req.body);
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Invalid client data",
+          errors: validationResult.error.errors
+        });
+      }
+
+      const clientData = validationResult.data;
       
       // Add timestamp and ID
       const client = {
@@ -250,16 +258,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const { id } = req.params;
-      const clientData = req.body;
       
-      // Update timestamp
-      const updatedClient = {
-        ...clientData,
-        id,
-        updatedAt: new Date().toISOString(),
-      };
+      // Validate request body with Zod schema (partial update allowed)
+      const updateSchema = clientSchema.partial().omit({ id: true, createdAt: true, updatedAt: true });
+      const validationResult = updateSchema.safeParse(req.body);
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Invalid client data",
+          errors: validationResult.error.errors
+        });
+      }
 
-      const client = await storage.updateClient(id, updatedClient);
+      const clientData = validationResult.data;
+      
+      // Storage handles merging with existing data and setting timestamps
+      const client = await storage.updateClient(id, clientData);
       
       if (!client) {
         return res.status(404).json({ success: false, message: "Client not found" });
