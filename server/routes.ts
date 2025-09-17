@@ -115,6 +115,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin Authentication Routes
+  app.post("/api/admin/login", async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      // Simple hardcoded authentication
+      if (email === "polo.perry@yahoo.com" && password === "password") {
+        // Set session/cookie for authentication
+        // For simplicity, using a basic session approach
+        res.cookie('admin_session', 'authenticated', { 
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          path: '/',
+          maxAge: 2 * 60 * 60 * 1000 // 2 hours for better security
+        });
+        
+        res.json({ success: true, message: "Login successful" });
+      } else {
+        res.status(401).json({ success: false, message: "Invalid credentials" });
+      }
+    } catch (error) {
+      console.error("Admin login error:", error);
+      res.status(500).json({ success: false, message: "Server error" });
+    }
+  });
+
+  app.get("/api/admin/verify", async (req, res) => {
+    try {
+      const adminSession = req.cookies?.admin_session;
+      
+      if (adminSession === 'authenticated') {
+        res.json({ success: true, authenticated: true });
+      } else {
+        res.status(401).json({ success: false, authenticated: false });
+      }
+    } catch (error) {
+      console.error("Admin verify error:", error);
+      res.status(500).json({ success: false, message: "Server error" });
+    }
+  });
+
+  app.post("/api/admin/logout", async (req, res) => {
+    try {
+      res.clearCookie('admin_session');
+      res.json({ success: true, message: "Logged out successfully" });
+    } catch (error) {
+      console.error("Admin logout error:", error);
+      res.status(500).json({ success: false, message: "Server error" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;

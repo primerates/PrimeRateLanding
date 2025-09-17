@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -8,6 +9,7 @@ import { Calculator, X } from 'lucide-react';
 import heroImage from '@assets/generated_images/Bright_white_family_room_4f4419e6.png';
 
 export default function HeroSection() {
+  const [location, setLocation] = useLocation();
   const [loanAmount, setLoanAmount] = useState('400000');
   const [downPayment, setDownPayment] = useState('80000');
   const [interestRate, setInterestRate] = useState('6.5');
@@ -247,7 +249,7 @@ export default function HeroSection() {
           size="sm" 
           className="bg-primary text-white hover:bg-green-800 transition-colors duration-200 no-default-hover-elevate"
           data-testid="button-menu-loan-status"
-          onClick={() => console.log('Loan Status clicked')}
+          onClick={() => setLocation('/admin/login')}
         >
           Loan Status
         </Button>
