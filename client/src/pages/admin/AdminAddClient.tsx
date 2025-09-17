@@ -11,8 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Save } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Minus } from 'lucide-react';
 import { insertClientSchema, type InsertClient } from '@shared/schema';
 import { apiRequest } from '@/lib/queryClient';
 
@@ -75,6 +76,7 @@ export default function AdminAddClient() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
+  const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
 
   const form = useForm<InsertClient>({
     resolver: zodResolver(insertClientSchema),
@@ -345,6 +347,36 @@ export default function AdminAddClient() {
   const handlePhoneChange = (fieldName: string, value: string) => {
     const formatted = formatPhoneNumber(value);
     form.setValue(fieldName as any, formatted);
+  };
+
+  // Parse monetary value and convert to number
+  const parseMonetaryValue = (value: string | undefined): number => {
+    if (!value || value.trim() === '') return 0;
+    // Remove $ signs, commas, and convert to number
+    const cleaned = value.replace(/[$,]/g, '');
+    const parsed = parseFloat(cleaned);
+    return isNaN(parsed) ? 0 : parsed;
+  };
+
+  // Calculate total monthly income
+  const calculateTotalBorrowerIncome = (): string => {
+    const income = form.watch('income');
+    
+    const employmentIncome = parseMonetaryValue(income?.monthlyIncome);
+    const secondEmploymentIncome = parseMonetaryValue(income?.secondMonthlyIncome);
+    const businessIncome = parseMonetaryValue(income?.businessMonthlyIncome);
+    const pensionIncome = parseMonetaryValue(income?.pensionMonthlyAmount);
+    const socialSecurityIncome = parseMonetaryValue(income?.socialSecurityMonthlyAmount);
+    const vaBenefitsIncome = parseMonetaryValue(income?.vaBenefitsMonthlyAmount);
+    const disabilityIncome = parseMonetaryValue(income?.disabilityMonthlyAmount);
+    const otherIncome = parseMonetaryValue(income?.otherIncomeMonthlyAmount);
+    
+    const total = employmentIncome + secondEmploymentIncome + businessIncome + 
+                  pensionIncome + socialSecurityIncome + vaBenefitsIncome + 
+                  disabilityIncome + otherIncome;
+    
+    // Format as currency
+    return `$${total.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
   };
 
   return (
@@ -967,7 +999,7 @@ export default function AdminAddClient() {
               {/* Income Type Selection */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Borrower Income</CardTitle>
+                  <CardTitle>Borrower Income ({calculateTotalBorrowerIncome()})</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -1087,7 +1119,6 @@ export default function AdminAddClient() {
                       </div>
                       
                       <div className="space-y-2 md:col-span-2">
-                        <Label>Years Employed</Label>
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <Label htmlFor="income-years">Years Employed</Label>
@@ -1204,17 +1235,13 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
-              {/* Other Income Sections Card */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Additional Income Sources</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-
-                  {/* Second Employment Income Section */}
-                  {form.watch('income.incomeTypes.secondEmployment') && (
-                    <div className="space-y-4">
-                      <Label className="text-base font-semibold">Second Employment Income</Label>
+              {/* Second Employment Income Card */}
+              {form.watch('income.incomeTypes.secondEmployment') && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Second Employment Income</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="income-secondEmployerName">Employer Name</Label>
@@ -1245,7 +1272,6 @@ export default function AdminAddClient() {
                         </div>
                         
                         <div className="space-y-2">
-                          <Label>Years Employed</Label>
                           <div className="grid grid-cols-2 gap-4">
                             <div>
                               <Label htmlFor="income-second-years">Years Employed</Label>
@@ -1354,13 +1380,17 @@ export default function AdminAddClient() {
                           />
                         </div>
                       </div>
-                    </div>
-                  )}
+                  </CardContent>
+                </Card>
+              )}
 
-                  {/* Self-Employment Income Section */}
-                  {form.watch('income.incomeTypes.selfEmployment') && (
-                    <div className="space-y-4">
-                      <Label className="text-base font-semibold">Self-Employment Income</Label>
+              {/* Self-Employment Income Card */}
+              {form.watch('income.incomeTypes.selfEmployment') && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Self-Employment Income</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="income-businessName">Business Name</Label>
@@ -1488,13 +1518,17 @@ export default function AdminAddClient() {
                           />
                         </div>
                       </div>
-                    </div>
-                  )}
+                  </CardContent>
+                </Card>
+              )}
 
-                  {/* Pension Income Section */}
-                  {form.watch('income.incomeTypes.pension') && (
-                    <div className="space-y-4">
-                      <Label className="text-base font-semibold">Pension Income</Label>
+              {/* Pension Income Card */}
+              {form.watch('income.incomeTypes.pension') && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Pension Income</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="income-pensionPayerName">Payer Name</Label>
@@ -1514,13 +1548,17 @@ export default function AdminAddClient() {
                           />
                         </div>
                       </div>
-                    </div>
-                  )}
+                  </CardContent>
+                </Card>
+              )}
 
-                  {/* Social Security Income Section */}
-                  {form.watch('income.incomeTypes.socialSecurity') && (
-                    <div className="space-y-4">
-                      <Label className="text-base font-semibold">Social Security Income</Label>
+              {/* Social Security Income Card */}
+              {form.watch('income.incomeTypes.socialSecurity') && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Social Security Income</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="income-socialSecurityMonthlyAmount">Monthly Amount</Label>
@@ -1532,13 +1570,17 @@ export default function AdminAddClient() {
                           />
                         </div>
                       </div>
-                    </div>
-                  )}
+                  </CardContent>
+                </Card>
+              )}
 
-                  {/* VA Benefits Income Section */}
-                  {form.watch('income.incomeTypes.vaBenefits') && (
-                    <div className="space-y-4">
-                      <Label className="text-base font-semibold">VA Benefits Income</Label>
+              {/* VA Benefits Income Card */}
+              {form.watch('income.incomeTypes.vaBenefits') && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>VA Benefits Income</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="income-vaBenefitsMonthlyAmount">Monthly Amount</Label>
@@ -1550,13 +1592,17 @@ export default function AdminAddClient() {
                           />
                         </div>
                       </div>
-                    </div>
-                  )}
+                  </CardContent>
+                </Card>
+              )}
 
-                  {/* Disability Income Section */}
-                  {form.watch('income.incomeTypes.disability') && (
-                    <div className="space-y-4">
-                      <Label className="text-base font-semibold">Disability Income</Label>
+              {/* Disability Income Card */}
+              {form.watch('income.incomeTypes.disability') && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Disability Income</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="income-disabilityPayerName">Payer Name</Label>
@@ -1576,13 +1622,17 @@ export default function AdminAddClient() {
                           />
                         </div>
                       </div>
-                    </div>
-                  )}
+                  </CardContent>
+                </Card>
+              )}
 
-                  {/* Other Income Section */}
-                  {form.watch('income.incomeTypes.other') && (
-                    <div className="space-y-4">
-                      <Label className="text-base font-semibold">Other Income</Label>
+              {/* Other Income Card */}
+              {form.watch('income.incomeTypes.other') && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Other Income</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="income-otherIncomeDescription">Description</Label>
@@ -1603,10 +1653,9 @@ export default function AdminAddClient() {
                           />
                         </div>
                       </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Co-Borrower Income */}
               {hasCoBorrower && (
@@ -1780,68 +1829,79 @@ export default function AdminAddClient() {
             <TabsContent value="loan" className="space-y-6">
               {/* Current Loan Information */}
               <Card>
-                <CardHeader>
-                  <CardTitle>Current Loan Information</CardTitle>
-                </CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="currentLoan-currentLender">Current Lender</Label>
-                    <Input
-                      id="currentLoan-currentLender"
-                      {...form.register('currentLoan.currentLender')}
-                      data-testid="input-currentLoan-currentLender"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="currentLoan-currentBalance">Current Balance</Label>
-                    <Input
-                      id="currentLoan-currentBalance"
-                      {...form.register('currentLoan.currentBalance')}
-                      placeholder="$0.00"
-                      data-testid="input-currentLoan-currentBalance"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="currentLoan-currentRate">Current Rate</Label>
-                    <Input
-                      id="currentLoan-currentRate"
-                      {...form.register('currentLoan.currentRate')}
-                      placeholder="0.00%"
-                      data-testid="input-currentLoan-currentRate"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="currentLoan-currentPayment">Current Payment</Label>
-                    <Input
-                      id="currentLoan-currentPayment"
-                      {...form.register('currentLoan.currentPayment')}
-                      placeholder="$0.00"
-                      data-testid="input-currentLoan-currentPayment"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="currentLoan-loanType">Loan Type</Label>
-                    <Input
-                      id="currentLoan-loanType"
-                      {...form.register('currentLoan.loanType')}
-                      data-testid="input-currentLoan-loanType"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="currentLoan-remainingTerm">Remaining Term</Label>
-                    <Input
-                      id="currentLoan-remainingTerm"
-                      {...form.register('currentLoan.remainingTerm')}
-                      placeholder="Years/Months"
-                      data-testid="input-currentLoan-remainingTerm"
-                    />
-                  </div>
-                </CardContent>
+                <Collapsible open={isCurrentLoanOpen} onOpenChange={setIsCurrentLoanOpen}>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <CardTitle>Current Loan Information</CardTitle>
+                      <CollapsibleTrigger asChild>
+                        <Button variant="ghost" size="sm" data-testid="button-toggle-current-loan">
+                          {isCurrentLoanOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                        </Button>
+                      </CollapsibleTrigger>
+                    </div>
+                  </CardHeader>
+                  <CollapsibleContent>
+                    <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="currentLoan-currentLender">Current Lender</Label>
+                        <Input
+                          id="currentLoan-currentLender"
+                          {...form.register('currentLoan.currentLender')}
+                          data-testid="input-currentLoan-currentLender"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="currentLoan-currentBalance">Current Balance</Label>
+                        <Input
+                          id="currentLoan-currentBalance"
+                          {...form.register('currentLoan.currentBalance')}
+                          placeholder="$0.00"
+                          data-testid="input-currentLoan-currentBalance"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="currentLoan-currentRate">Current Rate</Label>
+                        <Input
+                          id="currentLoan-currentRate"
+                          {...form.register('currentLoan.currentRate')}
+                          placeholder="0.00%"
+                          data-testid="input-currentLoan-currentRate"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="currentLoan-currentPayment">Current Payment</Label>
+                        <Input
+                          id="currentLoan-currentPayment"
+                          {...form.register('currentLoan.currentPayment')}
+                          placeholder="$0.00"
+                          data-testid="input-currentLoan-currentPayment"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="currentLoan-loanType">Loan Type</Label>
+                        <Input
+                          id="currentLoan-loanType"
+                          {...form.register('currentLoan.loanType')}
+                          data-testid="input-currentLoan-loanType"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="currentLoan-remainingTerm">Remaining Term</Label>
+                        <Input
+                          id="currentLoan-remainingTerm"
+                          {...form.register('currentLoan.remainingTerm')}
+                          placeholder="Years/Months"
+                          data-testid="input-currentLoan-remainingTerm"
+                        />
+                      </div>
+                    </CardContent>
+                  </CollapsibleContent>
+                </Collapsible>
               </Card>
 
               {/* New Loan Information */}
