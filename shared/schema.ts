@@ -24,6 +24,7 @@ export const addressSchema = z.object({
   city: z.string().min(1, "City is required"),
   state: z.string().min(1, "State is required"),
   zip: z.string().min(1, "ZIP code is required"),
+  county: z.string().optional(),
 });
 
 // Client Management Schema

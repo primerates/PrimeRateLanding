@@ -436,8 +436,8 @@ export default function AdminAddClient() {
                   {/* Residence Address Fields */}
                   <div className="md:col-span-3 space-y-4">
                     <Label className="text-base font-semibold">Residence Address *</Label>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="space-y-2 md:col-span-2">
+                    <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                      <div className="space-y-2 md:col-span-4">
                         <Label htmlFor="borrower-residence-street">Street Address *</Label>
                         <Input
                           id="borrower-residence-street"
@@ -449,7 +449,7 @@ export default function AdminAddClient() {
                         )}
                       </div>
                       
-                      <div className="space-y-2">
+                      <div className="space-y-2 md:col-span-2">
                         <Label htmlFor="borrower-residence-unit">Unit/Apt</Label>
                         <Input
                           id="borrower-residence-unit"
@@ -458,7 +458,7 @@ export default function AdminAddClient() {
                         />
                       </div>
                       
-                      <div className="space-y-2">
+                      <div className="space-y-2 md:col-span-2">
                         <Label htmlFor="borrower-residence-city">City *</Label>
                         <Input
                           id="borrower-residence-city"
@@ -477,7 +477,7 @@ export default function AdminAddClient() {
                           onValueChange={(value) => form.setValue('borrower.residenceAddress.state', value)}
                         >
                           <SelectTrigger data-testid="select-borrower-residence-state">
-                            <SelectValue placeholder="Select state" />
+                            <SelectValue placeholder="State" />
                           </SelectTrigger>
                           <SelectContent>
                             {US_STATES.map((state) => (
@@ -502,6 +502,15 @@ export default function AdminAddClient() {
                         {form.formState.errors.borrower?.residenceAddress?.zip && (
                           <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.zip.message}</p>
                         )}
+                      </div>
+                      
+                      <div className="space-y-2 md:col-span-2">
+                        <Label htmlFor="borrower-residence-county">County</Label>
+                        <Input
+                          id="borrower-residence-county"
+                          {...form.register('borrower.residenceAddress.county')}
+                          data-testid="input-borrower-residence-county"
+                        />
                       </div>
                     </div>
                   </div>
@@ -551,8 +560,8 @@ export default function AdminAddClient() {
                         Same
                       </Button>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="space-y-2 md:col-span-2">
+                    <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                      <div className="space-y-2 md:col-span-4">
                         <Label htmlFor="borrower-subject-street">Street Address</Label>
                         <Input
                           id="borrower-subject-street"
@@ -561,7 +570,7 @@ export default function AdminAddClient() {
                         />
                       </div>
                       
-                      <div className="space-y-2">
+                      <div className="space-y-2 md:col-span-2">
                         <Label htmlFor="borrower-subject-unit">Unit/Apt</Label>
                         <Input
                           id="borrower-subject-unit"
@@ -570,7 +579,7 @@ export default function AdminAddClient() {
                         />
                       </div>
                       
-                      <div className="space-y-2">
+                      <div className="space-y-2 md:col-span-2">
                         <Label htmlFor="borrower-subject-city">City</Label>
                         <Input
                           id="borrower-subject-city"
@@ -604,6 +613,15 @@ export default function AdminAddClient() {
                           id="borrower-subject-zip"
                           {...form.register('borrower.subjectProperty.zip')}
                           data-testid="input-borrower-subject-zip"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2 md:col-span-2">
+                        <Label htmlFor="borrower-subject-county">County</Label>
+                        <Input
+                          id="borrower-subject-county"
+                          {...form.register('borrower.subjectProperty.county')}
+                          data-testid="input-borrower-subject-county"
                         />
                       </div>
                     </div>
@@ -729,8 +747,8 @@ export default function AdminAddClient() {
                     {/* Co-Borrower Residence Address Fields */}
                     <div className="md:col-span-3 space-y-4">
                       <Label className="text-base font-semibold">Residence Address</Label>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="space-y-2 md:col-span-2">
+                      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                        <div className="space-y-2 md:col-span-4">
                           <Label htmlFor="coBorrower-residence-street">Street Address</Label>
                           <Input
                             id="coBorrower-residence-street"
@@ -739,7 +757,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2">
+                        <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="coBorrower-residence-unit">Unit/Apt</Label>
                           <Input
                             id="coBorrower-residence-unit"
@@ -748,7 +766,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2">
+                        <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="coBorrower-residence-city">City</Label>
                           <Input
                             id="coBorrower-residence-city"
@@ -782,6 +800,15 @@ export default function AdminAddClient() {
                             id="coBorrower-residence-zip"
                             {...form.register('coBorrower.residenceAddress.zip')}
                             data-testid="input-coborrower-residence-zip"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2 md:col-span-2">
+                          <Label htmlFor="coBorrower-residence-county">County</Label>
+                          <Input
+                            id="coBorrower-residence-county"
+                            {...form.register('coBorrower.residenceAddress.county')}
+                            data-testid="input-coborrower-residence-county"
                           />
                         </div>
                       </div>
