@@ -133,6 +133,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
         
         console.log("Login successful, cookie set for:", email);
+        console.log("Cookie headers being sent:", res.getHeaders()['set-cookie']);
         res.json({ success: true, message: "Login successful" });
       } else {
         res.status(401).json({ success: false, message: "Invalid credentials" });
@@ -149,6 +150,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Debug logging to see what we're getting
       console.log("Verify request cookies:", req.cookies);
+      console.log("Verify request headers:", req.headers.cookie);
       console.log("Admin session cookie:", adminSession);
       
       if (adminSession === 'authenticated') {
