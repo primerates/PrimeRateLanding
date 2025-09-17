@@ -190,7 +190,7 @@ export default function AdminAddClient() {
             <Button
               onClick={form.handleSubmit(onSubmit)}
               disabled={addClientMutation.isPending}
-              className="bg-primary-foreground text-primary hover:bg-green-700"
+              className="bg-primary-foreground text-primary hover:bg-yellow-500"
               data-testid="button-save-client"
             >
               <Save className="h-4 w-4 mr-2" />
