@@ -1430,33 +1430,6 @@ export default function AdminAddClient() {
                       />
                     </div>
                     
-                    <div className="space-y-2">
-                      <Label htmlFor="coBorrowerIncome-yearsEmployed">Years Employed</Label>
-                      <Input
-                        id="coBorrowerIncome-yearsEmployed"
-                        {...form.register('coBorrowerIncome.yearsEmployed')}
-                        data-testid="input-coborrowerIncome-yearsEmployed"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="coBorrowerIncome-additionalIncome">Additional Income</Label>
-                      <Input
-                        id="coBorrowerIncome-additionalIncome"
-                        {...form.register('coBorrowerIncome.additionalIncome')}
-                        placeholder="$0.00"
-                        data-testid="input-coborrowerIncome-additionalIncome"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="coBorrowerIncome-incomeSource">Income Source</Label>
-                      <Input
-                        id="coBorrowerIncome-incomeSource"
-                        {...form.register('coBorrowerIncome.incomeSource')}
-                        data-testid="input-coborrowerIncome-incomeSource"
-                      />
-                    </div>
                   </CardContent>
                 </Card>
               )}
