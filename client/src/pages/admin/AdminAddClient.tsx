@@ -204,10 +204,6 @@ export default function AdminAddClient() {
       },
       yearsAtAddress: '',
       monthsAtAddress: '',
-      subjectProperty: undefined,
-      leadRef: '',
-      callDate: '',
-      startDate: '',
     });
   };
 
