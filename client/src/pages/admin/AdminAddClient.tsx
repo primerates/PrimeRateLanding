@@ -509,86 +509,90 @@ export default function AdminAddClient() {
                       <p className="text-sm text-destructive">{form.formState.errors.borrower.ssn.message}</p>
                     )}
                   </div>
-                  
-                  {/* Residence Address Fields */}
-                  <div className="md:col-span-3 space-y-4">
-                    <Label className="text-base font-semibold">Residence Address *</Label>
-                    <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                      <div className="space-y-2 md:col-span-4">
-                        <Label htmlFor="borrower-residence-street">Street Address *</Label>
-                        <Input
-                          id="borrower-residence-street"
-                          {...form.register('borrower.residenceAddress.street')}
-                          data-testid="input-borrower-residence-street"
-                        />
-                        {form.formState.errors.borrower?.residenceAddress?.street && (
-                          <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.street.message}</p>
-                        )}
-                      </div>
-                      
-                      <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="borrower-residence-unit">Unit/Apt</Label>
-                        <Input
-                          id="borrower-residence-unit"
-                          {...form.register('borrower.residenceAddress.unit')}
-                          data-testid="input-borrower-residence-unit"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="borrower-residence-city">City *</Label>
-                        <Input
-                          id="borrower-residence-city"
-                          {...form.register('borrower.residenceAddress.city')}
-                          data-testid="input-borrower-residence-city"
-                        />
-                        {form.formState.errors.borrower?.residenceAddress?.city && (
-                          <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.city.message}</p>
-                        )}
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="borrower-residence-state">State *</Label>
-                        <Select
-                          value={form.watch('borrower.residenceAddress.state') || ''}
-                          onValueChange={(value) => form.setValue('borrower.residenceAddress.state', value)}
-                        >
-                          <SelectTrigger data-testid="select-borrower-residence-state">
-                            <SelectValue placeholder="State" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {US_STATES.map((state) => (
-                              <SelectItem key={state.value} value={state.value}>
-                                {state.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        {form.formState.errors.borrower?.residenceAddress?.state && (
-                          <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.state.message}</p>
-                        )}
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="borrower-residence-zip">ZIP Code *</Label>
-                        <Input
-                          id="borrower-residence-zip"
-                          {...form.register('borrower.residenceAddress.zip')}
-                          data-testid="input-borrower-residence-zip"
-                        />
-                        {form.formState.errors.borrower?.residenceAddress?.zip && (
-                          <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.zip.message}</p>
-                        )}
-                      </div>
-                      
-                      <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="borrower-residence-county">County</Label>
-                        <Input
-                          id="borrower-residence-county"
-                          {...form.register('borrower.residenceAddress.county')}
-                          data-testid="input-borrower-residence-county"
-                        />
-                      </div>
+                </CardContent>
+              </Card>
+
+              {/* Residence Address */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Residence Address</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                    <div className="space-y-2 md:col-span-4">
+                      <Label htmlFor="borrower-residence-street">Street Address *</Label>
+                      <Input
+                        id="borrower-residence-street"
+                        {...form.register('borrower.residenceAddress.street')}
+                        data-testid="input-borrower-residence-street"
+                      />
+                      {form.formState.errors.borrower?.residenceAddress?.street && (
+                        <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.street.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor="borrower-residence-unit">Unit/Apt</Label>
+                      <Input
+                        id="borrower-residence-unit"
+                        {...form.register('borrower.residenceAddress.unit')}
+                        data-testid="input-borrower-residence-unit"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor="borrower-residence-city">City *</Label>
+                      <Input
+                        id="borrower-residence-city"
+                        {...form.register('borrower.residenceAddress.city')}
+                        data-testid="input-borrower-residence-city"
+                      />
+                      {form.formState.errors.borrower?.residenceAddress?.city && (
+                        <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.city.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="borrower-residence-state">State *</Label>
+                      <Select
+                        value={form.watch('borrower.residenceAddress.state') || ''}
+                        onValueChange={(value) => form.setValue('borrower.residenceAddress.state', value)}
+                      >
+                        <SelectTrigger data-testid="select-borrower-residence-state">
+                          <SelectValue placeholder="State" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {US_STATES.map((state) => (
+                            <SelectItem key={state.value} value={state.value}>
+                              {state.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {form.formState.errors.borrower?.residenceAddress?.state && (
+                        <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.state.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="borrower-residence-zip">ZIP Code *</Label>
+                      <Input
+                        id="borrower-residence-zip"
+                        {...form.register('borrower.residenceAddress.zip')}
+                        data-testid="input-borrower-residence-zip"
+                      />
+                      {form.formState.errors.borrower?.residenceAddress?.zip && (
+                        <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.zip.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor="borrower-residence-county">County</Label>
+                      <Input
+                        id="borrower-residence-county"
+                        {...form.register('borrower.residenceAddress.county')}
+                        data-testid="input-borrower-residence-county"
+                      />
                     </div>
                   </div>
                   
@@ -622,86 +626,90 @@ export default function AdminAddClient() {
                       <p className="text-sm text-destructive">{form.formState.errors.borrower.yearsAtAddress.message}</p>
                     )}
                   </div>
-                  
-                  {/* Subject Property Address Fields */}
-                  <div className="md:col-span-3 space-y-4">
-                    <div className="flex items-center justify-between">
-                      <Label className="text-base font-semibold">Subject Property Address</Label>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={copyResidenceToSubjectProperty}
-                        className="hover:bg-yellow-500"
-                        data-testid="button-same-address"
-                      >
-                        Same
-                      </Button>
+                </CardContent>
+              </Card>
+
+              {/* Subject Property Address */}
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>Subject Property Address</CardTitle>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={copyResidenceToSubjectProperty}
+                      className="hover:bg-yellow-500"
+                      data-testid="button-same-address"
+                    >
+                      Same
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                    <div className="space-y-2 md:col-span-4">
+                      <Label htmlFor="borrower-subject-street">Street Address</Label>
+                      <Input
+                        id="borrower-subject-street"
+                        {...form.register('borrower.subjectProperty.street')}
+                        data-testid="input-borrower-subject-street"
+                      />
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                      <div className="space-y-2 md:col-span-4">
-                        <Label htmlFor="borrower-subject-street">Street Address</Label>
-                        <Input
-                          id="borrower-subject-street"
-                          {...form.register('borrower.subjectProperty.street')}
-                          data-testid="input-borrower-subject-street"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="borrower-subject-unit">Unit/Apt</Label>
-                        <Input
-                          id="borrower-subject-unit"
-                          {...form.register('borrower.subjectProperty.unit')}
-                          data-testid="input-borrower-subject-unit"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="borrower-subject-city">City</Label>
-                        <Input
-                          id="borrower-subject-city"
-                          {...form.register('borrower.subjectProperty.city')}
-                          data-testid="input-borrower-subject-city"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="borrower-subject-state">State</Label>
-                        <Select
-                          value={form.watch('borrower.subjectProperty.state') || ''}
-                          onValueChange={(value) => form.setValue('borrower.subjectProperty.state', value)}
-                        >
-                          <SelectTrigger data-testid="select-borrower-subject-state">
-                            <SelectValue placeholder="Select state" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {US_STATES.map((state) => (
-                              <SelectItem key={state.value} value={state.value}>
-                                {state.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="borrower-subject-zip">ZIP Code</Label>
-                        <Input
-                          id="borrower-subject-zip"
-                          {...form.register('borrower.subjectProperty.zip')}
-                          data-testid="input-borrower-subject-zip"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="borrower-subject-county">County</Label>
-                        <Input
-                          id="borrower-subject-county"
-                          {...form.register('borrower.subjectProperty.county')}
-                          data-testid="input-borrower-subject-county"
-                        />
-                      </div>
+                    
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor="borrower-subject-unit">Unit/Apt</Label>
+                      <Input
+                        id="borrower-subject-unit"
+                        {...form.register('borrower.subjectProperty.unit')}
+                        data-testid="input-borrower-subject-unit"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor="borrower-subject-city">City</Label>
+                      <Input
+                        id="borrower-subject-city"
+                        {...form.register('borrower.subjectProperty.city')}
+                        data-testid="input-borrower-subject-city"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="borrower-subject-state">State</Label>
+                      <Select
+                        value={form.watch('borrower.subjectProperty.state') || ''}
+                        onValueChange={(value) => form.setValue('borrower.subjectProperty.state', value)}
+                      >
+                        <SelectTrigger data-testid="select-borrower-subject-state">
+                          <SelectValue placeholder="Select state" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {US_STATES.map((state) => (
+                            <SelectItem key={state.value} value={state.value}>
+                              {state.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="borrower-subject-zip">ZIP Code</Label>
+                      <Input
+                        id="borrower-subject-zip"
+                        {...form.register('borrower.subjectProperty.zip')}
+                        data-testid="input-borrower-subject-zip"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor="borrower-subject-county">County</Label>
+                      <Input
+                        id="borrower-subject-county"
+                        {...form.register('borrower.subjectProperty.county')}
+                        data-testid="input-borrower-subject-county"
+                      />
                     </div>
                   </div>
                 </CardContent>
