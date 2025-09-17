@@ -411,6 +411,48 @@ export default function AdminAddClient() {
     return `$${total.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
   };
 
+  // Calculate total household income (borrower + co-borrower)
+  const calculateTotalHouseholdIncome = (): string => {
+    const income = form.watch('income');
+    const coBorrowerIncome = form.watch('coBorrowerIncome');
+    
+    // Calculate borrower total
+    const borrowerEmploymentIncome = parseMonetaryValue(income?.monthlyIncome);
+    const borrowerSecondEmploymentIncome = parseMonetaryValue(income?.secondMonthlyIncome);
+    const borrowerBusinessIncome = parseMonetaryValue(income?.businessMonthlyIncome);
+    const borrowerPensionIncome = income?.pensions?.reduce((total, pension) => total + parseMonetaryValue(pension.monthlyAmount), 0) || 0;
+    const borrowerSocialSecurityIncome = parseMonetaryValue(income?.socialSecurityMonthlyAmount);
+    const borrowerVaBenefitsIncome = parseMonetaryValue(income?.vaBenefitsMonthlyAmount);
+    const borrowerDisabilityIncome = parseMonetaryValue(income?.disabilityMonthlyAmount);
+    const borrowerOtherIncome = parseMonetaryValue(income?.otherIncomeMonthlyAmount);
+    
+    const borrowerTotal = borrowerEmploymentIncome + borrowerSecondEmploymentIncome + borrowerBusinessIncome + 
+                         borrowerPensionIncome + borrowerSocialSecurityIncome + borrowerVaBenefitsIncome + 
+                         borrowerDisabilityIncome + borrowerOtherIncome;
+    
+    // Calculate co-borrower total (only if co-borrower exists)
+    let coBorrowerTotal = 0;
+    if (hasCoBorrower && coBorrowerIncome) {
+      const coBorrowerEmploymentIncome = parseMonetaryValue(coBorrowerIncome?.monthlyIncome);
+      const coBorrowerSecondEmploymentIncome = parseMonetaryValue(coBorrowerIncome?.secondMonthlyIncome);
+      const coBorrowerBusinessIncome = parseMonetaryValue(coBorrowerIncome?.businessMonthlyIncome);
+      const coBorrowerPensionIncome = coBorrowerIncome?.pensions?.reduce((total, pension) => total + parseMonetaryValue(pension.monthlyAmount), 0) || 0;
+      const coBorrowerSocialSecurityIncome = parseMonetaryValue(coBorrowerIncome?.socialSecurityMonthlyAmount);
+      const coBorrowerVaBenefitsIncome = parseMonetaryValue(coBorrowerIncome?.vaBenefitsMonthlyAmount);
+      const coBorrowerDisabilityIncome = parseMonetaryValue(coBorrowerIncome?.disabilityMonthlyAmount);
+      const coBorrowerOtherIncome = parseMonetaryValue(coBorrowerIncome?.otherIncomeMonthlyAmount);
+      
+      coBorrowerTotal = coBorrowerEmploymentIncome + coBorrowerSecondEmploymentIncome + coBorrowerBusinessIncome + 
+                       coBorrowerPensionIncome + coBorrowerSocialSecurityIncome + coBorrowerVaBenefitsIncome + 
+                       coBorrowerDisabilityIncome + coBorrowerOtherIncome;
+    }
+    
+    const householdTotal = borrowerTotal + coBorrowerTotal;
+    
+    // Format as currency
+    return `$${householdTotal.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -957,6 +999,38 @@ export default function AdminAddClient() {
 
             {/* Income Tab */}
             <TabsContent value="income" className="space-y-6">
+              {/* Household Income Summary */}
+              <Card>
+                <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="household-income-total">Total Household Income</Label>
+                    <div className="text-2xl font-bold text-primary" data-testid="text-household-income-total">
+                      {calculateTotalHouseholdIncome()}
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="income-frontDTI">Front DTI</Label>
+                    <Input
+                      id="income-frontDTI"
+                      {...form.register('income.frontDTI')}
+                      placeholder="0.00%"
+                      data-testid="input-income-frontDTI"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="income-backDTI">Back DTI</Label>
+                    <Input
+                      id="income-backDTI"
+                      {...form.register('income.backDTI')}
+                      placeholder="0.00%"
+                      data-testid="input-income-backDTI"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* Income Type Selection */}
               <Card>
                 <CardHeader>
