@@ -157,14 +157,15 @@ export default function AdminAddClient() {
           county: ''
         },
         businessPhone: '',
-        pensionPayerName: '',
-        pensionMonthlyAmount: '',
+        pensions: [],
         socialSecurityMonthlyAmount: '',
         vaBenefitsMonthlyAmount: '',
         disabilityPayerName: '',
         disabilityMonthlyAmount: '',
         otherIncomeDescription: '',
         otherIncomeMonthlyAmount: '',
+        frontDTI: '',
+        backDTI: '',
       },
       coBorrowerIncome: {
         incomeTypes: {
@@ -218,14 +219,15 @@ export default function AdminAddClient() {
           county: ''
         },
         businessPhone: '',
-        pensionPayerName: '',
-        pensionMonthlyAmount: '',
+        pensions: [],
         socialSecurityMonthlyAmount: '',
         vaBenefitsMonthlyAmount: '',
         disabilityPayerName: '',
         disabilityMonthlyAmount: '',
         otherIncomeDescription: '',
         otherIncomeMonthlyAmount: '',
+        frontDTI: '',
+        backDTI: '',
       },
       property: {
         propertyAddress: undefined,
@@ -375,7 +377,7 @@ export default function AdminAddClient() {
     const employmentIncome = parseMonetaryValue(income?.monthlyIncome);
     const secondEmploymentIncome = parseMonetaryValue(income?.secondMonthlyIncome);
     const businessIncome = parseMonetaryValue(income?.businessMonthlyIncome);
-    const pensionIncome = parseMonetaryValue(income?.pensionMonthlyAmount);
+    const pensionIncome = income?.pensions?.reduce((total, pension) => total + parseMonetaryValue(pension.monthlyAmount), 0) || 0;
     const socialSecurityIncome = parseMonetaryValue(income?.socialSecurityMonthlyAmount);
     const vaBenefitsIncome = parseMonetaryValue(income?.vaBenefitsMonthlyAmount);
     const disabilityIncome = parseMonetaryValue(income?.disabilityMonthlyAmount);
@@ -395,7 +397,7 @@ export default function AdminAddClient() {
     const employmentIncome = parseMonetaryValue(coBorrowerIncome?.monthlyIncome);
     const secondEmploymentIncome = parseMonetaryValue(coBorrowerIncome?.secondMonthlyIncome);
     const businessIncome = parseMonetaryValue(coBorrowerIncome?.businessMonthlyIncome);
-    const pensionIncome = parseMonetaryValue(coBorrowerIncome?.pensionMonthlyAmount);
+    const pensionIncome = coBorrowerIncome?.pensions?.reduce((total, pension) => total + parseMonetaryValue(pension.monthlyAmount), 0) || 0;
     const socialSecurityIncome = parseMonetaryValue(coBorrowerIncome?.socialSecurityMonthlyAmount);
     const vaBenefitsIncome = parseMonetaryValue(coBorrowerIncome?.vaBenefitsMonthlyAmount);
     const disabilityIncome = parseMonetaryValue(coBorrowerIncome?.disabilityMonthlyAmount);
@@ -1481,35 +1483,7 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
-              {/* Pension Income Card */}
-              {form.watch('income.incomeTypes.pension') && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Pension Income</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="income-pensionPayerName">Payer Name</Label>
-                          <Input
-                            id="income-pensionPayerName"
-                            {...form.register('income.pensionPayerName')}
-                            data-testid="input-income-pensionPayerName"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="income-pensionMonthlyAmount">Monthly Amount</Label>
-                          <Input
-                            id="income-pensionMonthlyAmount"
-                            {...form.register('income.pensionMonthlyAmount')}
-                            placeholder="$0.00"
-                            data-testid="input-income-pensionMonthlyAmount"
-                          />
-                        </div>
-                      </div>
-                  </CardContent>
-                </Card>
-              )}
+              {/* Pension Income Card - TODO: Implement multiple pensions */}
 
               {/* Social Security Income Card */}
               {form.watch('income.incomeTypes.socialSecurity') && (
@@ -2144,36 +2118,7 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
-              {/* Co-Borrower Pension Income Card */}
-              {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.pension') && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Co-Borrower Pension Income</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="coBorrowerIncome-pensionPayerName">Payer Name</Label>
-                          <Input
-                            id="coBorrowerIncome-pensionPayerName"
-                            {...form.register('coBorrowerIncome.pensionPayerName')}
-                            placeholder="e.g., XYZ Corporation"
-                            data-testid="input-coborrowerIncome-pensionPayerName"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="coBorrowerIncome-pensionMonthlyAmount">Monthly Amount</Label>
-                          <Input
-                            id="coBorrowerIncome-pensionMonthlyAmount"
-                            {...form.register('coBorrowerIncome.pensionMonthlyAmount')}
-                            placeholder="$0.00"
-                            data-testid="input-coborrowerIncome-pensionMonthlyAmount"
-                          />
-                        </div>
-                      </div>
-                  </CardContent>
-                </Card>
-              )}
+              {/* Co-Borrower Pension Income Card - TODO: Implement multiple pensions */}
 
               {/* Co-Borrower Social Security Income Card */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.socialSecurity') && (

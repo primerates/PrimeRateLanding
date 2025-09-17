@@ -27,6 +27,13 @@ export const addressSchema = z.object({
   county: z.string().optional(),
 });
 
+// Pension schema for multiple pensions
+export const pensionSchema = z.object({
+  id: z.string().optional(),
+  payerName: z.string().optional(),
+  monthlyAmount: z.string().optional(),
+});
+
 // Client Management Schema
 export const borrowerInfoSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -85,9 +92,8 @@ export const incomeSchema = z.object({
   businessAddress: addressSchema.partial().optional(),
   businessPhone: z.string().optional(),
   
-  // Pension fields
-  pensionPayerName: z.string().optional(),
-  pensionMonthlyAmount: z.string().optional(),
+  // Pension fields (multiple pensions)
+  pensions: z.array(pensionSchema).optional(),
   
   // Social Security fields
   socialSecurityMonthlyAmount: z.string().optional(),
@@ -102,6 +108,10 @@ export const incomeSchema = z.object({
   // Other income fields
   otherIncomeDescription: z.string().optional(),
   otherIncomeMonthlyAmount: z.string().optional(),
+  
+  // DTI fields
+  frontDTI: z.string().optional(),
+  backDTI: z.string().optional(),
 });
 
 export const propertySchema = z.object({
