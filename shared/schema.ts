@@ -47,12 +47,51 @@ export const borrowerInfoSchema = z.object({
 });
 
 export const incomeSchema = z.object({
+  // Income type selections
+  incomeTypes: z.object({
+    employment: z.boolean().optional(),
+    selfEmployment: z.boolean().optional(),
+    pension: z.boolean().optional(),
+    socialSecurity: z.boolean().optional(),
+    vaBenefits: z.boolean().optional(),
+    disability: z.boolean().optional(),
+    other: z.boolean().optional(),
+  }).optional(),
+  
+  // Employment fields  
   employerName: z.string().optional(),
   jobTitle: z.string().optional(),
   monthlyIncome: z.string().optional(),
-  yearsEmployed: z.string().optional(),
-  additionalIncome: z.string().optional(),
-  incomeSource: z.string().optional(),
+  yearsEmployedYears: z.string().optional(),
+  yearsEmployedMonths: z.string().optional(),
+  employerAddress: addressSchema.partial().optional(),
+  employerPhone: z.string().optional(),
+  
+  // Self-Employment fields
+  businessName: z.string().optional(),
+  businessMonthlyIncome: z.string().optional(),
+  yearsInBusinessYears: z.string().optional(),
+  yearsInBusinessMonths: z.string().optional(),
+  businessAddress: addressSchema.partial().optional(),
+  businessPhone: z.string().optional(),
+  
+  // Pension fields
+  pensionPayerName: z.string().optional(),
+  pensionMonthlyAmount: z.string().optional(),
+  
+  // Social Security fields
+  socialSecurityMonthlyAmount: z.string().optional(),
+  
+  // VA Benefits fields
+  vaBenefitsMonthlyAmount: z.string().optional(),
+  
+  // Disability fields
+  disabilityPayerName: z.string().optional(),
+  disabilityMonthlyAmount: z.string().optional(),
+  
+  // Other income fields
+  otherIncomeDescription: z.string().optional(),
+  otherIncomeMonthlyAmount: z.string().optional(),
 });
 
 export const propertySchema = z.object({
