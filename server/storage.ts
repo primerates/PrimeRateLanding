@@ -1,4 +1,4 @@
-import { type User, type InsertUser } from "@shared/schema";
+import { type User, type InsertUser, type Client, type InsertClient } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 // modify the interface with any CRUD methods
@@ -8,13 +8,23 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  
+  // Client management methods
+  createClient(client: Client): Promise<Client>;
+  getClient(id: string): Promise<Client | undefined>;
+  getClients(): Promise<Client[]>;
+  updateClient(id: string, client: Client): Promise<Client | undefined>;
+  deleteClient(id: string): Promise<boolean>;
+  searchClients(query: string): Promise<Client[]>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
+  private clients: Map<string, Client>;
 
   constructor() {
     this.users = new Map();
+    this.clients = new Map();
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -32,6 +42,65 @@ export class MemStorage implements IStorage {
     const user: User = { ...insertUser, id };
     this.users.set(id, user);
     return user;
+  }
+
+  // Client management methods
+  async createClient(client: Client): Promise<Client> {
+    if (!client.id) {
+      client.id = Date.now().toString();
+    }
+    this.clients.set(client.id, client);
+    return client;
+  }
+
+  async getClient(id: string): Promise<Client | undefined> {
+    return this.clients.get(id);
+  }
+
+  async getClients(): Promise<Client[]> {
+    return Array.from(this.clients.values());
+  }
+
+  async updateClient(id: string, client: Client): Promise<Client | undefined> {
+    if (this.clients.has(id)) {
+      this.clients.set(id, client);
+      return client;
+    }
+    return undefined;
+  }
+
+  async deleteClient(id: string): Promise<boolean> {
+    return this.clients.delete(id);
+  }
+
+  async searchClients(query: string): Promise<Client[]> {
+    const lowerQuery = query.toLowerCase();
+    return Array.from(this.clients.values()).filter(client => {
+      // Search in borrower information
+      const borrower = client.borrower;
+      if (borrower?.firstName?.toLowerCase().includes(lowerQuery) ||
+          borrower?.lastName?.toLowerCase().includes(lowerQuery) ||
+          borrower?.email?.toLowerCase().includes(lowerQuery) ||
+          borrower?.phone?.includes(query)) {
+        return true;
+      }
+      
+      // Search in co-borrower information if it exists
+      const coBorrower = client.coBorrower;
+      if (coBorrower?.firstName?.toLowerCase().includes(lowerQuery) ||
+          coBorrower?.lastName?.toLowerCase().includes(lowerQuery) ||
+          coBorrower?.email?.toLowerCase().includes(lowerQuery) ||
+          coBorrower?.phone?.includes(query)) {
+        return true;
+      }
+      
+      // Search in property address
+      if (client.property?.propertyAddress?.toLowerCase().includes(lowerQuery)) {
+        return true;
+      }
+      
+      return false;
+    });
   }
 }
 

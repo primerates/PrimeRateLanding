@@ -174,6 +174,144 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Client Management Routes
+  app.post("/api/admin/clients", async (req, res) => {
+    try {
+      // Check authentication
+      const adminSession = req.cookies?.admin_session;
+      if (adminSession !== 'authenticated') {
+        return res.status(401).json({ success: false, message: "Unauthorized" });
+      }
+
+      const clientData = req.body;
+      
+      // Add timestamp and ID
+      const client = {
+        ...clientData,
+        id: Date.now().toString(), // Simple ID generation for development
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      // Store client using storage interface
+      const savedClient = await storage.createClient(client);
+      
+      res.json({ success: true, data: savedClient, message: "Client added successfully" });
+    } catch (error) {
+      console.error("Add client error:", error);
+      res.status(500).json({ success: false, message: "Failed to add client" });
+    }
+  });
+
+  app.get("/api/admin/clients", async (req, res) => {
+    try {
+      // Check authentication
+      const adminSession = req.cookies?.admin_session;
+      if (adminSession !== 'authenticated') {
+        return res.status(401).json({ success: false, message: "Unauthorized" });
+      }
+
+      const clients = await storage.getClients();
+      res.json({ success: true, data: clients });
+    } catch (error) {
+      console.error("Get clients error:", error);
+      res.status(500).json({ success: false, message: "Failed to get clients" });
+    }
+  });
+
+  app.get("/api/admin/clients/:id", async (req, res) => {
+    try {
+      // Check authentication
+      const adminSession = req.cookies?.admin_session;
+      if (adminSession !== 'authenticated') {
+        return res.status(401).json({ success: false, message: "Unauthorized" });
+      }
+
+      const { id } = req.params;
+      const client = await storage.getClient(id);
+      
+      if (!client) {
+        return res.status(404).json({ success: false, message: "Client not found" });
+      }
+      
+      res.json({ success: true, data: client });
+    } catch (error) {
+      console.error("Get client error:", error);
+      res.status(500).json({ success: false, message: "Failed to get client" });
+    }
+  });
+
+  app.put("/api/admin/clients/:id", async (req, res) => {
+    try {
+      // Check authentication
+      const adminSession = req.cookies?.admin_session;
+      if (adminSession !== 'authenticated') {
+        return res.status(401).json({ success: false, message: "Unauthorized" });
+      }
+
+      const { id } = req.params;
+      const clientData = req.body;
+      
+      // Update timestamp
+      const updatedClient = {
+        ...clientData,
+        id,
+        updatedAt: new Date().toISOString(),
+      };
+
+      const client = await storage.updateClient(id, updatedClient);
+      
+      if (!client) {
+        return res.status(404).json({ success: false, message: "Client not found" });
+      }
+      
+      res.json({ success: true, data: client, message: "Client updated successfully" });
+    } catch (error) {
+      console.error("Update client error:", error);
+      res.status(500).json({ success: false, message: "Failed to update client" });
+    }
+  });
+
+  app.delete("/api/admin/clients/:id", async (req, res) => {
+    try {
+      // Check authentication
+      const adminSession = req.cookies?.admin_session;
+      if (adminSession !== 'authenticated') {
+        return res.status(401).json({ success: false, message: "Unauthorized" });
+      }
+
+      const { id } = req.params;
+      const success = await storage.deleteClient(id);
+      
+      if (!success) {
+        return res.status(404).json({ success: false, message: "Client not found" });
+      }
+      
+      res.json({ success: true, message: "Client deleted successfully" });
+    } catch (error) {
+      console.error("Delete client error:", error);
+      res.status(500).json({ success: false, message: "Failed to delete client" });
+    }
+  });
+
+  // Search clients
+  app.get("/api/admin/clients/search/:query", async (req, res) => {
+    try {
+      // Check authentication
+      const adminSession = req.cookies?.admin_session;
+      if (adminSession !== 'authenticated') {
+        return res.status(401).json({ success: false, message: "Unauthorized" });
+      }
+
+      const { query } = req.params;
+      const clients = await storage.searchClients(query);
+      res.json({ success: true, data: clients });
+    } catch (error) {
+      console.error("Search clients error:", error);
+      res.status(500).json({ success: false, message: "Failed to search clients" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
