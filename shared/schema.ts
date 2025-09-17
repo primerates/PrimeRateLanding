@@ -38,7 +38,7 @@ export const borrowerInfoSchema = z.object({
   ssn: z.string().min(1, "SSN is required"),
   residenceAddress: addressSchema,
   yearsAtAddress: z.string().min(1, "Years at address is required"),
-  subjectProperty: addressSchema.optional(),
+  subjectProperty: addressSchema.partial().optional(),
   leadRef: z.string().optional(),
   callDate: z.string().optional(),
   startDate: z.string().optional(),
@@ -54,7 +54,7 @@ export const incomeSchema = z.object({
 });
 
 export const propertySchema = z.object({
-  propertyAddress: addressSchema.optional(),
+  propertyAddress: addressSchema.partial().optional(),
   propertyType: z.enum(["single-family", "condo", "townhouse", "multi-family", "land", ""]).optional(),
   propertyValue: z.string().optional(),
   propertyUse: z.enum(["primary", "secondary", "investment", ""]).optional(),
