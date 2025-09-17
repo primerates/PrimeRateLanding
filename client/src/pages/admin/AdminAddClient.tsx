@@ -851,7 +851,7 @@ export default function AdminAddClient() {
               {/* Primary Borrower Income */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Primary Borrower Income</CardTitle>
+                  <CardTitle>Borrower Income</CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div className="space-y-2">
