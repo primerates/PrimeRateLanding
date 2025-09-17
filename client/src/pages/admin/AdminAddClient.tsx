@@ -86,6 +86,15 @@ export default function AdminAddClient() {
   const [isDisabilityIncomeOpen, setIsDisabilityIncomeOpen] = useState(true);
   const [isOtherIncomeOpen, setIsOtherIncomeOpen] = useState(true);
 
+  // Co-Borrower income collapsible state
+  const [isCoBorrowerEmploymentIncomeOpen, setIsCoBorrowerEmploymentIncomeOpen] = useState(true);
+  const [isCoBorrowerSecondEmploymentIncomeOpen, setIsCoBorrowerSecondEmploymentIncomeOpen] = useState(true);
+  const [isCoBorrowerSelfEmploymentIncomeOpen, setIsCoBorrowerSelfEmploymentIncomeOpen] = useState(true);
+  const [isCoBorrowerSocialSecurityIncomeOpen, setIsCoBorrowerSocialSecurityIncomeOpen] = useState(true);
+  const [isCoBorrowerVaBenefitsIncomeOpen, setIsCoBorrowerVaBenefitsIncomeOpen] = useState(true);
+  const [isCoBorrowerDisabilityIncomeOpen, setIsCoBorrowerDisabilityIncomeOpen] = useState(true);
+  const [isCoBorrowerOtherIncomeOpen, setIsCoBorrowerOtherIncomeOpen] = useState(true);
+
   const form = useForm<InsertClient>({
     resolver: zodResolver(insertClientSchema),
     defaultValues: {
@@ -1829,10 +1838,19 @@ export default function AdminAddClient() {
               {/* Co-Borrower Employment Income Card */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.employment') && (
                 <Card>
-                  <CardHeader>
-                    <CardTitle>Co-Borrower Employment Income</CardTitle>
-                  </CardHeader>
-                  <CardContent>
+                  <Collapsible open={isCoBorrowerEmploymentIncomeOpen} onOpenChange={setIsCoBorrowerEmploymentIncomeOpen}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Co-Borrower Employment Income</CardTitle>
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" size="sm" data-testid="button-toggle-coborrower-employment-income">
+                            {isCoBorrowerEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                          </Button>
+                        </CollapsibleTrigger>
+                      </div>
+                    </CardHeader>
+                    <CollapsibleContent>
+                      <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="coBorrowerIncome-employerName">Employer Name</Label>
@@ -1890,7 +1908,9 @@ export default function AdminAddClient() {
                         </div>
                       </div>
                     </div>
-                  </CardContent>
+                    </CardContent>
+                  </CollapsibleContent>
+                </Collapsible>
                 </Card>
               )}
 
@@ -1982,10 +2002,19 @@ export default function AdminAddClient() {
               {/* Co-Borrower Second Employment Income Card */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.secondEmployment') && (
                 <Card>
-                  <CardHeader>
-                    <CardTitle>Co-Borrower Second Employment Income</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+                  <Collapsible open={isCoBorrowerSecondEmploymentIncomeOpen} onOpenChange={setIsCoBorrowerSecondEmploymentIncomeOpen}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Co-Borrower Second Employment Income</CardTitle>
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" size="sm" data-testid="button-toggle-coborrower-second-employment-income">
+                            {isCoBorrowerSecondEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                          </Button>
+                        </CollapsibleTrigger>
+                      </div>
+                    </CardHeader>
+                    <CollapsibleContent>
+                      <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="coBorrowerIncome-secondEmployerName">Employer Name</Label>
@@ -2124,17 +2153,28 @@ export default function AdminAddClient() {
                           />
                         </div>
                       </div>
-                  </CardContent>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
                 </Card>
               )}
 
               {/* Co-Borrower Self-Employment Income Card */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.selfEmployment') && (
                 <Card>
-                  <CardHeader>
-                    <CardTitle>Co-Borrower Self-Employment Income</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+                  <Collapsible open={isCoBorrowerSelfEmploymentIncomeOpen} onOpenChange={setIsCoBorrowerSelfEmploymentIncomeOpen}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Co-Borrower Self-Employment Income</CardTitle>
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" size="sm" data-testid="button-toggle-coborrower-self-employment-income">
+                            {isCoBorrowerSelfEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                          </Button>
+                        </CollapsibleTrigger>
+                      </div>
+                    </CardHeader>
+                    <CollapsibleContent>
+                      <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="coBorrowerIncome-businessName">Business Name</Label>
@@ -2262,7 +2302,9 @@ export default function AdminAddClient() {
                           />
                         </div>
                       </div>
-                  </CardContent>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
                 </Card>
               )}
 
@@ -2271,10 +2313,19 @@ export default function AdminAddClient() {
               {/* Co-Borrower Social Security Income Card */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.socialSecurity') && (
                 <Card>
-                  <CardHeader>
-                    <CardTitle>Co-Borrower Social Security Income</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+                  <Collapsible open={isCoBorrowerSocialSecurityIncomeOpen} onOpenChange={setIsCoBorrowerSocialSecurityIncomeOpen}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Co-Borrower Social Security Income</CardTitle>
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" size="sm" data-testid="button-toggle-coborrower-social-security-income">
+                            {isCoBorrowerSocialSecurityIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                          </Button>
+                        </CollapsibleTrigger>
+                      </div>
+                    </CardHeader>
+                    <CollapsibleContent>
+                      <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="coBorrowerIncome-socialSecurityMonthlyAmount">Monthly Amount</Label>
@@ -2286,17 +2337,28 @@ export default function AdminAddClient() {
                           />
                         </div>
                       </div>
-                  </CardContent>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
                 </Card>
               )}
 
               {/* Co-Borrower VA Benefits Income Card */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.vaBenefits') && (
                 <Card>
-                  <CardHeader>
-                    <CardTitle>Co-Borrower VA Benefits Income</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+                  <Collapsible open={isCoBorrowerVaBenefitsIncomeOpen} onOpenChange={setIsCoBorrowerVaBenefitsIncomeOpen}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Co-Borrower VA Benefits Income</CardTitle>
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" size="sm" data-testid="button-toggle-coborrower-va-benefits-income">
+                            {isCoBorrowerVaBenefitsIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                          </Button>
+                        </CollapsibleTrigger>
+                      </div>
+                    </CardHeader>
+                    <CollapsibleContent>
+                      <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="coBorrowerIncome-vaBenefitsMonthlyAmount">Monthly Amount</Label>
@@ -2308,17 +2370,28 @@ export default function AdminAddClient() {
                           />
                         </div>
                       </div>
-                  </CardContent>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
                 </Card>
               )}
 
               {/* Co-Borrower Disability Income Card */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.disability') && (
                 <Card>
-                  <CardHeader>
-                    <CardTitle>Co-Borrower Disability Income</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+                  <Collapsible open={isCoBorrowerDisabilityIncomeOpen} onOpenChange={setIsCoBorrowerDisabilityIncomeOpen}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Co-Borrower Disability Income</CardTitle>
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" size="sm" data-testid="button-toggle-coborrower-disability-income">
+                            {isCoBorrowerDisabilityIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                          </Button>
+                        </CollapsibleTrigger>
+                      </div>
+                    </CardHeader>
+                    <CollapsibleContent>
+                      <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="coBorrowerIncome-disabilityPayerName">Payer Name</Label>
@@ -2339,17 +2412,28 @@ export default function AdminAddClient() {
                           />
                         </div>
                       </div>
-                  </CardContent>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
                 </Card>
               )}
 
               {/* Co-Borrower Other Income Card */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.other') && (
                 <Card>
-                  <CardHeader>
-                    <CardTitle>Co-Borrower Other Income</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+                  <Collapsible open={isCoBorrowerOtherIncomeOpen} onOpenChange={setIsCoBorrowerOtherIncomeOpen}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Co-Borrower Other Income</CardTitle>
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" size="sm" data-testid="button-toggle-coborrower-other-income">
+                            {isCoBorrowerOtherIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                          </Button>
+                        </CollapsibleTrigger>
+                      </div>
+                    </CardHeader>
+                    <CollapsibleContent>
+                      <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="coBorrowerIncome-otherIncomeDescription">Description</Label>
@@ -2370,7 +2454,9 @@ export default function AdminAddClient() {
                           />
                         </div>
                       </div>
-                  </CardContent>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
                 </Card>
               )}
             </TabsContent>
