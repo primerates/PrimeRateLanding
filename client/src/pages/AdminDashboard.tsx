@@ -19,7 +19,6 @@ import { apiRequest } from '@/lib/queryClient';
 
 export default function AdminDashboard() {
   const [location, setLocation] = useLocation();
-  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
   const menuItems = [
@@ -31,35 +30,6 @@ export default function AdminDashboard() {
     { id: 'add-vendor', label: 'Add Vendor', icon: Building2, path: '/admin/add-vendor' },
     { id: 'search', label: 'Search', icon: Search, path: '/admin/search' },
   ];
-
-  useEffect(() => {
-    // Check if user is authenticated
-    checkAuthentication();
-  }, []);
-
-  const checkAuthentication = async () => {
-    try {
-      const response = await apiRequest('GET', '/api/admin/verify');
-
-      if (!response.ok) {
-        toast({
-          title: "Session Expired",
-          description: "Please log in again to continue.",
-          variant: "destructive",
-        });
-        setLocation('/admin/login');
-        return;
-      }
-      setIsLoading(false);
-    } catch (error) {
-      toast({
-        title: "Authentication Error",
-        description: "Please log in again to continue.",
-        variant: "destructive",
-      });
-      setLocation('/admin/login');
-    }
-  };
 
   const handleLogout = async () => {
     try {
@@ -79,17 +49,6 @@ export default function AdminDashboard() {
   const handleMenuClick = (path: string) => {
     setLocation(path);
   };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading dashboard...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">

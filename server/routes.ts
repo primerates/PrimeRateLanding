@@ -123,15 +123,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Simple hardcoded authentication
       if (email === "polo.perry@yahoo.com" && password === "password") {
         // Set session/cookie for authentication
-        // For simplicity, using a basic session approach
+        // For development, use simpler cookie settings
         res.cookie('admin_session', 'authenticated', { 
           httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
+          secure: false, // Allow over HTTP in development
           sameSite: 'lax',
           path: '/',
           maxAge: 2 * 60 * 60 * 1000 // 2 hours for better security
         });
         
+        console.log("Login successful, cookie set for:", email);
         res.json({ success: true, message: "Login successful" });
       } else {
         res.status(401).json({ success: false, message: "Invalid credentials" });
@@ -145,6 +146,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/admin/verify", async (req, res) => {
     try {
       const adminSession = req.cookies?.admin_session;
+      
+      // Debug logging to see what we're getting
+      console.log("Verify request cookies:", req.cookies);
+      console.log("Admin session cookie:", adminSession);
       
       if (adminSession === 'authenticated') {
         res.json({ success: true, authenticated: true });
