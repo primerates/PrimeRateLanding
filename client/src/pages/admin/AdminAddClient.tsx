@@ -1010,11 +1010,8 @@ export default function AdminAddClient() {
                 variant="ghost"
                 size="sm"
                 onClick={() => {
-                  if (form.formState.isDirty) {
-                    setUnsavedChangesDialog({ isOpen: true });
-                  } else {
-                    setLocation('/admin/dashboard');
-                  }
+                  // Always show unsaved changes dialog when navigating away from Add Client page
+                  setUnsavedChangesDialog({ isOpen: true });
                 }}
                 className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/10"
                 data-testid="button-back-to-dashboard"
@@ -4275,7 +4272,7 @@ export default function AdminAddClient() {
         <DialogContent data-testid="dialog-unsaved-changes-warning">
           <DialogHeader>
             <DialogTitle>Unsaved Changes</DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-destructive">
               By returning to dashboard now, unsaved changes will be lost. Do you want to continue?
             </DialogDescription>
           </DialogHeader>
