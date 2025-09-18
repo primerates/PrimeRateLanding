@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { sendEmail, formatPreApprovalEmail, formatRateTrackerEmail, formatScheduleCallEmail, formatContactEmail } from "./email";
 import { insertClientSchema, clientSchema } from "@shared/schema";
 import { ZodError } from "zod";
+import fetch from "node-fetch";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const TARGET_EMAIL = "polo.perry@yahoo.com";
@@ -114,6 +115,115 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Contact form submission error:", error);
       res.status(500).json({ success: false, message: "Server error" });
+    }
+  });
+
+  // County lookup from ZIP code
+  app.get("/api/county-lookup/:zipCode", async (req, res) => {
+    try {
+      const { zipCode } = req.params;
+      
+      if (!zipCode || zipCode.length < 5) {
+        return res.json({ success: true, counties: [] });
+      }
+      
+      // First try FCC API directly with ZIP to get all possible counties
+      try {
+        const fccZipResponse = await fetch(`https://geo.fcc.gov/api/census/area?zip=${zipCode}&format=json`);
+        if (fccZipResponse.ok) {
+          const fccZipData = await fccZipResponse.json() as any;
+          if (fccZipData.results && fccZipData.results.length > 0) {
+            // Extract unique counties from all results
+            const counties = new Map();
+            
+            fccZipData.results.forEach((result: any) => {
+              if (result.county_name && result.county_fips && result.state_code) {
+                const countyKey = `${result.county_fips}-${result.state_code}`;
+                // Format county name properly - don't duplicate "County" if it already exists
+                const baseCountyName = result.county_name.replace(/\s+County$/i, ''); // Remove existing "County" suffix
+                const countyLabel = `${baseCountyName} County`; // Clean label without state
+                counties.set(countyKey, {
+                  value: result.county_fips,
+                  label: countyLabel,
+                  county_name: result.county_name,
+                  state_code: result.state_code
+                });
+              }
+            });
+            
+            if (counties.size > 0) {
+              const countyList = Array.from(counties.values()).map((county: any) => ({
+                value: county.value,
+                label: county.label
+              }));
+              return res.json({ success: true, counties: countyList });
+            }
+          }
+        }
+      } catch (fccError) {
+        console.warn('FCC ZIP lookup failed:', fccError);
+      }
+      
+      // Fallback: Use Nominatim for geocoding, then FCC for county lookup
+      const nominatimResponse = await fetch(
+        `https://nominatim.openstreetmap.org/search?postalcode=${zipCode}&countrycodes=us&format=json&limit=3`,
+        {
+          headers: {
+            'User-Agent': 'PrimeRateHomeLoans/1.0 (contact@primerateloans.com)'
+          }
+        }
+      );
+      
+      if (nominatimResponse.ok) {
+        const nominatimData = await nominatimResponse.json() as any[];
+        if (nominatimData && nominatimData.length > 0) {
+          const counties = new Map();
+          
+          // Try multiple coordinate points if available
+          for (const location of nominatimData.slice(0, 3)) {
+            try {
+              const { lat, lon } = location;
+              const fccResponse = await fetch(`https://geo.fcc.gov/api/census/area?lat=${lat}&lon=${lon}&format=json`);
+              
+              if (fccResponse.ok) {
+                const countyData = await fccResponse.json() as any;
+                if (countyData.results && countyData.results.length > 0) {
+                  countyData.results.forEach((result: any) => {
+                    if (result.county_name && result.county_fips && result.state_code) {
+                      const countyKey = `${result.county_fips}-${result.state_code}`;
+                      // Format county name properly - don't duplicate "County" if it already exists
+                      const baseCountyName = result.county_name.replace(/\s+County$/i, ''); // Remove existing "County" suffix
+                      const countyLabel = `${baseCountyName} County`; // Clean label without state
+                      counties.set(countyKey, {
+                        value: result.county_fips,
+                        label: countyLabel
+                      });
+                    }
+                  });
+                }
+              }
+              
+              // Add small delay between requests to be respectful to APIs
+              await new Promise(resolve => setTimeout(resolve, 100));
+              
+            } catch (coordError) {
+              console.warn(`Error looking up county for coordinate ${location.lat}, ${location.lon}:`, coordError);
+            }
+          }
+          
+          if (counties.size > 0) {
+            const countyList = Array.from(counties.values());
+            return res.json({ success: true, counties: countyList });
+          }
+        }
+      }
+      
+      // No counties found
+      res.json({ success: true, counties: [] });
+      
+    } catch (error) {
+      console.error('County lookup error:', error);
+      res.status(500).json({ success: false, message: 'Failed to lookup county information' });
     }
   });
 
