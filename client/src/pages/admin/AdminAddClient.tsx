@@ -14,6 +14,7 @@ import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Plus, Save, Minus } from 'lucide-react';
+import { nanoid } from 'nanoid';
 import { insertClientSchema, type InsertClient } from '@shared/schema';
 import { apiRequest } from '@/lib/queryClient';
 
@@ -99,6 +100,9 @@ export default function AdminAddClient() {
   // Pension income collapsible state
   const [isPensionIncomeOpen, setIsPensionIncomeOpen] = useState(true);
   const [isCoBorrowerPensionIncomeOpen, setIsCoBorrowerPensionIncomeOpen] = useState(true);
+
+  // Property collapsible state (using object to manage multiple property cards)
+  const [propertyCardStates, setPropertyCardStates] = useState<Record<string, boolean>>({});
 
   const form = useForm<InsertClient>({
     resolver: zodResolver(insertClientSchema),
@@ -252,12 +256,8 @@ export default function AdminAddClient() {
         backDTI: '',
       },
       property: {
-        propertyAddress: undefined,
-        propertyType: '',
-        propertyValue: '',
-        propertyUse: '',
-        downPayment: '',
-        purchasePrice: '',
+        estimatedLTV: '',
+        properties: [],
       },
       currentLoan: {
         currentLender: '',
@@ -510,6 +510,103 @@ export default function AdminAddClient() {
     const currentPensions = form.watch('coBorrowerIncome.pensions') || [];
     const updatedPensions = currentPensions.filter(pension => pension.id !== pensionId);
     form.setValue('coBorrowerIncome.pensions', updatedPensions);
+  };
+
+  // Property management helper functions
+  const addProperty = (use: 'primary' | 'second-home' | 'investment') => {
+    const currentProperties = form.watch('property.properties') || [];
+    const newProperty = {
+      id: nanoid(),
+      use,
+      isSubject: false,
+      address: {},
+      propertyType: '',
+      estimatedValue: '',
+      appraisedValue: '',
+      ownedSince: '',
+      purchasePrice: '',
+      loan: {
+        lenderName: '',
+        loanNumber: '',
+        mortgageBalance: '',
+        piPayment: '',
+        escrowPayment: '',
+        totalMonthlyPayment: '',
+      },
+    };
+    form.setValue('property.properties', [...currentProperties, newProperty]);
+    // Set initial collapsible state for new property
+    setPropertyCardStates(prev => ({ ...prev, [newProperty.id!]: true }));
+  };
+
+  const removeProperty = (propertyId: string) => {
+    const currentProperties = form.watch('property.properties') || [];
+    const updatedProperties = currentProperties.filter(property => property.id !== propertyId);
+    form.setValue('property.properties', updatedProperties);
+    
+    // Remove collapsible state for removed property
+    setPropertyCardStates(prev => {
+      const { [propertyId]: _, ...rest } = prev;
+      return rest;
+    });
+  };
+
+  const setSubjectProperty = (propertyId: string) => {
+    const currentProperties = form.watch('property.properties') || [];
+    const updatedProperties = currentProperties.map(property => ({
+      ...property,
+      isSubject: property.id === propertyId,
+    }));
+    form.setValue('property.properties', updatedProperties);
+  };
+
+  // Property type management functions
+  const addPropertyType = (type: 'primary' | 'second-home' | 'investment') => {
+    const currentProperties = form.watch('property.properties') || [];
+    
+    // For primary residence, ensure only one exists
+    if (type === 'primary') {
+      const hasExistingPrimary = currentProperties.some(p => p.use === 'primary');
+      if (hasExistingPrimary) return;
+    }
+    
+    addProperty(type);
+  };
+
+  const removePropertyType = (type: 'primary' | 'second-home' | 'investment') => {
+    const currentProperties = form.watch('property.properties') || [];
+    const propertiesToRemove = currentProperties.filter(property => property.use === type);
+    
+    propertiesToRemove.forEach(property => {
+      if (property.id) {
+        removeProperty(property.id);
+      }
+    });
+  };
+
+  const hasPropertyType = (type: 'primary' | 'second-home' | 'investment'): boolean => {
+    const currentProperties = form.watch('property.properties') || [];
+    return currentProperties.some(property => property.use === type);
+  };
+
+  // Calculate total monthly payment for a property loan
+  const calculateTotalMonthlyPayment = (propertyId: string) => {
+    const properties = form.watch('property.properties') || [];
+    const property = properties.find(p => p.id === propertyId);
+    
+    if (!property?.loan) return;
+    
+    const piPayment = parseMonetaryValue(property.loan.piPayment || '');
+    const escrowPayment = parseMonetaryValue(property.loan.escrowPayment || '');
+    const total = piPayment + escrowPayment;
+    
+    // Update the form with calculated total
+    const updatedProperties = properties.map(p => 
+      p.id === propertyId 
+        ? { ...p, loan: { ...p.loan, totalMonthlyPayment: total.toFixed(2) } }
+        : p
+    );
+    form.setValue('property.properties', updatedProperties);
   };
 
   return (
@@ -2648,7 +2745,441 @@ export default function AdminAddClient() {
 
             {/* Property Tab */}
             <TabsContent value="property" className="space-y-6">
-              {/* Subject Property Address */}
+              {/* Property Summary Card */}
+              <Card className="bg-muted">
+                <CardHeader>
+                  <CardTitle>Property Summary</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium text-muted-foreground">Total Property Count</Label>
+                      <div className="text-2xl font-semibold" data-testid="text-property-count">
+                        {(form.watch('property.properties') || []).length}
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium text-muted-foreground">Subject Property Is</Label>
+                      <div className="text-lg font-medium" data-testid="text-subject-property">
+                        {(() => {
+                          const properties = form.watch('property.properties') || [];
+                          const subjectProperty = properties.find(p => p.isSubject);
+                          if (!subjectProperty) return 'Not selected';
+                          const typeLabels = {
+                            'primary': 'Primary Residence',
+                            'second-home': 'Second Home', 
+                            'investment': 'Investment Property'
+                          };
+                          return typeLabels[subjectProperty.use as keyof typeof typeLabels] || 'Unknown';
+                        })()}
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium text-muted-foreground">Investment Properties</Label>
+                      <div className="text-2xl font-semibold" data-testid="text-investment-count">
+                        {(form.watch('property.properties') || []).filter(p => p.use === 'investment').length}
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2 md:col-span-3">
+                      <Label htmlFor="property-estimatedLTV">Estimated LTV (%)</Label>
+                      <Input
+                        id="property-estimatedLTV"
+                        {...form.register('property.estimatedLTV')}
+                        placeholder="e.g., 80%"
+                        data-testid="input-property-estimatedLTV"
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Property List Card */}
+              <Card className="bg-muted">
+                <CardHeader>
+                  <CardTitle>Property List</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <Label className="text-base font-semibold">Select property types to add:</Label>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="property-type-primary"
+                          checked={hasPropertyType('primary')}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              addPropertyType('primary');
+                            } else {
+                              removePropertyType('primary');
+                            }
+                          }}
+                          data-testid="checkbox-property-primary"
+                        />
+                        <Label htmlFor="property-type-primary" className="font-medium">
+                          Primary Residence
+                        </Label>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="property-type-second-home"
+                          checked={hasPropertyType('second-home')}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              addPropertyType('second-home');
+                            } else {
+                              removePropertyType('second-home');
+                            }
+                          }}
+                          data-testid="checkbox-property-second-home"
+                        />
+                        <Label htmlFor="property-type-second-home" className="font-medium">
+                          Second Home
+                        </Label>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="property-type-investment"
+                          checked={hasPropertyType('investment')}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              addPropertyType('investment');
+                            } else {
+                              removePropertyType('investment');
+                            }
+                          }}
+                          data-testid="checkbox-property-investment"
+                        />
+                        <Label htmlFor="property-type-investment" className="font-medium">
+                          Investment Property
+                        </Label>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Dynamic Property Cards */}
+              {(form.watch('property.properties') || []).map((property, index) => {
+                const propertyId = property.id || `property-${index}`;
+                const isOpen = propertyCardStates[propertyId] ?? true;
+                
+                const getPropertyTitle = () => {
+                  const typeLabels = {
+                    'primary': 'Primary Residence',
+                    'second-home': 'Second Home',
+                    'investment': 'Investment Property'
+                  };
+                  const baseTitle = typeLabels[property.use as keyof typeof typeLabels] || 'Property';
+                  const sameTypeCount = (form.watch('property.properties') || [])
+                    .filter(p => p.use === property.use)
+                    .findIndex(p => p.id === property.id) + 1;
+                  return property.use === 'primary' ? baseTitle : `${baseTitle} ${sameTypeCount}`;
+                };
+
+                return (
+                  <Card key={propertyId}>
+                    <Collapsible 
+                      open={isOpen} 
+                      onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
+                    >
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="flex items-center gap-2">
+                            {getPropertyTitle()}
+                            {property.isSubject && (
+                              <span className="bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-medium">
+                                Subject Property
+                              </span>
+                            )}
+                          </CardTitle>
+                          <div className="flex items-center gap-2">
+                            {/* Add/Remove buttons for multi-property types */}
+                            {(property.use === 'second-home' || property.use === 'investment') && (
+                              <div className="flex gap-1">
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => addProperty(property.use as 'second-home' | 'investment')}
+                                  data-testid={`button-add-${property.use}`}
+                                >
+                                  <Plus className="h-3 w-3" />
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => removeProperty(propertyId)}
+                                  data-testid={`button-remove-${property.use}-${propertyId}`}
+                                >
+                                  <Minus className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            )}
+                            <CollapsibleTrigger asChild>
+                              <Button variant="ghost" size="sm" data-testid={`button-toggle-property-${propertyId}`}>
+                                {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      
+                      <CollapsibleContent>
+                        <CardContent>
+                          <div className="space-y-6">
+                            {/* Property Address */}
+                            <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                              <div className="space-y-2 md:col-span-4">
+                                <Label htmlFor={`property-address-street-${propertyId}`}>Street Address</Label>
+                                <Input
+                                  id={`property-address-street-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.address.street` as const)}
+                                  placeholder="123 Main St"
+                                  data-testid={`input-property-street-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`property-address-unit-${propertyId}`}>Unit/Apt</Label>
+                                <Input
+                                  id={`property-address-unit-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.address.unit` as const)}
+                                  data-testid={`input-property-unit-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`property-address-city-${propertyId}`}>City</Label>
+                                <Input
+                                  id={`property-address-city-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.address.city` as const)}
+                                  data-testid={`input-property-city-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-address-state-${propertyId}`}>State</Label>
+                                <Select
+                                  value={form.watch(`property.properties.${index}.address.state` as const) || ''}
+                                  onValueChange={(value) => form.setValue(`property.properties.${index}.address.state` as const, value)}
+                                >
+                                  <SelectTrigger data-testid={`select-property-state-${propertyId}`}>
+                                    <SelectValue placeholder="State" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {US_STATES.map((state) => (
+                                      <SelectItem key={state.value} value={state.value}>
+                                        {state.label}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-address-zip-${propertyId}`}>ZIP Code</Label>
+                                <Input
+                                  id={`property-address-zip-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.address.zip` as const)}
+                                  data-testid={`input-property-zip-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`property-address-county-${propertyId}`}>County</Label>
+                                <Input
+                                  id={`property-address-county-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.address.county` as const)}
+                                  data-testid={`input-property-county-${propertyId}`}
+                                />
+                              </div>
+                            </div>
+
+                            {/* Property Details */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-type-${propertyId}`}>Property Type</Label>
+                                <Input
+                                  id={`property-type-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.propertyType` as const)}
+                                  placeholder="e.g., Single Family"
+                                  data-testid={`input-property-type-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-estimated-value-${propertyId}`}>Estimated Property Value</Label>
+                                <Input
+                                  id={`property-estimated-value-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.estimatedValue` as const)}
+                                  placeholder="$0.00"
+                                  data-testid={`input-property-estimated-value-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-appraised-value-${propertyId}`}>Appraised Value</Label>
+                                <Input
+                                  id={`property-appraised-value-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.appraisedValue` as const)}
+                                  placeholder="$0.00"
+                                  data-testid={`input-property-appraised-value-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-owned-since-${propertyId}`}>Owned Since</Label>
+                                <Input
+                                  id={`property-owned-since-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.ownedSince` as const)}
+                                  placeholder="MM/YYYY"
+                                  data-testid={`input-property-owned-since-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-purchase-price-${propertyId}`}>Purchase Price</Label>
+                                <Input
+                                  id={`property-purchase-price-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.purchasePrice` as const)}
+                                  placeholder="$0.00"
+                                  data-testid={`input-property-purchase-price-${propertyId}`}
+                                />
+                              </div>
+                            </div>
+
+                            {/* Loan Details Box */}
+                            <Card className="border-2 border-dashed">
+                              <CardHeader>
+                                <CardTitle className="text-lg">Loan Details</CardTitle>
+                              </CardHeader>
+                              <CardContent>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`property-lender-name-${propertyId}`}>Lender Name</Label>
+                                    <Input
+                                      id={`property-lender-name-${propertyId}`}
+                                      {...form.register(`property.properties.${index}.loan.lenderName` as const)}
+                                      data-testid={`input-property-lender-name-${propertyId}`}
+                                    />
+                                  </div>
+                                  
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`property-loan-number-${propertyId}`}>Loan Number</Label>
+                                    <Input
+                                      id={`property-loan-number-${propertyId}`}
+                                      {...form.register(`property.properties.${index}.loan.loanNumber` as const)}
+                                      data-testid={`input-property-loan-number-${propertyId}`}
+                                    />
+                                  </div>
+                                  
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`property-mortgage-balance-${propertyId}`}>Mortgage Balance</Label>
+                                    <Input
+                                      id={`property-mortgage-balance-${propertyId}`}
+                                      {...form.register(`property.properties.${index}.loan.mortgageBalance` as const)}
+                                      placeholder="$0.00"
+                                      data-testid={`input-property-mortgage-balance-${propertyId}`}
+                                    />
+                                  </div>
+                                  
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`property-pi-payment-${propertyId}`}>P&I Payment</Label>
+                                    <Input
+                                      id={`property-pi-payment-${propertyId}`}
+                                      {...form.register(`property.properties.${index}.loan.piPayment` as const)}
+                                      placeholder="$0.00"
+                                      onChange={(e) => {
+                                        form.setValue(`property.properties.${index}.loan.piPayment` as const, e.target.value);
+                                        calculateTotalMonthlyPayment(propertyId);
+                                      }}
+                                      data-testid={`input-property-pi-payment-${propertyId}`}
+                                    />
+                                  </div>
+                                  
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`property-escrow-payment-${propertyId}`}>Escrow Payment</Label>
+                                    <Input
+                                      id={`property-escrow-payment-${propertyId}`}
+                                      {...form.register(`property.properties.${index}.loan.escrowPayment` as const)}
+                                      placeholder="$0.00"
+                                      onChange={(e) => {
+                                        form.setValue(`property.properties.${index}.loan.escrowPayment` as const, e.target.value);
+                                        calculateTotalMonthlyPayment(propertyId);
+                                      }}
+                                      data-testid={`input-property-escrow-payment-${propertyId}`}
+                                    />
+                                  </div>
+                                  
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`property-total-payment-${propertyId}`}>Total Monthly Payment</Label>
+                                    <Input
+                                      id={`property-total-payment-${propertyId}`}
+                                      {...form.register(`property.properties.${index}.loan.totalMonthlyPayment` as const)}
+                                      placeholder="$0.00"
+                                      readOnly
+                                      className="bg-muted"
+                                      data-testid={`input-property-total-payment-${propertyId}`}
+                                    />
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+
+                            {/* Subject Property Selection */}
+                            <Card className="bg-muted">
+                              <CardContent className="pt-6">
+                                <div className="space-y-3">
+                                  <Label className="text-base font-semibold">Is this the subject property?</Label>
+                                  <div className="flex gap-4">
+                                    <div className="flex items-center space-x-2">
+                                      <input
+                                        type="radio"
+                                        id={`subject-yes-${propertyId}`}
+                                        name={`subject-${propertyId}`}
+                                        checked={property.isSubject === true}
+                                        onChange={() => setSubjectProperty(propertyId)}
+                                        data-testid={`radio-subject-yes-${propertyId}`}
+                                      />
+                                      <Label htmlFor={`subject-yes-${propertyId}`}>Yes</Label>
+                                    </div>
+                                    
+                                    <div className="flex items-center space-x-2">
+                                      <input
+                                        type="radio"
+                                        id={`subject-no-${propertyId}`}
+                                        name={`subject-${propertyId}`}
+                                        checked={property.isSubject === false}
+                                        onChange={() => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const updatedProperties = properties.map(p => 
+                                            p.id === propertyId ? { ...p, isSubject: false } : p
+                                          );
+                                          form.setValue('property.properties', updatedProperties);
+                                        }}
+                                        data-testid={`radio-subject-no-${propertyId}`}
+                                      />
+                                      <Label htmlFor={`subject-no-${propertyId}`}>No</Label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </div>
+                        </CardContent>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  </Card>
+                );
+              })}
+
+              {/* Keep existing Subject Property Address for borrower info */}
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -2730,129 +3261,6 @@ export default function AdminAddClient() {
                         data-testid="input-borrower-subject-county"
                       />
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Property Information</CardTitle>
-                </CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {/* Property Address Fields */}
-                  <div className="md:col-span-3 space-y-4">
-                    <Label className="text-base font-semibold">Property Address</Label>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="property-street">Street Address</Label>
-                        <Input
-                          id="property-street"
-                          {...form.register('property.propertyAddress.street')}
-                          data-testid="input-property-street"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="property-unit">Unit/Apt</Label>
-                        <Input
-                          id="property-unit"
-                          {...form.register('property.propertyAddress.unit')}
-                          data-testid="input-property-unit"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="property-city">City</Label>
-                        <Input
-                          id="property-city"
-                          {...form.register('property.propertyAddress.city')}
-                          data-testid="input-property-city"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="property-state">State</Label>
-                        <Input
-                          id="property-state"
-                          {...form.register('property.propertyAddress.state')}
-                          data-testid="input-property-state"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="property-zip">ZIP Code</Label>
-                        <Input
-                          id="property-zip"
-                          {...form.register('property.propertyAddress.zip')}
-                          data-testid="input-property-zip"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="property-propertyType">Property Type</Label>
-                    <Select 
-                      value={form.watch('property.propertyType') || ''}
-                      onValueChange={(value) => form.setValue('property.propertyType', value as any)}
-                    >
-                      <SelectTrigger data-testid="select-property-propertyType">
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="single-family">Single Family</SelectItem>
-                        <SelectItem value="condo">Condo</SelectItem>
-                        <SelectItem value="townhouse">Townhouse</SelectItem>
-                        <SelectItem value="multi-family">Multi-Family</SelectItem>
-                        <SelectItem value="land">Land</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="property-propertyValue">Property Value</Label>
-                    <Input
-                      id="property-propertyValue"
-                      {...form.register('property.propertyValue')}
-                      placeholder="$0.00"
-                      data-testid="input-property-propertyValue"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="property-propertyUse">Property Use</Label>
-                    <Select 
-                      value={form.watch('property.propertyUse') || ''}
-                      onValueChange={(value) => form.setValue('property.propertyUse', value as any)}
-                    >
-                      <SelectTrigger data-testid="select-property-propertyUse">
-                        <SelectValue placeholder="Select use" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="primary">Primary Residence</SelectItem>
-                        <SelectItem value="secondary">Secondary Home</SelectItem>
-                        <SelectItem value="investment">Investment Property</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="property-downPayment">Down Payment</Label>
-                    <Input
-                      id="property-downPayment"
-                      {...form.register('property.downPayment')}
-                      placeholder="$0.00"
-                      data-testid="input-property-downPayment"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="property-purchasePrice">Purchase Price</Label>
-                    <Input
-                      id="property-purchasePrice"
-                      {...form.register('property.purchasePrice')}
-                      placeholder="$0.00"
-                      data-testid="input-property-purchasePrice"
-                    />
                   </div>
                 </CardContent>
               </Card>

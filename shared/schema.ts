@@ -114,13 +114,34 @@ export const incomeSchema = z.object({
   backDTI: z.string().optional(),
 });
 
-export const propertySchema = z.object({
-  propertyAddress: addressSchema.partial().optional(),
-  propertyType: z.enum(["single-family", "condo", "townhouse", "multi-family", "land", ""]).optional(),
-  propertyValue: z.string().optional(),
-  propertyUse: z.enum(["primary", "secondary", "investment", ""]).optional(),
-  downPayment: z.string().optional(),
+// Loan details schema for property loan information
+export const loanDetailSchema = z.object({
+  lenderName: z.string().optional(),
+  loanNumber: z.string().optional(),
+  mortgageBalance: z.string().optional(),
+  piPayment: z.string().optional(),
+  escrowPayment: z.string().optional(),
+  totalMonthlyPayment: z.string().optional(),
+});
+
+// Individual property entry schema
+export const propertyEntrySchema = z.object({
+  id: z.string().optional(),
+  use: z.enum(["primary", "second-home", "investment"]).optional(),
+  isSubject: z.boolean().optional(),
+  address: addressSchema.partial().optional(),
+  propertyType: z.string().optional(),
+  estimatedValue: z.string().optional(),
+  appraisedValue: z.string().optional(),
+  ownedSince: z.string().optional(),
   purchasePrice: z.string().optional(),
+  loan: loanDetailSchema.optional(),
+});
+
+// Property section schema with multiple properties support
+export const propertySchema = z.object({
+  estimatedLTV: z.string().optional(),
+  properties: z.array(propertyEntrySchema).optional(),
 });
 
 export const currentLoanSchema = z.object({
