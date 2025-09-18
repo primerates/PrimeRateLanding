@@ -12,7 +12,10 @@ import {
   Building2, 
   Search,
   LogOut,
-  User
+  User,
+  BarChart3,
+  UserCheck,
+  Handshake
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
@@ -22,13 +25,18 @@ export default function AdminDashboard() {
   const { toast } = useToast();
 
   const menuItems = [
+    // Line 1
     { id: 'pipeline', label: 'Pipeline', icon: LayoutDashboard, path: '/admin/pipeline' },
     { id: 'loan-prep', label: 'Loan Prep', icon: FileText, path: '/admin/loan-prep' },
     { id: 'quotes', label: 'Quotes', icon: Calculator, path: '/admin/quotes' },
+    { id: 'stats', label: 'Stats', icon: BarChart3, path: '/admin/stats' },
+    { id: 'search', label: 'Search', icon: Search, path: '/admin/search' },
+    // Line 2
     { id: 'add-client', label: 'Add Client', icon: UserPlus, path: '/admin/add-client' },
     { id: 'add-comment', label: 'Add Comment', icon: MessageSquare, path: '/admin/add-comment' },
+    { id: 'add-staff', label: 'Add Staff', icon: UserCheck, path: '/admin/add-staff' },
     { id: 'add-vendor', label: 'Add Vendor', icon: Building2, path: '/admin/add-vendor' },
-    { id: 'search', label: 'Search', icon: Search, path: '/admin/search' },
+    { id: 'add-partner', label: 'Add Partner', icon: Handshake, path: '/admin/add-partner' },
   ];
 
   const handleLogout = async () => {
@@ -63,7 +71,7 @@ export default function AdminDashboard() {
               <Separator orientation="vertical" className="h-6 bg-primary-foreground/20" />
               <button 
                 onClick={() => setLocation('/')}
-                className="text-primary-foreground/80 hover:text-primary-foreground cursor-pointer transition-colors"
+                className="text-primary-foreground/80 hover:bg-orange-500 hover:text-white hover:border-orange-500 px-3 py-1 rounded cursor-pointer transition-colors"
                 data-testid="button-back-to-website"
               >
                 Back to Website
@@ -79,7 +87,7 @@ export default function AdminDashboard() {
                 variant="ghost"
                 size="sm"
                 onClick={handleLogout}
-                className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/10"
+                className="text-primary-foreground hover:bg-orange-500 hover:text-white hover:border-orange-500"
                 data-testid="button-admin-logout"
               >
                 <LogOut className="h-4 w-4 mr-2" />
@@ -99,7 +107,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Menu Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -122,7 +130,7 @@ export default function AdminDashboard() {
                     className="w-full"
                     data-testid={`button-admin-${item.id}`}
                   >
-                    Access {item.label}
+                    {item.label}
                   </Button>
                 </CardContent>
               </Card>
