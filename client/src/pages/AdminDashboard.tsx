@@ -59,18 +59,7 @@ export default function AdminDashboard() {
   };
 
   const getTileHoverClass = (itemId: string) => {
-    switch (itemId) {
-      case 'pipeline':
-        return 'hover:bg-orange-500 hover:text-white';
-      case 'loan-prep':
-        return 'hover:bg-green-300 hover:text-black';
-      case 'quotes':
-        return 'hover:bg-blue-300 hover:text-black';
-      case 'stats':
-        return 'hover:border-orange-500 hover:border-2';
-      default:
-        return 'hover-elevate';
-    }
+    return 'hover:border-orange-500 hover:border-2';
   };
 
   return (
