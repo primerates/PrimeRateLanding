@@ -1642,7 +1642,7 @@ export default function AdminAddClient() {
               })() && (
                 <Card>
                   <CardHeader>
-                    <CardTitle>Prior Borrower Residence Address</CardTitle>
+                    <CardTitle>Borrower's Prior Residence Address</CardTitle>
                   </CardHeader>
                   <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div className="space-y-2">
@@ -2058,7 +2058,7 @@ export default function AdminAddClient() {
                 })() && (
                   <Card>
                     <CardHeader>
-                      <CardTitle>Prior Co-Borrower Residence Address</CardTitle>
+                      <CardTitle>Co-Borrower's Prior Residence Address</CardTitle>
                     </CardHeader>
                     <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       <div className="space-y-2">
