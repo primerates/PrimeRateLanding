@@ -58,6 +58,19 @@ export default function AdminDashboard() {
     setLocation(path);
   };
 
+  const getTileHoverClass = (itemId: string) => {
+    switch (itemId) {
+      case 'pipeline':
+        return 'hover:bg-orange-500 hover:text-white';
+      case 'loan-prep':
+        return 'hover:bg-green-300 hover:text-black';
+      case 'quotes':
+        return 'hover:bg-blue-300 hover:text-black';
+      default:
+        return 'hover-elevate';
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -100,7 +113,7 @@ export default function AdminDashboard() {
 
       {/* Main Content */}
       <div className="container mx-auto px-6 py-8">
-        <div className="mb-8">
+        <div className="mb-16">
           <h2 className="text-2xl font-bold mb-2" data-testid="text-dashboard-welcome">
             Dashboard
           </h2>
@@ -113,7 +126,7 @@ export default function AdminDashboard() {
             return (
               <Card 
                 key={item.id}
-                className="hover-elevate cursor-pointer transition-all duration-200"
+                className={`cursor-pointer transition-all duration-200 ${getTileHoverClass(item.id)}`}
                 onClick={() => handleMenuClick(item.path)}
                 data-testid={`card-admin-${item.id}`}
               >
@@ -123,16 +136,6 @@ export default function AdminDashboard() {
                   </div>
                   <CardTitle className="text-lg">{item.label}</CardTitle>
                 </CardHeader>
-                <CardContent className="text-center pt-0">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="w-full"
-                    data-testid={`button-admin-${item.id}`}
-                  >
-                    Open
-                  </Button>
-                </CardContent>
               </Card>
             );
           })}
@@ -145,7 +148,7 @@ export default function AdminDashboard() {
             return (
               <Card 
                 key={item.id}
-                className="hover-elevate cursor-pointer transition-all duration-200"
+                className={`cursor-pointer transition-all duration-200 ${getTileHoverClass(item.id)}`}
                 onClick={() => handleMenuClick(item.path)}
                 data-testid={`card-admin-${item.id}`}
               >
@@ -155,16 +158,6 @@ export default function AdminDashboard() {
                   </div>
                   <CardTitle className="text-lg">{item.label}</CardTitle>
                 </CardHeader>
-                <CardContent className="text-center pt-0">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="w-full"
-                    data-testid={`button-admin-${item.id}`}
-                  >
-                    Open
-                  </Button>
-                </CardContent>
               </Card>
             );
           })}
