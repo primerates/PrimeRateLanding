@@ -153,6 +153,11 @@ export const propertyEntrySchema = z.object({
   address: addressSchema.partial().optional(),
   propertyType: z.string().optional(),
   estimatedValue: z.string().optional(),
+  valuations: z.object({
+    zillow: z.string().optional(),
+    redfin: z.string().optional(),
+    realtor: z.string().optional(),
+  }).optional(),
   appraisedValue: z.string().optional(),
   ownedSince: z.string().optional(),
   purchasePrice: z.string().optional(),

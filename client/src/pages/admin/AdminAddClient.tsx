@@ -14,7 +14,8 @@ import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Save, Minus } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Minus, Home, Building } from 'lucide-react';
+import { SiZillow } from 'react-icons/si';
 import { nanoid } from 'nanoid';
 import { insertClientSchema, type InsertClient } from '@shared/schema';
 import { apiRequest } from '@/lib/queryClient';
@@ -438,6 +439,16 @@ export default function AdminAddClient() {
     itemType?: string;
     onConfirm?: () => void;
   }>({ isOpen: false, type: null });
+
+  // Property valuation modal state
+  const [valuationDialog, setValuationDialog] = useState<{
+    isOpen: boolean;
+    service: 'zillow' | 'redfin' | 'realtor' | null;
+    propertyIndex: number | null;
+    currentValue: string;
+  }>({ isOpen: false, service: null, propertyIndex: null, currentValue: '' });
+  
+  const [valuationInput, setValuationInput] = useState('');
 
   // Unsaved changes warning dialog state
   const [unsavedChangesDialog, setUnsavedChangesDialog] = useState<{
@@ -1047,6 +1058,38 @@ export default function AdminAddClient() {
     });
   };
 
+  // Property valuation handlers
+  const openValuationDialog = (service: 'zillow' | 'redfin' | 'realtor', propertyIndex: number) => {
+    const currentValue = form.watch(`property.properties.${propertyIndex}.valuations.${service}`) || '';
+    setValuationInput(currentValue);
+    setValuationDialog({
+      isOpen: true,
+      service,
+      propertyIndex,
+      currentValue
+    });
+  };
+
+  const closeValuationDialog = () => {
+    setValuationDialog({ isOpen: false, service: null, propertyIndex: null, currentValue: '' });
+    setValuationInput('');
+  };
+
+  const saveValuation = () => {
+    if (valuationDialog.propertyIndex !== null && valuationDialog.service) {
+      form.setValue(`property.properties.${valuationDialog.propertyIndex}.valuations.${valuationDialog.service}`, valuationInput);
+      closeValuationDialog();
+    }
+  };
+
+  const saveAndApplyValuation = () => {
+    if (valuationDialog.propertyIndex !== null && valuationDialog.service) {
+      form.setValue(`property.properties.${valuationDialog.propertyIndex}.valuations.${valuationDialog.service}`, valuationInput);
+      form.setValue(`property.properties.${valuationDialog.propertyIndex}.estimatedValue`, valuationInput);
+      closeValuationDialog();
+    }
+  };
+
   // Property management helper functions
   const addProperty = (use: 'primary' | 'second-home' | 'investment') => {
     const currentProperties = form.watch('property.properties') || [];
@@ -1057,6 +1100,11 @@ export default function AdminAddClient() {
       address: {},
       propertyType: '',
       estimatedValue: '',
+      valuations: {
+        zillow: '',
+        redfin: '',
+        realtor: '',
+      },
       appraisedValue: '',
       ownedSince: '',
       purchasePrice: '',
@@ -5103,7 +5151,46 @@ export default function AdminAddClient() {
                               </div>
                               
                               <div className="space-y-2">
-                                <Label htmlFor={`property-estimated-value-${propertyId}`}>Estimated Property Value</Label>
+                                <div className="flex items-center gap-2">
+                                  <Label htmlFor={`property-estimated-value-${propertyId}`}>Estimated Property Value</Label>
+                                  {property.use === 'primary' && (
+                                    <div className="flex items-center gap-1 ml-auto">
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                        onClick={() => openValuationDialog('zillow', index)}
+                                        data-testid={`button-zillow-valuation-${propertyId}`}
+                                        title="Get Zillow valuation"
+                                      >
+                                        <SiZillow className="h-4 w-4" />
+                                      </Button>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-red-600 hover:text-red-800"
+                                        onClick={() => openValuationDialog('redfin', index)}
+                                        data-testid={`button-redfin-valuation-${propertyId}`}
+                                        title="Get Redfin valuation"
+                                      >
+                                        <Home className="h-4 w-4" />
+                                      </Button>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-purple-600 hover:text-purple-800"
+                                        onClick={() => openValuationDialog('realtor', index)}
+                                        data-testid={`button-realtor-valuation-${propertyId}`}
+                                        title="Get Realtor.com valuation"
+                                      >
+                                        <Building className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                  )}
+                                </div>
                                 <Input
                                   id={`property-estimated-value-${propertyId}`}
                                   {...form.register(`property.properties.${index}.estimatedValue` as const)}
@@ -5931,6 +6018,60 @@ export default function AdminAddClient() {
               data-testid="button-unsaved-changes-yes"
             >
               Yes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Property Valuation Dialog */}
+      <Dialog open={valuationDialog.isOpen} onOpenChange={(open) => !open && closeValuationDialog()}>
+        <DialogContent data-testid="dialog-property-valuation">
+          <DialogHeader>
+            <DialogTitle>
+              {valuationDialog.service === 'zillow' && 'Zillow Valuation'}
+              {valuationDialog.service === 'redfin' && 'Redfin Valuation'}
+              {valuationDialog.service === 'realtor' && 'Realtor.com Valuation'}
+            </DialogTitle>
+            <DialogDescription>
+              Enter the property valuation from {valuationDialog.service === 'zillow' && 'Zillow.com'}
+              {valuationDialog.service === 'redfin' && 'Redfin.com'}
+              {valuationDialog.service === 'realtor' && 'Realtor.com'}.
+              You can save the value for reference or apply it to the estimated property value field.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="valuation-input">Property Value</Label>
+              <Input
+                id="valuation-input"
+                value={valuationInput}
+                onChange={(e) => setValuationInput(e.target.value)}
+                placeholder="$0.00"
+                data-testid="input-valuation-amount"
+              />
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={closeValuationDialog}
+              data-testid="button-valuation-cancel"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="outline"
+              onClick={saveValuation}
+              data-testid="button-valuation-save"
+            >
+              Save
+            </Button>
+            <Button
+              onClick={saveAndApplyValuation}
+              className="bg-orange-500 hover:bg-orange-600 text-white"
+              data-testid="button-valuation-save-apply"
+            >
+              Save & Apply to Estimated Value
             </Button>
           </DialogFooter>
         </DialogContent>
