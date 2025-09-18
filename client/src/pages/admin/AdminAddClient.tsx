@@ -376,6 +376,27 @@ export default function AdminAddClient() {
     });
   };
   
+  // Function to remove a third loan
+  const removeThirdLoan = (propertyIndex: number) => {
+    setConfirmRemovalDialog({
+      isOpen: true,
+      type: 'third-loan',
+      itemId: propertyIndex.toString(),
+      onConfirm: () => {
+        form.setValue(`property.properties.${propertyIndex}.activeThirdLoan` as const, '');
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan` as const, {
+          lenderName: '',
+          loanNumber: '',
+          mortgageBalance: '',
+          piPayment: '',
+          escrowPayment: '',
+          totalMonthlyPayment: '',
+        });
+        setConfirmRemovalDialog({ isOpen: false, type: null });
+      }
+    });
+  };
+  
   // Borrower income section collapsible states
   const [isEmploymentIncomeOpen, setIsEmploymentIncomeOpen] = useState(true);
   const [isPriorEmploymentIncomeOpen, setIsPriorEmploymentIncomeOpen] = useState(true);
@@ -412,7 +433,7 @@ export default function AdminAddClient() {
   // Removal confirmation dialog state
   const [confirmRemovalDialog, setConfirmRemovalDialog] = useState<{
     isOpen: boolean;
-    type: 'co-borrower' | 'property' | 'property-type' | 'income' | 'prior-address' | null;
+    type: 'co-borrower' | 'property' | 'property-type' | 'income' | 'prior-address' | 'third-loan' | null;
     itemId?: string;
     itemType?: string;
     onConfirm?: () => void;
@@ -5336,6 +5357,106 @@ export default function AdminAddClient() {
                                       readOnly
                                       className="bg-muted"
                                       data-testid={`input-property-second-total-monthly-payment-${propertyId}`}
+                                    />
+                                  </div>
+                                </div>
+                                
+                                {/* Add Third Loan Button */}
+                                {!form.watch(`property.properties.${index}.activeThirdLoan` as const) && (
+                                  <div className="mt-4 flex justify-center">
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => form.setValue(`property.properties.${index}.activeThirdLoan` as const, 'yes')}
+                                      className="hover:bg-blue-500 hover:text-white"
+                                      data-testid={`button-add-third-loan-${propertyId}`}
+                                    >
+                                      <Plus className="h-4 w-4 mr-2" />
+                                      Add Third Loan
+                                    </Button>
+                                  </div>
+                                )}
+                              </CardContent>
+                            </Card>
+                            )}
+
+                            {/* Third Loan Details Box - Only show when activeThirdLoan is 'yes' and property is primary/second-home */}
+                            {(property.use === 'primary' || property.use === 'second-home') && form.watch(`property.properties.${index}.activeThirdLoan` as const) === 'yes' && (
+                            <Card className="border-2 border-dashed">
+                              <CardHeader className="flex flex-row items-center justify-between">
+                                <CardTitle className="text-lg">Third Loan Details</CardTitle>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => removeThirdLoan(index)}
+                                  className="hover:bg-orange-500 hover:text-white"
+                                  data-testid={`button-remove-third-loan-${propertyId}`}
+                                >
+                                  <Minus className="h-4 w-4 mr-2" />
+                                  Remove
+                                </Button>
+                              </CardHeader>
+                              <CardContent>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`property-third-lender-name-${propertyId}`}>Lender Name</Label>
+                                    <Input
+                                      id={`property-third-lender-name-${propertyId}`}
+                                      {...form.register(`property.properties.${index}.thirdLoan.lenderName` as const)}
+                                      data-testid={`input-property-third-lender-name-${propertyId}`}
+                                    />
+                                  </div>
+                                  
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`property-third-loan-number-${propertyId}`}>Loan Number</Label>
+                                    <Input
+                                      id={`property-third-loan-number-${propertyId}`}
+                                      {...form.register(`property.properties.${index}.thirdLoan.loanNumber` as const)}
+                                      data-testid={`input-property-third-loan-number-${propertyId}`}
+                                    />
+                                  </div>
+                                  
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`property-third-mortgage-balance-${propertyId}`}>Mortgage Balance</Label>
+                                    <Input
+                                      id={`property-third-mortgage-balance-${propertyId}`}
+                                      {...form.register(`property.properties.${index}.thirdLoan.mortgageBalance` as const)}
+                                      placeholder="$0.00"
+                                      data-testid={`input-property-third-mortgage-balance-${propertyId}`}
+                                    />
+                                  </div>
+                                  
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`property-third-pi-payment-${propertyId}`}>Principal & Interest Payment</Label>
+                                    <Input
+                                      id={`property-third-pi-payment-${propertyId}`}
+                                      {...form.register(`property.properties.${index}.thirdLoan.piPayment` as const)}
+                                      placeholder="$0.00"
+                                      data-testid={`input-property-third-pi-payment-${propertyId}`}
+                                    />
+                                  </div>
+                                  
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`property-third-escrow-payment-${propertyId}`}>Other</Label>
+                                    <Input
+                                      id={`property-third-escrow-payment-${propertyId}`}
+                                      {...form.register(`property.properties.${index}.thirdLoan.escrowPayment` as const)}
+                                      placeholder="$0.00"
+                                      data-testid={`input-property-third-escrow-payment-${propertyId}`}
+                                    />
+                                  </div>
+                                  
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`property-third-total-monthly-payment-${propertyId}`}>Total Monthly Payment</Label>
+                                    <Input
+                                      id={`property-third-total-monthly-payment-${propertyId}`}
+                                      {...form.register(`property.properties.${index}.thirdLoan.totalMonthlyPayment` as const)}
+                                      placeholder="$0.00"
+                                      readOnly
+                                      className="bg-muted"
+                                      data-testid={`input-property-third-total-monthly-payment-${propertyId}`}
                                     />
                                   </div>
                                 </div>
