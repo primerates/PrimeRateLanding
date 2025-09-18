@@ -447,6 +447,15 @@ export default function AdminAddClient() {
     propertyIndex: number | null;
     currentValue: string;
   }>({ isOpen: false, service: null, propertyIndex: null, currentValue: '' });
+
+  // Property valuation hover tooltip state
+  const [valuationHover, setValuationHover] = useState<{
+    isVisible: boolean;
+    service: 'zillow' | 'redfin' | 'realtor' | null;
+    propertyIndex: number | null;
+    value: string;
+    position: { x: number; y: number };
+  }>({ isVisible: false, service: null, propertyIndex: null, value: '', position: { x: 0, y: 0 } });
   
   const [valuationInput, setValuationInput] = useState('');
 
@@ -1088,6 +1097,23 @@ export default function AdminAddClient() {
       form.setValue(`property.properties.${valuationDialog.propertyIndex}.estimatedValue`, valuationInput);
       closeValuationDialog();
     }
+  };
+
+  // Property valuation hover handlers
+  const handleValuationHover = (service: 'zillow' | 'redfin' | 'realtor', propertyIndex: number, event: React.MouseEvent) => {
+    const savedValue = form.watch(`property.properties.${propertyIndex}.valuations.${service}`) || '';
+    const rect = event.currentTarget.getBoundingClientRect();
+    setValuationHover({
+      isVisible: true,
+      service,
+      propertyIndex,
+      value: savedValue,
+      position: { x: rect.left + window.scrollX, y: rect.bottom + window.scrollY + 5 }
+    });
+  };
+
+  const handleValuationHoverLeave = () => {
+    setValuationHover({ isVisible: false, service: null, propertyIndex: null, value: '', position: { x: 0, y: 0 } });
   };
 
   // Property management helper functions
@@ -5153,43 +5179,47 @@ export default function AdminAddClient() {
                               <div className="space-y-2">
                                 <div className="flex items-center gap-2">
                                   <Label htmlFor={`property-estimated-value-${propertyId}`}>Estimated Property Value</Label>
-                                  {property.use === 'primary' && (
-                                    <div className="flex items-center gap-1 ml-auto">
-                                      <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="sm"
-                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                                        onClick={() => openValuationDialog('zillow', index)}
-                                        data-testid={`button-zillow-valuation-${propertyId}`}
-                                        title="Get Zillow valuation"
-                                      >
-                                        <SiZillow className="h-4 w-4" />
-                                      </Button>
-                                      <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="sm"
-                                        className="p-1 h-auto text-red-600 hover:text-red-800"
-                                        onClick={() => openValuationDialog('redfin', index)}
-                                        data-testid={`button-redfin-valuation-${propertyId}`}
-                                        title="Get Redfin valuation"
-                                      >
-                                        <Home className="h-4 w-4" />
-                                      </Button>
-                                      <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="sm"
-                                        className="p-1 h-auto text-purple-600 hover:text-purple-800"
-                                        onClick={() => openValuationDialog('realtor', index)}
-                                        data-testid={`button-realtor-valuation-${propertyId}`}
-                                        title="Get Realtor.com valuation"
-                                      >
-                                        <Building className="h-4 w-4" />
-                                      </Button>
-                                    </div>
-                                  )}
+                                  <div className="flex items-center gap-1">
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                      onClick={() => openValuationDialog('zillow', index)}
+                                      onMouseEnter={(e) => handleValuationHover('zillow', index, e)}
+                                      onMouseLeave={handleValuationHoverLeave}
+                                      data-testid={`button-zillow-valuation-${propertyId}`}
+                                      title="Get Zillow valuation"
+                                    >
+                                      <SiZillow className="h-4 w-4" />
+                                    </Button>
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      className="p-1 h-auto text-red-600 hover:text-red-800"
+                                      onClick={() => openValuationDialog('redfin', index)}
+                                      onMouseEnter={(e) => handleValuationHover('redfin', index, e)}
+                                      onMouseLeave={handleValuationHoverLeave}
+                                      data-testid={`button-redfin-valuation-${propertyId}`}
+                                      title="Get Redfin valuation"
+                                    >
+                                      <Home className="h-4 w-4" />
+                                    </Button>
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      className="p-1 h-auto text-purple-600 hover:text-purple-800"
+                                      onClick={() => openValuationDialog('realtor', index)}
+                                      onMouseEnter={(e) => handleValuationHover('realtor', index, e)}
+                                      onMouseLeave={handleValuationHoverLeave}
+                                      data-testid={`button-realtor-valuation-${propertyId}`}
+                                      title="Get Realtor.com valuation"
+                                    >
+                                      <Building className="h-4 w-4" />
+                                    </Button>
+                                  </div>
                                 </div>
                                 <Input
                                   id={`property-estimated-value-${propertyId}`}
@@ -6076,6 +6106,34 @@ export default function AdminAddClient() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Property Valuation Hover Tooltip */}
+      {valuationHover.isVisible && (
+        <div
+          className="fixed z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg p-3 max-w-xs"
+          style={{
+            left: valuationHover.position.x,
+            top: valuationHover.position.y,
+          }}
+          data-testid="tooltip-valuation-hover"
+        >
+          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+            {valuationHover.service === 'zillow' && 'Zillow Valuation'}
+            {valuationHover.service === 'redfin' && 'Redfin Valuation'}
+            {valuationHover.service === 'realtor' && 'Realtor.com Valuation'}
+          </div>
+          <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+            {valuationHover.value ? (
+              <span className="font-mono">{valuationHover.value}</span>
+            ) : (
+              <span className="italic">No value saved</span>
+            )}
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+            Click to open full editor
+          </div>
+        </div>
+      )}
     </div>
   );
 }
