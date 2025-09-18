@@ -36,8 +36,7 @@ export default function Footer() {
           <div className="flex space-x-6 mt-4 md:mt-0">
             {[
               'Privacy Policy',
-              'Terms of Service',
-              'Sitemap'
+              'Terms of Service'
             ].map((link, index) => (
               <a 
                 key={index}

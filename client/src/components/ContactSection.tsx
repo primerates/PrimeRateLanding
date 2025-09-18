@@ -462,7 +462,7 @@ export default function ContactSection() {
                     data-testid="button-submit-contact"
                     disabled={contactSubmitting}
                     onClick={() => {
-                      if (!contactSubmitting) {
+                      if (!contactSubmitting && validateContactForm()) {
                         setPlanePath(circlePath());
                         setShowPlaneAnimation(true);
                       }

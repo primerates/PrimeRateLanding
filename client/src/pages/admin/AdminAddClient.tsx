@@ -3388,7 +3388,7 @@ export default function AdminAddClient() {
                               </div>
                             )}
                             <CollapsibleTrigger asChild>
-                              <Button variant="ghost" size="sm" data-testid={`button-toggle-property-${propertyId}`}>
+                              <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid={`button-toggle-property-${propertyId}`}>
                                 {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                               </Button>
                             </CollapsibleTrigger>
