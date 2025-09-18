@@ -343,7 +343,37 @@ export default function AdminAddClient() {
 
   // Function to remove a prior address
   const removeBorrowerPriorAddress = (addressId: string) => {
-    setBorrowerPriorAddresses(prev => prev.filter(addr => addr.id !== addressId));
+    setConfirmRemovalDialog({
+      isOpen: true,
+      type: 'prior-address',
+      itemId: addressId,
+      onConfirm: () => {
+        setBorrowerPriorAddresses(prev => prev.filter(addr => addr.id !== addressId));
+        setConfirmRemovalDialog({ isOpen: false, type: null });
+      }
+    });
+  };
+
+  // Co-borrower multiple prior addresses state management
+  const [coBorrowerPriorAddresses, setCoBorrowerPriorAddresses] = useState<{ id: string }[]>([]);
+
+  // Function to add a new co-borrower prior address
+  const addCoBorrowerPriorAddress = () => {
+    const newAddress = { id: crypto.randomUUID() };
+    setCoBorrowerPriorAddresses(prev => [...prev, newAddress]);
+  };
+
+  // Function to remove a co-borrower prior address
+  const removeCoBorrowerPriorAddress = (addressId: string) => {
+    setConfirmRemovalDialog({
+      isOpen: true,
+      type: 'prior-address',
+      itemId: addressId,
+      onConfirm: () => {
+        setCoBorrowerPriorAddresses(prev => prev.filter(addr => addr.id !== addressId));
+        setConfirmRemovalDialog({ isOpen: false, type: null });
+      }
+    });
   };
   
   // Borrower income section collapsible states
@@ -382,7 +412,7 @@ export default function AdminAddClient() {
   // Removal confirmation dialog state
   const [confirmRemovalDialog, setConfirmRemovalDialog] = useState<{
     isOpen: boolean;
-    type: 'co-borrower' | 'property' | 'property-type' | 'income' | null;
+    type: 'co-borrower' | 'property' | 'property-type' | 'income' | 'prior-address' | null;
     itemId?: string;
     itemType?: string;
     onConfirm?: () => void;
@@ -1805,7 +1835,7 @@ export default function AdminAddClient() {
                       variant="outline"
                       size="sm"
                       onClick={() => removeBorrowerPriorAddress(address.id)}
-                      className="hover:bg-red-500 hover:text-white"
+                      className="hover:bg-orange-500 hover:text-white"
                       data-testid={`button-remove-prior-address-${address.id}`}
                     >
                       <Minus className="h-4 w-4 mr-2" />
@@ -2188,10 +2218,11 @@ export default function AdminAddClient() {
                   const showPriorAddress = years < 2 || (years === 0 && months < 24);
                   return showPriorAddress;
                 })() && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Co-Borrower's Prior Residence Address</CardTitle>
-                    </CardHeader>
+                  <>
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Co-Borrower's Prior Residence Address</CardTitle>
+                      </CardHeader>
                     <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="coBorrower-prior-street">Street Address</Label>
@@ -2310,8 +2341,126 @@ export default function AdminAddClient() {
                           </div>
                         </div>
                       </div>
+                      
+                      <div className="md:col-span-2 lg:col-span-3 flex justify-end mt-4">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={addCoBorrowerPriorAddress}
+                          className="hover:bg-blue-500 hover:text-white"
+                          data-testid="button-add-coborrower-prior-address"
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add Prior Address
+                        </Button>
+                      </div>
                     </CardContent>
                   </Card>
+
+                  {/* Additional Co-Borrower Prior Addresses */}
+                  {coBorrowerPriorAddresses.map((address, index) => (
+                    <Card key={address.id}>
+                      <CardHeader className="flex flex-row items-center justify-between">
+                        <CardTitle>Co-Borrower's Prior Residence Address #{index + 2}</CardTitle>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => removeCoBorrowerPriorAddress(address.id)}
+                          className="hover:bg-orange-500 hover:text-white"
+                          data-testid={`button-remove-coborrower-prior-address-${address.id}`}
+                        >
+                          <Minus className="h-4 w-4 mr-2" />
+                          Remove
+                        </Button>
+                      </CardHeader>
+                      <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor={`coBorrower-prior-street-${address.id}`}>Street Address</Label>
+                          <Input
+                            id={`coBorrower-prior-street-${address.id}`}
+                            placeholder="Street Address"
+                            data-testid={`input-coborrower-prior-street-${address.id}`}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor={`coBorrower-prior-unit-${address.id}`}>Unit/Apt</Label>
+                          <Input
+                            id={`coBorrower-prior-unit-${address.id}`}
+                            placeholder="Unit/Apt"
+                            data-testid={`input-coborrower-prior-unit-${address.id}`}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor={`coBorrower-prior-city-${address.id}`}>City</Label>
+                          <Input
+                            id={`coBorrower-prior-city-${address.id}`}
+                            placeholder="City"
+                            data-testid={`input-coborrower-prior-city-${address.id}`}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor={`coBorrower-prior-state-${address.id}`}>State</Label>
+                          <Select defaultValue="">
+                            <SelectTrigger data-testid={`select-coborrower-prior-state-${address.id}`}>
+                              <SelectValue placeholder="State" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {US_STATES.map((state) => (
+                                <SelectItem key={state.value} value={state.value}>
+                                  {state.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor={`coBorrower-prior-zip-${address.id}`}>ZIP Code</Label>
+                          <Input
+                            id={`coBorrower-prior-zip-${address.id}`}
+                            placeholder="ZIP Code"
+                            data-testid={`input-coborrower-prior-zip-${address.id}`}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor={`coBorrower-prior-county-${address.id}`}>County</Label>
+                          <Input
+                            id={`coBorrower-prior-county-${address.id}`}
+                            placeholder="County"
+                            data-testid={`input-coborrower-prior-county-${address.id}`}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor={`coBorrower-prior-years-${address.id}`}>Years at this Address</Label>
+                              <Input
+                                id={`coBorrower-prior-years-${address.id}`}
+                                type="number"
+                                min="0"
+                                max="99"
+                                placeholder="Years"
+                                data-testid={`input-coborrower-prior-years-${address.id}`}
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor={`coBorrower-prior-months-${address.id}`}>Months at this Address</Label>
+                              <Input
+                                id={`coBorrower-prior-months-${address.id}`}
+                                type="number"
+                                min="0"
+                                max="11"
+                                placeholder="Months"
+                                data-testid={`input-coborrower-prior-months-${address.id}`}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                  </>
                 )}
                 </>
               )}
