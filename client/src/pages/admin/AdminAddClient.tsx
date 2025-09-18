@@ -5062,9 +5062,9 @@ export default function AdminAddClient() {
 
                             {/* Active Secured Loans for Primary Residence and Second Home - Side by Side */}
                             {(property.use === 'primary' || property.use === 'second-home') && (
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                                 <div className="space-y-2">
-                                  <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Active Secured First Loan?</Label>
+                                  <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured First Loan</Label>
                                   <Select
                                     value={form.watch(`property.properties.${index}.activeSecuredLoan` as const) || ''}
                                     onValueChange={(value) => form.setValue(`property.properties.${index}.activeSecuredLoan` as const, value)}
