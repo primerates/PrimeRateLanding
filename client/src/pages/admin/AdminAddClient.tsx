@@ -840,6 +840,15 @@ export default function AdminAddClient() {
         escrowPayment: '',
         totalMonthlyPayment: '',
       },
+      activeSecondLoan: '',
+      secondLoan: {
+        lenderName: '',
+        loanNumber: '',
+        mortgageBalance: '',
+        piPayment: '',
+        escrowPayment: '',
+        totalMonthlyPayment: '',
+      },
     };
     form.setValue('property.properties', [...currentProperties, newProperty]);
     // Set initial collapsible state for new property
@@ -4433,6 +4442,38 @@ export default function AdminAddClient() {
                               </div>
                             )}
 
+                            {/* Active new second loan for Primary Residence and Second Home */}
+                            {(property.use === 'primary' || property.use === 'second-home') && (
+                              <div className="space-y-2 mt-4">
+                                <Label htmlFor={`property-active-second-loan-${propertyId}`}>Active new second loan?</Label>
+                                <Select
+                                  value={form.watch(`property.properties.${index}.activeSecondLoan` as const) || ''}
+                                  onValueChange={(value) => {
+                                    form.setValue(`property.properties.${index}.activeSecondLoan` as const, value);
+                                    // Clear secondLoan data when toggled to "no" for data hygiene
+                                    if (value !== 'yes') {
+                                      form.setValue(`property.properties.${index}.secondLoan` as const, {
+                                        lenderName: '',
+                                        loanNumber: '',
+                                        mortgageBalance: '',
+                                        piPayment: '',
+                                        escrowPayment: '',
+                                        totalMonthlyPayment: '',
+                                      });
+                                    }
+                                  }}
+                                >
+                                  <SelectTrigger data-testid={`select-property-active-second-loan-${propertyId}`}>
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="yes">Yes</SelectItem>
+                                    <SelectItem value="no">No</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            )}
+
                             {/* Loan Details Box - Only show for Primary Residence/Second Home if activeSecuredLoan is 'yes', or always for Investment properties */}
                             {(property.use === 'investment' || form.watch(`property.properties.${index}.activeSecuredLoan` as const) === 'yes') && (
                             <Card className="border-2 border-dashed">
@@ -4589,6 +4630,78 @@ export default function AdminAddClient() {
                                       </div>
                                     </>
                                   )}
+                                </div>
+                              </CardContent>
+                            </Card>
+                            )}
+
+                            {/* Second Loan Details Box - Only show when activeSecondLoan is 'yes' and property is primary/second-home */}
+                            {(property.use === 'primary' || property.use === 'second-home') && form.watch(`property.properties.${index}.activeSecondLoan` as const) === 'yes' && (
+                            <Card className="border-2 border-dashed">
+                              <CardHeader>
+                                <CardTitle className="text-lg">Second Loan Details</CardTitle>
+                              </CardHeader>
+                              <CardContent>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`property-second-lender-name-${propertyId}`}>Lender Name</Label>
+                                    <Input
+                                      id={`property-second-lender-name-${propertyId}`}
+                                      {...form.register(`property.properties.${index}.secondLoan.lenderName` as const)}
+                                      data-testid={`input-property-second-lender-name-${propertyId}`}
+                                    />
+                                  </div>
+                                  
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`property-second-loan-number-${propertyId}`}>Loan Number</Label>
+                                    <Input
+                                      id={`property-second-loan-number-${propertyId}`}
+                                      {...form.register(`property.properties.${index}.secondLoan.loanNumber` as const)}
+                                      data-testid={`input-property-second-loan-number-${propertyId}`}
+                                    />
+                                  </div>
+                                  
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`property-second-mortgage-balance-${propertyId}`}>Mortgage Balance</Label>
+                                    <Input
+                                      id={`property-second-mortgage-balance-${propertyId}`}
+                                      {...form.register(`property.properties.${index}.secondLoan.mortgageBalance` as const)}
+                                      placeholder="$0.00"
+                                      data-testid={`input-property-second-mortgage-balance-${propertyId}`}
+                                    />
+                                  </div>
+                                  
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`property-second-pi-payment-${propertyId}`}>Principal & Interest Payment</Label>
+                                    <Input
+                                      id={`property-second-pi-payment-${propertyId}`}
+                                      {...form.register(`property.properties.${index}.secondLoan.piPayment` as const)}
+                                      placeholder="$0.00"
+                                      data-testid={`input-property-second-pi-payment-${propertyId}`}
+                                    />
+                                  </div>
+                                  
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`property-second-escrow-payment-${propertyId}`}>Escrow Payment</Label>
+                                    <Input
+                                      id={`property-second-escrow-payment-${propertyId}`}
+                                      {...form.register(`property.properties.${index}.secondLoan.escrowPayment` as const)}
+                                      placeholder="$0.00"
+                                      data-testid={`input-property-second-escrow-payment-${propertyId}`}
+                                    />
+                                  </div>
+                                  
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`property-second-total-monthly-payment-${propertyId}`}>Total Monthly Payment</Label>
+                                    <Input
+                                      id={`property-second-total-monthly-payment-${propertyId}`}
+                                      {...form.register(`property.properties.${index}.secondLoan.totalMonthlyPayment` as const)}
+                                      placeholder="$0.00"
+                                      readOnly
+                                      className="bg-muted"
+                                      data-testid={`input-property-second-total-monthly-payment-${propertyId}`}
+                                    />
+                                  </div>
                                 </div>
                               </CardContent>
                             </Card>

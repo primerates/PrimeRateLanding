@@ -155,6 +155,8 @@ export const propertyEntrySchema = z.object({
   hoaFee: z.string().optional(),
   activeSecuredLoan: z.string().optional(), // For primary residence
   loan: loanDetailSchema.optional(),
+  activeSecondLoan: z.string().optional(), // For second loan
+  secondLoan: loanDetailSchema.optional(),
 });
 
 // Property section schema with multiple properties support
