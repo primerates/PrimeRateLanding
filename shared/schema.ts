@@ -79,6 +79,15 @@ export const incomeSchema = z.object({
   employerAddress: addressSchema.partial().optional(),
   employerPhone: z.string().optional(),
   
+  // Prior Employment fields
+  priorEmployerName: z.string().optional(),
+  priorJobTitle: z.string().optional(),
+  priorMonthlyIncome: z.string().optional(),
+  priorYearsEmployedYears: z.string().optional(),
+  priorYearsEmployedMonths: z.string().optional(),
+  priorEmployerAddress: addressSchema.partial().optional(),
+  priorEmployerPhone: z.string().optional(),
+  
   // Second Employment fields
   secondEmployerName: z.string().optional(),
   secondJobTitle: z.string().optional(),

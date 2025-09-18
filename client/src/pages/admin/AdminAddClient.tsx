@@ -334,6 +334,20 @@ export default function AdminAddClient() {
           county: ''
         },
         employerPhone: '',
+        priorEmployerName: '',
+        priorJobTitle: '',
+        priorMonthlyIncome: '',
+        priorYearsEmployedYears: '',
+        priorYearsEmployedMonths: '',
+        priorEmployerAddress: {
+          street: '',
+          unit: '',
+          city: '',
+          state: '',
+          zip: '',
+          county: ''
+        },
+        priorEmployerPhone: '',
         secondEmployerName: '',
         secondJobTitle: '',
         secondMonthlyIncome: '',
@@ -396,6 +410,20 @@ export default function AdminAddClient() {
           county: ''
         },
         employerPhone: '',
+        priorEmployerName: '',
+        priorJobTitle: '',
+        priorMonthlyIncome: '',
+        priorYearsEmployedYears: '',
+        priorYearsEmployedMonths: '',
+        priorEmployerAddress: {
+          street: '',
+          unit: '',
+          city: '',
+          state: '',
+          zip: '',
+          county: ''
+        },
+        priorEmployerPhone: '',
         secondEmployerName: '',
         secondJobTitle: '',
         secondMonthlyIncome: '',
@@ -2287,7 +2315,8 @@ export default function AdminAddClient() {
               {form.watch('income.incomeTypes.employment') && (() => {
                 const years = parseInt(form.watch('income.yearsEmployedYears') || '0');
                 const months = parseInt(form.watch('income.yearsEmployedMonths') || '0');
-                const showPriorEmployment = years < 2 || (years === 0 && months < 24);
+                const totalMonths = years * 12 + months;
+                const showPriorEmployment = totalMonths < 24;
                 return showPriorEmployment;
               })() && (
                 <Card>
@@ -3244,7 +3273,8 @@ export default function AdminAddClient() {
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.employment') && (() => {
                 const years = parseInt(form.watch('coBorrowerIncome.yearsEmployedYears') || '0');
                 const months = parseInt(form.watch('coBorrowerIncome.yearsEmployedMonths') || '0');
-                const showPriorEmployment = years < 2 || (years === 0 && months < 24);
+                const totalMonths = years * 12 + months;
+                const showPriorEmployment = totalMonths < 24;
                 return showPriorEmployment;
               })() && (
                 <Card>
