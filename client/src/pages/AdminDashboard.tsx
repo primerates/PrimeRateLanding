@@ -106,9 +106,9 @@ export default function AdminDashboard() {
           </h2>
         </div>
 
-        {/* Menu Grid */}
+        {/* Menu Grid - First Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          {menuItems.map((item) => {
+          {menuItems.slice(0, 5).map((item) => {
             const Icon = item.icon;
             return (
               <Card 
@@ -130,7 +130,39 @@ export default function AdminDashboard() {
                     className="w-full"
                     data-testid={`button-admin-${item.id}`}
                   >
-                    {item.label}
+                    Open
+                  </Button>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+
+        {/* Menu Grid - Second Row with extra spacing */}
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-16">
+          {menuItems.slice(5).map((item) => {
+            const Icon = item.icon;
+            return (
+              <Card 
+                key={item.id}
+                className="hover-elevate cursor-pointer transition-all duration-200"
+                onClick={() => handleMenuClick(item.path)}
+                data-testid={`card-admin-${item.id}`}
+              >
+                <CardHeader className="text-center pb-4">
+                  <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-3">
+                    <Icon className="h-6 w-6 text-primary" />
+                  </div>
+                  <CardTitle className="text-lg">{item.label}</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center pt-0">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="w-full"
+                    data-testid={`button-admin-${item.id}`}
+                  >
+                    Open
                   </Button>
                 </CardContent>
               </Card>
