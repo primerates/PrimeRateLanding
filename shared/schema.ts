@@ -32,6 +32,7 @@ export const pensionSchema = z.object({
   id: z.string().optional(),
   payerName: z.string().optional(),
   monthlyAmount: z.string().optional(),
+  startDate: z.string().optional(),
 });
 
 // Client Management Schema
@@ -110,13 +111,16 @@ export const incomeSchema = z.object({
   
   // Social Security fields
   socialSecurityMonthlyAmount: z.string().optional(),
+  socialSecurityStartDate: z.string().optional(),
   
   // VA Disability fields
   vaBenefitsMonthlyAmount: z.string().optional(),
+  vaBenefitsStartDate: z.string().optional(),
   
   // Disability fields
   disabilityPayerName: z.string().optional(),
   disabilityMonthlyAmount: z.string().optional(),
+  disabilityStartDate: z.string().optional(),
   
   // Other income fields
   otherIncomeDescription: z.string().optional(),

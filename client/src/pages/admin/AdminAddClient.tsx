@@ -3402,7 +3402,7 @@ export default function AdminAddClient() {
                                 <Minus className="h-4 w-4" />
                               </Button>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                               <div className="space-y-2">
                                 <Label htmlFor={`income-pension-${index}-payerName`}>Payer Name</Label>
                                 <Input
@@ -3419,6 +3419,15 @@ export default function AdminAddClient() {
                                   {...form.register(`income.pensions.${index}.monthlyAmount`)}
                                   placeholder="$0.00"
                                   data-testid={`input-income-pension-${index}-monthlyAmount`}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label htmlFor={`income-pension-${index}-startDate`}>Start Date</Label>
+                                <Input
+                                  id={`income-pension-${index}-startDate`}
+                                  {...form.register(`income.pensions.${index}.startDate`)}
+                                  placeholder="MM/YYYY"
+                                  data-testid={`input-income-pension-${index}-startDate`}
                                 />
                               </div>
                             </div>
@@ -3456,6 +3465,15 @@ export default function AdminAddClient() {
                             data-testid="input-income-socialSecurityMonthlyAmount"
                           />
                         </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="income-socialSecurityStartDate">Start Date</Label>
+                          <Input
+                            id="income-socialSecurityStartDate"
+                            {...form.register('income.socialSecurityStartDate')}
+                            placeholder="MM/YYYY"
+                            data-testid="input-income-socialSecurityStartDate"
+                          />
+                        </div>
                       </div>
                       </CardContent>
                     </CollapsibleContent>
@@ -3489,6 +3507,15 @@ export default function AdminAddClient() {
                             data-testid="input-income-vaBenefitsMonthlyAmount"
                           />
                         </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="income-vaBenefitsStartDate">Start Date</Label>
+                          <Input
+                            id="income-vaBenefitsStartDate"
+                            {...form.register('income.vaBenefitsStartDate')}
+                            placeholder="MM/YYYY"
+                            data-testid="input-income-vaBenefitsStartDate"
+                          />
+                        </div>
                       </div>
                       </CardContent>
                     </CollapsibleContent>
@@ -3512,7 +3539,7 @@ export default function AdminAddClient() {
                     </CardHeader>
                     <CollapsibleContent>
                       <CardContent className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="income-disabilityPayerName">Payer Name</Label>
                           <Input
@@ -3528,6 +3555,15 @@ export default function AdminAddClient() {
                             {...form.register('income.disabilityMonthlyAmount')}
                             placeholder="$0.00"
                             data-testid="input-income-disabilityMonthlyAmount"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="income-disabilityStartDate">Start Date</Label>
+                          <Input
+                            id="income-disabilityStartDate"
+                            {...form.register('income.disabilityStartDate')}
+                            placeholder="MM/YYYY"
+                            data-testid="input-income-disabilityStartDate"
                           />
                         </div>
                       </div>
@@ -4456,7 +4492,7 @@ export default function AdminAddClient() {
                                 <Minus className="h-4 w-4" />
                               </Button>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                               <div className="space-y-2">
                                 <Label htmlFor={`coBorrowerIncome-pension-${index}-payerName`}>Payer Name</Label>
                                 <Input
@@ -4473,6 +4509,15 @@ export default function AdminAddClient() {
                                   {...form.register(`coBorrowerIncome.pensions.${index}.monthlyAmount`)}
                                   placeholder="$0.00"
                                   data-testid={`input-coborrowerIncome-pension-${index}-monthlyAmount`}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label htmlFor={`coBorrowerIncome-pension-${index}-startDate`}>Start Date</Label>
+                                <Input
+                                  id={`coBorrowerIncome-pension-${index}-startDate`}
+                                  {...form.register(`coBorrowerIncome.pensions.${index}.startDate`)}
+                                  placeholder="MM/YYYY"
+                                  data-testid={`input-coborrowerIncome-pension-${index}-startDate`}
                                 />
                               </div>
                             </div>
@@ -4510,6 +4555,15 @@ export default function AdminAddClient() {
                             data-testid="input-coborrowerIncome-socialSecurityMonthlyAmount"
                           />
                         </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="coBorrowerIncome-socialSecurityStartDate">Start Date</Label>
+                          <Input
+                            id="coBorrowerIncome-socialSecurityStartDate"
+                            {...form.register('coBorrowerIncome.socialSecurityStartDate')}
+                            placeholder="MM/YYYY"
+                            data-testid="input-coborrowerIncome-socialSecurityStartDate"
+                          />
+                        </div>
                       </div>
                       </CardContent>
                     </CollapsibleContent>
@@ -4543,6 +4597,15 @@ export default function AdminAddClient() {
                             data-testid="input-coborrowerIncome-vaBenefitsMonthlyAmount"
                           />
                         </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="coBorrowerIncome-vaBenefitsStartDate">Start Date</Label>
+                          <Input
+                            id="coBorrowerIncome-vaBenefitsStartDate"
+                            {...form.register('coBorrowerIncome.vaBenefitsStartDate')}
+                            placeholder="MM/YYYY"
+                            data-testid="input-coborrowerIncome-vaBenefitsStartDate"
+                          />
+                        </div>
                       </div>
                       </CardContent>
                     </CollapsibleContent>
@@ -4566,7 +4629,7 @@ export default function AdminAddClient() {
                     </CardHeader>
                     <CollapsibleContent>
                       <CardContent className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="coBorrowerIncome-disabilityPayerName">Payer Name</Label>
                           <Input
@@ -4583,6 +4646,15 @@ export default function AdminAddClient() {
                             {...form.register('coBorrowerIncome.disabilityMonthlyAmount')}
                             placeholder="$0.00"
                             data-testid="input-coborrowerIncome-disabilityMonthlyAmount"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="coBorrowerIncome-disabilityStartDate">Start Date</Label>
+                          <Input
+                            id="coBorrowerIncome-disabilityStartDate"
+                            {...form.register('coBorrowerIncome.disabilityStartDate')}
+                            placeholder="MM/YYYY"
+                            data-testid="input-coborrowerIncome-disabilityStartDate"
                           />
                         </div>
                       </div>
