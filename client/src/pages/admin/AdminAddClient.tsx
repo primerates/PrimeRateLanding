@@ -120,6 +120,11 @@ export default function AdminAddClient() {
     onConfirm?: () => void;
   }>({ isOpen: false, type: null });
 
+  // Unsaved changes warning dialog state
+  const [unsavedChangesDialog, setUnsavedChangesDialog] = useState<{
+    isOpen: boolean;
+  }>({ isOpen: false });
+
   // Property rental popup dialog state
   const [propertyRentalDialog, setPropertyRentalDialog] = useState<{
     isOpen: boolean;
@@ -930,7 +935,13 @@ export default function AdminAddClient() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setLocation('/admin/dashboard')}
+                onClick={() => {
+                  if (form.formState.isDirty) {
+                    setUnsavedChangesDialog({ isOpen: true });
+                  } else {
+                    setLocation('/admin/dashboard');
+                  }
+                }}
                 className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/10"
                 data-testid="button-back-to-dashboard"
               >
@@ -948,7 +959,7 @@ export default function AdminAddClient() {
               data-testid="button-save-client"
             >
               <Save className="h-4 w-4 mr-2" />
-              {addClientMutation.isPending ? 'Saving...' : 'Save Client'}
+              {addClientMutation.isPending ? 'Saving...' : 'Save'}
             </Button>
           </div>
         </div>
@@ -4114,6 +4125,37 @@ export default function AdminAddClient() {
             <Button
               onClick={() => handlePropertyUsageChangeConfirmation(true)}
               data-testid="button-property-usage-change-yes"
+            >
+              Yes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Unsaved Changes Warning Dialog */}
+      <Dialog open={unsavedChangesDialog.isOpen} onOpenChange={(open) => !open && setUnsavedChangesDialog({ isOpen: false })}>
+        <DialogContent data-testid="dialog-unsaved-changes-warning">
+          <DialogHeader>
+            <DialogTitle>Unsaved Changes</DialogTitle>
+            <DialogDescription>
+              By returning to dashboard now, unsaved changes will be lost. Do you want to continue?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setUnsavedChangesDialog({ isOpen: false })}
+              data-testid="button-unsaved-changes-no"
+            >
+              No
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                setUnsavedChangesDialog({ isOpen: false });
+                setLocation('/admin/dashboard');
+              }}
+              data-testid="button-unsaved-changes-yes"
             >
               Yes
             </Button>
