@@ -42,7 +42,7 @@ export const borrowerInfoSchema = z.object({
   phone: z.string().min(1, "Phone is required"),
   email: z.string().email("Valid email is required"),
   maritalStatus: z.enum(["single", "married", "divorced", "widowed"]),
-  relationshipToBorrower: z.enum(["spouse", "partner", "family", "friend", "other"]).optional(),
+  relationshipToBorrower: z.enum(["spouse", "partner", "family", "friend", "other", "not-applicable"]).optional(),
   dateOfBirth: z.string().min(1, "Date of birth is required"),
   ssn: z.string().min(1, "SSN is required"),
   residenceAddress: addressSchema,

@@ -572,7 +572,10 @@ export default function AdminAddClient() {
         return total + parseMonetaryValue(property.loan?.monthlyIncome || '');
       }, 0);
       
-      const addressList = investmentProperties.map(p => p.address?.street || 'Property').join(', ');
+      const addressList = investmentProperties.map((p, index) => {
+        const propertyTitle = `Investment Property ${index + 1}`;
+        return p.address?.street ? `${propertyTitle} (${p.address.street})` : propertyTitle;
+      }).join(', ');
       
       // Update rental income fields with proper negative formatting
       const formattedAmount = totalRentalIncome >= 0 
@@ -1086,7 +1089,7 @@ export default function AdminAddClient() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="borrower-relationshipToBorrower">Relationship to Borrower</Label>
+                    <Label htmlFor="borrower-relationshipToBorrower">Relationship to Co-borrower</Label>
                     <Select 
                       value={form.watch('borrower.relationshipToBorrower') || ''}
                       onValueChange={(value) => form.setValue('borrower.relationshipToBorrower', value as any)}
@@ -1100,6 +1103,7 @@ export default function AdminAddClient() {
                         <SelectItem value="family">Family</SelectItem>
                         <SelectItem value="friend">Friend</SelectItem>
                         <SelectItem value="other">Other</SelectItem>
+                        <SelectItem value="not-applicable">Not Applicable</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -1135,7 +1139,7 @@ export default function AdminAddClient() {
               {/* Residence Address */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Residence Address</CardTitle>
+                  <CardTitle>Borrower Residence Address</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
@@ -1259,7 +1263,7 @@ export default function AdminAddClient() {
                       variant="outline"
                       size="sm"
                       onClick={addCoBorrower}
-                      className="hover:bg-yellow-500"
+                      className="hover:bg-orange-500 hover:text-white"
                       data-testid="button-add-coborrower"
                     >
                       <Plus className="h-4 w-4 mr-2" />
@@ -1271,6 +1275,7 @@ export default function AdminAddClient() {
                       variant="outline"
                       size="sm"
                       onClick={removeCoBorrower}
+                      className="hover:bg-orange-500 hover:text-white"
                       data-testid="button-remove-coborrower"
                     >
                       Remove Co-Borrower
@@ -1397,7 +1402,7 @@ export default function AdminAddClient() {
                       variant="outline"
                       size="sm"
                       onClick={copyBorrowerToCoResidence}
-                      className="hover:bg-yellow-500"
+                      className="hover:bg-orange-500 hover:text-white"
                       data-testid="button-copy-borrower-address"
                     >
                       Same as Borrower
@@ -1651,7 +1656,7 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Employment Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" data-testid="button-toggle-employment-income">
+                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-employment-income">
                             {isEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -1810,7 +1815,7 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Second Employment Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" data-testid="button-toggle-second-employment-income">
+                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-second-employment-income">
                             {isSecondEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -1971,7 +1976,7 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Self-Employment Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" data-testid="button-toggle-self-employment-income">
+                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-self-employment-income">
                             {isSelfEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -2120,7 +2125,7 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Pension Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" data-testid="button-toggle-pension-income">
+                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-pension-income">
                             {isPensionIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -2193,7 +2198,7 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Social Security Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" data-testid="button-toggle-social-security-income">
+                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-social-security-income">
                             {isSocialSecurityIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -2226,7 +2231,7 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>VA Disability Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" data-testid="button-toggle-va-benefits-income">
+                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-va-benefits-income">
                             {isVaBenefitsIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -2259,7 +2264,7 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Disability Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" data-testid="button-toggle-disability-income">
+                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-disability-income">
                             {isDisabilityIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -2292,15 +2297,15 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
-              {/* Property Rental Income Card */}
+              {/* Rental Income Card */}
               {form.watch('income.incomeTypes.other') && (
                 <Card>
                   <Collapsible open={isOtherIncomeOpen} onOpenChange={setIsOtherIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Property Rental Income</CardTitle>
+                        <CardTitle>Rental Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" data-testid="button-toggle-other-income">
+                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-other-income">
                             {isOtherIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -2310,7 +2315,7 @@ export default function AdminAddClient() {
                       <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="income-otherIncomeDescription">Property Address</Label>
+                          <Label htmlFor="income-otherIncomeDescription">Investment Property</Label>
                           <Input
                             id="income-otherIncomeDescription"
                             {...form.register('income.otherIncomeDescription')}
@@ -2446,7 +2451,7 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower Employment Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" data-testid="button-toggle-coborrower-employment-income">
+                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-coborrower-employment-income">
                             {isCoBorrowerEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -2605,7 +2610,7 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower Second Employment Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" data-testid="button-toggle-coborrower-second-employment-income">
+                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-coborrower-second-employment-income">
                             {isCoBorrowerSecondEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -2766,7 +2771,7 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower Self-Employment Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" data-testid="button-toggle-coborrower-self-employment-income">
+                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-coborrower-self-employment-income">
                             {isCoBorrowerSelfEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -2915,7 +2920,7 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower Pension Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" data-testid="button-toggle-coborrower-pension-income">
+                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-coborrower-pension-income">
                             {isCoBorrowerPensionIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -2988,7 +2993,7 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower Social Security Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" data-testid="button-toggle-coborrower-social-security-income">
+                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-coborrower-social-security-income">
                             {isCoBorrowerSocialSecurityIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -3021,7 +3026,7 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower VA Disability Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" data-testid="button-toggle-coborrower-va-benefits-income">
+                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-coborrower-va-benefits-income">
                             {isCoBorrowerVaBenefitsIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -3054,7 +3059,7 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower Disability Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" data-testid="button-toggle-coborrower-disability-income">
+                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-coborrower-disability-income">
                             {isCoBorrowerDisabilityIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -3094,9 +3099,9 @@ export default function AdminAddClient() {
                   <Collapsible open={isCoBorrowerOtherIncomeOpen} onOpenChange={setIsCoBorrowerOtherIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Co-Borrower Other Income</CardTitle>
+                        <CardTitle>Co-Borrower Rental Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" data-testid="button-toggle-coborrower-other-income">
+                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-coborrower-other-income">
                             {isCoBorrowerOtherIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -3106,7 +3111,7 @@ export default function AdminAddClient() {
                       <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="coBorrowerIncome-otherIncomeDescription">Description</Label>
+                          <Label htmlFor="coBorrowerIncome-otherIncomeDescription">Investment Property</Label>
                           <Input
                             id="coBorrowerIncome-otherIncomeDescription"
                             {...form.register('coBorrowerIncome.otherIncomeDescription')}
@@ -3767,7 +3772,7 @@ export default function AdminAddClient() {
                     <div className="flex items-center justify-between">
                       <CardTitle>Current Loan Information</CardTitle>
                       <CollapsibleTrigger asChild>
-                        <Button variant="ghost" size="sm" data-testid="button-toggle-current-loan">
+                        <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-current-loan">
                           {isCurrentLoanOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                         </Button>
                       </CollapsibleTrigger>
@@ -4042,7 +4047,7 @@ export default function AdminAddClient() {
         <DialogContent data-testid="dialog-property-rental">
           <DialogHeader>
             <DialogTitle>
-              {propertyRentalDialog.type === 'add' ? 'Property Rental Income' : 'Remove Property Rental'}
+              {propertyRentalDialog.type === 'add' ? 'Rental Income' : 'Remove Property Rental'}
             </DialogTitle>
             <DialogDescription>
               {propertyRentalDialog.type === 'add' 
