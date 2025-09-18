@@ -196,6 +196,139 @@ export default function AdminAddClient() {
     
     setCountyLookupLoading(prev => ({...prev, coBorrowerPrior: false}));
   };
+
+  // Handler for borrower employer ZIP code lookup
+  const handleBorrowerEmployerZipCodeLookup = async (zipCode: string) => {
+    if (!zipCode || zipCode.length < 5) {
+      setBorrowerEmployerCountyOptions([]);
+      return;
+    }
+    
+    setCountyLookupLoading(prev => ({...prev, borrowerEmployer: true}));
+    const counties = await lookupCountyFromZip(zipCode);
+    
+    if (counties.length === 1) {
+      form.setValue('income.employerAddress.county', counties[0].label, { shouldDirty: true });
+      setBorrowerEmployerCountyOptions([]);
+    } else if (counties.length > 1) {
+      setBorrowerEmployerCountyOptions(counties);
+    } else {
+      setBorrowerEmployerCountyOptions([]);
+    }
+    
+    setCountyLookupLoading(prev => ({...prev, borrowerEmployer: false}));
+  };
+
+  // Handler for borrower prior employer ZIP code lookup
+  const handleBorrowerPriorEmployerZipCodeLookup = async (zipCode: string) => {
+    if (!zipCode || zipCode.length < 5) {
+      setBorrowerPriorEmployerCountyOptions([]);
+      return;
+    }
+    
+    setCountyLookupLoading(prev => ({...prev, borrowerPriorEmployer: true}));
+    const counties = await lookupCountyFromZip(zipCode);
+    
+    if (counties.length === 1) {
+      form.setValue('income.priorEmployerAddress.county', counties[0].label, { shouldDirty: true });
+      setBorrowerPriorEmployerCountyOptions([]);
+    } else if (counties.length > 1) {
+      setBorrowerPriorEmployerCountyOptions(counties);
+    } else {
+      setBorrowerPriorEmployerCountyOptions([]);
+    }
+    
+    setCountyLookupLoading(prev => ({...prev, borrowerPriorEmployer: false}));
+  };
+
+  // Handler for borrower second employer ZIP code lookup
+  const handleBorrowerSecondEmployerZipCodeLookup = async (zipCode: string) => {
+    if (!zipCode || zipCode.length < 5) {
+      setBorrowerSecondEmployerCountyOptions([]);
+      return;
+    }
+    
+    setCountyLookupLoading(prev => ({...prev, borrowerSecondEmployer: true}));
+    const counties = await lookupCountyFromZip(zipCode);
+    
+    if (counties.length === 1) {
+      form.setValue('income.secondEmployerAddress.county', counties[0].label, { shouldDirty: true });
+      setBorrowerSecondEmployerCountyOptions([]);
+    } else if (counties.length > 1) {
+      setBorrowerSecondEmployerCountyOptions(counties);
+    } else {
+      setBorrowerSecondEmployerCountyOptions([]);
+    }
+    
+    setCountyLookupLoading(prev => ({...prev, borrowerSecondEmployer: false}));
+  };
+
+  // Handler for co-borrower employer ZIP code lookup
+  const handleCoBorrowerEmployerZipCodeLookup = async (zipCode: string) => {
+    if (!zipCode || zipCode.length < 5) {
+      setCoBorrowerEmployerCountyOptions([]);
+      return;
+    }
+    
+    setCountyLookupLoading(prev => ({...prev, coBorrowerEmployer: true}));
+    const counties = await lookupCountyFromZip(zipCode);
+    
+    if (counties.length === 1) {
+      form.setValue('coBorrowerIncome.employerAddress.county', counties[0].label, { shouldDirty: true });
+      setCoBorrowerEmployerCountyOptions([]);
+    } else if (counties.length > 1) {
+      setCoBorrowerEmployerCountyOptions(counties);
+    } else {
+      setCoBorrowerEmployerCountyOptions([]);
+    }
+    
+    setCountyLookupLoading(prev => ({...prev, coBorrowerEmployer: false}));
+  };
+
+  // Handler for co-borrower prior employer ZIP code lookup
+  const handleCoBorrowerPriorEmployerZipCodeLookup = async (zipCode: string) => {
+    if (!zipCode || zipCode.length < 5) {
+      setCoBorrowerPriorEmployerCountyOptions([]);
+      return;
+    }
+    
+    setCountyLookupLoading(prev => ({...prev, coBorrowerPriorEmployer: true}));
+    const counties = await lookupCountyFromZip(zipCode);
+    
+    if (counties.length === 1) {
+      form.setValue('coBorrowerIncome.priorEmployerAddress.county', counties[0].label, { shouldDirty: true });
+      setCoBorrowerPriorEmployerCountyOptions([]);
+    } else if (counties.length > 1) {
+      setCoBorrowerPriorEmployerCountyOptions(counties);
+    } else {
+      setCoBorrowerPriorEmployerCountyOptions([]);
+    }
+    
+    setCountyLookupLoading(prev => ({...prev, coBorrowerPriorEmployer: false}));
+  };
+
+  // Handler for co-borrower second employer ZIP code lookup
+  const handleCoBorrowerSecondEmployerZipCodeLookup = async (zipCode: string) => {
+    if (!zipCode || zipCode.length < 5) {
+      setCoBorrowerSecondEmployerCountyOptions([]);
+      return;
+    }
+    
+    setCountyLookupLoading(prev => ({...prev, coBorrowerSecondEmployer: true}));
+    const counties = await lookupCountyFromZip(zipCode);
+    
+    if (counties.length === 1) {
+      form.setValue('coBorrowerIncome.secondEmployerAddress.county', counties[0].label, { shouldDirty: true });
+      setCoBorrowerSecondEmployerCountyOptions([]);
+    } else if (counties.length > 1) {
+      setCoBorrowerSecondEmployerCountyOptions(counties);
+    } else {
+      setCoBorrowerSecondEmployerCountyOptions([]);
+    }
+    
+    setCountyLookupLoading(prev => ({...prev, coBorrowerSecondEmployer: false}));
+  };
+
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
   
@@ -251,7 +384,38 @@ export default function AdminAddClient() {
   const [coBorrowerCountyOptions, setCoBorrowerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
   const [borrowerPriorCountyOptions, setBorrowerPriorCountyOptions] = useState<Array<{value: string, label: string}>>([]);
   const [coBorrowerPriorCountyOptions, setCoBorrowerPriorCountyOptions] = useState<Array<{value: string, label: string}>>([]);
-  const [countyLookupLoading, setCountyLookupLoading] = useState<{borrower: boolean, coBorrower: boolean, borrowerPrior: boolean, coBorrowerPrior: boolean}>({borrower: false, coBorrower: false, borrowerPrior: false, coBorrowerPrior: false});
+  
+  // Employment income county lookup state
+  const [borrowerEmployerCountyOptions, setBorrowerEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
+  const [borrowerPriorEmployerCountyOptions, setBorrowerPriorEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
+  const [borrowerSecondEmployerCountyOptions, setBorrowerSecondEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
+  const [coBorrowerEmployerCountyOptions, setCoBorrowerEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
+  const [coBorrowerPriorEmployerCountyOptions, setCoBorrowerPriorEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
+  const [coBorrowerSecondEmployerCountyOptions, setCoBorrowerSecondEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
+  
+  const [countyLookupLoading, setCountyLookupLoading] = useState<{
+    borrower: boolean, 
+    coBorrower: boolean, 
+    borrowerPrior: boolean, 
+    coBorrowerPrior: boolean,
+    borrowerEmployer: boolean,
+    borrowerPriorEmployer: boolean,
+    borrowerSecondEmployer: boolean,
+    coBorrowerEmployer: boolean,
+    coBorrowerPriorEmployer: boolean,
+    coBorrowerSecondEmployer: boolean
+  }>({
+    borrower: false, 
+    coBorrower: false, 
+    borrowerPrior: false, 
+    coBorrowerPrior: false,
+    borrowerEmployer: false,
+    borrowerPriorEmployer: false,
+    borrowerSecondEmployer: false,
+    coBorrowerEmployer: false,
+    coBorrowerPriorEmployer: false,
+    coBorrowerSecondEmployer: false
+  });
 
   // Property rental popup dialog state
   const [propertyRentalDialog, setPropertyRentalDialog] = useState<{
@@ -2301,17 +2465,49 @@ export default function AdminAddClient() {
                               <Input
                                 id="income-employer-zip"
                                 {...form.register('income.employerAddress.zip')}
+                                onBlur={(e) => handleBorrowerEmployerZipCodeLookup(e.target.value)}
                                 data-testid="input-income-employer-zip"
                               />
                             </div>
                             
                             <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="income-employer-county">County</Label>
-                              <Input
-                                id="income-employer-county"
-                                {...form.register('income.employerAddress.county')}
-                                data-testid="input-income-employer-county"
-                              />
+                              {borrowerEmployerCountyOptions.length > 0 ? (
+                                <Select
+                                  value={form.watch('income.employerAddress.county') || ''}
+                                  onValueChange={(value) => {
+                                    if (value === 'manual-entry') {
+                                      form.setValue('income.employerAddress.county', '');
+                                      setBorrowerEmployerCountyOptions([]);
+                                    } else {
+                                      const selectedCounty = borrowerEmployerCountyOptions.find(county => county.value === value);
+                                      form.setValue('income.employerAddress.county', selectedCounty?.label || value, { shouldDirty: true });
+                                    }
+                                  }}
+                                >
+                                  <SelectTrigger data-testid="select-income-employer-county">
+                                    <SelectValue placeholder={countyLookupLoading.borrowerEmployer ? "Looking up counties..." : "Select county"} />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {borrowerEmployerCountyOptions.map((county) => (
+                                      <SelectItem key={county.value} value={county.value}>
+                                        {county.label}
+                                      </SelectItem>
+                                    ))}
+                                    <SelectItem value="manual-entry" className="text-muted-foreground border-t">
+                                      Enter county manually
+                                    </SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              ) : (
+                                <Input
+                                  id="income-employer-county"
+                                  {...form.register('income.employerAddress.county')}
+                                  placeholder={countyLookupLoading.borrowerEmployer ? "Looking up counties..." : "Enter county name"}
+                                  disabled={countyLookupLoading.borrowerEmployer}
+                                  data-testid="input-income-employer-county"
+                                />
+                              )}
                             </div>
                           </div>
                         </div>
@@ -2465,17 +2661,49 @@ export default function AdminAddClient() {
                               <Input
                                 id="income-prior-employer-zip"
                                 {...form.register('income.priorEmployerAddress.zip')}
+                                onBlur={(e) => handleBorrowerPriorEmployerZipCodeLookup(e.target.value)}
                                 data-testid="input-income-prior-employer-zip"
                               />
                             </div>
                             
                             <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="income-prior-employer-county">County</Label>
-                              <Input
-                                id="income-prior-employer-county"
-                                {...form.register('income.priorEmployerAddress.county')}
-                                data-testid="input-income-prior-employer-county"
-                              />
+                              {borrowerPriorEmployerCountyOptions.length > 0 ? (
+                                <Select
+                                  value={form.watch('income.priorEmployerAddress.county') || ''}
+                                  onValueChange={(value) => {
+                                    if (value === 'manual-entry') {
+                                      form.setValue('income.priorEmployerAddress.county', '');
+                                      setBorrowerPriorEmployerCountyOptions([]);
+                                    } else {
+                                      const selectedCounty = borrowerPriorEmployerCountyOptions.find(county => county.value === value);
+                                      form.setValue('income.priorEmployerAddress.county', selectedCounty?.label || value, { shouldDirty: true });
+                                    }
+                                  }}
+                                >
+                                  <SelectTrigger data-testid="select-income-prior-employer-county">
+                                    <SelectValue placeholder={countyLookupLoading.borrowerPriorEmployer ? "Looking up counties..." : "Select county"} />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {borrowerPriorEmployerCountyOptions.map((county) => (
+                                      <SelectItem key={county.value} value={county.value}>
+                                        {county.label}
+                                      </SelectItem>
+                                    ))}
+                                    <SelectItem value="manual-entry" className="text-muted-foreground border-t">
+                                      Enter county manually
+                                    </SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              ) : (
+                                <Input
+                                  id="income-prior-employer-county"
+                                  {...form.register('income.priorEmployerAddress.county')}
+                                  placeholder={countyLookupLoading.borrowerPriorEmployer ? "Looking up counties..." : "Enter county name"}
+                                  disabled={countyLookupLoading.borrowerPriorEmployer}
+                                  data-testid="input-income-prior-employer-county"
+                                />
+                              )}
                             </div>
                           </div>
                         </div>
@@ -2626,17 +2854,49 @@ export default function AdminAddClient() {
                               <Input
                                 id="income-second-employer-zip"
                                 {...form.register('income.secondEmployerAddress.zip')}
+                                onBlur={(e) => handleBorrowerSecondEmployerZipCodeLookup(e.target.value)}
                                 data-testid="input-income-second-employer-zip"
                               />
                             </div>
                             
                             <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="income-second-employer-county">County</Label>
-                              <Input
-                                id="income-second-employer-county"
-                                {...form.register('income.secondEmployerAddress.county')}
-                                data-testid="input-income-second-employer-county"
-                              />
+                              {borrowerSecondEmployerCountyOptions.length > 0 ? (
+                                <Select
+                                  value={form.watch('income.secondEmployerAddress.county') || ''}
+                                  onValueChange={(value) => {
+                                    if (value === 'manual-entry') {
+                                      form.setValue('income.secondEmployerAddress.county', '');
+                                      setBorrowerSecondEmployerCountyOptions([]);
+                                    } else {
+                                      const selectedCounty = borrowerSecondEmployerCountyOptions.find(county => county.value === value);
+                                      form.setValue('income.secondEmployerAddress.county', selectedCounty?.label || value, { shouldDirty: true });
+                                    }
+                                  }}
+                                >
+                                  <SelectTrigger data-testid="select-income-second-employer-county">
+                                    <SelectValue placeholder={countyLookupLoading.borrowerSecondEmployer ? "Looking up counties..." : "Select county"} />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {borrowerSecondEmployerCountyOptions.map((county) => (
+                                      <SelectItem key={county.value} value={county.value}>
+                                        {county.label}
+                                      </SelectItem>
+                                    ))}
+                                    <SelectItem value="manual-entry" className="text-muted-foreground border-t">
+                                      Enter county manually
+                                    </SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              ) : (
+                                <Input
+                                  id="income-second-employer-county"
+                                  {...form.register('income.secondEmployerAddress.county')}
+                                  placeholder={countyLookupLoading.borrowerSecondEmployer ? "Looking up counties..." : "Enter county name"}
+                                  disabled={countyLookupLoading.borrowerSecondEmployer}
+                                  data-testid="input-income-second-employer-county"
+                                />
+                              )}
                             </div>
                           </div>
                         </div>
@@ -3259,17 +3519,49 @@ export default function AdminAddClient() {
                               <Input
                                 id="coBorrowerIncome-employer-zip"
                                 {...form.register('coBorrowerIncome.employerAddress.zip')}
+                                onBlur={(e) => handleCoBorrowerEmployerZipCodeLookup(e.target.value)}
                                 data-testid="input-coborrowerIncome-employer-zip"
                               />
                             </div>
                             
                             <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="coBorrowerIncome-employer-county">County</Label>
-                              <Input
-                                id="coBorrowerIncome-employer-county"
-                                {...form.register('coBorrowerIncome.employerAddress.county')}
-                                data-testid="input-coborrowerIncome-employer-county"
-                              />
+                              {coBorrowerEmployerCountyOptions.length > 0 ? (
+                                <Select
+                                  value={form.watch('coBorrowerIncome.employerAddress.county') || ''}
+                                  onValueChange={(value) => {
+                                    if (value === 'manual-entry') {
+                                      form.setValue('coBorrowerIncome.employerAddress.county', '');
+                                      setCoBorrowerEmployerCountyOptions([]);
+                                    } else {
+                                      const selectedCounty = coBorrowerEmployerCountyOptions.find(county => county.value === value);
+                                      form.setValue('coBorrowerIncome.employerAddress.county', selectedCounty?.label || value, { shouldDirty: true });
+                                    }
+                                  }}
+                                >
+                                  <SelectTrigger data-testid="select-coborrowerIncome-employer-county">
+                                    <SelectValue placeholder={countyLookupLoading.coBorrowerEmployer ? "Looking up counties..." : "Select county"} />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {coBorrowerEmployerCountyOptions.map((county) => (
+                                      <SelectItem key={county.value} value={county.value}>
+                                        {county.label}
+                                      </SelectItem>
+                                    ))}
+                                    <SelectItem value="manual-entry" className="text-muted-foreground border-t">
+                                      Enter county manually
+                                    </SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              ) : (
+                                <Input
+                                  id="coBorrowerIncome-employer-county"
+                                  {...form.register('coBorrowerIncome.employerAddress.county')}
+                                  placeholder={countyLookupLoading.coBorrowerEmployer ? "Looking up counties..." : "Enter county name"}
+                                  disabled={countyLookupLoading.coBorrowerEmployer}
+                                  data-testid="input-coborrowerIncome-employer-county"
+                                />
+                              )}
                             </div>
                           </div>
                         </div>
@@ -3423,17 +3715,49 @@ export default function AdminAddClient() {
                               <Input
                                 id="coBorrowerIncome-prior-employer-zip"
                                 {...form.register('coBorrowerIncome.priorEmployerAddress.zip')}
+                                onBlur={(e) => handleCoBorrowerPriorEmployerZipCodeLookup(e.target.value)}
                                 data-testid="input-coBorrowerIncome-prior-employer-zip"
                               />
                             </div>
                             
                             <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="coBorrowerIncome-prior-employer-county">County</Label>
-                              <Input
-                                id="coBorrowerIncome-prior-employer-county"
-                                {...form.register('coBorrowerIncome.priorEmployerAddress.county')}
-                                data-testid="input-coBorrowerIncome-prior-employer-county"
-                              />
+                              {coBorrowerPriorEmployerCountyOptions.length > 0 ? (
+                                <Select
+                                  value={form.watch('coBorrowerIncome.priorEmployerAddress.county') || ''}
+                                  onValueChange={(value) => {
+                                    if (value === 'manual-entry') {
+                                      form.setValue('coBorrowerIncome.priorEmployerAddress.county', '');
+                                      setCoBorrowerPriorEmployerCountyOptions([]);
+                                    } else {
+                                      const selectedCounty = coBorrowerPriorEmployerCountyOptions.find(county => county.value === value);
+                                      form.setValue('coBorrowerIncome.priorEmployerAddress.county', selectedCounty?.label || value, { shouldDirty: true });
+                                    }
+                                  }}
+                                >
+                                  <SelectTrigger data-testid="select-coBorrowerIncome-prior-employer-county">
+                                    <SelectValue placeholder={countyLookupLoading.coBorrowerPriorEmployer ? "Looking up counties..." : "Select county"} />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {coBorrowerPriorEmployerCountyOptions.map((county) => (
+                                      <SelectItem key={county.value} value={county.value}>
+                                        {county.label}
+                                      </SelectItem>
+                                    ))}
+                                    <SelectItem value="manual-entry" className="text-muted-foreground border-t">
+                                      Enter county manually
+                                    </SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              ) : (
+                                <Input
+                                  id="coBorrowerIncome-prior-employer-county"
+                                  {...form.register('coBorrowerIncome.priorEmployerAddress.county')}
+                                  placeholder={countyLookupLoading.coBorrowerPriorEmployer ? "Looking up counties..." : "Enter county name"}
+                                  disabled={countyLookupLoading.coBorrowerPriorEmployer}
+                                  data-testid="input-coBorrowerIncome-prior-employer-county"
+                                />
+                              )}
                             </div>
                           </div>
                         </div>
@@ -3584,17 +3908,49 @@ export default function AdminAddClient() {
                               <Input
                                 id="coBorrowerIncome-second-employer-zip"
                                 {...form.register('coBorrowerIncome.secondEmployerAddress.zip')}
+                                onBlur={(e) => handleCoBorrowerSecondEmployerZipCodeLookup(e.target.value)}
                                 data-testid="input-coborrowerIncome-second-employer-zip"
                               />
                             </div>
                             
                             <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="coBorrowerIncome-second-employer-county">County</Label>
-                              <Input
-                                id="coBorrowerIncome-second-employer-county"
-                                {...form.register('coBorrowerIncome.secondEmployerAddress.county')}
-                                data-testid="input-coborrowerIncome-second-employer-county"
-                              />
+                              {coBorrowerSecondEmployerCountyOptions.length > 0 ? (
+                                <Select
+                                  value={form.watch('coBorrowerIncome.secondEmployerAddress.county') || ''}
+                                  onValueChange={(value) => {
+                                    if (value === 'manual-entry') {
+                                      form.setValue('coBorrowerIncome.secondEmployerAddress.county', '');
+                                      setCoBorrowerSecondEmployerCountyOptions([]);
+                                    } else {
+                                      const selectedCounty = coBorrowerSecondEmployerCountyOptions.find(county => county.value === value);
+                                      form.setValue('coBorrowerIncome.secondEmployerAddress.county', selectedCounty?.label || value, { shouldDirty: true });
+                                    }
+                                  }}
+                                >
+                                  <SelectTrigger data-testid="select-coborrowerIncome-second-employer-county">
+                                    <SelectValue placeholder={countyLookupLoading.coBorrowerSecondEmployer ? "Looking up counties..." : "Select county"} />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {coBorrowerSecondEmployerCountyOptions.map((county) => (
+                                      <SelectItem key={county.value} value={county.value}>
+                                        {county.label}
+                                      </SelectItem>
+                                    ))}
+                                    <SelectItem value="manual-entry" className="text-muted-foreground border-t">
+                                      Enter county manually
+                                    </SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              ) : (
+                                <Input
+                                  id="coBorrowerIncome-second-employer-county"
+                                  {...form.register('coBorrowerIncome.secondEmployerAddress.county')}
+                                  placeholder={countyLookupLoading.coBorrowerSecondEmployer ? "Looking up counties..." : "Enter county name"}
+                                  disabled={countyLookupLoading.coBorrowerSecondEmployer}
+                                  data-testid="input-coborrowerIncome-second-employer-county"
+                                />
+                              )}
                             </div>
                           </div>
                         </div>
