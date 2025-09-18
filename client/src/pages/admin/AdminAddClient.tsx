@@ -83,9 +83,43 @@ export default function AdminAddClient() {
     if (!zipCode || zipCode.length < 5) return [];
     
     try {
-      // First, use OpenStreetMap Nominatim API (completely free, no API key needed)
+      // First try FCC API directly with ZIP to get all possible counties
+      try {
+        const fccZipResponse = await fetch(`https://geo.fcc.gov/api/census/area?zip=${zipCode}&format=json`);
+        if (fccZipResponse.ok) {
+          const fccZipData = await fccZipResponse.json();
+          if (fccZipData.results && fccZipData.results.length > 0) {
+            // Extract unique counties from all results
+            const counties = new Map();
+            
+            fccZipData.results.forEach((result: any) => {
+              if (result.county_name && result.county_fips && result.state_code) {
+                const countyKey = `${result.county_fips}-${result.state_code}`;
+                const countyLabel = `${result.county_name} County, ${result.state_code}`;
+                counties.set(countyKey, {
+                  value: result.county_fips,
+                  label: countyLabel,
+                  county_name: result.county_name,
+                  state_code: result.state_code
+                });
+              }
+            });
+            
+            if (counties.size > 0) {
+              return Array.from(counties.values()).map(county => ({
+                value: county.value,
+                label: county.label
+              }));
+            }
+          }
+        }
+      } catch (fccError) {
+        console.warn('FCC ZIP lookup failed:', fccError);
+      }
+      
+      // Fallback: Use Nominatim for geocoding, then FCC for county lookup
       const nominatimResponse = await fetch(
-        `https://nominatim.openstreetmap.org/search?postalcode=${zipCode}&countrycodes=us&format=json&limit=1`,
+        `https://nominatim.openstreetmap.org/search?postalcode=${zipCode}&countrycodes=us&format=json&limit=3`,
         {
           headers: {
             'User-Agent': 'PrimeRateHomeLoans/1.0 (contact@primerateloans.com)'
@@ -96,43 +130,42 @@ export default function AdminAddClient() {
       if (nominatimResponse.ok) {
         const nominatimData = await nominatimResponse.json();
         if (nominatimData && nominatimData.length > 0) {
-          const { lat, lon } = nominatimData[0];
+          const counties = new Map();
           
-          // Now use FCC Area API to get county information
-          const fccResponse = await fetch(`https://geo.fcc.gov/api/census/area?lat=${lat}&lon=${lon}&format=json`);
-          
-          if (fccResponse.ok) {
-            const countyData = await fccResponse.json();
-            if (countyData.results && countyData.results.length > 0) {
-              const result = countyData.results[0];
-              if (result.county_name) {
-                return [{
-                  value: result.county_name,
-                  label: result.county_name
-                }];
+          // Try multiple coordinate points if available
+          for (const location of nominatimData.slice(0, 3)) {
+            try {
+              const { lat, lon } = location;
+              const fccResponse = await fetch(`https://geo.fcc.gov/api/census/area?lat=${lat}&lon=${lon}&format=json`);
+              
+              if (fccResponse.ok) {
+                const countyData = await fccResponse.json();
+                if (countyData.results && countyData.results.length > 0) {
+                  countyData.results.forEach((result: any) => {
+                    if (result.county_name && result.county_fips && result.state_code) {
+                      const countyKey = `${result.county_fips}-${result.state_code}`;
+                      const countyLabel = `${result.county_name} County, ${result.state_code}`;
+                      counties.set(countyKey, {
+                        value: result.county_fips,
+                        label: countyLabel
+                      });
+                    }
+                  });
+                }
               }
+              
+              // Add small delay between requests to be respectful to APIs
+              await new Promise(resolve => setTimeout(resolve, 100));
+              
+            } catch (coordError) {
+              console.warn(`Error looking up county for coordinate ${location.lat}, ${location.lon}:`, coordError);
             }
           }
-        }
-      }
-      
-      // Fallback: try FCC API directly with ZIP (sometimes works)
-      try {
-        const directResponse = await fetch(`https://geo.fcc.gov/api/census/area?zip=${zipCode}&format=json`);
-        if (directResponse.ok) {
-          const directData = await directResponse.json();
-          if (directData.results && directData.results.length > 0) {
-            const result = directData.results[0];
-            if (result.county_name) {
-              return [{
-                value: result.county_name,
-                label: result.county_name
-              }];
-            }
+          
+          if (counties.size > 0) {
+            return Array.from(counties.values());
           }
         }
-      } catch (fallbackError) {
-        console.warn('FCC direct lookup failed:', fallbackError);
       }
       
       return [];
@@ -151,7 +184,19 @@ export default function AdminAddClient() {
     
     setCountyLookupLoading(prev => ({...prev, borrower: true}));
     const counties = await lookupCountyFromZip(zipCode);
-    setBorrowerCountyOptions(counties);
+    
+    if (counties.length === 1) {
+      // Auto-fill single county result
+      form.setValue('borrower.residenceAddress.county', counties[0].label, { shouldDirty: true });
+      setBorrowerCountyOptions([]); // Keep as input field but with value filled
+    } else if (counties.length > 1) {
+      // Show dropdown for multiple counties
+      setBorrowerCountyOptions(counties);
+    } else {
+      // No counties found, keep as input field
+      setBorrowerCountyOptions([]);
+    }
+    
     setCountyLookupLoading(prev => ({...prev, borrower: false}));
   };
 
@@ -164,7 +209,19 @@ export default function AdminAddClient() {
     
     setCountyLookupLoading(prev => ({...prev, coBorrower: true}));
     const counties = await lookupCountyFromZip(zipCode);
-    setCoBorrowerCountyOptions(counties);
+    
+    if (counties.length === 1) {
+      // Auto-fill single county result
+      form.setValue('coBorrower.residenceAddress.county', counties[0].label, { shouldDirty: true });
+      setCoBorrowerCountyOptions([]); // Keep as input field but with value filled
+    } else if (counties.length > 1) {
+      // Show dropdown for multiple counties
+      setCoBorrowerCountyOptions(counties);
+    } else {
+      // No counties found, keep as input field
+      setCoBorrowerCountyOptions([]);
+    }
+    
     setCountyLookupLoading(prev => ({...prev, coBorrower: false}));
   };
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
@@ -1327,7 +1384,9 @@ export default function AdminAddClient() {
                               form.setValue('borrower.residenceAddress.county', '');
                               setBorrowerCountyOptions([]);
                             } else {
-                              form.setValue('borrower.residenceAddress.county', value, { shouldDirty: true });
+                              // Find the selected county to get its label for display
+                              const selectedCounty = borrowerCountyOptions.find(county => county.value === value);
+                              form.setValue('borrower.residenceAddress.county', selectedCounty?.label || value, { shouldDirty: true });
                             }
                           }}
                         >
@@ -1341,7 +1400,7 @@ export default function AdminAddClient() {
                               </SelectItem>
                             ))}
                             <SelectItem value="manual-entry" className="text-muted-foreground border-t">
-                              ✏️ Enter county manually
+                              Enter county manually
                             </SelectItem>
                           </SelectContent>
                         </Select>
@@ -1627,7 +1686,7 @@ export default function AdminAddClient() {
                                 </SelectItem>
                               ))}
                               <SelectItem value="manual-entry" className="text-muted-foreground border-t">
-                                ✏️ Enter county manually
+                                Enter county manually
                               </SelectItem>
                             </SelectContent>
                           </Select>
