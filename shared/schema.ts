@@ -122,6 +122,10 @@ export const loanDetailSchema = z.object({
   piPayment: z.string().optional(),
   escrowPayment: z.string().optional(),
   totalMonthlyPayment: z.string().optional(),
+  // Investment property rental fields
+  isPropertyRented: z.string().optional(),
+  monthlyRental: z.string().optional(),
+  monthlyIncome: z.string().optional(),
 });
 
 // Individual property entry schema
@@ -135,6 +139,7 @@ export const propertyEntrySchema = z.object({
   appraisedValue: z.string().optional(),
   ownedSince: z.string().optional(),
   purchasePrice: z.string().optional(),
+  activeSecuredLoan: z.string().optional(), // For primary residence
   loan: loanDetailSchema.optional(),
 });
 

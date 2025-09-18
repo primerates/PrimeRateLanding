@@ -603,7 +603,32 @@ export default function AdminAddClient() {
     // Update the form with calculated total
     const updatedProperties = properties.map(p => 
       p.id === propertyId 
-        ? { ...p, loan: { ...p.loan, totalMonthlyPayment: total.toFixed(2) } }
+        ? { ...p, loan: { ...p.loan, totalMonthlyPayment: `$${total.toFixed(2)}` } }
+        : p
+    );
+    form.setValue('property.properties', updatedProperties);
+
+    // If this is an investment property, also update the monthly income calculation
+    if (property.use === 'investment') {
+      calculateInvestmentIncome(propertyId);
+    }
+  };
+
+  // Calculate monthly income for investment properties (rental - total payment)
+  const calculateInvestmentIncome = (propertyId: string) => {
+    const properties = form.watch('property.properties') || [];
+    const property = properties.find(p => p.id === propertyId);
+    
+    if (!property?.loan || property.use !== 'investment') return;
+    
+    const monthlyRental = parseMonetaryValue(property.loan.monthlyRental || '');
+    const totalPayment = parseMonetaryValue(property.loan.totalMonthlyPayment || '');
+    const monthlyIncome = Math.max(0, monthlyRental - totalPayment);
+    
+    // Update the form with calculated income
+    const updatedProperties = properties.map(p => 
+      p.id === propertyId 
+        ? { ...p, loan: { ...p.loan, monthlyIncome: `$${monthlyIncome.toFixed(2)}` } }
         : p
     );
     form.setValue('property.properties', updatedProperties);
@@ -2748,14 +2773,25 @@ export default function AdminAddClient() {
               {/* Property Summary Card */}
               <Card className="bg-muted">
                 <CardHeader>
-                  <CardTitle>Property Summary</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    Property Summary 
+                    <span className="text-lg font-semibold">
+                      (<span data-testid="text-property-count">{(form.watch('property.properties') || []).length}</span>)
+                    </span>
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
-                      <Label className="text-sm font-medium text-muted-foreground">Total Property Count</Label>
-                      <div className="text-2xl font-semibold" data-testid="text-property-count">
-                        {(form.watch('property.properties') || []).length}
+                      <Label htmlFor="property-estimatedLTV">Estimated LTV</Label>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          id="property-estimatedLTV"
+                          {...form.register('property.estimatedLTV')}
+                          placeholder="80"
+                          data-testid="input-property-estimatedLTV"
+                        />
+                        <span className="text-lg font-medium">%</span>
                       </div>
                     </div>
                     
@@ -2782,16 +2818,6 @@ export default function AdminAddClient() {
                         {(form.watch('property.properties') || []).filter(p => p.use === 'investment').length}
                       </div>
                     </div>
-                    
-                    <div className="space-y-2 md:col-span-3">
-                      <Label htmlFor="property-estimatedLTV">Estimated LTV (%)</Label>
-                      <Input
-                        id="property-estimatedLTV"
-                        {...form.register('property.estimatedLTV')}
-                        placeholder="e.g., 80%"
-                        data-testid="input-property-estimatedLTV"
-                      />
-                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -2803,7 +2829,6 @@ export default function AdminAddClient() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <Label className="text-base font-semibold">Select property types to add:</Label>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="flex items-center space-x-2">
                         <Checkbox
@@ -2889,11 +2914,11 @@ export default function AdminAddClient() {
                     >
                       <CardHeader>
                         <div className="flex items-center justify-between">
-                          <CardTitle className="flex items-center gap-2">
+                          <CardTitle className={`flex items-center gap-2 ${property.isSubject ? 'text-green-600' : ''}`}>
                             {getPropertyTitle()}
                             {property.isSubject && (
-                              <span className="bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-medium">
-                                Subject Property
+                              <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
+                                - Subject Property
                               </span>
                             )}
                           </CardTitle>
@@ -2933,6 +2958,46 @@ export default function AdminAddClient() {
                       <CollapsibleContent>
                         <CardContent>
                           <div className="space-y-6">
+                            {/* Subject Property Question - Moved to top */}
+                            <Card className="bg-muted">
+                              <CardContent className="pt-6">
+                                <div className="space-y-3">
+                                  <Label className="text-base font-semibold">Is this also the subject property?</Label>
+                                  <div className="flex gap-4">
+                                    <div className="flex items-center space-x-2">
+                                      <input
+                                        type="radio"
+                                        id={`subject-yes-${propertyId}`}
+                                        name={`subject-${propertyId}`}
+                                        checked={property.isSubject === true}
+                                        onChange={() => setSubjectProperty(propertyId)}
+                                        data-testid={`radio-subject-yes-${propertyId}`}
+                                      />
+                                      <Label htmlFor={`subject-yes-${propertyId}`}>Yes</Label>
+                                    </div>
+                                    
+                                    <div className="flex items-center space-x-2">
+                                      <input
+                                        type="radio"
+                                        id={`subject-no-${propertyId}`}
+                                        name={`subject-${propertyId}`}
+                                        checked={property.isSubject === false}
+                                        onChange={() => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const updatedProperties = properties.map(p => 
+                                            p.id === propertyId ? { ...p, isSubject: false } : p
+                                          );
+                                          form.setValue('property.properties', updatedProperties);
+                                        }}
+                                        data-testid={`radio-subject-no-${propertyId}`}
+                                      />
+                                      <Label htmlFor={`subject-no-${propertyId}`}>No</Label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+
                             {/* Property Address */}
                             <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                               <div className="space-y-2 md:col-span-4">
@@ -3005,12 +3070,24 @@ export default function AdminAddClient() {
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                               <div className="space-y-2">
                                 <Label htmlFor={`property-type-${propertyId}`}>Property Type</Label>
-                                <Input
-                                  id={`property-type-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.propertyType` as const)}
-                                  placeholder="e.g., Single Family"
-                                  data-testid={`input-property-type-${propertyId}`}
-                                />
+                                <Select
+                                  value={form.watch(`property.properties.${index}.propertyType` as const) || ''}
+                                  onValueChange={(value) => form.setValue(`property.properties.${index}.propertyType` as const, value)}
+                                >
+                                  <SelectTrigger data-testid={`select-property-type-${propertyId}`}>
+                                    <SelectValue placeholder="Select type" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="single-family">Single Family</SelectItem>
+                                    <SelectItem value="condo">Condo</SelectItem>
+                                    <SelectItem value="townhouse">Townhouse</SelectItem>
+                                    <SelectItem value="duplex">Duplex</SelectItem>
+                                    <SelectItem value="multi-family">Multi-Family</SelectItem>
+                                    <SelectItem value="mobile-home-sw">Mobile Home SW</SelectItem>
+                                    <SelectItem value="mobile-home-dw">Mobile Home DW</SelectItem>
+                                    <SelectItem value="other">Other</SelectItem>
+                                  </SelectContent>
+                                </Select>
                               </div>
                               
                               <div className="space-y-2">
@@ -3033,6 +3110,25 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
+                              {/* Active Secured Loan for Primary Residence only */}
+                              {property.use === 'primary' && (
+                                <div className="space-y-2">
+                                  <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Active Secured Loan?</Label>
+                                  <Select
+                                    value={form.watch(`property.properties.${index}.activeSecuredLoan` as const) || ''}
+                                    onValueChange={(value) => form.setValue(`property.properties.${index}.activeSecuredLoan` as const, value)}
+                                  >
+                                    <SelectTrigger data-testid={`select-property-active-secured-loan-${propertyId}`}>
+                                      <SelectValue placeholder="Select" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="yes">Yes</SelectItem>
+                                      <SelectItem value="no-paid-off">No, Paid Off</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              )}
+                              
                               <div className="space-y-2">
                                 <Label htmlFor={`property-owned-since-${propertyId}`}>Owned Since</Label>
                                 <Input
@@ -3054,7 +3150,8 @@ export default function AdminAddClient() {
                               </div>
                             </div>
 
-                            {/* Loan Details Box */}
+                            {/* Loan Details Box - Only show for Primary Residence if activeSecuredLoan is 'yes', or always for other property types */}
+                            {(property.use !== 'primary' || form.watch(`property.properties.${index}.activeSecuredLoan` as const) === 'yes') && (
                             <Card className="border-2 border-dashed">
                               <CardHeader>
                                 <CardTitle className="text-lg">Loan Details</CardTitle>
@@ -3080,7 +3177,7 @@ export default function AdminAddClient() {
                                   </div>
                                   
                                   <div className="space-y-2">
-                                    <Label htmlFor={`property-mortgage-balance-${propertyId}`}>Mortgage Balance</Label>
+                                    <Label htmlFor={`property-mortgage-balance-${propertyId}`}>Mortgage Statement Balance</Label>
                                     <Input
                                       id={`property-mortgage-balance-${propertyId}`}
                                       {...form.register(`property.properties.${index}.loan.mortgageBalance` as const)}
@@ -3128,49 +3225,58 @@ export default function AdminAddClient() {
                                       data-testid={`input-property-total-payment-${propertyId}`}
                                     />
                                   </div>
+                                  
+                                  {/* Investment Property Rental Fields */}
+                                  {property.use === 'investment' && (
+                                    <>
+                                      <div className="space-y-2">
+                                        <Label htmlFor={`property-is-rented-${propertyId}`}>Is this Property Rented?</Label>
+                                        <Select
+                                          value={form.watch(`property.properties.${index}.loan.isPropertyRented` as const) || ''}
+                                          onValueChange={(value) => form.setValue(`property.properties.${index}.loan.isPropertyRented` as const, value)}
+                                        >
+                                          <SelectTrigger data-testid={`select-property-is-rented-${propertyId}`}>
+                                            <SelectValue placeholder="Select" />
+                                          </SelectTrigger>
+                                          <SelectContent>
+                                            <SelectItem value="yes">Yes</SelectItem>
+                                            <SelectItem value="no">No</SelectItem>
+                                          </SelectContent>
+                                        </Select>
+                                      </div>
+                                      
+                                      <div className="space-y-2">
+                                        <Label htmlFor={`property-monthly-rental-${propertyId}`}>Monthly Rental</Label>
+                                        <Input
+                                          id={`property-monthly-rental-${propertyId}`}
+                                          {...form.register(`property.properties.${index}.loan.monthlyRental` as const)}
+                                          placeholder="$0.00"
+                                          onChange={(e) => {
+                                            form.setValue(`property.properties.${index}.loan.monthlyRental` as const, e.target.value);
+                                            calculateInvestmentIncome(propertyId);
+                                          }}
+                                          data-testid={`input-property-monthly-rental-${propertyId}`}
+                                        />
+                                      </div>
+                                      
+                                      <div className="space-y-2">
+                                        <Label htmlFor={`property-monthly-income-${propertyId}`}>Monthly Income</Label>
+                                        <Input
+                                          id={`property-monthly-income-${propertyId}`}
+                                          {...form.register(`property.properties.${index}.loan.monthlyIncome` as const)}
+                                          placeholder="$0.00"
+                                          readOnly
+                                          className="bg-muted"
+                                          data-testid={`input-property-monthly-income-${propertyId}`}
+                                        />
+                                      </div>
+                                    </>
+                                  )}
                                 </div>
                               </CardContent>
                             </Card>
+                            )}
 
-                            {/* Subject Property Selection */}
-                            <Card className="bg-muted">
-                              <CardContent className="pt-6">
-                                <div className="space-y-3">
-                                  <Label className="text-base font-semibold">Is this the subject property?</Label>
-                                  <div className="flex gap-4">
-                                    <div className="flex items-center space-x-2">
-                                      <input
-                                        type="radio"
-                                        id={`subject-yes-${propertyId}`}
-                                        name={`subject-${propertyId}`}
-                                        checked={property.isSubject === true}
-                                        onChange={() => setSubjectProperty(propertyId)}
-                                        data-testid={`radio-subject-yes-${propertyId}`}
-                                      />
-                                      <Label htmlFor={`subject-yes-${propertyId}`}>Yes</Label>
-                                    </div>
-                                    
-                                    <div className="flex items-center space-x-2">
-                                      <input
-                                        type="radio"
-                                        id={`subject-no-${propertyId}`}
-                                        name={`subject-${propertyId}`}
-                                        checked={property.isSubject === false}
-                                        onChange={() => {
-                                          const properties = form.watch('property.properties') || [];
-                                          const updatedProperties = properties.map(p => 
-                                            p.id === propertyId ? { ...p, isSubject: false } : p
-                                          );
-                                          form.setValue('property.properties', updatedProperties);
-                                        }}
-                                        data-testid={`radio-subject-no-${propertyId}`}
-                                      />
-                                      <Label htmlFor={`subject-no-${propertyId}`}>No</Label>
-                                    </div>
-                                  </div>
-                                </div>
-                              </CardContent>
-                            </Card>
                           </div>
                         </CardContent>
                       </CollapsibleContent>
@@ -3179,91 +3285,6 @@ export default function AdminAddClient() {
                 );
               })}
 
-              {/* Keep existing Subject Property Address for borrower info */}
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle>Subject Property Address</CardTitle>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={copyResidenceToSubjectProperty}
-                      className="hover:bg-yellow-500"
-                      data-testid="button-same-address"
-                    >
-                      Same
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                    <div className="space-y-2 md:col-span-4">
-                      <Label htmlFor="borrower-subject-street">Street Address</Label>
-                      <Input
-                        id="borrower-subject-street"
-                        {...form.register('borrower.subjectProperty.street')}
-                        data-testid="input-borrower-subject-street"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor="borrower-subject-unit">Unit/Apt</Label>
-                      <Input
-                        id="borrower-subject-unit"
-                        {...form.register('borrower.subjectProperty.unit')}
-                        data-testid="input-borrower-subject-unit"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor="borrower-subject-city">City</Label>
-                      <Input
-                        id="borrower-subject-city"
-                        {...form.register('borrower.subjectProperty.city')}
-                        data-testid="input-borrower-subject-city"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="borrower-subject-state">State</Label>
-                      <Select
-                        value={form.watch('borrower.subjectProperty.state') || ''}
-                        onValueChange={(value) => form.setValue('borrower.subjectProperty.state', value)}
-                      >
-                        <SelectTrigger data-testid="select-borrower-subject-state">
-                          <SelectValue placeholder="Select state" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {US_STATES.map((state) => (
-                            <SelectItem key={state.value} value={state.value}>
-                              {state.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="borrower-subject-zip">ZIP Code</Label>
-                      <Input
-                        id="borrower-subject-zip"
-                        {...form.register('borrower.subjectProperty.zip')}
-                        data-testid="input-borrower-subject-zip"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor="borrower-subject-county">County</Label>
-                      <Input
-                        id="borrower-subject-county"
-                        {...form.register('borrower.subjectProperty.county')}
-                        data-testid="input-borrower-subject-county"
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
             </TabsContent>
 
 
