@@ -1703,6 +1703,7 @@ export default function AdminAddClient() {
 
               {/* Co-Borrower Residence Address */}
               {hasCoBorrower && (
+                <>
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between">
                     <CardTitle>Co-Borrower Residence Address</CardTitle>
@@ -1976,6 +1977,7 @@ export default function AdminAddClient() {
                     </CardContent>
                   </Card>
                 )}
+                </>
               )}
             </TabsContent>
 
