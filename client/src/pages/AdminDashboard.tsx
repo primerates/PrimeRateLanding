@@ -66,6 +66,8 @@ export default function AdminDashboard() {
         return 'hover:bg-green-300 hover:text-black';
       case 'quotes':
         return 'hover:bg-blue-300 hover:text-black';
+      case 'stats':
+        return 'hover:border-orange-500 hover:border-2';
       default:
         return 'hover-elevate';
     }
