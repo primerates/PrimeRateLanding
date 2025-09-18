@@ -4412,26 +4412,26 @@ export default function AdminAddClient() {
                                   data-testid={`input-property-hoa-fee-${propertyId}`}
                                 />
                               </div>
-                              
-                              {/* Active Secured Loan for Primary Residence and Second Home */}
-                              {(property.use === 'primary' || property.use === 'second-home') && (
-                                <div className="space-y-2">
-                                  <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Active Secured Loan?</Label>
-                                  <Select
-                                    value={form.watch(`property.properties.${index}.activeSecuredLoan` as const) || ''}
-                                    onValueChange={(value) => form.setValue(`property.properties.${index}.activeSecuredLoan` as const, value)}
-                                  >
-                                    <SelectTrigger data-testid={`select-property-active-secured-loan-${propertyId}`}>
-                                      <SelectValue placeholder="Select" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="yes">Yes</SelectItem>
-                                      <SelectItem value="no-paid-off">No, Paid Off</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                              )}
                             </div>
+
+                            {/* Active Secured First Loan for Primary Residence and Second Home */}
+                            {(property.use === 'primary' || property.use === 'second-home') && (
+                              <div className="space-y-2 mt-4">
+                                <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Active Secured First Loan?</Label>
+                                <Select
+                                  value={form.watch(`property.properties.${index}.activeSecuredLoan` as const) || ''}
+                                  onValueChange={(value) => form.setValue(`property.properties.${index}.activeSecuredLoan` as const, value)}
+                                >
+                                  <SelectTrigger data-testid={`select-property-active-secured-loan-${propertyId}`}>
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="yes">Yes</SelectItem>
+                                    <SelectItem value="no-paid-off">No, Paid Off</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            )}
 
                             {/* Loan Details Box - Only show for Primary Residence/Second Home if activeSecuredLoan is 'yes', or always for Investment properties */}
                             {(property.use === 'investment' || form.watch(`property.properties.${index}.activeSecuredLoan` as const) === 'yes') && (
