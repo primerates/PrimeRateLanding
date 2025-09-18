@@ -77,6 +77,89 @@ export default function AdminAddClient() {
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Utility function to lookup county from zip code using FCC Area API
+  const lookupCountyFromZip = async (zipCode: string): Promise<Array<{value: string, label: string}>> => {
+    if (!zipCode || zipCode.length < 5) return [];
+    
+    try {
+      // First, we need to geocode the ZIP code to get lat/lng
+      // Using a simple approach with geocode.maps.co (free tier)
+      const geoResponse = await fetch(`https://geocode.maps.co/search?q=${zipCode}&api_key=`);
+      
+      if (!geoResponse.ok) {
+        // If geocode.maps.co fails, try with FCC API directly using ZIP
+        // FCC API can sometimes work with ZIP codes directly
+        const directResponse = await fetch(`https://geo.fcc.gov/api/census/area?zip=${zipCode}&format=json`);
+        if (directResponse.ok) {
+          const directData = await directResponse.json();
+          if (directData.results && directData.results.length > 0) {
+            const result = directData.results[0];
+            if (result.county_name) {
+              return [{
+                value: result.county_name,
+                label: result.county_name
+              }];
+            }
+          }
+        }
+        return [];
+      }
+      
+      const geoData = await geoResponse.json();
+      if (!geoData || geoData.length === 0) return [];
+      
+      const { lat, lon } = geoData[0];
+      
+      // Now use FCC Area API to get county information
+      const fccResponse = await fetch(`https://geo.fcc.gov/api/census/area?lat=${lat}&lon=${lon}&format=json`);
+      
+      if (!fccResponse.ok) return [];
+      
+      const countyData = await fccResponse.json();
+      
+      if (countyData.results && countyData.results.length > 0) {
+        const result = countyData.results[0];
+        if (result.county_name) {
+          return [{
+            value: result.county_name,
+            label: result.county_name
+          }];
+        }
+      }
+      
+      return [];
+    } catch (error) {
+      console.error('Error looking up county from ZIP code:', error);
+      return [];
+    }
+  };
+
+  // Handler for borrower ZIP code lookup
+  const handleBorrowerZipCodeLookup = async (zipCode: string) => {
+    if (!zipCode || zipCode.length < 5) {
+      setBorrowerCountyOptions([]);
+      return;
+    }
+    
+    setCountyLookupLoading(prev => ({...prev, borrower: true}));
+    const counties = await lookupCountyFromZip(zipCode);
+    setBorrowerCountyOptions(counties);
+    setCountyLookupLoading(prev => ({...prev, borrower: false}));
+  };
+
+  // Handler for co-borrower ZIP code lookup
+  const handleCoBorrowerZipCodeLookup = async (zipCode: string) => {
+    if (!zipCode || zipCode.length < 5) {
+      setCoBorrowerCountyOptions([]);
+      return;
+    }
+    
+    setCountyLookupLoading(prev => ({...prev, coBorrower: true}));
+    const counties = await lookupCountyFromZip(zipCode);
+    setCoBorrowerCountyOptions(counties);
+    setCountyLookupLoading(prev => ({...prev, coBorrower: false}));
+  };
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
   
@@ -124,6 +207,11 @@ export default function AdminAddClient() {
   const [unsavedChangesDialog, setUnsavedChangesDialog] = useState<{
     isOpen: boolean;
   }>({ isOpen: false });
+
+  // County lookup state
+  const [borrowerCountyOptions, setBorrowerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
+  const [coBorrowerCountyOptions, setCoBorrowerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
+  const [countyLookupLoading, setCountyLookupLoading] = useState<{borrower: boolean, coBorrower: boolean}>({borrower: false, coBorrower: false});
 
   // Property rental popup dialog state
   const [propertyRentalDialog, setPropertyRentalDialog] = useState<{
@@ -1214,6 +1302,7 @@ export default function AdminAddClient() {
                       <Input
                         id="borrower-residence-zip"
                         {...form.register('borrower.residenceAddress.zip')}
+                        onBlur={(e) => handleBorrowerZipCodeLookup(e.target.value)}
                         data-testid="input-borrower-residence-zip"
                       />
                       {form.formState.errors.borrower?.residenceAddress?.zip && (
@@ -1223,11 +1312,41 @@ export default function AdminAddClient() {
                     
                     <div className="space-y-2 md:col-span-2">
                       <Label htmlFor="borrower-residence-county">County</Label>
-                      <Input
-                        id="borrower-residence-county"
-                        {...form.register('borrower.residenceAddress.county')}
-                        data-testid="input-borrower-residence-county"
-                      />
+                      {borrowerCountyOptions.length > 0 ? (
+                        <Select
+                          value={form.watch('borrower.residenceAddress.county') || ''}
+                          onValueChange={(value) => {
+                            if (value === 'manual-entry') {
+                              form.setValue('borrower.residenceAddress.county', '');
+                              setBorrowerCountyOptions([]);
+                            } else {
+                              form.setValue('borrower.residenceAddress.county', value, { shouldDirty: true });
+                            }
+                          }}
+                        >
+                          <SelectTrigger data-testid="select-borrower-residence-county">
+                            <SelectValue placeholder={countyLookupLoading.borrower ? "Looking up counties..." : "Select county"} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {borrowerCountyOptions.map((county) => (
+                              <SelectItem key={county.value} value={county.value}>
+                                {county.label}
+                              </SelectItem>
+                            ))}
+                            <SelectItem value="manual-entry" className="text-muted-foreground border-t">
+                              ✏️ Enter county manually
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <Input
+                          id="borrower-residence-county"
+                          {...form.register('borrower.residenceAddress.county')}
+                          placeholder={countyLookupLoading.borrower ? "Looking up counties..." : "Enter county name"}
+                          disabled={countyLookupLoading.borrower}
+                          data-testid="input-borrower-residence-county"
+                        />
+                      )}
                     </div>
                   </div>
                   
@@ -1472,17 +1591,48 @@ export default function AdminAddClient() {
                         <Input
                           id="coBorrower-residence-zip"
                           {...form.register('coBorrower.residenceAddress.zip')}
+                          onBlur={(e) => handleCoBorrowerZipCodeLookup(e.target.value)}
                           data-testid="input-coborrower-residence-zip"
                         />
                       </div>
                       
                       <div className="space-y-2 md:col-span-2">
                         <Label htmlFor="coBorrower-residence-county">County</Label>
-                        <Input
-                          id="coBorrower-residence-county"
-                          {...form.register('coBorrower.residenceAddress.county')}
-                          data-testid="input-coborrower-residence-county"
-                        />
+                        {coBorrowerCountyOptions.length > 0 ? (
+                          <Select
+                            value={form.watch('coBorrower.residenceAddress.county') || ''}
+                            onValueChange={(value) => {
+                              if (value === 'manual-entry') {
+                                form.setValue('coBorrower.residenceAddress.county', '');
+                                setCoBorrowerCountyOptions([]);
+                              } else {
+                                form.setValue('coBorrower.residenceAddress.county', value, { shouldDirty: true });
+                              }
+                            }}
+                          >
+                            <SelectTrigger data-testid="select-coborrower-residence-county">
+                              <SelectValue placeholder={countyLookupLoading.coBorrower ? "Looking up counties..." : "Select county"} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {coBorrowerCountyOptions.map((county) => (
+                                <SelectItem key={county.value} value={county.value}>
+                                  {county.label}
+                                </SelectItem>
+                              ))}
+                              <SelectItem value="manual-entry" className="text-muted-foreground border-t">
+                                ✏️ Enter county manually
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <Input
+                            id="coBorrower-residence-county"
+                            {...form.register('coBorrower.residenceAddress.county')}
+                            placeholder={countyLookupLoading.coBorrower ? "Looking up counties..." : "Enter county name"}
+                            disabled={countyLookupLoading.coBorrower}
+                            data-testid="input-coborrower-residence-county"
+                          />
+                        )}
                       </div>
                     </div>
                     
