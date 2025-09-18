@@ -2837,35 +2837,59 @@ export default function AdminAddClient() {
               <Card className="bg-muted">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    Property Summary 
+                    Property Summary
                     <span className="text-lg font-semibold">
-                      (<span data-testid="text-property-count">{(form.watch('property.properties') || []).length}</span>)
+                      - <span data-testid="text-property-count">{(form.watch('property.properties') || []).length}</span>
                     </span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
-                      <Label>Estimated LTV</Label>
+                      <Label>
+                        {(() => {
+                          const properties = form.watch('property.properties') || [];
+                          const subjectProperty = properties.find(p => p.isSubject === true);
+                          
+                          if (!subjectProperty) return 'Estimated LTV';
+                          
+                          const hasAppraisedValue = subjectProperty.appraisedValue && parseMonetaryValue(subjectProperty.appraisedValue) > 0;
+                          const fieldType = mortgageBalanceFieldType[subjectProperty.id || ''] || 'statement';
+                          const hasPayOffBalance = fieldType === 'payoff' && subjectProperty.loan?.mortgageBalance && parseMonetaryValue(subjectProperty.loan.mortgageBalance) > 0;
+                          
+                          if (hasAppraisedValue && hasPayOffBalance) {
+                            return 'Final LTV';
+                          }
+                          
+                          return 'Estimated LTV';
+                        })()}
+                      </Label>
                       <div className="flex items-center gap-2">
                         <div 
-                          className="h-9 w-full px-3 py-2 border border-input bg-background rounded-md text-sm font-medium"
+                          className="h-9 w-1/2 px-3 py-2 border border-input bg-background rounded-md text-sm font-medium"
                           data-testid="display-property-estimatedLTV"
                         >
                           {(() => {
                             const properties = form.watch('property.properties') || [];
                             const subjectProperty = properties.find(p => p.isSubject === true);
                             
-                            if (!subjectProperty || !subjectProperty.estimatedValue || !subjectProperty.loan?.mortgageBalance) {
+                            if (!subjectProperty || !subjectProperty.loan?.mortgageBalance) {
                               return '-';
                             }
                             
                             const mortgageBalance = parseMonetaryValue(subjectProperty.loan.mortgageBalance);
-                            const estimatedValue = parseMonetaryValue(subjectProperty.estimatedValue);
                             
-                            if (estimatedValue <= 0) return '-';
+                            // Use appraised value if available, otherwise use estimated value
+                            let propertyValue = 0;
+                            if (subjectProperty.appraisedValue && parseMonetaryValue(subjectProperty.appraisedValue) > 0) {
+                              propertyValue = parseMonetaryValue(subjectProperty.appraisedValue);
+                            } else if (subjectProperty.estimatedValue && parseMonetaryValue(subjectProperty.estimatedValue) > 0) {
+                              propertyValue = parseMonetaryValue(subjectProperty.estimatedValue);
+                            }
                             
-                            const ltv = (mortgageBalance / estimatedValue * 100);
+                            if (propertyValue <= 0) return '-';
+                            
+                            const ltv = (mortgageBalance / propertyValue * 100);
                             return Math.round(ltv).toString();
                           })()}
                         </div>
@@ -2891,9 +2915,26 @@ export default function AdminAddClient() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label className="text-sm font-medium text-muted-foreground">Investment Properties</Label>
-                      <div className="text-2xl font-semibold" data-testid="text-investment-count">
-                        {(form.watch('property.properties') || []).filter(p => p.use === 'investment').length}
+                      <Label className="text-sm font-medium text-muted-foreground">Property Breakdown</Label>
+                      <div className="space-y-1 text-sm">
+                        <div className="flex justify-between">
+                          <span>Primary Residence:</span>
+                          <span className="font-medium" data-testid="text-primary-count">
+                            {(form.watch('property.properties') || []).filter(p => p.use === 'primary').length}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Second Home:</span>
+                          <span className="font-medium" data-testid="text-second-home-count">
+                            {(form.watch('property.properties') || []).filter(p => p.use === 'second-home').length}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Investment Property:</span>
+                          <span className="font-medium" data-testid="text-investment-count">
+                            {(form.watch('property.properties') || []).filter(p => p.use === 'investment').length}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -3174,7 +3215,6 @@ export default function AdminAddClient() {
                                   id={`property-estimated-value-${propertyId}`}
                                   {...form.register(`property.properties.${index}.estimatedValue` as const)}
                                   placeholder="$0.00"
-                                  className="w-2/3"
                                   data-testid={`input-property-estimated-value-${propertyId}`}
                                 />
                               </div>
@@ -3186,6 +3226,26 @@ export default function AdminAddClient() {
                                   {...form.register(`property.properties.${index}.appraisedValue` as const)}
                                   placeholder="$0.00"
                                   data-testid={`input-property-appraised-value-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-owned-since-${propertyId}`}>Owned Since</Label>
+                                <Input
+                                  id={`property-owned-since-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.ownedSince` as const)}
+                                  placeholder="MM/YYYY"
+                                  data-testid={`input-property-owned-since-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-purchase-price-${propertyId}`}>Purchase Price</Label>
+                                <Input
+                                  id={`property-purchase-price-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.purchasePrice` as const)}
+                                  placeholder="$0.00"
+                                  data-testid={`input-property-purchase-price-${propertyId}`}
                                 />
                               </div>
                               
@@ -3207,26 +3267,6 @@ export default function AdminAddClient() {
                                   </Select>
                                 </div>
                               )}
-                              
-                              <div className="space-y-2">
-                                <Label htmlFor={`property-owned-since-${propertyId}`}>Owned Since</Label>
-                                <Input
-                                  id={`property-owned-since-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.ownedSince` as const)}
-                                  placeholder="MM/YYYY"
-                                  data-testid={`input-property-owned-since-${propertyId}`}
-                                />
-                              </div>
-                              
-                              <div className="space-y-2">
-                                <Label htmlFor={`property-purchase-price-${propertyId}`}>Purchase Price</Label>
-                                <Input
-                                  id={`property-purchase-price-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.purchasePrice` as const)}
-                                  placeholder="$0.00"
-                                  data-testid={`input-property-purchase-price-${propertyId}`}
-                                />
-                              </div>
                             </div>
 
                             {/* Loan Details Box - Only show for Primary Residence/Second Home if activeSecuredLoan is 'yes', or always for Investment properties */}
