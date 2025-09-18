@@ -126,8 +126,18 @@ export default function AdminAddClient() {
     type: 'add' | 'remove' | null;
   }>({ isOpen: false, type: null });
 
+  // Property usage change confirmation dialog state
+  const [propertyUsageChangeDialog, setPropertyUsageChangeDialog] = useState<{
+    isOpen: boolean;
+    propertyId: string | undefined;
+    newUsage: 'primary' | 'second-home' | 'investment' | undefined;
+  }>({ isOpen: false, propertyId: undefined, newUsage: undefined });
+
   // Mortgage balance field toggle state (per property)
   const [mortgageBalanceFieldType, setMortgageBalanceFieldType] = useState<Record<string, 'statement' | 'payoff'>>({});
+  
+  // Escrow payment field toggle state (per property)
+  const [escrowPaymentFieldType, setEscrowPaymentFieldType] = useState<Record<string, 'tax-insurance' | 'property-tax' | 'home-insurance'>>({});
 
   const form = useForm<InsertClient>({
     resolver: zodResolver(insertClientSchema),
@@ -715,6 +725,45 @@ export default function AdminAddClient() {
     setSubjectConfirmDialog({ isOpen: false, newSubjectPropertyId: null });
   };
 
+  // Handle property usage change request
+  const requestPropertyUsageChange = (propertyId: string, newUsage: 'primary' | 'second-home' | 'investment') => {
+    const currentProperties = form.watch('property.properties') || [];
+    const property = currentProperties.find(p => p.id === propertyId);
+    
+    if (!property || property.use === newUsage) return;
+    
+    // Check if changing to primary residence and one already exists
+    if (newUsage === 'primary') {
+      const hasExistingPrimary = currentProperties.some(p => p.use === 'primary' && p.id !== propertyId);
+      if (hasExistingPrimary) {
+        alert('You can only have one Primary Residence property.');
+        return;
+      }
+    }
+    
+    setPropertyUsageChangeDialog({
+      isOpen: true,
+      propertyId,
+      newUsage
+    });
+  };
+
+  // Handle property usage change confirmation
+  const handlePropertyUsageChangeConfirmation = (confirmed: boolean) => {
+    if (confirmed && propertyUsageChangeDialog.propertyId && propertyUsageChangeDialog.newUsage) {
+      const currentProperties = form.watch('property.properties') || [];
+      const updatedProperties = currentProperties.map(property => 
+        property.id === propertyUsageChangeDialog.propertyId 
+          ? { ...property, use: propertyUsageChangeDialog.newUsage }
+          : property
+      );
+      form.setValue('property.properties', updatedProperties);
+    }
+    
+    // Close dialog
+    setPropertyUsageChangeDialog({ isOpen: false, propertyId: undefined, newUsage: undefined });
+  };
+
   // Property type management functions
   const addPropertyType = (type: 'primary' | 'second-home' | 'investment') => {
     const currentProperties = form.watch('property.properties') || [];
@@ -800,12 +849,17 @@ export default function AdminAddClient() {
     
     const monthlyRental = parseMonetaryValue(property.loan.monthlyRental || '');
     const totalPayment = parseMonetaryValue(property.loan.totalMonthlyPayment || '');
-    const monthlyIncome = Math.max(0, monthlyRental - totalPayment);
+    const monthlyIncome = monthlyRental - totalPayment; // Allow negative values
+    
+    // Format with proper sign for negative values
+    const formattedIncome = monthlyIncome >= 0 
+      ? `$${monthlyIncome.toFixed(2)}` 
+      : `-$${Math.abs(monthlyIncome).toFixed(2)}`;
     
     // Update the form with calculated income
     const updatedProperties = properties.map(p => 
       p.id === propertyId 
-        ? { ...p, loan: { ...p.loan, monthlyIncome: `$${monthlyIncome.toFixed(2)}` } }
+        ? { ...p, loan: { ...p.loan, monthlyIncome: formattedIncome } }
         : p
     );
     form.setValue('property.properties', updatedProperties);
@@ -823,6 +877,30 @@ export default function AdminAddClient() {
   const getMortgageBalanceLabel = (propertyId: string) => {
     const fieldType = mortgageBalanceFieldType[propertyId] || 'statement';
     return fieldType === 'statement' ? 'Mortgage Statement Balance' : 'Pay Off Demand Balance';
+  };
+
+  // Toggle escrow payment field type
+  const toggleEscrowPaymentFieldType = (propertyId: string) => {
+    setEscrowPaymentFieldType(prev => {
+      const currentType = prev[propertyId] || 'tax-insurance';
+      const nextType = currentType === 'tax-insurance' ? 'property-tax' : 
+                      currentType === 'property-tax' ? 'home-insurance' : 'tax-insurance';
+      return {
+        ...prev,
+        [propertyId]: nextType
+      };
+    });
+  };
+
+  // Get escrow payment field label
+  const getEscrowPaymentLabel = (propertyId: string) => {
+    const fieldType = escrowPaymentFieldType[propertyId] || 'tax-insurance';
+    switch (fieldType) {
+      case 'tax-insurance': return 'Tax & Insurance Payment';
+      case 'property-tax': return 'Property Tax';
+      case 'home-insurance': return 'Home Insurance';
+      default: return 'Tax & Insurance Payment';
+    }
   };
 
   // Sort properties by hierarchy: Primary Residence, Second Homes, Investment Properties
@@ -873,7 +951,7 @@ export default function AdminAddClient() {
       <div className="container mx-auto px-6 py-8">
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <Tabs defaultValue="client" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-7">
               <TabsTrigger value="client" data-testid="tab-client">Client</TabsTrigger>
               <TabsTrigger value="income" data-testid="tab-income">Income</TabsTrigger>
               <TabsTrigger value="property" data-testid="tab-property">Property</TabsTrigger>
@@ -1116,7 +1194,7 @@ export default function AdminAddClient() {
                   </div>
                   
                   <div className="space-y-2">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-4 gap-4">
                       <div>
                         <Label htmlFor="borrower-years">Years at Address</Label>
                         <Input
@@ -1351,7 +1429,7 @@ export default function AdminAddClient() {
                     </div>
                     
                     <div className="space-y-2">
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-4 gap-4">
                         <div>
                           <Label htmlFor="coBorrower-years">Years at Address</Label>
                           <Input
@@ -2015,6 +2093,7 @@ export default function AdminAddClient() {
                             variant="outline" 
                             size="sm" 
                             onClick={addBorrowerPension}
+                            className="hover:bg-orange-500 hover:text-white hover:border-orange-500"
                             data-testid="button-add-borrower-pension"
                           >
                             <Plus className="h-4 w-4 mr-2" />
@@ -2206,6 +2285,10 @@ export default function AdminAddClient() {
                             placeholder="$0.00"
                             data-testid="input-income-otherIncomeMonthlyAmount"
                             readOnly
+                            className={(() => {
+                              const value = form.watch('income.otherIncomeMonthlyAmount') || '';
+                              return value.startsWith('-') ? 'text-red-600' : '';
+                            })()}
                           />
                         </div>
                       </div>
@@ -2803,6 +2886,7 @@ export default function AdminAddClient() {
                             variant="outline" 
                             size="sm" 
                             onClick={addCoBorrowerPension}
+                            className="hover:bg-orange-500 hover:text-white hover:border-orange-500"
                             data-testid="button-add-coborrower-pension"
                           >
                             <Plus className="h-4 w-4 mr-2" />
@@ -3204,14 +3288,32 @@ export default function AdminAddClient() {
                     >
                       <CardHeader>
                         <div className="flex items-center justify-between">
-                          <CardTitle className={`flex items-center gap-2 ${property.isSubject ? 'text-green-600' : ''}`}>
-                            {getPropertyTitle()}
-                            {property.isSubject && (
-                              <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
-                                - Subject Property
-                              </span>
-                            )}
-                          </CardTitle>
+                          <div className="flex items-center gap-4">
+                            <CardTitle className={`flex items-center gap-2 ${property.isSubject ? 'text-green-600' : ''}`}>
+                              {getPropertyTitle()}
+                              {property.isSubject && (
+                                <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
+                                  - Subject Property
+                                </span>
+                              )}
+                            </CardTitle>
+                            <div className="flex items-center gap-2">
+                              <Label className="text-sm text-muted-foreground">Usage:</Label>
+                              <Select
+                                value={property.use}
+                                onValueChange={(value) => requestPropertyUsageChange(propertyId, value as 'primary' | 'second-home' | 'investment')}
+                              >
+                                <SelectTrigger className="w-40" data-testid={`select-property-usage-${propertyId}`}>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="primary">Primary Residence</SelectItem>
+                                  <SelectItem value="second-home">Second Home</SelectItem>
+                                  <SelectItem value="investment">Investment Property</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
                           <div className="flex items-center gap-2">
                             {/* Add/Remove buttons for multi-property types */}
                             {(property.use === 'second-home' || property.use === 'investment') && (
@@ -3491,7 +3593,7 @@ export default function AdminAddClient() {
                                   </div>
                                   
                                   <div className="space-y-2">
-                                    <Label htmlFor={`property-pi-payment-${propertyId}`}>P&I Payment</Label>
+                                    <Label htmlFor={`property-pi-payment-${propertyId}`}>Principal & Interest Payment</Label>
                                     <Input
                                       id={`property-pi-payment-${propertyId}`}
                                       {...form.register(`property.properties.${index}.loan.piPayment` as const)}
@@ -3505,7 +3607,21 @@ export default function AdminAddClient() {
                                   </div>
                                   
                                   <div className="space-y-2">
-                                    <Label htmlFor={`property-escrow-payment-${propertyId}`}>Escrow Payment</Label>
+                                    <div className="flex items-center justify-between">
+                                      <Label htmlFor={`property-escrow-payment-${propertyId}`}>
+                                        {getEscrowPaymentLabel(propertyId)}
+                                      </Label>
+                                      <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => toggleEscrowPaymentFieldType(propertyId)}
+                                        className="h-6 px-2 text-xs"
+                                        data-testid={`button-toggle-escrow-payment-type-${propertyId}`}
+                                      >
+                                        Toggle
+                                      </Button>
+                                    </div>
                                     <Input
                                       id={`property-escrow-payment-${propertyId}`}
                                       {...form.register(`property.properties.${index}.loan.escrowPayment` as const)}
@@ -3570,7 +3686,10 @@ export default function AdminAddClient() {
                                           {...form.register(`property.properties.${index}.loan.monthlyIncome` as const)}
                                           placeholder="$0.00"
                                           readOnly
-                                          className="bg-muted"
+                                          className={(() => {
+                                            const value = form.watch(`property.properties.${index}.loan.monthlyIncome` as const) || '';
+                                            return `bg-muted ${value.startsWith('-') ? 'text-red-600' : ''}`;
+                                          })()}
                                           data-testid={`input-property-monthly-income-${propertyId}`}
                                         />
                                       </div>
@@ -3916,6 +4035,33 @@ export default function AdminAddClient() {
             <Button
               onClick={() => handleSubjectPropertyConfirmation(true)}
               data-testid="button-subject-property-yes"
+            >
+              Yes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Property Usage Change Confirmation Dialog */}
+      <Dialog open={propertyUsageChangeDialog.isOpen} onOpenChange={(open) => !open && handlePropertyUsageChangeConfirmation(false)}>
+        <DialogContent data-testid="dialog-property-usage-change-confirmation">
+          <DialogHeader>
+            <DialogTitle>Change Property Usage</DialogTitle>
+            <DialogDescription>
+              You are changing the purpose/use of this property. Would you like to continue?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => handlePropertyUsageChangeConfirmation(false)}
+              data-testid="button-property-usage-change-no"
+            >
+              No
+            </Button>
+            <Button
+              onClick={() => handlePropertyUsageChangeConfirmation(true)}
+              data-testid="button-property-usage-change-yes"
             >
               Yes
             </Button>
