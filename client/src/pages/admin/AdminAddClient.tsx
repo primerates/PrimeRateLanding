@@ -78,18 +78,46 @@ export default function AdminAddClient() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Utility function to lookup county from zip code using FCC Area API
+  // Utility function to lookup county from zip code using free APIs
   const lookupCountyFromZip = async (zipCode: string): Promise<Array<{value: string, label: string}>> => {
     if (!zipCode || zipCode.length < 5) return [];
     
     try {
-      // First, we need to geocode the ZIP code to get lat/lng
-      // Using a simple approach with geocode.maps.co (free tier)
-      const geoResponse = await fetch(`https://geocode.maps.co/search?q=${zipCode}&api_key=`);
+      // First, use OpenStreetMap Nominatim API (completely free, no API key needed)
+      const nominatimResponse = await fetch(
+        `https://nominatim.openstreetmap.org/search?postalcode=${zipCode}&countrycodes=us&format=json&limit=1`,
+        {
+          headers: {
+            'User-Agent': 'PrimeRateHomeLoans/1.0 (contact@primerateloans.com)'
+          }
+        }
+      );
       
-      if (!geoResponse.ok) {
-        // If geocode.maps.co fails, try with FCC API directly using ZIP
-        // FCC API can sometimes work with ZIP codes directly
+      if (nominatimResponse.ok) {
+        const nominatimData = await nominatimResponse.json();
+        if (nominatimData && nominatimData.length > 0) {
+          const { lat, lon } = nominatimData[0];
+          
+          // Now use FCC Area API to get county information
+          const fccResponse = await fetch(`https://geo.fcc.gov/api/census/area?lat=${lat}&lon=${lon}&format=json`);
+          
+          if (fccResponse.ok) {
+            const countyData = await fccResponse.json();
+            if (countyData.results && countyData.results.length > 0) {
+              const result = countyData.results[0];
+              if (result.county_name) {
+                return [{
+                  value: result.county_name,
+                  label: result.county_name
+                }];
+              }
+            }
+          }
+        }
+      }
+      
+      // Fallback: try FCC API directly with ZIP (sometimes works)
+      try {
         const directResponse = await fetch(`https://geo.fcc.gov/api/census/area?zip=${zipCode}&format=json`);
         if (directResponse.ok) {
           const directData = await directResponse.json();
@@ -103,29 +131,8 @@ export default function AdminAddClient() {
             }
           }
         }
-        return [];
-      }
-      
-      const geoData = await geoResponse.json();
-      if (!geoData || geoData.length === 0) return [];
-      
-      const { lat, lon } = geoData[0];
-      
-      // Now use FCC Area API to get county information
-      const fccResponse = await fetch(`https://geo.fcc.gov/api/census/area?lat=${lat}&lon=${lon}&format=json`);
-      
-      if (!fccResponse.ok) return [];
-      
-      const countyData = await fccResponse.json();
-      
-      if (countyData.results && countyData.results.length > 0) {
-        const result = countyData.results[0];
-        if (result.county_name) {
-          return [{
-            value: result.county_name,
-            label: result.county_name
-          }];
-        }
+      } catch (fallbackError) {
+        console.warn('FCC direct lookup failed:', fallbackError);
       }
       
       return [];
