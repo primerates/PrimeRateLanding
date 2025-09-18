@@ -152,6 +152,7 @@ export const propertyEntrySchema = z.object({
   appraisedValue: z.string().optional(),
   ownedSince: z.string().optional(),
   purchasePrice: z.string().optional(),
+  hoaFee: z.string().optional(),
   activeSecuredLoan: z.string().optional(), // For primary residence
   loan: loanDetailSchema.optional(),
 });

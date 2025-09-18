@@ -831,6 +831,7 @@ export default function AdminAddClient() {
       appraisedValue: '',
       ownedSince: '',
       purchasePrice: '',
+      hoaFee: '',
       loan: {
         lenderName: '',
         loanNumber: '',
@@ -4399,6 +4400,16 @@ export default function AdminAddClient() {
                                   {...form.register(`property.properties.${index}.purchasePrice` as const)}
                                   placeholder="$0.00"
                                   data-testid={`input-property-purchase-price-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-hoa-fee-${propertyId}`}>HOA Fee</Label>
+                                <Input
+                                  id={`property-hoa-fee-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.hoaFee` as const)}
+                                  placeholder="$0.00"
+                                  data-testid={`input-property-hoa-fee-${propertyId}`}
                                 />
                               </div>
                               
