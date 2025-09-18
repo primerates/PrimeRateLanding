@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Plus, Save, Minus } from 'lucide-react';
 import { nanoid } from 'nanoid';
@@ -103,6 +104,15 @@ export default function AdminAddClient() {
 
   // Property collapsible state (using object to manage multiple property cards)
   const [propertyCardStates, setPropertyCardStates] = useState<Record<string, boolean>>({});
+  
+  // Subject property confirmation dialog state
+  const [subjectConfirmDialog, setSubjectConfirmDialog] = useState<{
+    isOpen: boolean;
+    newSubjectPropertyId: string | null;
+  }>({ isOpen: false, newSubjectPropertyId: null });
+
+  // Mortgage balance field toggle state (per property)
+  const [mortgageBalanceFieldType, setMortgageBalanceFieldType] = useState<Record<string, 'statement' | 'payoff'>>({});
 
   const form = useForm<InsertClient>({
     resolver: zodResolver(insertClientSchema),
@@ -553,11 +563,40 @@ export default function AdminAddClient() {
 
   const setSubjectProperty = (propertyId: string) => {
     const currentProperties = form.watch('property.properties') || [];
+    
+    // Check if another property is already selected as subject
+    const currentSubjectProperty = currentProperties.find(property => property.isSubject === true);
+    
+    if (currentSubjectProperty && currentSubjectProperty.id !== propertyId) {
+      // Show confirmation dialog
+      setSubjectConfirmDialog({
+        isOpen: true,
+        newSubjectPropertyId: propertyId
+      });
+      return;
+    }
+    
+    // No existing subject property or same property selected, proceed with change
     const updatedProperties = currentProperties.map(property => ({
       ...property,
       isSubject: property.id === propertyId,
     }));
     form.setValue('property.properties', updatedProperties);
+  };
+
+  // Handle subject property confirmation
+  const handleSubjectPropertyConfirmation = (confirmed: boolean) => {
+    if (confirmed && subjectConfirmDialog.newSubjectPropertyId) {
+      const currentProperties = form.watch('property.properties') || [];
+      const updatedProperties = currentProperties.map(property => ({
+        ...property,
+        isSubject: property.id === subjectConfirmDialog.newSubjectPropertyId,
+      }));
+      form.setValue('property.properties', updatedProperties);
+    }
+    
+    // Close dialog
+    setSubjectConfirmDialog({ isOpen: false, newSubjectPropertyId: null });
   };
 
   // Property type management functions
@@ -632,6 +671,30 @@ export default function AdminAddClient() {
         : p
     );
     form.setValue('property.properties', updatedProperties);
+  };
+
+  // Toggle mortgage balance field type
+  const toggleMortgageBalanceFieldType = (propertyId: string) => {
+    setMortgageBalanceFieldType(prev => ({
+      ...prev,
+      [propertyId]: prev[propertyId] === 'payoff' ? 'statement' : 'payoff'
+    }));
+  };
+
+  // Get mortgage balance field label
+  const getMortgageBalanceLabel = (propertyId: string) => {
+    const fieldType = mortgageBalanceFieldType[propertyId] || 'statement';
+    return fieldType === 'statement' ? 'Mortgage Statement Balance' : 'Pay Off Demand Balance';
+  };
+
+  // Sort properties by hierarchy: Primary Residence, Second Homes, Investment Properties
+  const sortPropertiesByHierarchy = (properties: any[]) => {
+    const hierarchyOrder = { 'primary': 1, 'second-home': 2, 'investment': 3 };
+    return [...properties].sort((a, b) => {
+      const aOrder = hierarchyOrder[a.use as keyof typeof hierarchyOrder] || 999;
+      const bOrder = hierarchyOrder[b.use as keyof typeof hierarchyOrder] || 999;
+      return aOrder - bOrder;
+    });
   };
 
   return (
@@ -2783,14 +2846,29 @@ export default function AdminAddClient() {
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="property-estimatedLTV">Estimated LTV</Label>
+                      <Label>Estimated LTV</Label>
                       <div className="flex items-center gap-2">
-                        <Input
-                          id="property-estimatedLTV"
-                          {...form.register('property.estimatedLTV')}
-                          placeholder="80"
-                          data-testid="input-property-estimatedLTV"
-                        />
+                        <div 
+                          className="h-9 w-full px-3 py-2 border border-input bg-background rounded-md text-sm font-medium"
+                          data-testid="display-property-estimatedLTV"
+                        >
+                          {(() => {
+                            const properties = form.watch('property.properties') || [];
+                            const subjectProperty = properties.find(p => p.isSubject === true);
+                            
+                            if (!subjectProperty || !subjectProperty.estimatedValue || !subjectProperty.loan?.mortgageBalance) {
+                              return '-';
+                            }
+                            
+                            const mortgageBalance = parseMonetaryValue(subjectProperty.loan.mortgageBalance);
+                            const estimatedValue = parseMonetaryValue(subjectProperty.estimatedValue);
+                            
+                            if (estimatedValue <= 0) return '-';
+                            
+                            const ltv = (mortgageBalance / estimatedValue * 100);
+                            return Math.round(ltv).toString();
+                          })()}
+                        </div>
                         <span className="text-lg font-medium">%</span>
                       </div>
                     </div>
@@ -2889,7 +2967,7 @@ export default function AdminAddClient() {
               </Card>
 
               {/* Dynamic Property Cards */}
-              {(form.watch('property.properties') || []).map((property, index) => {
+              {sortPropertiesByHierarchy(form.watch('property.properties') || []).map((property, index) => {
                 const propertyId = property.id || `property-${index}`;
                 const isOpen = propertyCardStates[propertyId] ?? true;
                 
@@ -3096,6 +3174,7 @@ export default function AdminAddClient() {
                                   id={`property-estimated-value-${propertyId}`}
                                   {...form.register(`property.properties.${index}.estimatedValue` as const)}
                                   placeholder="$0.00"
+                                  className="w-2/3"
                                   data-testid={`input-property-estimated-value-${propertyId}`}
                                 />
                               </div>
@@ -3110,8 +3189,8 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
-                              {/* Active Secured Loan for Primary Residence only */}
-                              {property.use === 'primary' && (
+                              {/* Active Secured Loan for Primary Residence and Second Home */}
+                              {(property.use === 'primary' || property.use === 'second-home') && (
                                 <div className="space-y-2">
                                   <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Active Secured Loan?</Label>
                                   <Select
@@ -3150,8 +3229,8 @@ export default function AdminAddClient() {
                               </div>
                             </div>
 
-                            {/* Loan Details Box - Only show for Primary Residence if activeSecuredLoan is 'yes', or always for other property types */}
-                            {(property.use !== 'primary' || form.watch(`property.properties.${index}.activeSecuredLoan` as const) === 'yes') && (
+                            {/* Loan Details Box - Only show for Primary Residence/Second Home if activeSecuredLoan is 'yes', or always for Investment properties */}
+                            {(property.use === 'investment' || form.watch(`property.properties.${index}.activeSecuredLoan` as const) === 'yes') && (
                             <Card className="border-2 border-dashed">
                               <CardHeader>
                                 <CardTitle className="text-lg">Loan Details</CardTitle>
@@ -3177,7 +3256,21 @@ export default function AdminAddClient() {
                                   </div>
                                   
                                   <div className="space-y-2">
-                                    <Label htmlFor={`property-mortgage-balance-${propertyId}`}>Mortgage Statement Balance</Label>
+                                    <div className="flex items-center justify-between">
+                                      <Label htmlFor={`property-mortgage-balance-${propertyId}`}>
+                                        {getMortgageBalanceLabel(propertyId)}
+                                      </Label>
+                                      <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => toggleMortgageBalanceFieldType(propertyId)}
+                                        className="h-6 px-2 text-xs"
+                                        data-testid={`button-toggle-mortgage-balance-type-${propertyId}`}
+                                      >
+                                        Toggle
+                                      </Button>
+                                    </div>
                                     <Input
                                       id={`property-mortgage-balance-${propertyId}`}
                                       {...form.register(`property.properties.${index}.loan.mortgageBalance` as const)}
@@ -3508,6 +3601,33 @@ export default function AdminAddClient() {
           </Tabs>
         </form>
       </div>
+
+      {/* Subject Property Confirmation Dialog */}
+      <Dialog open={subjectConfirmDialog.isOpen} onOpenChange={(open) => !open && handleSubjectPropertyConfirmation(false)}>
+        <DialogContent data-testid="dialog-subject-property-confirmation">
+          <DialogHeader>
+            <DialogTitle>Change Subject Property</DialogTitle>
+            <DialogDescription>
+              Another property is designated as subject property. Would you like to proceed with this change?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => handleSubjectPropertyConfirmation(false)}
+              data-testid="button-subject-property-no"
+            >
+              No
+            </Button>
+            <Button
+              onClick={() => handleSubjectPropertyConfirmation(true)}
+              data-testid="button-subject-property-yes"
+            >
+              Yes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
