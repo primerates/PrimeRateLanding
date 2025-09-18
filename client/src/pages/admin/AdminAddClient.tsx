@@ -561,24 +561,28 @@ export default function AdminAddClient() {
   // Auto-sync rental property income with property data
   useEffect(() => {
     const properties = form.watch('property.properties') || [];
-    const investmentProperties = properties.filter(p => p.use === 'investment' && p.loan && parseMonetaryValue(p.loan.monthlyIncome || '') > 0);
+    const investmentProperties = properties.filter(p => p.use === 'investment' && p.loan && p.loan.monthlyIncome);
     
     if (investmentProperties.length > 0) {
       // Auto-check Property Rental checkbox
       form.setValue('income.incomeTypes.other', true);
       
-      // Calculate total rental income and create description
+      // Calculate total rental income including negative values
       const totalRentalIncome = investmentProperties.reduce((total, property) => {
         return total + parseMonetaryValue(property.loan?.monthlyIncome || '');
       }, 0);
       
       const addressList = investmentProperties.map(p => p.address?.street || 'Property').join(', ');
       
-      // Update rental income fields
+      // Update rental income fields with proper negative formatting
+      const formattedAmount = totalRentalIncome >= 0 
+        ? `$${totalRentalIncome.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+        : `-$${Math.abs(totalRentalIncome).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+      
       form.setValue('income.otherIncomeDescription', addressList);
-      form.setValue('income.otherIncomeMonthlyAmount', `$${totalRentalIncome.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`);
+      form.setValue('income.otherIncomeMonthlyAmount', formattedAmount);
     } else {
-      // No rental properties with positive income, uncheck the box
+      // No rental properties, uncheck the box
       form.setValue('income.incomeTypes.other', false);
       form.setValue('income.otherIncomeDescription', '');
       form.setValue('income.otherIncomeMonthlyAmount', '');
@@ -937,7 +941,7 @@ export default function AdminAddClient() {
             <Button
               onClick={form.handleSubmit(onSubmit)}
               disabled={addClientMutation.isPending}
-              className="bg-primary-foreground text-primary hover:bg-yellow-500"
+              className="bg-primary-foreground text-primary hover:bg-orange-500 hover:text-white"
               data-testid="button-save-client"
             >
               <Save className="h-4 w-4 mr-2" />
@@ -956,8 +960,8 @@ export default function AdminAddClient() {
               <TabsTrigger value="income" data-testid="tab-income">Income</TabsTrigger>
               <TabsTrigger value="property" data-testid="tab-property">Property</TabsTrigger>
               <TabsTrigger value="loan" data-testid="tab-loan">Loan</TabsTrigger>
-              <TabsTrigger value="vendors" data-testid="tab-vendors">Vendors</TabsTrigger>
               <TabsTrigger value="status" data-testid="tab-status">Status</TabsTrigger>
+              <TabsTrigger value="vendors" data-testid="tab-vendors">Vendors</TabsTrigger>
               <TabsTrigger value="notes" data-testid="tab-notes">Notes</TabsTrigger>
             </TabsList>
 
@@ -1077,6 +1081,25 @@ export default function AdminAddClient() {
                         <SelectItem value="married">Married</SelectItem>
                         <SelectItem value="divorced">Divorced</SelectItem>
                         <SelectItem value="widowed">Widowed</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="borrower-relationshipToBorrower">Relationship to Borrower</Label>
+                    <Select 
+                      value={form.watch('borrower.relationshipToBorrower') || ''}
+                      onValueChange={(value) => form.setValue('borrower.relationshipToBorrower', value as any)}
+                    >
+                      <SelectTrigger data-testid="select-borrower-relationshipToBorrower">
+                        <SelectValue placeholder="Select relationship" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="spouse">Spouse</SelectItem>
+                        <SelectItem value="partner">Partner</SelectItem>
+                        <SelectItem value="family">Family</SelectItem>
+                        <SelectItem value="friend">Friend</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -1318,6 +1341,25 @@ export default function AdminAddClient() {
                           <SelectItem value="married">Married</SelectItem>
                           <SelectItem value="divorced">Divorced</SelectItem>
                           <SelectItem value="widowed">Widowed</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="coBorrower-relationshipToBorrower">Relationship to Borrower</Label>
+                      <Select 
+                        value={form.watch('coBorrower.relationshipToBorrower') || ''}
+                        onValueChange={(value) => form.setValue('coBorrower.relationshipToBorrower', value as any)}
+                      >
+                        <SelectTrigger data-testid="select-coborrower-relationshipToBorrower">
+                          <SelectValue placeholder="Select relationship" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="spouse">Spouse</SelectItem>
+                          <SelectItem value="partner">Partner</SelectItem>
+                          <SelectItem value="family">Family</SelectItem>
+                          <SelectItem value="friend">Friend</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -1568,7 +1610,7 @@ export default function AdminAddClient() {
                           onCheckedChange={(checked) => form.setValue('income.incomeTypes.vaBenefits', !!checked)}
                           data-testid="checkbox-vaBenefits"
                         />
-                        <Label htmlFor="income-type-vaBenefits">VA Benefits</Label>
+                        <Label htmlFor="income-type-vaBenefits">VA Disability</Label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Checkbox
@@ -1594,7 +1636,7 @@ export default function AdminAddClient() {
                           }}
                           data-testid="checkbox-property-rental"
                         />
-                        <Label htmlFor="income-type-property-rental">Property Rental</Label>
+                        <Label htmlFor="income-type-property-rental">Rental Property</Label>
                       </div>
                     </div>
                   </div>
@@ -2182,7 +2224,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isVaBenefitsIncomeOpen} onOpenChange={setIsVaBenefitsIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>VA Benefits Income</CardTitle>
+                        <CardTitle>VA Disability Income</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button variant="ghost" size="sm" data-testid="button-toggle-va-benefits-income">
                             {isVaBenefitsIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
@@ -2287,7 +2329,9 @@ export default function AdminAddClient() {
                             readOnly
                             className={(() => {
                               const value = form.watch('income.otherIncomeMonthlyAmount') || '';
-                              return value.startsWith('-') ? 'text-red-600' : '';
+                              if (value.startsWith('-')) return 'text-red-600';
+                              if (value && !value.startsWith('$0') && parseFloat(value.replace(/[$,]/g, '')) > 0) return 'text-green-600';
+                              return '';
                             })()}
                           />
                         </div>
@@ -2368,7 +2412,7 @@ export default function AdminAddClient() {
                             onCheckedChange={(checked) => form.setValue('coBorrowerIncome.incomeTypes.vaBenefits', !!checked)}
                             data-testid="checkbox-coborrower-vaBenefits"
                           />
-                          <Label htmlFor="coBorrowerIncome-type-vaBenefits">VA Benefits</Label>
+                          <Label htmlFor="coBorrowerIncome-type-vaBenefits">VA Disability</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <Checkbox
@@ -2975,7 +3019,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isCoBorrowerVaBenefitsIncomeOpen} onOpenChange={setIsCoBorrowerVaBenefitsIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Co-Borrower VA Benefits Income</CardTitle>
+                        <CardTitle>Co-Borrower VA Disability Income</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button variant="ghost" size="sm" data-testid="button-toggle-coborrower-va-benefits-income">
                             {isCoBorrowerVaBenefitsIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
@@ -3288,7 +3332,7 @@ export default function AdminAddClient() {
                     >
                       <CardHeader>
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-8">
                             <CardTitle className={`flex items-center gap-2 ${property.isSubject ? 'text-green-600' : ''}`}>
                               {getPropertyTitle()}
                               {property.isSubject && (
@@ -3298,7 +3342,7 @@ export default function AdminAddClient() {
                               )}
                             </CardTitle>
                             <div className="flex items-center gap-2">
-                              <Label className="text-sm text-muted-foreground">Usage:</Label>
+                              <Label className="text-sm text-muted-foreground">Purpose:</Label>
                               <Select
                                 value={property.use}
                                 onValueChange={(value) => requestPropertyUsageChange(propertyId, value as 'primary' | 'second-home' | 'investment')}
@@ -3578,7 +3622,7 @@ export default function AdminAddClient() {
                                         variant="outline"
                                         size="sm"
                                         onClick={() => toggleMortgageBalanceFieldType(propertyId)}
-                                        className="h-6 px-2 text-xs"
+                                        className="h-6 px-2 text-xs hover:bg-orange-500 hover:text-white hover:border-orange-500"
                                         data-testid={`button-toggle-mortgage-balance-type-${propertyId}`}
                                       >
                                         Toggle
@@ -3616,7 +3660,7 @@ export default function AdminAddClient() {
                                         variant="outline"
                                         size="sm"
                                         onClick={() => toggleEscrowPaymentFieldType(propertyId)}
-                                        className="h-6 px-2 text-xs"
+                                        className="h-6 px-2 text-xs hover:bg-orange-500 hover:text-white hover:border-orange-500"
                                         data-testid={`button-toggle-escrow-payment-type-${propertyId}`}
                                       >
                                         Toggle
@@ -3688,7 +3732,10 @@ export default function AdminAddClient() {
                                           readOnly
                                           className={(() => {
                                             const value = form.watch(`property.properties.${index}.loan.monthlyIncome` as const) || '';
-                                            return `bg-muted ${value.startsWith('-') ? 'text-red-600' : ''}`;
+                                            let colorClass = '';
+                                            if (value.startsWith('-')) colorClass = 'text-red-600';
+                                            else if (value && !value.startsWith('$0') && parseFloat(value.replace(/[$,]/g, '')) > 0) colorClass = 'text-green-600';
+                                            return `bg-muted ${colorClass}`;
                                           })()}
                                           data-testid={`input-property-monthly-income-${propertyId}`}
                                         />
