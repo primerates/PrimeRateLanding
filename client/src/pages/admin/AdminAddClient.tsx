@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -110,6 +110,21 @@ export default function AdminAddClient() {
     isOpen: boolean;
     newSubjectPropertyId: string | null;
   }>({ isOpen: false, newSubjectPropertyId: null });
+
+  // Removal confirmation dialog state
+  const [confirmRemovalDialog, setConfirmRemovalDialog] = useState<{
+    isOpen: boolean;
+    type: 'co-borrower' | 'property' | 'property-type' | 'income' | null;
+    itemId?: string;
+    itemType?: string;
+    onConfirm?: () => void;
+  }>({ isOpen: false, type: null });
+
+  // Property rental popup dialog state
+  const [propertyRentalDialog, setPropertyRentalDialog] = useState<{
+    isOpen: boolean;
+    type: 'add' | 'remove' | null;
+  }>({ isOpen: false, type: null });
 
   // Mortgage balance field toggle state (per property)
   const [mortgageBalanceFieldType, setMortgageBalanceFieldType] = useState<Record<string, 'statement' | 'payoff'>>({});
@@ -351,9 +366,16 @@ export default function AdminAddClient() {
   };
 
   const removeCoBorrower = () => {
-    setHasCoBorrower(false);
-    form.setValue('coBorrower', undefined);
-    form.setValue('coBorrowerIncome', undefined);
+    setConfirmRemovalDialog({
+      isOpen: true,
+      type: 'co-borrower',
+      onConfirm: () => {
+        setHasCoBorrower(false);
+        form.setValue('coBorrower', undefined);
+        form.setValue('coBorrowerIncome', undefined);
+        setConfirmRemovalDialog({ isOpen: false, type: null });
+      }
+    });
   };
 
   const copyResidenceToSubjectProperty = () => {
@@ -485,6 +507,74 @@ export default function AdminAddClient() {
     return `$${householdTotal.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
   };
 
+  // Helper functions to get numerical values for styling
+  const calculateTotalBorrowerIncomeValue = (): number => {
+    const income = form.watch('income');
+    
+    const employmentIncome = parseMonetaryValue(income?.monthlyIncome);
+    const secondEmploymentIncome = parseMonetaryValue(income?.secondMonthlyIncome);
+    const businessIncome = parseMonetaryValue(income?.businessMonthlyIncome);
+    const pensionIncome = income?.pensions?.reduce((total, pension) => total + parseMonetaryValue(pension.monthlyAmount), 0) || 0;
+    const socialSecurityIncome = parseMonetaryValue(income?.socialSecurityMonthlyAmount);
+    const vaBenefitsIncome = parseMonetaryValue(income?.vaBenefitsMonthlyAmount);
+    const disabilityIncome = parseMonetaryValue(income?.disabilityMonthlyAmount);
+    const otherIncome = parseMonetaryValue(income?.otherIncomeMonthlyAmount);
+    
+    return employmentIncome + secondEmploymentIncome + businessIncome + 
+           pensionIncome + socialSecurityIncome + vaBenefitsIncome + 
+           disabilityIncome + otherIncome;
+  };
+
+  const calculateTotalCoBorrowerIncomeValue = (): number => {
+    const coBorrowerIncome = form.watch('coBorrowerIncome');
+    
+    const employmentIncome = parseMonetaryValue(coBorrowerIncome?.monthlyIncome);
+    const secondEmploymentIncome = parseMonetaryValue(coBorrowerIncome?.secondMonthlyIncome);
+    const businessIncome = parseMonetaryValue(coBorrowerIncome?.businessMonthlyIncome);
+    const pensionIncome = coBorrowerIncome?.pensions?.reduce((total, pension) => total + parseMonetaryValue(pension.monthlyAmount), 0) || 0;
+    const socialSecurityIncome = parseMonetaryValue(coBorrowerIncome?.socialSecurityMonthlyAmount);
+    const vaBenefitsIncome = parseMonetaryValue(coBorrowerIncome?.vaBenefitsMonthlyAmount);
+    const disabilityIncome = parseMonetaryValue(coBorrowerIncome?.disabilityMonthlyAmount);
+    const otherIncome = parseMonetaryValue(coBorrowerIncome?.otherIncomeMonthlyAmount);
+    
+    return employmentIncome + secondEmploymentIncome + businessIncome + 
+           pensionIncome + socialSecurityIncome + vaBenefitsIncome + 
+           disabilityIncome + otherIncome;
+  };
+
+  const calculateTotalHouseholdIncomeValue = (): number => {
+    const borrowerTotal = calculateTotalBorrowerIncomeValue();
+    const coBorrowerTotal = hasCoBorrower ? calculateTotalCoBorrowerIncomeValue() : 0;
+    return borrowerTotal + coBorrowerTotal;
+  };
+
+  // Auto-sync rental property income with property data
+  useEffect(() => {
+    const properties = form.watch('property.properties') || [];
+    const investmentProperties = properties.filter(p => p.use === 'investment' && p.loan && parseMonetaryValue(p.loan.monthlyIncome || '') > 0);
+    
+    if (investmentProperties.length > 0) {
+      // Auto-check Property Rental checkbox
+      form.setValue('income.incomeTypes.other', true);
+      
+      // Calculate total rental income and create description
+      const totalRentalIncome = investmentProperties.reduce((total, property) => {
+        return total + parseMonetaryValue(property.loan?.monthlyIncome || '');
+      }, 0);
+      
+      const addressList = investmentProperties.map(p => p.address?.street || 'Property').join(', ');
+      
+      // Update rental income fields
+      form.setValue('income.otherIncomeDescription', addressList);
+      form.setValue('income.otherIncomeMonthlyAmount', `$${totalRentalIncome.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`);
+    } else {
+      // No rental properties with positive income, uncheck the box
+      form.setValue('income.incomeTypes.other', false);
+      form.setValue('income.otherIncomeDescription', '');
+      form.setValue('income.otherIncomeMonthlyAmount', '');
+    }
+  }, [form.watch('property.properties')]);
+
   // Pension management helper functions
   const generateUniqueId = (): string => {
     return `pension-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -501,9 +591,18 @@ export default function AdminAddClient() {
   };
 
   const removeBorrowerPension = (pensionId: string) => {
-    const currentPensions = form.watch('income.pensions') || [];
-    const updatedPensions = currentPensions.filter(pension => pension.id !== pensionId);
-    form.setValue('income.pensions', updatedPensions);
+    setConfirmRemovalDialog({
+      isOpen: true,
+      type: 'income',
+      itemId: pensionId,
+      itemType: 'pension',
+      onConfirm: () => {
+        const currentPensions = form.watch('income.pensions') || [];
+        const updatedPensions = currentPensions.filter(pension => pension.id !== pensionId);
+        form.setValue('income.pensions', updatedPensions);
+        setConfirmRemovalDialog({ isOpen: false, type: null });
+      }
+    });
   };
 
   const addCoBorrowerPension = () => {
@@ -517,9 +616,18 @@ export default function AdminAddClient() {
   };
 
   const removeCoBorrowerPension = (pensionId: string) => {
-    const currentPensions = form.watch('coBorrowerIncome.pensions') || [];
-    const updatedPensions = currentPensions.filter(pension => pension.id !== pensionId);
-    form.setValue('coBorrowerIncome.pensions', updatedPensions);
+    setConfirmRemovalDialog({
+      isOpen: true,
+      type: 'income',
+      itemId: pensionId,
+      itemType: 'co-borrower pension',
+      onConfirm: () => {
+        const currentPensions = form.watch('coBorrowerIncome.pensions') || [];
+        const updatedPensions = currentPensions.filter(pension => pension.id !== pensionId);
+        form.setValue('coBorrowerIncome.pensions', updatedPensions);
+        setConfirmRemovalDialog({ isOpen: false, type: null });
+      }
+    });
   };
 
   // Property management helper functions
@@ -550,14 +658,22 @@ export default function AdminAddClient() {
   };
 
   const removeProperty = (propertyId: string) => {
-    const currentProperties = form.watch('property.properties') || [];
-    const updatedProperties = currentProperties.filter(property => property.id !== propertyId);
-    form.setValue('property.properties', updatedProperties);
-    
-    // Remove collapsible state for removed property
-    setPropertyCardStates(prev => {
-      const { [propertyId]: _, ...rest } = prev;
-      return rest;
+    setConfirmRemovalDialog({
+      isOpen: true,
+      type: 'property',
+      itemId: propertyId,
+      onConfirm: () => {
+        const currentProperties = form.watch('property.properties') || [];
+        const updatedProperties = currentProperties.filter(property => property.id !== propertyId);
+        form.setValue('property.properties', updatedProperties);
+        
+        // Remove collapsible state for removed property
+        setPropertyCardStates(prev => {
+          const { [propertyId]: _, ...rest } = prev;
+          return rest;
+        });
+        setConfirmRemovalDialog({ isOpen: false, type: null });
+      }
     });
   };
 
@@ -613,12 +729,34 @@ export default function AdminAddClient() {
   };
 
   const removePropertyType = (type: 'primary' | 'second-home' | 'investment') => {
-    const currentProperties = form.watch('property.properties') || [];
-    const propertiesToRemove = currentProperties.filter(property => property.use === type);
+    const typeLabels = {
+      'primary': 'Primary Residence',
+      'second-home': 'Second Home',
+      'investment': 'Investment Property'
+    };
     
-    propertiesToRemove.forEach(property => {
-      if (property.id) {
-        removeProperty(property.id);
+    setConfirmRemovalDialog({
+      isOpen: true,
+      type: 'property-type',
+      itemType: typeLabels[type],
+      onConfirm: () => {
+        const currentProperties = form.watch('property.properties') || [];
+        const propertiesToRemove = currentProperties.filter(property => property.use === type);
+        
+        propertiesToRemove.forEach(property => {
+          if (property.id) {
+            const currentPropertiesNow = form.watch('property.properties') || [];
+            const updatedProperties = currentPropertiesNow.filter(p => p.id !== property.id);
+            form.setValue('property.properties', updatedProperties);
+            
+            // Remove collapsible state for removed property
+            setPropertyCardStates(prev => {
+              const { [property.id!]: _, ...rest } = prev;
+              return rest;
+            });
+          }
+        });
+        setConfirmRemovalDialog({ isOpen: false, type: null });
       }
     });
   };
@@ -741,6 +879,8 @@ export default function AdminAddClient() {
               <TabsTrigger value="property" data-testid="tab-property">Property</TabsTrigger>
               <TabsTrigger value="loan" data-testid="tab-loan">Loan</TabsTrigger>
               <TabsTrigger value="vendors" data-testid="tab-vendors">Vendors</TabsTrigger>
+              <TabsTrigger value="status" data-testid="tab-status">Status</TabsTrigger>
+              <TabsTrigger value="notes" data-testid="tab-notes">Notes</TabsTrigger>
             </TabsList>
 
             {/* Client Tab */}
@@ -1248,7 +1388,13 @@ export default function AdminAddClient() {
                 <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6">
                   <div className="space-y-2">
                     <Label htmlFor="household-income-total">Total Household Income</Label>
-                    <div className="text-2xl font-bold text-primary" data-testid="text-household-income-total">
+                    <div 
+                      className={`text-2xl font-bold ${(() => {
+                        const totalValue = calculateTotalHouseholdIncomeValue();
+                        return totalValue > 0 ? 'text-orange-600' : 'text-primary';
+                      })()}`}
+                      data-testid="text-household-income-total"
+                    >
                       {calculateTotalHouseholdIncome()}
                     </div>
                   </div>
@@ -1278,7 +1424,15 @@ export default function AdminAddClient() {
               {/* Income Type Selection */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Borrower Income {calculateTotalBorrowerIncome()}</CardTitle>
+                  <CardTitle>
+                    Borrower Income{' '}
+                    <span className={(() => {
+                      const totalValue = calculateTotalBorrowerIncomeValue();
+                      return totalValue > 0 ? 'text-green-600' : '';
+                    })()}>
+                      {calculateTotalBorrowerIncome()}
+                    </span>
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -1349,12 +1503,20 @@ export default function AdminAddClient() {
                       </div>
                       <div className="flex items-center space-x-2">
                         <Checkbox
-                          id="income-type-other"
+                          id="income-type-property-rental"
                           checked={form.watch('income.incomeTypes.other') || false}
-                          onCheckedChange={(checked) => form.setValue('income.incomeTypes.other', !!checked)}
-                          data-testid="checkbox-other"
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              // Show popup for adding property rental
+                              setPropertyRentalDialog({ isOpen: true, type: 'add' });
+                            } else {
+                              // Show popup for removing property rental
+                              setPropertyRentalDialog({ isOpen: true, type: 'remove' });
+                            }
+                          }}
+                          data-testid="checkbox-property-rental"
                         />
-                        <Label htmlFor="income-type-other">Other</Label>
+                        <Label htmlFor="income-type-property-rental">Property Rental</Label>
                       </div>
                     </div>
                   </div>
@@ -2009,13 +2171,13 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
-              {/* Other Income Card */}
+              {/* Property Rental Income Card */}
               {form.watch('income.incomeTypes.other') && (
                 <Card>
                   <Collapsible open={isOtherIncomeOpen} onOpenChange={setIsOtherIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Other Income</CardTitle>
+                        <CardTitle>Property Rental Income</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button variant="ghost" size="sm" data-testid="button-toggle-other-income">
                             {isOtherIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
@@ -2027,12 +2189,13 @@ export default function AdminAddClient() {
                       <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="income-otherIncomeDescription">Description</Label>
+                          <Label htmlFor="income-otherIncomeDescription">Property Address</Label>
                           <Input
                             id="income-otherIncomeDescription"
                             {...form.register('income.otherIncomeDescription')}
-                            placeholder="e.g., Investment income, rental income"
+                            placeholder="Property address"
                             data-testid="input-income-otherIncomeDescription"
+                            readOnly
                           />
                         </div>
                         <div className="space-y-2">
@@ -2042,6 +2205,7 @@ export default function AdminAddClient() {
                             {...form.register('income.otherIncomeMonthlyAmount')}
                             placeholder="$0.00"
                             data-testid="input-income-otherIncomeMonthlyAmount"
+                            readOnly
                           />
                         </div>
                       </div>
@@ -2055,7 +2219,15 @@ export default function AdminAddClient() {
               {hasCoBorrower && (
                 <Card>
                   <CardHeader>
-                    <CardTitle>Co-Borrower Income {calculateTotalCoBorrowerIncome()}</CardTitle>
+                    <CardTitle>
+                      Co-Borrower Income{' '}
+                      <span className={(() => {
+                        const totalValue = calculateTotalCoBorrowerIncomeValue();
+                        return totalValue > 0 ? 'text-green-600' : '';
+                      })()}>
+                        {calculateTotalCoBorrowerIncome()}
+                      </span>
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
@@ -2866,7 +3038,7 @@ export default function AdminAddClient() {
                       </Label>
                       <div className="flex items-center gap-2">
                         <div 
-                          className="h-9 w-1/2 px-3 py-2 border border-input bg-background rounded-md text-sm font-medium"
+                          className="h-9 w-1/4 px-3 py-2 border border-input bg-background rounded-md text-sm font-medium"
                           data-testid="display-property-estimatedLTV"
                         >
                           {(() => {
@@ -2914,8 +3086,7 @@ export default function AdminAddClient() {
                       </div>
                     </div>
                     
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium text-muted-foreground">Property Breakdown</Label>
+                    <div className="space-y-2 flex flex-col justify-center h-full">
                       <div className="space-y-1 text-sm">
                         <div className="flex justify-between">
                           <span>Primary Residence:</span>
@@ -3638,9 +3809,92 @@ export default function AdminAddClient() {
                 </CardContent>
               </Card>
             </TabsContent>
+
+            {/* Status Tab */}
+            <TabsContent value="status" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Status Information</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">Status functionality will be implemented here.</p>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Notes Tab */}
+            <TabsContent value="notes" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Notes</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">Notes functionality will be implemented here.</p>
+                </CardContent>
+              </Card>
+            </TabsContent>
           </Tabs>
         </form>
       </div>
+
+      {/* Removal Confirmation Dialog */}
+      <Dialog open={confirmRemovalDialog.isOpen} onOpenChange={(open) => !open && setConfirmRemovalDialog({ isOpen: false, type: null })}>
+        <DialogContent data-testid="dialog-removal-confirmation">
+          <DialogHeader>
+            <DialogTitle>Confirm Removal</DialogTitle>
+            <DialogDescription>
+              <span className="text-red-600 font-medium">
+                Removing this information will delete any corresponding data. Would you like to still continue?
+              </span>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setConfirmRemovalDialog({ isOpen: false, type: null })}
+              data-testid="button-removal-no"
+            >
+              No
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (confirmRemovalDialog.onConfirm) {
+                  confirmRemovalDialog.onConfirm();
+                }
+              }}
+              data-testid="button-removal-yes"
+            >
+              Yes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Property Rental Dialog */}
+      <Dialog open={propertyRentalDialog.isOpen} onOpenChange={(open) => !open && setPropertyRentalDialog({ isOpen: false, type: null })}>
+        <DialogContent data-testid="dialog-property-rental">
+          <DialogHeader>
+            <DialogTitle>
+              {propertyRentalDialog.type === 'add' ? 'Property Rental Income' : 'Remove Property Rental'}
+            </DialogTitle>
+            <DialogDescription>
+              {propertyRentalDialog.type === 'add' 
+                ? 'Please add property details using property menu option. This area will update automatically.'
+                : 'Please remove property rental using property menu option.'
+              }
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              onClick={() => setPropertyRentalDialog({ isOpen: false, type: null })}
+              data-testid="button-property-rental-ok"
+            >
+              Ok
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Subject Property Confirmation Dialog */}
       <Dialog open={subjectConfirmDialog.isOpen} onOpenChange={(open) => !open && handleSubjectPropertyConfirmation(false)}>
