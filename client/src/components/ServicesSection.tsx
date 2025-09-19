@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Lock, Zap, Ban, TrendingDown } from 'lucide-react';
+import { Lock, Handshake, Ban, TrendingDown } from 'lucide-react';
 
 const services = [
   {
@@ -22,7 +22,7 @@ const services = [
     features: ['FHA loans (3.5% down)', 'VA loans (0% down)', 'USDA rural loans', 'State-specific programs']
   },
   {
-    icon: Zap,
+    icon: Handshake,
     title: 'Choose Simplicity',
     description: 'Work and family life can be a handful; your loan shouldn\'t be - with expert guidance, real-time updates and a simplified loan process, Choose simplicity.',
     features: ['Rate & term refinance', 'Cash-out refinance', 'Streamline refinance', 'Investment property refi']
