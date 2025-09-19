@@ -5456,7 +5456,11 @@ export default function AdminAddClient() {
                 };
 
                 return (
-                  <Card key={propertyId}>
+                  <Card key={propertyId} className={`border-l-4 ${
+                    property.use === 'primary' ? 'border-l-green-500' : 
+                    property.use === 'second-home' ? 'border-l-blue-500' : 
+                    property.use === 'investment' ? 'border-l-orange-500' : ''
+                  }`}>
                     <Collapsible 
                       open={isOpen} 
                       onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
