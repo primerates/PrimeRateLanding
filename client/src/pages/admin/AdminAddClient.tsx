@@ -14,8 +14,9 @@ import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info } from 'lucide-react';
 import { SiZillow } from 'react-icons/si';
 import { MdRealEstateAgent } from 'react-icons/md';
 import { FaHome } from 'react-icons/fa';
@@ -479,6 +480,17 @@ export default function AdminAddClient() {
 
   // Screenshare state
   const [screenshareLoading, setScreenshareLoading] = useState(false);
+
+  // Co-borrower marital status popup state
+  const [maritalStatusDialog, setMaritalStatusDialog] = useState<{
+    isOpen: boolean;
+  }>({ isOpen: false });
+
+  // Valuation summary dialog state
+  const [valuationSummaryDialog, setValuationSummaryDialog] = useState<{
+    isOpen: boolean;
+    propertyIndex: number | null;
+  }>({ isOpen: false, propertyIndex: null });
 
   // County lookup state
   const [borrowerCountyOptions, setBorrowerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
@@ -1240,6 +1252,15 @@ export default function AdminAddClient() {
   const handleValuationHoverLeave = () => {
     setValuationHover({ isVisible: false, service: null, propertyIndex: null, value: '', position: { x: 0, y: 0 } });
   };
+
+  // Open valuation summary dialog
+  const openValuationSummary = (propertyIndex: number) => {
+    setValuationSummaryDialog({ isOpen: true, propertyIndex });
+  };
+
+  const closeValuationSummary = () => {
+    setValuationSummaryDialog({ isOpen: false, propertyIndex: null });
+  };
   
   // Auto-fetch property valuations
   const autoFetchValuations = async (propertyIndex: number, address: { street?: string; city?: string; state?: string; zipCode?: string }) => {
@@ -1750,7 +1771,7 @@ export default function AdminAddClient() {
               <Button
                 onClick={form.handleSubmit(onSubmit)}
                 disabled={addClientMutation.isPending}
-                className="bg-primary-foreground text-primary hover:bg-orange-500 hover:text-white"
+                className="bg-green-600 text-white border-green-700"
                 data-testid="button-save-client"
               >
                 <Save className="h-4 w-4 mr-2" />
@@ -1882,7 +1903,13 @@ export default function AdminAddClient() {
                     <Label htmlFor="borrower-maritalStatus">Marital Status *</Label>
                     <Select 
                       value={form.watch('borrower.maritalStatus') || 'single'}
-                      onValueChange={(value) => form.setValue('borrower.maritalStatus', value as any)}
+                      onValueChange={(value) => {
+                        form.setValue('borrower.maritalStatus', value as any);
+                        // Trigger co-borrower popup when married is selected
+                        if (value === 'married' && !hasCoBorrower) {
+                          setMaritalStatusDialog({ isOpen: true });
+                        }
+                      }}
                     >
                       <SelectTrigger data-testid="select-borrower-maritalStatus">
                         <SelectValue placeholder="Select status" />
@@ -2345,7 +2372,7 @@ export default function AdminAddClient() {
               ))}
 
               {/* Co-Borrower Section */}
-<Card className="mt-16 border-l-4 border-l-orange-500">
+<Card className="mt-16 border-l-4 border-l-blue-500">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>Co-Borrower Information</CardTitle>
                   {!hasCoBorrower ? (
@@ -4116,7 +4143,7 @@ export default function AdminAddClient() {
 
               {/* Co-Borrower Income */}
               {hasCoBorrower && (
-                <Card className="border-l-4 border-l-orange-500">
+                <Card className="border-l-4 border-l-blue-500">
                   <CardHeader>
                     <CardTitle>
                       Co-Borrower Income{' '}
@@ -5697,6 +5724,7 @@ export default function AdminAddClient() {
                                 <div className="flex items-center gap-2">
                                   <Label htmlFor={`property-estimated-value-${propertyId}`}>Estimated Property Value</Label>
                                   <div className="flex items-center gap-1">
+                                    {/* Zillow */}
                                     <div className="flex items-center gap-1">
                                       <Button
                                         type="button"
@@ -5736,39 +5764,7 @@ export default function AdminAddClient() {
                                         )}
                                       </Button>
                                     </div>
-                                    <div className="flex items-center gap-1">
-                                      <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="sm"
-                                        className="p-1 h-auto text-red-600 hover:text-red-800"
-                                        onClick={() => openValuationDialog('redfin', index)}
-                                        onMouseEnter={(e) => handleValuationHover('redfin', index, e)}
-                                        onMouseLeave={handleValuationHoverLeave}
-                                        data-testid={`button-redfin-valuation-${propertyId}`}
-                                        title="Enter Redfin valuation manually"
-                                      >
-                                        <FaHome className="h-4 w-4" />
-                                      </Button>
-                                      <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="sm"
-                                        className="p-1 h-auto text-red-500 hover:text-red-700"
-                                        onClick={() => {
-                                          toast({
-                                            title: "Service Unavailable",
-                                            description: "Redfin auto-valuations coming soon!",
-                                            variant: "default"
-                                          });
-                                        }}
-                                        disabled={true}
-                                        data-testid={`button-redfin-auto-${propertyId}`}
-                                        title="Auto-fetch Redfin valuation (coming soon)"
-                                      >
-                                        <RefreshCw className="h-3 w-3 opacity-50" />
-                                      </Button>
-                                    </div>
+                                    {/* Realtor */}
                                     <div className="flex items-center gap-1">
                                       <Button
                                         type="button"
@@ -5806,6 +5802,33 @@ export default function AdminAddClient() {
                                         ) : (
                                           <RefreshCw className="h-3 w-3" />
                                         )}
+                                      </Button>
+                                    </div>
+                                    {/* Redfin */}
+                                    <div className="flex items-center gap-1">
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-red-600 hover:text-red-800"
+                                        onClick={() => openValuationDialog('redfin', index)}
+                                        onMouseEnter={(e) => handleValuationHover('redfin', index, e)}
+                                        onMouseLeave={handleValuationHoverLeave}
+                                        data-testid={`button-redfin-valuation-${propertyId}`}
+                                        title="Enter Redfin valuation manually"
+                                      >
+                                        <FaHome className="h-4 w-4" />
+                                      </Button>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-gray-600 hover:text-gray-800"
+                                        onClick={() => openValuationSummary(index)}
+                                        data-testid={`button-valuation-info-${propertyId}`}
+                                        title="View all valuation estimates"
+                                      >
+                                        <Info className="h-3 w-3" />
                                       </Button>
                                     </div>
                                   </div>
@@ -6752,6 +6775,105 @@ export default function AdminAddClient() {
           </div>
         </div>
       )}
+
+      {/* Co-Borrower Marital Status Dialog */}
+      <AlertDialog open={maritalStatusDialog.isOpen} onOpenChange={(open) => !open && setMaritalStatusDialog({ isOpen: false })}>
+        <AlertDialogContent data-testid="dialog-marital-status-coborrower">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Add Co-Borrower?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Would you like to add a Co-Borrower?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setMaritalStatusDialog({ isOpen: false })}
+              data-testid="button-marital-status-not-yet"
+            >
+              Not Yet
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                setMaritalStatusDialog({ isOpen: false });
+                addCoBorrower();
+              }}
+              data-testid="button-marital-status-yes"
+            >
+              Yes
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Valuation Summary Dialog */}
+      <Dialog open={valuationSummaryDialog.isOpen} onOpenChange={(open) => !open && closeValuationSummary()}>
+        <DialogContent data-testid="dialog-valuation-summary">
+          <DialogHeader>
+            <DialogTitle>Property Valuation Summary</DialogTitle>
+            <DialogDescription>
+              All valuation estimates for this property
+            </DialogDescription>
+          </DialogHeader>
+          {valuationSummaryDialog.propertyIndex !== null && (
+            <div className="space-y-4">
+              {(() => {
+                const propertyIndex = valuationSummaryDialog.propertyIndex!;
+                const property = (form.watch('property.properties') || [])[propertyIndex];
+                const clientEstimate = property?.estimatedValue || '';
+                const zillowEstimate = property?.valuations?.zillow || '';
+                const realtorEstimate = property?.valuations?.realtor || '';
+                const redfinEstimate = property?.valuations?.redfin || '';
+                const appraisedValue = property?.appraisedValue || '';
+
+                return (
+                  <>
+                    <div className="grid grid-cols-1 gap-3">
+                      <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded">
+                        <span className="font-medium">Client Estimated Value:</span>
+                        <span className="font-mono text-green-600 dark:text-green-400">
+                          {clientEstimate || 'Not entered'}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded">
+                        <span className="font-medium">Zillow Estimate:</span>
+                        <span className="font-mono text-blue-600 dark:text-blue-400">
+                          {zillowEstimate || 'Not available'}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded">
+                        <span className="font-medium">Realtor.com Estimate:</span>
+                        <span className="font-mono text-purple-600 dark:text-purple-400">
+                          {realtorEstimate || 'Not available'}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded">
+                        <span className="font-medium">Redfin Estimate:</span>
+                        <span className="font-mono text-red-600 dark:text-red-400">
+                          {redfinEstimate || 'Not available'}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded">
+                        <span className="font-medium">Appraised Value:</span>
+                        <span className="font-mono text-orange-600 dark:text-orange-400">
+                          {appraisedValue || 'Not entered'}
+                        </span>
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
+          )}
+          <DialogFooter>
+            <Button
+              onClick={closeValuationSummary}
+              data-testid="button-valuation-summary-close"
+            >
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
