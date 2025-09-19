@@ -5348,20 +5348,20 @@ export default function AdminAddClient() {
                     <div className="space-y-2 flex flex-col justify-center h-full">
                       <div className="space-y-1 text-sm">
                         <div className="flex justify-between">
-                          <span>Primary Residence:</span>
-                          <span className="font-medium" data-testid="text-primary-count">
+                          <span className="text-green-500 font-medium">Primary Residence:</span>
+                          <span className="font-medium text-green-500" data-testid="text-primary-count">
                             {(form.watch('property.properties') || []).filter(p => p.use === 'primary').length}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Second Home:</span>
-                          <span className="font-medium" data-testid="text-second-home-count">
+                          <span className="text-blue-500 font-medium">Second Home:</span>
+                          <span className="font-medium text-blue-500" data-testid="text-second-home-count">
                             {(form.watch('property.properties') || []).filter(p => p.use === 'second-home').length}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Investment Property:</span>
-                          <span className="font-medium" data-testid="text-investment-count">
+                          <span className="text-orange-500 font-medium">Investment Property:</span>
+                          <span className="font-medium text-orange-500" data-testid="text-investment-count">
                             {(form.watch('property.properties') || []).filter(p => p.use === 'investment').length}
                           </span>
                         </div>
