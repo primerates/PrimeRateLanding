@@ -2923,7 +2923,7 @@ export default function AdminAddClient() {
               </Card>
 
               {/* Income Type Selection */}
-              <Card>
+              <Card className="border-l-4 border-l-green-500">
                 <CardHeader>
                   <CardTitle>
                     Borrower Income{' '}
@@ -4116,7 +4116,7 @@ export default function AdminAddClient() {
 
               {/* Co-Borrower Income */}
               {hasCoBorrower && (
-                <Card>
+                <Card className="border-l-4 border-l-orange-500">
                   <CardHeader>
                     <CardTitle>
                       Co-Borrower Income{' '}
