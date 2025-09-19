@@ -18,7 +18,7 @@ export default function Footer() {
                 info@primerateloans.com
               </p>
               <p className="text-primary-foreground/80" data-testid="text-footer-address">
-                123 Main Street, Suite 200, Del Ray Beach, FL 33445
+                123 Main Street, Delray Beach, FL 33445
               </p>
               <p className="text-sm text-primary-foreground/70" data-testid="text-footer-equal-housing">
                 Equal Housing Lender | Equal Opportunity Employer

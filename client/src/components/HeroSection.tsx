@@ -247,7 +247,7 @@ export default function HeroSection() {
       <div className="absolute top-6 right-6 z-20 hidden lg:flex gap-3">
         <Button 
           size="sm" 
-          className="bg-primary text-white hover:bg-green-800 transition-colors duration-200 no-default-hover-elevate"
+          className="bg-primary text-white hover:bg-green-600 transition-colors duration-200 no-default-hover-elevate"
           data-testid="button-menu-loan-status"
           onClick={() => setLocation('/admin/login')}
         >
@@ -255,7 +255,7 @@ export default function HeroSection() {
         </Button>
         <Button 
           size="sm" 
-          className="bg-primary text-white hover:bg-green-800 transition-colors duration-200 no-default-hover-elevate"
+          className="bg-primary text-white hover:bg-green-600 transition-colors duration-200 no-default-hover-elevate"
           data-testid="button-menu-rate-tracker"
           onClick={() => setShowRateTracker(true)}
         >
@@ -263,7 +263,7 @@ export default function HeroSection() {
         </Button>
         <Button 
           size="sm" 
-          className="bg-primary text-white hover:bg-green-800 transition-colors duration-200 no-default-hover-elevate"
+          className="bg-primary text-white hover:bg-green-600 transition-colors duration-200 no-default-hover-elevate"
           data-testid="button-menu-mortgage-calculator"
           onClick={() => setShowCalculator(true)}
         >
@@ -271,7 +271,7 @@ export default function HeroSection() {
         </Button>
         <Button 
           size="sm" 
-          className="bg-primary text-white hover:bg-green-800 transition-colors duration-200 no-default-hover-elevate"
+          className="bg-primary text-white hover:bg-green-600 transition-colors duration-200 no-default-hover-elevate"
           data-testid="button-menu-get-preapproved"
           onClick={() => setShowPreApproval(true)}
         >

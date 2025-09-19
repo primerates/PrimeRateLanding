@@ -547,6 +547,9 @@ export default function AdminAddClient() {
   // Mortgage balance field toggle state (per property)
   const [mortgageBalanceFieldType, setMortgageBalanceFieldType] = useState<Record<string, 'statement' | 'payoff'>>({});
   
+  // Second mortgage balance field toggle state (per property)
+  const [secondMortgageBalanceFieldType, setSecondMortgageBalanceFieldType] = useState<Record<string, 'statement' | 'payoff'>>({});
+  
   // Escrow payment field toggle state (per property)
   const [escrowPaymentFieldType, setEscrowPaymentFieldType] = useState<Record<string, 'tax-insurance' | 'property-tax' | 'home-insurance'>>({});
 
@@ -945,6 +948,27 @@ export default function AdminAddClient() {
   const copyResidenceToSubjectProperty = () => {
     const residenceAddress = form.getValues('borrower.residenceAddress');
     form.setValue('borrower.subjectProperty', residenceAddress);
+  };
+
+  // Format currency values for display
+  const formatCurrency = (value: string | number | undefined): string => {
+    if (!value || value === '') return 'Not entered';
+    
+    // If it's already formatted as currency, return as is
+    if (typeof value === 'string' && value.includes('$')) {
+      return value;
+    }
+    
+    // Convert to number and format
+    const numValue = typeof value === 'string' ? parseFloat(value.replace(/[^\d.-]/g, '')) : value;
+    if (isNaN(numValue) || numValue === 0) return 'Not entered';
+    
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(numValue);
   };
 
   // Auto-copy borrower residence address to primary residence property
@@ -1635,6 +1659,50 @@ export default function AdminAddClient() {
     }
     
     addProperty(type);
+    
+    // Auto-copy address data when primary residence is selected
+    if (type === 'primary') {
+      setTimeout(() => {
+        const borrowerAddress = form.getValues('borrower.residenceAddress');
+        if (borrowerAddress && (borrowerAddress.street || borrowerAddress.city || borrowerAddress.state)) {
+          const updatedProperties = form.watch('property.properties') || [];
+          const primaryPropertyIndex = updatedProperties.findIndex(p => p.use === 'primary');
+          
+          if (primaryPropertyIndex >= 0) {
+            form.setValue(`property.properties.${primaryPropertyIndex}.address`, {
+              street: borrowerAddress.street || '',
+              unit: borrowerAddress.unit || '',
+              city: borrowerAddress.city || '',
+              state: borrowerAddress.state || '',
+              zip: borrowerAddress.zip || '',
+              county: borrowerAddress.county || ''
+            });
+          }
+        }
+      }, 100);
+    }
+    
+    // Auto-copy co-borrower address if applicable
+    if (hasCoBorrower && (type === 'second-home' || type === 'investment')) {
+      setTimeout(() => {
+        const coBorrowerAddress = form.getValues('coBorrower.residenceAddress');
+        if (coBorrowerAddress && (coBorrowerAddress.street || coBorrowerAddress.city || coBorrowerAddress.state)) {
+          const updatedProperties = form.watch('property.properties') || [];
+          const coBorrowerPropertyIndex = updatedProperties.findIndex(p => p.use === type);
+          
+          if (coBorrowerPropertyIndex >= 0) {
+            form.setValue(`property.properties.${coBorrowerPropertyIndex}.address`, {
+              street: coBorrowerAddress.street || '',
+              unit: coBorrowerAddress.unit || '',
+              city: coBorrowerAddress.city || '',
+              state: coBorrowerAddress.state || '',
+              zip: coBorrowerAddress.zip || '',
+              county: coBorrowerAddress.county || ''
+            });
+          }
+        }
+      }, 100);
+    }
   };
 
   const removePropertyType = (type: 'primary' | 'second-home' | 'investment') => {
@@ -1736,6 +1804,20 @@ export default function AdminAddClient() {
   // Get mortgage balance field label
   const getMortgageBalanceLabel = (propertyId: string) => {
     const fieldType = mortgageBalanceFieldType[propertyId] || 'statement';
+    return fieldType === 'statement' ? 'Mortgage Statement Balance' : 'Pay Off Demand Balance';
+  };
+
+  // Toggle second mortgage balance field type
+  const toggleSecondMortgageBalanceFieldType = (propertyId: string) => {
+    setSecondMortgageBalanceFieldType(prev => ({
+      ...prev,
+      [propertyId]: prev[propertyId] === 'payoff' ? 'statement' : 'payoff'
+    }));
+  };
+
+  // Get second mortgage balance field label
+  const getSecondMortgageBalanceLabel = (propertyId: string) => {
+    const fieldType = secondMortgageBalanceFieldType[propertyId] || 'statement';
     return fieldType === 'statement' ? 'Mortgage Statement Balance' : 'Pay Off Demand Balance';
   };
 
@@ -5995,7 +6077,7 @@ export default function AdminAddClient() {
 
                             {/* Loan Details Box - Only show for Primary Residence/Second Home if activeSecuredLoan is 'yes', or always for Investment properties */}
                             {(property.use === 'investment' || form.watch(`property.properties.${index}.activeSecuredLoan` as const) === 'yes') && (
-                            <Card className="border-2 border-dashed">
+                            <Card className="border-2 border-dashed border-gray-500">
                               <CardHeader>
                                 <CardTitle className="text-lg">Loan Details</CardTitle>
                               </CardHeader>
@@ -6156,7 +6238,7 @@ export default function AdminAddClient() {
 
                             {/* Second Loan Details Box - Only show when activeSecondLoan is 'yes' and property is primary/second-home */}
                             {(property.use === 'primary' || property.use === 'second-home') && form.watch(`property.properties.${index}.activeSecondLoan` as const) === 'yes' && (
-                            <Card className="border-2 border-dashed">
+                            <Card className="border-2 border-dashed border-gray-500">
                               <CardHeader>
                                 <CardTitle className="text-lg">Second Loan Details</CardTitle>
                               </CardHeader>
@@ -6181,7 +6263,21 @@ export default function AdminAddClient() {
                                   </div>
                                   
                                   <div className="space-y-2">
-                                    <Label htmlFor={`property-second-mortgage-balance-${propertyId}`}>Mortgage Balance</Label>
+                                    <div className="flex items-center justify-between">
+                                      <Label htmlFor={`property-second-mortgage-balance-${propertyId}`}>
+                                        {getSecondMortgageBalanceLabel(propertyId)}
+                                      </Label>
+                                      <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => toggleSecondMortgageBalanceFieldType(propertyId)}
+                                        className="h-6 px-2 text-xs hover:bg-orange-500 hover:text-white hover:border-orange-500"
+                                        data-testid={`button-toggle-second-mortgage-balance-type-${propertyId}`}
+                                      >
+                                        Toggle
+                                      </Button>
+                                    </div>
                                     <Input
                                       id={`property-second-mortgage-balance-${propertyId}`}
                                       {...form.register(`property.properties.${index}.secondLoan.mortgageBalance` as const)}
@@ -6245,7 +6341,7 @@ export default function AdminAddClient() {
 
                             {/* Third Loan Details Box - Only show when activeThirdLoan is 'yes' and property is primary/second-home */}
                             {(property.use === 'primary' || property.use === 'second-home') && form.watch(`property.properties.${index}.activeThirdLoan` as const) === 'yes' && (
-                            <Card className="border-2 border-dashed">
+                            <Card className="border-2 border-dashed border-gray-500">
                               <CardHeader className="flex flex-row items-center justify-between">
                                 <CardTitle className="text-lg">Third Loan Details</CardTitle>
                                 <Button
@@ -6898,7 +6994,7 @@ export default function AdminAddClient() {
                             </div>
                             <div className="text-right">
                               <p className="text-2xl font-bold text-green-600 dark:text-green-400">
-                                {clientEstimate || 'Not entered'}
+                                {formatCurrency(clientEstimate)}
                               </p>
                             </div>
                           </div>
@@ -6943,7 +7039,7 @@ export default function AdminAddClient() {
                             </div>
                             <div className="text-right">
                               <p className="text-2xl font-bold text-red-600 dark:text-red-400">
-                                {redfinEstimate || 'Not available'}
+                                {formatCurrency(redfinEstimate)}
                               </p>
                             </div>
                           </div>
@@ -6958,7 +7054,7 @@ export default function AdminAddClient() {
                             </div>
                             <div className="text-right">
                               <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
-                                {appraisedValue || 'Not entered'}
+                                {formatCurrency(appraisedValue)}
                               </p>
                             </div>
                           </div>
