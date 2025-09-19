@@ -240,6 +240,74 @@ export type NewLoan = z.infer<typeof newLoanSchema>;
 export type Vendors = z.infer<typeof vendorsSchema>;
 export type Client = z.infer<typeof clientSchema>;
 
+// Pre-approval form schema for the Get Approved forms
+export const preApprovalDataSchema = z.object({
+  // Borrower information
+  fullName: z.string().min(1, "Full name is required"),
+  email: z.string().email("Valid email is required"),
+  phone: z.string().min(1, "Phone is required"),
+  
+  // Address fields
+  streetAddress: z.string().min(1, "Street address is required"),
+  unitApt: z.string().optional(),
+  city: z.string().min(1, "City is required"),
+  state: z.string().min(1, "State is required"),
+  zipCode: z.string().min(1, "ZIP code is required"),
+  
+  // Income information
+  incomeSource: z.string().min(1, "Income source is required"),
+  grossAnnualIncome: z.string().min(1, "Gross annual income is required"),
+  
+  // Loan details
+  loanPurpose: z.string().min(1, "Loan purpose is required"),
+  desiredLoanAmount: z.string().min(1, "Desired loan amount is required"),
+  downPayment: z.string().min(1, "Down payment is required"),
+  estimatedPropertyValue: z.string().min(1, "Estimated property value is required"),
+  propertyType: z.string().min(1, "Property type is required"),
+  intendedUse: z.string().min(1, "Intended use is required"),
+  
+  // Conditional fields for purchase
+  firstTimeBuyer: z.string().optional(),
+  timelineToPurchase: z.string().optional(),
+  
+  // Conditional field for refinance
+  appraisalCompleted: z.string().optional(),
+  
+  // Additional information
+  additionalInfo: z.string().optional(),
+  
+  // Co-borrower selection
+  addCoBorrower: z.enum(["yes", "no"]).default("no"),
+});
+
+export const coBorrowerDataSchema = z.object({
+  // Personal information
+  fullName: z.string().min(1, "Full name is required"),
+  email: z.string().email("Valid email is required"),
+  phone: z.string().min(1, "Phone is required"),
+  
+  // Address fields (optional if same as borrower)
+  streetAddress: z.string().optional(),
+  unitApt: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  zipCode: z.string().optional(),
+  sameAsBorrower: z.boolean().default(false),
+  
+  // Income information
+  incomeSource: z.string().min(1, "Income source is required"),
+  grossAnnualIncome: z.string().min(1, "Gross annual income is required"),
+});
+
+export const preApprovalSubmissionSchema = z.object({
+  preApprovalData: preApprovalDataSchema,
+  coBorrowerData: coBorrowerDataSchema.optional(),
+});
+
+export type PreApprovalData = z.infer<typeof preApprovalDataSchema>;
+export type CoBorrowerData = z.infer<typeof coBorrowerDataSchema>;
+export type PreApprovalSubmission = z.infer<typeof preApprovalSubmissionSchema>;
+
 // Create insert schema (excluding auto-generated fields)
 export const insertClientSchema = clientSchema.omit({ id: true, createdAt: true, updatedAt: true });
 export type InsertClient = z.infer<typeof insertClientSchema>;
