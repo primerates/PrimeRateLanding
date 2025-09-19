@@ -486,11 +486,6 @@ export default function AdminAddClient() {
     isOpen: boolean;
   }>({ isOpen: false });
 
-  // Residence history validation popup state
-  const [residenceHistoryDialog, setResidenceHistoryDialog] = useState<{
-    isOpen: boolean;
-    borrowerType: 'borrower' | 'coBorrower';
-  }>({ isOpen: false, borrowerType: 'borrower' });
 
   // Valuation summary dialog state
   const [valuationSummaryDialog, setValuationSummaryDialog] = useState<{
@@ -933,20 +928,6 @@ export default function AdminAddClient() {
     });
   };
 
-  // Validate residence history - show popup if < 2 years total
-  const validateResidenceHistory = (borrowerType: 'borrower' | 'coBorrower') => {
-    const yearsField = borrowerType === 'borrower' ? 'borrower.yearsAtAddress' : 'coBorrower.yearsAtAddress';
-    const monthsField = borrowerType === 'borrower' ? 'borrower.monthsAtAddress' : 'coBorrower.monthsAtAddress';
-    
-    const years = parseInt(form.watch(yearsField) || '0');
-    const months = parseInt(form.watch(monthsField) || '0');
-    const totalMonths = (years * 12) + months;
-    
-    // If total residence time is less than 24 months (2 years), show popup
-    if (totalMonths < 24 && totalMonths > 0) {
-      setResidenceHistoryDialog({ isOpen: true, borrowerType });
-    }
-  };
 
   const removeCoBorrower = () => {
     setConfirmRemovalDialog({
@@ -964,6 +945,43 @@ export default function AdminAddClient() {
   const copyResidenceToSubjectProperty = () => {
     const residenceAddress = form.getValues('borrower.residenceAddress');
     form.setValue('borrower.subjectProperty', residenceAddress);
+  };
+
+  // Auto-copy borrower residence address to primary residence property
+  const autoCopyBorrowerAddressToPrimaryProperty = () => {
+    const borrowerAddress = form.getValues('borrower.residenceAddress');
+    const properties = form.watch('property.properties') || [];
+    const primaryPropertyIndex = properties.findIndex(p => p.use === 'primary');
+    
+    if (primaryPropertyIndex >= 0 && borrowerAddress) {
+      form.setValue(`property.properties.${primaryPropertyIndex}.address`, {
+        street: borrowerAddress.street || '',
+        unit: borrowerAddress.unit || '',
+        city: borrowerAddress.city || '',
+        state: borrowerAddress.state || '',
+        zip: borrowerAddress.zip || '',
+        county: borrowerAddress.county || ''
+      });
+    }
+  };
+
+  // Auto-copy co-borrower residence address to co-borrower property
+  const autoCopyCoBorrowerAddressToProperty = () => {
+    const coBorrowerAddress = form.getValues('coBorrower.residenceAddress');
+    const properties = form.watch('property.properties') || [];
+    // Find a non-primary property for co-borrower (second home or investment)
+    const coBorrowerPropertyIndex = properties.findIndex(p => p.use !== 'primary');
+    
+    if (coBorrowerPropertyIndex >= 0 && coBorrowerAddress) {
+      form.setValue(`property.properties.${coBorrowerPropertyIndex}.address`, {
+        street: coBorrowerAddress.street || '',
+        unit: coBorrowerAddress.unit || '',
+        city: coBorrowerAddress.city || '',
+        state: coBorrowerAddress.state || '',
+        zip: coBorrowerAddress.zip || '',
+        county: coBorrowerAddress.county || ''
+      });
+    }
   };
 
   const copyBorrowerToCoResidence = () => {
@@ -1783,7 +1801,7 @@ export default function AdminAddClient() {
               <Button
                 onClick={handleScreenshare}
                 disabled={screenshareLoading}
-                className="bg-primary-foreground text-primary hover:bg-orange-500 hover:text-white"
+                className="bg-primary-foreground text-primary hover:bg-green-600 hover:text-white"
                 data-testid="button-screenshare"
               >
                 <Monitor className="h-4 w-4 mr-2" />
@@ -2003,7 +2021,9 @@ export default function AdminAddClient() {
                       <Label htmlFor="borrower-residence-street">Street Address *</Label>
                       <Input
                         id="borrower-residence-street"
-                        {...form.register('borrower.residenceAddress.street')}
+                        {...form.register('borrower.residenceAddress.street', {
+                          onChange: () => setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100)
+                        })}
                         data-testid="input-borrower-residence-street"
                       />
                       {form.formState.errors.borrower?.residenceAddress?.street && (
@@ -2015,7 +2035,9 @@ export default function AdminAddClient() {
                       <Label htmlFor="borrower-residence-unit">Unit/Apt</Label>
                       <Input
                         id="borrower-residence-unit"
-                        {...form.register('borrower.residenceAddress.unit')}
+                        {...form.register('borrower.residenceAddress.unit', {
+                          onChange: () => setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100)
+                        })}
                         data-testid="input-borrower-residence-unit"
                       />
                     </div>
@@ -2024,7 +2046,9 @@ export default function AdminAddClient() {
                       <Label htmlFor="borrower-residence-city">City *</Label>
                       <Input
                         id="borrower-residence-city"
-                        {...form.register('borrower.residenceAddress.city')}
+                        {...form.register('borrower.residenceAddress.city', {
+                          onChange: () => setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100)
+                        })}
                         data-testid="input-borrower-residence-city"
                       />
                       {form.formState.errors.borrower?.residenceAddress?.city && (
@@ -2036,7 +2060,10 @@ export default function AdminAddClient() {
                       <Label htmlFor="borrower-residence-state">State *</Label>
                       <Select
                         value={form.watch('borrower.residenceAddress.state') || ''}
-                        onValueChange={(value) => form.setValue('borrower.residenceAddress.state', value)}
+                        onValueChange={(value) => {
+                          form.setValue('borrower.residenceAddress.state', value);
+                          setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100);
+                        }}
                       >
                         <SelectTrigger data-testid="select-borrower-residence-state">
                           <SelectValue placeholder="State" />
@@ -2058,7 +2085,9 @@ export default function AdminAddClient() {
                       <Label htmlFor="borrower-residence-zip">ZIP Code *</Label>
                       <Input
                         id="borrower-residence-zip"
-                        {...form.register('borrower.residenceAddress.zip')}
+                        {...form.register('borrower.residenceAddress.zip', {
+                          onChange: () => setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100)
+                        })}
                         onBlur={(e) => handleBorrowerZipCodeLookup(e.target.value)}
                         data-testid="input-borrower-residence-zip"
                       />
@@ -2118,9 +2147,7 @@ export default function AdminAddClient() {
                           type="number"
                           min="0"
                           max="99"
-                          {...form.register('borrower.yearsAtAddress', {
-                            onChange: () => setTimeout(() => validateResidenceHistory('borrower'), 100)
-                          })}
+                          {...form.register('borrower.yearsAtAddress')}
                           data-testid="input-borrower-years"
                         />
                       </div>
@@ -2131,9 +2158,7 @@ export default function AdminAddClient() {
                           type="number"
                           min="0"
                           max="11"
-                          {...form.register('borrower.monthsAtAddress', {
-                            onChange: () => setTimeout(() => validateResidenceHistory('borrower'), 100)
-                          })}
+                          {...form.register('borrower.monthsAtAddress')}
                           data-testid="input-borrower-months"
                         />
                       </div>
@@ -2558,7 +2583,9 @@ export default function AdminAddClient() {
                         <Label htmlFor="coBorrower-residence-street">Street Address</Label>
                         <Input
                           id="coBorrower-residence-street"
-                          {...form.register('coBorrower.residenceAddress.street')}
+                          {...form.register('coBorrower.residenceAddress.street', {
+                            onChange: () => setTimeout(() => autoCopyCoBorrowerAddressToProperty(), 100)
+                          })}
                           data-testid="input-coborrower-residence-street"
                         />
                       </div>
@@ -2567,7 +2594,9 @@ export default function AdminAddClient() {
                         <Label htmlFor="coBorrower-residence-unit">Unit/Apt</Label>
                         <Input
                           id="coBorrower-residence-unit"
-                          {...form.register('coBorrower.residenceAddress.unit')}
+                          {...form.register('coBorrower.residenceAddress.unit', {
+                            onChange: () => setTimeout(() => autoCopyCoBorrowerAddressToProperty(), 100)
+                          })}
                           data-testid="input-coborrower-residence-unit"
                         />
                       </div>
@@ -2576,7 +2605,9 @@ export default function AdminAddClient() {
                         <Label htmlFor="coBorrower-residence-city">City</Label>
                         <Input
                           id="coBorrower-residence-city"
-                          {...form.register('coBorrower.residenceAddress.city')}
+                          {...form.register('coBorrower.residenceAddress.city', {
+                            onChange: () => setTimeout(() => autoCopyCoBorrowerAddressToProperty(), 100)
+                          })}
                           data-testid="input-coborrower-residence-city"
                         />
                       </div>
@@ -2585,7 +2616,10 @@ export default function AdminAddClient() {
                         <Label htmlFor="coBorrower-residence-state">State</Label>
                         <Select
                           value={form.watch('coBorrower.residenceAddress.state') || ''}
-                          onValueChange={(value) => form.setValue('coBorrower.residenceAddress.state', value)}
+                          onValueChange={(value) => {
+                            form.setValue('coBorrower.residenceAddress.state', value);
+                            setTimeout(() => autoCopyCoBorrowerAddressToProperty(), 100);
+                          }}
                         >
                           <SelectTrigger data-testid="select-coborrower-residence-state">
                             <SelectValue placeholder="Select state" />
@@ -2604,7 +2638,9 @@ export default function AdminAddClient() {
                         <Label htmlFor="coBorrower-residence-zip">ZIP Code</Label>
                         <Input
                           id="coBorrower-residence-zip"
-                          {...form.register('coBorrower.residenceAddress.zip')}
+                          {...form.register('coBorrower.residenceAddress.zip', {
+                            onChange: () => setTimeout(() => autoCopyCoBorrowerAddressToProperty(), 100)
+                          })}
                           onBlur={(e) => handleCoBorrowerZipCodeLookup(e.target.value)}
                           data-testid="input-coborrower-residence-zip"
                         />
@@ -2659,9 +2695,7 @@ export default function AdminAddClient() {
                             type="number"
                             min="0"
                             max="99"
-                            {...form.register('coBorrower.yearsAtAddress', {
-                              onChange: () => setTimeout(() => validateResidenceHistory('coBorrower'), 100)
-                            })}
+                            {...form.register('coBorrower.yearsAtAddress')}
                             data-testid="input-coborrower-years"
                           />
                         </div>
@@ -2672,9 +2706,7 @@ export default function AdminAddClient() {
                             type="number"
                             min="0"
                             max="11"
-                            {...form.register('coBorrower.monthsAtAddress', {
-                              onChange: () => setTimeout(() => validateResidenceHistory('coBorrower'), 100)
-                            })}
+                            {...form.register('coBorrower.monthsAtAddress')}
                             data-testid="input-coborrower-months"
                           />
                         </div>
@@ -5324,7 +5356,7 @@ export default function AdminAddClient() {
               <Card className="bg-muted">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    Property Summary
+                    Total Properties
                     <span className="text-lg font-semibold">
                       - <span data-testid="text-property-count">{(form.watch('property.properties') || []).length}</span>
                     </span>
@@ -6834,34 +6866,6 @@ export default function AdminAddClient() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Residence History Dialog */}
-      <AlertDialog open={residenceHistoryDialog.isOpen} onOpenChange={(open) => !open && setResidenceHistoryDialog({ isOpen: false, borrowerType: 'borrower' })}>
-        <AlertDialogContent data-testid="dialog-residence-history">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Add Prior Residence?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Two years of residence history is required. Would you like to add prior address?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel 
-              onClick={() => setResidenceHistoryDialog({ isOpen: false, borrowerType: 'borrower' })}
-              data-testid="button-residence-history-no"
-            >
-              No
-            </AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={() => {
-                setResidenceHistoryDialog({ isOpen: false, borrowerType: 'borrower' });
-                // Logic to show prior address section will be handled by existing conditional rendering
-              }}
-              data-testid="button-residence-history-yes"
-            >
-              Yes
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
 
       {/* Valuation Summary Dialog */}
       <Dialog open={valuationSummaryDialog.isOpen} onOpenChange={(open) => !open && closeValuationSummary()}>
@@ -6891,7 +6895,6 @@ export default function AdminAddClient() {
                           <div className="flex justify-between items-center">
                             <div>
                               <p className="font-semibold text-sm text-muted-foreground">CLIENT ESTIMATE</p>
-                              <p className="text-lg font-bold">Client Estimated Value</p>
                             </div>
                             <div className="text-right">
                               <p className="text-2xl font-bold text-green-600 dark:text-green-400">
@@ -6907,7 +6910,6 @@ export default function AdminAddClient() {
                           <div className="flex justify-between items-center">
                             <div>
                               <p className="font-semibold text-sm text-muted-foreground">ZILLOW</p>
-                              <p className="text-lg font-bold">Zillow Estimate</p>
                             </div>
                             <div className="text-right">
                               <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
@@ -6923,7 +6925,6 @@ export default function AdminAddClient() {
                           <div className="flex justify-between items-center">
                             <div>
                               <p className="font-semibold text-sm text-muted-foreground">REALTOR.COM</p>
-                              <p className="text-lg font-bold">Realtor.com Estimate</p>
                             </div>
                             <div className="text-right">
                               <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
@@ -6939,7 +6940,6 @@ export default function AdminAddClient() {
                           <div className="flex justify-between items-center">
                             <div>
                               <p className="font-semibold text-sm text-muted-foreground">REDFIN</p>
-                              <p className="text-lg font-bold">Redfin Estimate</p>
                             </div>
                             <div className="text-right">
                               <p className="text-2xl font-bold text-red-600 dark:text-red-400">
@@ -6955,7 +6955,6 @@ export default function AdminAddClient() {
                           <div className="flex justify-between items-center">
                             <div>
                               <p className="font-semibold text-sm text-muted-foreground">APPRAISAL</p>
-                              <p className="text-lg font-bold">Appraised Value</p>
                             </div>
                             <div className="text-right">
                               <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
