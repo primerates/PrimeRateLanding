@@ -1813,7 +1813,7 @@ export default function AdminAddClient() {
               </Card>
               
               {/* Borrower Information */}
-              <Card>
+              <Card className="border-l-4 border-l-green-500">
                 <CardHeader>
                   <CardTitle>Borrower Information</CardTitle>
                 </CardHeader>
@@ -2345,7 +2345,7 @@ export default function AdminAddClient() {
               ))}
 
               {/* Co-Borrower Section */}
-              <Card className="mt-16 border-t-2 border-gray-200 shadow-lg">
+<Card className="mt-16 border-l-4 border-l-orange-500">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>Co-Borrower Information</CardTitle>
                   {!hasCoBorrower ? (
