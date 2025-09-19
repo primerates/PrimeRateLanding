@@ -426,6 +426,10 @@ export default function AdminAddClient() {
   const [isPensionIncomeOpen, setIsPensionIncomeOpen] = useState(true);
   const [isCoBorrowerPensionIncomeOpen, setIsCoBorrowerPensionIncomeOpen] = useState(true);
 
+  // Loan details collapsible state (per property)
+  const [isLoanDetailsOpen, setIsLoanDetailsOpen] = useState<Record<string, boolean>>({});
+  const [isSecondLoanDetailsOpen, setIsSecondLoanDetailsOpen] = useState<Record<string, boolean>>({});
+
   // Property collapsible state (using object to manage multiple property cards)
   const [propertyCardStates, setPropertyCardStates] = useState<Record<string, boolean>>({});
   
@@ -1298,8 +1302,9 @@ export default function AdminAddClient() {
   const handleValuationHover = (service: 'zillow' | 'redfin' | 'realtor', propertyIndex: number, event: React.MouseEvent) => {
     const savedValue = form.watch(`property.properties.${propertyIndex}.valuations.${service}`) || '';
     const rect = event.currentTarget.getBoundingClientRect();
-    // Position tooltip above the icon with estimated tooltip height of 120px
+    // Position tooltip higher above the icon with increased distance for better spacing
     const tooltipHeight = 120;
+    const extraSpacing = 50; // Additional spacing to move tooltip higher
     setValuationHover({
       isVisible: true,
       service,
@@ -1307,7 +1312,7 @@ export default function AdminAddClient() {
       value: savedValue,
       position: { 
         x: rect.left + window.scrollX, 
-        y: rect.top + window.scrollY - tooltipHeight - 10 
+        y: rect.top + window.scrollY - tooltipHeight - extraSpacing 
       }
     });
   };
@@ -1819,6 +1824,32 @@ export default function AdminAddClient() {
   const getSecondMortgageBalanceLabel = (propertyId: string) => {
     const fieldType = secondMortgageBalanceFieldType[propertyId] || 'statement';
     return fieldType === 'statement' ? 'Mortgage Statement Balance' : 'Pay Off Demand Balance';
+  };
+
+  // Toggle loan details collapsible state
+  const toggleLoanDetailsOpen = (propertyId: string) => {
+    setIsLoanDetailsOpen(prev => ({
+      ...prev,
+      [propertyId]: !prev[propertyId]
+    }));
+  };
+
+  // Toggle second loan details collapsible state
+  const toggleSecondLoanDetailsOpen = (propertyId: string) => {
+    setIsSecondLoanDetailsOpen(prev => ({
+      ...prev,
+      [propertyId]: !prev[propertyId]
+    }));
+  };
+
+  // Get loan details open state (default to true)
+  const getLoanDetailsOpen = (propertyId: string) => {
+    return isLoanDetailsOpen[propertyId] ?? true;
+  };
+
+  // Get second loan details open state (default to true)
+  const getSecondLoanDetailsOpen = (propertyId: string) => {
+    return isSecondLoanDetailsOpen[propertyId] ?? true;
   };
 
   // Toggle escrow payment field type
@@ -5520,12 +5551,12 @@ export default function AdminAddClient() {
                         <div className="flex justify-between">
                           <span className={`font-medium ${
                             (form.watch('property.properties') || []).filter(p => p.use === 'primary').length > 0 
-                              ? 'text-green-500' 
+                              ? 'text-green-800' 
                               : 'text-foreground'
                           }`}>Primary Residence:</span>
                           <span className={`font-medium ${
                             (form.watch('property.properties') || []).filter(p => p.use === 'primary').length > 0 
-                              ? 'text-green-500' 
+                              ? 'text-green-800' 
                               : 'text-foreground'
                           }`} data-testid="text-primary-count">
                             {(form.watch('property.properties') || []).filter(p => p.use === 'primary').length}
@@ -6025,6 +6056,75 @@ export default function AdminAddClient() {
                               </div>
                             </div>
 
+                            {/* Active Secured Loans for Investment Properties - Below Owned Since */}
+                            {property.use === 'investment' && (
+                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                                <div className="space-y-2">
+                                  <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured First Loan</Label>
+                                  <Select
+                                    value={form.watch(`property.properties.${index}.activeSecuredLoan` as const) || ''}
+                                    onValueChange={(value) => form.setValue(`property.properties.${index}.activeSecuredLoan` as const, value)}
+                                  >
+                                    <SelectTrigger data-testid={`select-property-active-secured-loan-${propertyId}`}>
+                                      <SelectValue placeholder="Select" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="yes">Yes</SelectItem>
+                                      <SelectItem value="no-paid-off">No, Paid Off</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <Label htmlFor={`property-active-second-loan-${propertyId}`}>Secured Second Loan</Label>
+                                  <Select
+                                    value={form.watch(`property.properties.${index}.activeSecondLoan` as const) || ''}
+                                    onValueChange={(value) => {
+                                      form.setValue(`property.properties.${index}.activeSecondLoan` as const, value);
+                                      // Clear secondLoan data when toggled to "no" for data hygiene
+                                      if (value !== 'yes') {
+                                        form.setValue(`property.properties.${index}.secondLoan` as const, {
+                                          lenderName: '',
+                                          loanNumber: '',
+                                          mortgageBalance: '',
+                                          piPayment: '',
+                                          escrowPayment: '',
+                                          totalMonthlyPayment: '',
+                                        });
+                                      }
+                                    }}
+                                  >
+                                    <SelectTrigger data-testid={`select-property-active-second-loan-${propertyId}`}>
+                                      <SelectValue placeholder="Select" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="yes">Yes</SelectItem>
+                                      <SelectItem value="no">No</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <Label htmlFor={`property-owned-held-by-${propertyId}`}>Owned / Titled Held By</Label>
+                                  <Select
+                                    value={form.watch(`property.properties.${index}.ownedHeldBy` as const) || ''}
+                                    onValueChange={(value: "borrower" | "borrower-coborrower" | "borrower-others") => {
+                                      form.setValue(`property.properties.${index}.ownedHeldBy` as const, value);
+                                    }}
+                                  >
+                                    <SelectTrigger data-testid={`select-property-owned-held-by-${propertyId}`}>
+                                      <SelectValue placeholder="Select" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="borrower">Borrower</SelectItem>
+                                      <SelectItem value="borrower-coborrower">Borrower & Co-Borrower</SelectItem>
+                                      <SelectItem value="borrower-others">Borrower(s) & Others</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </div>
+                            )}
+
                             {/* Active Secured Loans for Primary Residence and Second Home - Side by Side */}
                             {(property.use === 'primary' || property.use === 'second-home') && (
                               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
@@ -6072,16 +6172,44 @@ export default function AdminAddClient() {
                                     </SelectContent>
                                   </Select>
                                 </div>
+                                
+                                <div className="space-y-2">
+                                  <Label htmlFor={`property-owned-held-by-${propertyId}`}>Owned / Titled Held By</Label>
+                                  <Select
+                                    value={form.watch(`property.properties.${index}.ownedHeldBy` as const) || ''}
+                                    onValueChange={(value: "borrower" | "borrower-coborrower" | "borrower-others") => {
+                                      form.setValue(`property.properties.${index}.ownedHeldBy` as const, value);
+                                    }}
+                                  >
+                                    <SelectTrigger data-testid={`select-property-owned-held-by-${propertyId}`}>
+                                      <SelectValue placeholder="Select" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="borrower">Borrower</SelectItem>
+                                      <SelectItem value="borrower-coborrower">Borrower & Co-Borrower</SelectItem>
+                                      <SelectItem value="borrower-others">Borrower(s) & Others</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
                               </div>
                             )}
 
-                            {/* Loan Details Box - Only show for Primary Residence/Second Home if activeSecuredLoan is 'yes', or always for Investment properties */}
-                            {(property.use === 'investment' || form.watch(`property.properties.${index}.activeSecuredLoan` as const) === 'yes') && (
+                            {/* Loan Details Box - Only show when activeSecuredLoan is 'yes' for all property types */}
+                            {form.watch(`property.properties.${index}.activeSecuredLoan` as const) === 'yes' && (
                             <Card className="border-2 border-dashed border-gray-500">
-                              <CardHeader>
-                                <CardTitle className="text-lg">Loan Details</CardTitle>
-                              </CardHeader>
-                              <CardContent>
+                              <Collapsible open={getLoanDetailsOpen(propertyId)} onOpenChange={() => toggleLoanDetailsOpen(propertyId)}>
+                                <CardHeader>
+                                  <div className="flex items-center justify-between">
+                                    <CardTitle className="text-lg">Loan Details</CardTitle>
+                                    <CollapsibleTrigger asChild>
+                                      <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid={`button-toggle-loan-details-${propertyId}`}>
+                                        {getLoanDetailsOpen(propertyId) ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                                      </Button>
+                                    </CollapsibleTrigger>
+                                  </div>
+                                </CardHeader>
+                                <CollapsibleContent>
+                                  <CardContent>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                   <div className="space-y-2">
                                     <Label htmlFor={`property-lender-name-${propertyId}`}>Lender Name</Label>
@@ -6233,16 +6361,27 @@ export default function AdminAddClient() {
                                   )}
                                 </div>
                               </CardContent>
+                                </CollapsibleContent>
+                              </Collapsible>
                             </Card>
                             )}
 
                             {/* Second Loan Details Box - Only show when activeSecondLoan is 'yes' and property is primary/second-home */}
                             {(property.use === 'primary' || property.use === 'second-home') && form.watch(`property.properties.${index}.activeSecondLoan` as const) === 'yes' && (
                             <Card className="border-2 border-dashed border-gray-500">
-                              <CardHeader>
-                                <CardTitle className="text-lg">Second Loan Details</CardTitle>
-                              </CardHeader>
-                              <CardContent>
+                              <Collapsible open={getSecondLoanDetailsOpen(propertyId)} onOpenChange={() => toggleSecondLoanDetailsOpen(propertyId)}>
+                                <CardHeader>
+                                  <div className="flex items-center justify-between">
+                                    <CardTitle className="text-lg">Second Loan Details</CardTitle>
+                                    <CollapsibleTrigger asChild>
+                                      <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid={`button-toggle-second-loan-details-${propertyId}`}>
+                                        {getSecondLoanDetailsOpen(propertyId) ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                                      </Button>
+                                    </CollapsibleTrigger>
+                                  </div>
+                                </CardHeader>
+                                <CollapsibleContent>
+                                  <CardContent>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                   <div className="space-y-2">
                                     <Label htmlFor={`property-second-lender-name-${propertyId}`}>Lender Name</Label>
@@ -6336,6 +6475,8 @@ export default function AdminAddClient() {
                                   </div>
                                 )}
                               </CardContent>
+                                </CollapsibleContent>
+                              </Collapsible>
                             </Card>
                             )}
 
@@ -7009,7 +7150,7 @@ export default function AdminAddClient() {
                             </div>
                             <div className="text-right">
                               <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                                {zillowEstimate || 'Not available'}
+                                {zillowEstimate ? formatCurrency(zillowEstimate) : 'Not available'}
                               </p>
                             </div>
                           </div>
@@ -7024,7 +7165,7 @@ export default function AdminAddClient() {
                             </div>
                             <div className="text-right">
                               <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                                {realtorEstimate || 'Not available'}
+                                {realtorEstimate ? formatCurrency(realtorEstimate) : 'Not available'}
                               </p>
                             </div>
                           </div>

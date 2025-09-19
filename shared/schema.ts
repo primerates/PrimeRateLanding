@@ -175,6 +175,7 @@ export const propertyEntrySchema = z.object({
   loan: loanDetailSchema.optional(),
   activeSecondLoan: z.string().optional(), // For second loan
   secondLoan: loanDetailSchema.optional(),
+  ownedHeldBy: z.enum(["borrower", "borrower-coborrower", "borrower-others"]).optional(), // Property ownership
   activeThirdLoan: z.string().optional(), // For third loan
   thirdLoan: loanDetailSchema.optional(),
 });
