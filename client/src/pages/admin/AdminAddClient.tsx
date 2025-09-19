@@ -1171,12 +1171,17 @@ export default function AdminAddClient() {
   const handleValuationHover = (service: 'zillow' | 'redfin' | 'realtor', propertyIndex: number, event: React.MouseEvent) => {
     const savedValue = form.watch(`property.properties.${propertyIndex}.valuations.${service}`) || '';
     const rect = event.currentTarget.getBoundingClientRect();
+    // Position tooltip above the icon with estimated tooltip height of 120px
+    const tooltipHeight = 120;
     setValuationHover({
       isVisible: true,
       service,
       propertyIndex,
       value: savedValue,
-      position: { x: rect.left + window.scrollX, y: rect.bottom + window.scrollY + 5 }
+      position: { 
+        x: rect.left + window.scrollX, 
+        y: rect.top + window.scrollY - tooltipHeight - 10 
+      }
     });
   };
 
@@ -6442,26 +6447,26 @@ export default function AdminAddClient() {
       {/* Property Valuation Hover Tooltip */}
       {valuationHover.isVisible && (
         <div
-          className="fixed z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg p-3 max-w-xs"
+          className="fixed z-50 bg-white dark:bg-gray-800 border-2 border-orange-500 rounded-md shadow-lg p-6 max-w-md w-80"
           style={{
             left: valuationHover.position.x,
             top: valuationHover.position.y,
           }}
           data-testid="tooltip-valuation-hover"
         >
-          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          <div className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
             {valuationHover.service === 'zillow' && 'Zillow Valuation'}
             {valuationHover.service === 'redfin' && 'Redfin Valuation'}
             {valuationHover.service === 'realtor' && 'Realtor.com Valuation'}
           </div>
-          <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+          <div className="text-base text-gray-600 dark:text-gray-400 mt-2">
             {valuationHover.value ? (
-              <span className="font-mono">{valuationHover.value}</span>
+              <span className="font-mono text-green-600 dark:text-green-400">{valuationHover.value}</span>
             ) : (
-              <span className="italic">No value saved</span>
+              <span className="italic text-gray-500">No value saved</span>
             )}
           </div>
-          <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+          <div className="text-sm text-gray-500 dark:text-gray-500 mt-3 pt-2 border-t border-gray-200 dark:border-gray-600">
             Click to open full editor
           </div>
         </div>
