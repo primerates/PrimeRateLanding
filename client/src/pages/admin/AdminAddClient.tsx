@@ -2659,7 +2659,9 @@ export default function AdminAddClient() {
                             type="number"
                             min="0"
                             max="99"
-                            {...form.register('coBorrower.yearsAtAddress')}
+                            {...form.register('coBorrower.yearsAtAddress', {
+                              onChange: () => setTimeout(() => validateResidenceHistory('coBorrower'), 100)
+                            })}
                             data-testid="input-coborrower-years"
                           />
                         </div>
@@ -2670,7 +2672,9 @@ export default function AdminAddClient() {
                             type="number"
                             min="0"
                             max="11"
-                            {...form.register('coBorrower.monthsAtAddress')}
+                            {...form.register('coBorrower.monthsAtAddress', {
+                              onChange: () => setTimeout(() => validateResidenceHistory('coBorrower'), 100)
+                            })}
                             data-testid="input-coborrower-months"
                           />
                         </div>
