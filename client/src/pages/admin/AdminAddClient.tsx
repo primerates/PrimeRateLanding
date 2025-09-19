@@ -6218,6 +6218,23 @@ export default function AdminAddClient() {
                             </Card>
                             )}
 
+                            {/* Add Second Home Button - Only show for second-home properties */}
+                            {property.use === 'second-home' && (
+                              <div className="flex justify-end mt-6">
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => addProperty('second-home')}
+                                  className="hover:bg-blue-500 hover:text-white"
+                                  data-testid={`button-add-second-home-${propertyId}`}
+                                >
+                                  <Plus className="h-4 w-4 mr-2" />
+                                  Add Second Home
+                                </Button>
+                              </div>
+                            )}
+
                           </div>
                         </CardContent>
                       </CollapsibleContent>
