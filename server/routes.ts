@@ -436,6 +436,287 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Property Valuation API Routes
+  app.get("/api/property-valuations", async (req, res) => {
+    try {
+      const { address } = req.query;
+      
+      if (!address || typeof address !== 'string') {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Address parameter is required" 
+        });
+      }
+
+      const rapidApiKey = process.env.RAPIDAPI_KEY;
+      if (!rapidApiKey) {
+        return res.status(500).json({
+          success: false,
+          message: "API configuration error"
+        });
+      }
+
+      const valuations = {
+        zillow: null as any,
+        realtor: null as any,
+        errors: [] as string[]
+      };
+
+      // Common headers for RapidAPI
+      const rapidApiHeaders = {
+        'X-RapidAPI-Key': rapidApiKey,
+        'X-RapidAPI-Host': '',
+        'User-Agent': 'PrimeRateHomeLoans/1.0'
+      };
+
+      // Fetch Zillow data via RapidAPI
+      try {
+        const zillowHeaders = {
+          ...rapidApiHeaders,
+          'X-RapidAPI-Host': 'zillow-com1.p.rapidapi.com'
+        };
+
+        const zillowResponse = await fetch(
+          `https://zillow-com1.p.rapidapi.com/propertyExtendedSearch?location=${encodeURIComponent(address)}`,
+          {
+            method: 'GET',
+            headers: zillowHeaders,
+          }
+        );
+
+        if (zillowResponse.ok) {
+          const zillowData = await zillowResponse.json() as any;
+          if (zillowData && zillowData.props && zillowData.props.length > 0) {
+            const property = zillowData.props[0];
+            valuations.zillow = {
+              estimate: property.price || property.zestimate,
+              address: property.address,
+              bedrooms: property.bedrooms,
+              bathrooms: property.bathrooms,
+              livingArea: property.livingArea,
+              propertyType: property.propertyType,
+              lastSoldPrice: property.lastSoldPrice,
+              lastSoldDate: property.lastSoldDate,
+              source: 'Zillow'
+            };
+          }
+        } else {
+          console.warn('Zillow API request failed:', zillowResponse.status, zillowResponse.statusText);
+          valuations.errors.push('Zillow data unavailable');
+        }
+      } catch (zillowError) {
+        console.error('Zillow API error:', zillowError);
+        valuations.errors.push('Zillow service error');
+      }
+
+      // Fetch Realtor.com data via RapidAPI
+      try {
+        const realtorHeaders = {
+          ...rapidApiHeaders,
+          'X-RapidAPI-Host': 'realtor16.p.rapidapi.com'
+        };
+
+        // First, search for properties by address
+        const realtorSearchResponse = await fetch(
+          `https://realtor16.p.rapidapi.com/properties/list-for-sale?city=${encodeURIComponent(address)}&limit=1`,
+          {
+            method: 'GET',
+            headers: realtorHeaders,
+          }
+        );
+
+        if (realtorSearchResponse.ok) {
+          const realtorData = await realtorSearchResponse.json() as any;
+          if (realtorData && realtorData.data && realtorData.data.home_search && realtorData.data.home_search.results && realtorData.data.home_search.results.length > 0) {
+            const property = realtorData.data.home_search.results[0];
+            valuations.realtor = {
+              estimate: property.list_price || property.price,
+              address: property.location?.address?.line,
+              city: property.location?.address?.city,
+              state: property.location?.address?.state_code,
+              bedrooms: property.description?.beds,
+              bathrooms: property.description?.baths,
+              sqft: property.description?.sqft,
+              propertyType: property.description?.type,
+              listingDate: property.list_date,
+              source: 'Realtor.com'
+            };
+          }
+        } else {
+          console.warn('Realtor API request failed:', realtorSearchResponse.status, realtorSearchResponse.statusText);
+          valuations.errors.push('Realtor.com data unavailable');
+        }
+      } catch (realtorError) {
+        console.error('Realtor API error:', realtorError);
+        valuations.errors.push('Realtor.com service error');
+      }
+
+      // Return results
+      res.json({
+        success: true,
+        data: valuations,
+        message: `Property valuations retrieved${valuations.errors.length > 0 ? ' (with some errors)' : ' successfully'}`
+      });
+
+    } catch (error) {
+      console.error('Property valuations error:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'Failed to retrieve property valuations' 
+      });
+    }
+  });
+
+  // Individual service endpoints for targeted fetching
+  app.get("/api/property-valuations/zillow", async (req, res) => {
+    try {
+      const { address } = req.query;
+      
+      if (!address || typeof address !== 'string') {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Address parameter is required" 
+        });
+      }
+
+      const rapidApiKey = process.env.RAPIDAPI_KEY;
+      if (!rapidApiKey) {
+        return res.status(500).json({
+          success: false,
+          message: "API configuration error"
+        });
+      }
+
+      const headers = {
+        'X-RapidAPI-Key': rapidApiKey,
+        'X-RapidAPI-Host': 'zillow-com1.p.rapidapi.com',
+        'User-Agent': 'PrimeRateHomeLoans/1.0'
+      };
+
+      const response = await fetch(
+        `https://zillow-com1.p.rapidapi.com/propertyExtendedSearch?location=${encodeURIComponent(address)}`,
+        {
+          method: 'GET',
+          headers: headers,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Zillow API responded with status: ${response.status}`);
+      }
+
+      const data = await response.json() as any;
+      
+      if (data && data.props && data.props.length > 0) {
+        const property = data.props[0];
+        res.json({
+          success: true,
+          data: {
+            estimate: property.price || property.zestimate,
+            address: property.address,
+            details: {
+              bedrooms: property.bedrooms,
+              bathrooms: property.bathrooms,
+              livingArea: property.livingArea,
+              propertyType: property.propertyType,
+              lastSoldPrice: property.lastSoldPrice,
+              lastSoldDate: property.lastSoldDate
+            },
+            source: 'Zillow'
+          }
+        });
+      } else {
+        res.json({
+          success: true,
+          data: null,
+          message: 'No property data found for this address'
+        });
+      }
+
+    } catch (error) {
+      console.error('Zillow API error:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'Failed to retrieve Zillow valuation' 
+      });
+    }
+  });
+
+  app.get("/api/property-valuations/realtor", async (req, res) => {
+    try {
+      const { address } = req.query;
+      
+      if (!address || typeof address !== 'string') {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Address parameter is required" 
+        });
+      }
+
+      const rapidApiKey = process.env.RAPIDAPI_KEY;
+      if (!rapidApiKey) {
+        return res.status(500).json({
+          success: false,
+          message: "API configuration error"
+        });
+      }
+
+      const headers = {
+        'X-RapidAPI-Key': rapidApiKey,
+        'X-RapidAPI-Host': 'realtor16.p.rapidapi.com',
+        'User-Agent': 'PrimeRateHomeLoans/1.0'
+      };
+
+      const response = await fetch(
+        `https://realtor16.p.rapidapi.com/properties/list-for-sale?city=${encodeURIComponent(address)}&limit=1`,
+        {
+          method: 'GET',
+          headers: headers,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Realtor API responded with status: ${response.status}`);
+      }
+
+      const data = await response.json() as any;
+      
+      if (data && data.data && data.data.home_search && data.data.home_search.results && data.data.home_search.results.length > 0) {
+        const property = data.data.home_search.results[0];
+        res.json({
+          success: true,
+          data: {
+            estimate: property.list_price || property.price,
+            address: property.location?.address?.line,
+            details: {
+              city: property.location?.address?.city,
+              state: property.location?.address?.state_code,
+              bedrooms: property.description?.beds,
+              bathrooms: property.description?.baths,
+              sqft: property.description?.sqft,
+              propertyType: property.description?.type,
+              listingDate: property.list_date
+            },
+            source: 'Realtor.com'
+          }
+        });
+      } else {
+        res.json({
+          success: true,
+          data: null,
+          message: 'No property data found for this address'
+        });
+      }
+
+    } catch (error) {
+      console.error('Realtor API error:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'Failed to retrieve Realtor.com valuation' 
+      });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
