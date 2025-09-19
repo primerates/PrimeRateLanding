@@ -6105,7 +6105,7 @@ export default function AdminAddClient() {
                                 </div>
                                 
                                 <div className="space-y-2">
-                                  <Label htmlFor={`property-owned-held-by-${propertyId}`}>Owned / Titled Held By</Label>
+                                  <Label htmlFor={`property-owned-held-by-${propertyId}`}>Owned / Title Held By</Label>
                                   <Select
                                     value={form.watch(`property.properties.${index}.ownedHeldBy` as const) || ''}
                                     onValueChange={(value: "borrower" | "borrower-coborrower" | "borrower-others") => {
@@ -6174,7 +6174,7 @@ export default function AdminAddClient() {
                                 </div>
                                 
                                 <div className="space-y-2">
-                                  <Label htmlFor={`property-owned-held-by-${propertyId}`}>Owned / Titled Held By</Label>
+                                  <Label htmlFor={`property-owned-held-by-${propertyId}`}>Owned / Title Held By</Label>
                                   <Select
                                     value={form.watch(`property.properties.${index}.ownedHeldBy` as const) || ''}
                                     onValueChange={(value: "borrower" | "borrower-coborrower" | "borrower-others") => {
@@ -6366,8 +6366,8 @@ export default function AdminAddClient() {
                             </Card>
                             )}
 
-                            {/* Second Loan Details Box - Only show when activeSecondLoan is 'yes' and property is primary/second-home */}
-                            {(property.use === 'primary' || property.use === 'second-home') && form.watch(`property.properties.${index}.activeSecondLoan` as const) === 'yes' && (
+                            {/* Second Loan Details Box - Only show when activeSecondLoan is 'yes' for all property types */}
+                            {form.watch(`property.properties.${index}.activeSecondLoan` as const) === 'yes' && (
                             <Card className="border-2 border-dashed border-gray-500">
                               <Collapsible open={getSecondLoanDetailsOpen(propertyId)} onOpenChange={() => toggleSecondLoanDetailsOpen(propertyId)}>
                                 <CardHeader>
