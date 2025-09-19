@@ -2345,7 +2345,7 @@ export default function AdminAddClient() {
               ))}
 
               {/* Co-Borrower Section */}
-              <Card className="mt-16">
+              <Card className="mt-16 border-t-2 border-gray-200 shadow-lg">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>Co-Borrower Information</CardTitle>
                   {!hasCoBorrower ? (
