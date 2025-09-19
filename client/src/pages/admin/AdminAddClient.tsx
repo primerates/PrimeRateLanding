@@ -834,49 +834,50 @@ export default function AdminAddClient() {
     },
   });
 
-  // Screenshare functionality
+  // Screenleap integration functionality
   const handleScreenshare = async () => {
     setScreenshareLoading(true);
     
     try {
-      const response = await apiRequest('POST', '/api/screenshare/start', {
-        clientName: `${form.getValues('borrower.firstName')} ${form.getValues('borrower.lastName')}`.trim() || 'New Client',
-        sessionType: 'client-consultation'
-      });
+      // Remove any existing screenleap script
+      const existingScript = document.querySelector('script[src*="screenleap.js"]');
+      if (existingScript) {
+        existingScript.remove();
+      }
       
-      // Parse JSON response
-      const data = await response.json();
+      // Create and inject screenleap script for presenter role
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://integration.screenleap.com/screenleap.js';
+      script.setAttribute('data-param', 'userId=438165&role=presenter');
       
-      if (data.sessionUrl) {
-        // Open screenshare session in new window
-        const popupWindow = window.open(data.sessionUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-        
-        if (popupWindow) {
-          toast({
-            title: 'Screenshare Started',
-            description: 'Screenshare session opened in new window',
-          });
-        } else {
-          toast({
-            title: 'Popup Blocked',
-            description: 'Please allow popups for this site and try again. The screenshare session URL is: ' + data.sessionUrl.substring(0, 50) + '...',
-            variant: 'destructive',
-          });
-        }
-      } else {
+      // Add script to document head
+      document.head.appendChild(script);
+      
+      // Wait for script to load and initialize
+      script.onload = () => {
+        toast({
+          title: 'Screenshare Ready',
+          description: 'Screenleap presenter mode activated. You can now start screen sharing.',
+        });
+        setScreenshareLoading(false);
+      };
+      
+      script.onerror = () => {
         toast({
           title: 'Screenshare Error',
-          description: 'No session URL received from server',
+          description: 'Failed to load screenleap integration',
           variant: 'destructive',
         });
-      }
+        setScreenshareLoading(false);
+      };
+      
     } catch (error: any) {
       toast({
         title: 'Screenshare Error',
-        description: error.message || 'Failed to start screenshare session',
+        description: error.message || 'Failed to initialize screenleap',
         variant: 'destructive',
       });
-    } finally {
       setScreenshareLoading(false);
     }
   };
