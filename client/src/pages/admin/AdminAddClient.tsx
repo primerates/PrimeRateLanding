@@ -836,41 +836,34 @@ export default function AdminAddClient() {
 
   // Screenshare functionality
   const handleScreenshare = async () => {
-    console.log('Screenshare button clicked!');
     setScreenshareLoading(true);
     
     try {
-      console.log('Making API request to start screenshare...');
       const response = await apiRequest('POST', '/api/screenshare/start', {
         clientName: `${form.getValues('borrower.firstName')} ${form.getValues('borrower.lastName')}`.trim() || 'New Client',
         sessionType: 'client-consultation'
       });
       
-      console.log('API response received:', response);
+      // Parse JSON response
+      const data = await response.json();
       
-      if ((response as any).sessionUrl) {
-        const sessionUrl = (response as any).sessionUrl;
-        console.log('Attempting to open popup window with URL:', sessionUrl);
-        
+      if (data.sessionUrl) {
         // Open screenshare session in new window
-        const popupWindow = window.open(sessionUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+        const popupWindow = window.open(data.sessionUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
         
         if (popupWindow) {
-          console.log('Popup window opened successfully');
           toast({
             title: 'Screenshare Started',
             description: 'Screenshare session opened in new window',
           });
         } else {
-          console.log('Popup window was blocked by browser');
           toast({
             title: 'Popup Blocked',
-            description: 'Please allow popups for this site and try again. The screenshare session URL is: ' + sessionUrl.substring(0, 50) + '...',
+            description: 'Please allow popups for this site and try again. The screenshare session URL is: ' + data.sessionUrl.substring(0, 50) + '...',
             variant: 'destructive',
           });
         }
       } else {
-        console.log('No sessionUrl in response');
         toast({
           title: 'Screenshare Error',
           description: 'No session URL received from server',
@@ -878,7 +871,6 @@ export default function AdminAddClient() {
         });
       }
     } catch (error: any) {
-      console.log('Screenshare error:', error);
       toast({
         title: 'Screenshare Error',
         description: error.message || 'Failed to start screenshare session',
@@ -886,7 +878,6 @@ export default function AdminAddClient() {
       });
     } finally {
       setScreenshareLoading(false);
-      console.log('Screenshare loading state reset');
     }
   };
 
