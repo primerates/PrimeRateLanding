@@ -14,7 +14,7 @@ import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2 } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor } from 'lucide-react';
 import { SiZillow } from 'react-icons/si';
 import { MdRealEstateAgent } from 'react-icons/md';
 import { FaHome } from 'react-icons/fa';
@@ -476,6 +476,9 @@ export default function AdminAddClient() {
     isOpen: boolean;
   }>({ isOpen: false });
 
+  // Screenshare state
+  const [screenshareLoading, setScreenshareLoading] = useState(false);
+
   // County lookup state
   const [borrowerCountyOptions, setBorrowerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
   const [coBorrowerCountyOptions, setCoBorrowerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
@@ -830,6 +833,34 @@ export default function AdminAddClient() {
       });
     },
   });
+
+  // Screenshare functionality
+  const handleScreenshare = async () => {
+    setScreenshareLoading(true);
+    try {
+      const response = await apiRequest('POST', '/api/screenshare/start', {
+        clientName: `${form.getValues('borrower.firstName')} ${form.getValues('borrower.lastName')}`.trim() || 'New Client',
+        sessionType: 'client-consultation'
+      });
+      
+      if ((response as any).sessionUrl) {
+        // Open screenshare session in new window
+        window.open((response as any).sessionUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+        toast({
+          title: 'Screenshare Started',
+          description: 'Screenshare session opened in new window',
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: 'Screenshare Error',
+        description: error.message || 'Failed to start screenshare session',
+        variant: 'destructive',
+      });
+    } finally {
+      setScreenshareLoading(false);
+    }
+  };
 
   const onSubmit = (data: InsertClient) => {
     // Clean up co-borrower data if not needed
@@ -1685,15 +1716,26 @@ export default function AdminAddClient() {
                 Add New Client
               </h1>
             </div>
-            <Button
-              onClick={form.handleSubmit(onSubmit)}
-              disabled={addClientMutation.isPending}
-              className="bg-primary-foreground text-primary hover:bg-orange-500 hover:text-white"
-              data-testid="button-save-client"
-            >
-              <Save className="h-4 w-4 mr-2" />
-              {addClientMutation.isPending ? 'Saving...' : 'Save'}
-            </Button>
+            <div className="flex items-center space-x-3">
+              <Button
+                onClick={handleScreenshare}
+                disabled={screenshareLoading}
+                className="bg-primary-foreground text-primary hover:bg-orange-500 hover:text-white"
+                data-testid="button-screenshare"
+              >
+                <Monitor className="h-4 w-4 mr-2" />
+                {screenshareLoading ? 'Starting...' : 'Screenshare'}
+              </Button>
+              <Button
+                onClick={form.handleSubmit(onSubmit)}
+                disabled={addClientMutation.isPending}
+                className="bg-primary-foreground text-primary hover:bg-orange-500 hover:text-white"
+                data-testid="button-save-client"
+              >
+                <Save className="h-4 w-4 mr-2" />
+                {addClientMutation.isPending ? 'Saving...' : 'Save'}
+              </Button>
+            </div>
           </div>
         </div>
       </header>

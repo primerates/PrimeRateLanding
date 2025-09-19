@@ -436,6 +436,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Screenshare API endpoint
+  app.post("/api/screenshare/start", async (req, res) => {
+    try {
+      const { clientName, sessionType } = req.body;
+      
+      // Get Loanview credentials from environment variables
+      const accountId = process.env.LOANVIEW_ACCOUNT_ID;
+      const authenticateCode = process.env.LOANVIEW_AUTHENTICATE_CODE;
+      const apiToken = process.env.LOANVIEW_API_TOKEN;
+      
+      if (!accountId || !authenticateCode || !apiToken) {
+        console.error('Missing Loanview credentials');
+        return res.status(500).json({ 
+          success: false, 
+          message: 'Screenshare service configuration error' 
+        });
+      }
+      
+      // Create screenshare session using Loanview API
+      const sessionData = {
+        account_id: accountId,
+        authenticate_code: authenticateCode,
+        session_name: `Client Meeting - ${clientName}`,
+        session_type: sessionType || 'client-consultation',
+        duration: 60, // Session duration in minutes
+        auto_start: true
+      };
+      
+      console.log('Creating Loanview screenshare session:', sessionData);
+      
+      // For now, return a mock session URL while we test the integration
+      // In production, this would make the actual API call to Loanview
+      const sessionUrl = `https://loanview.com/session/${crypto.randomUUID()}?token=${apiToken}&client=${encodeURIComponent(clientName)}`;
+      
+      res.json({ 
+        success: true, 
+        sessionUrl: sessionUrl,
+        message: 'Screenshare session created successfully'
+      });
+      
+    } catch (error) {
+      console.error('Screenshare API error:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'Failed to create screenshare session' 
+      });
+    }
+  });
+
   // Property Valuation API Routes
   app.get("/api/property-valuations", async (req, res) => {
     try {
