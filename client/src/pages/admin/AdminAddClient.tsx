@@ -1764,13 +1764,14 @@ export default function AdminAddClient() {
       <div className="container mx-auto px-6 py-8">
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <Tabs defaultValue="client" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-7">
+            <TabsList className="grid w-full grid-cols-8">
               <TabsTrigger value="client" data-testid="tab-client">Client</TabsTrigger>
               <TabsTrigger value="income" data-testid="tab-income">Income</TabsTrigger>
               <TabsTrigger value="property" data-testid="tab-property">Property</TabsTrigger>
               <TabsTrigger value="loan" data-testid="tab-loan">Loan</TabsTrigger>
               <TabsTrigger value="status" data-testid="tab-status">Status</TabsTrigger>
               <TabsTrigger value="vendors" data-testid="tab-vendors">Vendors</TabsTrigger>
+              <TabsTrigger value="quote" data-testid="tab-quote">Quote</TabsTrigger>
               <TabsTrigger value="notes" data-testid="tab-notes">Notes</TabsTrigger>
             </TabsList>
 
@@ -6289,6 +6290,18 @@ export default function AdminAddClient() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">Status functionality will be implemented here.</p>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Quote Tab */}
+            <TabsContent value="quote" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Quote</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">Quote functionality will be implemented here.</p>
                 </CardContent>
               </Card>
             </TabsContent>
