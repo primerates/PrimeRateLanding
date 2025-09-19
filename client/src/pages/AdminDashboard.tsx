@@ -58,8 +58,11 @@ export default function AdminDashboard() {
     setLocation(path);
   };
 
-  const getTileHoverClass = (itemId: string) => {
-    return 'border-l-4 border-l-green-500 hover:border-l-green-600';
+  const getTileHoverClass = (itemId: string, isSecondRow: boolean = false) => {
+    if (isSecondRow) {
+      return 'border-l-4 border-l-blue-500 hover:border-blue-500';
+    }
+    return 'border-l-4 border-l-green-500 hover:border-green-500';
   };
 
   return (
@@ -117,7 +120,7 @@ export default function AdminDashboard() {
             return (
               <Card 
                 key={item.id}
-                className={`cursor-pointer transition-all duration-200 ${getTileHoverClass(item.id)}`}
+                className={`cursor-pointer transition-all duration-200 ${getTileHoverClass(item.id, false)}`}
                 onClick={() => handleMenuClick(item.path)}
                 data-testid={`card-admin-${item.id}`}
               >
@@ -139,7 +142,7 @@ export default function AdminDashboard() {
             return (
               <Card 
                 key={item.id}
-                className={`cursor-pointer transition-all duration-200 ${getTileHoverClass(item.id)}`}
+                className={`cursor-pointer transition-all duration-200 ${getTileHoverClass(item.id, true)}`}
                 onClick={() => handleMenuClick(item.path)}
                 data-testid={`card-admin-${item.id}`}
               >

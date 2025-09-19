@@ -2149,7 +2149,7 @@ export default function AdminAddClient() {
                             <Button 
                               variant="ghost" 
                               size="sm" 
-                              className="hover:text-orange-500"
+                              className="hover:bg-orange-500 hover:text-black"
                               data-testid="button-toggle-borrower-residence"
                             >
                               {isBorrowerResidenceOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
@@ -2338,7 +2338,7 @@ export default function AdminAddClient() {
                               <Button 
                                 variant="ghost" 
                                 size="sm" 
-                                className="hover:text-orange-500"
+                                className="hover:bg-orange-500 hover:text-black"
                                 data-testid="button-toggle-borrower-prior-residence"
                               >
                                 {isBorrowerPriorResidenceOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
@@ -3570,7 +3570,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isPriorEmploymentIncomeOpen} onOpenChange={setIsPriorEmploymentIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Prior Employment</CardTitle>
+                        <CardTitle>Borrower Prior Employment</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button 
                             variant="ghost" 
@@ -3799,7 +3799,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isSecondEmploymentIncomeOpen} onOpenChange={setIsSecondEmploymentIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Second Employment Income</CardTitle>
+                        <CardTitle>Borrower Second Employment Income</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button 
                             variant="ghost" 
@@ -4031,7 +4031,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isSelfEmploymentIncomeOpen} onOpenChange={setIsSelfEmploymentIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Self-Employment Income</CardTitle>
+                        <CardTitle>Borrower Self-Employment Income</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button 
                             variant="ghost" 
@@ -4187,7 +4187,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isPensionIncomeOpen} onOpenChange={setIsPensionIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Pension Income</CardTitle>
+                        <CardTitle>Borrower Pension Income</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button 
                             variant="ghost" 
@@ -4276,7 +4276,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isSocialSecurityIncomeOpen} onOpenChange={setIsSocialSecurityIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Social Security Income</CardTitle>
+                        <CardTitle>Borrower Social Security Income</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button 
                             variant="ghost" 
@@ -4325,7 +4325,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isVaBenefitsIncomeOpen} onOpenChange={setIsVaBenefitsIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>VA Disability Income</CardTitle>
+                        <CardTitle>Borrower VA Disability Income</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button 
                             variant="ghost" 
@@ -4374,7 +4374,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isDisabilityIncomeOpen} onOpenChange={setIsDisabilityIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Disability Income</CardTitle>
+                        <CardTitle>Borrower Disability Income</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button 
                             variant="ghost" 
