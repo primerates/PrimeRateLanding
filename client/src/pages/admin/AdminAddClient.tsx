@@ -427,6 +427,12 @@ export default function AdminAddClient() {
   const [isPensionIncomeOpen, setIsPensionIncomeOpen] = useState(true);
   const [isCoBorrowerPensionIncomeOpen, setIsCoBorrowerPensionIncomeOpen] = useState(true);
 
+  // Address box collapsible states
+  const [isBorrowerResidenceOpen, setIsBorrowerResidenceOpen] = useState(true);
+  const [isBorrowerPriorResidenceOpen, setIsBorrowerPriorResidenceOpen] = useState(true);
+  const [isCoBorrowerResidenceOpen, setIsCoBorrowerResidenceOpen] = useState(true);
+  const [isCoBorrowerPriorResidenceOpen, setIsCoBorrowerPriorResidenceOpen] = useState(true);
+
   // Loan details collapsible state (per property)
   const [isLoanDetailsOpen, setIsLoanDetailsOpen] = useState<Record<string, boolean>>({});
   const [isSecondLoanDetailsOpen, setIsSecondLoanDetailsOpen] = useState<Record<string, boolean>>({});
@@ -2133,10 +2139,30 @@ export default function AdminAddClient() {
 
               {/* Residence Address */}
               <Card>
-                <CardHeader>
-                  <CardTitle>Borrower Residence Address</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
+                <Collapsible open={isBorrowerResidenceOpen} onOpenChange={setIsBorrowerResidenceOpen}>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <CardTitle>Borrower Residence Address</CardTitle>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              data-testid="button-toggle-borrower-residence"
+                            >
+                              {isBorrowerResidenceOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{isBorrowerResidenceOpen ? 'Minimize' : 'Expand'}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                  </CardHeader>
+                  <CollapsibleContent>
+                    <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                     <div className="space-y-2 md:col-span-4">
                       <Label htmlFor="borrower-residence-street">Street Address *</Label>
@@ -2288,7 +2314,9 @@ export default function AdminAddClient() {
                       <p className="text-sm text-destructive">{form.formState.errors.borrower.yearsAtAddress.message}</p>
                     )}
                   </div>
-                </CardContent>
+                    </CardContent>
+                  </CollapsibleContent>
+                </Collapsible>
               </Card>
 
               {/* Prior Borrower Residence Address - Show if less than 2 years at current address */}
@@ -2299,10 +2327,30 @@ export default function AdminAddClient() {
                 return showPriorAddress;
               })() && (
                 <Card>
-                  <CardHeader>
-                    <CardTitle>Borrower's Prior Residence Address</CardTitle>
-                  </CardHeader>
-                  <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <Collapsible open={isBorrowerPriorResidenceOpen} onOpenChange={setIsBorrowerPriorResidenceOpen}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Borrower's Prior Residence Address</CardTitle>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <CollapsibleTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                data-testid="button-toggle-borrower-prior-residence"
+                              >
+                                {isBorrowerPriorResidenceOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{isBorrowerPriorResidenceOpen ? 'Minimize' : 'Expand'}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                    </CardHeader>
+                    <CollapsibleContent>
+                      <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="borrower-prior-street">Street Address</Label>
                       <Input
@@ -2435,7 +2483,9 @@ export default function AdminAddClient() {
                         Add Prior Address
                       </Button>
                     </div>
-                  </CardContent>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
                 </Card>
               )}
 
@@ -2685,20 +2735,40 @@ export default function AdminAddClient() {
               {hasCoBorrower && (
                 <>
                 <Card>
-                  <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle>Co-Borrower Residence Address</CardTitle>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={copyBorrowerToCoResidence}
-                      className="hover:bg-orange-500 hover:text-white"
-                      data-testid="button-copy-borrower-address"
-                    >
-                      Same as Borrower
-                    </Button>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+                  <Collapsible open={isCoBorrowerResidenceOpen} onOpenChange={setIsCoBorrowerResidenceOpen}>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                      <CardTitle>Co-Borrower Residence Address</CardTitle>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={copyBorrowerToCoResidence}
+                          className="hover:bg-orange-500 hover:text-white"
+                          data-testid="button-copy-borrower-address"
+                        >
+                          Same as Borrower
+                        </Button>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <CollapsibleTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                data-testid="button-toggle-coborrower-residence"
+                              >
+                                {isCoBorrowerResidenceOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{isCoBorrowerResidenceOpen ? 'Minimize' : 'Expand'}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                    </CardHeader>
+                    <CollapsibleContent>
+                      <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                       <div className="space-y-2 md:col-span-4">
                         <Label htmlFor="coBorrower-residence-street">Street Address</Label>
@@ -2833,7 +2903,9 @@ export default function AdminAddClient() {
                         </div>
                       </div>
                     </div>
-                  </CardContent>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
                 </Card>
 
                 {/* Prior Co-Borrower Residence Address - Show if less than 2 years at current address */}
@@ -2845,10 +2917,30 @@ export default function AdminAddClient() {
                 })() && (
                   <>
                     <Card>
-                      <CardHeader>
-                        <CardTitle>Co-Borrower's Prior Residence Address</CardTitle>
-                      </CardHeader>
-                    <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <Collapsible open={isCoBorrowerPriorResidenceOpen} onOpenChange={setIsCoBorrowerPriorResidenceOpen}>
+                        <CardHeader>
+                          <div className="flex items-center justify-between">
+                            <CardTitle>Co-Borrower's Prior Residence Address</CardTitle>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <CollapsibleTrigger asChild>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    data-testid="button-toggle-coborrower-prior-residence"
+                                  >
+                                    {isCoBorrowerPriorResidenceOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                                  </Button>
+                                </CollapsibleTrigger>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{isCoBorrowerPriorResidenceOpen ? 'Minimize' : 'Expand'}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
+                        </CardHeader>
+                        <CollapsibleContent>
+                          <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="coBorrower-prior-street">Street Address</Label>
                         <Input
@@ -2980,8 +3072,10 @@ export default function AdminAddClient() {
                           Add Prior Address
                         </Button>
                       </div>
-                    </CardContent>
-                  </Card>
+                          </CardContent>
+                        </CollapsibleContent>
+                      </Collapsible>
+                    </Card>
 
                   {/* Additional Co-Borrower Prior Addresses */}
                   {coBorrowerPriorAddresses.map((address, index) => (
@@ -3241,7 +3335,14 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Borrower Employer</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-employment-income">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:bg-orange-500 hover:text-white" 
+                            data-testid="button-toggle-employment-income"
+                            title={isEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
+                            key={`employment-income-${isEmploymentIncomeOpen}`}
+                          >
                             {isEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -3469,7 +3570,14 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Prior Employment</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-prior-employment-income">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:bg-orange-500 hover:text-white" 
+                            data-testid="button-toggle-prior-employment-income"
+                            title={isPriorEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
+                            key={`prior-employment-income-${isPriorEmploymentIncomeOpen}`}
+                          >
                             {isPriorEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -3691,7 +3799,14 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Second Employment Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-second-employment-income">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:bg-orange-500 hover:text-white" 
+                            data-testid="button-toggle-second-employment-income"
+                            title={isSecondEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
+                            key={`second-employment-income-${isSecondEmploymentIncomeOpen}`}
+                          >
                             {isSecondEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -3916,7 +4031,14 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Self-Employment Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-self-employment-income">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:bg-orange-500 hover:text-white" 
+                            data-testid="button-toggle-self-employment-income"
+                            title={isSelfEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
+                            key={`self-employment-income-${isSelfEmploymentIncomeOpen}`}
+                          >
                             {isSelfEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -4065,7 +4187,14 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Pension Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-pension-income">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:bg-orange-500 hover:text-white" 
+                            data-testid="button-toggle-pension-income"
+                            title={isPensionIncomeOpen ? 'Minimize' : 'Expand'}
+                            key={`pension-income-${isPensionIncomeOpen}`}
+                          >
                             {isPensionIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -4147,7 +4276,14 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Social Security Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-social-security-income">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:bg-orange-500 hover:text-white" 
+                            data-testid="button-toggle-social-security-income"
+                            title={isSocialSecurityIncomeOpen ? 'Minimize' : 'Expand'}
+                            key={`social-security-income-${isSocialSecurityIncomeOpen}`}
+                          >
                             {isSocialSecurityIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -4189,7 +4325,14 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>VA Disability Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-va-benefits-income">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:bg-orange-500 hover:text-white" 
+                            data-testid="button-toggle-va-benefits-income"
+                            title={isVaBenefitsIncomeOpen ? 'Minimize' : 'Expand'}
+                            key={`va-benefits-income-${isVaBenefitsIncomeOpen}`}
+                          >
                             {isVaBenefitsIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -4231,7 +4374,14 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Disability Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-disability-income">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:bg-orange-500 hover:text-white" 
+                            data-testid="button-toggle-disability-income"
+                            title={isDisabilityIncomeOpen ? 'Minimize' : 'Expand'}
+                            key={`disability-income-${isDisabilityIncomeOpen}`}
+                          >
                             {isDisabilityIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -4281,7 +4431,14 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Rental Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-other-income">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:bg-orange-500 hover:text-white" 
+                            data-testid="button-toggle-other-income"
+                            title={isOtherIncomeOpen ? 'Minimize' : 'Expand'}
+                            key={`other-income-${isOtherIncomeOpen}`}
+                          >
                             {isOtherIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -4427,7 +4584,14 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower Employer</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-coborrower-employment-income">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:bg-orange-500 hover:text-white" 
+                            data-testid="button-toggle-coborrower-employment-income"
+                            title={isCoBorrowerEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
+                            key={`coborrower-employment-income-${isCoBorrowerEmploymentIncomeOpen}`}
+                          >
                             {isCoBorrowerEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -4655,7 +4819,14 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower Prior Employment</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-coborrower-prior-employment-income">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:bg-orange-500 hover:text-white" 
+                            data-testid="button-toggle-coborrower-prior-employment-income"
+                            title={isCoBorrowerPriorEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
+                            key={`coborrower-prior-employment-income-${isCoBorrowerPriorEmploymentIncomeOpen}`}
+                          >
                             {isCoBorrowerPriorEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -4845,7 +5016,14 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower Second Employment Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-coborrower-second-employment-income">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:bg-orange-500 hover:text-white" 
+                            data-testid="button-toggle-coborrower-second-employment-income"
+                            title={isCoBorrowerSecondEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
+                            key={`coborrower-second-employment-income-${isCoBorrowerSecondEmploymentIncomeOpen}`}
+                          >
                             {isCoBorrowerSecondEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -5070,7 +5248,14 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower Self-Employment Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-coborrower-self-employment-income">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:bg-orange-500 hover:text-white" 
+                            data-testid="button-toggle-coborrower-self-employment-income"
+                            title={isCoBorrowerSelfEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
+                            key={`coborrower-self-employment-income-${isCoBorrowerSelfEmploymentIncomeOpen}`}
+                          >
                             {isCoBorrowerSelfEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -5219,7 +5404,14 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower Pension Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-coborrower-pension-income">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:bg-orange-500 hover:text-white" 
+                            data-testid="button-toggle-coborrower-pension-income"
+                            title={isCoBorrowerPensionIncomeOpen ? 'Minimize' : 'Expand'}
+                            key={`coborrower-pension-income-${isCoBorrowerPensionIncomeOpen}`}
+                          >
                             {isCoBorrowerPensionIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -5301,7 +5493,14 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower Social Security Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-coborrower-social-security-income">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:bg-orange-500 hover:text-white" 
+                            data-testid="button-toggle-coborrower-social-security-income"
+                            title={isCoBorrowerSocialSecurityIncomeOpen ? 'Minimize' : 'Expand'}
+                            key={`coborrower-social-security-income-${isCoBorrowerSocialSecurityIncomeOpen}`}
+                          >
                             {isCoBorrowerSocialSecurityIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -5343,7 +5542,14 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower VA Disability Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-coborrower-va-benefits-income">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:bg-orange-500 hover:text-white" 
+                            data-testid="button-toggle-coborrower-va-benefits-income"
+                            title={isCoBorrowerVaBenefitsIncomeOpen ? 'Minimize' : 'Expand'}
+                            key={`coborrower-va-benefits-income-${isCoBorrowerVaBenefitsIncomeOpen}`}
+                          >
                             {isCoBorrowerVaBenefitsIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -5385,7 +5591,14 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower Disability Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-coborrower-disability-income">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:bg-orange-500 hover:text-white" 
+                            data-testid="button-toggle-coborrower-disability-income"
+                            title={isCoBorrowerDisabilityIncomeOpen ? 'Minimize' : 'Expand'}
+                            key={`coborrower-disability-income-${isCoBorrowerDisabilityIncomeOpen}`}
+                          >
                             {isCoBorrowerDisabilityIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -5436,7 +5649,14 @@ export default function AdminAddClient() {
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower Rental Income</CardTitle>
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-coborrower-other-income">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:bg-orange-500 hover:text-white" 
+                            data-testid="button-toggle-coborrower-other-income"
+                            title={isCoBorrowerOtherIncomeOpen ? 'Minimize' : 'Expand'}
+                            key={`coborrower-other-income-${isCoBorrowerOtherIncomeOpen}`}
+                          >
                             {isCoBorrowerOtherIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
@@ -5751,7 +5971,14 @@ export default function AdminAddClient() {
                               </div>
                             )}
                             <CollapsibleTrigger asChild>
-                              <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid={`button-toggle-property-${propertyId}`}>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="hover:bg-orange-500 hover:text-white" 
+                                data-testid={`button-toggle-property-${propertyId}`}
+                                title={isOpen ? 'Minimize' : 'Expand'}
+                                key={`property-toggle-${propertyId}-${isOpen}`}
+                              >
                                 {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                               </Button>
                             </CollapsibleTrigger>
