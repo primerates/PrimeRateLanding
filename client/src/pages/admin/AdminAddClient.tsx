@@ -486,6 +486,12 @@ export default function AdminAddClient() {
     isOpen: boolean;
   }>({ isOpen: false });
 
+  // Residence history validation popup state
+  const [residenceHistoryDialog, setResidenceHistoryDialog] = useState<{
+    isOpen: boolean;
+    borrowerType: 'borrower' | 'coBorrower';
+  }>({ isOpen: false, borrowerType: 'borrower' });
+
   // Valuation summary dialog state
   const [valuationSummaryDialog, setValuationSummaryDialog] = useState<{
     isOpen: boolean;
@@ -925,6 +931,21 @@ export default function AdminAddClient() {
       yearsAtAddress: '',
       monthsAtAddress: '',
     });
+  };
+
+  // Validate residence history - show popup if < 2 years total
+  const validateResidenceHistory = (borrowerType: 'borrower' | 'coBorrower') => {
+    const yearsField = borrowerType === 'borrower' ? 'borrower.yearsAtAddress' : 'coBorrower.yearsAtAddress';
+    const monthsField = borrowerType === 'borrower' ? 'borrower.monthsAtAddress' : 'coBorrower.monthsAtAddress';
+    
+    const years = parseInt(form.watch(yearsField) || '0');
+    const months = parseInt(form.watch(monthsField) || '0');
+    const totalMonths = (years * 12) + months;
+    
+    // If total residence time is less than 24 months (2 years), show popup
+    if (totalMonths < 24 && totalMonths > 0) {
+      setResidenceHistoryDialog({ isOpen: true, borrowerType });
+    }
   };
 
   const removeCoBorrower = () => {
@@ -2097,7 +2118,9 @@ export default function AdminAddClient() {
                           type="number"
                           min="0"
                           max="99"
-                          {...form.register('borrower.yearsAtAddress')}
+                          {...form.register('borrower.yearsAtAddress', {
+                            onChange: () => setTimeout(() => validateResidenceHistory('borrower'), 100)
+                          })}
                           data-testid="input-borrower-years"
                         />
                       </div>
@@ -2108,7 +2131,9 @@ export default function AdminAddClient() {
                           type="number"
                           min="0"
                           max="11"
-                          {...form.register('borrower.monthsAtAddress')}
+                          {...form.register('borrower.monthsAtAddress', {
+                            onChange: () => setTimeout(() => validateResidenceHistory('borrower'), 100)
+                          })}
                           data-testid="input-borrower-months"
                         />
                       </div>
@@ -6798,6 +6823,35 @@ export default function AdminAddClient() {
                 addCoBorrower();
               }}
               data-testid="button-marital-status-yes"
+            >
+              Yes
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Residence History Dialog */}
+      <AlertDialog open={residenceHistoryDialog.isOpen} onOpenChange={(open) => !open && setResidenceHistoryDialog({ isOpen: false, borrowerType: 'borrower' })}>
+        <AlertDialogContent data-testid="dialog-residence-history">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Add Prior Residence?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Two years of residence history is required. Would you like to add prior address?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setResidenceHistoryDialog({ isOpen: false, borrowerType: 'borrower' })}
+              data-testid="button-residence-history-no"
+            >
+              No
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                setResidenceHistoryDialog({ isOpen: false, borrowerType: 'borrower' });
+                // Logic to show prior address section will be handled by existing conditional rendering
+              }}
+              data-testid="button-residence-history-yes"
             >
               Yes
             </AlertDialogAction>
