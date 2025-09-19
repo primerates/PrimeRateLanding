@@ -1894,7 +1894,7 @@ export default function AdminAddClient() {
   };
 
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={300}>
       <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="bg-primary text-primary-foreground shadow-sm border-b">
@@ -6205,22 +6205,22 @@ export default function AdminAddClient() {
                             {/* Loan Details Box - Only show when activeSecuredLoan is 'yes' for all property types */}
                             {form.watch(`property.properties.${index}.activeSecuredLoan` as const) === 'yes' && (
                             <Card className="border-2 border-dashed border-gray-500">
-                              <Collapsible open={getLoanDetailsOpen(propertyId)} onOpenChange={() => toggleLoanDetailsOpen(propertyId)}>
+                              <Collapsible open={isLoanDetailsOpen[propertyId] ?? true} onOpenChange={() => toggleLoanDetailsOpen(propertyId)}>
                                 <CardHeader>
                                   <div className="flex items-center justify-between">
                                     <CardTitle className="text-lg">Loan Details</CardTitle>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <CollapsibleTrigger asChild>
-                                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid={`button-toggle-loan-details-${propertyId}`}>
-                                            {getLoanDetailsOpen(propertyId) ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                                          </Button>
-                                        </CollapsibleTrigger>
-                                      </TooltipTrigger>
-                                      <TooltipContent>
-                                        <p>{getLoanDetailsOpen(propertyId) ? 'Minimize' : 'Expand'}</p>
-                                      </TooltipContent>
-                                    </Tooltip>
+                                    <CollapsibleTrigger asChild>
+                                      <Button 
+                                        variant="ghost" 
+                                        size="sm" 
+                                        className="hover:bg-orange-500 hover:text-white" 
+                                        data-testid={`button-toggle-loan-details-${propertyId}`}
+                                        title={(isLoanDetailsOpen[propertyId] ?? true) ? 'Minimize' : 'Expand'}
+                                        key={`loan-details-${propertyId}-${isLoanDetailsOpen[propertyId] ?? true}`}
+                                      >
+                                        {(isLoanDetailsOpen[propertyId] ?? true) ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                                      </Button>
+                                    </CollapsibleTrigger>
                                   </div>
                                 </CardHeader>
                                 <CollapsibleContent>
@@ -6384,22 +6384,22 @@ export default function AdminAddClient() {
                             {/* Second Loan Details Box - Only show when activeSecondLoan is 'yes' for all property types */}
                             {form.watch(`property.properties.${index}.activeSecondLoan` as const) === 'yes' && (
                             <Card className="border-2 border-dashed border-gray-500">
-                              <Collapsible open={getSecondLoanDetailsOpen(propertyId)} onOpenChange={() => toggleSecondLoanDetailsOpen(propertyId)}>
+                              <Collapsible open={isSecondLoanDetailsOpen[propertyId] ?? true} onOpenChange={() => toggleSecondLoanDetailsOpen(propertyId)}>
                                 <CardHeader>
                                   <div className="flex items-center justify-between">
                                     <CardTitle className="text-lg">Second Loan Details</CardTitle>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <CollapsibleTrigger asChild>
-                                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid={`button-toggle-second-loan-details-${propertyId}`}>
-                                            {getSecondLoanDetailsOpen(propertyId) ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                                          </Button>
-                                        </CollapsibleTrigger>
-                                      </TooltipTrigger>
-                                      <TooltipContent>
-                                        <p>{getSecondLoanDetailsOpen(propertyId) ? 'Minimize' : 'Expand'}</p>
-                                      </TooltipContent>
-                                    </Tooltip>
+                                    <CollapsibleTrigger asChild>
+                                      <Button 
+                                        variant="ghost" 
+                                        size="sm" 
+                                        className="hover:bg-orange-500 hover:text-white" 
+                                        data-testid={`button-toggle-second-loan-details-${propertyId}`}
+                                        title={(isSecondLoanDetailsOpen[propertyId] ?? true) ? 'Minimize' : 'Expand'}
+                                        key={`second-loan-details-${propertyId}-${isSecondLoanDetailsOpen[propertyId] ?? true}`}
+                                      >
+                                        {(isSecondLoanDetailsOpen[propertyId] ?? true) ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                                      </Button>
+                                    </CollapsibleTrigger>
                                   </div>
                                 </CardHeader>
                                 <CollapsibleContent>
