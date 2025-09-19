@@ -5759,7 +5759,7 @@ export default function AdminAddClient() {
                                         type="button"
                                         variant="ghost"
                                         size="sm"
-                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800 no-default-hover-elevate no-default-active-elevate"
                                         onClick={() => openValuationDialog('zillow', index)}
                                         onMouseEnter={(e) => handleValuationHover('zillow', index, e)}
                                         onMouseLeave={handleValuationHoverLeave}
@@ -5799,7 +5799,7 @@ export default function AdminAddClient() {
                                         type="button"
                                         variant="ghost"
                                         size="sm"
-                                        className="p-1 h-auto text-purple-600 hover:text-purple-800"
+                                        className="p-1 h-auto text-purple-600 hover:text-purple-800 no-default-hover-elevate no-default-active-elevate"
                                         onClick={() => openValuationDialog('realtor', index)}
                                         onMouseEnter={(e) => handleValuationHover('realtor', index, e)}
                                         onMouseLeave={handleValuationHoverLeave}
@@ -5839,7 +5839,7 @@ export default function AdminAddClient() {
                                         type="button"
                                         variant="ghost"
                                         size="sm"
-                                        className="p-1 h-auto text-red-600 hover:text-red-800"
+                                        className="p-1 h-auto text-red-600 hover:text-red-800 no-default-hover-elevate no-default-active-elevate"
                                         onClick={() => openValuationDialog('redfin', index)}
                                         onMouseEnter={(e) => handleValuationHover('redfin', index, e)}
                                         onMouseLeave={handleValuationHoverLeave}
