@@ -6827,37 +6827,86 @@ export default function AdminAddClient() {
 
                 return (
                   <>
-                    <div className="grid grid-cols-1 gap-3">
-                      <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded">
-                        <span className="font-medium">Client Estimated Value:</span>
-                        <span className="font-mono text-green-600 dark:text-green-400">
-                          {clientEstimate || 'Not entered'}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded">
-                        <span className="font-medium">Zillow Estimate:</span>
-                        <span className="font-mono text-blue-600 dark:text-blue-400">
-                          {zillowEstimate || 'Not available'}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded">
-                        <span className="font-medium">Realtor.com Estimate:</span>
-                        <span className="font-mono text-purple-600 dark:text-purple-400">
-                          {realtorEstimate || 'Not available'}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded">
-                        <span className="font-medium">Redfin Estimate:</span>
-                        <span className="font-mono text-red-600 dark:text-red-400">
-                          {redfinEstimate || 'Not available'}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded">
-                        <span className="font-medium">Appraised Value:</span>
-                        <span className="font-mono text-orange-600 dark:text-orange-400">
-                          {appraisedValue || 'Not entered'}
-                        </span>
-                      </div>
+                    <div className="grid gap-4">
+                      <Card className="border-l-4 border-l-green-500">
+                        <CardContent className="pt-4">
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <p className="font-semibold text-sm text-muted-foreground">CLIENT ESTIMATE</p>
+                              <p className="text-lg font-bold">Client Estimated Value</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+                                {clientEstimate || 'Not entered'}
+                              </p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="border-l-4 border-l-blue-500">
+                        <CardContent className="pt-4">
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <p className="font-semibold text-sm text-muted-foreground">ZILLOW</p>
+                              <p className="text-lg font-bold">Zillow Estimate</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                                {zillowEstimate || 'Not available'}
+                              </p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="border-l-4 border-l-purple-500">
+                        <CardContent className="pt-4">
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <p className="font-semibold text-sm text-muted-foreground">REALTOR.COM</p>
+                              <p className="text-lg font-bold">Realtor.com Estimate</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                                {realtorEstimate || 'Not available'}
+                              </p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="border-l-4 border-l-red-500">
+                        <CardContent className="pt-4">
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <p className="font-semibold text-sm text-muted-foreground">REDFIN</p>
+                              <p className="text-lg font-bold">Redfin Estimate</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-2xl font-bold text-red-600 dark:text-red-400">
+                                {redfinEstimate || 'Not available'}
+                              </p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="border-l-4 border-l-orange-500">
+                        <CardContent className="pt-4">
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <p className="font-semibold text-sm text-muted-foreground">APPRAISAL</p>
+                              <p className="text-lg font-bold">Appraised Value</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                                {appraisedValue || 'Not entered'}
+                              </p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
                     </div>
                   </>
                 );
