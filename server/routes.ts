@@ -479,93 +479,134 @@ export async function registerRoutes(app: Express): Promise<Server> {
               'X-RapidAPI-Host': 'zillow-com1.p.rapidapi.com'
             };
 
-            // Try multiple approaches to find Zillow data
+            // Try the new Value Estimate endpoint first (most reliable)
             let zillowFound = false;
             
-            // Try different address formats for better coverage
-            const addressFormats = [
-              address, // Original full address
-              address.replace(/,\s*/g, ' '), // Remove commas
-              address.split(',')[0].trim(), // Just street address
-            ];
-            
-            for (const addressFormat of addressFormats) {
-              if (zillowFound) break;
-              
-              try {
-                // First try: Property Extended Search
-                let zillowResponse = await fetch(
-                  `https://zillow-com1.p.rapidapi.com/propertyExtendedSearch?location=${encodeURIComponent(addressFormat)}`,
-                  {
-                    method: 'GET',
-                    headers: zillowHeaders,
-                  }
-                );
+            try {
+              // Primary approach: Value Estimate API
+              const valueEstimateResponse = await fetch(
+                `https://zillow-com1.p.rapidapi.com/valueEstimate?address=${encodeURIComponent(address)}&propertyType=SingleFamily`,
+                {
+                  method: 'GET',
+                  headers: zillowHeaders,
+                }
+              );
 
-                if (zillowResponse.ok) {
-                  const zillowData = await zillowResponse.json() as any;
-                  
-                  if (zillowData && zillowData.props && zillowData.props.length > 0) {
-                    const property = zillowData.props[0];
-                    const estimate = property.price || property.zestimate || property.estimate;
+              console.log('Zillow valueEstimate response status:', valueEstimateResponse.status);
+              
+              if (valueEstimateResponse.ok) {
+                const estimateData = await valueEstimateResponse.json() as any;
+                console.log('Zillow valueEstimate data:', JSON.stringify(estimateData, null, 2));
+                
+                // Check for estimate value in response
+                if (estimateData && (estimateData.estimate || estimateData.zestimate || estimateData.value)) {
+                  const estimate = estimateData.estimate || estimateData.zestimate || estimateData.value;
+                  valuations.zillow = {
+                    estimate: estimate,
+                    address: estimateData.address || address,
+                    details: {
+                      bedrooms: estimateData.bedrooms,
+                      bathrooms: estimateData.bathrooms,
+                      livingArea: estimateData.livingArea || estimateData.sqft,
+                      propertyType: estimateData.propertyType || 'SingleFamily',
+                      lastSoldPrice: estimateData.lastSoldPrice,
+                      lastSoldDate: estimateData.lastSoldDate
+                    },
+                    source: 'Zillow Value Estimate'
+                  };
+                  zillowFound = true;
+                }
+              }
+            } catch (valueEstimateError) {
+              console.error('Zillow Value Estimate API error:', valueEstimateError);
+            }
+            
+            // Fallback to original search methods if needed
+            if (!zillowFound) {
+              const addressFormats = [
+                address, // Original full address
+                address.replace(/,\s*/g, ' '), // Remove commas
+                address.split(',')[0].trim(), // Just street address
+              ];
+              
+              for (const addressFormat of addressFormats) {
+                if (zillowFound) break;
+                
+                try {
+                  // Fallback 1: Property Extended Search
+                  let zillowResponse = await fetch(
+                    `https://zillow-com1.p.rapidapi.com/propertyExtendedSearch?location=${encodeURIComponent(addressFormat)}`,
+                    {
+                      method: 'GET',
+                      headers: zillowHeaders,
+                    }
+                  );
+
+                  if (zillowResponse.ok) {
+                    const zillowData = await zillowResponse.json() as any;
                     
-                    if (estimate) {
-                      valuations.zillow = {
-                        estimate: estimate,
-                        address: property.address,
-                        details: {
-                          bedrooms: property.bedrooms,
-                          bathrooms: property.bathrooms,
-                          livingArea: property.livingArea,
-                          propertyType: property.propertyType,
-                          lastSoldPrice: property.lastSoldPrice,
-                          lastSoldDate: property.lastSoldDate
-                        },
-                        source: 'Zillow'
-                      };
-                      zillowFound = true;
-                      continue;
+                    if (zillowData && zillowData.props && zillowData.props.length > 0) {
+                      const property = zillowData.props[0];
+                      const estimate = property.price || property.zestimate || property.estimate;
+                      
+                      if (estimate) {
+                        valuations.zillow = {
+                          estimate: estimate,
+                          address: property.address,
+                          details: {
+                            bedrooms: property.bedrooms,
+                            bathrooms: property.bathrooms,
+                            livingArea: property.livingArea,
+                            propertyType: property.propertyType,
+                            lastSoldPrice: property.lastSoldPrice,
+                            lastSoldDate: property.lastSoldDate
+                          },
+                          source: 'Zillow Search'
+                        };
+                        zillowFound = true;
+                        continue;
+                      }
                     }
                   }
-                }
-                
-                // Second try: Search Results endpoint
-                zillowResponse = await fetch(
-                  `https://zillow-com1.p.rapidapi.com/searchResults?location=${encodeURIComponent(addressFormat)}`,
-                  {
-                    method: 'GET',
-                    headers: zillowHeaders,
-                  }
-                );
-                
-                if (zillowResponse.ok) {
-                  const searchData = await zillowResponse.json() as any;
                   
-                  if (searchData && searchData.searchResults && searchData.searchResults.listResults && searchData.searchResults.listResults.length > 0) {
-                    const property = searchData.searchResults.listResults[0];
-                    const estimate = property.price || property.zestimate || property.unformattedPrice;
+                  // Fallback 2: Search Results endpoint
+                  zillowResponse = await fetch(
+                    `https://zillow-com1.p.rapidapi.com/searchResults?location=${encodeURIComponent(addressFormat)}`,
+                    {
+                      method: 'GET',
+                      headers: zillowHeaders,
+                    }
+                  );
+                  
+                  if (zillowResponse.ok) {
+                    const searchData = await zillowResponse.json() as any;
                     
-                    if (estimate) {
-                      valuations.zillow = {
-                        estimate: estimate,
-                        address: property.address,
-                        details: {
-                          bedrooms: property.bedrooms,
-                          bathrooms: property.bathrooms,
-                          livingArea: property.livingArea,
-                          propertyType: property.propertyType || property.homeType,
-                          lastSoldPrice: property.lastSoldPrice,
-                          lastSoldDate: property.lastSoldDate
-                        },
-                        source: 'Zillow'
-                      };
-                      zillowFound = true;
-                      continue;
+                    if (searchData && searchData.searchResults && searchData.searchResults.listResults && searchData.searchResults.listResults.length > 0) {
+                      const property = searchData.searchResults.listResults[0];
+                      const estimate = property.price || property.zestimate || property.unformattedPrice;
+                      
+                      if (estimate) {
+                        valuations.zillow = {
+                          estimate: estimate,
+                          address: property.address,
+                          details: {
+                            bedrooms: property.bedrooms,
+                            bathrooms: property.bathrooms,
+                            livingArea: property.livingArea,
+                            propertyType: property.propertyType || property.homeType,
+                            lastSoldPrice: property.lastSoldPrice,
+                            lastSoldDate: property.lastSoldDate
+                          },
+                          source: 'Zillow Search'
+                        };
+                        zillowFound = true;
+                        continue;
+                      }
                     }
                   }
+                } catch (formatError) {
+                  console.error(`Zillow fallback API error with format ${addressFormat}:`, formatError);
                 }
-              } catch (formatError) {
-                console.error(`Zillow API error with format ${addressFormat}:`, formatError);
               }
             }
             
