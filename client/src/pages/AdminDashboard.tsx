@@ -59,7 +59,7 @@ export default function AdminDashboard() {
   };
 
   const getTileHoverClass = (itemId: string) => {
-    return 'hover:border-orange-500 hover:border-2';
+    return 'border-l-4 border-l-green-500 hover:border-l-green-600';
   };
 
   return (
