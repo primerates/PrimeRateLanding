@@ -22,18 +22,22 @@ export default function ContactSection() {
     fullName: '',
     email: '',
     phone: '',
-    employmentStatus: '',
-    annualIncome: '',
-    yearsAtJob: '',
-    monthlyDebts: '',
-    assets: '',
+    streetAddress: '',
+    unitApt: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    incomeSource: '',
+    grossAnnualIncome: '',
+    loanPurpose: '',
     desiredLoanAmount: '',
     downPayment: '',
-    propertyValue: '',
+    estimatedPropertyValue: '',
     propertyType: '',
     intendedUse: '',
-    state: '',
+    firstTimeBuyer: '',
     timelineToPurchase: '',
+    appraisalCompleted: '',
     additionalInfo: '',
     addCoBorrower: 'no'
   });
@@ -41,12 +45,14 @@ export default function ContactSection() {
     fullName: '',
     email: '',
     phone: '',
-    employmentStatus: '',
-    annualIncome: '',
-    yearsAtJob: '',
-    monthlyDebts: '',
-    assets: '',
-    state: ''
+    streetAddress: '',
+    unitApt: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    sameAsBorrower: false,
+    incomeSource: '',
+    grossAnnualIncome: ''
   });
   
   // Schedule call form state
@@ -127,6 +133,26 @@ export default function ContactSection() {
     setCoBorrowerData(prev => ({ ...prev, phone: formatted }));
   };
 
+  const handleSameAsBorrowerChange = (checked: boolean) => {
+    setCoBorrowerData(prev => ({ 
+      ...prev, 
+      sameAsBorrower: checked,
+      ...(checked ? {
+        streetAddress: preApprovalData.streetAddress,
+        unitApt: preApprovalData.unitApt,
+        city: preApprovalData.city,
+        state: preApprovalData.state,
+        zipCode: preApprovalData.zipCode
+      } : {
+        streetAddress: '',
+        unitApt: '',
+        city: '',
+        state: '',
+        zipCode: ''
+      })
+    }));
+  };
+
   const handleScheduleCallPhoneChange = (value: string) => {
     const formatted = formatPhoneNumber(value);
     setScheduleCallData(prev => ({ ...prev, phone: formatted }));
@@ -149,9 +175,9 @@ export default function ContactSection() {
 
   const validatePreApproval = () => {
     const errors: {[key: string]: boolean} = {};
-    const required = ['fullName', 'email', 'phone', 'employmentStatus', 'annualIncome', 'yearsAtJob', 
-                     'monthlyDebts', 'assets', 'desiredLoanAmount', 'downPayment', 'propertyValue', 
-                     'propertyType', 'intendedUse', 'state', 'timelineToPurchase'];
+    const required = ['fullName', 'email', 'phone', 'streetAddress', 'city', 'state', 'zipCode',
+                     'incomeSource', 'grossAnnualIncome', 'loanPurpose', 'desiredLoanAmount', 
+                     'downPayment', 'estimatedPropertyValue', 'propertyType', 'intendedUse'];
     
     required.forEach(field => {
       if (!preApprovalData[field as keyof typeof preApprovalData]?.trim()) {
@@ -159,17 +185,38 @@ export default function ContactSection() {
       }
     });
 
+    // Conditional validation for purchase
+    if (preApprovalData.loanPurpose === 'purchase') {
+      if (!preApprovalData.firstTimeBuyer?.trim()) {
+        errors['firstTimeBuyer'] = true;
+      }
+      if (!preApprovalData.timelineToPurchase?.trim()) {
+        errors['timelineToPurchase'] = true;
+      }
+    }
+
+    // Conditional validation for refinance
+    if (preApprovalData.loanPurpose?.startsWith('refinance')) {
+      if (!preApprovalData.appraisalCompleted?.trim()) {
+        errors['appraisalCompleted'] = true;
+      }
+    }
+
     setPreApprovalErrors(errors);
 
     // Validate co-borrower if added
     let coBorrowerValid = true;
     if (preApprovalData.addCoBorrower === 'yes') {
       const coBorrowerErrs: {[key: string]: boolean} = {};
-      const coBorrowerRequired = ['fullName', 'email', 'phone', 'employmentStatus', 'annualIncome', 
-                                 'yearsAtJob', 'monthlyDebts', 'assets', 'state'];
+      const coBorrowerRequired = ['fullName', 'email', 'phone', 'incomeSource', 'grossAnnualIncome'];
+      
+      // Only validate address if not same as borrower
+      if (!coBorrowerData.sameAsBorrower) {
+        coBorrowerRequired.push('streetAddress', 'city', 'state', 'zipCode');
+      }
       
       coBorrowerRequired.forEach(field => {
-        if (!coBorrowerData[field as keyof typeof coBorrowerData]?.trim()) {
+        if (!coBorrowerData[field as keyof typeof coBorrowerData]?.toString().trim()) {
           coBorrowerErrs[field] = true;
         }
       });
@@ -600,6 +647,41 @@ export default function ContactSection() {
                       </div>
 
                       <div>
+                        <label className="block text-sm font-medium mb-2">Street Address</label>
+                        <Input
+                          type="text"
+                          value={preApprovalData.streetAddress}
+                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, streetAddress: e.target.value }))}
+                          placeholder="Enter street address"
+                          data-testid="input-contact-street-address"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Unit/Apt</label>
+                        <Input
+                          type="text"
+                          value={preApprovalData.unitApt}
+                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, unitApt: e.target.value }))}
+                          placeholder="Unit or apartment number"
+                          data-testid="input-contact-unit-apt"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-2">City</label>
+                        <Input
+                          type="text"
+                          value={preApprovalData.city}
+                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, city: e.target.value }))}
+                          placeholder="Enter city"
+                          data-testid="input-contact-city"
+                          required
+                        />
+                      </div>
+
+                      <div>
                         <label className="block text-sm font-medium mb-2">State</label>
                         <Select value={preApprovalData.state} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, state: value }))}>
                           <SelectTrigger data-testid="select-contact-pre-approval-state">
@@ -659,77 +741,49 @@ export default function ContactSection() {
                           </SelectContent>
                         </Select>
                       </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Zip Code</label>
+                        <Input
+                          type="text"
+                          value={preApprovalData.zipCode}
+                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, zipCode: e.target.value }))}
+                          placeholder="Enter zip code"
+                          data-testid="input-contact-zip-code"
+                          required
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  {/* Employment & Income */}
+                  {/* Borrower Income */}
                   <div>
-                    <h3 className="text-lg font-semibold mb-4 text-primary">Employment & Income</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <h3 className="text-lg font-semibold mb-4 text-primary">Borrower Income</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium mb-2">Employment Status</label>
-                        <Select value={preApprovalData.employmentStatus} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, employmentStatus: value }))}>
-                          <SelectTrigger data-testid="select-contact-employment-status">
-                            <SelectValue placeholder="Select status" />
+                        <label className="block text-sm font-medium mb-2">Income Source</label>
+                        <Select value={preApprovalData.incomeSource} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, incomeSource: value }))}>
+                          <SelectTrigger data-testid="select-contact-income-source">
+                            <SelectValue placeholder="Select income source" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="employed">Employed</SelectItem>
-                            <SelectItem value="self-employed">Self-Employed</SelectItem>
-                            <SelectItem value="retired">Retired</SelectItem>
+                            <SelectItem value="employment">Employment</SelectItem>
+                            <SelectItem value="self-employment">Self-Employment</SelectItem>
+                            <SelectItem value="retirement">Retirement</SelectItem>
+                            <SelectItem value="multiple-sources">Multiple Sources</SelectItem>
                             <SelectItem value="other">Other</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium mb-2">Annual Income</label>
+                        <label className="block text-sm font-medium mb-2">Gross Annual Income</label>
                         <Input
                           type="number"
-                          value={preApprovalData.annualIncome}
-                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, annualIncome: e.target.value }))}
+                          value={preApprovalData.grossAnnualIncome}
+                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, grossAnnualIncome: e.target.value }))}
                           placeholder="$75,000"
-                          data-testid="input-contact-annual-income"
-                          required
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Years at Current Job</label>
-                        <Input
-                          type="number"
-                          value={preApprovalData.yearsAtJob}
-                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, yearsAtJob: e.target.value }))}
-                          placeholder="2"
-                          data-testid="input-contact-years-at-job"
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Financial Information */}
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4 text-primary">Financial Information</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Monthly Debts</label>
-                        <Input
-                          type="number"
-                          value={preApprovalData.monthlyDebts}
-                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, monthlyDebts: e.target.value }))}
-                          placeholder="$500"
-                          data-testid="input-contact-monthly-debts"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Assets/Savings</label>
-                        <Input
-                          type="number"
-                          value={preApprovalData.assets}
-                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, assets: e.target.value }))}
-                          placeholder="$50,000"
-                          data-testid="input-contact-assets"
+                          data-testid="input-contact-gross-annual-income"
                           required
                         />
                       </div>
@@ -739,7 +793,40 @@ export default function ContactSection() {
                   {/* Loan Details */}
                   <div>
                     <h3 className="text-lg font-semibold mb-4 text-primary">Loan Details</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Loan Purpose</label>
+                        <Select value={preApprovalData.loanPurpose} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, loanPurpose: value }))}>
+                          <SelectTrigger data-testid="select-contact-loan-purpose">
+                            <SelectValue placeholder="Select loan purpose" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="purchase">Purchase</SelectItem>
+                            <SelectItem value="refinance-reduce-rate">Refinance - Reduce Rate</SelectItem>
+                            <SelectItem value="refinance-cash-out">Refinance - Cash Out</SelectItem>
+                            <SelectItem value="refinance-pay-off-2nd">Refinance - Pay Off 2nd Loan</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Property Type</label>
+                        <Select value={preApprovalData.propertyType} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, propertyType: value }))}>
+                          <SelectTrigger data-testid="select-contact-property-type">
+                            <SelectValue placeholder="Select property type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="single-family">Single Family</SelectItem>
+                            <SelectItem value="condo">Condo</SelectItem>
+                            <SelectItem value="townhome">Townhome</SelectItem>
+                            <SelectItem value="duplex">Duplex</SelectItem>
+                            <SelectItem value="multi-family">Multi-Family</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
                       <div>
                         <label className="block text-sm font-medium mb-2">Desired Loan Amount</label>
                         <Input
@@ -765,72 +852,73 @@ export default function ContactSection() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium mb-2">Property Value</label>
+                        <label className="block text-sm font-medium mb-2">Estimated Property Value</label>
                         <Input
                           type="number"
-                          value={preApprovalData.propertyValue}
-                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, propertyValue: e.target.value }))}
+                          value={preApprovalData.estimatedPropertyValue}
+                          onChange={(e) => setPreApprovalData(prev => ({ ...prev, estimatedPropertyValue: e.target.value }))}
                           placeholder="$480,000"
-                          data-testid="input-contact-property-value"
+                          data-testid="input-contact-estimated-property-value"
                           required
                         />
                       </div>
                     </div>
+
+                    {/* Conditional fields for Purchase */}
+                    {preApprovalData.loanPurpose === 'purchase' && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div>
+                          <label className="block text-sm font-medium mb-2">First Time Home Buyer?</label>
+                          <Select value={preApprovalData.firstTimeBuyer} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, firstTimeBuyer: value }))}>
+                            <SelectTrigger data-testid="select-contact-first-time-buyer">
+                              <SelectValue placeholder="Select option" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="yes">Yes</SelectItem>
+                              <SelectItem value="no">No</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium mb-2">Timeline to Purchase</label>
+                          <Select value={preApprovalData.timelineToPurchase} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, timelineToPurchase: value }))}>
+                            <SelectTrigger data-testid="select-contact-timeline-purchase">
+                              <SelectValue placeholder="Select timeline" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="within-7-days">Within 7 days</SelectItem>
+                              <SelectItem value="2-weeks">2 weeks</SelectItem>
+                              <SelectItem value="30-days">30 days</SelectItem>
+                              <SelectItem value="3-months">3 months</SelectItem>
+                              <SelectItem value="6-months">6 months</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Conditional field for Refinance */}
+                    {preApprovalData.loanPurpose?.startsWith('refinance') && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div>
+                          <label className="block text-sm font-medium mb-2">Have you completed an appraisal?</label>
+                          <Select value={preApprovalData.appraisalCompleted} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, appraisalCompleted: value }))}>
+                            <SelectTrigger data-testid="select-contact-appraisal-completed">
+                              <SelectValue placeholder="Select option" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="yes">Yes</SelectItem>
+                              <SelectItem value="no">No</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
-                  {/* Property Information */}
                   <div>
-                    <h3 className="text-lg font-semibold mb-4 text-primary">Property Information</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Property Type</label>
-                        <Select value={preApprovalData.propertyType} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, propertyType: value }))}>
-                          <SelectTrigger data-testid="select-contact-property-type">
-                            <SelectValue placeholder="Select type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="single-family">Single Family Home</SelectItem>
-                            <SelectItem value="condo">Condominium</SelectItem>
-                            <SelectItem value="townhouse">Townhouse</SelectItem>
-                            <SelectItem value="multi-family">Multi-Family</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Intended Use</label>
-                        <Select value={preApprovalData.intendedUse} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, intendedUse: value }))}>
-                          <SelectTrigger data-testid="select-contact-intended-use">
-                            <SelectValue placeholder="Select use" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="primary">Primary Residence</SelectItem>
-                            <SelectItem value="secondary">Secondary Home</SelectItem>
-                            <SelectItem value="investment">Investment Property</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Timeline to Purchase</label>
-                        <Select value={preApprovalData.timelineToPurchase} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, timelineToPurchase: value }))}>
-                          <SelectTrigger data-testid="select-contact-timeline">
-                            <SelectValue placeholder="Select timeline" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="immediate">Immediately</SelectItem>
-                            <SelectItem value="1-3months">1-3 Months</SelectItem>
-                            <SelectItem value="3-6months">3-6 Months</SelectItem>
-                            <SelectItem value="6-12months">6-12 Months</SelectItem>
-                            <SelectItem value="12months+">12+ Months</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Additional Information</label>
+                    <label className="block text-sm font-medium mb-2">Additional Information / How did you hear from us</label>
                     <Textarea
                       value={preApprovalData.additionalInfo}
                       onChange={(e) => setPreApprovalData(prev => ({ ...prev, additionalInfo: e.target.value }))}
@@ -910,14 +998,74 @@ export default function ContactSection() {
                               maxLength={14}
                             />
                           </div>
+                        </div>
 
-                          <div>
-                            <label className="block text-sm font-medium mb-2">State</label>
-                            <Select value={coBorrowerData.state} onValueChange={(value) => setCoBorrowerData(prev => ({ ...prev, state: value }))}>
-                              <SelectTrigger data-testid="select-contact-co-borrower-state">
-                                <SelectValue placeholder="Select state" />
-                              </SelectTrigger>
-                              <SelectContent>
+                        {/* Co-borrower Address Section */}
+                        <div className="mt-4">
+                          <h4 className="text-md font-semibold mb-3">Address Information</h4>
+                          <div className="mb-3">
+                            <label className="flex items-center">
+                              <input
+                                type="checkbox"
+                                checked={coBorrowerData.sameAsBorrower}
+                                onChange={(e) => handleSameAsBorrowerChange(e.target.checked)}
+                                className="mr-2"
+                                data-testid="checkbox-same-as-borrower"
+                              />
+                              Same as Borrower
+                            </label>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium mb-2">Street Address</label>
+                              <Input
+                                type="text"
+                                value={coBorrowerData.streetAddress}
+                                onChange={(e) => setCoBorrowerData(prev => ({ ...prev, streetAddress: e.target.value }))}
+                                placeholder="Enter street address"
+                                data-testid="input-co-borrower-street-address"
+                                disabled={coBorrowerData.sameAsBorrower}
+                                required={!coBorrowerData.sameAsBorrower}
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-sm font-medium mb-2">Unit/Apt</label>
+                              <Input
+                                type="text"
+                                value={coBorrowerData.unitApt}
+                                onChange={(e) => setCoBorrowerData(prev => ({ ...prev, unitApt: e.target.value }))}
+                                placeholder="Unit or apartment number"
+                                data-testid="input-co-borrower-unit-apt"
+                                disabled={coBorrowerData.sameAsBorrower}
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-sm font-medium mb-2">City</label>
+                              <Input
+                                type="text"
+                                value={coBorrowerData.city}
+                                onChange={(e) => setCoBorrowerData(prev => ({ ...prev, city: e.target.value }))}
+                                placeholder="Enter city"
+                                data-testid="input-co-borrower-city"
+                                disabled={coBorrowerData.sameAsBorrower}
+                                required={!coBorrowerData.sameAsBorrower}
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-sm font-medium mb-2">State</label>
+                              <Select 
+                                value={coBorrowerData.state} 
+                                onValueChange={(value) => setCoBorrowerData(prev => ({ ...prev, state: value }))}
+                                disabled={coBorrowerData.sameAsBorrower}
+                              >
+                                <SelectTrigger data-testid="select-contact-co-borrower-state">
+                                  <SelectValue placeholder="Select state" />
+                                </SelectTrigger>
+                                <SelectContent>
                                 <SelectItem value="AL">Alabama</SelectItem>
                                 <SelectItem value="AK">Alaska</SelectItem>
                                 <SelectItem value="AZ">Arizona</SelectItem>
@@ -971,79 +1119,57 @@ export default function ContactSection() {
                               </SelectContent>
                             </Select>
                           </div>
+
+                            <div>
+                              <label className="block text-sm font-medium mb-2">Zip Code</label>
+                              <Input
+                                type="text"
+                                value={coBorrowerData.zipCode}
+                                onChange={(e) => setCoBorrowerData(prev => ({ ...prev, zipCode: e.target.value }))}
+                                placeholder="Enter zip code"
+                                data-testid="input-co-borrower-zip-code"
+                                disabled={coBorrowerData.sameAsBorrower}
+                                required={!coBorrowerData.sameAsBorrower}
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Co-Borrower Income */}
+                        <div className="mt-6">
+                          <h4 className="text-md font-semibold mb-4 text-primary">Co-Borrower Income</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium mb-2">Income Source</label>
+                              <Select value={coBorrowerData.incomeSource} onValueChange={(value) => setCoBorrowerData(prev => ({ ...prev, incomeSource: value }))}>
+                                <SelectTrigger data-testid="select-contact-co-borrower-income-source">
+                                  <SelectValue placeholder="Select income source" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="employment">Employment</SelectItem>
+                                  <SelectItem value="self-employment">Self-Employment</SelectItem>
+                                  <SelectItem value="retirement">Retirement</SelectItem>
+                                  <SelectItem value="multiple-sources">Multiple Sources</SelectItem>
+                                  <SelectItem value="other">Other</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+
+                            <div>
+                              <label className="block text-sm font-medium mb-2">Gross Annual Income</label>
+                              <Input
+                                type="number"
+                                value={coBorrowerData.grossAnnualIncome}
+                                onChange={(e) => setCoBorrowerData(prev => ({ ...prev, grossAnnualIncome: e.target.value }))}
+                                placeholder="$75,000"
+                                data-testid="input-contact-co-borrower-gross-annual-income"
+                                required
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
 
-                      {/* Co-Borrower Employment & Income */}
-                      <div className="mt-6">
-                        <h4 className="text-md font-semibold mb-4 text-primary">Co-Borrower Employment & Income</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div>
-                            <label className="block text-sm font-medium mb-2">Employment Status</label>
-                            <Select value={coBorrowerData.employmentStatus} onValueChange={(value) => setCoBorrowerData(prev => ({ ...prev, employmentStatus: value }))}>
-                              <SelectTrigger data-testid="select-contact-co-borrower-employment-status">
-                                <SelectValue placeholder="Select status" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="employed">Employed</SelectItem>
-                                <SelectItem value="self-employed">Self-Employed</SelectItem>
-                                <SelectItem value="retired">Retired</SelectItem>
-                                <SelectItem value="other">Other</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-
-                          <div>
-                            <label className="block text-sm font-medium mb-2">Annual Income</label>
-                            <Input
-                              type="number"
-                              value={coBorrowerData.annualIncome}
-                              onChange={(e) => setCoBorrowerData(prev => ({ ...prev, annualIncome: e.target.value }))}
-                              placeholder="$75,000"
-                              data-testid="input-contact-co-borrower-annual-income"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="block text-sm font-medium mb-2">Years at Current Job</label>
-                            <Input
-                              type="number"
-                              value={coBorrowerData.yearsAtJob}
-                              onChange={(e) => setCoBorrowerData(prev => ({ ...prev, yearsAtJob: e.target.value }))}
-                              placeholder="2"
-                              data-testid="input-contact-co-borrower-years-at-job"
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Co-Borrower Financial Information */}
-                      <div className="mt-6">
-                        <h4 className="text-md font-semibold mb-4 text-primary">Co-Borrower Financial Information</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-sm font-medium mb-2">Monthly Debts</label>
-                            <Input
-                              type="number"
-                              value={coBorrowerData.monthlyDebts}
-                              onChange={(e) => setCoBorrowerData(prev => ({ ...prev, monthlyDebts: e.target.value }))}
-                              placeholder="$500"
-                              data-testid="input-contact-co-borrower-monthly-debts"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="block text-sm font-medium mb-2">Assets/Savings</label>
-                            <Input
-                              type="number"
-                              value={coBorrowerData.assets}
-                              onChange={(e) => setCoBorrowerData(prev => ({ ...prev, assets: e.target.value }))}
-                              placeholder="$50,000"
-                              data-testid="input-contact-co-borrower-assets"
-                            />
-                          </div>
-                        </div>
-                      </div>
                     </div>
                   )}
 
