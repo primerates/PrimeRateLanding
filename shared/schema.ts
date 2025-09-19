@@ -75,28 +75,37 @@ export const incomeSchema = z.object({
   employerName: z.string().optional(),
   jobTitle: z.string().optional(),
   monthlyIncome: z.string().optional(),
+  employmentType: z.enum(["Full-Time", "Part-Time"]).optional(),
   yearsEmployedYears: z.string().optional(),
   yearsEmployedMonths: z.string().optional(),
   employerAddress: addressSchema.partial().optional(),
   employerPhone: z.string().optional(),
+  employmentVerificationPhone: z.string().optional(),
+  isShowingEmploymentVerification: z.boolean().optional(),
   
   // Prior Employment fields
   priorEmployerName: z.string().optional(),
   priorJobTitle: z.string().optional(),
   priorMonthlyIncome: z.string().optional(),
+  priorEmploymentType: z.enum(["Full-Time", "Part-Time"]).optional(),
   priorYearsEmployedYears: z.string().optional(),
   priorYearsEmployedMonths: z.string().optional(),
   priorEmployerAddress: addressSchema.partial().optional(),
   priorEmployerPhone: z.string().optional(),
+  priorEmploymentVerificationPhone: z.string().optional(),
+  priorIsShowingEmploymentVerification: z.boolean().optional(),
   
   // Second Employment fields
   secondEmployerName: z.string().optional(),
   secondJobTitle: z.string().optional(),
   secondMonthlyIncome: z.string().optional(),
+  secondEmploymentType: z.enum(["Full-Time", "Part-Time"]).optional(),
   secondYearsEmployedYears: z.string().optional(),
   secondYearsEmployedMonths: z.string().optional(),
   secondEmployerAddress: addressSchema.partial().optional(),
   secondEmployerPhone: z.string().optional(),
+  secondEmploymentVerificationPhone: z.string().optional(),
+  secondIsShowingEmploymentVerification: z.boolean().optional(),
   
   // Self-Employment fields
   businessName: z.string().optional(),
