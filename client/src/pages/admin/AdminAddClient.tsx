@@ -15,6 +15,7 @@ import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info } from 'lucide-react';
 import { SiZillow } from 'react-icons/si';
@@ -547,6 +548,12 @@ export default function AdminAddClient() {
     propertyId: string | undefined;
     newUsage: 'primary' | 'second-home' | 'investment' | undefined;
   }>({ isOpen: false, propertyId: undefined, newUsage: undefined });
+
+  // Add property confirmation dialog state
+  const [addPropertyDialog, setAddPropertyDialog] = useState<{
+    isOpen: boolean;
+    propertyType: 'second-home' | 'investment' | null;
+  }>({ isOpen: false, propertyType: null });
 
   // Mortgage balance field toggle state (per property)
   const [mortgageBalanceFieldType, setMortgageBalanceFieldType] = useState<Record<string, 'statement' | 'payoff'>>({});
@@ -1887,7 +1894,8 @@ export default function AdminAddClient() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <TooltipProvider>
+      <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="bg-primary text-primary-foreground shadow-sm border-b">
         <div className="container mx-auto px-6 py-4">
@@ -5726,7 +5734,7 @@ export default function AdminAddClient() {
                                   type="button"
                                   variant="outline"
                                   size="sm"
-                                  onClick={() => addProperty(property.use as 'second-home' | 'investment')}
+                                  onClick={() => setAddPropertyDialog({ isOpen: true, propertyType: property.use as 'second-home' | 'investment' })}
                                   data-testid={`button-add-${property.use}`}
                                 >
                                   <Plus className="h-3 w-3" />
@@ -6201,11 +6209,18 @@ export default function AdminAddClient() {
                                 <CardHeader>
                                   <div className="flex items-center justify-between">
                                     <CardTitle className="text-lg">Loan Details</CardTitle>
-                                    <CollapsibleTrigger asChild>
-                                      <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid={`button-toggle-loan-details-${propertyId}`}>
-                                        {getLoanDetailsOpen(propertyId) ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                                      </Button>
-                                    </CollapsibleTrigger>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <CollapsibleTrigger asChild>
+                                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid={`button-toggle-loan-details-${propertyId}`}>
+                                            {getLoanDetailsOpen(propertyId) ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                                          </Button>
+                                        </CollapsibleTrigger>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>{getLoanDetailsOpen(propertyId) ? 'Minimize' : 'Expand'}</p>
+                                      </TooltipContent>
+                                    </Tooltip>
                                   </div>
                                 </CardHeader>
                                 <CollapsibleContent>
@@ -6373,11 +6388,18 @@ export default function AdminAddClient() {
                                 <CardHeader>
                                   <div className="flex items-center justify-between">
                                     <CardTitle className="text-lg">Second Loan Details</CardTitle>
-                                    <CollapsibleTrigger asChild>
-                                      <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid={`button-toggle-second-loan-details-${propertyId}`}>
-                                        {getSecondLoanDetailsOpen(propertyId) ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                                      </Button>
-                                    </CollapsibleTrigger>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <CollapsibleTrigger asChild>
+                                          <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid={`button-toggle-second-loan-details-${propertyId}`}>
+                                            {getSecondLoanDetailsOpen(propertyId) ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                                          </Button>
+                                        </CollapsibleTrigger>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>{getSecondLoanDetailsOpen(propertyId) ? 'Minimize' : 'Expand'}</p>
+                                      </TooltipContent>
+                                    </Tooltip>
                                   </div>
                                 </CardHeader>
                                 <CollapsibleContent>
@@ -7217,6 +7239,39 @@ export default function AdminAddClient() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+
+      {/* Add Property Confirmation Dialog */}
+      <AlertDialog open={addPropertyDialog.isOpen} onOpenChange={(open) => setAddPropertyDialog(prev => ({ ...prev, isOpen: open }))}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Add Property</AlertDialogTitle>
+            <AlertDialogDescription>
+              {addPropertyDialog.propertyType === 'second-home' 
+                ? "Would you like to add additional property?"
+                : addPropertyDialog.propertyType === 'investment'
+                ? "Would you like to add additional investment property?"
+                : ""
+              }
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setAddPropertyDialog({ isOpen: false, propertyType: null })}>
+              No
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                if (addPropertyDialog.propertyType) {
+                  addProperty(addPropertyDialog.propertyType);
+                }
+                setAddPropertyDialog({ isOpen: false, propertyType: null });
+              }}
+            >
+              Yes
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      </div>
+    </TooltipProvider>
   );
 }
