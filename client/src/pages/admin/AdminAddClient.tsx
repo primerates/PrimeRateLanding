@@ -3338,7 +3338,7 @@ export default function AdminAddClient() {
               <Card>
                 <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6">
                   <div className="space-y-2">
-                    <Label htmlFor="household-income-total">Total Household Income</Label>
+                    <Label htmlFor="household-income-total" className="text-lg font-semibold">Total Household Income</Label>
                     <div 
                       className={`text-2xl font-bold ${(() => {
                         const totalValue = calculateTotalHouseholdIncomeValue();
