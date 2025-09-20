@@ -1447,41 +1447,8 @@ export default function AdminAddClient() {
     const statementBalanceBinding = useFieldBinding('currentLoan.statementBalance.amount', idPrefix, targetForm);
     const attachedToPropertyBinding = useSelectFieldBinding('currentLoan.attachedToProperty', idPrefix, targetForm);
     
-    // Payment field bindings
+    // Payment field bindings - using simple formula like loan number for fast data entry
     const currentRateBinding = useFieldBinding('currentLoan.currentRate', idPrefix, targetForm);
-    
-    // Optimized percentage formatting for Current Rate field
-    const currentRateBindingWithPercentage = {
-      ...currentRateBinding,
-      onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-        let value = e.target.value;
-        // Quick validation - only allow digits, decimal point, and percentage
-        if (!/^[\d.%]*$/.test(value)) {
-          return; // Skip invalid input immediately
-        }
-        
-        // Remove % and clean up
-        value = value.replace('%', '');
-        
-        // Quick decimal point check
-        const dotCount = (value.match(/\./g) || []).length;
-        if (dotCount > 1) {
-          return; // Skip invalid input
-        }
-        
-        // Store the raw numeric value - disable validation during typing for speed
-        targetForm.setValue('currentLoan.currentRate' as any, value, { shouldDirty: true, shouldTouch: false, shouldValidate: false });
-      }
-    };
-    
-    // Format display value as percentage
-    const formatCurrentRateDisplay = (value: string) => {
-      if (!value) return '';
-      if (!value.includes('%')) {
-        return `${value}%`;
-      }
-      return value;
-    };
     const principalInterestPaymentBinding = useFieldBinding('currentLoan.principalAndInterestPayment', idPrefix, targetForm);
     const escrowPaymentBinding = useFieldBinding('currentLoan.escrowPayment', idPrefix, targetForm);
     const totalMonthlyPaymentBinding = useFieldBinding('currentLoan.totalMonthlyPayment', idPrefix, targetForm);
@@ -1636,16 +1603,12 @@ export default function AdminAddClient() {
               {/* Row 3: Payment Details */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor={currentRateBindingWithPercentage.id}>Current Rate</Label>
+                  <Label htmlFor={currentRateBinding.id}>Current Rate</Label>
                   <Input
-                    id={currentRateBindingWithPercentage.id}
-                    name={currentRateBindingWithPercentage.field?.name}
-                    ref={currentRateBindingWithPercentage.field?.ref}
-                    value={formatCurrentRateDisplay(targetForm.watch('currentLoan.currentRate') || '')}
-                    onChange={currentRateBindingWithPercentage.onChange}
+                    id={currentRateBinding.id}
+                    {...currentRateBinding.field}
                     placeholder="0.00%"
-                    inputMode="decimal"
-                    data-testid={currentRateBindingWithPercentage['data-testid']}
+                    data-testid={currentRateBinding['data-testid']}
                   />
                 </div>
                 
@@ -7582,12 +7545,19 @@ export default function AdminAddClient() {
                                   <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured First Loan</Label>
                                   <Select
                                     value={form.watch(`property.properties.${index}.activeSecuredLoan` as const) || ''}
-                                    onValueChange={(value) => form.setValue(`property.properties.${index}.activeSecuredLoan` as const, value)}
+                                    onValueChange={(value) => {
+                                      // Prevent user selection and show message
+                                      toast({
+                                        title: "Read Only",
+                                        description: "Please enter or change data in loan page",
+                                      });
+                                    }}
                                   >
                                     <SelectTrigger data-testid={`select-property-active-secured-loan-${propertyId}`}>
                                       <SelectValue placeholder="Select" />
                                     </SelectTrigger>
                                     <SelectContent>
+                                      <SelectItem value="select">Select</SelectItem>
                                       <SelectItem value="yes">Yes</SelectItem>
                                       <SelectItem value="paid-off">Paid Off</SelectItem>
                                     </SelectContent>
