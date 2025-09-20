@@ -2714,6 +2714,15 @@ export default function AdminAddClient() {
       type: 'current-loan',
       onConfirm: () => {
         setShowCurrentLoan(false);
+        
+        // Reset Primary Residence "secured first loan" dropdown to default
+        const properties = form.watch('property.properties') || [];
+        const primaryPropertyIndex = properties.findIndex(p => p?.use === 'primary');
+        
+        if (primaryPropertyIndex >= 0) {
+          form.setValue(`property.properties.${primaryPropertyIndex}.activeSecuredLoan` as const, 'select', { shouldDirty: true });
+        }
+        
         setConfirmRemovalDialog({ isOpen: false, type: null });
       }
     });
