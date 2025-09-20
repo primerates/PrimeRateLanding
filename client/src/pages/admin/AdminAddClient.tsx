@@ -7330,6 +7330,25 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-owned-held-by-${propertyId}`}>Owned / Title Held By</Label>
+                                <Select
+                                  value={form.watch(`property.properties.${index}.ownedHeldBy` as const) || ''}
+                                  onValueChange={(value: "borrower" | "borrower-coborrower" | "borrower-others") => {
+                                    form.setValue(`property.properties.${index}.ownedHeldBy` as const, value);
+                                  }}
+                                >
+                                  <SelectTrigger data-testid={`select-property-owned-held-by-${propertyId}`}>
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="borrower">Borrower</SelectItem>
+                                    <SelectItem value="borrower-coborrower">Borrower & Co-Borrower</SelectItem>
+                                    <SelectItem value="borrower-others">Borrower(s) & Others</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
                             </div>
 
                             {/* Active Secured Loans for Investment Properties - Below Owned Since */}
@@ -7376,25 +7395,6 @@ export default function AdminAddClient() {
                                     <SelectContent>
                                       <SelectItem value="yes">Yes</SelectItem>
                                       <SelectItem value="no">No</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                                
-                                <div className="space-y-2">
-                                  <Label htmlFor={`property-owned-held-by-${propertyId}`}>Owned / Title Held By</Label>
-                                  <Select
-                                    value={form.watch(`property.properties.${index}.ownedHeldBy` as const) || ''}
-                                    onValueChange={(value: "borrower" | "borrower-coborrower" | "borrower-others") => {
-                                      form.setValue(`property.properties.${index}.ownedHeldBy` as const, value);
-                                    }}
-                                  >
-                                    <SelectTrigger data-testid={`select-property-owned-held-by-${propertyId}`}>
-                                      <SelectValue placeholder="Select" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="borrower">Borrower</SelectItem>
-                                      <SelectItem value="borrower-coborrower">Borrower & Co-Borrower</SelectItem>
-                                      <SelectItem value="borrower-others">Borrower(s) & Others</SelectItem>
                                     </SelectContent>
                                   </Select>
                                 </div>
@@ -7445,25 +7445,6 @@ export default function AdminAddClient() {
                                     <SelectContent>
                                       <SelectItem value="yes">Yes</SelectItem>
                                       <SelectItem value="no">No</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                                
-                                <div className="space-y-2">
-                                  <Label htmlFor={`property-owned-held-by-${propertyId}`}>Owned / Title Held By</Label>
-                                  <Select
-                                    value={form.watch(`property.properties.${index}.ownedHeldBy` as const) || ''}
-                                    onValueChange={(value: "borrower" | "borrower-coborrower" | "borrower-others") => {
-                                      form.setValue(`property.properties.${index}.ownedHeldBy` as const, value);
-                                    }}
-                                  >
-                                    <SelectTrigger data-testid={`select-property-owned-held-by-${propertyId}`}>
-                                      <SelectValue placeholder="Select" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="borrower">Borrower</SelectItem>
-                                      <SelectItem value="borrower-coborrower">Borrower & Co-Borrower</SelectItem>
-                                      <SelectItem value="borrower-others">Borrower(s) & Others</SelectItem>
                                     </SelectContent>
                                   </Select>
                                 </div>
