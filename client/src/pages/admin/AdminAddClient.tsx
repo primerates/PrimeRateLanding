@@ -7519,15 +7519,6 @@ export default function AdminAddClient() {
                                   onAutoCopyAddress={autoCopyPropertyAddressToCurrentLoan}
                                   formInstance={form}
                                 />
-
-                                <CurrentLoanTermsCard
-                                  mode="mirror"
-                                  idPrefix="property-"
-                                  borderVariant="none"
-                                  isOpen={isLoanDetailsOpen[propertyId] ?? true}
-                                  setIsOpen={() => toggleLoanDetailsOpen(propertyId)}
-                                  formInstance={form}
-                                />
                               </div>
                             )}
 
