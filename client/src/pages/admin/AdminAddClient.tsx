@@ -1530,7 +1530,7 @@ export default function AdminAddClient() {
                 </div>
               </div>
               
-              {/* Row 2: Loan Category, Loan Program, Loan Term, Loan Purpose */}
+              {/* Row 2: Loan Category, Loan Term, Loan Duration, Loan Purpose */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor={`${idPrefix}currentLoan-loanCategory`}>Loan Category</Label>
@@ -1550,7 +1550,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor={`${idPrefix}currentLoan-loanProgram`}>Loan Program</Label>
+                  <Label htmlFor={`${idPrefix}currentLoan-loanProgram`}>Loan Term</Label>
                   <Select {...loanProgramBinding}>
                     <SelectTrigger data-testid={loanProgramBinding['data-testid']}>
                       <SelectValue placeholder="Select program" />
@@ -7842,7 +7842,7 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="secondLoan-loanProgram">Loan Program</Label>
+                              <Label htmlFor="secondLoan-loanProgram">Loan Term</Label>
                               <Select value={form.watch('currentLoan.loanProgram') || ''} onValueChange={(value) => form.setValue('currentLoan.loanProgram', value)}>
                                 <SelectTrigger data-testid="select-secondLoan-loanProgram">
                                   <SelectValue placeholder="Select" />
@@ -8147,7 +8147,7 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="thirdLoan-loanProgram">Loan Program</Label>
+                              <Label htmlFor="thirdLoan-loanProgram">Loan Term</Label>
                               <Select>
                                 <SelectTrigger data-testid="select-thirdLoan-loanProgram">
                                   <SelectValue placeholder="Select" />
