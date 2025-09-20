@@ -2077,11 +2077,12 @@ export default function AdminAddClient() {
       <div className="container mx-auto px-6 py-8">
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <Tabs defaultValue="client" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-8">
-              <TabsTrigger value="client" data-testid="tab-client" className="data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Client</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-9">
+              <TabsTrigger value="client" data-testid="tab-client" className="data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Borrower</TabsTrigger>
               <TabsTrigger value="income" data-testid="tab-income" className="data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Income</TabsTrigger>
               <TabsTrigger value="property" data-testid="tab-property" className="data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Property</TabsTrigger>
               <TabsTrigger value="loan" data-testid="tab-loan" className="data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Loan</TabsTrigger>
+              <TabsTrigger value="credit" data-testid="tab-credit" className="data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Credit</TabsTrigger>
               <TabsTrigger value="status" data-testid="tab-status" className="data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Status</TabsTrigger>
               <TabsTrigger value="vendors" data-testid="tab-vendors" className="data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Vendors</TabsTrigger>
               <TabsTrigger value="quote" data-testid="tab-quote" className="data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Quote</TabsTrigger>
@@ -2127,7 +2128,7 @@ export default function AdminAddClient() {
               {/* Borrower Information */}
               <Card className="border-l-4 border-l-green-500">
                 <CardHeader>
-                  <CardTitle>Borrower Information</CardTitle>
+                  <CardTitle>Borrower</CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div className="space-y-2">
@@ -2722,7 +2723,7 @@ export default function AdminAddClient() {
               {/* Co-Borrower Section */}
 <Card className="mt-16 border-l-4 border-l-blue-500">
                 <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle>Co-Borrower Information</CardTitle>
+                  <CardTitle>Co-Borrower</CardTitle>
                   {!hasCoBorrower ? (
                     <Button
                       type="button"
