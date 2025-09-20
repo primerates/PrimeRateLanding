@@ -7416,6 +7416,277 @@ export default function AdminAddClient() {
                   </CollapsibleContent>
                 </Collapsible>
               </Card>
+
+              {/* Current Loan Payment Details - Separate Card */}
+              <Card className="border-l-4 border-l-purple-500">
+                <Collapsible open={isCurrentLoanOpen} onOpenChange={setIsCurrentLoanOpen}>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <CardTitle>Current Loan Payment Details</CardTitle>
+                      <CollapsibleTrigger asChild>
+                        <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-current-loan-payments">
+                          {isCurrentLoanOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                        </Button>
+                      </CollapsibleTrigger>
+                    </div>
+                  </CardHeader>
+                  <CollapsibleContent>
+                    <CardContent className="space-y-6">
+                      {/* Payment Details */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-currentBalance">Current Balance</Label>
+                          <Input
+                            id="currentLoan-currentBalance"
+                            {...form.register('currentLoan.currentBalance')}
+                            placeholder="$0.00"
+                            data-testid="input-currentLoan-currentBalance"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-currentRate">Current Rate</Label>
+                          <Input
+                            id="currentLoan-currentRate"
+                            {...form.register('currentLoan.currentRate')}
+                            placeholder="0.00%"
+                            data-testid="input-currentLoan-currentRate"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-principalAndInterestPayment">Principal & Interest Payment</Label>
+                          <Input
+                            id="currentLoan-principalAndInterestPayment"
+                            {...form.register('currentLoan.principalAndInterestPayment')}
+                            placeholder="$0.00"
+                            data-testid="input-currentLoan-principalAndInterestPayment"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="currentLoan-escrowPayment">
+                              {getCurrentLoanEscrowPaymentLabel()}
+                            </Label>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={toggleCurrentLoanEscrowPaymentFieldType}
+                              className="h-6 px-2 text-xs hover:bg-orange-500 hover:text-white hover:border-orange-500"
+                              data-testid="button-toggle-currentLoan-escrowPayment-type"
+                            >
+                              Toggle
+                            </Button>
+                          </div>
+                          <Input
+                            id="currentLoan-escrowPayment"
+                            {...form.register('currentLoan.escrowPayment.amount')}
+                            placeholder="$0.00"
+                            data-testid="input-currentLoan-escrowPayment"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-totalMonthlyPayment">Total Monthly Payment</Label>
+                          <Input
+                            id="currentLoan-totalMonthlyPayment"
+                            {...form.register('currentLoan.totalMonthlyPayment')}
+                            placeholder="$0.00"
+                            readOnly
+                            className="bg-gray-50 cursor-not-allowed"
+                            data-testid="input-currentLoan-totalMonthlyPayment"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-hoaPayment">HOA Payment</Label>
+                          <Input
+                            id="currentLoan-hoaPayment"
+                            {...form.register('currentLoan.hoaPayment')}
+                            placeholder="$0.00"
+                            data-testid="input-currentLoan-hoaPayment"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-prepaymentPenalty">Pre-payment Penalty</Label>
+                          <Select value={form.watch('currentLoan.prepaymentPenalty') || 'No'} onValueChange={(value: 'Yes - see notes' | 'No') => form.setValue('currentLoan.prepaymentPenalty', value)}>
+                            <SelectTrigger data-testid="select-currentLoan-prepaymentPenalty">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Yes - see notes">Yes - see notes</SelectItem>
+                              <SelectItem value="No">No</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="currentLoan-statementBalance">
+                              {getCurrentLoanStatementBalanceLabel()}
+                            </Label>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={toggleCurrentLoanStatementBalanceFieldType}
+                              className="h-6 px-2 text-xs hover:bg-orange-500 hover:text-white hover:border-orange-500"
+                              data-testid="button-toggle-currentLoan-statementBalance-type"
+                            >
+                              Toggle
+                            </Button>
+                          </div>
+                          <Input
+                            id="currentLoan-statementBalance"
+                            {...form.register('currentLoan.statementBalance.amount')}
+                            placeholder="$0.00"
+                            data-testid="input-currentLoan-statementBalance"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-attachedToProperty">Attached to Property</Label>
+                          <Select value={form.watch('currentLoan.attachedToProperty') || ''} onValueChange={(value) => {
+                            form.setValue('currentLoan.attachedToProperty', value as any);
+                            if (value && value !== '') {
+                              setTimeout(() => autoCopyPropertyAddressToCurrentLoan(), 100);
+                            }
+                          }}>
+                            <SelectTrigger data-testid="select-currentLoan-attachedToProperty">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select">Select</SelectItem>
+                              <SelectItem value="Primary Residence">Primary Residence</SelectItem>
+                              <SelectItem value="Second Home">Second Home</SelectItem>
+                              <SelectItem value="Investment Property">Investment Property</SelectItem>
+                              <SelectItem value="Other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      
+                      {/* Conditional Address Fields - Show when Attached to Property is selected */}
+                      {form.watch('currentLoan.attachedToProperty') && form.watch('currentLoan.attachedToProperty') !== '' && (
+                        <div className="mt-4 p-4 border-t border-gray-200">
+                          <Label className="text-sm font-medium text-gray-700 mb-3 block">
+                            Property Address ({form.watch('currentLoan.attachedToProperty')})
+                          </Label>
+                          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                            <div className="space-y-2 md:col-span-4">
+                              <Label htmlFor="currentLoan-property-street">Street Address</Label>
+                              <Input
+                                id="currentLoan-property-street"
+                                {...form.register('currentLoan.propertyAddress.street')}
+                                data-testid="input-currentLoan-property-street"
+                                readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
+                                className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="currentLoan-property-unit">Unit/Apt</Label>
+                              <Input
+                                id="currentLoan-property-unit"
+                                {...form.register('currentLoan.propertyAddress.unit')}
+                                data-testid="input-currentLoan-property-unit"
+                                readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
+                                className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="currentLoan-property-city">City</Label>
+                              <Input
+                                id="currentLoan-property-city"
+                                {...form.register('currentLoan.propertyAddress.city')}
+                                data-testid="input-currentLoan-property-city"
+                                readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
+                                className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="currentLoan-property-state">State</Label>
+                              <Select
+                                value={form.watch('currentLoan.propertyAddress.state') || ''}
+                                onValueChange={(value) => form.setValue('currentLoan.propertyAddress.state', value)}
+                                disabled={form.watch('currentLoan.attachedToProperty') !== 'Other'}
+                              >
+                                <SelectTrigger
+                                  data-testid="select-currentLoan-property-state"
+                                  className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                                >
+                                  <SelectValue placeholder="State" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {US_STATES.map(state => (
+                                    <SelectItem key={state.value} value={state.value}>{state.label}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="currentLoan-property-zipCode">ZIP Code</Label>
+                              <Input
+                                id="currentLoan-property-zipCode"
+                                {...form.register('currentLoan.propertyAddress.zipCode')}
+                                data-testid="input-currentLoan-property-zipCode"
+                                readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
+                                className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="currentLoan-property-county">County</Label>
+                              <Input
+                                id="currentLoan-property-county"
+                                {...form.register('currentLoan.propertyAddress.county')}
+                                data-testid="input-currentLoan-property-county"
+                                readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
+                                className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Second Loan Info Button */}
+                      <div className="border-t pt-4">
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          className="w-full hover:bg-blue-500 hover:text-white"
+                          data-testid="button-add-second-loan-info"
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Second Loan Info
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </CollapsibleContent>
+                </Collapsible>
+              </Card>
+            </TabsContent>
+
+            {/* Credit Tab */}
+            <TabsContent value="credit" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Credit Information</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">Credit functionality will be implemented later.</p>
+                </CardContent>
+              </Card>
             </TabsContent>
 
             {/* Vendors Tab */}
