@@ -337,6 +337,7 @@ export default function AdminAddClient() {
   };
 
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
+  const [showCurrentLoan, setShowCurrentLoan] = useState(true);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
   const [isNewLoanOpen, setIsNewLoanOpen] = useState(true);
   const [showSecondLoan, setShowSecondLoan] = useState(false);
@@ -457,7 +458,7 @@ export default function AdminAddClient() {
   // Removal confirmation dialog state
   const [confirmRemovalDialog, setConfirmRemovalDialog] = useState<{
     isOpen: boolean;
-    type: 'co-borrower' | 'property' | 'property-type' | 'income' | 'prior-address' | 'third-loan' | 'second-loan' | null;
+    type: 'co-borrower' | 'property' | 'property-type' | 'income' | 'prior-address' | 'third-loan' | 'second-loan' | 'current-loan' | null;
     itemId?: string;
     itemType?: string;
     onConfirm?: () => void;
@@ -1939,6 +1940,23 @@ export default function AdminAddClient() {
   const handleAddThirdLoan = () => {
     setShowThirdLoan(true);
   };
+
+  // Handle showing current loan sections  
+  const handleAddCurrentLoan = () => {
+    setShowCurrentLoan(true);
+  };
+
+  // Handle removing current loan
+  const removeCurrentLoan = () => {
+    setConfirmRemovalDialog({
+      isOpen: true,
+      type: 'current-loan',
+      onConfirm: () => {
+        setShowCurrentLoan(false);
+        setConfirmRemovalDialog({ isOpen: false, type: null });
+      }
+    });
+  };
   
   // Toggle escrow payment field type for current loan
   const [currentLoanEscrowPaymentFieldType, setCurrentLoanEscrowPaymentFieldType] = useState<'tax-insurance' | 'property-tax' | 'home-insurance'>('tax-insurance');
@@ -1968,14 +1986,29 @@ export default function AdminAddClient() {
     const attachedProperty = form.getValues('currentLoan.attachedToProperty');
     
     if (attachedProperty === 'Primary Residence') {
-      const borrowerAddress = form.getValues('borrower.residenceAddress');
-      if (borrowerAddress) {
-        form.setValue('currentLoan.propertyAddress.street', borrowerAddress.street || '');
-        form.setValue('currentLoan.propertyAddress.unit', borrowerAddress.unit || '');
-        form.setValue('currentLoan.propertyAddress.city', borrowerAddress.city || '');
-        form.setValue('currentLoan.propertyAddress.state', borrowerAddress.state || '');
-        form.setValue('currentLoan.propertyAddress.zipCode', borrowerAddress.zip || '');
-        form.setValue('currentLoan.propertyAddress.county', borrowerAddress.county || '');
+      // First priority: Check Property tab Primary Residence address
+      const properties = form.getValues('property.properties') || [];
+      const primaryProperty = properties.find(p => p.use === 'primary');
+      
+      if (primaryProperty?.address && (primaryProperty.address.street || primaryProperty.address.city)) {
+        // Use Property tab Primary Residence address
+        form.setValue('currentLoan.propertyAddress.street', primaryProperty.address.street || '');
+        form.setValue('currentLoan.propertyAddress.unit', primaryProperty.address.unit || '');
+        form.setValue('currentLoan.propertyAddress.city', primaryProperty.address.city || '');
+        form.setValue('currentLoan.propertyAddress.state', primaryProperty.address.state || '');
+        form.setValue('currentLoan.propertyAddress.zipCode', primaryProperty.address.zip || '');
+        form.setValue('currentLoan.propertyAddress.county', primaryProperty.address.county || '');
+      } else {
+        // Fallback: Use Borrower tab Residence Address
+        const borrowerAddress = form.getValues('borrower.residenceAddress');
+        if (borrowerAddress) {
+          form.setValue('currentLoan.propertyAddress.street', borrowerAddress.street || '');
+          form.setValue('currentLoan.propertyAddress.unit', borrowerAddress.unit || '');
+          form.setValue('currentLoan.propertyAddress.city', borrowerAddress.city || '');
+          form.setValue('currentLoan.propertyAddress.state', borrowerAddress.state || '');
+          form.setValue('currentLoan.propertyAddress.zipCode', borrowerAddress.zip || '');
+          form.setValue('currentLoan.propertyAddress.county', borrowerAddress.county || '');
+        }
       }
     } else if (attachedProperty === 'Second Home') {
       const properties = form.getValues('property.properties') || [];
@@ -7109,25 +7142,40 @@ export default function AdminAddClient() {
                 </Collapsible>
               </Card>
 
-              {/* Current Loan Information */}
-              <Card className="border-l-4 border-l-blue-500">
-                <Collapsible open={isCurrentLoanOpen} onOpenChange={setIsCurrentLoanOpen}>
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle>Current Loan</CardTitle>
-                      <CollapsibleTrigger asChild>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="hover:bg-orange-500 hover:text-white" 
-                          data-testid="button-toggle-current-loan"
-                          title={isCurrentLoanOpen ? 'Minimize' : 'Expand'}
-                        >
-                          {isCurrentLoanOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                        </Button>
-                      </CollapsibleTrigger>
-                    </div>
-                  </CardHeader>
+              {/* Current Loan Sections - Show/Hide based on state */}
+              {showCurrentLoan ? (
+                <>
+                  {/* Current Loan Information */}
+                  <Card className="border-l-4 border-l-blue-500">
+                    <Collapsible open={isCurrentLoanOpen} onOpenChange={setIsCurrentLoanOpen}>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>Current Loan</CardTitle>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={removeCurrentLoan}
+                              className="hover:bg-red-500 hover:text-white"
+                              data-testid="button-remove-current-loan"
+                            >
+                              <Minus className="h-4 w-4" />
+                            </Button>
+                            <CollapsibleTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="hover:bg-orange-500 hover:text-white" 
+                                data-testid="button-toggle-current-loan"
+                                title={isCurrentLoanOpen ? 'Minimize' : 'Expand'}
+                              >
+                                {isCurrentLoanOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </div>
+                        </div>
+                      </CardHeader>
                   <CollapsibleContent>
                     <CardContent className="space-y-4">
                       {/* Row 1: Current Lender, Loan Number, Loan Start Date, Remaining Term Per Credit Report */}
@@ -7570,6 +7618,24 @@ export default function AdminAddClient() {
                   </CollapsibleContent>
                 </Collapsible>
               </Card>
+                </>
+              ) : (
+                <Card className="border-2 border-dashed border-gray-300">
+                  <CardContent className="flex flex-col items-center justify-center py-12">
+                    <p className="text-muted-foreground mb-4">Current loan information is not added</p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleAddCurrentLoan}
+                      className="hover:bg-blue-500 hover:text-white"
+                      data-testid="button-add-current-loan"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Current Loan
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Second Loan Sections - Only show when added */}
               {showSecondLoan && (
@@ -7926,6 +7992,287 @@ export default function AdminAddClient() {
                               />
                             </div>
                           </div>
+                          
+                          {/* Add Third Loan Button - Only show when third loan is not already shown */}
+                          {!showThirdLoan && (
+                            <div className="mt-6 flex justify-end">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setConfirmRemovalDialog({
+                                    isOpen: true,
+                                    type: 'third-loan',
+                                    onConfirm: () => {
+                                      handleAddThirdLoan();
+                                      setConfirmRemovalDialog({ isOpen: false, type: null });
+                                    }
+                                  });
+                                }}
+                                className="hover:bg-orange-500 hover:text-white"
+                                data-testid="button-add-third-loan-info"
+                              >
+                                <Plus className="h-4 w-4 mr-2" />
+                                Third Loan Info
+                              </Button>
+                            </div>
+                          )}
+                        </CardContent>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  </Card>
+                </>
+              )}
+
+              {/* Third Loan Sections - Only show when added */}
+              {showThirdLoan && (
+                <>
+                  {/* Current Third Loan Information */}
+                  <Card className="border-l-4 border-l-orange-500">
+                    <Collapsible open={isThirdLoanOpen} onOpenChange={setIsThirdLoanOpen}>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>Current Third Loan</CardTitle>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setConfirmRemovalDialog({
+                                  isOpen: true,
+                                  type: 'second-loan',
+                                  itemType: 'third-loan',
+                                  onConfirm: () => {
+                                    setShowThirdLoan(false);
+                                    setConfirmRemovalDialog({ isOpen: false, type: null });
+                                  }
+                                });
+                              }}
+                              className="hover:bg-red-500 hover:text-white"
+                              data-testid="button-remove-third-loan"
+                            >
+                              <Minus className="h-4 w-4" />
+                            </Button>
+                            <CollapsibleTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="hover:bg-orange-500 hover:text-white" 
+                                data-testid="button-toggle-third-loan"
+                                title={isThirdLoanOpen ? 'Minimize' : 'Expand'}
+                              >
+                                {isThirdLoanOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CollapsibleContent>
+                        <CardContent className="space-y-4">
+                          {/* Row 1: Lender Name, Loan Number, Current Balance */}
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="thirdLoan-lenderName">Lender Name</Label>
+                              <Input
+                                id="thirdLoan-lenderName"
+                                placeholder="Enter lender name"
+                                data-testid="input-thirdLoan-lenderName"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="thirdLoan-loanNumber">Loan Number</Label>
+                              <Input
+                                id="thirdLoan-loanNumber"
+                                placeholder="Enter loan number"
+                                data-testid="input-thirdLoan-loanNumber"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="thirdLoan-currentBalance">Current Balance</Label>
+                              <Input
+                                id="thirdLoan-currentBalance"
+                                placeholder="$0.00"
+                                data-testid="input-thirdLoan-currentBalance"
+                              />
+                            </div>
+                          </div>
+                          
+                          {/* Row 2: Current Rate, Loan Category, Loan Program */}
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="thirdLoan-currentRate">Current Rate (%)</Label>
+                              <Input
+                                id="thirdLoan-currentRate"
+                                placeholder="0.00%"
+                                data-testid="input-thirdLoan-currentRate"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="thirdLoan-loanCategory">Loan Category</Label>
+                              <Select>
+                                <SelectTrigger data-testid="select-thirdLoan-loanCategory">
+                                  <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="select">Select</SelectItem>
+                                  <SelectItem value="heloc">HELOC</SelectItem>
+                                  <SelectItem value="fixed">FIXED</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="thirdLoan-loanProgram">Loan Program</Label>
+                              <Select>
+                                <SelectTrigger data-testid="select-thirdLoan-loanProgram">
+                                  <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="select">Select</SelectItem>
+                                  <SelectItem value="heloc">HELOC</SelectItem>
+                                  <SelectItem value="fixed-second-loan">Fixed Second Loan</SelectItem>
+                                  <SelectItem value="adjustable-second-loan">Adjustable Second Loan</SelectItem>
+                                  <SelectItem value="home-improvement-loan">Home Improvement Loan</SelectItem>
+                                  <SelectItem value="other">Other</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                          
+                          {/* Row 3: Loan Term, Loan Purpose */}
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="thirdLoan-loanTerm">Loan Term</Label>
+                              <Select>
+                                <SelectTrigger data-testid="select-thirdLoan-loanTerm">
+                                  <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="select">Select</SelectItem>
+                                  <SelectItem value="30-years">30 Years</SelectItem>
+                                  <SelectItem value="25-years">25 Years</SelectItem>
+                                  <SelectItem value="20-years">20 Years</SelectItem>
+                                  <SelectItem value="15-years">15 Years</SelectItem>
+                                  <SelectItem value="10-years">10 Years</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="thirdLoan-loanPurpose">Loan Purpose</Label>
+                              <Select>
+                                <SelectTrigger data-testid="select-thirdLoan-loanPurpose">
+                                  <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="select">Select</SelectItem>
+                                  <SelectItem value="purchase">Purchase</SelectItem>
+                                  <SelectItem value="debt-pay-off">Debt Pay Off</SelectItem>
+                                  <SelectItem value="home-improvement">Home Improvement</SelectItem>
+                                  <SelectItem value="other">Other</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                          
+                          {/* Row 4: Pre-payment Penalty, Statement Balance, Attached to Property */}
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="thirdLoan-prepaymentPenalty">Pre-payment Penalty</Label>
+                              <Select>
+                                <SelectTrigger data-testid="select-thirdLoan-prepaymentPenalty">
+                                  <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="no">No</SelectItem>
+                                  <SelectItem value="yes-see-notes">Yes - see notes</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="thirdLoan-statementBalance">Statement Balance</Label>
+                              <Input
+                                id="thirdLoan-statementBalance"
+                                placeholder="$0.00"
+                                data-testid="input-thirdLoan-statementBalance"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="thirdLoan-attachedToProperty">Attached to Property</Label>
+                              <Select>
+                                <SelectTrigger data-testid="select-thirdLoan-attachedToProperty">
+                                  <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="primary-residence">Primary Residence</SelectItem>
+                                  <SelectItem value="investment-property">Investment Property</SelectItem>
+                                  <SelectItem value="second-home">Second Home</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  </Card>
+
+                  {/* Current Third Loan Terms - Separate Card */}
+                  <Card>
+                    <Collapsible open={isThirdLoanTermsOpen} onOpenChange={setIsThirdLoanTermsOpen}>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle>Current Third Loan Terms</CardTitle>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-third-loan-terms"
+                              title={isThirdLoanTermsOpen ? 'Minimize' : 'Expand'}
+                            >
+                              {isThirdLoanTermsOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
+                      </CardHeader>
+                      <CollapsibleContent>
+                        <CardContent className="space-y-4">
+                          {/* Row 1: Current Balance, Current Rate, Principal & Interest Payment */}
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="thirdLoan-terms-currentBalance">Current Balance</Label>
+                              <Input
+                                id="thirdLoan-terms-currentBalance"
+                                placeholder="$0.00"
+                                data-testid="input-thirdLoan-terms-currentBalance"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="thirdLoan-terms-currentRate">Current Rate (%)</Label>
+                              <Input
+                                id="thirdLoan-terms-currentRate"
+                                placeholder="0.00%"
+                                data-testid="input-thirdLoan-terms-currentRate"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="thirdLoan-terms-piPayment">Principal & Interest Payment</Label>
+                              <Input
+                                id="thirdLoan-terms-piPayment"
+                                placeholder="$0.00"
+                                data-testid="input-thirdLoan-terms-piPayment"
+                              />
+                            </div>
+                          </div>
                         </CardContent>
                       </CollapsibleContent>
                     </Collapsible>
@@ -8058,7 +8405,11 @@ export default function AdminAddClient() {
             </DialogTitle>
             <DialogDescription>
               <span className="text-red-600 font-medium">
-                {confirmRemovalDialog.type === 'second-loan' 
+                {confirmRemovalDialog.type === 'current-loan'
+                  ? "Removing the current loan will delete all entered data. Would you like to continue?"
+                  : confirmRemovalDialog.type === 'second-loan' && confirmRemovalDialog.itemType === 'third-loan'
+                  ? "Removing the third loan will delete all entered data. Would you like to continue?"
+                  : confirmRemovalDialog.type === 'second-loan' 
                   ? "Removing the second loan will delete all entered data. Would you like to continue?"
                   : confirmRemovalDialog.type === 'third-loan'
                   ? "Would you like to create a third current loan?"
