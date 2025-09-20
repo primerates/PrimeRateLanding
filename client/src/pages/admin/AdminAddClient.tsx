@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from '@/components/ui/switch';
@@ -767,15 +768,26 @@ export default function AdminAddClient() {
         currentLender: '',
         loanNumber: '',
         loanStartDate: '',
+        remainingTermPerCreditReport: '',
         currentBalance: '',
         currentRate: '',
-        currentPayment: '',
-        loanType: '',
+        principalAndInterestPayment: '',
+        escrowPayment: {
+          amount: '',
+          type: 'Escrow payment' as const,
+        },
+        totalMonthlyPayment: '',
+        hoaPayment: '',
+        prepaymentPenalty: 'No' as const,
+        statementBalance: {
+          mode: 'Statement Balance' as const,
+          amount: '',
+        },
+        attachedToProperty: 'Primary Residence' as const,
         loanCategory: '',
         loanProgram: '',
         loanTerm: '',
         loanPurpose: '',
-        remainingTerm: '',
       },
       newLoan: {
         loanAmount: '',
@@ -817,6 +829,23 @@ export default function AdminAddClient() {
     },
     [autoValuationLoading]
   );
+  
+  // Auto-sum calculation for Total Monthly Payment
+  useEffect(() => {
+    const piPayment = form.watch('currentLoan.principalAndInterestPayment') || '0';
+    const escrowAmount = form.watch('currentLoan.escrowPayment.amount') || '0';
+    
+    const parseCurrency = (value: string) => {
+      return parseFloat(value.replace(/[^0-9.-]+/g, '')) || 0;
+    };
+    
+    const piAmount = parseCurrency(piPayment);
+    const escrowAmountNum = parseCurrency(escrowAmount);
+    const total = piAmount + escrowAmountNum;
+    
+    const formattedTotal = total > 0 ? `$${total.toFixed(2)}` : '';
+    form.setValue('currentLoan.totalMonthlyPayment', formattedTotal);
+  }, [form.watch('currentLoan.principalAndInterestPayment'), form.watch('currentLoan.escrowPayment.amount')]);
   
   // Watch address changes for each property
   useEffect(() => {
@@ -6865,8 +6894,8 @@ export default function AdminAddClient() {
                   </CardHeader>
                   <CollapsibleContent>
                     <CardContent className="space-y-4">
-                      {/* First row: Current Lender, Loan Number, Loan Start Date */}
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {/* Row 1: Current Lender, Loan Number, Loan Start Date, Remaining Term Per Credit Report */}
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="currentLoan-currentLender">Current Lender</Label>
                           <Input
@@ -6894,9 +6923,19 @@ export default function AdminAddClient() {
                             data-testid="input-currentLoan-loanStartDate"
                           />
                         </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-remainingTermPerCreditReport">Remaining Term Per Credit Report</Label>
+                          <Input
+                            id="currentLoan-remainingTermPerCreditReport"
+                            {...form.register('currentLoan.remainingTermPerCreditReport')}
+                            placeholder="Years/Months"
+                            data-testid="input-currentLoan-remainingTermPerCreditReport"
+                          />
+                        </div>
                       </div>
                       
-                      {/* Second row: Loan Category, Loan Program, Loan Term, Loan Purpose */}
+                      {/* Row 2: Loan Category, Loan Program, Loan Term, Loan Purpose */}
                       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="currentLoan-loanCategory">Loan Category</Label>
@@ -6963,8 +7002,8 @@ export default function AdminAddClient() {
                         </div>
                       </div>
                       
-                      {/* Third row: Current Balance, Current Rate, Current Payment, Loan Type, Remaining Term */}
-                      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                      {/* Row 3: Current Balance, Current Rate, Principal & Interest Payment, Escrow Payment (with toggle), Total Monthly Payment */}
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="currentLoan-currentBalance">Current Balance</Label>
                           <Input
@@ -6986,32 +7025,123 @@ export default function AdminAddClient() {
                         </div>
                         
                         <div className="space-y-2">
-                          <Label htmlFor="currentLoan-currentPayment">Current Payment</Label>
+                          <Label htmlFor="currentLoan-principalAndInterestPayment">Principal & Interest Payment</Label>
                           <Input
-                            id="currentLoan-currentPayment"
-                            {...form.register('currentLoan.currentPayment')}
+                            id="currentLoan-principalAndInterestPayment"
+                            {...form.register('currentLoan.principalAndInterestPayment')}
                             placeholder="$0.00"
-                            data-testid="input-currentLoan-currentPayment"
+                            data-testid="input-currentLoan-principalAndInterestPayment"
                           />
                         </div>
                         
                         <div className="space-y-2">
-                          <Label htmlFor="currentLoan-loanType">Loan Type</Label>
+                          <Label>Escrow Payment</Label>
+                          <div className="space-y-2">
+                            <ToggleGroup
+                              type="single"
+                              value={form.watch('currentLoan.escrowPayment.type') || 'Escrow payment'}
+                              onValueChange={(value: 'Escrow payment' | 'Property Tax' | 'Home Insurance') => {
+                                if (value) form.setValue('currentLoan.escrowPayment.type', value);
+                              }}
+                              className="justify-start flex-wrap"
+                              data-testid="toggle-currentLoan-escrowType"
+                            >
+                              <ToggleGroupItem value="Escrow payment" className="text-xs hover:bg-orange-500 hover:text-white data-[state=on]:bg-orange-500 data-[state=on]:text-white" data-testid="toggle-escrow-payment">
+                                Escrow
+                              </ToggleGroupItem>
+                              <ToggleGroupItem value="Property Tax" className="text-xs hover:bg-orange-500 hover:text-white data-[state=on]:bg-orange-500 data-[state=on]:text-white" data-testid="toggle-property-tax">
+                                Tax
+                              </ToggleGroupItem>
+                              <ToggleGroupItem value="Home Insurance" className="text-xs hover:bg-orange-500 hover:text-white data-[state=on]:bg-orange-500 data-[state=on]:text-white" data-testid="toggle-home-insurance">
+                                Insurance
+                              </ToggleGroupItem>
+                            </ToggleGroup>
+                            <Input
+                              {...form.register('currentLoan.escrowPayment.amount')}
+                              placeholder="$0.00"
+                              data-testid="input-currentLoan-escrowAmount"
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-totalMonthlyPayment">Total Monthly Payment</Label>
                           <Input
-                            id="currentLoan-loanType"
-                            {...form.register('currentLoan.loanType')}
-                            data-testid="input-currentLoan-loanType"
+                            id="currentLoan-totalMonthlyPayment"
+                            {...form.register('currentLoan.totalMonthlyPayment')}
+                            placeholder="$0.00"
+                            readOnly
+                            className="bg-gray-50 cursor-not-allowed"
+                            data-testid="input-currentLoan-totalMonthlyPayment"
+                          />
+                        </div>
+                      </div>
+                      
+                      {/* Row 4: HOA Payment, Pre-payment Penalty, Statement Balance (with toggle), Attached to Property */}
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-hoaPayment">HOA Payment</Label>
+                          <Input
+                            id="currentLoan-hoaPayment"
+                            {...form.register('currentLoan.hoaPayment')}
+                            placeholder="$0.00"
+                            data-testid="input-currentLoan-hoaPayment"
                           />
                         </div>
                         
                         <div className="space-y-2">
-                          <Label htmlFor="currentLoan-remainingTerm">Remaining Term</Label>
-                          <Input
-                            id="currentLoan-remainingTerm"
-                            {...form.register('currentLoan.remainingTerm')}
-                            placeholder="Years/Months"
-                            data-testid="input-currentLoan-remainingTerm"
-                          />
+                          <Label htmlFor="currentLoan-prepaymentPenalty">Pre-payment Penalty</Label>
+                          <Select value={form.watch('currentLoan.prepaymentPenalty') || 'No'} onValueChange={(value: 'Yes - see notes' | 'No') => form.setValue('currentLoan.prepaymentPenalty', value)}>
+                            <SelectTrigger data-testid="select-currentLoan-prepaymentPenalty">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Yes - see notes">Yes - see notes</SelectItem>
+                              <SelectItem value="No">No</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label>Statement Balance</Label>
+                          <div className="space-y-2">
+                            <ToggleGroup
+                              type="single"
+                              value={form.watch('currentLoan.statementBalance.mode') || 'Statement Balance'}
+                              onValueChange={(value: 'Statement Balance' | 'Pay Off Demand') => {
+                                if (value) form.setValue('currentLoan.statementBalance.mode', value);
+                              }}
+                              className="justify-start"
+                              data-testid="toggle-currentLoan-statementMode"
+                            >
+                              <ToggleGroupItem value="Statement Balance" className="text-xs hover:bg-orange-500 hover:text-white data-[state=on]:bg-orange-500 data-[state=on]:text-white" data-testid="toggle-statement-balance">
+                                Statement
+                              </ToggleGroupItem>
+                              <ToggleGroupItem value="Pay Off Demand" className="text-xs hover:bg-orange-500 hover:text-white data-[state=on]:bg-orange-500 data-[state=on]:text-white" data-testid="toggle-payoff-demand">
+                                Pay Off
+                              </ToggleGroupItem>
+                            </ToggleGroup>
+                            <Input
+                              {...form.register('currentLoan.statementBalance.amount')}
+                              placeholder="$0.00"
+                              data-testid="input-currentLoan-statementAmount"
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-attachedToProperty">Attached to Property</Label>
+                          <Select value={form.watch('currentLoan.attachedToProperty') || 'Primary Residence'} onValueChange={(value: 'Primary Residence' | 'Second Home' | 'Investment Property' | 'Other') => form.setValue('currentLoan.attachedToProperty', value)}>
+                            <SelectTrigger data-testid="select-currentLoan-attachedToProperty">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Primary Residence">Primary Residence</SelectItem>
+                              <SelectItem value="Second Home">Second Home</SelectItem>
+                              <SelectItem value="Investment Property">Investment Property</SelectItem>
+                              <SelectItem value="Other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
                     </CardContent>
