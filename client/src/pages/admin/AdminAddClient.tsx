@@ -342,7 +342,6 @@ export default function AdminAddClient() {
   const [isNewLoanOpen, setIsNewLoanOpen] = useState(true);
   const [showSecondLoan, setShowSecondLoan] = useState(false);
   const [isSecondLoanOpen, setIsSecondLoanOpen] = useState(true);
-  const [isSecondLoanTermsOpen, setIsSecondLoanTermsOpen] = useState(true);
   const [showThirdLoan, setShowThirdLoan] = useState(false);
   const [isThirdLoanOpen, setIsThirdLoanOpen] = useState(true);
   const [isThirdLoanTermsOpen, setIsThirdLoanTermsOpen] = useState(true);
@@ -7930,7 +7929,7 @@ export default function AdminAddClient() {
                             </div>
                           </div>
                           
-                          {/* Row 2: Current Rate, Loan Category, Loan Program */}
+                          {/* Row 2: Current Rate, Loan Program, Loan Term */}
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="space-y-2">
                               <Label htmlFor="secondLoan-currentRate">Current Rate (%)</Label>
@@ -7940,20 +7939,6 @@ export default function AdminAddClient() {
                                 placeholder="0.00%"
                                 data-testid="input-secondLoan-currentRate"
                               />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="secondLoan-loanCategory">Loan Category</Label>
-                              <Select value={form.watch('currentLoan.loanCategory') || ''} onValueChange={(value) => form.setValue('currentLoan.loanCategory', value)}>
-                                <SelectTrigger data-testid="select-secondLoan-loanCategory">
-                                  <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="select">Select</SelectItem>
-                                  <SelectItem value="heloc">HELOC</SelectItem>
-                                  <SelectItem value="fixed">FIXED</SelectItem>
-                                </SelectContent>
-                              </Select>
                             </div>
                             
                             <div className="space-y-2">
@@ -7972,10 +7957,7 @@ export default function AdminAddClient() {
                                 </SelectContent>
                               </Select>
                             </div>
-                          </div>
-                          
-                          {/* Row 3: Loan Term, Loan Purpose */}
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            
                             <div className="space-y-2">
                               <Label htmlFor="secondLoan-loanTerm">Loan Term</Label>
                               <Select value={form.watch('currentLoan.loanTerm') || ''} onValueChange={(value) => form.setValue('currentLoan.loanTerm', value)}>
@@ -7992,7 +7974,10 @@ export default function AdminAddClient() {
                                 </SelectContent>
                               </Select>
                             </div>
-                            
+                          </div>
+                          
+                          {/* Row 3: Loan Purpose, Principal & Interest Payment */}
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="space-y-2">
                               <Label htmlFor="secondLoan-loanPurpose">Loan Purpose</Label>
                               <Select value={form.watch('currentLoan.loanPurpose') || ''} onValueChange={(value) => form.setValue('currentLoan.loanPurpose', value)}>
@@ -8007,6 +7992,16 @@ export default function AdminAddClient() {
                                   <SelectItem value="other">Other</SelectItem>
                                 </SelectContent>
                               </Select>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="secondLoan-principalAndInterestPayment">Principal & Interest Payment</Label>
+                              <Input
+                                id="secondLoan-principalAndInterestPayment"
+                                {...form.register('currentLoan.principalAndInterestPayment')}
+                                placeholder="$0.00"
+                                data-testid="input-secondLoan-principalAndInterestPayment"
+                              />
                             </div>
                           </div>
                           
@@ -8147,86 +8142,6 @@ export default function AdminAddClient() {
                     </Collapsible>
                   </Card>
 
-                  {/* Current Second Loan Terms - Separate Card */}
-                  <Card>
-                    <Collapsible open={isSecondLoanTermsOpen} onOpenChange={setIsSecondLoanTermsOpen}>
-                      <CardHeader>
-                        <div className="flex items-center justify-between">
-                          <CardTitle>Current Second Loan Terms</CardTitle>
-                          <CollapsibleTrigger asChild>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="hover:bg-orange-500 hover:text-white" 
-                              data-testid="button-toggle-second-loan-terms"
-                              title={isSecondLoanTermsOpen ? 'Minimize' : 'Expand'}
-                            >
-                              {isSecondLoanTermsOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                            </Button>
-                          </CollapsibleTrigger>
-                        </div>
-                      </CardHeader>
-                      <CollapsibleContent>
-                        <CardContent className="space-y-4">
-                          {/* Row 1: Current Balance, Current Rate, Principal & Interest Payment */}
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="secondLoan-currentBalance">Current Balance</Label>
-                              <Input
-                                id="secondLoan-currentBalance"
-                                placeholder="$0.00"
-                                data-testid="input-secondLoan-terms-currentBalance"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="secondLoan-currentRate">Current Rate (%)</Label>
-                              <Input
-                                id="secondLoan-currentRate"
-                                placeholder="0.00%"
-                                data-testid="input-secondLoan-terms-currentRate"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="secondLoan-piPayment">Principal & Interest Payment</Label>
-                              <Input
-                                id="secondLoan-piPayment"
-                                placeholder="$0.00"
-                                data-testid="input-secondLoan-piPayment"
-                              />
-                            </div>
-                          </div>
-                          
-                          {/* Add Third Loan Button - Only show when third loan is not already shown */}
-                          {!showThirdLoan && (
-                            <div className="mt-6 flex justify-end">
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setConfirmRemovalDialog({
-                                    isOpen: true,
-                                    type: 'third-loan',
-                                    onConfirm: () => {
-                                      handleAddThirdLoan();
-                                      setConfirmRemovalDialog({ isOpen: false, type: null });
-                                    }
-                                  });
-                                }}
-                                className="hover:bg-orange-500 hover:text-white"
-                                data-testid="button-add-third-loan-info"
-                              >
-                                <Plus className="h-4 w-4 mr-2" />
-                                Third Loan Info
-                              </Button>
-                            </div>
-                          )}
-                        </CardContent>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  </Card>
                 </>
               )}
 
