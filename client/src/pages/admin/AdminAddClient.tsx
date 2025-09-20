@@ -342,6 +342,9 @@ export default function AdminAddClient() {
   const [showSecondLoan, setShowSecondLoan] = useState(false);
   const [isSecondLoanOpen, setIsSecondLoanOpen] = useState(true);
   const [isSecondLoanTermsOpen, setIsSecondLoanTermsOpen] = useState(true);
+  const [showThirdLoan, setShowThirdLoan] = useState(false);
+  const [isThirdLoanOpen, setIsThirdLoanOpen] = useState(true);
+  const [isThirdLoanTermsOpen, setIsThirdLoanTermsOpen] = useState(true);
   
   // Multiple prior addresses state management
   const [borrowerPriorAddresses, setBorrowerPriorAddresses] = useState<{ id: string }[]>([]);
@@ -454,7 +457,7 @@ export default function AdminAddClient() {
   // Removal confirmation dialog state
   const [confirmRemovalDialog, setConfirmRemovalDialog] = useState<{
     isOpen: boolean;
-    type: 'co-borrower' | 'property' | 'property-type' | 'income' | 'prior-address' | 'third-loan' | null;
+    type: 'co-borrower' | 'property' | 'property-type' | 'income' | 'prior-address' | 'third-loan' | 'second-loan' | null;
     itemId?: string;
     itemType?: string;
     onConfirm?: () => void;
@@ -1917,6 +1920,24 @@ export default function AdminAddClient() {
   // Handle showing second loan sections
   const handleAddSecondLoan = () => {
     setShowSecondLoan(true);
+  };
+
+  // Handle removing second loan
+  const removeSecondLoan = () => {
+    setConfirmRemovalDialog({
+      isOpen: true,
+      type: 'second-loan',
+      onConfirm: () => {
+        setShowSecondLoan(false);
+        setShowThirdLoan(false);
+        setConfirmRemovalDialog({ isOpen: false, type: null });
+      }
+    });
+  };
+
+  // Handle adding third loan
+  const handleAddThirdLoan = () => {
+    setShowThirdLoan(true);
   };
   
   // Toggle escrow payment field type for current loan
@@ -7555,11 +7576,44 @@ export default function AdminAddClient() {
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <CardTitle>Current Second Loan</CardTitle>
-                          <CollapsibleTrigger asChild>
-                            <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-second-loan">
-                              {isSecondLoanOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                          <div className="flex items-center gap-2">
+                            {!showThirdLoan && (
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setConfirmRemovalDialog({
+                                    isOpen: true,
+                                    type: 'third-loan',
+                                    onConfirm: () => {
+                                      handleAddThirdLoan();
+                                      setConfirmRemovalDialog({ isOpen: false, type: null });
+                                    }
+                                  });
+                                }}
+                                className="hover:bg-blue-500 hover:text-white"
+                                data-testid="button-add-third-loan"
+                              >
+                                <Plus className="h-4 w-4" />
+                              </Button>
+                            )}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={removeSecondLoan}
+                              className="hover:bg-red-500 hover:text-white"
+                              data-testid="button-remove-second-loan"
+                            >
+                              <Minus className="h-4 w-4" />
                             </Button>
-                          </CollapsibleTrigger>
+                            <CollapsibleTrigger asChild>
+                              <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-second-loan">
+                                {isSecondLoanOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </div>
                         </div>
                       </CardHeader>
                       <CollapsibleContent>
@@ -8027,10 +8081,17 @@ export default function AdminAddClient() {
       <Dialog open={confirmRemovalDialog.isOpen} onOpenChange={(open) => !open && setConfirmRemovalDialog({ isOpen: false, type: null })}>
         <DialogContent data-testid="dialog-removal-confirmation">
           <DialogHeader>
-            <DialogTitle>Confirm Removal</DialogTitle>
+            <DialogTitle>
+              {confirmRemovalDialog.type === 'third-loan' ? 'Add Third Loan' : 'Confirm Removal'}
+            </DialogTitle>
             <DialogDescription>
               <span className="text-red-600 font-medium">
-                Removing this information will delete any corresponding data. Would you like to still continue?
+                {confirmRemovalDialog.type === 'second-loan' 
+                  ? "Removing the second loan will delete all entered data. Would you like to continue?"
+                  : confirmRemovalDialog.type === 'third-loan'
+                  ? "Would you like to create a third current loan?"
+                  : "Removing this information will delete any corresponding data. Would you like to still continue?"
+                }
               </span>
             </DialogDescription>
           </DialogHeader>
