@@ -780,10 +780,7 @@ export default function AdminAddClient() {
         currentBalance: '',
         currentRate: '',
         principalAndInterestPayment: '',
-        escrowPayment: {
-          amount: '',
-          type: 'Escrow payment' as const,
-        },
+        escrowPayment: '',
         totalMonthlyPayment: '',
         prepaymentPenalty: 'No' as const,
         statementBalance: {
@@ -848,7 +845,7 @@ export default function AdminAddClient() {
   // Auto-sum calculation for Total Monthly Payment
   useEffect(() => {
     const piPayment = form.watch('currentLoan.principalAndInterestPayment') || '0';
-    const escrowAmount = form.watch('currentLoan.escrowPayment.amount') || '0';
+    const escrowAmount = form.watch('currentLoan.escrowPayment') || '0';
     
     const parseCurrency = (value: string) => {
       return parseFloat(value.replace(/[^0-9.-]+/g, '')) || 0;
@@ -860,7 +857,7 @@ export default function AdminAddClient() {
     
     const formattedTotal = total > 0 ? `$${total.toFixed(2)}` : '';
     form.setValue('currentLoan.totalMonthlyPayment', formattedTotal);
-  }, [form.watch('currentLoan.principalAndInterestPayment'), form.watch('currentLoan.escrowPayment.amount')]);
+  }, [form.watch('currentLoan.principalAndInterestPayment'), form.watch('currentLoan.escrowPayment')]);
   
   // Watch address changes for each property
   useEffect(() => {
@@ -1298,7 +1295,7 @@ export default function AdminAddClient() {
       },
       {
         propertyPath: 'loan.escrowPayment',
-        loanPath: 'escrowPayment.amount'
+        loanPath: 'escrowPayment'
       }
     ];
 
