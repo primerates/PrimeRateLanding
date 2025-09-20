@@ -1348,20 +1348,8 @@ export default function AdminAddClient() {
   //   return subscription.unsubscribe;
   // }, []);
   
-  // Auto-set Primary Residence "secured First Loan" to "Yes" when Current Loan exists
-  useEffect(() => {
-    const properties = form.watch('property.properties') || [];
-    const primaryPropertyIndex = properties.findIndex(p => p?.use === 'primary');
-    
-    if (primaryPropertyIndex >= 0) {
-      const currentActiveSecuredLoan = form.watch(`property.properties.${primaryPropertyIndex}.activeSecuredLoan` as const);
-      
-      if (showCurrentLoan && (!currentActiveSecuredLoan || currentActiveSecuredLoan === '')) {
-        // Auto-set to "yes" when Current Loan exists and field is not already set
-        form.setValue(`property.properties.${primaryPropertyIndex}.activeSecuredLoan` as const, 'yes', { shouldDirty: true });
-      }
-    }
-  }, [showCurrentLoan, form]);
+  // REMOVED: Auto-sync logic between Loan and Property tabs
+  // Loan cards are now exclusive to Loan tab, Property tab dropdown is independent
   
   // Helper function to get nested value from object path
   const getNestedValue = (obj: any, path: string): string | undefined => {
@@ -2680,69 +2668,8 @@ export default function AdminAddClient() {
   // Handle showing current loan sections  
   const handleAddCurrentLoan = () => {
     setShowCurrentLoan(true);
-    
-    // Auto-create Primary Residence property if it doesn't exist
-    const properties = form.watch('property.properties') || [];
-    const hasPrimaryProperty = properties.some(p => p?.use === 'primary');
-    
-    if (!hasPrimaryProperty) {
-      const newPrimaryProperty = {
-        id: crypto.randomUUID(),
-        use: 'primary' as const,
-        isSubject: true,
-        address: {
-          street: '',
-          unit: '',
-          city: '',
-          state: '',
-          zipCode: '',
-          county: ''
-        },
-        propertyType: '',
-        estimatedValue: '',
-        valuations: {
-          zillow: '',
-          redfin: '',
-          realtor: ''
-        },
-        appraisedValue: '',
-        ownedSince: '',
-        purchasePrice: '',
-        hoaFee: '',
-        activeSecuredLoan: '', // Will be set to 'yes' by useEffect
-        loan: {
-          lenderName: '',
-          loanNumber: '',
-          mortgageBalance: '',
-          piPayment: '',
-          escrowPayment: '',
-          totalMonthlyPayment: '',
-          monthlyRental: '',
-          monthlyIncome: ''
-        },
-        activeSecondLoan: '',
-        secondLoan: {
-          lenderName: '',
-          loanNumber: '',
-          mortgageBalance: '',
-          piPayment: '',
-          escrowPayment: '',
-          totalMonthlyPayment: ''
-        },
-        ownedHeldBy: 'borrower' as const,
-        activeThirdLoan: '',
-        thirdLoan: {
-          lenderName: '',
-          loanNumber: '',
-          mortgageBalance: '',
-          piPayment: '',
-          escrowPayment: '',
-          totalMonthlyPayment: ''
-        }
-      };
-      
-      form.setValue('property.properties', [...properties, newPrimaryProperty], { shouldDirty: true });
-    }
+    // REMOVED: Auto-creation of Primary Residence property
+    // Loan cards are now exclusive to Loan tab
   };
 
   // Handle removing current loan
@@ -2752,15 +2679,7 @@ export default function AdminAddClient() {
       type: 'current-loan',
       onConfirm: () => {
         setShowCurrentLoan(false);
-        
-        // Reset Primary Residence "secured first loan" dropdown to default
-        const properties = form.watch('property.properties') || [];
-        const primaryPropertyIndex = properties.findIndex(p => p?.use === 'primary');
-        
-        if (primaryPropertyIndex >= 0) {
-          form.setValue(`property.properties.${primaryPropertyIndex}.activeSecuredLoan` as const, 'select', { shouldDirty: true });
-        }
-        
+        // REMOVED: Property tab reset logic - now independent
         setConfirmRemovalDialog({ isOpen: false, type: null });
       }
     });
@@ -7075,14 +6994,6 @@ export default function AdminAddClient() {
                 </CardContent>
               </Card>
 
-              {/* Read-only Current Loan Card - shows when current loan exists */}
-              {showCurrentLoan && (
-                <ReadOnlyCurrentLoanCard
-                  isOpen={isReadOnlyCurrentLoanOpen}
-                  setIsOpen={setIsReadOnlyCurrentLoanOpen}
-                  formInstance={form}
-                />
-              )}
 
               {/* Property List Card */}
               <Card className="bg-muted">
@@ -7618,13 +7529,7 @@ export default function AdminAddClient() {
                                   <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured First Loan</Label>
                                   <Select
                                     value={form.watch(`property.properties.${index}.activeSecuredLoan` as const) || ''}
-                                    onValueChange={(value) => {
-                                      // Prevent user selection and show message
-                                      toast({
-                                        title: "Read Only",
-                                        description: "Please enter or change data in loan page",
-                                      });
-                                    }}
+                                    onValueChange={(value) => form.setValue(`property.properties.${index}.activeSecuredLoan` as const, value)}
                                   >
                                     <SelectTrigger data-testid={`select-property-active-secured-loan-${propertyId}`}>
                                       <SelectValue placeholder="Select" />
@@ -7668,17 +7573,6 @@ export default function AdminAddClient() {
                               </div>
                             )}
 
-                            {/* Current Loan Cards - Only show for Primary Residence when activeSecuredLoan is 'yes' */}
-                            {property.use === 'primary' && form.watch(`property.properties.${index}.activeSecuredLoan` as const) === 'yes' && showCurrentLoan && (
-                              <div className="border-2 border-dashed border-gray-500 rounded-md p-4 space-y-4">
-                                <ReadOnlyCurrentLoanCard
-                                  idPrefix="property-"
-                                  isOpen={isLoanDetailsOpen[propertyId] ?? true}
-                                  setIsOpen={() => toggleLoanDetailsOpen(propertyId)}
-                                  formInstance={form}
-                                />
-                              </div>
-                            )}
 
                             {/* Second Loan Details Box - Only show when activeSecondLoan is 'yes' for all property types */}
                             {form.watch(`property.properties.${index}.activeSecondLoan` as const) === 'yes' && (
