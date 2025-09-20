@@ -843,22 +843,23 @@ export default function AdminAddClient() {
     [autoValuationLoading]
   );
   
-  // Auto-sum calculation for Total Monthly Payment
-  useEffect(() => {
-    const piPayment = form.watch('currentLoan.principalAndInterestPayment') || '0';
-    const escrowAmount = form.watch('currentLoan.escrowPayment') || '0';
-    
-    const parseCurrency = (value: string) => {
-      return parseFloat(value.replace(/[^0-9.-]+/g, '')) || 0;
-    };
-    
-    const piAmount = parseCurrency(piPayment);
-    const escrowAmountNum = parseCurrency(escrowAmount);
-    const total = piAmount + escrowAmountNum;
-    
-    const formattedTotal = total > 0 ? `$${total.toFixed(2)}` : '';
-    form.setValue('currentLoan.totalMonthlyPayment', formattedTotal);
-  }, [form.watch('currentLoan.principalAndInterestPayment'), form.watch('currentLoan.escrowPayment')]);
+  // DISABLED: Auto-sum calculation for Total Monthly Payment
+  // This expensive useEffect was causing typing lag by watching fields on every keystroke
+  // useEffect(() => {
+  //   const piPayment = form.watch('currentLoan.principalAndInterestPayment') || '0';
+  //   const escrowAmount = form.watch('currentLoan.escrowPayment') || '0';
+  //   
+  //   const parseCurrency = (value: string) => {
+  //     return parseFloat(value.replace(/[^0-9.-]+/g, '')) || 0;
+  //   };
+  //   
+  //   const piAmount = parseCurrency(piPayment);
+  //   const escrowAmountNum = parseCurrency(escrowAmount);
+  //   const total = piAmount + escrowAmountNum;
+  //   
+  //   const formattedTotal = total > 0 ? `$${total.toFixed(2)}` : '';
+  //   form.setValue('currentLoan.totalMonthlyPayment', formattedTotal);
+  // }, [form.watch('currentLoan.principalAndInterestPayment'), form.watch('currentLoan.escrowPayment')]);
   
   // Watch address changes for each property
   useEffect(() => {
@@ -1448,10 +1449,9 @@ export default function AdminAddClient() {
     const statementBalanceBinding = useFieldBinding('currentLoan.statementBalance.amount', idPrefix, targetForm);
     const attachedToPropertyBinding = useSelectFieldBinding('currentLoan.attachedToProperty', idPrefix, targetForm);
     
-    // Payment field bindings - using simple formula like loan number for fast data entry
+    // Payment field bindings - optimized for performance
     const currentRateBinding = useFieldBinding('currentLoan.currentRate', idPrefix, targetForm);
-    const principalInterestPaymentBinding = useFieldBinding('currentLoan.principalAndInterestPayment', idPrefix, targetForm);
-    const escrowPaymentBinding = useFieldBinding('currentLoan.escrowPayment', idPrefix, targetForm);
+    // REMOVED: principalInterestPaymentBinding and escrowPaymentBinding - now using direct form.register() for better performance
     const totalMonthlyPaymentBinding = useFieldBinding('currentLoan.totalMonthlyPayment', idPrefix, targetForm);
     
     // Property address bindings
