@@ -2680,6 +2680,69 @@ export default function AdminAddClient() {
   // Handle showing current loan sections  
   const handleAddCurrentLoan = () => {
     setShowCurrentLoan(true);
+    
+    // Auto-create Primary Residence property if it doesn't exist
+    const properties = form.watch('property.properties') || [];
+    const hasPrimaryProperty = properties.some(p => p?.use === 'primary');
+    
+    if (!hasPrimaryProperty) {
+      const newPrimaryProperty = {
+        id: crypto.randomUUID(),
+        use: 'primary' as const,
+        isSubject: true,
+        address: {
+          street: '',
+          unit: '',
+          city: '',
+          state: '',
+          zipCode: '',
+          county: ''
+        },
+        propertyType: '',
+        estimatedValue: '',
+        valuations: {
+          zillow: '',
+          redfin: '',
+          realtor: ''
+        },
+        appraisedValue: '',
+        ownedSince: '',
+        purchasePrice: '',
+        hoaFee: '',
+        activeSecuredLoan: '', // Will be set to 'yes' by useEffect
+        loan: {
+          lenderName: '',
+          loanNumber: '',
+          mortgageBalance: '',
+          piPayment: '',
+          escrowPayment: '',
+          totalMonthlyPayment: '',
+          monthlyRental: '',
+          monthlyIncome: ''
+        },
+        activeSecondLoan: '',
+        secondLoan: {
+          lenderName: '',
+          loanNumber: '',
+          mortgageBalance: '',
+          piPayment: '',
+          escrowPayment: '',
+          totalMonthlyPayment: ''
+        },
+        ownedHeldBy: 'borrower' as const,
+        activeThirdLoan: '',
+        thirdLoan: {
+          lenderName: '',
+          loanNumber: '',
+          mortgageBalance: '',
+          piPayment: '',
+          escrowPayment: '',
+          totalMonthlyPayment: ''
+        }
+      };
+      
+      form.setValue('property.properties', [...properties, newPrimaryProperty], { shouldDirty: true });
+    }
   };
 
   // Handle removing current loan
