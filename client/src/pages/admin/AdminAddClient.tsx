@@ -1274,73 +1274,77 @@ export default function AdminAddClient() {
   // Bidirectional sync between Property Tab (Primary Residence) and Loan Tab (Current Loan)
   const syncInProgress = useRef(false);
   
-  useEffect(() => {
-    // Field mapping configuration
-    const fieldMappings = [
-      {
-        propertyPath: 'loan.lenderName',
-        loanPath: 'currentLender'
-      },
-      {
-        propertyPath: 'loan.loanNumber',
-        loanPath: 'loanNumber'
-      },
-      {
-        propertyPath: 'loan.mortgageBalance',
-        loanPath: 'statementBalance.amount'
-      },
-      {
-        propertyPath: 'loan.piPayment',
-        loanPath: 'principalAndInterestPayment'
-      },
-      {
-        propertyPath: 'loan.escrowPayment',
-        loanPath: 'escrowPayment'
-      }
-    ];
+  // DISABLED: Bidirectional sync - Removed to improve typing performance
+  // This was causing slow typing due to heavy processing on every keystroke
+  // Now using simplified one-way flow: Loan Tab -> Property Tab (read-only display)
+  
+  // useEffect(() => {
+  //   // Field mapping configuration
+  //   const fieldMappings = [
+  //     {
+  //       propertyPath: 'loan.lenderName',
+  //       loanPath: 'currentLender'
+  //     },
+  //     {
+  //       propertyPath: 'loan.loanNumber',
+  //       loanPath: 'loanNumber'
+  //     },
+  //     {
+  //       propertyPath: 'loan.mortgageBalance',
+  //       loanPath: 'statementBalance.amount'
+  //     },
+  //     {
+  //       propertyPath: 'loan.piPayment',
+  //       loanPath: 'principalAndInterestPayment'
+  //     },
+  //     {
+  //       propertyPath: 'loan.escrowPayment',
+  //       loanPath: 'escrowPayment'
+  //     }
+  //   ];
 
-    const subscription = form.watch((value, { name }) => {
-      if (!name || syncInProgress.current) return;
+  //   const subscription = form.watch((value, { name }) => {
+  //     if (!name || syncInProgress.current) return;
       
-      const properties = value.property?.properties || [];
-      const primaryPropertyIndex = properties.findIndex(p => p?.use === 'primary');
+  //     const properties = value.property?.properties || [];
+  //     const primaryPropertyIndex = properties.findIndex(p => p?.use === 'primary');
       
-      if (primaryPropertyIndex < 0) return;
+  //     if (primaryPropertyIndex < 0) return;
       
-      syncInProgress.current = true;
+  //     syncInProgress.current = true;
       
-      // Check if the changed field is a property field that should sync to loan
-      for (const mapping of fieldMappings) {
-        const propertyFieldPath = `property.properties.${primaryPropertyIndex}.${mapping.propertyPath}`;
-        const loanFieldPath = `currentLoan.${mapping.loanPath}`;
+  //     // Check if the changed field is a property field that should sync to loan
+  //     for (const mapping of fieldMappings) {
+  //       const propertyFieldPath = `property.properties.${primaryPropertyIndex}.${mapping.propertyPath}`;
+  //       const loanFieldPath = `currentLoan.${mapping.loanPath}`;
         
-        if (name === propertyFieldPath) {
-          const sourceValue = getNestedValue(value, propertyFieldPath) ?? '';
-          const targetValue = getNestedValue(value, loanFieldPath) ?? '';
+  //       if (name === propertyFieldPath) {
+  //         const sourceValue = getNestedValue(value, propertyFieldPath) ?? '';
+  //         const targetValue = getNestedValue(value, loanFieldPath) ?? '';
           
-          if (sourceValue !== targetValue) {
-            form.setValue(loanFieldPath as any, sourceValue, { shouldDirty: true });
-          }
-          break;
-        }
+  //         if (sourceValue !== targetValue) {
+  //           form.setValue(loanFieldPath as any, sourceValue, { shouldDirty: true });
+  //         }
+  //         break;
+  //       }
         
-        // Check if the changed field is a loan field that should sync to property
-        if (name === loanFieldPath) {
-          const sourceValue = getNestedValue(value, loanFieldPath) ?? '';
-          const targetValue = getNestedValue(value, propertyFieldPath) ?? '';
+  //       // Check if the changed field is a loan field that should sync to property
+  //       if (name === loanFieldPath) {
+  //         const sourceValue = getNestedValue(value, loanFieldPath) ?? '';
+  //         const targetValue = getNestedValue(value, propertyFieldPath) ?? '';
           
-          if (sourceValue !== targetValue) {
-            form.setValue(propertyFieldPath as any, sourceValue, { shouldDirty: true });
-          }
-          break;
-        }
-      }
+  //         if (sourceValue !== targetValue) {
+  //           form.setValue(propertyFieldPath as any, sourceValue, { shouldDirty: true });
+  //         }
+  //         break;
+  //       }
+  //     }
       
-      syncInProgress.current = false;
-    });
+  //     syncInProgress.current = false;
+  //   });
 
-    return subscription.unsubscribe;
-  }, []);
+  //   return subscription.unsubscribe;
+  // }, []);
   
   // Auto-set Primary Residence "secured First Loan" to "Yes" when Current Loan exists
   useEffect(() => {
@@ -1446,20 +1450,27 @@ export default function AdminAddClient() {
     // Payment field bindings
     const currentRateBinding = useFieldBinding('currentLoan.currentRate', idPrefix, targetForm);
     
-    // Custom percentage formatting for Current Rate field
+    // Optimized percentage formatting for Current Rate field
     const currentRateBindingWithPercentage = {
       ...currentRateBinding,
       onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
         let value = e.target.value;
-        // Remove existing % symbol and allow only digits and decimal point
-        value = value.replace('%', '').replace(/[^0-9.]/g, '');
-        // Prevent multiple decimal points
-        const parts = value.split('.');
-        if (parts.length > 2) {
-          value = parts[0] + '.' + parts.slice(1).join('');
+        // Quick validation - only allow digits, decimal point, and percentage
+        if (!/^[\d.%]*$/.test(value)) {
+          return; // Skip invalid input immediately
         }
-        // Store the raw numeric value
-        targetForm.setValue('currentLoan.currentRate' as any, value, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+        
+        // Remove % and clean up
+        value = value.replace('%', '');
+        
+        // Quick decimal point check
+        const dotCount = (value.match(/\./g) || []).length;
+        if (dotCount > 1) {
+          return; // Skip invalid input
+        }
+        
+        // Store the raw numeric value - disable validation during typing for speed
+        targetForm.setValue('currentLoan.currentRate' as any, value, { shouldDirty: true, shouldTouch: false, shouldValidate: false });
       }
     };
     
