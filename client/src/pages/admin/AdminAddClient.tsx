@@ -7413,21 +7413,7 @@ export default function AdminAddClient() {
                       
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2">
-                          <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor="currentLoan-escrowPayment">
-                              {getCurrentLoanEscrowPaymentLabel()}
-                            </Label>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={toggleCurrentLoanEscrowPaymentFieldType}
-                              className="h-6 px-2 text-xs hover:bg-orange-500 hover:text-white hover:border-orange-500"
-                              data-testid="button-toggle-currentLoan-escrowPayment-type"
-                            >
-                              Toggle
-                            </Button>
-                          </div>
+                          <Label htmlFor="currentLoan-escrowPayment">Escrow Payment</Label>
                           <Input
                             id="currentLoan-escrowPayment"
                             {...form.register('currentLoan.escrowPayment.amount')}
