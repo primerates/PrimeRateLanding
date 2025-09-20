@@ -153,6 +153,16 @@ export const loanDetailSchema = z.object({
   isPropertyRented: z.string().optional(),
   monthlyRental: z.string().optional(),
   monthlyIncome: z.string().optional(),
+  // Attached to Property fields for second and third loans
+  attachedToProperty: z.enum(['', 'Primary Residence', 'Second Home', 'Investment Property', 'Other']).optional(),
+  propertyAddress: z.object({
+    street: z.string().optional(),
+    unit: z.string().optional(),
+    city: z.string().optional(),
+    state: z.string().optional(),
+    zipCode: z.string().optional(),
+    county: z.string().optional(),
+  }).optional(),
 });
 
 // Individual property entry schema
@@ -250,6 +260,8 @@ export const clientSchema = z.object({
   coBorrowerIncome: incomeSchema.optional(),
   property: propertySchema.optional(),
   currentLoan: currentLoanSchema.optional(),
+  secondLoan: currentLoanSchema.optional(),
+  thirdLoan: currentLoanSchema.optional(),
   newLoan: newLoanSchema.optional(),
   vendors: vendorsSchema.optional(),
   // Metadata

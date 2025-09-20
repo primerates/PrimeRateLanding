@@ -2043,6 +2043,240 @@ export default function AdminAddClient() {
     }
   };
 
+  // Auto-copy property address to Second Loan based on Attached to Property selection
+  const autoCopyPropertyAddressToSecondLoan = (propertyId: string) => {
+    const properties = form.getValues('property.properties') || [];
+    const propertyIndex = properties.findIndex(p => p.id === propertyId);
+    if (propertyIndex === -1) return;
+
+    const attachedProperty = form.getValues(`property.properties.${propertyIndex}.secondLoan.attachedToProperty`);
+    
+    if (attachedProperty === 'Primary Residence') {
+      const primaryProperty = properties.find(p => p.use === 'primary');
+      if (primaryProperty?.address && (primaryProperty.address.street || primaryProperty.address.city)) {
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.street`, primaryProperty.address.street || '');
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.unit`, primaryProperty.address.unit || '');
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.city`, primaryProperty.address.city || '');
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.state`, primaryProperty.address.state || '');
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.zipCode`, primaryProperty.address.zip || '');
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.county`, primaryProperty.address.county || '');
+      } else {
+        const borrowerAddress = form.getValues('borrower.residenceAddress');
+        if (borrowerAddress) {
+          form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.street`, borrowerAddress.street || '');
+          form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.unit`, borrowerAddress.unit || '');
+          form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.city`, borrowerAddress.city || '');
+          form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.state`, borrowerAddress.state || '');
+          form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.zipCode`, borrowerAddress.zip || '');
+          form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.county`, borrowerAddress.county || '');
+        }
+      }
+    } else if (attachedProperty === 'Second Home') {
+      const secondHome = properties.find(property => property.use === 'second-home');
+      if (secondHome?.address) {
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.street`, secondHome.address.street || '');
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.unit`, secondHome.address.unit || '');
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.city`, secondHome.address.city || '');
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.state`, secondHome.address.state || '');
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.zipCode`, secondHome.address.zip || '');
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.county`, secondHome.address.county || '');
+      }
+    } else if (attachedProperty === 'Investment Property') {
+      const investmentProperty = properties.find(property => property.use === 'investment');
+      if (investmentProperty?.address) {
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.street`, investmentProperty.address.street || '');
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.unit`, investmentProperty.address.unit || '');
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.city`, investmentProperty.address.city || '');
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.state`, investmentProperty.address.state || '');
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.zipCode`, investmentProperty.address.zip || '');
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.county`, investmentProperty.address.county || '');
+      }
+    } else if (attachedProperty === 'Other') {
+      // Clear all fields for Other
+      form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.street`, '');
+      form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.unit`, '');
+      form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.city`, '');
+      form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.state`, '');
+      form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.zipCode`, '');
+      form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.county`, '');
+    }
+  };
+
+  // Auto-copy property address to Third Loan based on Attached to Property selection
+  const autoCopyPropertyAddressToThirdLoan = (propertyId: string) => {
+    const properties = form.getValues('property.properties') || [];
+    const propertyIndex = properties.findIndex(p => p.id === propertyId);
+    if (propertyIndex === -1) return;
+
+    const attachedProperty = form.getValues(`property.properties.${propertyIndex}.thirdLoan.attachedToProperty`);
+    
+    if (attachedProperty === 'Primary Residence') {
+      const primaryProperty = properties.find(p => p.use === 'primary');
+      if (primaryProperty?.address && (primaryProperty.address.street || primaryProperty.address.city)) {
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.street`, primaryProperty.address.street || '');
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.unit`, primaryProperty.address.unit || '');
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.city`, primaryProperty.address.city || '');
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.state`, primaryProperty.address.state || '');
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.zipCode`, primaryProperty.address.zip || '');
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.county`, primaryProperty.address.county || '');
+      } else {
+        const borrowerAddress = form.getValues('borrower.residenceAddress');
+        if (borrowerAddress) {
+          form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.street`, borrowerAddress.street || '');
+          form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.unit`, borrowerAddress.unit || '');
+          form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.city`, borrowerAddress.city || '');
+          form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.state`, borrowerAddress.state || '');
+          form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.zipCode`, borrowerAddress.zip || '');
+          form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.county`, borrowerAddress.county || '');
+        }
+      }
+    } else if (attachedProperty === 'Second Home') {
+      const secondHome = properties.find(property => property.use === 'second-home');
+      if (secondHome?.address) {
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.street`, secondHome.address.street || '');
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.unit`, secondHome.address.unit || '');
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.city`, secondHome.address.city || '');
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.state`, secondHome.address.state || '');
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.zipCode`, secondHome.address.zip || '');
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.county`, secondHome.address.county || '');
+      }
+    } else if (attachedProperty === 'Investment Property') {
+      const investmentProperty = properties.find(property => property.use === 'investment');
+      if (investmentProperty?.address) {
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.street`, investmentProperty.address.street || '');
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.unit`, investmentProperty.address.unit || '');
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.city`, investmentProperty.address.city || '');
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.state`, investmentProperty.address.state || '');
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.zipCode`, investmentProperty.address.zip || '');
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.county`, investmentProperty.address.county || '');
+      }
+    } else if (attachedProperty === 'Other') {
+      // Clear all fields for Other
+      form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.street`, '');
+      form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.unit`, '');
+      form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.city`, '');
+      form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.state`, '');
+      form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.zipCode`, '');
+      form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.county`, '');
+    }
+  };
+
+  // Auto-copy property address to Global Second Loan based on Attached to Property selection
+  const autoCopyPropertyAddressToGlobalSecondLoan = () => {
+    const attachedProperty = form.getValues('secondLoan.attachedToProperty');
+    
+    if (attachedProperty === 'Primary Residence') {
+      const properties = form.getValues('property.properties') || [];
+      const primaryProperty = properties.find(p => p.use === 'primary');
+      if (primaryProperty?.address && (primaryProperty.address.street || primaryProperty.address.city)) {
+        form.setValue('secondLoan.propertyAddress.street', primaryProperty.address.street || '');
+        form.setValue('secondLoan.propertyAddress.unit', primaryProperty.address.unit || '');
+        form.setValue('secondLoan.propertyAddress.city', primaryProperty.address.city || '');
+        form.setValue('secondLoan.propertyAddress.state', primaryProperty.address.state || '');
+        form.setValue('secondLoan.propertyAddress.zipCode', primaryProperty.address.zip || '');
+        form.setValue('secondLoan.propertyAddress.county', primaryProperty.address.county || '');
+      } else {
+        const borrowerAddress = form.getValues('borrower.residenceAddress');
+        if (borrowerAddress) {
+          form.setValue('secondLoan.propertyAddress.street', borrowerAddress.street || '');
+          form.setValue('secondLoan.propertyAddress.unit', borrowerAddress.unit || '');
+          form.setValue('secondLoan.propertyAddress.city', borrowerAddress.city || '');
+          form.setValue('secondLoan.propertyAddress.state', borrowerAddress.state || '');
+          form.setValue('secondLoan.propertyAddress.zipCode', borrowerAddress.zip || '');
+          form.setValue('secondLoan.propertyAddress.county', borrowerAddress.county || '');
+        }
+      }
+    } else if (attachedProperty === 'Second Home') {
+      const properties = form.getValues('property.properties') || [];
+      const secondHome = properties.find(property => property.use === 'second-home');
+      if (secondHome?.address) {
+        form.setValue('secondLoan.propertyAddress.street', secondHome.address.street || '');
+        form.setValue('secondLoan.propertyAddress.unit', secondHome.address.unit || '');
+        form.setValue('secondLoan.propertyAddress.city', secondHome.address.city || '');
+        form.setValue('secondLoan.propertyAddress.state', secondHome.address.state || '');
+        form.setValue('secondLoan.propertyAddress.zipCode', secondHome.address.zip || '');
+        form.setValue('secondLoan.propertyAddress.county', secondHome.address.county || '');
+      }
+    } else if (attachedProperty === 'Investment Property') {
+      const properties = form.getValues('property.properties') || [];
+      const investmentProperty = properties.find(property => property.use === 'investment');
+      if (investmentProperty?.address) {
+        form.setValue('secondLoan.propertyAddress.street', investmentProperty.address.street || '');
+        form.setValue('secondLoan.propertyAddress.unit', investmentProperty.address.unit || '');
+        form.setValue('secondLoan.propertyAddress.city', investmentProperty.address.city || '');
+        form.setValue('secondLoan.propertyAddress.state', investmentProperty.address.state || '');
+        form.setValue('secondLoan.propertyAddress.zipCode', investmentProperty.address.zip || '');
+        form.setValue('secondLoan.propertyAddress.county', investmentProperty.address.county || '');
+      }
+    } else if (attachedProperty === 'Other') {
+      // Clear fields for manual entry
+      form.setValue('secondLoan.propertyAddress.street', '');
+      form.setValue('secondLoan.propertyAddress.unit', '');
+      form.setValue('secondLoan.propertyAddress.city', '');
+      form.setValue('secondLoan.propertyAddress.state', '');
+      form.setValue('secondLoan.propertyAddress.zipCode', '');
+      form.setValue('secondLoan.propertyAddress.county', '');
+    }
+  };
+
+  // Auto-copy property address to Global Third Loan based on Attached to Property selection
+  const autoCopyPropertyAddressToGlobalThirdLoan = () => {
+    const attachedProperty = form.getValues('thirdLoan.attachedToProperty');
+    
+    if (attachedProperty === 'Primary Residence') {
+      const properties = form.getValues('property.properties') || [];
+      const primaryProperty = properties.find(p => p.use === 'primary');
+      if (primaryProperty?.address && (primaryProperty.address.street || primaryProperty.address.city)) {
+        form.setValue('thirdLoan.propertyAddress.street', primaryProperty.address.street || '');
+        form.setValue('thirdLoan.propertyAddress.unit', primaryProperty.address.unit || '');
+        form.setValue('thirdLoan.propertyAddress.city', primaryProperty.address.city || '');
+        form.setValue('thirdLoan.propertyAddress.state', primaryProperty.address.state || '');
+        form.setValue('thirdLoan.propertyAddress.zipCode', primaryProperty.address.zip || '');
+        form.setValue('thirdLoan.propertyAddress.county', primaryProperty.address.county || '');
+      } else {
+        const borrowerAddress = form.getValues('borrower.residenceAddress');
+        if (borrowerAddress) {
+          form.setValue('thirdLoan.propertyAddress.street', borrowerAddress.street || '');
+          form.setValue('thirdLoan.propertyAddress.unit', borrowerAddress.unit || '');
+          form.setValue('thirdLoan.propertyAddress.city', borrowerAddress.city || '');
+          form.setValue('thirdLoan.propertyAddress.state', borrowerAddress.state || '');
+          form.setValue('thirdLoan.propertyAddress.zipCode', borrowerAddress.zip || '');
+          form.setValue('thirdLoan.propertyAddress.county', borrowerAddress.county || '');
+        }
+      }
+    } else if (attachedProperty === 'Second Home') {
+      const properties = form.getValues('property.properties') || [];
+      const secondHome = properties.find(property => property.use === 'second-home');
+      if (secondHome?.address) {
+        form.setValue('thirdLoan.propertyAddress.street', secondHome.address.street || '');
+        form.setValue('thirdLoan.propertyAddress.unit', secondHome.address.unit || '');
+        form.setValue('thirdLoan.propertyAddress.city', secondHome.address.city || '');
+        form.setValue('thirdLoan.propertyAddress.state', secondHome.address.state || '');
+        form.setValue('thirdLoan.propertyAddress.zipCode', secondHome.address.zip || '');
+        form.setValue('thirdLoan.propertyAddress.county', secondHome.address.county || '');
+      }
+    } else if (attachedProperty === 'Investment Property') {
+      const properties = form.getValues('property.properties') || [];
+      const investmentProperty = properties.find(property => property.use === 'investment');
+      if (investmentProperty?.address) {
+        form.setValue('thirdLoan.propertyAddress.street', investmentProperty.address.street || '');
+        form.setValue('thirdLoan.propertyAddress.unit', investmentProperty.address.unit || '');
+        form.setValue('thirdLoan.propertyAddress.city', investmentProperty.address.city || '');
+        form.setValue('thirdLoan.propertyAddress.state', investmentProperty.address.state || '');
+        form.setValue('thirdLoan.propertyAddress.zipCode', investmentProperty.address.zip || '');
+        form.setValue('thirdLoan.propertyAddress.county', investmentProperty.address.county || '');
+      }
+    } else if (attachedProperty === 'Other') {
+      // Clear fields for manual entry
+      form.setValue('thirdLoan.propertyAddress.street', '');
+      form.setValue('thirdLoan.propertyAddress.unit', '');
+      form.setValue('thirdLoan.propertyAddress.city', '');
+      form.setValue('thirdLoan.propertyAddress.state', '');
+      form.setValue('thirdLoan.propertyAddress.zipCode', '');
+      form.setValue('thirdLoan.propertyAddress.county', '');
+    }
+  };
+
   // Get loan details open state (default to true)
   const getLoanDetailsOpen = (propertyId: string) => {
     return isLoanDetailsOpen[propertyId] ?? true;
@@ -7832,10 +8066,10 @@ export default function AdminAddClient() {
                             
                             <div className="space-y-2">
                               <Label htmlFor="secondLoan-attachedToProperty">Attached to Property</Label>
-                              <Select value={form.watch('currentLoan.attachedToProperty') || ''} onValueChange={(value) => {
-                                form.setValue('currentLoan.attachedToProperty', value as any);
+                              <Select value={form.watch('secondLoan.attachedToProperty') || ''} onValueChange={(value) => {
+                                form.setValue('secondLoan.attachedToProperty', value as any);
                                 if (value && value !== '') {
-                                  setTimeout(() => autoCopyPropertyAddressToCurrentLoan(), 100);
+                                  setTimeout(() => autoCopyPropertyAddressToGlobalSecondLoan(), 100);
                                 }
                               }}>
                                 <SelectTrigger data-testid="select-secondLoan-attachedToProperty">
@@ -7853,20 +8087,20 @@ export default function AdminAddClient() {
                           </div>
                           
                           {/* Conditional Address Fields - Show when Attached to Property is selected */}
-                          {form.watch('currentLoan.attachedToProperty') && form.watch('currentLoan.attachedToProperty') !== '' && (
+                          {form.watch('secondLoan.attachedToProperty') && form.watch('secondLoan.attachedToProperty') !== '' && (
                             <div className="mt-4 p-4 border-t border-gray-200">
                               <Label className="text-sm font-medium text-gray-700 mb-3 block">
-                                Property Address ({form.watch('currentLoan.attachedToProperty')})
+                                Property Address ({form.watch('secondLoan.attachedToProperty')})
                               </Label>
                               <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                                 <div className="space-y-2 md:col-span-4">
                                   <Label htmlFor="secondLoan-property-street">Street Address</Label>
                                   <Input
                                     id="secondLoan-property-street"
-                                    {...form.register('currentLoan.propertyAddress.street')}
+                                    {...form.register('secondLoan.propertyAddress.street')}
                                     data-testid="input-secondLoan-property-street"
-                                    readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
-                                    className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                                    readOnly={form.watch('secondLoan.attachedToProperty') !== 'Other'}
+                                    className={form.watch('secondLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
                                   />
                                 </div>
                                 
@@ -8206,18 +8440,122 @@ export default function AdminAddClient() {
                             
                             <div className="space-y-2">
                               <Label htmlFor="thirdLoan-attachedToProperty">Attached to Property</Label>
-                              <Select>
+                              <Select value={form.watch('thirdLoan.attachedToProperty') || ''} onValueChange={(value) => {
+                                form.setValue('thirdLoan.attachedToProperty', value as any);
+                                if (['Primary Residence', 'Second Home', 'Investment Property'].includes(value)) {
+                                  setTimeout(() => autoCopyPropertyAddressToGlobalThirdLoan(), 100);
+                                } else if (value === 'Other' || value === '') {
+                                  // Clear address fields for Other or empty selection
+                                  form.setValue('thirdLoan.propertyAddress.street', '');
+                                  form.setValue('thirdLoan.propertyAddress.unit', '');
+                                  form.setValue('thirdLoan.propertyAddress.city', '');
+                                  form.setValue('thirdLoan.propertyAddress.state', '');
+                                  form.setValue('thirdLoan.propertyAddress.zipCode', '');
+                                  form.setValue('thirdLoan.propertyAddress.county', '');
+                                }
+                              }}>
                                 <SelectTrigger data-testid="select-thirdLoan-attachedToProperty">
                                   <SelectValue placeholder="Select" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value="primary-residence">Primary Residence</SelectItem>
-                                  <SelectItem value="investment-property">Investment Property</SelectItem>
-                                  <SelectItem value="second-home">Second Home</SelectItem>
+                                  <SelectItem value="Primary Residence">Primary Residence</SelectItem>
+                                  <SelectItem value="Second Home">Second Home</SelectItem>
+                                  <SelectItem value="Investment Property">Investment Property</SelectItem>
+                                  <SelectItem value="Other">Other</SelectItem>
                                 </SelectContent>
                               </Select>
                             </div>
                           </div>
+                          
+                          {/* Conditional Address Fields - Show when Attached to Property is selected */}
+                          {form.watch('thirdLoan.attachedToProperty') && form.watch('thirdLoan.attachedToProperty') !== '' && ['Primary Residence', 'Second Home', 'Investment Property', 'Other'].includes(form.watch('thirdLoan.attachedToProperty')) && (
+                            <div className="mt-4 p-4 border-t border-gray-200">
+                              <Label className="text-sm font-medium text-gray-700 mb-3 block">
+                                Property Address ({form.watch('thirdLoan.attachedToProperty')})
+                              </Label>
+                              <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                                <div className="space-y-2 md:col-span-4">
+                                  <Label htmlFor="thirdLoan-property-street">Street Address</Label>
+                                  <Input
+                                    id="thirdLoan-property-street"
+                                    {...form.register('thirdLoan.propertyAddress.street')}
+                                    data-testid="input-thirdLoan-property-street"
+                                    readOnly={form.watch('thirdLoan.attachedToProperty') !== 'Other'}
+                                    className={form.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                                  />
+                                </div>
+                                
+                                <div className="space-y-2 md:col-span-2">
+                                  <Label htmlFor="thirdLoan-property-unit">Unit/Apt</Label>
+                                  <Input
+                                    id="thirdLoan-property-unit"
+                                    {...form.register('thirdLoan.propertyAddress.unit')}
+                                    data-testid="input-thirdLoan-property-unit"
+                                    readOnly={form.watch('thirdLoan.attachedToProperty') !== 'Other'}
+                                    className={form.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                                  />
+                                </div>
+                              </div>
+                              
+                              <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mt-4">
+                                <div className="space-y-2 md:col-span-2">
+                                  <Label htmlFor="thirdLoan-property-city">City</Label>
+                                  <Input
+                                    id="thirdLoan-property-city"
+                                    {...form.register('thirdLoan.propertyAddress.city')}
+                                    data-testid="input-thirdLoan-property-city"
+                                    readOnly={form.watch('thirdLoan.attachedToProperty') !== 'Other'}
+                                    className={form.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                                  />
+                                </div>
+                                
+                                <div className="space-y-2 md:col-span-2">
+                                  <Label htmlFor="thirdLoan-property-state">State</Label>
+                                  <Select
+                                    value={form.watch('thirdLoan.propertyAddress.state') || ''}
+                                    onValueChange={(value) => form.setValue('thirdLoan.propertyAddress.state', value)}
+                                    disabled={form.watch('thirdLoan.attachedToProperty') !== 'Other'}
+                                  >
+                                    <SelectTrigger
+                                      data-testid="select-thirdLoan-property-state"
+                                      className={form.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                                    >
+                                      <SelectValue placeholder="State" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {US_STATES.map(state => (
+                                        <SelectItem key={state.value} value={state.value}>
+                                          {state.label}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <Label htmlFor="thirdLoan-property-zipCode">ZIP Code</Label>
+                                  <Input
+                                    id="thirdLoan-property-zipCode"
+                                    {...form.register('thirdLoan.propertyAddress.zipCode')}
+                                    data-testid="input-thirdLoan-property-zipCode"
+                                    readOnly={form.watch('thirdLoan.attachedToProperty') !== 'Other'}
+                                    className={form.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                                  />
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <Label htmlFor="thirdLoan-property-county">County</Label>
+                                  <Input
+                                    id="thirdLoan-property-county"
+                                    {...form.register('thirdLoan.propertyAddress.county')}
+                                    data-testid="input-thirdLoan-property-county"
+                                    readOnly={form.watch('thirdLoan.attachedToProperty') !== 'Other'}
+                                    className={form.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </CardContent>
                       </CollapsibleContent>
                     </Collapsible>
