@@ -1779,9 +1779,7 @@ export default function AdminAddClient() {
                   type="button" 
                   variant="outline" 
                   size="sm" 
-                  onClick={() => {
-                    // TODO: Implement add second loan functionality
-                  }}
+                  onClick={handleAddSecondLoan}
                   className="hover:bg-orange-500 hover:text-white hover:border-orange-500 no-default-hover-elevate no-default-active-elevate"
                   data-testid={`button-add-second-loan-${idPrefix}`}
                 >
@@ -1789,6 +1787,426 @@ export default function AdminAddClient() {
                   Add Second Loan
                 </Button>
               </div>
+            </CardContent>
+          </CollapsibleContent>
+        </Collapsible>
+      </Card>
+    );
+  };
+
+  // CurrentSecondLoanCard component - duplicate of CurrentLoanCard for second loan
+  const CurrentSecondLoanCard = ({ 
+    idPrefix = '', 
+    borderVariant, 
+    isOpen, 
+    setIsOpen, 
+    onRemove,
+    onAutoCopyAddress,
+    formInstance 
+  }: {
+    idPrefix?: string;
+    borderVariant: 'blue' | 'none';
+    isOpen: boolean;
+    setIsOpen: (open: boolean) => void;
+    onRemove?: () => void;
+    onAutoCopyAddress?: () => void;
+    formInstance?: any;
+  }) => {
+    const contextForm = useFormContext();
+    const targetForm = formInstance || contextForm;
+    const currentLenderBinding = useFieldBinding('secondLoan.currentLender', idPrefix, targetForm);
+    const loanNumberBinding = useFieldBinding('secondLoan.loanNumber', idPrefix, targetForm);
+    const loanStartDateBinding = useFieldBinding('secondLoan.loanStartDate', idPrefix, targetForm);
+    const remainingTermBinding = useFieldBinding('secondLoan.remainingTermPerCreditReport', idPrefix, targetForm);
+    const loanCategoryBinding = useSelectFieldBinding('secondLoan.loanCategory', idPrefix, targetForm);
+    const loanProgramBinding = useSelectFieldBinding('secondLoan.loanProgram', idPrefix, targetForm);
+    const loanTermBinding = useSelectFieldBinding('secondLoan.loanTerm', idPrefix, targetForm);
+    const loanPurposeBinding = useSelectFieldBinding('secondLoan.loanPurpose', idPrefix, targetForm);
+    const prepaymentPenaltyBinding = useSelectFieldBinding('secondLoan.prepaymentPenalty', idPrefix, targetForm);
+    const statementBalanceBinding = useFieldBinding('secondLoan.statementBalance.amount', idPrefix, targetForm);
+    const attachedToPropertyBinding = useSelectFieldBinding('secondLoan.attachedToProperty', idPrefix, targetForm);
+    
+    // Payment field bindings - optimized for performance
+    const currentRateBinding = useFieldBinding('secondLoan.currentRate', idPrefix, targetForm);
+    // REMOVED: principalInterestPaymentBinding and escrowPaymentBinding - now using direct form.register() for better performance
+    const totalMonthlyPaymentBinding = useFieldBinding('secondLoan.totalMonthlyPayment', idPrefix, targetForm);
+    
+    // Property address bindings
+    const propertyStreetBinding = useFieldBinding('secondLoan.propertyAddress.street', idPrefix, targetForm);
+    const propertyUnitBinding = useFieldBinding('secondLoan.propertyAddress.unit', idPrefix, targetForm);
+    const propertyCityBinding = useFieldBinding('secondLoan.propertyAddress.city', idPrefix, targetForm);
+    const propertyStateBinding = useSelectFieldBinding('secondLoan.propertyAddress.state', idPrefix, targetForm);
+    const propertyZipBinding = useFieldBinding('secondLoan.propertyAddress.zipCode', idPrefix, targetForm);
+    const propertyCountyBinding = useFieldBinding('secondLoan.propertyAddress.county', idPrefix, targetForm);
+    
+    const cardClassName = borderVariant === 'blue' ? 'border-l-4 border-l-purple-500' : '';
+    
+    return (
+      <Card className={cardClassName}>
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Current Second Loan</CardTitle>
+              <div className="flex items-center gap-2">
+                {onRemove && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={onRemove}
+                    className="hover:bg-red-500 hover:text-white"
+                    data-testid={`button-remove-second-loan-${idPrefix}`}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                )}
+                <CollapsibleTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="hover:bg-orange-500 hover:text-white" 
+                    data-testid={`button-toggle-second-loan-${idPrefix}`}
+                    title={isOpen ? 'Minimize' : 'Expand'}
+                  >
+                    {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                  </Button>
+                </CollapsibleTrigger>
+              </div>
+            </div>
+          </CardHeader>
+          <CollapsibleContent>
+            <CardContent className="space-y-4">
+              {/* Row 1: Current Lender, Loan Number, Loan Start Date, Remaining Term Per Credit Report */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor={currentLenderBinding.id}>Current Lender</Label>
+                  <Input
+                    id={currentLenderBinding.id}
+                    {...currentLenderBinding.field}
+                    data-testid={currentLenderBinding['data-testid']}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="secondLoan-loanNumber">Loan Number</Label>
+                  <Input
+                    id="secondLoan-loanNumber"
+                    {...form.register('secondLoan.loanNumber')}
+                    data-testid="input-secondLoan-loanNumber"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={loanStartDateBinding.id}>Loan Start Date</Label>
+                  <Input
+                    id={loanStartDateBinding.id}
+                    type="date"
+                    {...loanStartDateBinding.field}
+                    data-testid={loanStartDateBinding['data-testid']}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={remainingTermBinding.id}>Remaining Term Per Credit Report</Label>
+                  <Input
+                    id={remainingTermBinding.id}
+                    {...remainingTermBinding.field}
+                    placeholder="Years/Months"
+                    data-testid={remainingTermBinding['data-testid']}
+                  />
+                </div>
+              </div>
+              
+              {/* Row 2: Loan Category, Loan Term, Loan Duration, Current Balance */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}secondLoan-loanCategory`}>Loan Category</Label>
+                  <Select {...loanCategoryBinding}>
+                    <SelectTrigger data-testid={loanCategoryBinding['data-testid']}>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="conventional">Conventional</SelectItem>
+                      <SelectItem value="conventional-jumbo">Conventional Jumbo</SelectItem>
+                      <SelectItem value="fha">FHA</SelectItem>
+                      <SelectItem value="va">VA</SelectItem>
+                      <SelectItem value="va-jumbo">VA Jumbo</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}secondLoan-loanProgram`}>Loan Term</Label>
+                  <Select {...loanProgramBinding}>
+                    <SelectTrigger data-testid={loanProgramBinding['data-testid']}>
+                      <SelectValue placeholder="Select term" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="30-year-fixed">30 Year Fixed</SelectItem>
+                      <SelectItem value="15-year-fixed">15 Year Fixed</SelectItem>
+                      <SelectItem value="arm">ARM</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}secondLoan-loanTerm`}>Loan Duration</Label>
+                  <Select {...loanTermBinding}>
+                    <SelectTrigger data-testid={loanTermBinding['data-testid']}>
+                      <SelectValue placeholder="Select duration" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="30">30 Years</SelectItem>
+                      <SelectItem value="15">15 Years</SelectItem>
+                      <SelectItem value="10">10 Years</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="secondLoan-currentBalance">Current Balance</Label>
+                  <Input
+                    id="secondLoan-currentBalance"
+                    {...form.register('secondLoan.statementBalance.amount')}
+                    placeholder="$0.00"
+                    data-testid="input-secondLoan-currentBalance"
+                  />
+                </div>
+              </div>
+              
+              {/* Row 3: Payment Details */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="secondLoan-currentRate">Current Rate</Label>
+                  <Input
+                    id="secondLoan-currentRate"
+                    {...form.register('secondLoan.currentRate')}
+                    placeholder="0.00%"
+                    data-testid="input-secondLoan-currentRate"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="secondLoan-principalInterestPayment">Principal & Interest Payment</Label>
+                  <Input
+                    id="secondLoan-principalInterestPayment"
+                    {...form.register('secondLoan.principalAndInterestPayment')}
+                    placeholder="$0.00"
+                    data-testid="input-secondLoan-principalInterestPayment"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="secondLoan-escrowPayment">Escrow Payment</Label>
+                  <Input
+                    id="secondLoan-escrowPayment"
+                    {...form.register('secondLoan.escrowPayment')}
+                    placeholder="$0.00"
+                    data-testid="input-secondLoan-escrowPayment"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={totalMonthlyPaymentBinding.id}>Total Monthly Payment</Label>
+                  <Input
+                    id={totalMonthlyPaymentBinding.id}
+                    {...totalMonthlyPaymentBinding.field}
+                    placeholder="$0.00"
+                    data-testid={totalMonthlyPaymentBinding['data-testid']}
+                  />
+                </div>
+              </div>
+              
+              {/* Row 4: Loan Purpose, Pre-payment Penalty, Attached to Property */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}secondLoan-loanPurpose`}>Loan Purpose</Label>
+                  <Select {...loanPurposeBinding}>
+                    <SelectTrigger data-testid={loanPurposeBinding['data-testid']}>
+                      <SelectValue placeholder="Select purpose" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="purchase">Purchase</SelectItem>
+                      <SelectItem value="refinance-rate-term">Refinance Rate & Term</SelectItem>
+                      <SelectItem value="refinance-cash-out">Refinance Cash Out</SelectItem>
+                      <SelectItem value="construction">Construction</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}secondLoan-prepaymentPenalty`}>Pre-payment Penalty</Label>
+                  <Select {...prepaymentPenaltyBinding}>
+                    <SelectTrigger data-testid={prepaymentPenaltyBinding['data-testid']}>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Yes - see notes">Yes - see notes</SelectItem>
+                      <SelectItem value="No">No</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}secondLoan-attachedToProperty`}>Attached to Property</Label>
+                  <Select 
+                    {...attachedToPropertyBinding}
+                    onValueChange={(value) => {
+                      attachedToPropertyBinding.onValueChange(value);
+                      if (['Primary Residence', 'Second Home', 'Investment Property'].includes(value) && onAutoCopyAddress) {
+                        setTimeout(() => onAutoCopyAddress(), 100);
+                      }
+                    }}
+                  >
+                    <SelectTrigger data-testid={attachedToPropertyBinding['data-testid']}>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Primary Residence">Primary Residence</SelectItem>
+                      <SelectItem value="Second Home">Second Home</SelectItem>
+                      <SelectItem value="Investment Property">Investment Property</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              {/* Property Address Section - Only show when "Attached to Property" is not empty */}
+              {targetForm.watch('secondLoan.attachedToProperty') && (
+                <div className="bg-gray-50 p-4 rounded-md">
+                  <h4 className="text-sm font-medium mb-3">Property Address</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor={propertyStreetBinding.id}>Street Address</Label>
+                      <Input
+                        id={propertyStreetBinding.id}
+                        {...propertyStreetBinding.field}
+                        placeholder="Enter street address"
+                        data-testid={propertyStreetBinding['data-testid']}
+                        readOnly={targetForm.watch('secondLoan.attachedToProperty') !== 'Other'}
+                        className={targetForm.watch('secondLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor={propertyUnitBinding.id}>Unit/Apt</Label>
+                      <Input
+                        id={propertyUnitBinding.id}
+                        {...propertyUnitBinding.field}
+                        placeholder="Unit/Apt (optional)"
+                        data-testid={propertyUnitBinding['data-testid']}
+                        readOnly={targetForm.watch('secondLoan.attachedToProperty') !== 'Other'}
+                        className={targetForm.watch('secondLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor={propertyCityBinding.id}>City</Label>
+                      <Input
+                        id={propertyCityBinding.id}
+                        {...propertyCityBinding.field}
+                        placeholder="Enter city"
+                        data-testid={propertyCityBinding['data-testid']}
+                        readOnly={targetForm.watch('secondLoan.attachedToProperty') !== 'Other'}
+                        className={targetForm.watch('secondLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor={`${idPrefix}secondLoan-propertyState`}>State</Label>
+                      <Select {...propertyStateBinding}>
+                        <SelectTrigger 
+                          data-testid={propertyStateBinding['data-testid']}
+                          disabled={targetForm.watch('secondLoan.attachedToProperty') !== 'Other'}
+                          className={targetForm.watch('secondLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                        >
+                          <SelectValue placeholder="Select state" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="AL">Alabama</SelectItem>
+                          <SelectItem value="AK">Alaska</SelectItem>
+                          <SelectItem value="AZ">Arizona</SelectItem>
+                          <SelectItem value="AR">Arkansas</SelectItem>
+                          <SelectItem value="CA">California</SelectItem>
+                          <SelectItem value="CO">Colorado</SelectItem>
+                          <SelectItem value="CT">Connecticut</SelectItem>
+                          <SelectItem value="DE">Delaware</SelectItem>
+                          <SelectItem value="FL">Florida</SelectItem>
+                          <SelectItem value="GA">Georgia</SelectItem>
+                          <SelectItem value="HI">Hawaii</SelectItem>
+                          <SelectItem value="ID">Idaho</SelectItem>
+                          <SelectItem value="IL">Illinois</SelectItem>
+                          <SelectItem value="IN">Indiana</SelectItem>
+                          <SelectItem value="IA">Iowa</SelectItem>
+                          <SelectItem value="KS">Kansas</SelectItem>
+                          <SelectItem value="KY">Kentucky</SelectItem>
+                          <SelectItem value="LA">Louisiana</SelectItem>
+                          <SelectItem value="ME">Maine</SelectItem>
+                          <SelectItem value="MD">Maryland</SelectItem>
+                          <SelectItem value="MA">Massachusetts</SelectItem>
+                          <SelectItem value="MI">Michigan</SelectItem>
+                          <SelectItem value="MN">Minnesota</SelectItem>
+                          <SelectItem value="MS">Mississippi</SelectItem>
+                          <SelectItem value="MO">Missouri</SelectItem>
+                          <SelectItem value="MT">Montana</SelectItem>
+                          <SelectItem value="NE">Nebraska</SelectItem>
+                          <SelectItem value="NV">Nevada</SelectItem>
+                          <SelectItem value="NH">New Hampshire</SelectItem>
+                          <SelectItem value="NJ">New Jersey</SelectItem>
+                          <SelectItem value="NM">New Mexico</SelectItem>
+                          <SelectItem value="NY">New York</SelectItem>
+                          <SelectItem value="NC">North Carolina</SelectItem>
+                          <SelectItem value="ND">North Dakota</SelectItem>
+                          <SelectItem value="OH">Ohio</SelectItem>
+                          <SelectItem value="OK">Oklahoma</SelectItem>
+                          <SelectItem value="OR">Oregon</SelectItem>
+                          <SelectItem value="PA">Pennsylvania</SelectItem>
+                          <SelectItem value="RI">Rhode Island</SelectItem>
+                          <SelectItem value="SC">South Carolina</SelectItem>
+                          <SelectItem value="SD">South Dakota</SelectItem>
+                          <SelectItem value="TN">Tennessee</SelectItem>
+                          <SelectItem value="TX">Texas</SelectItem>
+                          <SelectItem value="UT">Utah</SelectItem>
+                          <SelectItem value="VT">Vermont</SelectItem>
+                          <SelectItem value="VA">Virginia</SelectItem>
+                          <SelectItem value="WA">Washington</SelectItem>
+                          <SelectItem value="WV">West Virginia</SelectItem>
+                          <SelectItem value="WI">Wisconsin</SelectItem>
+                          <SelectItem value="WY">Wyoming</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor={propertyZipBinding.id}>ZIP Code</Label>
+                      <Input
+                        id={propertyZipBinding.id}
+                        {...propertyZipBinding.field}
+                        placeholder="Enter ZIP code"
+                        data-testid={propertyZipBinding['data-testid']}
+                        readOnly={targetForm.watch('secondLoan.attachedToProperty') !== 'Other'}
+                        className={targetForm.watch('secondLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor={propertyCountyBinding.id}>County</Label>
+                      <Input
+                        id={propertyCountyBinding.id}
+                        {...propertyCountyBinding.field}
+                        placeholder="Enter county"
+                        data-testid={propertyCountyBinding['data-testid']}
+                        readOnly={targetForm.watch('secondLoan.attachedToProperty') !== 'Other'}
+                        className={targetForm.watch('secondLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </CollapsibleContent>
         </Collapsible>
@@ -7932,306 +8350,15 @@ export default function AdminAddClient() {
 
               {/* Second Loan Sections - Only show when added */}
               {showSecondLoan && (
-                <>
-                  {/* Current Second Loan Information */}
-                  <Card className="border-l-4 border-l-purple-500">
-                    <Collapsible open={isSecondLoanOpen} onOpenChange={setIsSecondLoanOpen}>
-                      <CardHeader>
-                        <div className="flex items-center justify-between">
-                          <CardTitle>Current Second Loan</CardTitle>
-                          <div className="flex items-center gap-2">
-                            {!showThirdLoan && (
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setConfirmRemovalDialog({
-                                    isOpen: true,
-                                    type: 'third-loan',
-                                    onConfirm: () => {
-                                      handleAddThirdLoan();
-                                      setConfirmRemovalDialog({ isOpen: false, type: null });
-                                    }
-                                  });
-                                }}
-                                className="hover:bg-blue-500 hover:text-white"
-                                data-testid="button-add-third-loan"
-                              >
-                                <Plus className="h-4 w-4" />
-                              </Button>
-                            )}
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={removeSecondLoan}
-                              className="hover:bg-red-500 hover:text-white"
-                              data-testid="button-remove-second-loan"
-                            >
-                              <Minus className="h-4 w-4" />
-                            </Button>
-                            <CollapsibleTrigger asChild>
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                className="hover:bg-orange-500 hover:text-white" 
-                                data-testid="button-toggle-second-loan"
-                                title={isSecondLoanOpen ? 'Minimize' : 'Expand'}
-                              >
-                                {isSecondLoanOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                              </Button>
-                            </CollapsibleTrigger>
-                          </div>
-                        </div>
-                      </CardHeader>
-                      <CollapsibleContent>
-                        <CardContent className="space-y-4">
-                          {/* Row 1: Lender Name, Loan Number, Current Balance */}
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="secondLoan-lenderName">Lender Name</Label>
-                              <Input
-                                id="secondLoan-lenderName"
-                                placeholder="Enter lender name"
-                                data-testid="input-secondLoan-lenderName"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="secondLoan-loanNumber">Loan Number</Label>
-                              <Input
-                                id="secondLoan-loanNumber"
-                                {...form.register('currentLoan.loanNumber')}
-                                data-testid="input-secondLoan-loanNumber"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="secondLoan-currentBalance">Current Balance</Label>
-                              <Input
-                                id="secondLoan-currentBalance"
-                                {...form.register('currentLoan.currentBalance')}
-                                placeholder="$0.00"
-                                data-testid="input-secondLoan-currentBalance"
-                              />
-                            </div>
-                          </div>
-                          
-                          {/* Row 2: Current Rate, Loan Program, Loan Term */}
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="secondLoan-currentRate">Current Rate (%)</Label>
-                              <Input
-                                id="secondLoan-currentRate"
-                                {...form.register('currentLoan.currentRate')}
-                                placeholder="0.00%"
-                                data-testid="input-secondLoan-currentRate"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="secondLoan-loanProgram">Loan Term</Label>
-                              <Select value={form.watch('currentLoan.loanProgram') || ''} onValueChange={(value) => form.setValue('currentLoan.loanProgram', value)}>
-                                <SelectTrigger data-testid="select-secondLoan-loanProgram">
-                                  <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="select">Select</SelectItem>
-                                  <SelectItem value="heloc">HELOC</SelectItem>
-                                  <SelectItem value="fixed-second-loan">Fixed Second Loan</SelectItem>
-                                  <SelectItem value="adjustable-second-loan">Adjustable Second Loan</SelectItem>
-                                  <SelectItem value="home-improvement-loan">Home Improvement Loan</SelectItem>
-                                  <SelectItem value="other">Other</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="secondLoan-loanTerm">Loan Duration</Label>
-                              <Select value={form.watch('currentLoan.loanTerm') || ''} onValueChange={(value) => form.setValue('currentLoan.loanTerm', value)}>
-                                <SelectTrigger data-testid="select-secondLoan-loanTerm">
-                                  <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="select">Select</SelectItem>
-                                  <SelectItem value="30-years">30 Years</SelectItem>
-                                  <SelectItem value="25-years">25 Years</SelectItem>
-                                  <SelectItem value="20-years">20 Years</SelectItem>
-                                  <SelectItem value="15-years">15 Years</SelectItem>
-                                  <SelectItem value="10-years">10 Years</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </div>
-                          
-                          {/* Row 3: Loan Purpose, Principal & Interest Payment */}
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="secondLoan-loanPurpose">Loan Purpose</Label>
-                              <Select value={form.watch('currentLoan.loanPurpose') || ''} onValueChange={(value) => form.setValue('currentLoan.loanPurpose', value)}>
-                                <SelectTrigger data-testid="select-secondLoan-loanPurpose">
-                                  <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="select">Select</SelectItem>
-                                  <SelectItem value="purchase">Purchase</SelectItem>
-                                  <SelectItem value="debt-pay-off">Debt Pay Off</SelectItem>
-                                  <SelectItem value="home-improvement">Home Improvement</SelectItem>
-                                  <SelectItem value="other">Other</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="secondLoan-principalAndInterestPayment">Principal & Interest Payment</Label>
-                              <Input
-                                id="secondLoan-principalAndInterestPayment"
-                                {...form.register('currentLoan.principalAndInterestPayment')}
-                                placeholder="$0.00"
-                                data-testid="input-secondLoan-principalAndInterestPayment"
-                              />
-                            </div>
-                          </div>
-                          
-                          {/* Row 4: Pre-payment Penalty, Statement Balance, Attached to Property */}
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="secondLoan-prepaymentPenalty">Pre-payment Penalty</Label>
-                              <Select value={form.watch('currentLoan.prepaymentPenalty') || 'No'} onValueChange={(value: 'Yes - see notes' | 'No') => form.setValue('currentLoan.prepaymentPenalty', value)}>
-                                <SelectTrigger data-testid="select-secondLoan-prepaymentPenalty">
-                                  <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="Yes - see notes">Yes - see notes</SelectItem>
-                                  <SelectItem value="No">No</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="secondLoan-statementBalance">Current Balance</Label>
-                              <Input
-                                id="secondLoan-statementBalance"
-                                {...form.register('currentLoan.statementBalance.amount')}
-                                placeholder="$0.00"
-                                data-testid="input-secondLoan-statementBalance"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="secondLoan-attachedToProperty">Attached to Property</Label>
-                              <Select value={form.watch('secondLoan.attachedToProperty') || ''} onValueChange={(value) => {
-                                form.setValue('secondLoan.attachedToProperty', value as any);
-                                if (value && value !== '') {
-                                  setTimeout(() => autoCopyPropertyAddressToGlobalSecondLoan(), 100);
-                                }
-                              }}>
-                                <SelectTrigger data-testid="select-secondLoan-attachedToProperty">
-                                  <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="select">Select</SelectItem>
-                                  <SelectItem value="Primary Residence">Primary Residence</SelectItem>
-                                  <SelectItem value="Second Home">Second Home</SelectItem>
-                                  <SelectItem value="Investment Property">Investment Property</SelectItem>
-                                  <SelectItem value="Other">Other</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </div>
-                          
-                          {/* Conditional Address Fields - Show when Attached to Property is selected */}
-                          {form.watch('secondLoan.attachedToProperty') && form.watch('secondLoan.attachedToProperty') !== '' && (
-                            <div className="mt-4 p-4 border-t border-gray-200">
-                              <Label className="text-sm font-medium text-gray-700 mb-3 block">
-                                Property Address ({form.watch('secondLoan.attachedToProperty')})
-                              </Label>
-                              <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                                <div className="space-y-2 md:col-span-4">
-                                  <Label htmlFor="secondLoan-property-street">Street Address</Label>
-                                  <Input
-                                    id="secondLoan-property-street"
-                                    {...form.register('secondLoan.propertyAddress.street')}
-                                    data-testid="input-secondLoan-property-street"
-                                    readOnly={form.watch('secondLoan.attachedToProperty') !== 'Other'}
-                                    className={form.watch('secondLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
-                                  />
-                                </div>
-                                
-                                <div className="space-y-2 md:col-span-2">
-                                  <Label htmlFor="secondLoan-property-unit">Unit/Apt</Label>
-                                  <Input
-                                    id="secondLoan-property-unit"
-                                    {...form.register('currentLoan.propertyAddress.unit')}
-                                    data-testid="input-secondLoan-property-unit"
-                                    readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
-                                    className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
-                                  />
-                                </div>
-                                
-                                <div className="space-y-2 md:col-span-2">
-                                  <Label htmlFor="secondLoan-property-city">City</Label>
-                                  <Input
-                                    id="secondLoan-property-city"
-                                    {...form.register('currentLoan.propertyAddress.city')}
-                                    data-testid="input-secondLoan-property-city"
-                                    readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
-                                    className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
-                                  />
-                                </div>
-                                
-                                <div className="space-y-2 md:col-span-2">
-                                  <Label htmlFor="secondLoan-property-state">State</Label>
-                                  <Select
-                                    value={form.watch('currentLoan.propertyAddress.state') || ''}
-                                    onValueChange={(value) => form.setValue('currentLoan.propertyAddress.state', value)}
-                                    disabled={form.watch('currentLoan.attachedToProperty') !== 'Other'}
-                                  >
-                                    <SelectTrigger
-                                      data-testid="select-secondLoan-property-state"
-                                      className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
-                                    >
-                                      <SelectValue placeholder="State" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {US_STATES.map(state => (
-                                        <SelectItem key={state.value} value={state.value}>{state.label}</SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                                
-                                <div className="space-y-2">
-                                  <Label htmlFor="secondLoan-property-zipCode">ZIP Code</Label>
-                                  <Input
-                                    id="secondLoan-property-zipCode"
-                                    {...form.register('currentLoan.propertyAddress.zipCode')}
-                                    data-testid="input-secondLoan-property-zipCode"
-                                    readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
-                                    className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
-                                  />
-                                </div>
-                                
-                                <div className="space-y-2">
-                                  <Label htmlFor="secondLoan-property-county">County</Label>
-                                  <Input
-                                    id="secondLoan-property-county"
-                                    {...form.register('currentLoan.propertyAddress.county')}
-                                    data-testid="input-secondLoan-property-county"
-                                    readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
-                                    className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                        </CardContent>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  </Card>
-
-                </>
+                <CurrentSecondLoanCard
+                  idPrefix=""
+                  borderVariant="blue"
+                  isOpen={isSecondLoanOpen}
+                  setIsOpen={setIsSecondLoanOpen}
+                  onRemove={removeSecondLoan}
+                  onAutoCopyAddress={autoCopyPropertyAddressToGlobalSecondLoan}
+                  formInstance={form}
+                />
               )}
 
               {/* Third Loan Sections - Only show when added */}
