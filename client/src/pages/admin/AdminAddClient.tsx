@@ -3338,7 +3338,7 @@ export default function AdminAddClient() {
               <Card>
                 <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6">
                   <div className="space-y-2">
-                    <Label htmlFor="household-income-total" className="text-lg font-semibold">Total Household Income</Label>
+                    <Label htmlFor="household-income-total" className="text-2xl font-semibold">Total Household Income</Label>
                     <div 
                       className={`text-2xl font-bold ${(() => {
                         const totalValue = calculateTotalHouseholdIncomeValue();
@@ -7194,75 +7194,6 @@ export default function AdminAddClient() {
                               <SelectItem value="other">Other</SelectItem>
                             </SelectContent>
                           </Select>
-                        </div>
-                      </div>
-                      
-                      {/* Row 3: Current Balance, Current Rate, Principal & Interest Payment, Escrow Payment (with toggle), Total Monthly Payment */}
-                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="currentLoan-currentBalance">Current Balance</Label>
-                          <Input
-                            id="currentLoan-currentBalance"
-                            {...form.register('currentLoan.currentBalance')}
-                            placeholder="$0.00"
-                            data-testid="input-currentLoan-currentBalance"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="currentLoan-currentRate">Current Rate</Label>
-                          <Input
-                            id="currentLoan-currentRate"
-                            {...form.register('currentLoan.currentRate')}
-                            placeholder="0.00%"
-                            data-testid="input-currentLoan-currentRate"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="currentLoan-principalAndInterestPayment">Principal & Interest Payment</Label>
-                          <Input
-                            id="currentLoan-principalAndInterestPayment"
-                            {...form.register('currentLoan.principalAndInterestPayment')}
-                            placeholder="$0.00"
-                            data-testid="input-currentLoan-principalAndInterestPayment"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="currentLoan-escrowPayment">
-                              {getCurrentLoanEscrowPaymentLabel()}
-                            </Label>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={toggleCurrentLoanEscrowPaymentFieldType}
-                              className="h-6 px-2 text-xs hover:bg-orange-500 hover:text-white hover:border-orange-500"
-                              data-testid="button-toggle-currentLoan-escrowPayment-type"
-                            >
-                              Toggle
-                            </Button>
-                          </div>
-                          <Input
-                            id="currentLoan-escrowPayment"
-                            {...form.register('currentLoan.escrowPayment.amount')}
-                            placeholder="$0.00"
-                            data-testid="input-currentLoan-escrowPayment"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="currentLoan-totalMonthlyPayment">Total Monthly Payment</Label>
-                          <Input
-                            id="currentLoan-totalMonthlyPayment"
-                            {...form.register('currentLoan.totalMonthlyPayment')}
-                            placeholder="$0.00"
-                            readOnly
-                            className="bg-gray-50 cursor-not-allowed"
-                            data-testid="input-currentLoan-totalMonthlyPayment"
-                          />
                         </div>
                       </div>
                       
