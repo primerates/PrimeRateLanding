@@ -1845,6 +1845,7 @@ export default function AdminAddClient() {
     setIsOpen: (open: boolean) => void;
     formInstance?: any;
   }) => {
+    const { toast } = useToast();
     const contextForm = useFormContext();
     const targetForm = formInstance || contextForm;
     
@@ -1864,7 +1865,9 @@ export default function AdminAddClient() {
     
     // Click handler to show message
     const handleFieldClick = () => {
-      alert('Please enter or change data in the loan page');
+      toast({
+        description: "Please enter or change data in the loan page"
+      });
     };
     
     return (
