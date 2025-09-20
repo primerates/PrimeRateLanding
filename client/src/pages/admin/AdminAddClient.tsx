@@ -7025,7 +7025,13 @@ export default function AdminAddClient() {
                     <div className="flex items-center justify-between">
                       <CardTitle>New Loan</CardTitle>
                       <CollapsibleTrigger asChild>
-                        <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-new-loan">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="hover:bg-orange-500 hover:text-white" 
+                          data-testid="button-toggle-new-loan"
+                          title={isNewLoanOpen ? 'Minimize' : 'Expand'}
+                        >
                           {isNewLoanOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                         </Button>
                       </CollapsibleTrigger>
@@ -7110,7 +7116,13 @@ export default function AdminAddClient() {
                     <div className="flex items-center justify-between">
                       <CardTitle>Current Loan</CardTitle>
                       <CollapsibleTrigger asChild>
-                        <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-current-loan">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="hover:bg-orange-500 hover:text-white" 
+                          data-testid="button-toggle-current-loan"
+                          title={isCurrentLoanOpen ? 'Minimize' : 'Expand'}
+                        >
                           {isCurrentLoanOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                         </Button>
                       </CollapsibleTrigger>
@@ -7370,7 +7382,13 @@ export default function AdminAddClient() {
                     <div className="flex items-center justify-between">
                       <CardTitle>Current Loan Terms</CardTitle>
                       <CollapsibleTrigger asChild>
-                        <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-current-loan-payments">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="hover:bg-orange-500 hover:text-white" 
+                          data-testid="button-toggle-current-loan-payments"
+                          title={isCurrentLoanOpen ? 'Minimize' : 'Expand'}
+                        >
                           {isCurrentLoanOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                         </Button>
                       </CollapsibleTrigger>
@@ -7595,7 +7613,13 @@ export default function AdminAddClient() {
                               <Minus className="h-4 w-4" />
                             </Button>
                             <CollapsibleTrigger asChild>
-                              <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-second-loan">
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="hover:bg-orange-500 hover:text-white" 
+                                data-testid="button-toggle-second-loan"
+                                title={isSecondLoanOpen ? 'Minimize' : 'Expand'}
+                              >
                                 {isSecondLoanOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                               </Button>
                             </CollapsibleTrigger>
@@ -7859,7 +7883,13 @@ export default function AdminAddClient() {
                         <div className="flex items-center justify-between">
                           <CardTitle>Current Second Loan Terms</CardTitle>
                           <CollapsibleTrigger asChild>
-                            <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-second-loan-terms">
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-second-loan-terms"
+                              title={isSecondLoanTermsOpen ? 'Minimize' : 'Expand'}
+                            >
                               {isSecondLoanTermsOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                             </Button>
                           </CollapsibleTrigger>
