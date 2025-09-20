@@ -9305,7 +9305,7 @@ export default function AdminAddClient() {
 
       {/* Current Loan Info Popup Dialog - Shows when info icon is clicked in Property tab */}
       <Dialog open={showCurrentLoanInfoPopup} onOpenChange={setShowCurrentLoanInfoPopup}>
-        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto" data-testid="dialog-current-loan-info">
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto border-l-4 border-l-blue-500" data-testid="dialog-current-loan-info">
           <DialogHeader>
             <DialogTitle>Current Loan Information</DialogTitle>
             <DialogDescription>
