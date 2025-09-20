@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useLocation } from 'wouter';
 import { useForm, useFormContext, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -1118,129 +1118,66 @@ export default function AdminAddClient() {
     return isNaN(parsed) ? 0 : parsed;
   };
 
-  // Calculate total monthly income
-  const calculateTotalBorrowerIncome = (): string => {
-    const income = form.watch('income');
-    
-    const employmentIncome = parseMonetaryValue(income?.monthlyIncome);
-    const secondEmploymentIncome = parseMonetaryValue(income?.secondMonthlyIncome);
-    const businessIncome = parseMonetaryValue(income?.businessMonthlyIncome);
-    const pensionIncome = income?.pensions?.reduce((total, pension) => total + parseMonetaryValue(pension.monthlyAmount), 0) || 0;
-    const socialSecurityIncome = parseMonetaryValue(income?.socialSecurityMonthlyAmount);
-    const vaBenefitsIncome = parseMonetaryValue(income?.vaBenefitsMonthlyAmount);
-    const disabilityIncome = parseMonetaryValue(income?.disabilityMonthlyAmount);
-    const otherIncome = parseMonetaryValue(income?.otherIncomeMonthlyAmount);
-    
-    const total = employmentIncome + secondEmploymentIncome + businessIncome + 
-                  pensionIncome + socialSecurityIncome + vaBenefitsIncome + 
-                  disabilityIncome + otherIncome;
-    
-    // Format as currency
-    return `$${total.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
-  };
-
-  const calculateTotalCoBorrowerIncome = (): string => {
-    const coBorrowerIncome = form.watch('coBorrowerIncome');
-    
-    const employmentIncome = parseMonetaryValue(coBorrowerIncome?.monthlyIncome);
-    const secondEmploymentIncome = parseMonetaryValue(coBorrowerIncome?.secondMonthlyIncome);
-    const businessIncome = parseMonetaryValue(coBorrowerIncome?.businessMonthlyIncome);
-    const pensionIncome = coBorrowerIncome?.pensions?.reduce((total, pension) => total + parseMonetaryValue(pension.monthlyAmount), 0) || 0;
-    const socialSecurityIncome = parseMonetaryValue(coBorrowerIncome?.socialSecurityMonthlyAmount);
-    const vaBenefitsIncome = parseMonetaryValue(coBorrowerIncome?.vaBenefitsMonthlyAmount);
-    const disabilityIncome = parseMonetaryValue(coBorrowerIncome?.disabilityMonthlyAmount);
-    const otherIncome = parseMonetaryValue(coBorrowerIncome?.otherIncomeMonthlyAmount);
+  // Calculate total monthly income - optimized with useMemo
+  const borrowerIncomeData = form.watch('income');
+  const totalBorrowerIncome = useMemo(() => {
+    const employmentIncome = parseMonetaryValue(borrowerIncomeData?.monthlyIncome);
+    const secondEmploymentIncome = parseMonetaryValue(borrowerIncomeData?.secondMonthlyIncome);
+    const businessIncome = parseMonetaryValue(borrowerIncomeData?.businessMonthlyIncome);
+    const pensionIncome = borrowerIncomeData?.pensions?.reduce((total, pension) => total + parseMonetaryValue(pension.monthlyAmount), 0) || 0;
+    const socialSecurityIncome = parseMonetaryValue(borrowerIncomeData?.socialSecurityMonthlyAmount);
+    const vaBenefitsIncome = parseMonetaryValue(borrowerIncomeData?.vaBenefitsMonthlyAmount);
+    const disabilityIncome = parseMonetaryValue(borrowerIncomeData?.disabilityMonthlyAmount);
+    const otherIncome = parseMonetaryValue(borrowerIncomeData?.otherIncomeMonthlyAmount);
     
     const total = employmentIncome + secondEmploymentIncome + businessIncome + 
                   pensionIncome + socialSecurityIncome + vaBenefitsIncome + 
                   disabilityIncome + otherIncome;
     
-    // Format as currency
-    return `$${total.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
-  };
+    return total;
+  }, [borrowerIncomeData]);
+  
+  const totalBorrowerIncomeFormatted = useMemo(() => 
+    `$${totalBorrowerIncome.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`,
+    [totalBorrowerIncome]
+  );
 
-  // Calculate total household income (borrower + co-borrower)
-  const calculateTotalHouseholdIncome = (): string => {
-    const income = form.watch('income');
-    const coBorrowerIncome = form.watch('coBorrowerIncome');
+  // Calculate co-borrower income - optimized with useMemo
+  const coBorrowerIncomeData = form.watch('coBorrowerIncome');
+  const totalCoBorrowerIncome = useMemo(() => {
+    const employmentIncome = parseMonetaryValue(coBorrowerIncomeData?.monthlyIncome);
+    const secondEmploymentIncome = parseMonetaryValue(coBorrowerIncomeData?.secondMonthlyIncome);
+    const businessIncome = parseMonetaryValue(coBorrowerIncomeData?.businessMonthlyIncome);
+    const pensionIncome = coBorrowerIncomeData?.pensions?.reduce((total, pension) => total + parseMonetaryValue(pension.monthlyAmount), 0) || 0;
+    const socialSecurityIncome = parseMonetaryValue(coBorrowerIncomeData?.socialSecurityMonthlyAmount);
+    const vaBenefitsIncome = parseMonetaryValue(coBorrowerIncomeData?.vaBenefitsMonthlyAmount);
+    const disabilityIncome = parseMonetaryValue(coBorrowerIncomeData?.disabilityMonthlyAmount);
+    const otherIncome = parseMonetaryValue(coBorrowerIncomeData?.otherIncomeMonthlyAmount);
     
-    // Calculate borrower total
-    const borrowerEmploymentIncome = parseMonetaryValue(income?.monthlyIncome);
-    const borrowerSecondEmploymentIncome = parseMonetaryValue(income?.secondMonthlyIncome);
-    const borrowerBusinessIncome = parseMonetaryValue(income?.businessMonthlyIncome);
-    const borrowerPensionIncome = income?.pensions?.reduce((total, pension) => total + parseMonetaryValue(pension.monthlyAmount), 0) || 0;
-    const borrowerSocialSecurityIncome = parseMonetaryValue(income?.socialSecurityMonthlyAmount);
-    const borrowerVaBenefitsIncome = parseMonetaryValue(income?.vaBenefitsMonthlyAmount);
-    const borrowerDisabilityIncome = parseMonetaryValue(income?.disabilityMonthlyAmount);
-    const borrowerOtherIncome = parseMonetaryValue(income?.otherIncomeMonthlyAmount);
+    const total = employmentIncome + secondEmploymentIncome + businessIncome + 
+                  pensionIncome + socialSecurityIncome + vaBenefitsIncome + 
+                  disabilityIncome + otherIncome;
     
-    const borrowerTotal = borrowerEmploymentIncome + borrowerSecondEmploymentIncome + borrowerBusinessIncome + 
-                         borrowerPensionIncome + borrowerSocialSecurityIncome + borrowerVaBenefitsIncome + 
-                         borrowerDisabilityIncome + borrowerOtherIncome;
-    
-    // Calculate co-borrower total (only if co-borrower exists)
-    let coBorrowerTotal = 0;
-    if (hasCoBorrower && coBorrowerIncome) {
-      const coBorrowerEmploymentIncome = parseMonetaryValue(coBorrowerIncome?.monthlyIncome);
-      const coBorrowerSecondEmploymentIncome = parseMonetaryValue(coBorrowerIncome?.secondMonthlyIncome);
-      const coBorrowerBusinessIncome = parseMonetaryValue(coBorrowerIncome?.businessMonthlyIncome);
-      const coBorrowerPensionIncome = coBorrowerIncome?.pensions?.reduce((total, pension) => total + parseMonetaryValue(pension.monthlyAmount), 0) || 0;
-      const coBorrowerSocialSecurityIncome = parseMonetaryValue(coBorrowerIncome?.socialSecurityMonthlyAmount);
-      const coBorrowerVaBenefitsIncome = parseMonetaryValue(coBorrowerIncome?.vaBenefitsMonthlyAmount);
-      const coBorrowerDisabilityIncome = parseMonetaryValue(coBorrowerIncome?.disabilityMonthlyAmount);
-      const coBorrowerOtherIncome = parseMonetaryValue(coBorrowerIncome?.otherIncomeMonthlyAmount);
-      
-      coBorrowerTotal = coBorrowerEmploymentIncome + coBorrowerSecondEmploymentIncome + coBorrowerBusinessIncome + 
-                       coBorrowerPensionIncome + coBorrowerSocialSecurityIncome + coBorrowerVaBenefitsIncome + 
-                       coBorrowerDisabilityIncome + coBorrowerOtherIncome;
-    }
-    
-    const householdTotal = borrowerTotal + coBorrowerTotal;
-    
-    // Format as currency
-    return `$${householdTotal.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
-  };
+    return total;
+  }, [coBorrowerIncomeData]);
+  
+  const totalCoBorrowerIncomeFormatted = useMemo(() => 
+    `$${totalCoBorrowerIncome.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`,
+    [totalCoBorrowerIncome]
+  );
 
-  // Helper functions to get numerical values for styling
-  const calculateTotalBorrowerIncomeValue = (): number => {
-    const income = form.watch('income');
-    
-    const employmentIncome = parseMonetaryValue(income?.monthlyIncome);
-    const secondEmploymentIncome = parseMonetaryValue(income?.secondMonthlyIncome);
-    const businessIncome = parseMonetaryValue(income?.businessMonthlyIncome);
-    const pensionIncome = income?.pensions?.reduce((total, pension) => total + parseMonetaryValue(pension.monthlyAmount), 0) || 0;
-    const socialSecurityIncome = parseMonetaryValue(income?.socialSecurityMonthlyAmount);
-    const vaBenefitsIncome = parseMonetaryValue(income?.vaBenefitsMonthlyAmount);
-    const disabilityIncome = parseMonetaryValue(income?.disabilityMonthlyAmount);
-    const otherIncome = parseMonetaryValue(income?.otherIncomeMonthlyAmount);
-    
-    return employmentIncome + secondEmploymentIncome + businessIncome + 
-           pensionIncome + socialSecurityIncome + vaBenefitsIncome + 
-           disabilityIncome + otherIncome;
-  };
+  // Calculate total household income (borrower + co-borrower) - optimized with useMemo
+  const totalHouseholdIncome = useMemo(() => {
+    const coBorrowerTotal = hasCoBorrower ? totalCoBorrowerIncome : 0;
+    return totalBorrowerIncome + coBorrowerTotal;
+  }, [totalBorrowerIncome, totalCoBorrowerIncome, hasCoBorrower]);
+  
+  const totalHouseholdIncomeFormatted = useMemo(() => 
+    `$${totalHouseholdIncome.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`,
+    [totalHouseholdIncome]
+  );
 
-  const calculateTotalCoBorrowerIncomeValue = (): number => {
-    const coBorrowerIncome = form.watch('coBorrowerIncome');
-    
-    const employmentIncome = parseMonetaryValue(coBorrowerIncome?.monthlyIncome);
-    const secondEmploymentIncome = parseMonetaryValue(coBorrowerIncome?.secondMonthlyIncome);
-    const businessIncome = parseMonetaryValue(coBorrowerIncome?.businessMonthlyIncome);
-    const pensionIncome = coBorrowerIncome?.pensions?.reduce((total, pension) => total + parseMonetaryValue(pension.monthlyAmount), 0) || 0;
-    const socialSecurityIncome = parseMonetaryValue(coBorrowerIncome?.socialSecurityMonthlyAmount);
-    const vaBenefitsIncome = parseMonetaryValue(coBorrowerIncome?.vaBenefitsMonthlyAmount);
-    const disabilityIncome = parseMonetaryValue(coBorrowerIncome?.disabilityMonthlyAmount);
-    const otherIncome = parseMonetaryValue(coBorrowerIncome?.otherIncomeMonthlyAmount);
-    
-    return employmentIncome + secondEmploymentIncome + businessIncome + 
-           pensionIncome + socialSecurityIncome + vaBenefitsIncome + 
-           disabilityIncome + otherIncome;
-  };
-
-  const calculateTotalHouseholdIncomeValue = (): number => {
-    const borrowerTotal = calculateTotalBorrowerIncomeValue();
-    const coBorrowerTotal = hasCoBorrower ? calculateTotalCoBorrowerIncomeValue() : 0;
-    return borrowerTotal + coBorrowerTotal;
-  };
+  // Helper functions removed - now using optimized useMemo values above
 
   // Auto-sync rental property income with property data
   useEffect(() => {
@@ -4825,12 +4762,12 @@ export default function AdminAddClient() {
                     <Label htmlFor="household-income-total" className="text-2xl font-semibold">Total Household Income</Label>
                     <div 
                       className={`text-2xl font-bold ${(() => {
-                        const totalValue = calculateTotalHouseholdIncomeValue();
+                        const totalValue = totalHouseholdIncome;
                         return totalValue > 0 ? 'text-orange-600' : 'text-primary';
                       })()}`}
                       data-testid="text-household-income-total"
                     >
-                      {calculateTotalHouseholdIncome()}
+                      {totalHouseholdIncomeFormatted}
                     </div>
                   </div>
                   
@@ -4862,10 +4799,10 @@ export default function AdminAddClient() {
                   <CardTitle>
                     Borrower Income{' '}
                     <span className={(() => {
-                      const totalValue = calculateTotalBorrowerIncomeValue();
+                      const totalValue = totalBorrowerIncome;
                       return totalValue > 0 ? 'text-green-600' : '';
                     })()}>
-                      {calculateTotalBorrowerIncome()}
+                      {totalBorrowerIncomeFormatted}
                     </span>
                   </CardTitle>
                 </CardHeader>
@@ -6118,10 +6055,10 @@ export default function AdminAddClient() {
                     <CardTitle>
                       Co-Borrower Income{' '}
                       <span className={(() => {
-                        const totalValue = calculateTotalCoBorrowerIncomeValue();
+                        const totalValue = totalCoBorrowerIncome;
                         return totalValue > 0 ? 'text-green-600' : '';
                       })()}>
-                        {calculateTotalCoBorrowerIncome()}
+                        {totalCoBorrowerIncomeFormatted}
                       </span>
                     </CardTitle>
                   </CardHeader>
