@@ -338,6 +338,7 @@ export default function AdminAddClient() {
 
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
+  const [isNewLoanOpen, setIsNewLoanOpen] = useState(true);
   
   // Multiple prior addresses state management
   const [borrowerPriorAddresses, setBorrowerPriorAddresses] = useState<{ id: string }[]>([]);
@@ -783,7 +784,7 @@ export default function AdminAddClient() {
           mode: 'Statement Balance' as const,
           amount: '',
         },
-        attachedToProperty: 'Primary Residence' as const,
+        attachedToProperty: '' as const,
         propertyAddress: {
           street: '',
           unit: '',
@@ -1909,16 +1910,73 @@ export default function AdminAddClient() {
     return currentLoanStatementBalanceFieldType === 'statement' ? 'Statement Balance' : 'Pay Off Demand';
   };
   
-  // Auto-copy Primary Residence address to Current Loan when Attached to Property is Primary Residence
-  const autoCopyPrimaryResidenceToCurrentLoan = () => {
-    const borrowerAddress = form.getValues('borrower.residenceAddress');
-    if (borrowerAddress && form.getValues('currentLoan.attachedToProperty') === 'Primary Residence') {
-      form.setValue('currentLoan.propertyAddress.street', borrowerAddress.street || '');
-      form.setValue('currentLoan.propertyAddress.unit', borrowerAddress.unit || '');
-      form.setValue('currentLoan.propertyAddress.city', borrowerAddress.city || '');
-      form.setValue('currentLoan.propertyAddress.state', borrowerAddress.state || '');
-      form.setValue('currentLoan.propertyAddress.zipCode', borrowerAddress.zip || '');
-      form.setValue('currentLoan.propertyAddress.county', borrowerAddress.county || '');
+  // Toggle escrow payment field type for current loan
+  const [currentLoanEscrowPaymentFieldType, setCurrentLoanEscrowPaymentFieldType] = useState<'tax-insurance' | 'property-tax' | 'home-insurance'>('tax-insurance');
+  
+  const toggleCurrentLoanEscrowPaymentFieldType = () => {
+    setCurrentLoanEscrowPaymentFieldType(prev => {
+      switch (prev) {
+        case 'tax-insurance': return 'property-tax';
+        case 'property-tax': return 'home-insurance';
+        case 'home-insurance': return 'tax-insurance';
+        default: return 'tax-insurance';
+      }
+    });
+  };
+  
+  const getCurrentLoanEscrowPaymentLabel = () => {
+    switch (currentLoanEscrowPaymentFieldType) {
+      case 'tax-insurance': return 'Tax & Insurance Payment';
+      case 'property-tax': return 'Property Tax';
+      case 'home-insurance': return 'Home Insurance';
+      default: return 'Tax & Insurance Payment';
+    }
+  };
+  
+  // Auto-copy property address to Current Loan based on Attached to Property selection
+  const autoCopyPropertyAddressToCurrentLoan = () => {
+    const attachedProperty = form.getValues('currentLoan.attachedToProperty');
+    
+    if (attachedProperty === 'Primary Residence') {
+      const borrowerAddress = form.getValues('borrower.residenceAddress');
+      if (borrowerAddress) {
+        form.setValue('currentLoan.propertyAddress.street', borrowerAddress.street || '');
+        form.setValue('currentLoan.propertyAddress.unit', borrowerAddress.unit || '');
+        form.setValue('currentLoan.propertyAddress.city', borrowerAddress.city || '');
+        form.setValue('currentLoan.propertyAddress.state', borrowerAddress.state || '');
+        form.setValue('currentLoan.propertyAddress.zipCode', borrowerAddress.zip || '');
+        form.setValue('currentLoan.propertyAddress.county', borrowerAddress.county || '');
+      }
+    } else if (attachedProperty === 'Second Home') {
+      const properties = form.getValues('property.properties') || [];
+      const secondHome = properties.find(property => property.use === 'second-home');
+      if (secondHome?.address) {
+        form.setValue('currentLoan.propertyAddress.street', secondHome.address.street || '');
+        form.setValue('currentLoan.propertyAddress.unit', secondHome.address.unit || '');
+        form.setValue('currentLoan.propertyAddress.city', secondHome.address.city || '');
+        form.setValue('currentLoan.propertyAddress.state', secondHome.address.state || '');
+        form.setValue('currentLoan.propertyAddress.zipCode', secondHome.address.zip || '');
+        form.setValue('currentLoan.propertyAddress.county', secondHome.address.county || '');
+      }
+    } else if (attachedProperty === 'Investment Property') {
+      const properties = form.getValues('property.properties') || [];
+      const investmentProperty = properties.find(property => property.use === 'investment');
+      if (investmentProperty?.address) {
+        form.setValue('currentLoan.propertyAddress.street', investmentProperty.address.street || '');
+        form.setValue('currentLoan.propertyAddress.unit', investmentProperty.address.unit || '');
+        form.setValue('currentLoan.propertyAddress.city', investmentProperty.address.city || '');
+        form.setValue('currentLoan.propertyAddress.state', investmentProperty.address.state || '');
+        form.setValue('currentLoan.propertyAddress.zipCode', investmentProperty.address.zip || '');
+        form.setValue('currentLoan.propertyAddress.county', investmentProperty.address.county || '');
+      }
+    } else if (attachedProperty === 'Other') {
+      // Clear fields for manual entry
+      form.setValue('currentLoan.propertyAddress.street', '');
+      form.setValue('currentLoan.propertyAddress.unit', '');
+      form.setValue('currentLoan.propertyAddress.city', '');
+      form.setValue('currentLoan.propertyAddress.state', '');
+      form.setValue('currentLoan.propertyAddress.zipCode', '');
+      form.setValue('currentLoan.propertyAddress.county', '');
     }
   };
 
@@ -6911,8 +6969,93 @@ export default function AdminAddClient() {
 
             {/* New Loan Tab */}
             <TabsContent value="loan" className="space-y-6">
+              {/* New Loan Information */}
+              <Card className="border-l-4 border-l-green-500">
+                <Collapsible open={isNewLoanOpen} onOpenChange={setIsNewLoanOpen}>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <CardTitle>New Loan Information</CardTitle>
+                      <CollapsibleTrigger asChild>
+                        <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-new-loan">
+                          {isNewLoanOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                        </Button>
+                      </CollapsibleTrigger>
+                    </div>
+                  </CardHeader>
+                  <CollapsibleContent>
+                    <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="newLoan-loanAmount">Loan Amount</Label>
+                        <Input
+                          id="newLoan-loanAmount"
+                          {...form.register('newLoan.loanAmount')}
+                          placeholder="$0.00"
+                          data-testid="input-newLoan-loanAmount"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="newLoan-loanProgram">Loan Program</Label>
+                        <Input
+                          id="newLoan-loanProgram"
+                          {...form.register('newLoan.loanProgram')}
+                          data-testid="input-newLoan-loanProgram"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="newLoan-interestRate">Interest Rate</Label>
+                        <Input
+                          id="newLoan-interestRate"
+                          {...form.register('newLoan.interestRate')}
+                          placeholder="0.00%"
+                          data-testid="input-newLoan-interestRate"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="newLoan-loanTerm">Loan Term</Label>
+                        <Input
+                          id="newLoan-loanTerm"
+                          {...form.register('newLoan.loanTerm')}
+                          placeholder="Years"
+                          data-testid="input-newLoan-loanTerm"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="newLoan-loanPurpose">Loan Purpose</Label>
+                        <Select 
+                          value={form.watch('newLoan.loanPurpose') || ''}
+                          onValueChange={(value) => form.setValue('newLoan.loanPurpose', value as any)}
+                        >
+                          <SelectTrigger data-testid="select-newLoan-loanPurpose">
+                            <SelectValue placeholder="Select purpose" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="purchase">Purchase</SelectItem>
+                            <SelectItem value="refinance">Refinance</SelectItem>
+                            <SelectItem value="cash-out">Cash-Out Refinance</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="newLoan-monthlyPayment">Monthly Payment</Label>
+                        <Input
+                          id="newLoan-monthlyPayment"
+                          {...form.register('newLoan.monthlyPayment')}
+                          placeholder="$0.00"
+                          data-testid="input-newLoan-monthlyPayment"
+                        />
+                      </div>
+                    </CardContent>
+                  </CollapsibleContent>
+                </Collapsible>
+              </Card>
+
               {/* Current Loan Information */}
-              <Card>
+              <Card className="border-l-4 border-l-blue-500">
                 <Collapsible open={isCurrentLoanOpen} onOpenChange={setIsCurrentLoanOpen}>
                   <CardHeader>
                     <div className="flex items-center justify-between">
@@ -7067,33 +7210,27 @@ export default function AdminAddClient() {
                         </div>
                         
                         <div className="space-y-2">
-                          <Label>Escrow Payment</Label>
-                          <div className="space-y-2">
-                            <ToggleGroup
-                              type="single"
-                              value={form.watch('currentLoan.escrowPayment.type') || 'Escrow payment'}
-                              onValueChange={(value: 'Escrow payment' | 'Property Tax' | 'Home Insurance') => {
-                                if (value) form.setValue('currentLoan.escrowPayment.type', value);
-                              }}
-                              className="justify-start flex-wrap"
-                              data-testid="toggle-currentLoan-escrowType"
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="currentLoan-escrowPayment">
+                              {getCurrentLoanEscrowPaymentLabel()}
+                            </Label>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={toggleCurrentLoanEscrowPaymentFieldType}
+                              className="h-6 px-2 text-xs hover:bg-orange-500 hover:text-white hover:border-orange-500"
+                              data-testid="button-toggle-currentLoan-escrowPayment-type"
                             >
-                              <ToggleGroupItem value="Escrow payment" className="text-xs hover:bg-orange-500 hover:text-white data-[state=on]:bg-orange-500 data-[state=on]:text-white" data-testid="toggle-escrow-payment">
-                                Escrow
-                              </ToggleGroupItem>
-                              <ToggleGroupItem value="Property Tax" className="text-xs hover:bg-orange-500 hover:text-white data-[state=on]:bg-orange-500 data-[state=on]:text-white" data-testid="toggle-property-tax">
-                                Tax
-                              </ToggleGroupItem>
-                              <ToggleGroupItem value="Home Insurance" className="text-xs hover:bg-orange-500 hover:text-white data-[state=on]:bg-orange-500 data-[state=on]:text-white" data-testid="toggle-home-insurance">
-                                Insurance
-                              </ToggleGroupItem>
-                            </ToggleGroup>
-                            <Input
-                              {...form.register('currentLoan.escrowPayment.amount')}
-                              placeholder="$0.00"
-                              data-testid="input-currentLoan-escrowAmount"
-                            />
+                              Toggle
+                            </Button>
                           </div>
+                          <Input
+                            id="currentLoan-escrowPayment"
+                            {...form.register('currentLoan.escrowPayment.amount')}
+                            placeholder="$0.00"
+                            data-testid="input-currentLoan-escrowPayment"
+                          />
                         </div>
                         
                         <div className="space-y-2">
@@ -7160,16 +7297,17 @@ export default function AdminAddClient() {
                         
                         <div className="space-y-2">
                           <Label htmlFor="currentLoan-attachedToProperty">Attached to Property</Label>
-                          <Select value={form.watch('currentLoan.attachedToProperty') || 'Primary Residence'} onValueChange={(value: 'Primary Residence' | 'Second Home' | 'Investment Property' | 'Other') => {
-                            form.setValue('currentLoan.attachedToProperty', value);
-                            if (value === 'Primary Residence') {
-                              setTimeout(() => autoCopyPrimaryResidenceToCurrentLoan(), 100);
+                          <Select value={form.watch('currentLoan.attachedToProperty') || ''} onValueChange={(value) => {
+                            form.setValue('currentLoan.attachedToProperty', value as any);
+                            if (value && value !== '') {
+                              setTimeout(() => autoCopyPropertyAddressToCurrentLoan(), 100);
                             }
                           }}>
                             <SelectTrigger data-testid="select-currentLoan-attachedToProperty">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                             <SelectContent>
+                              <SelectItem value="select">Select</SelectItem>
                               <SelectItem value="Primary Residence">Primary Residence</SelectItem>
                               <SelectItem value="Second Home">Second Home</SelectItem>
                               <SelectItem value="Investment Property">Investment Property</SelectItem>
@@ -7179,10 +7317,12 @@ export default function AdminAddClient() {
                         </div>
                       </div>
                       
-                      {/* Conditional Address Fields - Show when Attached to Property is Primary Residence */}
-                      {form.watch('currentLoan.attachedToProperty') === 'Primary Residence' && (
+                      {/* Conditional Address Fields - Show when Attached to Property is selected */}
+                      {form.watch('currentLoan.attachedToProperty') && form.watch('currentLoan.attachedToProperty') !== '' && (
                         <div className="mt-4 p-4 border-t border-gray-200">
-                          <Label className="text-sm font-medium text-gray-700 mb-3 block">Property Address (Primary Residence)</Label>
+                          <Label className="text-sm font-medium text-gray-700 mb-3 block">
+                            Property Address ({form.watch('currentLoan.attachedToProperty')})
+                          </Label>
                           <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                             <div className="space-y-2 md:col-span-4">
                               <Label htmlFor="currentLoan-property-street">Street Address</Label>
@@ -7190,8 +7330,8 @@ export default function AdminAddClient() {
                                 id="currentLoan-property-street"
                                 {...form.register('currentLoan.propertyAddress.street')}
                                 data-testid="input-currentLoan-property-street"
-                                readOnly
-                                className="bg-gray-50"
+                                readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
+                                className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
                               />
                             </div>
                             
@@ -7201,8 +7341,8 @@ export default function AdminAddClient() {
                                 id="currentLoan-property-unit"
                                 {...form.register('currentLoan.propertyAddress.unit')}
                                 data-testid="input-currentLoan-property-unit"
-                                readOnly
-                                className="bg-gray-50"
+                                readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
+                                className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
                               />
                             </div>
                             
@@ -7212,8 +7352,8 @@ export default function AdminAddClient() {
                                 id="currentLoan-property-city"
                                 {...form.register('currentLoan.propertyAddress.city')}
                                 data-testid="input-currentLoan-property-city"
-                                readOnly
-                                className="bg-gray-50"
+                                readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
+                                className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
                               />
                             </div>
                             
@@ -7223,8 +7363,8 @@ export default function AdminAddClient() {
                                 id="currentLoan-property-state"
                                 {...form.register('currentLoan.propertyAddress.state')}
                                 data-testid="input-currentLoan-property-state"
-                                readOnly
-                                className="bg-gray-50"
+                                readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
+                                className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
                               />
                             </div>
                             
@@ -7234,8 +7374,8 @@ export default function AdminAddClient() {
                                 id="currentLoan-property-zipCode"
                                 {...form.register('currentLoan.propertyAddress.zipCode')}
                                 data-testid="input-currentLoan-property-zipCode"
-                                readOnly
-                                className="bg-gray-50"
+                                readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
+                                className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
                               />
                             </div>
                             
@@ -7245,8 +7385,8 @@ export default function AdminAddClient() {
                                 id="currentLoan-property-county"
                                 {...form.register('currentLoan.propertyAddress.county')}
                                 data-testid="input-currentLoan-property-county"
-                                readOnly
-                                className="bg-gray-50"
+                                readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
+                                className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
                               />
                             </div>
                           </div>
@@ -7255,80 +7395,6 @@ export default function AdminAddClient() {
                     </CardContent>
                   </CollapsibleContent>
                 </Collapsible>
-              </Card>
-
-              {/* New Loan Information */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>New Loan Information</CardTitle>
-                </CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="newLoan-loanAmount">Loan Amount</Label>
-                    <Input
-                      id="newLoan-loanAmount"
-                      {...form.register('newLoan.loanAmount')}
-                      placeholder="$0.00"
-                      data-testid="input-newLoan-loanAmount"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="newLoan-loanProgram">Loan Program</Label>
-                    <Input
-                      id="newLoan-loanProgram"
-                      {...form.register('newLoan.loanProgram')}
-                      data-testid="input-newLoan-loanProgram"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="newLoan-interestRate">Interest Rate</Label>
-                    <Input
-                      id="newLoan-interestRate"
-                      {...form.register('newLoan.interestRate')}
-                      placeholder="0.00%"
-                      data-testid="input-newLoan-interestRate"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="newLoan-loanTerm">Loan Term</Label>
-                    <Input
-                      id="newLoan-loanTerm"
-                      {...form.register('newLoan.loanTerm')}
-                      placeholder="Years"
-                      data-testid="input-newLoan-loanTerm"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="newLoan-loanPurpose">Loan Purpose</Label>
-                    <Select 
-                      value={form.watch('newLoan.loanPurpose') || ''}
-                      onValueChange={(value) => form.setValue('newLoan.loanPurpose', value as any)}
-                    >
-                      <SelectTrigger data-testid="select-newLoan-loanPurpose">
-                        <SelectValue placeholder="Select purpose" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="purchase">Purchase</SelectItem>
-                        <SelectItem value="refinance">Refinance</SelectItem>
-                        <SelectItem value="cash-out">Cash-Out Refinance</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="newLoan-lockPeriod">Lock Period</Label>
-                    <Input
-                      id="newLoan-lockPeriod"
-                      {...form.register('newLoan.lockPeriod')}
-                      placeholder="Days"
-                      data-testid="input-newLoan-lockPeriod"
-                    />
-                  </div>
-                </CardContent>
               </Card>
             </TabsContent>
 

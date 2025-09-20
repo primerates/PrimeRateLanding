@@ -205,7 +205,7 @@ export const currentLoanSchema = z.object({
     mode: z.enum(['Statement Balance', 'Pay Off Demand']).optional(),
     amount: z.string().optional(),
   }).optional(),
-  attachedToProperty: z.enum(['Primary Residence', 'Second Home', 'Investment Property', 'Other']).optional(),
+  attachedToProperty: z.enum(['', 'Primary Residence', 'Second Home', 'Investment Property', 'Other']).optional(),
   propertyAddress: z.object({
     street: z.string().optional(),
     unit: z.string().optional(),
@@ -226,6 +226,7 @@ export const newLoanSchema = z.object({
   interestRate: z.string().optional(),
   loanTerm: z.string().optional(),
   loanPurpose: z.enum(["purchase", "refinance", "cash-out", ""]).optional(),
+  monthlyPayment: z.string().optional(),
   lockPeriod: z.string().optional(),
 });
 
