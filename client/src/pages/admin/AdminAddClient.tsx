@@ -337,7 +337,7 @@ export default function AdminAddClient() {
   };
 
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
-  const [showCurrentLoan, setShowCurrentLoan] = useState(true);
+  const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
   const [isNewLoanOpen, setIsNewLoanOpen] = useState(true);
   const [showSecondLoan, setShowSecondLoan] = useState(false);
