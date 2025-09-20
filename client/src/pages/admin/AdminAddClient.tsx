@@ -1833,6 +1833,215 @@ export default function AdminAddClient() {
     );
   };
 
+  // Read-only version of Current Loan card for Property Tab
+  const ReadOnlyCurrentLoanCard = ({ 
+    idPrefix = 'readonly-', 
+    isOpen, 
+    setIsOpen, 
+    formInstance 
+  }: {
+    idPrefix?: string;
+    isOpen: boolean;
+    setIsOpen: (open: boolean) => void;
+    formInstance?: any;
+  }) => {
+    const contextForm = useFormContext();
+    const targetForm = formInstance || contextForm;
+    
+    // Watch all current loan values for display
+    const currentLender = targetForm.watch('currentLoan.currentLender') || '';
+    const loanNumber = targetForm.watch('currentLoan.loanNumber') || '';
+    const loanStartDate = targetForm.watch('currentLoan.loanStartDate') || '';
+    const remainingTerm = targetForm.watch('currentLoan.remainingTermPerCreditReport') || '';
+    const loanCategory = targetForm.watch('currentLoan.loanCategory') || '';
+    const loanProgram = targetForm.watch('currentLoan.loanProgram') || '';
+    const loanTerm = targetForm.watch('currentLoan.loanTerm') || '';
+    const statementBalance = targetForm.watch('currentLoan.statementBalance.amount') || '';
+    const currentRate = targetForm.watch('currentLoan.currentRate') || '';
+    const principalInterestPayment = targetForm.watch('currentLoan.principalAndInterestPayment') || '';
+    const escrowPayment = targetForm.watch('currentLoan.escrowPayment') || '';
+    const totalMonthlyPayment = targetForm.watch('currentLoan.totalMonthlyPayment') || '';
+    
+    // Click handler to show message
+    const handleFieldClick = () => {
+      alert('Please enter or change data in the loan page');
+    };
+    
+    return (
+      <Card className="opacity-75">
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-gray-600">Current Loan (Read-only)</CardTitle>
+              <CollapsibleTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="hover:bg-orange-500 hover:text-white" 
+                  data-testid={`button-toggle-readonly-current-loan-${idPrefix}`}
+                  title={isOpen ? 'Minimize' : 'Expand'}
+                >
+                  {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                </Button>
+              </CollapsibleTrigger>
+            </div>
+          </CardHeader>
+          <CollapsibleContent>
+            <CardContent className="space-y-4">
+              {/* Row 1: Current Lender, Loan Number, Loan Start Date, Remaining Term */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-gray-500">Current Lender</Label>
+                  <Input
+                    value={currentLender}
+                    readOnly
+                    onClick={handleFieldClick}
+                    className="bg-gray-50 cursor-pointer"
+                    data-testid={`input-readonly-current-lender-${idPrefix}`}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-gray-500">Loan Number</Label>
+                  <Input
+                    value={loanNumber}
+                    readOnly
+                    onClick={handleFieldClick}
+                    className="bg-gray-50 cursor-pointer"
+                    data-testid={`input-readonly-loan-number-${idPrefix}`}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-gray-500">Loan Start Date</Label>
+                  <Input
+                    value={loanStartDate}
+                    readOnly
+                    onClick={handleFieldClick}
+                    className="bg-gray-50 cursor-pointer"
+                    data-testid={`input-readonly-loan-start-date-${idPrefix}`}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-gray-500">Remaining Term Per Credit Report</Label>
+                  <Input
+                    value={remainingTerm}
+                    readOnly
+                    onClick={handleFieldClick}
+                    className="bg-gray-50 cursor-pointer"
+                    data-testid={`input-readonly-remaining-term-${idPrefix}`}
+                  />
+                </div>
+              </div>
+              
+              {/* Row 2: Loan Category, Loan Program, Loan Term, Current Balance */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-gray-500">Loan Category</Label>
+                  <Input
+                    value={loanCategory}
+                    readOnly
+                    onClick={handleFieldClick}
+                    className="bg-gray-50 cursor-pointer"
+                    data-testid={`input-readonly-loan-category-${idPrefix}`}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-gray-500">Loan Program</Label>
+                  <Input
+                    value={loanProgram}
+                    readOnly
+                    onClick={handleFieldClick}
+                    className="bg-gray-50 cursor-pointer"
+                    data-testid={`input-readonly-loan-program-${idPrefix}`}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-gray-500">Loan Duration</Label>
+                  <Input
+                    value={loanTerm}
+                    readOnly
+                    onClick={handleFieldClick}
+                    className="bg-gray-50 cursor-pointer"
+                    data-testid={`input-readonly-loan-term-${idPrefix}`}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-gray-500">Current Balance</Label>
+                  <Input
+                    value={statementBalance}
+                    readOnly
+                    onClick={handleFieldClick}
+                    className="bg-gray-50 cursor-pointer"
+                    data-testid={`input-readonly-statement-balance-${idPrefix}`}
+                  />
+                </div>
+              </div>
+              
+              {/* Row 3: Payment Details */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-gray-500">Current Rate</Label>
+                  <Input
+                    value={currentRate ? `${currentRate}%` : ''}
+                    readOnly
+                    onClick={handleFieldClick}
+                    className="bg-gray-50 cursor-pointer"
+                    data-testid={`input-readonly-current-rate-${idPrefix}`}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-gray-500">Principal & Interest Payment</Label>
+                  <Input
+                    value={principalInterestPayment}
+                    readOnly
+                    onClick={handleFieldClick}
+                    className="bg-gray-50 cursor-pointer"
+                    data-testid={`input-readonly-principal-interest-payment-${idPrefix}`}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-gray-500">Escrow Payment</Label>
+                  <Input
+                    value={escrowPayment}
+                    readOnly
+                    onClick={handleFieldClick}
+                    className="bg-gray-50 cursor-pointer"
+                    data-testid={`input-readonly-escrow-payment-${idPrefix}`}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-gray-500">Total Monthly Payment</Label>
+                  <Input
+                    value={totalMonthlyPayment}
+                    readOnly
+                    onClick={handleFieldClick}
+                    className="bg-gray-50 cursor-pointer"
+                    data-testid={`input-readonly-total-monthly-payment-${idPrefix}`}
+                  />
+                </div>
+              </div>
+              
+              {/* Note about editing */}
+              <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                <p className="text-sm text-blue-700 text-center">
+                  <strong>Note:</strong> To edit loan information, please go to the Loan Tab
+                </p>
+              </div>
+            </CardContent>
+          </CollapsibleContent>
+        </Collapsible>
+      </Card>
+    );
+  };
+
 
   // Pension management helper functions
   const generateUniqueId = (): string => {
@@ -7402,14 +7611,12 @@ export default function AdminAddClient() {
                             )}
 
                             {/* Current Loan Cards - Only show for Primary Residence when activeSecuredLoan is 'yes' */}
-                            {property.use === 'primary' && form.watch(`property.properties.${index}.activeSecuredLoan` as const) === 'yes' && (
+                            {property.use === 'primary' && form.watch(`property.properties.${index}.activeSecuredLoan` as const) === 'yes' && showCurrentLoan && (
                               <div className="border-2 border-dashed border-gray-500 rounded-md p-4 space-y-4">
-                                <CurrentLoanCard
+                                <ReadOnlyCurrentLoanCard
                                   idPrefix="property-"
-                                  borderVariant="none"
                                   isOpen={isLoanDetailsOpen[propertyId] ?? true}
                                   setIsOpen={() => toggleLoanDetailsOpen(propertyId)}
-                                  onAutoCopyAddress={autoCopyPropertyAddressToCurrentLoan}
                                   formInstance={form}
                                 />
                               </div>
