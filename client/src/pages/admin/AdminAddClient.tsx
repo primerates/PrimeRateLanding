@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation } from 'wouter';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -1275,6 +1275,86 @@ export default function AdminAddClient() {
       form.setValue('income.otherIncomeMonthlyAmount', '');
     }
   }, [form.watch('property.properties')]);
+
+  // Bidirectional sync between Property Tab (Primary Residence) and Loan Tab (Current Loan)
+  const syncInProgress = useRef(false);
+  
+  useEffect(() => {
+    // Field mapping configuration
+    const fieldMappings = [
+      {
+        propertyPath: 'hoaFee',
+        loanPath: 'hoaPayment'
+      },
+      {
+        propertyPath: 'loan.lenderName',
+        loanPath: 'currentLender'
+      },
+      {
+        propertyPath: 'loan.loanNumber',
+        loanPath: 'loanNumber'
+      },
+      {
+        propertyPath: 'loan.mortgageBalance',
+        loanPath: 'statementBalance.amount'
+      },
+      {
+        propertyPath: 'loan.piPayment',
+        loanPath: 'principalAndInterestPayment'
+      },
+      {
+        propertyPath: 'loan.escrowPayment',
+        loanPath: 'escrowPayment.amount'
+      }
+    ];
+
+    const subscription = form.watch((value, { name }) => {
+      if (!name || syncInProgress.current) return;
+      
+      const properties = value.property?.properties || [];
+      const primaryPropertyIndex = properties.findIndex(p => p?.use === 'primary');
+      
+      if (primaryPropertyIndex < 0) return;
+      
+      syncInProgress.current = true;
+      
+      // Check if the changed field is a property field that should sync to loan
+      for (const mapping of fieldMappings) {
+        const propertyFieldPath = `property.properties.${primaryPropertyIndex}.${mapping.propertyPath}`;
+        const loanFieldPath = `currentLoan.${mapping.loanPath}`;
+        
+        if (name === propertyFieldPath) {
+          const sourceValue = getNestedValue(value, propertyFieldPath) ?? '';
+          const targetValue = getNestedValue(value, loanFieldPath) ?? '';
+          
+          if (sourceValue !== targetValue) {
+            form.setValue(loanFieldPath as any, sourceValue, { shouldDirty: true });
+          }
+          break;
+        }
+        
+        // Check if the changed field is a loan field that should sync to property
+        if (name === loanFieldPath) {
+          const sourceValue = getNestedValue(value, loanFieldPath) ?? '';
+          const targetValue = getNestedValue(value, propertyFieldPath) ?? '';
+          
+          if (sourceValue !== targetValue) {
+            form.setValue(propertyFieldPath as any, sourceValue, { shouldDirty: true });
+          }
+          break;
+        }
+      }
+      
+      syncInProgress.current = false;
+    });
+
+    return subscription.unsubscribe;
+  }, []);
+  
+  // Helper function to get nested value from object path
+  const getNestedValue = (obj: any, path: string): string | undefined => {
+    return path.split('.').reduce((current, key) => current?.[key], obj);
+  };
 
   // Pension management helper functions
   const generateUniqueId = (): string => {
@@ -8468,7 +8548,7 @@ export default function AdminAddClient() {
                           </div>
                           
                           {/* Conditional Address Fields - Show when Attached to Property is selected */}
-                          {form.watch('thirdLoan.attachedToProperty') && form.watch('thirdLoan.attachedToProperty') !== '' && ['Primary Residence', 'Second Home', 'Investment Property', 'Other'].includes(form.watch('thirdLoan.attachedToProperty')) && (
+                          {form.watch('thirdLoan.attachedToProperty') && form.watch('thirdLoan.attachedToProperty') !== '' && ['Primary Residence', 'Second Home', 'Investment Property', 'Other'].includes(form.watch('thirdLoan.attachedToProperty') || '') && (
                             <div className="mt-4 p-4 border-t border-gray-200">
                               <Label className="text-sm font-medium text-gray-700 mb-3 block">
                                 Property Address ({form.watch('thirdLoan.attachedToProperty')})
