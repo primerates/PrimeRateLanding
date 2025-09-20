@@ -2892,7 +2892,7 @@ export default function AdminAddClient() {
                 <Card>
                   <Collapsible open={isCoBorrowerResidenceOpen} onOpenChange={setIsCoBorrowerResidenceOpen}>
                     <CardHeader className="flex flex-row items-center justify-between">
-                      <CardTitle>Co-Borrower Residence Address</CardTitle>
+                      <CardTitle>Co-Borrower's Residence Address</CardTitle>
                       <div className="flex items-center gap-2">
                         <Button
                           type="button"
