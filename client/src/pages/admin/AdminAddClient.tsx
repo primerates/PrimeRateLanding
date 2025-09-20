@@ -1520,12 +1520,16 @@ export default function AdminAddClient() {
                 
                 <div className="space-y-2">
                   <Label htmlFor="currentLoan-currentBalance">Current Balance</Label>
-                  <Input
-                    id="currentLoan-currentBalance"
-                    {...form.register('currentLoan.statementBalance.amount')}
-                    placeholder="$0.00"
-                    data-testid="input-currentLoan-currentBalance"
-                  />
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="currentLoan-currentBalance"
+                      {...form.register('currentLoan.statementBalance.amount')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-currentLoan-currentBalance"
+                    />
+                  </div>
                 </div>
               </div>
               
@@ -1533,12 +1537,16 @@ export default function AdminAddClient() {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="currentLoan-currentRate">Current Rate</Label>
-                  <Input
-                    id="currentLoan-currentRate"
-                    {...form.register('currentLoan.currentRate')}
-                    placeholder="0.00%"
-                    data-testid="input-currentLoan-currentRate"
-                  />
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <Input
+                      id="currentLoan-currentRate"
+                      {...form.register('currentLoan.currentRate')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-currentLoan-currentRate"
+                    />
+                    <span className="text-muted-foreground text-sm">%</span>
+                  </div>
                 </div>
                 
                 <div className="space-y-2">
