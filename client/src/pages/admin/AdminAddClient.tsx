@@ -786,7 +786,6 @@ export default function AdminAddClient() {
           type: 'Escrow payment' as const,
         },
         totalMonthlyPayment: '',
-        hoaPayment: '',
         prepaymentPenalty: 'No' as const,
         statementBalance: {
           mode: 'Statement Balance' as const,
@@ -1282,10 +1281,6 @@ export default function AdminAddClient() {
   useEffect(() => {
     // Field mapping configuration
     const fieldMappings = [
-      {
-        propertyPath: 'hoaFee',
-        loanPath: 'hoaPayment'
-      },
       {
         propertyPath: 'loan.lenderName',
         loanPath: 'currentLender'
@@ -2210,7 +2205,6 @@ export default function AdminAddClient() {
       appraisedValue: '',
       ownedSince: '',
       purchasePrice: '',
-      hoaFee: '',
       loan: {
         lenderName: '',
         loanNumber: '',
@@ -7336,15 +7330,6 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
-                              <div className="space-y-2">
-                                <Label htmlFor={`property-hoa-fee-${propertyId}`}>HOA Fee</Label>
-                                <Input
-                                  id={`property-hoa-fee-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.hoaFee` as const)}
-                                  placeholder="$0.00"
-                                  data-testid={`input-property-hoa-fee-${propertyId}`}
-                                />
-                              </div>
                             </div>
 
                             {/* Active Secured Loans for Investment Properties - Below Owned Since */}
@@ -7487,11 +7472,11 @@ export default function AdminAddClient() {
 
                             {/* Current Loan Cards - Only show for Primary Residence when activeSecuredLoan is 'yes' */}
                             {property.use === 'primary' && form.watch(`property.properties.${index}.activeSecuredLoan` as const) === 'yes' && (
-                              <div className="border-l-4 border-l-green-500 pl-4 space-y-4">
+                              <div className="border-2 border-dashed border-gray-300 p-4 space-y-4">
                                 <CurrentLoanCard
                                   mode="mirror"
                                   idPrefix="property-"
-                                  borderVariant="blue"
+                                  borderVariant="none"
                                   isOpen={isLoanDetailsOpen[propertyId] ?? true}
                                   setIsOpen={() => toggleLoanDetailsOpen(propertyId)}
                                   onAutoCopyAddress={autoCopyPropertyAddressToCurrentLoan}
