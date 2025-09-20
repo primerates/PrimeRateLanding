@@ -50,43 +50,46 @@ export function formatPreApprovalEmail(data: any, coBorrowerData?: any) {
     <h2>New Pre-Approval Application</h2>
     
     <h3>Borrower Information</h3>
-    <p><strong>Name:</strong> ${data.fullName}</p>
-    <p><strong>Email:</strong> ${data.email}</p>
-    <p><strong>Phone:</strong> ${data.phone}</p>
-    <p><strong>State:</strong> ${data.state}</p>
+    <p><strong>Name:</strong> ${data.fullName || 'Not provided'}</p>
+    <p><strong>Email:</strong> ${data.email || 'Not provided'}</p>
+    <p><strong>Phone:</strong> ${data.phone || 'Not provided'}</p>
+    <p><strong>Address:</strong> ${data.streetAddress || ''} ${data.unitApt || ''}, ${data.city || ''}, ${data.state || ''} ${data.zipCode || ''}</p>
     
-    <h3>Employment & Income</h3>
-    <p><strong>Employment Status:</strong> ${data.employmentStatus}</p>
-    <p><strong>Annual Income:</strong> $${data.annualIncome}</p>
-    <p><strong>Years at Current Job:</strong> ${data.yearsAtJob}</p>
-    
-    <h3>Financial Information</h3>
-    <p><strong>Monthly Debts:</strong> $${data.monthlyDebts}</p>
-    <p><strong>Assets/Savings:</strong> $${data.assets}</p>
+    <h3>Income Information</h3>
+    <p><strong>Income Source:</strong> ${data.incomeSource || 'Not provided'}</p>
+    <p><strong>Gross Annual Income:</strong> $${data.grossAnnualIncome || 'Not provided'}</p>
     
     <h3>Loan Details</h3>
-    <p><strong>Desired Loan Amount:</strong> $${data.desiredLoanAmount}</p>
-    <p><strong>Down Payment:</strong> $${data.downPayment}</p>
-    <p><strong>Property Value:</strong> $${data.propertyValue}</p>
+    <p><strong>Loan Purpose:</strong> ${data.loanPurpose || 'Not provided'}</p>
+    <p><strong>Property Type:</strong> ${data.propertyType || 'Not provided'}</p>
+    <p><strong>Desired Loan Amount:</strong> $${data.desiredLoanAmount || 'Not provided'}</p>
+    ${data.downPayment ? `<p><strong>Down Payment:</strong> $${data.downPayment}</p>` : ''}
+    ${data.desiredCashAmount ? `<p><strong>Desired Cash Amount:</strong> $${data.desiredCashAmount}</p>` : ''}
+    <p><strong>Estimated Property Value:</strong> $${data.estimatedPropertyValue || 'Not provided'}</p>
     
-    <h3>Property Information</h3>
-    <p><strong>Property Type:</strong> ${data.propertyType}</p>
-    <p><strong>Intended Use:</strong> ${data.intendedUse}</p>
-    <p><strong>Timeline to Purchase:</strong> ${data.timelineToPurchase}</p>
+    ${data.loanPurpose === 'purchase' ? `
+    <h3>Purchase Details</h3>
+    <p><strong>First Time Home Buyer:</strong> ${data.firstTimeBuyer || 'Not provided'}</p>
+    <p><strong>Timeline to Purchase:</strong> ${data.timelineToPurchase || 'Not provided'}</p>
+    ` : ''}
+    
+    ${data.loanPurpose?.startsWith('refinance') ? `
+    <h3>Refinance Details</h3>
+    <p><strong>Appraisal Completed:</strong> ${data.appraisalCompleted || 'Not provided'}</p>
+    ` : ''}
     
     ${data.additionalInfo ? `<h3>Additional Information</h3><p>${data.additionalInfo}</p>` : ''}
     
     ${coBorrowerData ? `
     <h3>Co-Borrower Information</h3>
-    <p><strong>Name:</strong> ${coBorrowerData.fullName}</p>
-    <p><strong>Email:</strong> ${coBorrowerData.email}</p>
-    <p><strong>Phone:</strong> ${coBorrowerData.phone}</p>
-    <p><strong>State:</strong> ${coBorrowerData.state}</p>
-    <p><strong>Employment Status:</strong> ${coBorrowerData.employmentStatus}</p>
-    <p><strong>Annual Income:</strong> $${coBorrowerData.annualIncome}</p>
-    <p><strong>Years at Job:</strong> ${coBorrowerData.yearsAtJob}</p>
-    <p><strong>Monthly Debts:</strong> $${coBorrowerData.monthlyDebts}</p>
-    <p><strong>Assets:</strong> $${coBorrowerData.assets}</p>
+    <p><strong>Name:</strong> ${coBorrowerData.fullName || 'Not provided'}</p>
+    <p><strong>Email:</strong> ${coBorrowerData.email || 'Not provided'}</p>
+    <p><strong>Phone:</strong> ${coBorrowerData.phone || 'Not provided'}</p>
+    ${!coBorrowerData.sameAsBorrower ? `
+    <p><strong>Address:</strong> ${coBorrowerData.streetAddress || ''} ${coBorrowerData.unitApt || ''}, ${coBorrowerData.city || ''}, ${coBorrowerData.state || ''} ${coBorrowerData.zipCode || ''}</p>
+    ` : '<p><strong>Address:</strong> Same as borrower</p>'}
+    <p><strong>Income Source:</strong> ${coBorrowerData.incomeSource || 'Not provided'}</p>
+    <p><strong>Gross Annual Income:</strong> $${coBorrowerData.grossAnnualIncome || 'Not provided'}</p>
     ` : ''}
   `;
   

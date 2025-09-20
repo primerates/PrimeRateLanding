@@ -13,7 +13,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Pre-Approval Form Submission
   app.post("/api/pre-approval", async (req, res) => {
     try {
+      console.log("Pre-approval request body:", JSON.stringify(req.body, null, 2));
+      
       const { preApprovalData, coBorrowerData } = req.body;
+      
+      // Check if preApprovalData exists
+      if (!preApprovalData) {
+        console.error("preApprovalData is missing from request body");
+        return res.status(400).json({ success: false, message: "Pre-approval data is required" });
+      }
+      
+      console.log("Pre-approval data:", JSON.stringify(preApprovalData, null, 2));
+      console.log("Co-borrower data:", JSON.stringify(coBorrowerData, null, 2));
       
       const emailHtml = formatPreApprovalEmail(preApprovalData, coBorrowerData);
       
@@ -21,7 +32,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const emailSuccess = await sendEmail({
         to: TARGET_EMAIL,
         from: FROM_EMAIL,
-        subject: `New Pre-Approval Application from ${preApprovalData.fullName}`,
+        subject: `New Pre-Approval Application from ${preApprovalData?.fullName || 'Unknown'}`,
         html: emailHtml
       });
 
@@ -33,6 +44,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ success: true, message: "Pre-approval application received successfully" });
     } catch (error) {
       console.error("Pre-approval submission error:", error);
+      console.error("Error stack:", error.stack);
       res.status(500).json({ success: false, message: "Server error" });
     }
   });

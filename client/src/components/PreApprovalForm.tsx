@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Send } from 'lucide-react';
 
 // Shared field options constants
 export const INCOME_SOURCE_OPTIONS = [
@@ -97,6 +99,7 @@ export const DEFAULT_PRE_APPROVAL_DATA = {
   grossAnnualIncome: '',
   loanPurpose: '',
   propertyType: '',
+  desiredCashAmount: '',
   desiredLoanAmount: '',
   downPayment: '',
   estimatedPropertyValue: '',
@@ -146,6 +149,28 @@ export default function PreApprovalForm({
   const [preApprovalSubmitted, setPreApprovalSubmitted] = useState(false);
   const [preApprovalErrors, setPreApprovalErrors] = useState<{[key: string]: boolean}>({});
   const [coBorrowerErrors, setCoBorrowerErrors] = useState<{[key: string]: boolean}>({});
+  
+  // Paper plane animation state
+  const [showPlaneAnimation, setShowPlaneAnimation] = useState(false);
+  
+  // Create a circular looping path (roundabout effect)
+  const circlePath = () => {
+    const x = [];
+    const y = [];
+    const radius = 120;
+    const loops = 2; // how many times it circles
+    const steps = 40; // smoothness
+
+    for (let i = 0; i <= loops * steps; i++) {
+      const angle = (i / steps) * 2 * Math.PI;
+      x.push(Math.cos(angle) * radius);
+      y.push(Math.sin(angle) * radius * 0.6 - i * 3); // tilt downward slightly as it circles
+    }
+
+    return { x, y };
+  };
+  
+  const [planePath, setPlanePath] = useState(circlePath());
 
   const formatPhoneNumber = (value: string) => {
     const digits = value.replace(/\D/g, '');
@@ -196,9 +221,11 @@ export default function PreApprovalForm({
 
   const validatePreApproval = () => {
     const errors: {[key: string]: boolean} = {};
+    
+    // Base required fields (excluding conditional ones)
     const required = ['fullName', 'email', 'phone', 'streetAddress', 'city', 'state', 'zipCode',
                      'incomeSource', 'grossAnnualIncome', 'loanPurpose', 'propertyType', 
-                     'desiredLoanAmount', 'downPayment', 'estimatedPropertyValue'];
+                     'desiredLoanAmount', 'estimatedPropertyValue'];
     
     required.forEach(field => {
       if (!preApprovalData[field as keyof typeof preApprovalData]?.trim()) {
@@ -206,13 +233,24 @@ export default function PreApprovalForm({
       }
     });
 
-    // Conditional validation for loan purpose
+    // Conditional validation based on loan purpose
     if (preApprovalData.loanPurpose === 'purchase') {
+      // Down payment is only required for purchase
+      if (!preApprovalData.downPayment?.trim()) {
+        errors.downPayment = true;
+      }
       if (!preApprovalData.firstTimeBuyer?.trim()) {
         errors.firstTimeBuyer = true;
       }
       if (!preApprovalData.timelineToPurchase?.trim()) {
         errors.timelineToPurchase = true;
+      }
+    }
+
+    if (preApprovalData.loanPurpose === 'refinance-cash-out') {
+      // Desired cash amount is only required for cash-out refinance
+      if (!preApprovalData.desiredCashAmount?.trim()) {
+        errors.desiredCashAmount = true;
       }
     }
 
@@ -247,15 +285,20 @@ export default function PreApprovalForm({
   const submitPreApproval = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Only trigger animation and submit if validation passes
     if (!validatePreApproval()) {
       return;
     }
 
+    // Trigger paper plane animation
+    setPlanePath(circlePath());
+    setShowPlaneAnimation(true);
+
     try {
       setPreApprovalSubmitting(true);
       const payload = {
-        ...preApprovalData,
-        ...(preApprovalData.addCoBorrower === 'yes' ? { coBorrower: coBorrowerData } : {})
+        preApprovalData: preApprovalData,
+        ...(preApprovalData.addCoBorrower === 'yes' ? { coBorrowerData: coBorrowerData } : {})
       };
 
       const response = await fetch('/api/pre-approval', {
@@ -278,6 +321,20 @@ export default function PreApprovalForm({
     }
   };
 
+  // Helper function to get error styling for inputs
+  const getInputClassName = (fieldName: string, isSelect = false) => {
+    const hasError = preApprovalErrors[fieldName];
+    const baseClass = isSelect ? "" : "";
+    return hasError ? `${baseClass} border-red-500 border-2` : baseClass;
+  };
+
+  // Helper function to get error styling for co-borrower inputs
+  const getCoBorrowerInputClassName = (fieldName: string, isSelect = false) => {
+    const hasError = coBorrowerErrors[fieldName];
+    const baseClass = isSelect ? "" : "";
+    return hasError ? `${baseClass} border-red-500 border-2` : baseClass;
+  };
+
   const testIdPrefix = contextLabel === 'hero' ? 'hero-' : 'contact-';
 
   return (
@@ -294,6 +351,7 @@ export default function PreApprovalForm({
               onChange={(e) => setPreApprovalData(prev => ({ ...prev, fullName: e.target.value }))}
               placeholder="Enter your full name"
               data-testid={`input-${testIdPrefix}full-name`}
+              className={getInputClassName('fullName')}
               required
             />
           </div>
@@ -306,6 +364,7 @@ export default function PreApprovalForm({
               onChange={(e) => setPreApprovalData(prev => ({ ...prev, email: e.target.value }))}
               placeholder="Enter your email"
               data-testid={`input-${testIdPrefix}email`}
+              className={getInputClassName('email')}
               required
             />
           </div>
@@ -318,23 +377,10 @@ export default function PreApprovalForm({
               onChange={(e) => handlePreApprovalPhoneChange(e.target.value)}
               placeholder="(xxx) xxx-xxxx"
               data-testid={`input-${testIdPrefix}phone`}
+              className={getInputClassName('phone')}
               required
               maxLength={14}
             />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-2">State</label>
-            <Select value={preApprovalData.state} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, state: value }))}>
-              <SelectTrigger data-testid={`select-${testIdPrefix}state`}>
-                <SelectValue placeholder="Select state" />
-              </SelectTrigger>
-              <SelectContent>
-                {STATES_OPTIONS.map(state => (
-                  <SelectItem key={state.value} value={state.value}>{state.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </div>
 
           <div>
@@ -345,6 +391,7 @@ export default function PreApprovalForm({
               onChange={(e) => setPreApprovalData(prev => ({ ...prev, streetAddress: e.target.value }))}
               placeholder="Enter street address"
               data-testid={`input-${testIdPrefix}street-address`}
+              className={getInputClassName('streetAddress')}
               required
             />
           </div>
@@ -368,8 +415,23 @@ export default function PreApprovalForm({
               onChange={(e) => setPreApprovalData(prev => ({ ...prev, city: e.target.value }))}
               placeholder="Enter city"
               data-testid={`input-${testIdPrefix}city`}
+              className={getInputClassName('city')}
               required
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2">State</label>
+            <Select value={preApprovalData.state} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, state: value }))}>
+              <SelectTrigger data-testid={`select-${testIdPrefix}state`} className={getInputClassName('state', true)}>
+                <SelectValue placeholder="Select state" />
+              </SelectTrigger>
+              <SelectContent>
+                {STATES_OPTIONS.map(state => (
+                  <SelectItem key={state.value} value={state.value}>{state.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div>
@@ -380,6 +442,7 @@ export default function PreApprovalForm({
               onChange={(e) => setPreApprovalData(prev => ({ ...prev, zipCode: e.target.value }))}
               placeholder="Enter zip code"
               data-testid={`input-${testIdPrefix}zip-code`}
+              className={getInputClassName('zipCode')}
               required
             />
           </div>
@@ -393,7 +456,7 @@ export default function PreApprovalForm({
           <div>
             <label className="block text-sm font-medium mb-2">Income Source</label>
             <Select value={preApprovalData.incomeSource} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, incomeSource: value }))}>
-              <SelectTrigger data-testid={`select-${testIdPrefix}income-source`}>
+              <SelectTrigger data-testid={`select-${testIdPrefix}income-source`} className={getInputClassName('incomeSource', true)}>
                 <SelectValue placeholder="Select income source" />
               </SelectTrigger>
               <SelectContent>
@@ -412,6 +475,7 @@ export default function PreApprovalForm({
               onChange={(e) => setPreApprovalData(prev => ({ ...prev, grossAnnualIncome: e.target.value }))}
               placeholder="$75,000"
               data-testid={`input-${testIdPrefix}gross-annual-income`}
+              className={getInputClassName('grossAnnualIncome')}
               required
             />
           </div>
@@ -425,7 +489,7 @@ export default function PreApprovalForm({
           <div>
             <label className="block text-sm font-medium mb-2">Loan Purpose</label>
             <Select value={preApprovalData.loanPurpose} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, loanPurpose: value }))}>
-              <SelectTrigger data-testid={`select-${testIdPrefix}loan-purpose`}>
+              <SelectTrigger data-testid={`select-${testIdPrefix}loan-purpose`} className={getInputClassName('loanPurpose', true)}>
                 <SelectValue placeholder="Select loan purpose" />
               </SelectTrigger>
               <SelectContent>
@@ -439,7 +503,7 @@ export default function PreApprovalForm({
           <div>
             <label className="block text-sm font-medium mb-2">Property Type</label>
             <Select value={preApprovalData.propertyType} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, propertyType: value }))}>
-              <SelectTrigger data-testid={`select-${testIdPrefix}property-type`}>
+              <SelectTrigger data-testid={`select-${testIdPrefix}property-type`} className={getInputClassName('propertyType', true)}>
                 <SelectValue placeholder="Select property type" />
               </SelectTrigger>
               <SelectContent>
@@ -458,21 +522,42 @@ export default function PreApprovalForm({
               onChange={(e) => setPreApprovalData(prev => ({ ...prev, desiredLoanAmount: e.target.value }))}
               placeholder="$400,000"
               data-testid={`input-${testIdPrefix}loan-amount`}
+              className={getInputClassName('desiredLoanAmount')}
               required
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">Down Payment</label>
-            <Input
-              type="number"
-              value={preApprovalData.downPayment}
-              onChange={(e) => setPreApprovalData(prev => ({ ...prev, downPayment: e.target.value }))}
-              placeholder="$80,000"
-              data-testid={`input-${testIdPrefix}down-payment`}
-              required
-            />
-          </div>
+          {/* Conditional Down Payment Field - only show for purchase */}
+          {preApprovalData.loanPurpose === 'purchase' && (
+            <div>
+              <label className="block text-sm font-medium mb-2">Down Payment</label>
+              <Input
+                type="number"
+                value={preApprovalData.downPayment}
+                onChange={(e) => setPreApprovalData(prev => ({ ...prev, downPayment: e.target.value }))}
+                placeholder="$80,000"
+                data-testid={`input-${testIdPrefix}down-payment`}
+                className={getInputClassName('downPayment')}
+                required
+              />
+            </div>
+          )}
+
+          {/* Conditional Desired Cash Amount Field - only show for cash-out refinance */}
+          {preApprovalData.loanPurpose === 'refinance-cash-out' && (
+            <div>
+              <label className="block text-sm font-medium mb-2">Desired Cash Amount</label>
+              <Input
+                type="number"
+                value={preApprovalData.desiredCashAmount}
+                onChange={(e) => setPreApprovalData(prev => ({ ...prev, desiredCashAmount: e.target.value }))}
+                placeholder="$50,000"
+                data-testid={`input-${testIdPrefix}desired-cash-amount`}
+                className={getInputClassName('desiredCashAmount')}
+                required
+              />
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium mb-2">Estimated Property Value</label>
@@ -482,6 +567,7 @@ export default function PreApprovalForm({
               onChange={(e) => setPreApprovalData(prev => ({ ...prev, estimatedPropertyValue: e.target.value }))}
               placeholder="$480,000"
               data-testid={`input-${testIdPrefix}estimated-property-value`}
+              className={getInputClassName('estimatedPropertyValue')}
               required
             />
           </div>
@@ -493,7 +579,7 @@ export default function PreApprovalForm({
             <div>
               <label className="block text-sm font-medium mb-2">First Time Home Buyer?</label>
               <Select value={preApprovalData.firstTimeBuyer} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, firstTimeBuyer: value }))}>
-                <SelectTrigger data-testid={`select-${testIdPrefix}first-time-buyer`}>
+                <SelectTrigger data-testid={`select-${testIdPrefix}first-time-buyer`} className={getInputClassName('firstTimeBuyer', true)}>
                   <SelectValue placeholder="Select option" />
                 </SelectTrigger>
                 <SelectContent>
@@ -506,7 +592,7 @@ export default function PreApprovalForm({
             <div>
               <label className="block text-sm font-medium mb-2">Timeline to Purchase</label>
               <Select value={preApprovalData.timelineToPurchase} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, timelineToPurchase: value }))}>
-                <SelectTrigger data-testid={`select-${testIdPrefix}timeline-purchase`}>
+                <SelectTrigger data-testid={`select-${testIdPrefix}timeline-purchase`} className={getInputClassName('timelineToPurchase', true)}>
                   <SelectValue placeholder="Select timeline" />
                 </SelectTrigger>
                 <SelectContent>
@@ -527,7 +613,7 @@ export default function PreApprovalForm({
             <div>
               <label className="block text-sm font-medium mb-2">Have you completed an appraisal?</label>
               <Select value={preApprovalData.appraisalCompleted} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, appraisalCompleted: value }))}>
-                <SelectTrigger data-testid={`select-${testIdPrefix}appraisal-completed`}>
+                <SelectTrigger data-testid={`select-${testIdPrefix}appraisal-completed`} className={getInputClassName('appraisalCompleted', true)}>
                   <SelectValue placeholder="Select option" />
                 </SelectTrigger>
                 <SelectContent>
@@ -596,6 +682,7 @@ export default function PreApprovalForm({
                   onChange={(e) => setCoBorrowerData(prev => ({ ...prev, fullName: e.target.value }))}
                   placeholder="Enter co-borrower's full name"
                   data-testid={`input-${testIdPrefix}co-borrower-name`}
+                  className={getCoBorrowerInputClassName('fullName')}
                 />
               </div>
 
@@ -607,6 +694,7 @@ export default function PreApprovalForm({
                   onChange={(e) => setCoBorrowerData(prev => ({ ...prev, email: e.target.value }))}
                   placeholder="Enter co-borrower's email"
                   data-testid={`input-${testIdPrefix}co-borrower-email`}
+                  className={getCoBorrowerInputClassName('email')}
                 />
               </div>
 
@@ -618,6 +706,7 @@ export default function PreApprovalForm({
                   onChange={(e) => handleCoBorrowerPhoneChange(e.target.value)}
                   placeholder="(xxx) xxx-xxxx"
                   data-testid={`input-${testIdPrefix}co-borrower-phone`}
+                  className={getCoBorrowerInputClassName('phone')}
                   maxLength={14}
                 />
               </div>
@@ -648,6 +737,7 @@ export default function PreApprovalForm({
                     onChange={(e) => setCoBorrowerData(prev => ({ ...prev, streetAddress: e.target.value }))}
                     placeholder="Enter street address"
                     data-testid={`input-${testIdPrefix}co-borrower-street-address`}
+                    className={getCoBorrowerInputClassName('streetAddress')}
                     disabled={coBorrowerData.sameAsBorrower}
                     required={!coBorrowerData.sameAsBorrower}
                   />
@@ -673,6 +763,7 @@ export default function PreApprovalForm({
                     onChange={(e) => setCoBorrowerData(prev => ({ ...prev, city: e.target.value }))}
                     placeholder="Enter city"
                     data-testid={`input-${testIdPrefix}co-borrower-city`}
+                    className={getCoBorrowerInputClassName('city')}
                     disabled={coBorrowerData.sameAsBorrower}
                     required={!coBorrowerData.sameAsBorrower}
                   />
@@ -685,7 +776,7 @@ export default function PreApprovalForm({
                     onValueChange={(value) => setCoBorrowerData(prev => ({ ...prev, state: value }))}
                     disabled={coBorrowerData.sameAsBorrower}
                   >
-                    <SelectTrigger data-testid={`select-${testIdPrefix}co-borrower-state`}>
+                    <SelectTrigger data-testid={`select-${testIdPrefix}co-borrower-state`} className={getCoBorrowerInputClassName('state', true)}>
                       <SelectValue placeholder="Select state" />
                     </SelectTrigger>
                     <SelectContent>
@@ -704,6 +795,7 @@ export default function PreApprovalForm({
                     onChange={(e) => setCoBorrowerData(prev => ({ ...prev, zipCode: e.target.value }))}
                     placeholder="Enter zip code"
                     data-testid={`input-${testIdPrefix}co-borrower-zip-code`}
+                    className={getCoBorrowerInputClassName('zipCode')}
                     disabled={coBorrowerData.sameAsBorrower}
                     required={!coBorrowerData.sameAsBorrower}
                   />
@@ -718,7 +810,7 @@ export default function PreApprovalForm({
                 <div>
                   <label className="block text-sm font-medium mb-2">Income Source</label>
                   <Select value={coBorrowerData.incomeSource} onValueChange={(value) => setCoBorrowerData(prev => ({ ...prev, incomeSource: value }))}>
-                    <SelectTrigger data-testid={`select-${testIdPrefix}co-borrower-income-source`}>
+                    <SelectTrigger data-testid={`select-${testIdPrefix}co-borrower-income-source`} className={getCoBorrowerInputClassName('incomeSource', true)}>
                       <SelectValue placeholder="Select income source" />
                     </SelectTrigger>
                     <SelectContent>
@@ -737,6 +829,7 @@ export default function PreApprovalForm({
                     onChange={(e) => setCoBorrowerData(prev => ({ ...prev, grossAnnualIncome: e.target.value }))}
                     placeholder="$75,000"
                     data-testid={`input-${testIdPrefix}co-borrower-gross-annual-income`}
+                    className={getCoBorrowerInputClassName('grossAnnualIncome')}
                     required
                   />
                 </div>
@@ -748,13 +841,56 @@ export default function PreApprovalForm({
 
       <Button 
         type="submit" 
-        className="w-full" 
+        className="w-full relative overflow-hidden" 
         size="lg"
         data-testid={`button-submit-${testIdPrefix}pre-approval`}
         disabled={preApprovalSubmitting}
       >
-        {preApprovalSubmitting ? 'Submitting...' : 'Submit Pre-Approval Application'}
+        <Send className="w-4 h-4 mr-2" />
+        {preApprovalSubmitting ? 'Submitting...' : 'Submit Pre-Approval Request'}
       </Button>
+
+      {/* Paper Plane Animation */}
+      <AnimatePresence>
+        {showPlaneAnimation && (
+          <motion.div
+            className="fixed inset-0 pointer-events-none z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onAnimationComplete={() => {
+              setTimeout(() => setShowPlaneAnimation(false), 2000);
+            }}
+          >
+            <motion.div
+              className="absolute text-3xl"
+              initial={{ 
+                x: '50vw', 
+                y: '50vh',
+                rotate: 0,
+                scale: 1
+              }}
+              animate={{
+                x: ['50vw', '60vw', '50vw', '40vw', '50vw'],
+                y: ['50vh', '40vh', '30vh', '40vh', '50vh'],
+                rotate: [0, 90, 180, 270, 360],
+                scale: [1, 1.2, 0.8, 1.2, 1]
+              }}
+              transition={{
+                duration: 3,
+                ease: "easeInOut",
+                repeat: 0,
+                times: [0, 0.25, 0.5, 0.75, 1]
+              }}
+              style={{
+                transformOrigin: 'center'
+              }}
+            >
+              ✈️
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </form>
   );
 }

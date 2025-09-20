@@ -261,7 +261,8 @@ export const preApprovalDataSchema = z.object({
   // Loan details
   loanPurpose: z.string().min(1, "Loan purpose is required"),
   desiredLoanAmount: z.string().min(1, "Desired loan amount is required"),
-  downPayment: z.string().min(1, "Down payment is required"),
+  desiredCashAmount: z.string().optional(), // Only required for cash-out refinance
+  downPayment: z.string().optional(), // Only required for purchase
   estimatedPropertyValue: z.string().min(1, "Estimated property value is required"),
   propertyType: z.string().min(1, "Property type is required"),
   intendedUse: z.string().min(1, "Intended use is required"),
