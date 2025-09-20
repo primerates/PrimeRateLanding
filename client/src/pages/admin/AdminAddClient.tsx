@@ -1363,11 +1363,12 @@ export default function AdminAddClient() {
     const watchedValue = useWatch({ name: name as any, control: targetForm?.control });
     
     if (mode === 'canonical') {
-      // Canonical mode: normal field registration
+      // Canonical mode: normal field registration - let register handle everything
+      const registration = targetForm.register(name as any);
       return {
-        field: targetForm.register(name as any),
-        value: watchedValue,
-        onChange: undefined,
+        field: registration,
+        value: undefined, // Don't override value, let register handle it
+        onChange: undefined, // Don't override onChange, let register handle it
         id: `${idPrefix}${name.replace(/\./g, '-')}`,
         'data-testid': `input-${idPrefix}${name.replace(/\./g, '-')}`
       };
@@ -1488,8 +1489,8 @@ export default function AdminAddClient() {
                   <Input
                     id={currentLenderBinding.id}
                     {...currentLenderBinding.field}
-                    value={currentLenderBinding.value}
-                    onChange={currentLenderBinding.onChange}
+                    {...(currentLenderBinding.value !== undefined && { value: currentLenderBinding.value })}
+                    {...(currentLenderBinding.onChange && { onChange: currentLenderBinding.onChange })}
                     data-testid={currentLenderBinding['data-testid']}
                   />
                 </div>
@@ -1499,8 +1500,8 @@ export default function AdminAddClient() {
                   <Input
                     id={loanNumberBinding.id}
                     {...loanNumberBinding.field}
-                    value={loanNumberBinding.value}
-                    onChange={loanNumberBinding.onChange}
+                    {...(loanNumberBinding.value !== undefined && { value: loanNumberBinding.value })}
+                    {...(loanNumberBinding.onChange && { onChange: loanNumberBinding.onChange })}
                     data-testid={loanNumberBinding['data-testid']}
                   />
                 </div>
@@ -1511,8 +1512,8 @@ export default function AdminAddClient() {
                     id={loanStartDateBinding.id}
                     type="date"
                     {...loanStartDateBinding.field}
-                    value={loanStartDateBinding.value}
-                    onChange={loanStartDateBinding.onChange}
+                    {...(loanStartDateBinding.value !== undefined && { value: loanStartDateBinding.value })}
+                    {...(loanStartDateBinding.onChange && { onChange: loanStartDateBinding.onChange })}
                     data-testid={loanStartDateBinding['data-testid']}
                   />
                 </div>
@@ -1522,8 +1523,8 @@ export default function AdminAddClient() {
                   <Input
                     id={remainingTermBinding.id}
                     {...remainingTermBinding.field}
-                    value={remainingTermBinding.value}
-                    onChange={remainingTermBinding.onChange}
+                    {...(remainingTermBinding.value !== undefined && { value: remainingTermBinding.value })}
+                    {...(remainingTermBinding.onChange && { onChange: remainingTermBinding.onChange })}
                     placeholder="Years/Months"
                     data-testid={remainingTermBinding['data-testid']}
                   />
