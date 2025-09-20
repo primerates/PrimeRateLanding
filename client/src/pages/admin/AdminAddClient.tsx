@@ -1868,16 +1868,15 @@ export default function AdminAddClient() {
     };
     
     return (
-      <Card className="opacity-75">
+      <Card>
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-gray-600">Current Loan (Read-only)</CardTitle>
+              <CardTitle>Current Loan (Read-only)</CardTitle>
               <CollapsibleTrigger asChild>
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="hover:bg-orange-500 hover:text-white" 
                   data-testid={`button-toggle-readonly-current-loan-${idPrefix}`}
                   title={isOpen ? 'Minimize' : 'Expand'}
                 >
@@ -1891,7 +1890,7 @@ export default function AdminAddClient() {
               {/* Row 1: Current Lender, Loan Number, Loan Start Date, Remaining Term */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-gray-500">Current Lender</Label>
+                  <Label>Current Lender</Label>
                   <Input
                     value={currentLender}
                     readOnly
@@ -1902,7 +1901,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label className="text-gray-500">Loan Number</Label>
+                  <Label>Loan Number</Label>
                   <Input
                     value={loanNumber}
                     readOnly
@@ -1913,7 +1912,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label className="text-gray-500">Loan Start Date</Label>
+                  <Label>Loan Start Date</Label>
                   <Input
                     value={loanStartDate}
                     readOnly
@@ -1924,7 +1923,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label className="text-gray-500">Remaining Term Per Credit Report</Label>
+                  <Label>Remaining Term Per Credit Report</Label>
                   <Input
                     value={remainingTerm}
                     readOnly
@@ -1938,7 +1937,7 @@ export default function AdminAddClient() {
               {/* Row 2: Loan Category, Loan Program, Loan Term, Current Balance */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-gray-500">Loan Category</Label>
+                  <Label>Loan Category</Label>
                   <Input
                     value={loanCategory}
                     readOnly
@@ -1949,7 +1948,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label className="text-gray-500">Loan Program</Label>
+                  <Label>Loan Program</Label>
                   <Input
                     value={loanProgram}
                     readOnly
@@ -1960,7 +1959,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label className="text-gray-500">Loan Duration</Label>
+                  <Label>Loan Duration</Label>
                   <Input
                     value={loanTerm}
                     readOnly
@@ -1971,7 +1970,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label className="text-gray-500">Current Balance</Label>
+                  <Label>Current Balance</Label>
                   <Input
                     value={statementBalance}
                     readOnly
@@ -1985,7 +1984,7 @@ export default function AdminAddClient() {
               {/* Row 3: Payment Details */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-gray-500">Current Rate</Label>
+                  <Label>Current Rate</Label>
                   <Input
                     value={currentRate ? `${currentRate}%` : ''}
                     readOnly
@@ -1996,7 +1995,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label className="text-gray-500">Principal & Interest Payment</Label>
+                  <Label>Principal & Interest Payment</Label>
                   <Input
                     value={principalInterestPayment}
                     readOnly
@@ -2007,7 +2006,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label className="text-gray-500">Escrow Payment</Label>
+                  <Label>Escrow Payment</Label>
                   <Input
                     value={escrowPayment}
                     readOnly
@@ -2018,7 +2017,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label className="text-gray-500">Total Monthly Payment</Label>
+                  <Label>Total Monthly Payment</Label>
                   <Input
                     value={totalMonthlyPayment}
                     readOnly
@@ -2027,13 +2026,6 @@ export default function AdminAddClient() {
                     data-testid={`input-readonly-total-monthly-payment-${idPrefix}`}
                   />
                 </div>
-              </div>
-              
-              {/* Note about editing */}
-              <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
-                <p className="text-sm text-blue-700 text-center">
-                  <strong>Note:</strong> To edit loan information, please go to the Loan Tab
-                </p>
               </div>
             </CardContent>
           </CollapsibleContent>
