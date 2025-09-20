@@ -7860,16 +7860,6 @@ export default function AdminAddClient() {
                     onAutoCopyAddress={autoCopyPropertyAddressToCurrentLoan}
                     formInstance={form}
                   />
-
-                  <CurrentLoanTermsCard
-                    mode="canonical"
-                    idPrefix=""
-                    borderVariant="none"
-                    isOpen={isCurrentLoanOpen}
-                    setIsOpen={setIsCurrentLoanOpen}
-                    onAddSecondLoan={handleAddSecondLoan}
-                    formInstance={form}
-                  />
                 </>
               ) : (
                 <Card className="border-2 border-dashed border-gray-300">
