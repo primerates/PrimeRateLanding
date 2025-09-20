@@ -1342,6 +1342,21 @@ export default function AdminAddClient() {
     return subscription.unsubscribe;
   }, []);
   
+  // Auto-set Primary Residence "secured First Loan" to "Yes" when Current Loan exists
+  useEffect(() => {
+    const properties = form.watch('property.properties') || [];
+    const primaryPropertyIndex = properties.findIndex(p => p?.use === 'primary');
+    
+    if (primaryPropertyIndex >= 0) {
+      const currentActiveSecuredLoan = form.watch(`property.properties.${primaryPropertyIndex}.activeSecuredLoan` as const);
+      
+      if (showCurrentLoan && (!currentActiveSecuredLoan || currentActiveSecuredLoan === '')) {
+        // Auto-set to "yes" when Current Loan exists and field is not already set
+        form.setValue(`property.properties.${primaryPropertyIndex}.activeSecuredLoan` as const, 'yes', { shouldDirty: true });
+      }
+    }
+  }, [showCurrentLoan, form]);
+  
   // Helper function to get nested value from object path
   const getNestedValue = (obj: any, path: string): string | undefined => {
     return path.split('.').reduce((current, key) => current?.[key], obj);
