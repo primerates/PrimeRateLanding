@@ -1347,59 +1347,45 @@ export default function AdminAddClient() {
     return path.split('.').reduce((current, key) => current?.[key], obj);
   };
 
-  // Custom hook for field binding in canonical vs mirror mode
-  const useFieldBinding = (name: string, mode: 'canonical' | 'mirror', idPrefix: string = '', formInstance: any = null) => {
+  // Simplified hook for field binding - canonical mode only
+  const useFieldBinding = (name: string, idPrefix: string = '', formInstance: any = null) => {
     const contextForm = useFormContext();
     const targetForm = formInstance || contextForm;
-    const watchedValue = useWatch({ name: name as any, control: targetForm?.control });
-    const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     
-    // Cleanup debounce timer on unmount
-    useEffect(() => {
-      return () => {
-        if (debounceTimerRef.current) {
-          clearTimeout(debounceTimerRef.current);
-        }
-      };
-    }, []);
-    
-    if (mode === 'canonical') {
-      // Canonical mode: normal field registration - let register handle everything
-      const registration = targetForm.register(name as any);
+    // Safety check for form availability
+    if (!targetForm) {
+      console.error('useFieldBinding: No form instance available');
       return {
-        field: registration,
-        value: undefined, // Don't override value, let register handle it
-        onChange: undefined, // Don't override onChange, let register handle it
-        id: `${idPrefix}${name.replace(/\./g, '-')}`,
-        'data-testid': `input-${idPrefix}${name.replace(/\./g, '-')}`
-      };
-    } else {
-      // Mirror mode: watch value and use setValue for changes with debounced performance
-      return {
-        field: { name: undefined, ref: undefined }, // No registration to avoid conflicts
-        value: watchedValue || '',
-        onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-          const value = e.target.value;
-          // Clear any existing timer
-          if (debounceTimerRef.current) {
-            clearTimeout(debounceTimerRef.current);
-          }
-          // Set new timer to debounce rapid changes
-          debounceTimerRef.current = setTimeout(() => {
-            targetForm.setValue(name as any, value, { shouldDirty: true, shouldTouch: true, shouldValidate: false });
-          }, 100);
-        },
+        field: { name: '', onChange: () => {}, onBlur: () => {}, ref: () => {} },
         id: `${idPrefix}${name.replace(/\./g, '-')}`,
         'data-testid': `input-${idPrefix}${name.replace(/\./g, '-')}`
       };
     }
+    
+    // Normal field registration - let register handle everything
+    const registration = targetForm.register(name as any);
+    return {
+      field: registration,
+      id: `${idPrefix}${name.replace(/\./g, '-')}`,
+      'data-testid': `input-${idPrefix}${name.replace(/\./g, '-')}`
+    };
   };
 
-  // Custom hook for select field binding in canonical vs mirror mode
-  const useSelectFieldBinding = (name: string, mode: 'canonical' | 'mirror', idPrefix: string = '', formInstance: any = null) => {
+  // Simplified hook for select field binding - canonical mode only
+  const useSelectFieldBinding = (name: string, idPrefix: string = '', formInstance: any = null) => {
     const contextForm = useFormContext();
     const targetForm = formInstance || contextForm;
     const watchedValue = useWatch({ name: name as any, control: targetForm?.control });
+    
+    // Safety check for form availability
+    if (!targetForm) {
+      console.error('useSelectFieldBinding: No form instance available');
+      return {
+        value: '',
+        onValueChange: () => {},
+        'data-testid': `select-${idPrefix}${name.replace(/\./g, '-')}`
+      };
+    }
     
     return {
       value: watchedValue || '',
@@ -1410,9 +1396,8 @@ export default function AdminAddClient() {
     };
   };
 
-  // CurrentLoanCard component
+  // CurrentLoanCard component - canonical mode only
   const CurrentLoanCard = ({ 
-    mode, 
     idPrefix = '', 
     borderVariant, 
     isOpen, 
@@ -1421,7 +1406,6 @@ export default function AdminAddClient() {
     onAutoCopyAddress,
     formInstance 
   }: {
-    mode: 'canonical' | 'mirror';
     idPrefix?: string;
     borderVariant: 'blue' | 'none';
     isOpen: boolean;
@@ -1432,23 +1416,23 @@ export default function AdminAddClient() {
   }) => {
     const contextForm = useFormContext();
     const targetForm = formInstance || contextForm;
-    const currentLenderBinding = useFieldBinding('currentLoan.currentLender', mode, idPrefix, targetForm);
-    const loanNumberBinding = useFieldBinding('currentLoan.loanNumber', mode, idPrefix, targetForm);
-    const loanStartDateBinding = useFieldBinding('currentLoan.loanStartDate', mode, idPrefix, targetForm);
-    const remainingTermBinding = useFieldBinding('currentLoan.remainingTermPerCreditReport', mode, idPrefix, targetForm);
-    const loanCategoryBinding = useSelectFieldBinding('currentLoan.loanCategory', mode, idPrefix, targetForm);
-    const loanProgramBinding = useSelectFieldBinding('currentLoan.loanProgram', mode, idPrefix, targetForm);
-    const loanTermBinding = useSelectFieldBinding('currentLoan.loanTerm', mode, idPrefix, targetForm);
-    const loanPurposeBinding = useSelectFieldBinding('currentLoan.loanPurpose', mode, idPrefix, targetForm);
-    const prepaymentPenaltyBinding = useSelectFieldBinding('currentLoan.prepaymentPenalty', mode, idPrefix, targetForm);
-    const statementBalanceBinding = useFieldBinding('currentLoan.statementBalance.amount', mode, idPrefix, targetForm);
-    const attachedToPropertyBinding = useSelectFieldBinding('currentLoan.attachedToProperty', mode, idPrefix, targetForm);
+    const currentLenderBinding = useFieldBinding('currentLoan.currentLender', idPrefix, targetForm);
+    const loanNumberBinding = useFieldBinding('currentLoan.loanNumber', idPrefix, targetForm);
+    const loanStartDateBinding = useFieldBinding('currentLoan.loanStartDate', idPrefix, targetForm);
+    const remainingTermBinding = useFieldBinding('currentLoan.remainingTermPerCreditReport', idPrefix, targetForm);
+    const loanCategoryBinding = useSelectFieldBinding('currentLoan.loanCategory', idPrefix, targetForm);
+    const loanProgramBinding = useSelectFieldBinding('currentLoan.loanProgram', idPrefix, targetForm);
+    const loanTermBinding = useSelectFieldBinding('currentLoan.loanTerm', idPrefix, targetForm);
+    const loanPurposeBinding = useSelectFieldBinding('currentLoan.loanPurpose', idPrefix, targetForm);
+    const prepaymentPenaltyBinding = useSelectFieldBinding('currentLoan.prepaymentPenalty', idPrefix, targetForm);
+    const statementBalanceBinding = useFieldBinding('currentLoan.statementBalance.amount', idPrefix, targetForm);
+    const attachedToPropertyBinding = useSelectFieldBinding('currentLoan.attachedToProperty', idPrefix, targetForm);
     
     // Payment field bindings
-    const currentRateBinding = useFieldBinding('currentLoan.currentRate', mode, idPrefix, targetForm);
+    const currentRateBinding = useFieldBinding('currentLoan.currentRate', idPrefix, targetForm);
     
-    // Custom percentage formatting for Current Rate field in Loan Tab (canonical mode)
-    const currentRateBindingWithPercentage = mode === 'canonical' ? {
+    // Custom percentage formatting for Current Rate field
+    const currentRateBindingWithPercentage = {
       ...currentRateBinding,
       onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
         let value = e.target.value;
@@ -1462,27 +1446,27 @@ export default function AdminAddClient() {
         // Store the raw numeric value
         targetForm.setValue('currentLoan.currentRate' as any, value, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
       }
-    } : currentRateBinding;
+    };
     
-    // Format display value as percentage for canonical mode
+    // Format display value as percentage
     const formatCurrentRateDisplay = (value: string) => {
       if (!value) return '';
-      if (mode === 'canonical' && !value.includes('%')) {
+      if (!value.includes('%')) {
         return `${value}%`;
       }
       return value;
     };
-    const principalInterestPaymentBinding = useFieldBinding('currentLoan.principalAndInterestPayment', mode, idPrefix, targetForm);
-    const escrowPaymentBinding = useFieldBinding('currentLoan.escrowPayment', mode, idPrefix, targetForm);
-    const totalMonthlyPaymentBinding = useFieldBinding('currentLoan.totalMonthlyPayment', mode, idPrefix, targetForm);
+    const principalInterestPaymentBinding = useFieldBinding('currentLoan.principalAndInterestPayment', idPrefix, targetForm);
+    const escrowPaymentBinding = useFieldBinding('currentLoan.escrowPayment', idPrefix, targetForm);
+    const totalMonthlyPaymentBinding = useFieldBinding('currentLoan.totalMonthlyPayment', idPrefix, targetForm);
     
     // Property address bindings
-    const propertyStreetBinding = useFieldBinding('currentLoan.propertyAddress.street', mode, idPrefix, targetForm);
-    const propertyUnitBinding = useFieldBinding('currentLoan.propertyAddress.unit', mode, idPrefix, targetForm);
-    const propertyCityBinding = useFieldBinding('currentLoan.propertyAddress.city', mode, idPrefix, targetForm);
-    const propertyStateBinding = useSelectFieldBinding('currentLoan.propertyAddress.state', mode, idPrefix, targetForm);
-    const propertyZipBinding = useFieldBinding('currentLoan.propertyAddress.zipCode', mode, idPrefix, targetForm);
-    const propertyCountyBinding = useFieldBinding('currentLoan.propertyAddress.county', mode, idPrefix, targetForm);
+    const propertyStreetBinding = useFieldBinding('currentLoan.propertyAddress.street', idPrefix, targetForm);
+    const propertyUnitBinding = useFieldBinding('currentLoan.propertyAddress.unit', idPrefix, targetForm);
+    const propertyCityBinding = useFieldBinding('currentLoan.propertyAddress.city', idPrefix, targetForm);
+    const propertyStateBinding = useSelectFieldBinding('currentLoan.propertyAddress.state', idPrefix, targetForm);
+    const propertyZipBinding = useFieldBinding('currentLoan.propertyAddress.zipCode', idPrefix, targetForm);
+    const propertyCountyBinding = useFieldBinding('currentLoan.propertyAddress.county', idPrefix, targetForm);
     
     const cardClassName = borderVariant === 'blue' ? 'border-l-4 border-l-blue-500' : '';
     
@@ -1528,8 +1512,6 @@ export default function AdminAddClient() {
                   <Input
                     id={currentLenderBinding.id}
                     {...currentLenderBinding.field}
-                    {...(currentLenderBinding.value !== undefined && { value: currentLenderBinding.value })}
-                    {...(currentLenderBinding.onChange && { onChange: currentLenderBinding.onChange })}
                     data-testid={currentLenderBinding['data-testid']}
                   />
                 </div>
@@ -1539,8 +1521,6 @@ export default function AdminAddClient() {
                   <Input
                     id={loanNumberBinding.id}
                     {...loanNumberBinding.field}
-                    {...(loanNumberBinding.value !== undefined && { value: loanNumberBinding.value })}
-                    {...(loanNumberBinding.onChange && { onChange: loanNumberBinding.onChange })}
                     data-testid={loanNumberBinding['data-testid']}
                   />
                 </div>
@@ -1551,8 +1531,6 @@ export default function AdminAddClient() {
                     id={loanStartDateBinding.id}
                     type="date"
                     {...loanStartDateBinding.field}
-                    {...(loanStartDateBinding.value !== undefined && { value: loanStartDateBinding.value })}
-                    {...(loanStartDateBinding.onChange && { onChange: loanStartDateBinding.onChange })}
                     data-testid={loanStartDateBinding['data-testid']}
                   />
                 </div>
@@ -1562,8 +1540,6 @@ export default function AdminAddClient() {
                   <Input
                     id={remainingTermBinding.id}
                     {...remainingTermBinding.field}
-                    {...(remainingTermBinding.value !== undefined && { value: remainingTermBinding.value })}
-                    {...(remainingTermBinding.onChange && { onChange: remainingTermBinding.onChange })}
                     placeholder="Years/Months"
                     data-testid={remainingTermBinding['data-testid']}
                   />
@@ -1625,8 +1601,6 @@ export default function AdminAddClient() {
                   <Input
                     id={statementBalanceBinding.id}
                     {...statementBalanceBinding.field}
-                    value={statementBalanceBinding.value}
-                    onChange={statementBalanceBinding.onChange}
                     placeholder="$0.00"
                     data-testid={statementBalanceBinding['data-testid']}
                   />
@@ -1639,8 +1613,8 @@ export default function AdminAddClient() {
                   <Label htmlFor={currentRateBindingWithPercentage.id}>Current Rate</Label>
                   <Input
                     id={currentRateBindingWithPercentage.id}
-                    name={mode === 'canonical' ? currentRateBindingWithPercentage.field?.name : undefined}
-                    ref={mode === 'canonical' ? currentRateBindingWithPercentage.field?.ref : undefined}
+                    name={currentRateBindingWithPercentage.field?.name}
+                    ref={currentRateBindingWithPercentage.field?.ref}
                     value={formatCurrentRateDisplay(targetForm.watch('currentLoan.currentRate') || '')}
                     onChange={currentRateBindingWithPercentage.onChange}
                     placeholder="0.00%"
@@ -1654,8 +1628,6 @@ export default function AdminAddClient() {
                   <Input
                     id={principalInterestPaymentBinding.id}
                     {...principalInterestPaymentBinding.field}
-                    value={principalInterestPaymentBinding.value}
-                    onChange={principalInterestPaymentBinding.onChange}
                     placeholder="$0.00"
                     data-testid={principalInterestPaymentBinding['data-testid']}
                   />
@@ -1666,8 +1638,6 @@ export default function AdminAddClient() {
                   <Input
                     id={escrowPaymentBinding.id}
                     {...escrowPaymentBinding.field}
-                    value={escrowPaymentBinding.value}
-                    onChange={escrowPaymentBinding.onChange}
                     placeholder="$0.00"
                     data-testid={escrowPaymentBinding['data-testid']}
                   />
@@ -1678,8 +1648,6 @@ export default function AdminAddClient() {
                   <Input
                     id={totalMonthlyPaymentBinding.id}
                     {...totalMonthlyPaymentBinding.field}
-                    value={totalMonthlyPaymentBinding.value}
-                    onChange={totalMonthlyPaymentBinding.onChange}
                     placeholder="$0.00"
                     data-testid={totalMonthlyPaymentBinding['data-testid']}
                   />
@@ -1754,8 +1722,6 @@ export default function AdminAddClient() {
                       <Input
                         id={propertyStreetBinding.id}
                         {...propertyStreetBinding.field}
-                        value={propertyStreetBinding.value}
-                        onChange={propertyStreetBinding.onChange}
                         data-testid={propertyStreetBinding['data-testid']}
                         readOnly={targetForm.watch('currentLoan.attachedToProperty') !== 'Other'}
                         className={targetForm.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
@@ -1767,8 +1733,6 @@ export default function AdminAddClient() {
                       <Input
                         id={propertyUnitBinding.id}
                         {...propertyUnitBinding.field}
-                        value={propertyUnitBinding.value}
-                        onChange={propertyUnitBinding.onChange}
                         data-testid={propertyUnitBinding['data-testid']}
                         readOnly={targetForm.watch('currentLoan.attachedToProperty') !== 'Other'}
                         className={targetForm.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
@@ -1780,8 +1744,6 @@ export default function AdminAddClient() {
                       <Input
                         id={propertyCityBinding.id}
                         {...propertyCityBinding.field}
-                        value={propertyCityBinding.value}
-                        onChange={propertyCityBinding.onChange}
                         data-testid={propertyCityBinding['data-testid']}
                         readOnly={targetForm.watch('currentLoan.attachedToProperty') !== 'Other'}
                         className={targetForm.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
@@ -1813,8 +1775,6 @@ export default function AdminAddClient() {
                       <Input
                         id={propertyZipBinding.id}
                         {...propertyZipBinding.field}
-                        value={propertyZipBinding.value}
-                        onChange={propertyZipBinding.onChange}
                         data-testid={propertyZipBinding['data-testid']}
                         readOnly={targetForm.watch('currentLoan.attachedToProperty') !== 'Other'}
                         className={targetForm.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
@@ -1826,8 +1786,6 @@ export default function AdminAddClient() {
                       <Input
                         id={propertyCountyBinding.id}
                         {...propertyCountyBinding.field}
-                        value={propertyCountyBinding.value}
-                        onChange={propertyCountyBinding.onChange}
                         data-testid={propertyCountyBinding['data-testid']}
                         readOnly={targetForm.watch('currentLoan.attachedToProperty') !== 'Other'}
                         className={targetForm.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
@@ -7392,7 +7350,7 @@ export default function AdminAddClient() {
                                     </SelectTrigger>
                                     <SelectContent>
                                       <SelectItem value="yes">Yes</SelectItem>
-                                      <SelectItem value="no-paid-off">No, Paid Off</SelectItem>
+                                      <SelectItem value="paid-off">Paid Off</SelectItem>
                                     </SelectContent>
                                   </Select>
                                 </div>
@@ -7432,7 +7390,6 @@ export default function AdminAddClient() {
                             {property.use === 'primary' && form.watch(`property.properties.${index}.activeSecuredLoan` as const) === 'yes' && (
                               <div className="border-2 border-dashed border-gray-500 rounded-md p-4 space-y-4">
                                 <CurrentLoanCard
-                                  mode="mirror"
                                   idPrefix="property-"
                                   borderVariant="none"
                                   isOpen={isLoanDetailsOpen[propertyId] ?? true}
@@ -7772,7 +7729,6 @@ export default function AdminAddClient() {
               {showCurrentLoan ? (
                 <>
                   <CurrentLoanCard
-                    mode="canonical"
                     idPrefix=""
                     borderVariant="blue"
                     isOpen={isCurrentLoanOpen}
