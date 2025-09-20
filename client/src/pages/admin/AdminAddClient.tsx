@@ -7223,21 +7223,7 @@ export default function AdminAddClient() {
                         </div>
                         
                         <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="currentLoan-statementBalance">
-                              {getCurrentLoanStatementBalanceLabel()}
-                            </Label>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={toggleCurrentLoanStatementBalanceFieldType}
-                              className="h-6 px-2 text-xs hover:bg-orange-500 hover:text-white hover:border-orange-500"
-                              data-testid="button-toggle-currentLoan-statementBalance-type"
-                            >
-                              Toggle
-                            </Button>
-                          </div>
+                          <Label htmlFor="currentLoan-statementBalance">Statement Balance</Label>
                           <Input
                             id="currentLoan-statementBalance"
                             {...form.register('currentLoan.statementBalance.amount')}
@@ -7348,12 +7334,12 @@ export default function AdminAddClient() {
                 </Collapsible>
               </Card>
 
-              {/* Current Loan Payment Details - Separate Card */}
-              <Card className="border-l-4 border-l-purple-500">
+              {/* Current Loan Terms - Separate Card */}
+              <Card>
                 <Collapsible open={isCurrentLoanOpen} onOpenChange={setIsCurrentLoanOpen}>
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <CardTitle>Current Loan Payment Details</CardTitle>
+                      <CardTitle>Current Loan Terms</CardTitle>
                       <CollapsibleTrigger asChild>
                         <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-current-loan-payments">
                           {isCurrentLoanOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
@@ -7444,65 +7430,6 @@ export default function AdminAddClient() {
                         </div>
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="currentLoan-prepaymentPenalty">Pre-payment Penalty</Label>
-                          <Select value={form.watch('currentLoan.prepaymentPenalty') || 'No'} onValueChange={(value: 'Yes - see notes' | 'No') => form.setValue('currentLoan.prepaymentPenalty', value)}>
-                            <SelectTrigger data-testid="select-currentLoan-prepaymentPenalty">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="Yes - see notes">Yes - see notes</SelectItem>
-                              <SelectItem value="No">No</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor="currentLoan-statementBalance">
-                              {getCurrentLoanStatementBalanceLabel()}
-                            </Label>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={toggleCurrentLoanStatementBalanceFieldType}
-                              className="h-6 px-2 text-xs hover:bg-orange-500 hover:text-white hover:border-orange-500"
-                              data-testid="button-toggle-currentLoan-statementBalance-type"
-                            >
-                              Toggle
-                            </Button>
-                          </div>
-                          <Input
-                            id="currentLoan-statementBalance"
-                            {...form.register('currentLoan.statementBalance.amount')}
-                            placeholder="$0.00"
-                            data-testid="input-currentLoan-statementBalance"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="currentLoan-attachedToProperty">Attached to Property</Label>
-                          <Select value={form.watch('currentLoan.attachedToProperty') || ''} onValueChange={(value) => {
-                            form.setValue('currentLoan.attachedToProperty', value as any);
-                            if (value && value !== '') {
-                              setTimeout(() => autoCopyPropertyAddressToCurrentLoan(), 100);
-                            }
-                          }}>
-                            <SelectTrigger data-testid="select-currentLoan-attachedToProperty">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select">Select</SelectItem>
-                              <SelectItem value="Primary Residence">Primary Residence</SelectItem>
-                              <SelectItem value="Second Home">Second Home</SelectItem>
-                              <SelectItem value="Investment Property">Investment Property</SelectItem>
-                              <SelectItem value="Other">Other</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
                       
                       {/* Conditional Address Fields - Show when Attached to Property is selected */}
                       {form.watch('currentLoan.attachedToProperty') && form.watch('currentLoan.attachedToProperty') !== '' && (
@@ -7590,12 +7517,13 @@ export default function AdminAddClient() {
                         </div>
                       )}
                       
-                      {/* Second Loan Info Button */}
-                      <div className="border-t pt-4">
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          className="w-full hover:bg-blue-500 hover:text-white"
+                      {/* Second Loan Info Button - Match Property tab design */}
+                      <div className="flex justify-end mt-6">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="hover:bg-blue-500 hover:text-white"
                           data-testid="button-add-second-loan-info"
                         >
                           <Plus className="h-4 w-4 mr-2" />
