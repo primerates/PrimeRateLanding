@@ -1646,6 +1646,57 @@ export default function AdminAddClient() {
                 </div>
               </div>
               
+              {/* Row 5: Payment Details */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor={currentRateBinding.id}>Current Rate</Label>
+                  <Input
+                    id={currentRateBinding.id}
+                    {...currentRateBinding.field}
+                    value={currentRateBinding.value}
+                    onChange={currentRateBinding.onChange}
+                    placeholder="0.00%"
+                    data-testid={currentRateBinding['data-testid']}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={principalInterestPaymentBinding.id}>Principal & Interest Payment</Label>
+                  <Input
+                    id={principalInterestPaymentBinding.id}
+                    {...principalInterestPaymentBinding.field}
+                    value={principalInterestPaymentBinding.value}
+                    onChange={principalInterestPaymentBinding.onChange}
+                    placeholder="$0.00"
+                    data-testid={principalInterestPaymentBinding['data-testid']}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={escrowPaymentBinding.id}>Escrow Payment</Label>
+                  <Input
+                    id={escrowPaymentBinding.id}
+                    {...escrowPaymentBinding.field}
+                    value={escrowPaymentBinding.value}
+                    onChange={escrowPaymentBinding.onChange}
+                    placeholder="$0.00"
+                    data-testid={escrowPaymentBinding['data-testid']}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={totalMonthlyPaymentBinding.id}>Total Monthly Payment</Label>
+                  <Input
+                    id={totalMonthlyPaymentBinding.id}
+                    {...totalMonthlyPaymentBinding.field}
+                    value={totalMonthlyPaymentBinding.value}
+                    onChange={totalMonthlyPaymentBinding.onChange}
+                    placeholder="$0.00"
+                    data-testid={totalMonthlyPaymentBinding['data-testid']}
+                  />
+                </div>
+              </div>
+              
               {/* Conditional Address Fields - Show when Attached to Property is selected */}
               {targetForm.watch('currentLoan.attachedToProperty') && targetForm.watch('currentLoan.attachedToProperty') !== '' && (
                 <div className="mt-4 p-4 border-t border-gray-200">
@@ -1740,57 +1791,6 @@ export default function AdminAddClient() {
                   </div>
                 </div>
               )}
-              
-              {/* Row 5: Payment Details */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor={currentRateBinding.id}>Current Rate</Label>
-                  <Input
-                    id={currentRateBinding.id}
-                    {...currentRateBinding.field}
-                    value={currentRateBinding.value}
-                    onChange={currentRateBinding.onChange}
-                    placeholder="0.00%"
-                    data-testid={currentRateBinding['data-testid']}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor={principalInterestPaymentBinding.id}>Principal & Interest Payment</Label>
-                  <Input
-                    id={principalInterestPaymentBinding.id}
-                    {...principalInterestPaymentBinding.field}
-                    value={principalInterestPaymentBinding.value}
-                    onChange={principalInterestPaymentBinding.onChange}
-                    placeholder="$0.00"
-                    data-testid={principalInterestPaymentBinding['data-testid']}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor={escrowPaymentBinding.id}>Escrow Payment</Label>
-                  <Input
-                    id={escrowPaymentBinding.id}
-                    {...escrowPaymentBinding.field}
-                    value={escrowPaymentBinding.value}
-                    onChange={escrowPaymentBinding.onChange}
-                    placeholder="$0.00"
-                    data-testid={escrowPaymentBinding['data-testid']}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor={totalMonthlyPaymentBinding.id}>Total Monthly Payment</Label>
-                  <Input
-                    id={totalMonthlyPaymentBinding.id}
-                    {...totalMonthlyPaymentBinding.field}
-                    value={totalMonthlyPaymentBinding.value}
-                    onChange={totalMonthlyPaymentBinding.onChange}
-                    placeholder="$0.00"
-                    data-testid={totalMonthlyPaymentBinding['data-testid']}
-                  />
-                </div>
-              </div>
             </CardContent>
           </CollapsibleContent>
         </Collapsible>

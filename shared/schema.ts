@@ -205,10 +205,7 @@ export const currentLoanSchema = z.object({
   currentBalance: z.string().optional(),
   currentRate: z.string().optional(),
   principalAndInterestPayment: z.string().optional(),
-  escrowPayment: z.object({
-    amount: z.string().optional(),
-    type: z.enum(['Escrow payment', 'Property Tax', 'Home Insurance']).optional(),
-  }).optional(),
+  escrowPayment: z.string().optional(),
   totalMonthlyPayment: z.string().optional(),
   hoaPayment: z.string().optional(),
   prepaymentPenalty: z.enum(['Yes - see notes', 'No']).optional(),
