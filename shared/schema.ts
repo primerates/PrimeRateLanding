@@ -188,10 +188,16 @@ export const propertySchema = z.object({
 
 export const currentLoanSchema = z.object({
   currentLender: z.string().optional(),
+  loanNumber: z.string().optional(),
+  loanStartDate: z.string().optional(),
   currentBalance: z.string().optional(),
   currentRate: z.string().optional(),
   currentPayment: z.string().optional(),
   loanType: z.string().optional(),
+  loanCategory: z.string().optional(),
+  loanProgram: z.string().optional(),
+  loanTerm: z.string().optional(),
+  loanPurpose: z.string().optional(),
   remainingTerm: z.string().optional(),
 });
 

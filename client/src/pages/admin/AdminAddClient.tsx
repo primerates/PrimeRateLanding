@@ -765,10 +765,16 @@ export default function AdminAddClient() {
       },
       currentLoan: {
         currentLender: '',
+        loanNumber: '',
+        loanStartDate: '',
         currentBalance: '',
         currentRate: '',
         currentPayment: '',
         loanType: '',
+        loanCategory: '',
+        loanProgram: '',
+        loanTerm: '',
+        loanPurpose: '',
         remainingTerm: '',
       },
       newLoan: {
@@ -6858,63 +6864,155 @@ export default function AdminAddClient() {
                     </div>
                   </CardHeader>
                   <CollapsibleContent>
-                    <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="currentLoan-currentLender">Current Lender</Label>
-                        <Input
-                          id="currentLoan-currentLender"
-                          {...form.register('currentLoan.currentLender')}
-                          data-testid="input-currentLoan-currentLender"
-                        />
+                    <CardContent className="space-y-4">
+                      {/* First row: Current Lender, Loan Number, Loan Start Date */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-currentLender">Current Lender</Label>
+                          <Input
+                            id="currentLoan-currentLender"
+                            {...form.register('currentLoan.currentLender')}
+                            data-testid="input-currentLoan-currentLender"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-loanNumber">Loan Number</Label>
+                          <Input
+                            id="currentLoan-loanNumber"
+                            {...form.register('currentLoan.loanNumber')}
+                            data-testid="input-currentLoan-loanNumber"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-loanStartDate">Loan Start Date</Label>
+                          <Input
+                            id="currentLoan-loanStartDate"
+                            type="date"
+                            {...form.register('currentLoan.loanStartDate')}
+                            data-testid="input-currentLoan-loanStartDate"
+                          />
+                        </div>
                       </div>
                       
-                      <div className="space-y-2">
-                        <Label htmlFor="currentLoan-currentBalance">Current Balance</Label>
-                        <Input
-                          id="currentLoan-currentBalance"
-                          {...form.register('currentLoan.currentBalance')}
-                          placeholder="$0.00"
-                          data-testid="input-currentLoan-currentBalance"
-                        />
+                      {/* Second row: Loan Category, Loan Program, Loan Term, Loan Purpose */}
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-loanCategory">Loan Category</Label>
+                          <Select value={form.watch('currentLoan.loanCategory') || ''} onValueChange={(value) => form.setValue('currentLoan.loanCategory', value)}>
+                            <SelectTrigger data-testid="select-currentLoan-loanCategory">
+                              <SelectValue placeholder="Select category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="conventional">Conventional</SelectItem>
+                              <SelectItem value="conventional-jumbo">Conventional Jumbo</SelectItem>
+                              <SelectItem value="fha">FHA</SelectItem>
+                              <SelectItem value="va">VA</SelectItem>
+                              <SelectItem value="va-jumbo">VA Jumbo</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-loanProgram">Loan Program</Label>
+                          <Select value={form.watch('currentLoan.loanProgram') || ''} onValueChange={(value) => form.setValue('currentLoan.loanProgram', value)}>
+                            <SelectTrigger data-testid="select-currentLoan-loanProgram">
+                              <SelectValue placeholder="Select program" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="fixed-rate">Fixed Rate</SelectItem>
+                              <SelectItem value="adjustable">Adjustable</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-loanTerm">Loan Term</Label>
+                          <Select value={form.watch('currentLoan.loanTerm') || ''} onValueChange={(value) => form.setValue('currentLoan.loanTerm', value)}>
+                            <SelectTrigger data-testid="select-currentLoan-loanTerm">
+                              <SelectValue placeholder="Select term" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="30-years">30 years</SelectItem>
+                              <SelectItem value="25-years">25 years</SelectItem>
+                              <SelectItem value="20-years">20 years</SelectItem>
+                              <SelectItem value="15-years">15 years</SelectItem>
+                              <SelectItem value="10-years">10 years</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-loanPurpose">Loan Purpose</Label>
+                          <Select value={form.watch('currentLoan.loanPurpose') || ''} onValueChange={(value) => form.setValue('currentLoan.loanPurpose', value)}>
+                            <SelectTrigger data-testid="select-currentLoan-loanPurpose">
+                              <SelectValue placeholder="Select purpose" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="purchase">Purchase</SelectItem>
+                              <SelectItem value="refinance-rate-term">Refinance Rate & Term</SelectItem>
+                              <SelectItem value="refinance-cash-out">Refinance Cash Out</SelectItem>
+                              <SelectItem value="construction">Construction</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
                       
-                      <div className="space-y-2">
-                        <Label htmlFor="currentLoan-currentRate">Current Rate</Label>
-                        <Input
-                          id="currentLoan-currentRate"
-                          {...form.register('currentLoan.currentRate')}
-                          placeholder="0.00%"
-                          data-testid="input-currentLoan-currentRate"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="currentLoan-currentPayment">Current Payment</Label>
-                        <Input
-                          id="currentLoan-currentPayment"
-                          {...form.register('currentLoan.currentPayment')}
-                          placeholder="$0.00"
-                          data-testid="input-currentLoan-currentPayment"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="currentLoan-loanType">Loan Type</Label>
-                        <Input
-                          id="currentLoan-loanType"
-                          {...form.register('currentLoan.loanType')}
-                          data-testid="input-currentLoan-loanType"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="currentLoan-remainingTerm">Remaining Term</Label>
-                        <Input
-                          id="currentLoan-remainingTerm"
-                          {...form.register('currentLoan.remainingTerm')}
-                          placeholder="Years/Months"
-                          data-testid="input-currentLoan-remainingTerm"
-                        />
+                      {/* Third row: Current Balance, Current Rate, Current Payment, Loan Type, Remaining Term */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-currentBalance">Current Balance</Label>
+                          <Input
+                            id="currentLoan-currentBalance"
+                            {...form.register('currentLoan.currentBalance')}
+                            placeholder="$0.00"
+                            data-testid="input-currentLoan-currentBalance"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-currentRate">Current Rate</Label>
+                          <Input
+                            id="currentLoan-currentRate"
+                            {...form.register('currentLoan.currentRate')}
+                            placeholder="0.00%"
+                            data-testid="input-currentLoan-currentRate"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-currentPayment">Current Payment</Label>
+                          <Input
+                            id="currentLoan-currentPayment"
+                            {...form.register('currentLoan.currentPayment')}
+                            placeholder="$0.00"
+                            data-testid="input-currentLoan-currentPayment"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-loanType">Loan Type</Label>
+                          <Input
+                            id="currentLoan-loanType"
+                            {...form.register('currentLoan.loanType')}
+                            data-testid="input-currentLoan-loanType"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="currentLoan-remainingTerm">Remaining Term</Label>
+                          <Input
+                            id="currentLoan-remainingTerm"
+                            {...form.register('currentLoan.remainingTerm')}
+                            placeholder="Years/Months"
+                            data-testid="input-currentLoan-remainingTerm"
+                          />
+                        </div>
                       </div>
                     </CardContent>
                   </CollapsibleContent>
