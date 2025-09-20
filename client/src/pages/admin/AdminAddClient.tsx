@@ -1698,7 +1698,7 @@ export default function AdminAddClient() {
               </div>
               
               {/* Conditional Address Fields - Show when Attached to Property is selected */}
-              {targetForm.watch('currentLoan.attachedToProperty') && targetForm.watch('currentLoan.attachedToProperty') !== '' && (
+              {targetForm.watch('currentLoan.attachedToProperty') && targetForm.watch('currentLoan.attachedToProperty') !== '' && targetForm.watch('currentLoan.attachedToProperty') !== 'select' && (
                 <div className="mt-4 p-4 border-t border-gray-200">
                   <Label className="text-sm font-medium text-gray-700 mb-3 block">
                     Property Address ({targetForm.watch('currentLoan.attachedToProperty')})
