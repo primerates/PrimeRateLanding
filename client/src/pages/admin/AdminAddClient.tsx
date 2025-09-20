@@ -7472,7 +7472,7 @@ export default function AdminAddClient() {
 
                             {/* Current Loan Cards - Only show for Primary Residence when activeSecuredLoan is 'yes' */}
                             {property.use === 'primary' && form.watch(`property.properties.${index}.activeSecuredLoan` as const) === 'yes' && (
-                              <div className="border-2 border-dashed border-gray-300 p-4 space-y-4">
+                              <div className="border-2 border-dashed border-gray-500 p-4 space-y-4">
                                 <CurrentLoanCard
                                   mode="mirror"
                                   idPrefix="property-"
