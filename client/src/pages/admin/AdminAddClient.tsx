@@ -339,6 +339,7 @@ export default function AdminAddClient() {
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
+  const [isReadOnlyCurrentLoanOpen, setIsReadOnlyCurrentLoanOpen] = useState(true);
   const [isNewLoanOpen, setIsNewLoanOpen] = useState(true);
   const [showSecondLoan, setShowSecondLoan] = useState(false);
   const [isSecondLoanOpen, setIsSecondLoanOpen] = useState(true);
@@ -1510,11 +1511,11 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor={loanNumberBinding.id}>Loan Number</Label>
+                  <Label htmlFor="currentLoan-loanNumber">Loan Number</Label>
                   <Input
-                    id={loanNumberBinding.id}
-                    {...loanNumberBinding.field}
-                    data-testid={loanNumberBinding['data-testid']}
+                    id="currentLoan-loanNumber"
+                    {...form.register('currentLoan.loanNumber')}
+                    data-testid="input-currentLoan-loanNumber"
                   />
                 </div>
                 
@@ -1590,12 +1591,12 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor={statementBalanceBinding.id}>Current Balance</Label>
+                  <Label htmlFor="currentLoan-currentBalance">Current Balance</Label>
                   <Input
-                    id={statementBalanceBinding.id}
-                    {...statementBalanceBinding.field}
+                    id="currentLoan-currentBalance"
+                    {...form.register('currentLoan.statementBalance.amount')}
                     placeholder="$0.00"
-                    data-testid={statementBalanceBinding['data-testid']}
+                    data-testid="input-currentLoan-currentBalance"
                   />
                 </div>
               </div>
@@ -1603,32 +1604,32 @@ export default function AdminAddClient() {
               {/* Row 3: Payment Details */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor={currentRateBinding.id}>Current Rate</Label>
+                  <Label htmlFor="currentLoan-currentRate">Current Rate</Label>
                   <Input
-                    id={currentRateBinding.id}
-                    {...currentRateBinding.field}
+                    id="currentLoan-currentRate"
+                    {...form.register('currentLoan.currentRate')}
                     placeholder="0.00%"
-                    data-testid={currentRateBinding['data-testid']}
+                    data-testid="input-currentLoan-currentRate"
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor={principalInterestPaymentBinding.id}>Principal & Interest Payment</Label>
+                  <Label htmlFor="currentLoan-principalInterestPayment">Principal & Interest Payment</Label>
                   <Input
-                    id={principalInterestPaymentBinding.id}
-                    {...principalInterestPaymentBinding.field}
+                    id="currentLoan-principalInterestPayment"
+                    {...form.register('currentLoan.principalAndInterestPayment')}
                     placeholder="$0.00"
-                    data-testid={principalInterestPaymentBinding['data-testid']}
+                    data-testid="input-currentLoan-principalInterestPayment"
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor={escrowPaymentBinding.id}>Escrow Payment</Label>
+                  <Label htmlFor="currentLoan-escrowPayment">Escrow Payment</Label>
                   <Input
-                    id={escrowPaymentBinding.id}
-                    {...escrowPaymentBinding.field}
+                    id="currentLoan-escrowPayment"
+                    {...form.register('currentLoan.escrowPayment')}
                     placeholder="$0.00"
-                    data-testid={escrowPaymentBinding['data-testid']}
+                    data-testid="input-currentLoan-escrowPayment"
                   />
                 </div>
                 
@@ -7010,6 +7011,15 @@ export default function AdminAddClient() {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Read-only Current Loan Card - shows when current loan exists */}
+              {showCurrentLoan && (
+                <ReadOnlyCurrentLoanCard
+                  isOpen={isReadOnlyCurrentLoanOpen}
+                  setIsOpen={setIsReadOnlyCurrentLoanOpen}
+                  formInstance={form}
+                />
+              )}
 
               {/* Property List Card */}
               <Card className="bg-muted">
