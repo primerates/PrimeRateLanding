@@ -6994,7 +6994,7 @@ export default function AdminAddClient() {
                 <Collapsible open={isNewLoanOpen} onOpenChange={setIsNewLoanOpen}>
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <CardTitle>New Loan Information</CardTitle>
+                      <CardTitle>New Loan</CardTitle>
                       <CollapsibleTrigger asChild>
                         <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-new-loan">
                           {isNewLoanOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
@@ -7079,7 +7079,7 @@ export default function AdminAddClient() {
                 <Collapsible open={isCurrentLoanOpen} onOpenChange={setIsCurrentLoanOpen}>
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <CardTitle>Current Loan Information</CardTitle>
+                      <CardTitle>Current Loan</CardTitle>
                       <CollapsibleTrigger asChild>
                         <Button variant="ghost" size="sm" className="hover:bg-orange-500 hover:text-white" data-testid="button-toggle-current-loan">
                           {isCurrentLoanOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
