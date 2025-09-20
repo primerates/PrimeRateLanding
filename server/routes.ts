@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { sendEmail, formatPreApprovalEmail, formatRateTrackerEmail, formatScheduleCallEmail, formatContactEmail } from "./email";
-import { insertClientSchema, clientSchema } from "@shared/schema";
+import { insertClientSchema, clientSchema, preApprovalSubmissionSchema } from "@shared/schema";
 import { ZodError } from "zod";
 import fetch from "node-fetch";
 
@@ -13,18 +13,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Pre-Approval Form Submission
   app.post("/api/pre-approval", async (req, res) => {
     try {
-      console.log("Pre-approval request body:", JSON.stringify(req.body, null, 2));
-      
-      const { preApprovalData, coBorrowerData } = req.body;
-      
-      // Check if preApprovalData exists
-      if (!preApprovalData) {
-        console.error("preApprovalData is missing from request body");
-        return res.status(400).json({ success: false, message: "Pre-approval data is required" });
+      // Validate request body with Zod schema
+      const validationResult = preApprovalSubmissionSchema.safeParse(req.body);
+      if (!validationResult.success) {
+        console.error("Pre-approval validation failed:", validationResult.error.errors);
+        return res.status(400).json({ 
+          success: false, 
+          message: "Invalid pre-approval data",
+          errors: validationResult.error.errors
+        });
       }
+
+      const { preApprovalData, coBorrowerData } = validationResult.data;
       
-      console.log("Pre-approval data:", JSON.stringify(preApprovalData, null, 2));
-      console.log("Co-borrower data:", JSON.stringify(coBorrowerData, null, 2));
+      // Log minimal metadata only (no PII)
+      console.log(`Pre-approval submission received: ${new Date().toISOString()}, applicant: ${preApprovalData.fullName}, loan purpose: ${preApprovalData.loanPurpose}`);
       
       const emailHtml = formatPreApprovalEmail(preApprovalData, coBorrowerData);
       
@@ -42,9 +45,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Always return success to frontend - email delivery is secondary
       res.json({ success: true, message: "Pre-approval application received successfully" });
-    } catch (error: any) {
-      console.error("Pre-approval submission error:", error);
-      console.error("Error stack:", error.stack);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Pre-approval submission error:", error.message);
+        console.error("Error stack:", error.stack);
+      } else {
+        console.error("Pre-approval submission error:", error);
+      }
       res.status(500).json({ success: false, message: "Server error" });
     }
   });

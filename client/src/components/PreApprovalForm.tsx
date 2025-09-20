@@ -23,6 +23,12 @@ export const PROPERTY_TYPE_OPTIONS = [
   { value: "other", label: "Other" }
 ];
 
+export const INTENDED_USE_OPTIONS = [
+  { value: "primary-residence", label: "Primary Residence" },
+  { value: "second-home", label: "Second Home" },
+  { value: "investment-property", label: "Investment Property" }
+];
+
 export const LOAN_PURPOSE_OPTIONS = [
   { value: "purchase", label: "Purchase" },
   { value: "refinance-reduce-rate", label: "Refinance - Reduce Rate" },
@@ -98,6 +104,7 @@ export const DEFAULT_PRE_APPROVAL_DATA = {
   grossAnnualIncome: '',
   loanPurpose: '',
   propertyType: '',
+  intendedUse: '',
   desiredCashAmount: '',
   desiredLoanAmount: '',
   downPayment: '',
@@ -247,7 +254,10 @@ export default function PreApprovalForm({
 
     const coBorrowerErr: {[key: string]: boolean} = {};
     coBorrowerRequired.forEach(field => {
-      if (!coBorrowerData[field as keyof typeof coBorrowerData]?.trim()) {
+      const value = coBorrowerData[field as keyof typeof coBorrowerData];
+      if (typeof value === 'string' && !value.trim()) {
+        coBorrowerErr[field] = true;
+      } else if (!value) {
         coBorrowerErr[field] = true;
       }
     });
@@ -478,6 +488,20 @@ export default function PreApprovalForm({
               </SelectTrigger>
               <SelectContent>
                 {PROPERTY_TYPE_OPTIONS.map(option => (
+                  <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2">Intended Use</label>
+            <Select value={preApprovalData.intendedUse} onValueChange={(value) => setPreApprovalData(prev => ({ ...prev, intendedUse: value }))}>
+              <SelectTrigger data-testid={`select-${testIdPrefix}intended-use`} className={getInputClassName('intendedUse', true)}>
+                <SelectValue placeholder="Select intended use" />
+              </SelectTrigger>
+              <SelectContent>
+                {INTENDED_USE_OPTIONS.map(option => (
                   <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
                 ))}
               </SelectContent>
