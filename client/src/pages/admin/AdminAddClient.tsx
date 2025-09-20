@@ -7557,7 +7557,7 @@ export default function AdminAddClient() {
               {showSecondLoan && (
                 <>
                   {/* Current Second Loan Information */}
-                  <Card className="border-l-4 border-l-blue-500">
+                  <Card className="border-l-4 border-l-purple-500">
                     <Collapsible open={isSecondLoanOpen} onOpenChange={setIsSecondLoanOpen}>
                       <CardHeader>
                         <div className="flex items-center justify-between">
@@ -7655,10 +7655,8 @@ export default function AdminAddClient() {
                                 </SelectTrigger>
                                 <SelectContent>
                                   <SelectItem value="select">Select</SelectItem>
-                                  <SelectItem value="conforming">Conforming</SelectItem>
-                                  <SelectItem value="non-conforming">Non-Conforming</SelectItem>
-                                  <SelectItem value="government">Government</SelectItem>
-                                  <SelectItem value="portfolio">Portfolio</SelectItem>
+                                  <SelectItem value="heloc">HELOC</SelectItem>
+                                  <SelectItem value="fixed">FIXED</SelectItem>
                                 </SelectContent>
                               </Select>
                             </div>
@@ -7671,11 +7669,11 @@ export default function AdminAddClient() {
                                 </SelectTrigger>
                                 <SelectContent>
                                   <SelectItem value="select">Select</SelectItem>
-                                  <SelectItem value="conventional">Conventional</SelectItem>
-                                  <SelectItem value="fha">FHA</SelectItem>
-                                  <SelectItem value="va">VA</SelectItem>
-                                  <SelectItem value="usda">USDA</SelectItem>
-                                  <SelectItem value="jumbo">Jumbo</SelectItem>
+                                  <SelectItem value="heloc">HELOC</SelectItem>
+                                  <SelectItem value="fixed-second-loan">Fixed Second Loan</SelectItem>
+                                  <SelectItem value="adjustable-second-loan">Adjustable Second Loan</SelectItem>
+                                  <SelectItem value="home-improvement-loan">Home Improvement Loan</SelectItem>
+                                  <SelectItem value="other">Other</SelectItem>
                                 </SelectContent>
                               </Select>
                             </div>
@@ -7691,11 +7689,11 @@ export default function AdminAddClient() {
                                 </SelectTrigger>
                                 <SelectContent>
                                   <SelectItem value="select">Select</SelectItem>
-                                  <SelectItem value="15-year-fixed">15 Year Fixed</SelectItem>
-                                  <SelectItem value="30-year-fixed">30 Year Fixed</SelectItem>
-                                  <SelectItem value="5-1-arm">5/1 ARM</SelectItem>
-                                  <SelectItem value="7-1-arm">7/1 ARM</SelectItem>
-                                  <SelectItem value="10-1-arm">10/1 ARM</SelectItem>
+                                  <SelectItem value="30-years">30 Years</SelectItem>
+                                  <SelectItem value="25-years">25 Years</SelectItem>
+                                  <SelectItem value="20-years">20 Years</SelectItem>
+                                  <SelectItem value="15-years">15 Years</SelectItem>
+                                  <SelectItem value="10-years">10 Years</SelectItem>
                                 </SelectContent>
                               </Select>
                             </div>
@@ -7709,27 +7707,16 @@ export default function AdminAddClient() {
                                 <SelectContent>
                                   <SelectItem value="select">Select</SelectItem>
                                   <SelectItem value="purchase">Purchase</SelectItem>
-                                  <SelectItem value="refinance-rate-term">Refinance Rate & Term</SelectItem>
-                                  <SelectItem value="refinance-cash-out">Refinance Cash Out</SelectItem>
-                                  <SelectItem value="construction">Construction</SelectItem>
+                                  <SelectItem value="debt-pay-off">Debt Pay Off</SelectItem>
+                                  <SelectItem value="home-improvement">Home Improvement</SelectItem>
                                   <SelectItem value="other">Other</SelectItem>
                                 </SelectContent>
                               </Select>
                             </div>
                           </div>
                           
-                          {/* Row 4: HOA Payment, Pre-payment Penalty, Statement Balance, Attached to Property */}
-                          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="secondLoan-hoaPayment">HOA Payment</Label>
-                              <Input
-                                id="secondLoan-hoaPayment"
-                                {...form.register('currentLoan.hoaPayment')}
-                                placeholder="$0.00"
-                                data-testid="input-secondLoan-hoaPayment"
-                              />
-                            </div>
-                            
+                          {/* Row 4: Pre-payment Penalty, Statement Balance, Attached to Property */}
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="space-y-2">
                               <Label htmlFor="secondLoan-prepaymentPenalty">Pre-payment Penalty</Label>
                               <Select value={form.watch('currentLoan.prepaymentPenalty') || 'No'} onValueChange={(value: 'Yes - see notes' | 'No') => form.setValue('currentLoan.prepaymentPenalty', value)}>
@@ -7880,63 +7867,32 @@ export default function AdminAddClient() {
                       </CardHeader>
                       <CollapsibleContent>
                         <CardContent className="space-y-4">
-                          {/* Row 1: Principal & Interest Payment, Tax & Insurance Payment (with toggle), Total Monthly Payment */}
+                          {/* Row 1: Current Balance, Current Rate, Principal & Interest Payment */}
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="secondLoan-currentBalance">Current Balance</Label>
+                              <Input
+                                id="secondLoan-currentBalance"
+                                placeholder="$0.00"
+                                data-testid="input-secondLoan-terms-currentBalance"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="secondLoan-currentRate">Current Rate (%)</Label>
+                              <Input
+                                id="secondLoan-currentRate"
+                                placeholder="0.00%"
+                                data-testid="input-secondLoan-terms-currentRate"
+                              />
+                            </div>
+                            
                             <div className="space-y-2">
                               <Label htmlFor="secondLoan-piPayment">Principal & Interest Payment</Label>
                               <Input
                                 id="secondLoan-piPayment"
                                 placeholder="$0.00"
                                 data-testid="input-secondLoan-piPayment"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <div className="flex items-center justify-between mb-2">
-                                <Label htmlFor="secondLoan-escrowPayment">
-                                  {getCurrentLoanEscrowPaymentLabel()}
-                                </Label>
-                                <Button
-                                  type="button"
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={toggleCurrentLoanEscrowPaymentFieldType}
-                                  className="h-6 px-2 text-xs hover:bg-orange-500 hover:text-white hover:border-orange-500"
-                                  data-testid="button-toggle-secondLoan-escrowPayment-type"
-                                >
-                                  Toggle
-                                </Button>
-                              </div>
-                              <Input
-                                id="secondLoan-escrowPayment"
-                                {...form.register('currentLoan.escrowPayment')}
-                                placeholder="$0.00"
-                                data-testid="input-secondLoan-escrowPayment"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="secondLoan-totalMonthlyPayment">Total Monthly Payment</Label>
-                              <Input
-                                id="secondLoan-totalMonthlyPayment"
-                                {...form.register('currentLoan.totalMonthlyPayment')}
-                                placeholder="$0.00"
-                                readOnly
-                                className="bg-gray-50 cursor-not-allowed"
-                                data-testid="input-secondLoan-totalMonthlyPayment"
-                              />
-                            </div>
-                          </div>
-                          
-                          {/* Row 2: HOA Payment */}
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="secondLoan-hoaPayment">HOA Payment</Label>
-                              <Input
-                                id="secondLoan-hoaPayment"
-                                {...form.register('currentLoan.hoaPayment')}
-                                placeholder="$0.00"
-                                data-testid="input-secondLoan-hoaPayment"
                               />
                             </div>
                           </div>
