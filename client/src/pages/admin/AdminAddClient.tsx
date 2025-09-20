@@ -605,6 +605,7 @@ export default function AdminAddClient() {
         priorMonthsAtAddress: '',
         subjectProperty: undefined,
         leadRef: '',
+        source: '',
         callDate: '',
         startDate: '',
       },
@@ -2093,7 +2094,7 @@ export default function AdminAddClient() {
             <TabsContent value="client" className="space-y-6">
               {/* Lead Information Fields */}
               <Card>
-                <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6">
+                <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
                   <div className="space-y-2">
                     <Label htmlFor="borrower-leadRef">Lead Reference</Label>
                     <Input
@@ -2101,6 +2102,24 @@ export default function AdminAddClient() {
                       {...form.register('borrower.leadRef')}
                       data-testid="input-borrower-leadRef"
                     />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="borrower-source">Source</Label>
+                    <Select
+                      value={form.watch('borrower.source') || ''}
+                      onValueChange={(value) => form.setValue('borrower.source', value)}
+                    >
+                      <SelectTrigger data-testid="select-borrower-source">
+                        <SelectValue placeholder="Select source" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Direct Mail">Direct Mail</SelectItem>
+                        <SelectItem value="Social Media">Social Media</SelectItem>
+                        <SelectItem value="Client Referral">Client Referral</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   
                   <div className="space-y-2">
