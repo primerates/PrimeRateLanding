@@ -1432,7 +1432,6 @@ export default function AdminAddClient() {
     const loanProgramBinding = useSelectFieldBinding('currentLoan.loanProgram', mode, idPrefix, targetForm);
     const loanTermBinding = useSelectFieldBinding('currentLoan.loanTerm', mode, idPrefix, targetForm);
     const loanPurposeBinding = useSelectFieldBinding('currentLoan.loanPurpose', mode, idPrefix, targetForm);
-    const hoaPaymentBinding = useFieldBinding('currentLoan.hoaPayment', mode, idPrefix, targetForm);
     const prepaymentPenaltyBinding = useSelectFieldBinding('currentLoan.prepaymentPenalty', mode, idPrefix, targetForm);
     const statementBalanceBinding = useFieldBinding('currentLoan.statementBalance.amount', mode, idPrefix, targetForm);
     const attachedToPropertyBinding = useSelectFieldBinding('currentLoan.attachedToProperty', mode, idPrefix, targetForm);
@@ -1598,20 +1597,8 @@ export default function AdminAddClient() {
                 </div>
               </div>
               
-              {/* Row 4: HOA Payment, Pre-payment Penalty, Statement Balance, Attached to Property */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor={hoaPaymentBinding.id}>HOA Payment</Label>
-                  <Input
-                    id={hoaPaymentBinding.id}
-                    {...hoaPaymentBinding.field}
-                    value={hoaPaymentBinding.value}
-                    onChange={hoaPaymentBinding.onChange}
-                    placeholder="$0.00"
-                    data-testid={hoaPaymentBinding['data-testid']}
-                  />
-                </div>
-                
+              {/* Row 4: Pre-payment Penalty, Statement Balance, Attached to Property */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor={`${idPrefix}currentLoan-prepaymentPenalty`}>Pre-payment Penalty</Label>
                   <Select {...prepaymentPenaltyBinding}>
@@ -1788,7 +1775,6 @@ export default function AdminAddClient() {
     const principalInterestBinding = useFieldBinding('currentLoan.principalAndInterestPayment', mode, idPrefix, targetForm);
     const escrowPaymentBinding = useFieldBinding('currentLoan.escrowPayment.amount', mode, idPrefix, targetForm);
     const totalMonthlyBinding = useFieldBinding('currentLoan.totalMonthlyPayment', mode, idPrefix, targetForm);
-    const hoaPaymentBinding = useFieldBinding('currentLoan.hoaPayment', mode, idPrefix, targetForm);
     
     const cardClassName = borderVariant === 'blue' ? 'border-l-4 border-l-blue-500' : '';
     
@@ -1876,18 +1862,6 @@ export default function AdminAddClient() {
                     readOnly
                     className="bg-gray-50 cursor-not-allowed"
                     data-testid={totalMonthlyBinding['data-testid']}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor={hoaPaymentBinding.id}>HOA Payment</Label>
-                  <Input
-                    id={hoaPaymentBinding.id}
-                    {...hoaPaymentBinding.field}
-                    value={hoaPaymentBinding.value}
-                    onChange={hoaPaymentBinding.onChange}
-                    placeholder="$0.00"
-                    data-testid={hoaPaymentBinding['data-testid']}
                   />
                 </div>
               </div>
