@@ -62,6 +62,7 @@ export function formatPreApprovalEmail(data: any, coBorrowerData?: any) {
     <h3>Loan Details</h3>
     <p><strong>Loan Purpose:</strong> ${data.loanPurpose || 'Not provided'}</p>
     <p><strong>Property Type:</strong> ${data.propertyType || 'Not provided'}</p>
+    <p><strong>Intended Use:</strong> ${data.intendedUse || 'Not provided'}</p>
     <p><strong>Desired Loan Amount:</strong> $${data.desiredLoanAmount || 'Not provided'}</p>
     ${data.downPayment ? `<p><strong>Down Payment:</strong> $${data.downPayment}</p>` : ''}
     ${data.desiredCashAmount ? `<p><strong>Desired Cash Amount:</strong> $${data.desiredCashAmount}</p>` : ''}

@@ -42,7 +42,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Always return success to frontend - email delivery is secondary
       res.json({ success: true, message: "Pre-approval application received successfully" });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Pre-approval submission error:", error);
       console.error("Error stack:", error.stack);
       res.status(500).json({ success: false, message: "Server error" });
