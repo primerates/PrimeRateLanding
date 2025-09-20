@@ -1352,6 +1352,16 @@ export default function AdminAddClient() {
     const contextForm = useFormContext();
     const targetForm = formInstance || contextForm;
     const watchedValue = useWatch({ name: name as any, control: targetForm?.control });
+    const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    
+    // Cleanup debounce timer on unmount
+    useEffect(() => {
+      return () => {
+        if (debounceTimerRef.current) {
+          clearTimeout(debounceTimerRef.current);
+        }
+      };
+    }, []);
     
     if (mode === 'canonical') {
       // Canonical mode: normal field registration - let register handle everything
@@ -1364,13 +1374,20 @@ export default function AdminAddClient() {
         'data-testid': `input-${idPrefix}${name.replace(/\./g, '-')}`
       };
     } else {
-      // Mirror mode: watch value and use setValue for changes
+      // Mirror mode: watch value and use setValue for changes with debounced performance
       return {
         field: { name: undefined, ref: undefined }, // No registration to avoid conflicts
         value: watchedValue || '',
         onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
           const value = e.target.value;
-          targetForm.setValue(name as any, value, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+          // Clear any existing timer
+          if (debounceTimerRef.current) {
+            clearTimeout(debounceTimerRef.current);
+          }
+          // Set new timer to debounce rapid changes
+          debounceTimerRef.current = setTimeout(() => {
+            targetForm.setValue(name as any, value, { shouldDirty: true, shouldTouch: true, shouldValidate: false });
+          }, 100);
         },
         id: `${idPrefix}${name.replace(/\./g, '-')}`,
         'data-testid': `input-${idPrefix}${name.replace(/\./g, '-')}`
@@ -1429,6 +1446,32 @@ export default function AdminAddClient() {
     
     // Payment field bindings
     const currentRateBinding = useFieldBinding('currentLoan.currentRate', mode, idPrefix, targetForm);
+    
+    // Custom percentage formatting for Current Rate field in Loan Tab (canonical mode)
+    const currentRateBindingWithPercentage = mode === 'canonical' ? {
+      ...currentRateBinding,
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value;
+        // Remove existing % symbol and allow only digits and decimal point
+        value = value.replace('%', '').replace(/[^0-9.]/g, '');
+        // Prevent multiple decimal points
+        const parts = value.split('.');
+        if (parts.length > 2) {
+          value = parts[0] + '.' + parts.slice(1).join('');
+        }
+        // Store the raw numeric value
+        targetForm.setValue('currentLoan.currentRate' as any, value, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+      }
+    } : currentRateBinding;
+    
+    // Format display value as percentage for canonical mode
+    const formatCurrentRateDisplay = (value: string) => {
+      if (!value) return '';
+      if (mode === 'canonical' && !value.includes('%')) {
+        return `${value}%`;
+      }
+      return value;
+    };
     const principalInterestPaymentBinding = useFieldBinding('currentLoan.principalAndInterestPayment', mode, idPrefix, targetForm);
     const escrowPaymentBinding = useFieldBinding('currentLoan.escrowPayment', mode, idPrefix, targetForm);
     const totalMonthlyPaymentBinding = useFieldBinding('currentLoan.totalMonthlyPayment', mode, idPrefix, targetForm);
@@ -1593,14 +1636,16 @@ export default function AdminAddClient() {
               {/* Row 3: Payment Details */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor={currentRateBinding.id}>Current Rate</Label>
+                  <Label htmlFor={currentRateBindingWithPercentage.id}>Current Rate</Label>
                   <Input
-                    id={currentRateBinding.id}
-                    {...currentRateBinding.field}
-                    value={currentRateBinding.value}
-                    onChange={currentRateBinding.onChange}
+                    id={currentRateBindingWithPercentage.id}
+                    name={mode === 'canonical' ? currentRateBindingWithPercentage.field?.name : undefined}
+                    ref={mode === 'canonical' ? currentRateBindingWithPercentage.field?.ref : undefined}
+                    value={formatCurrentRateDisplay(targetForm.watch('currentLoan.currentRate') || '')}
+                    onChange={currentRateBindingWithPercentage.onChange}
                     placeholder="0.00%"
-                    data-testid={currentRateBinding['data-testid']}
+                    inputMode="decimal"
+                    data-testid={currentRateBindingWithPercentage['data-testid']}
                   />
                 </div>
                 
@@ -1801,6 +1846,7 @@ export default function AdminAddClient() {
                   onClick={() => {
                     // TODO: Implement add second loan functionality
                   }}
+                  className="hover:bg-orange-500 hover:text-white hover:border-orange-500 no-default-hover-elevate no-default-active-elevate"
                   data-testid={`button-add-second-loan-${idPrefix}`}
                 >
                   <Plus className="h-4 w-4 mr-2" />
