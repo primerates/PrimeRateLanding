@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -146,31 +145,8 @@ export default function PreApprovalForm({
   
   const [coBorrowerData, setCoBorrowerData] = useState(DEFAULT_CO_BORROWER_DATA);
   const [preApprovalSubmitting, setPreApprovalSubmitting] = useState(false);
-  const [preApprovalSubmitted, setPreApprovalSubmitted] = useState(false);
   const [preApprovalErrors, setPreApprovalErrors] = useState<{[key: string]: boolean}>({});
   const [coBorrowerErrors, setCoBorrowerErrors] = useState<{[key: string]: boolean}>({});
-  
-  // Paper plane animation state
-  const [showPlaneAnimation, setShowPlaneAnimation] = useState(false);
-  
-  // Create a circular looping path (roundabout effect)
-  const circlePath = () => {
-    const x = [];
-    const y = [];
-    const radius = 120;
-    const loops = 2; // how many times it circles
-    const steps = 40; // smoothness
-
-    for (let i = 0; i <= loops * steps; i++) {
-      const angle = (i / steps) * 2 * Math.PI;
-      x.push(Math.cos(angle) * radius);
-      y.push(Math.sin(angle) * radius * 0.6 - i * 3); // tilt downward slightly as it circles
-    }
-
-    return { x, y };
-  };
-  
-  const [planePath, setPlanePath] = useState(circlePath());
 
   const formatPhoneNumber = (value: string) => {
     const digits = value.replace(/\D/g, '');
@@ -285,14 +261,9 @@ export default function PreApprovalForm({
   const submitPreApproval = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Only trigger animation and submit if validation passes
     if (!validatePreApproval()) {
       return;
     }
-
-    // Trigger paper plane animation
-    setPlanePath(circlePath());
-    setShowPlaneAnimation(true);
 
     try {
       setPreApprovalSubmitting(true);
@@ -311,7 +282,6 @@ export default function PreApprovalForm({
         throw new Error('Failed to submit pre-approval');
       }
 
-      setPreApprovalSubmitted(true);
       onSuccess?.();
     } catch (error) {
       console.error('Error submitting pre-approval:', error);
@@ -850,47 +820,6 @@ export default function PreApprovalForm({
         {preApprovalSubmitting ? 'Submitting...' : 'Submit Pre-Approval Request'}
       </Button>
 
-      {/* Paper Plane Animation */}
-      <AnimatePresence>
-        {showPlaneAnimation && (
-          <motion.div
-            className="fixed inset-0 pointer-events-none z-50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onAnimationComplete={() => {
-              setTimeout(() => setShowPlaneAnimation(false), 2000);
-            }}
-          >
-            <motion.div
-              className="absolute text-3xl"
-              initial={{ 
-                x: '50vw', 
-                y: '50vh',
-                rotate: 0,
-                scale: 1
-              }}
-              animate={{
-                x: ['50vw', '60vw', '50vw', '40vw', '50vw'],
-                y: ['50vh', '40vh', '30vh', '40vh', '50vh'],
-                rotate: [0, 90, 180, 270, 360],
-                scale: [1, 1.2, 0.8, 1.2, 1]
-              }}
-              transition={{
-                duration: 3,
-                ease: "easeInOut",
-                repeat: 0,
-                times: [0, 0.25, 0.5, 0.75, 1]
-              }}
-              style={{
-                transformOrigin: 'center'
-              }}
-            >
-              ✈️
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </form>
   );
 }
