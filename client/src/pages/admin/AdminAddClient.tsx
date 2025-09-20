@@ -347,6 +347,9 @@ export default function AdminAddClient() {
   const [isThirdLoanOpen, setIsThirdLoanOpen] = useState(true);
   const [isThirdLoanTermsOpen, setIsThirdLoanTermsOpen] = useState(true);
   
+  // State for Current Loan info popup in Property tab
+  const [showCurrentLoanInfoPopup, setShowCurrentLoanInfoPopup] = useState(false);
+  
   // Multiple prior addresses state management
   const [borrowerPriorAddresses, setBorrowerPriorAddresses] = useState<{ id: string }[]>([]);
 
@@ -2207,6 +2210,20 @@ export default function AdminAddClient() {
                   </div>
                 </div>
               )}
+              
+              {/* Add Third Loan Button - positioned in lower right corner */}
+              <div className="flex justify-end mt-4">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={handleAddThirdLoan}
+                  data-testid="button-add-third-loan"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Third Loan
+                </Button>
+              </div>
             </CardContent>
           </CollapsibleContent>
         </Collapsible>
@@ -3081,6 +3098,31 @@ export default function AdminAddClient() {
   // Handle adding third loan
   const handleAddThirdLoan = () => {
     setShowThirdLoan(true);
+  };
+
+  // Handle info icon click in Property tab - show Current Loan popup if data exists
+  const handleCurrentLoanInfoClick = () => {
+    // Check if there's any current loan data
+    const currentLoan = form.getValues('currentLoan');
+    const hasCurrentLoanData = currentLoan && (
+      currentLoan.currentLender ||
+      currentLoan.loanNumber ||
+      currentLoan.loanStartDate ||
+      currentLoan.remainingTermPerCreditReport ||
+      currentLoan.loanCategory ||
+      currentLoan.loanProgram ||
+      currentLoan.loanTerm ||
+      currentLoan.statementBalance?.amount ||
+      currentLoan.currentRate ||
+      currentLoan.principalAndInterestPayment ||
+      currentLoan.escrowPayment ||
+      currentLoan.totalMonthlyPayment
+    );
+
+    if (hasCurrentLoanData) {
+      setShowCurrentLoanInfoPopup(true);
+    }
+    // If no current loan data exists, do nothing (as requested)
   };
 
   // Handle showing current loan sections  
@@ -7944,7 +7986,18 @@ export default function AdminAddClient() {
                             {(property.use === 'primary' || property.use === 'second-home') && (
                               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                                 <div className="space-y-2">
-                                  <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured First Loan</Label>
+                                  <div className="flex items-center gap-2">
+                                    <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured First Loan</Label>
+                                    <button
+                                      type="button"
+                                      onClick={handleCurrentLoanInfoClick}
+                                      className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                                      data-testid="button-current-loan-info"
+                                      title="View Current Loan details"
+                                    >
+                                      <Info className="h-4 w-4 text-gray-500 hover:text-blue-600" />
+                                    </button>
+                                  </div>
                                   <Select
                                     value={form.watch(`property.properties.${index}.activeSecuredLoan` as const) || ''}
                                     onValueChange={(value) => form.setValue(`property.properties.${index}.activeSecuredLoan` as const, value)}
@@ -9248,6 +9301,27 @@ export default function AdminAddClient() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Current Loan Info Popup Dialog - Shows when info icon is clicked in Property tab */}
+      <Dialog open={showCurrentLoanInfoPopup} onOpenChange={setShowCurrentLoanInfoPopup}>
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto" data-testid="dialog-current-loan-info">
+          <DialogHeader>
+            <DialogTitle>Current Loan Information</DialogTitle>
+            <DialogDescription>
+              View current loan details from the Loan tab
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <ReadOnlyCurrentLoanCard
+              idPrefix="popup-"
+              isOpen={true}
+              setIsOpen={() => {}} // Not needed for popup display
+              formInstance={form}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
+
       </div>
     </TooltipProvider>
   );
