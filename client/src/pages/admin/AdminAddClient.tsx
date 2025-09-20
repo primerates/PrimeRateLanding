@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation } from 'wouter';
-import { useForm } from 'react-hook-form';
+import { useForm, useFormContext, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -1354,6 +1354,556 @@ export default function AdminAddClient() {
   // Helper function to get nested value from object path
   const getNestedValue = (obj: any, path: string): string | undefined => {
     return path.split('.').reduce((current, key) => current?.[key], obj);
+  };
+
+  // Custom hook for field binding in canonical vs mirror mode
+  const useFieldBinding = (name: string, mode: 'canonical' | 'mirror', idPrefix: string = '') => {
+    const form = useFormContext();
+    const watchedValue = useWatch({ name: name as any });
+    
+    if (mode === 'canonical') {
+      // Canonical mode: normal field registration
+      return {
+        field: form.register(name as any),
+        value: watchedValue,
+        onChange: undefined,
+        id: `${idPrefix}${name.replace(/\./g, '-')}`,
+        'data-testid': `input-${idPrefix}${name.replace(/\./g, '-')}`
+      };
+    } else {
+      // Mirror mode: watch value and use setValue for changes
+      return {
+        field: { name: undefined, ref: undefined }, // No registration to avoid conflicts
+        value: watchedValue || '',
+        onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+          const value = e.target.value;
+          form.setValue(name as any, value, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+        },
+        id: `${idPrefix}${name.replace(/\./g, '-')}`,
+        'data-testid': `input-${idPrefix}${name.replace(/\./g, '-')}`
+      };
+    }
+  };
+
+  // Custom hook for select field binding in canonical vs mirror mode
+  const useSelectFieldBinding = (name: string, mode: 'canonical' | 'mirror', idPrefix: string = '') => {
+    const form = useFormContext();
+    const watchedValue = useWatch({ name: name as any });
+    
+    return {
+      value: watchedValue || '',
+      onValueChange: (value: string) => {
+        form.setValue(name as any, value, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+      },
+      'data-testid': `select-${idPrefix}${name.replace(/\./g, '-')}`
+    };
+  };
+
+  // CurrentLoanCard component
+  const CurrentLoanCard = ({ 
+    mode, 
+    idPrefix = '', 
+    borderVariant, 
+    isOpen, 
+    setIsOpen, 
+    onRemove,
+    onAutoCopyAddress 
+  }: {
+    mode: 'canonical' | 'mirror';
+    idPrefix?: string;
+    borderVariant: 'blue' | 'none';
+    isOpen: boolean;
+    setIsOpen: (open: boolean) => void;
+    onRemove?: () => void;
+    onAutoCopyAddress?: () => void;
+  }) => {
+    const form = useFormContext();
+    const currentLenderBinding = useFieldBinding('currentLoan.currentLender', mode, idPrefix);
+    const loanNumberBinding = useFieldBinding('currentLoan.loanNumber', mode, idPrefix);
+    const loanStartDateBinding = useFieldBinding('currentLoan.loanStartDate', mode, idPrefix);
+    const remainingTermBinding = useFieldBinding('currentLoan.remainingTermPerCreditReport', mode, idPrefix);
+    const loanCategoryBinding = useSelectFieldBinding('currentLoan.loanCategory', mode, idPrefix);
+    const loanProgramBinding = useSelectFieldBinding('currentLoan.loanProgram', mode, idPrefix);
+    const loanTermBinding = useSelectFieldBinding('currentLoan.loanTerm', mode, idPrefix);
+    const loanPurposeBinding = useSelectFieldBinding('currentLoan.loanPurpose', mode, idPrefix);
+    const hoaPaymentBinding = useFieldBinding('currentLoan.hoaPayment', mode, idPrefix);
+    const prepaymentPenaltyBinding = useSelectFieldBinding('currentLoan.prepaymentPenalty', mode, idPrefix);
+    const statementBalanceBinding = useFieldBinding('currentLoan.statementBalance.amount', mode, idPrefix);
+    const attachedToPropertyBinding = useSelectFieldBinding('currentLoan.attachedToProperty', mode, idPrefix);
+    
+    // Property address bindings
+    const propertyStreetBinding = useFieldBinding('currentLoan.propertyAddress.street', mode, idPrefix);
+    const propertyUnitBinding = useFieldBinding('currentLoan.propertyAddress.unit', mode, idPrefix);
+    const propertyCityBinding = useFieldBinding('currentLoan.propertyAddress.city', mode, idPrefix);
+    const propertyStateBinding = useSelectFieldBinding('currentLoan.propertyAddress.state', mode, idPrefix);
+    const propertyZipBinding = useFieldBinding('currentLoan.propertyAddress.zipCode', mode, idPrefix);
+    const propertyCountyBinding = useFieldBinding('currentLoan.propertyAddress.county', mode, idPrefix);
+    
+    const cardClassName = borderVariant === 'blue' ? 'border-l-4 border-l-blue-500' : '';
+    
+    return (
+      <Card className={cardClassName}>
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Current Loan</CardTitle>
+              <div className="flex items-center gap-2">
+                {onRemove && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={onRemove}
+                    className="hover:bg-red-500 hover:text-white"
+                    data-testid={`button-remove-current-loan-${idPrefix}`}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                )}
+                <CollapsibleTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="hover:bg-orange-500 hover:text-white" 
+                    data-testid={`button-toggle-current-loan-${idPrefix}`}
+                    title={isOpen ? 'Minimize' : 'Expand'}
+                  >
+                    {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                  </Button>
+                </CollapsibleTrigger>
+              </div>
+            </div>
+          </CardHeader>
+          <CollapsibleContent>
+            <CardContent className="space-y-4">
+              {/* Row 1: Current Lender, Loan Number, Loan Start Date, Remaining Term Per Credit Report */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor={currentLenderBinding.id}>Current Lender</Label>
+                  <Input
+                    id={currentLenderBinding.id}
+                    {...currentLenderBinding.field}
+                    value={currentLenderBinding.value}
+                    onChange={currentLenderBinding.onChange}
+                    data-testid={currentLenderBinding['data-testid']}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={loanNumberBinding.id}>Loan Number</Label>
+                  <Input
+                    id={loanNumberBinding.id}
+                    {...loanNumberBinding.field}
+                    value={loanNumberBinding.value}
+                    onChange={loanNumberBinding.onChange}
+                    data-testid={loanNumberBinding['data-testid']}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={loanStartDateBinding.id}>Loan Start Date</Label>
+                  <Input
+                    id={loanStartDateBinding.id}
+                    type="date"
+                    {...loanStartDateBinding.field}
+                    value={loanStartDateBinding.value}
+                    onChange={loanStartDateBinding.onChange}
+                    data-testid={loanStartDateBinding['data-testid']}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={remainingTermBinding.id}>Remaining Term Per Credit Report</Label>
+                  <Input
+                    id={remainingTermBinding.id}
+                    {...remainingTermBinding.field}
+                    value={remainingTermBinding.value}
+                    onChange={remainingTermBinding.onChange}
+                    placeholder="Years/Months"
+                    data-testid={remainingTermBinding['data-testid']}
+                  />
+                </div>
+              </div>
+              
+              {/* Row 2: Loan Category, Loan Program, Loan Term, Loan Purpose */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}currentLoan-loanCategory`}>Loan Category</Label>
+                  <Select {...loanCategoryBinding}>
+                    <SelectTrigger data-testid={loanCategoryBinding['data-testid']}>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="conventional">Conventional</SelectItem>
+                      <SelectItem value="conventional-jumbo">Conventional Jumbo</SelectItem>
+                      <SelectItem value="fha">FHA</SelectItem>
+                      <SelectItem value="va">VA</SelectItem>
+                      <SelectItem value="va-jumbo">VA Jumbo</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}currentLoan-loanProgram`}>Loan Program</Label>
+                  <Select {...loanProgramBinding}>
+                    <SelectTrigger data-testid={loanProgramBinding['data-testid']}>
+                      <SelectValue placeholder="Select program" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="fixed-rate">Fixed Rate</SelectItem>
+                      <SelectItem value="adjustable">Adjustable</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}currentLoan-loanTerm`}>Loan Term</Label>
+                  <Select {...loanTermBinding}>
+                    <SelectTrigger data-testid={loanTermBinding['data-testid']}>
+                      <SelectValue placeholder="Select term" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="30-years">30 years</SelectItem>
+                      <SelectItem value="25-years">25 years</SelectItem>
+                      <SelectItem value="20-years">20 years</SelectItem>
+                      <SelectItem value="15-years">15 years</SelectItem>
+                      <SelectItem value="10-years">10 years</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}currentLoan-loanPurpose`}>Loan Purpose</Label>
+                  <Select {...loanPurposeBinding}>
+                    <SelectTrigger data-testid={loanPurposeBinding['data-testid']}>
+                      <SelectValue placeholder="Select purpose" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="purchase">Purchase</SelectItem>
+                      <SelectItem value="refinance-rate-term">Refinance Rate & Term</SelectItem>
+                      <SelectItem value="refinance-cash-out">Refinance Cash Out</SelectItem>
+                      <SelectItem value="construction">Construction</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              {/* Row 4: HOA Payment, Pre-payment Penalty, Statement Balance, Attached to Property */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor={hoaPaymentBinding.id}>HOA Payment</Label>
+                  <Input
+                    id={hoaPaymentBinding.id}
+                    {...hoaPaymentBinding.field}
+                    value={hoaPaymentBinding.value}
+                    onChange={hoaPaymentBinding.onChange}
+                    placeholder="$0.00"
+                    data-testid={hoaPaymentBinding['data-testid']}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}currentLoan-prepaymentPenalty`}>Pre-payment Penalty</Label>
+                  <Select {...prepaymentPenaltyBinding}>
+                    <SelectTrigger data-testid={prepaymentPenaltyBinding['data-testid']}>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Yes - see notes">Yes - see notes</SelectItem>
+                      <SelectItem value="No">No</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={statementBalanceBinding.id}>Statement Balance</Label>
+                  <Input
+                    id={statementBalanceBinding.id}
+                    {...statementBalanceBinding.field}
+                    value={statementBalanceBinding.value}
+                    onChange={statementBalanceBinding.onChange}
+                    placeholder="$0.00"
+                    data-testid={statementBalanceBinding['data-testid']}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}currentLoan-attachedToProperty`}>Attached to Property</Label>
+                  <Select 
+                    {...attachedToPropertyBinding}
+                    onValueChange={(value) => {
+                      attachedToPropertyBinding.onValueChange(value);
+                      if (value && value !== '' && onAutoCopyAddress) {
+                        setTimeout(() => onAutoCopyAddress(), 100);
+                      }
+                    }}
+                  >
+                    <SelectTrigger data-testid={attachedToPropertyBinding['data-testid']}>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      <SelectItem value="Primary Residence">Primary Residence</SelectItem>
+                      <SelectItem value="Second Home">Second Home</SelectItem>
+                      <SelectItem value="Investment Property">Investment Property</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              {/* Conditional Address Fields - Show when Attached to Property is selected */}
+              {form.watch('currentLoan.attachedToProperty') && form.watch('currentLoan.attachedToProperty') !== '' && (
+                <div className="mt-4 p-4 border-t border-gray-200">
+                  <Label className="text-sm font-medium text-gray-700 mb-3 block">
+                    Property Address ({form.watch('currentLoan.attachedToProperty')})
+                  </Label>
+                  <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                    <div className="space-y-2 md:col-span-4">
+                      <Label htmlFor={propertyStreetBinding.id}>Street Address</Label>
+                      <Input
+                        id={propertyStreetBinding.id}
+                        {...propertyStreetBinding.field}
+                        value={propertyStreetBinding.value}
+                        onChange={propertyStreetBinding.onChange}
+                        data-testid={propertyStreetBinding['data-testid']}
+                        readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
+                        className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor={propertyUnitBinding.id}>Unit/Apt</Label>
+                      <Input
+                        id={propertyUnitBinding.id}
+                        {...propertyUnitBinding.field}
+                        value={propertyUnitBinding.value}
+                        onChange={propertyUnitBinding.onChange}
+                        data-testid={propertyUnitBinding['data-testid']}
+                        readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
+                        className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor={propertyCityBinding.id}>City</Label>
+                      <Input
+                        id={propertyCityBinding.id}
+                        {...propertyCityBinding.field}
+                        value={propertyCityBinding.value}
+                        onChange={propertyCityBinding.onChange}
+                        data-testid={propertyCityBinding['data-testid']}
+                        readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
+                        className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor={`${idPrefix}currentLoan-property-state`}>State</Label>
+                      <Select
+                        {...propertyStateBinding}
+                        disabled={form.watch('currentLoan.attachedToProperty') !== 'Other'}
+                      >
+                        <SelectTrigger
+                          data-testid={propertyStateBinding['data-testid']}
+                          className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                        >
+                          <SelectValue placeholder="State" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {US_STATES.map(state => (
+                            <SelectItem key={state.value} value={state.value}>{state.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor={propertyZipBinding.id}>ZIP Code</Label>
+                      <Input
+                        id={propertyZipBinding.id}
+                        {...propertyZipBinding.field}
+                        value={propertyZipBinding.value}
+                        onChange={propertyZipBinding.onChange}
+                        data-testid={propertyZipBinding['data-testid']}
+                        readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
+                        className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor={propertyCountyBinding.id}>County</Label>
+                      <Input
+                        id={propertyCountyBinding.id}
+                        {...propertyCountyBinding.field}
+                        value={propertyCountyBinding.value}
+                        onChange={propertyCountyBinding.onChange}
+                        data-testid={propertyCountyBinding['data-testid']}
+                        readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
+                        className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </CollapsibleContent>
+        </Collapsible>
+      </Card>
+    );
+  };
+
+  // CurrentLoanTermsCard component
+  const CurrentLoanTermsCard = ({ 
+    mode, 
+    idPrefix = '', 
+    borderVariant, 
+    isOpen, 
+    setIsOpen,
+    onAddSecondLoan 
+  }: {
+    mode: 'canonical' | 'mirror';
+    idPrefix?: string;
+    borderVariant: 'blue' | 'none';
+    isOpen: boolean;
+    setIsOpen: (open: boolean) => void;
+    onAddSecondLoan?: () => void;
+  }) => {
+    const form = useFormContext();
+    const currentBalanceBinding = useFieldBinding('currentLoan.currentBalance', mode, idPrefix);
+    const currentRateBinding = useFieldBinding('currentLoan.currentRate', mode, idPrefix);
+    const principalInterestBinding = useFieldBinding('currentLoan.principalAndInterestPayment', mode, idPrefix);
+    const escrowPaymentBinding = useFieldBinding('currentLoan.escrowPayment.amount', mode, idPrefix);
+    const totalMonthlyBinding = useFieldBinding('currentLoan.totalMonthlyPayment', mode, idPrefix);
+    const hoaPaymentBinding = useFieldBinding('currentLoan.hoaPayment', mode, idPrefix);
+    
+    const cardClassName = borderVariant === 'blue' ? 'border-l-4 border-l-blue-500' : '';
+    
+    return (
+      <Card className={cardClassName}>
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Current Loan Terms</CardTitle>
+              <CollapsibleTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="hover:bg-orange-500 hover:text-white" 
+                  data-testid={`button-toggle-current-loan-payments-${idPrefix}`}
+                  title={isOpen ? 'Minimize' : 'Expand'}
+                >
+                  {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                </Button>
+              </CollapsibleTrigger>
+            </div>
+          </CardHeader>
+          <CollapsibleContent>
+            <CardContent className="space-y-6">
+              {/* Payment Details */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor={currentBalanceBinding.id}>Current Balance</Label>
+                  <Input
+                    id={currentBalanceBinding.id}
+                    {...currentBalanceBinding.field}
+                    value={currentBalanceBinding.value}
+                    onChange={currentBalanceBinding.onChange}
+                    placeholder="$0.00"
+                    data-testid={currentBalanceBinding['data-testid']}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={currentRateBinding.id}>Current Rate</Label>
+                  <Input
+                    id={currentRateBinding.id}
+                    {...currentRateBinding.field}
+                    value={currentRateBinding.value}
+                    onChange={currentRateBinding.onChange}
+                    placeholder="0.00%"
+                    data-testid={currentRateBinding['data-testid']}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={principalInterestBinding.id}>Principal & Interest Payment</Label>
+                  <Input
+                    id={principalInterestBinding.id}
+                    {...principalInterestBinding.field}
+                    value={principalInterestBinding.value}
+                    onChange={principalInterestBinding.onChange}
+                    placeholder="$0.00"
+                    data-testid={principalInterestBinding['data-testid']}
+                  />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor={escrowPaymentBinding.id}>Escrow Payment</Label>
+                  <Input
+                    id={escrowPaymentBinding.id}
+                    {...escrowPaymentBinding.field}
+                    value={escrowPaymentBinding.value}
+                    onChange={escrowPaymentBinding.onChange}
+                    placeholder="$0.00"
+                    data-testid={escrowPaymentBinding['data-testid']}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={totalMonthlyBinding.id}>Total Monthly Payment</Label>
+                  <Input
+                    id={totalMonthlyBinding.id}
+                    {...totalMonthlyBinding.field}
+                    value={totalMonthlyBinding.value}
+                    onChange={totalMonthlyBinding.onChange}
+                    placeholder="$0.00"
+                    readOnly
+                    className="bg-gray-50 cursor-not-allowed"
+                    data-testid={totalMonthlyBinding['data-testid']}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={hoaPaymentBinding.id}>HOA Payment</Label>
+                  <Input
+                    id={hoaPaymentBinding.id}
+                    {...hoaPaymentBinding.field}
+                    value={hoaPaymentBinding.value}
+                    onChange={hoaPaymentBinding.onChange}
+                    placeholder="$0.00"
+                    data-testid={hoaPaymentBinding['data-testid']}
+                  />
+                </div>
+              </div>
+              
+              {/* Second Loan Info Button - Only show in canonical mode and when function provided */}
+              {mode === 'canonical' && onAddSecondLoan && !showSecondLoan && (
+                <div className="flex justify-end mt-6">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={onAddSecondLoan}
+                    className="hover:bg-blue-500 hover:text-white"
+                    data-testid="button-add-second-loan-info"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Second Loan Info
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </CollapsibleContent>
+        </Collapsible>
+      </Card>
+    );
   };
 
   // Pension management helper functions
