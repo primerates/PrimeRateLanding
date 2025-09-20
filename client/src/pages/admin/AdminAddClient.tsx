@@ -1527,7 +1527,7 @@ export default function AdminAddClient() {
                 </div>
               </div>
               
-              {/* Row 2: Loan Category, Loan Term, Loan Duration, Loan Purpose */}
+              {/* Row 2: Loan Category, Loan Term, Loan Duration, Current Balance */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor={`${idPrefix}currentLoan-loanCategory`}>Loan Category</Label>
@@ -1578,38 +1578,6 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor={`${idPrefix}currentLoan-loanPurpose`}>Loan Purpose</Label>
-                  <Select {...loanPurposeBinding}>
-                    <SelectTrigger data-testid={loanPurposeBinding['data-testid']}>
-                      <SelectValue placeholder="Select purpose" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="purchase">Purchase</SelectItem>
-                      <SelectItem value="refinance-rate-term">Refinance Rate & Term</SelectItem>
-                      <SelectItem value="refinance-cash-out">Refinance Cash Out</SelectItem>
-                      <SelectItem value="construction">Construction</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              
-              {/* Row 4: Pre-payment Penalty, Statement Balance, Attached to Property */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor={`${idPrefix}currentLoan-prepaymentPenalty`}>Pre-payment Penalty</Label>
-                  <Select {...prepaymentPenaltyBinding}>
-                    <SelectTrigger data-testid={prepaymentPenaltyBinding['data-testid']}>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Yes - see notes">Yes - see notes</SelectItem>
-                      <SelectItem value="No">No</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="space-y-2">
                   <Label htmlFor={statementBalanceBinding.id}>Current Balance</Label>
                   <Input
                     id={statementBalanceBinding.id}
@@ -1620,33 +1588,9 @@ export default function AdminAddClient() {
                     data-testid={statementBalanceBinding['data-testid']}
                   />
                 </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor={`${idPrefix}currentLoan-attachedToProperty`}>Attached to Property</Label>
-                  <Select 
-                    {...attachedToPropertyBinding}
-                    onValueChange={(value) => {
-                      attachedToPropertyBinding.onValueChange(value);
-                      if (value && value !== '' && onAutoCopyAddress) {
-                        setTimeout(() => onAutoCopyAddress(), 100);
-                      }
-                    }}
-                  >
-                    <SelectTrigger data-testid={attachedToPropertyBinding['data-testid']}>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="Primary Residence">Primary Residence</SelectItem>
-                      <SelectItem value="Second Home">Second Home</SelectItem>
-                      <SelectItem value="Investment Property">Investment Property</SelectItem>
-                      <SelectItem value="Other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
               </div>
               
-              {/* Row 5: Payment Details */}
+              {/* Row 3: Payment Details */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor={currentRateBinding.id}>Current Rate</Label>
@@ -1694,6 +1638,62 @@ export default function AdminAddClient() {
                     placeholder="$0.00"
                     data-testid={totalMonthlyPaymentBinding['data-testid']}
                   />
+                </div>
+              </div>
+              
+              {/* Row 4: Loan Purpose, Pre-payment Penalty, Attached to Property */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}currentLoan-loanPurpose`}>Loan Purpose</Label>
+                  <Select {...loanPurposeBinding}>
+                    <SelectTrigger data-testid={loanPurposeBinding['data-testid']}>
+                      <SelectValue placeholder="Select purpose" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="purchase">Purchase</SelectItem>
+                      <SelectItem value="refinance-rate-term">Refinance Rate & Term</SelectItem>
+                      <SelectItem value="refinance-cash-out">Refinance Cash Out</SelectItem>
+                      <SelectItem value="construction">Construction</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}currentLoan-prepaymentPenalty`}>Pre-payment Penalty</Label>
+                  <Select {...prepaymentPenaltyBinding}>
+                    <SelectTrigger data-testid={prepaymentPenaltyBinding['data-testid']}>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Yes - see notes">Yes - see notes</SelectItem>
+                      <SelectItem value="No">No</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}currentLoan-attachedToProperty`}>Attached to Property</Label>
+                  <Select 
+                    {...attachedToPropertyBinding}
+                    onValueChange={(value) => {
+                      attachedToPropertyBinding.onValueChange(value);
+                      if (value && value !== '' && onAutoCopyAddress) {
+                        setTimeout(() => onAutoCopyAddress(), 100);
+                      }
+                    }}
+                  >
+                    <SelectTrigger data-testid={attachedToPropertyBinding['data-testid']}>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      <SelectItem value="Primary Residence">Primary Residence</SelectItem>
+                      <SelectItem value="Second Home">Second Home</SelectItem>
+                      <SelectItem value="Investment Property">Investment Property</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
               
