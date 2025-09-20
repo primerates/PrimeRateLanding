@@ -1430,6 +1430,12 @@ export default function AdminAddClient() {
     const statementBalanceBinding = useFieldBinding('currentLoan.statementBalance.amount', mode, idPrefix, targetForm);
     const attachedToPropertyBinding = useSelectFieldBinding('currentLoan.attachedToProperty', mode, idPrefix, targetForm);
     
+    // Payment field bindings
+    const currentRateBinding = useFieldBinding('currentLoan.currentRate', mode, idPrefix, targetForm);
+    const principalInterestPaymentBinding = useFieldBinding('currentLoan.principalAndInterestPayment', mode, idPrefix, targetForm);
+    const escrowPaymentBinding = useFieldBinding('currentLoan.escrowPayment', mode, idPrefix, targetForm);
+    const totalMonthlyPaymentBinding = useFieldBinding('currentLoan.totalMonthlyPayment', mode, idPrefix, targetForm);
+    
     // Property address bindings
     const propertyStreetBinding = useFieldBinding('currentLoan.propertyAddress.street', mode, idPrefix, targetForm);
     const propertyUnitBinding = useFieldBinding('currentLoan.propertyAddress.unit', mode, idPrefix, targetForm);
@@ -1558,7 +1564,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor={`${idPrefix}currentLoan-loanTerm`}>Loan Term</Label>
+                  <Label htmlFor={`${idPrefix}currentLoan-loanTerm`}>Loan Duration</Label>
                   <Select {...loanTermBinding}>
                     <SelectTrigger data-testid={loanTermBinding['data-testid']}>
                       <SelectValue placeholder="Select term" />
@@ -1607,7 +1613,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor={statementBalanceBinding.id}>Statement Balance</Label>
+                  <Label htmlFor={statementBalanceBinding.id}>Current Balance</Label>
                   <Input
                     id={statementBalanceBinding.id}
                     {...statementBalanceBinding.field}
@@ -1737,6 +1743,57 @@ export default function AdminAddClient() {
                   </div>
                 </div>
               )}
+              
+              {/* Row 5: Payment Details */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor={currentRateBinding.id}>Current Rate</Label>
+                  <Input
+                    id={currentRateBinding.id}
+                    {...currentRateBinding.field}
+                    value={currentRateBinding.value}
+                    onChange={currentRateBinding.onChange}
+                    placeholder="0.00%"
+                    data-testid={currentRateBinding['data-testid']}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={principalInterestPaymentBinding.id}>Principal & Interest Payment</Label>
+                  <Input
+                    id={principalInterestPaymentBinding.id}
+                    {...principalInterestPaymentBinding.field}
+                    value={principalInterestPaymentBinding.value}
+                    onChange={principalInterestPaymentBinding.onChange}
+                    placeholder="$0.00"
+                    data-testid={principalInterestPaymentBinding['data-testid']}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={escrowPaymentBinding.id}>Escrow Payment</Label>
+                  <Input
+                    id={escrowPaymentBinding.id}
+                    {...escrowPaymentBinding.field}
+                    value={escrowPaymentBinding.value}
+                    onChange={escrowPaymentBinding.onChange}
+                    placeholder="$0.00"
+                    data-testid={escrowPaymentBinding['data-testid']}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={totalMonthlyPaymentBinding.id}>Total Monthly Payment</Label>
+                  <Input
+                    id={totalMonthlyPaymentBinding.id}
+                    {...totalMonthlyPaymentBinding.field}
+                    value={totalMonthlyPaymentBinding.value}
+                    onChange={totalMonthlyPaymentBinding.onChange}
+                    placeholder="$0.00"
+                    data-testid={totalMonthlyPaymentBinding['data-testid']}
+                  />
+                </div>
+              </div>
             </CardContent>
           </CollapsibleContent>
         </Collapsible>
