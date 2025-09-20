@@ -2218,6 +2218,7 @@ export default function AdminAddClient() {
                   variant="outline" 
                   size="sm" 
                   onClick={handleAddThirdLoan}
+                  className="hover:bg-orange-500 hover:text-white hover:border-orange-500 no-default-hover-elevate no-default-active-elevate"
                   data-testid="button-add-third-loan"
                 >
                   <Plus className="h-4 w-4 mr-2" />
