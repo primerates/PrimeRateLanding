@@ -1801,144 +1801,6 @@ export default function AdminAddClient() {
     );
   };
 
-  // CurrentLoanTermsCard component
-  const CurrentLoanTermsCard = ({ 
-    mode, 
-    idPrefix = '', 
-    borderVariant, 
-    isOpen, 
-    setIsOpen,
-    onAddSecondLoan,
-    formInstance 
-  }: {
-    mode: 'canonical' | 'mirror';
-    idPrefix?: string;
-    borderVariant: 'blue' | 'none';
-    isOpen: boolean;
-    setIsOpen: (open: boolean) => void;
-    onAddSecondLoan?: () => void;
-    formInstance?: any;
-  }) => {
-    const contextForm = useFormContext();
-    const targetForm = formInstance || contextForm;
-    const currentBalanceBinding = useFieldBinding('currentLoan.currentBalance', mode, idPrefix, targetForm);
-    const currentRateBinding = useFieldBinding('currentLoan.currentRate', mode, idPrefix, targetForm);
-    const principalInterestBinding = useFieldBinding('currentLoan.principalAndInterestPayment', mode, idPrefix, targetForm);
-    const escrowPaymentBinding = useFieldBinding('currentLoan.escrowPayment.amount', mode, idPrefix, targetForm);
-    const totalMonthlyBinding = useFieldBinding('currentLoan.totalMonthlyPayment', mode, idPrefix, targetForm);
-    
-    const cardClassName = borderVariant === 'blue' ? 'border-l-4 border-l-blue-500' : '';
-    
-    return (
-      <Card className={cardClassName}>
-        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>Current Loan Terms</CardTitle>
-              <CollapsibleTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="hover:bg-orange-500 hover:text-white" 
-                  data-testid={`button-toggle-current-loan-payments-${idPrefix}`}
-                  title={isOpen ? 'Minimize' : 'Expand'}
-                >
-                  {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                </Button>
-              </CollapsibleTrigger>
-            </div>
-          </CardHeader>
-          <CollapsibleContent>
-            <CardContent className="space-y-6">
-              {/* Payment Details */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor={currentBalanceBinding.id}>Current Balance</Label>
-                  <Input
-                    id={currentBalanceBinding.id}
-                    {...currentBalanceBinding.field}
-                    value={currentBalanceBinding.value}
-                    onChange={currentBalanceBinding.onChange}
-                    placeholder="$0.00"
-                    data-testid={currentBalanceBinding['data-testid']}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor={currentRateBinding.id}>Current Rate</Label>
-                  <Input
-                    id={currentRateBinding.id}
-                    {...currentRateBinding.field}
-                    value={currentRateBinding.value}
-                    onChange={currentRateBinding.onChange}
-                    placeholder="0.00%"
-                    data-testid={currentRateBinding['data-testid']}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor={principalInterestBinding.id}>Principal & Interest Payment</Label>
-                  <Input
-                    id={principalInterestBinding.id}
-                    {...principalInterestBinding.field}
-                    value={principalInterestBinding.value}
-                    onChange={principalInterestBinding.onChange}
-                    placeholder="$0.00"
-                    data-testid={principalInterestBinding['data-testid']}
-                  />
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor={escrowPaymentBinding.id}>Escrow Payment</Label>
-                  <Input
-                    id={escrowPaymentBinding.id}
-                    {...escrowPaymentBinding.field}
-                    value={escrowPaymentBinding.value}
-                    onChange={escrowPaymentBinding.onChange}
-                    placeholder="$0.00"
-                    data-testid={escrowPaymentBinding['data-testid']}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor={totalMonthlyBinding.id}>Total Monthly Payment</Label>
-                  <Input
-                    id={totalMonthlyBinding.id}
-                    {...totalMonthlyBinding.field}
-                    value={totalMonthlyBinding.value}
-                    onChange={totalMonthlyBinding.onChange}
-                    placeholder="$0.00"
-                    readOnly
-                    className="bg-gray-50 cursor-not-allowed"
-                    data-testid={totalMonthlyBinding['data-testid']}
-                  />
-                </div>
-              </div>
-              
-              {/* Second Loan Info Button - Only show in canonical mode and when function provided */}
-              {mode === 'canonical' && onAddSecondLoan && !showSecondLoan && (
-                <div className="flex justify-end mt-6">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={onAddSecondLoan}
-                    className="hover:bg-blue-500 hover:text-white"
-                    data-testid="button-add-second-loan-info"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Second Loan Info
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-          </CollapsibleContent>
-        </Collapsible>
-      </Card>
-    );
-  };
 
   // Pension management helper functions
   const generateUniqueId = (): string => {
@@ -7807,7 +7669,7 @@ export default function AdminAddClient() {
                       </div>
                       
                       <div className="space-y-2">
-                        <Label htmlFor="newLoan-loanTerm">Loan Term</Label>
+                        <Label htmlFor="newLoan-loanTerm">Loan Duration</Label>
                         <Input
                           id="newLoan-loanTerm"
                           {...form.register('newLoan.loanTerm')}
@@ -7997,7 +7859,7 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="secondLoan-loanTerm">Loan Term</Label>
+                              <Label htmlFor="secondLoan-loanTerm">Loan Duration</Label>
                               <Select value={form.watch('currentLoan.loanTerm') || ''} onValueChange={(value) => form.setValue('currentLoan.loanTerm', value)}>
                                 <SelectTrigger data-testid="select-secondLoan-loanTerm">
                                   <SelectValue placeholder="Select" />
@@ -8059,7 +7921,7 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="secondLoan-statementBalance">Statement Balance</Label>
+                              <Label htmlFor="secondLoan-statementBalance">Current Balance</Label>
                               <Input
                                 id="secondLoan-statementBalance"
                                 {...form.register('currentLoan.statementBalance.amount')}
@@ -8305,7 +8167,7 @@ export default function AdminAddClient() {
                           {/* Row 3: Loan Term, Loan Purpose */}
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="space-y-2">
-                              <Label htmlFor="thirdLoan-loanTerm">Loan Term</Label>
+                              <Label htmlFor="thirdLoan-loanTerm">Loan Duration</Label>
                               <Select>
                                 <SelectTrigger data-testid="select-thirdLoan-loanTerm">
                                   <SelectValue placeholder="Select" />
@@ -8354,7 +8216,7 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="thirdLoan-statementBalance">Statement Balance</Label>
+                              <Label htmlFor="thirdLoan-statementBalance">Current Balance</Label>
                               <Input
                                 id="thirdLoan-statementBalance"
                                 placeholder="$0.00"
