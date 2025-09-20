@@ -1357,14 +1357,15 @@ export default function AdminAddClient() {
   };
 
   // Custom hook for field binding in canonical vs mirror mode
-  const useFieldBinding = (name: string, mode: 'canonical' | 'mirror', idPrefix: string = '') => {
-    const form = useFormContext();
-    const watchedValue = useWatch({ name: name as any });
+  const useFieldBinding = (name: string, mode: 'canonical' | 'mirror', idPrefix: string = '', formInstance: any = null) => {
+    const contextForm = useFormContext();
+    const targetForm = formInstance || contextForm;
+    const watchedValue = useWatch({ name: name as any, control: targetForm?.control });
     
     if (mode === 'canonical') {
       // Canonical mode: normal field registration
       return {
-        field: form.register(name as any),
+        field: targetForm.register(name as any),
         value: watchedValue,
         onChange: undefined,
         id: `${idPrefix}${name.replace(/\./g, '-')}`,
@@ -1377,7 +1378,7 @@ export default function AdminAddClient() {
         value: watchedValue || '',
         onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
           const value = e.target.value;
-          form.setValue(name as any, value, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+          targetForm.setValue(name as any, value, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
         },
         id: `${idPrefix}${name.replace(/\./g, '-')}`,
         'data-testid': `input-${idPrefix}${name.replace(/\./g, '-')}`
@@ -1386,14 +1387,15 @@ export default function AdminAddClient() {
   };
 
   // Custom hook for select field binding in canonical vs mirror mode
-  const useSelectFieldBinding = (name: string, mode: 'canonical' | 'mirror', idPrefix: string = '') => {
-    const form = useFormContext();
-    const watchedValue = useWatch({ name: name as any });
+  const useSelectFieldBinding = (name: string, mode: 'canonical' | 'mirror', idPrefix: string = '', formInstance: any = null) => {
+    const contextForm = useFormContext();
+    const targetForm = formInstance || contextForm;
+    const watchedValue = useWatch({ name: name as any, control: targetForm?.control });
     
     return {
       value: watchedValue || '',
       onValueChange: (value: string) => {
-        form.setValue(name as any, value, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+        targetForm.setValue(name as any, value, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
       },
       'data-testid': `select-${idPrefix}${name.replace(/\./g, '-')}`
     };
@@ -1407,7 +1409,8 @@ export default function AdminAddClient() {
     isOpen, 
     setIsOpen, 
     onRemove,
-    onAutoCopyAddress 
+    onAutoCopyAddress,
+    formInstance 
   }: {
     mode: 'canonical' | 'mirror';
     idPrefix?: string;
@@ -1416,28 +1419,30 @@ export default function AdminAddClient() {
     setIsOpen: (open: boolean) => void;
     onRemove?: () => void;
     onAutoCopyAddress?: () => void;
+    formInstance?: any;
   }) => {
-    const form = useFormContext();
-    const currentLenderBinding = useFieldBinding('currentLoan.currentLender', mode, idPrefix);
-    const loanNumberBinding = useFieldBinding('currentLoan.loanNumber', mode, idPrefix);
-    const loanStartDateBinding = useFieldBinding('currentLoan.loanStartDate', mode, idPrefix);
-    const remainingTermBinding = useFieldBinding('currentLoan.remainingTermPerCreditReport', mode, idPrefix);
-    const loanCategoryBinding = useSelectFieldBinding('currentLoan.loanCategory', mode, idPrefix);
-    const loanProgramBinding = useSelectFieldBinding('currentLoan.loanProgram', mode, idPrefix);
-    const loanTermBinding = useSelectFieldBinding('currentLoan.loanTerm', mode, idPrefix);
-    const loanPurposeBinding = useSelectFieldBinding('currentLoan.loanPurpose', mode, idPrefix);
-    const hoaPaymentBinding = useFieldBinding('currentLoan.hoaPayment', mode, idPrefix);
-    const prepaymentPenaltyBinding = useSelectFieldBinding('currentLoan.prepaymentPenalty', mode, idPrefix);
-    const statementBalanceBinding = useFieldBinding('currentLoan.statementBalance.amount', mode, idPrefix);
-    const attachedToPropertyBinding = useSelectFieldBinding('currentLoan.attachedToProperty', mode, idPrefix);
+    const contextForm = useFormContext();
+    const targetForm = formInstance || contextForm;
+    const currentLenderBinding = useFieldBinding('currentLoan.currentLender', mode, idPrefix, targetForm);
+    const loanNumberBinding = useFieldBinding('currentLoan.loanNumber', mode, idPrefix, targetForm);
+    const loanStartDateBinding = useFieldBinding('currentLoan.loanStartDate', mode, idPrefix, targetForm);
+    const remainingTermBinding = useFieldBinding('currentLoan.remainingTermPerCreditReport', mode, idPrefix, targetForm);
+    const loanCategoryBinding = useSelectFieldBinding('currentLoan.loanCategory', mode, idPrefix, targetForm);
+    const loanProgramBinding = useSelectFieldBinding('currentLoan.loanProgram', mode, idPrefix, targetForm);
+    const loanTermBinding = useSelectFieldBinding('currentLoan.loanTerm', mode, idPrefix, targetForm);
+    const loanPurposeBinding = useSelectFieldBinding('currentLoan.loanPurpose', mode, idPrefix, targetForm);
+    const hoaPaymentBinding = useFieldBinding('currentLoan.hoaPayment', mode, idPrefix, targetForm);
+    const prepaymentPenaltyBinding = useSelectFieldBinding('currentLoan.prepaymentPenalty', mode, idPrefix, targetForm);
+    const statementBalanceBinding = useFieldBinding('currentLoan.statementBalance.amount', mode, idPrefix, targetForm);
+    const attachedToPropertyBinding = useSelectFieldBinding('currentLoan.attachedToProperty', mode, idPrefix, targetForm);
     
     // Property address bindings
-    const propertyStreetBinding = useFieldBinding('currentLoan.propertyAddress.street', mode, idPrefix);
-    const propertyUnitBinding = useFieldBinding('currentLoan.propertyAddress.unit', mode, idPrefix);
-    const propertyCityBinding = useFieldBinding('currentLoan.propertyAddress.city', mode, idPrefix);
-    const propertyStateBinding = useSelectFieldBinding('currentLoan.propertyAddress.state', mode, idPrefix);
-    const propertyZipBinding = useFieldBinding('currentLoan.propertyAddress.zipCode', mode, idPrefix);
-    const propertyCountyBinding = useFieldBinding('currentLoan.propertyAddress.county', mode, idPrefix);
+    const propertyStreetBinding = useFieldBinding('currentLoan.propertyAddress.street', mode, idPrefix, targetForm);
+    const propertyUnitBinding = useFieldBinding('currentLoan.propertyAddress.unit', mode, idPrefix, targetForm);
+    const propertyCityBinding = useFieldBinding('currentLoan.propertyAddress.city', mode, idPrefix, targetForm);
+    const propertyStateBinding = useSelectFieldBinding('currentLoan.propertyAddress.state', mode, idPrefix, targetForm);
+    const propertyZipBinding = useFieldBinding('currentLoan.propertyAddress.zipCode', mode, idPrefix, targetForm);
+    const propertyCountyBinding = useFieldBinding('currentLoan.propertyAddress.county', mode, idPrefix, targetForm);
     
     const cardClassName = borderVariant === 'blue' ? 'border-l-4 border-l-blue-500' : '';
     
@@ -1657,10 +1662,10 @@ export default function AdminAddClient() {
               </div>
               
               {/* Conditional Address Fields - Show when Attached to Property is selected */}
-              {form.watch('currentLoan.attachedToProperty') && form.watch('currentLoan.attachedToProperty') !== '' && (
+              {targetForm.watch('currentLoan.attachedToProperty') && targetForm.watch('currentLoan.attachedToProperty') !== '' && (
                 <div className="mt-4 p-4 border-t border-gray-200">
                   <Label className="text-sm font-medium text-gray-700 mb-3 block">
-                    Property Address ({form.watch('currentLoan.attachedToProperty')})
+                    Property Address ({targetForm.watch('currentLoan.attachedToProperty')})
                   </Label>
                   <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                     <div className="space-y-2 md:col-span-4">
@@ -1671,8 +1676,8 @@ export default function AdminAddClient() {
                         value={propertyStreetBinding.value}
                         onChange={propertyStreetBinding.onChange}
                         data-testid={propertyStreetBinding['data-testid']}
-                        readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
-                        className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                        readOnly={targetForm.watch('currentLoan.attachedToProperty') !== 'Other'}
+                        className={targetForm.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
                       />
                     </div>
                     
@@ -1684,8 +1689,8 @@ export default function AdminAddClient() {
                         value={propertyUnitBinding.value}
                         onChange={propertyUnitBinding.onChange}
                         data-testid={propertyUnitBinding['data-testid']}
-                        readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
-                        className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                        readOnly={targetForm.watch('currentLoan.attachedToProperty') !== 'Other'}
+                        className={targetForm.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
                       />
                     </div>
                     
@@ -1697,8 +1702,8 @@ export default function AdminAddClient() {
                         value={propertyCityBinding.value}
                         onChange={propertyCityBinding.onChange}
                         data-testid={propertyCityBinding['data-testid']}
-                        readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
-                        className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                        readOnly={targetForm.watch('currentLoan.attachedToProperty') !== 'Other'}
+                        className={targetForm.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
                       />
                     </div>
                     
@@ -1706,11 +1711,11 @@ export default function AdminAddClient() {
                       <Label htmlFor={`${idPrefix}currentLoan-property-state`}>State</Label>
                       <Select
                         {...propertyStateBinding}
-                        disabled={form.watch('currentLoan.attachedToProperty') !== 'Other'}
+                        disabled={targetForm.watch('currentLoan.attachedToProperty') !== 'Other'}
                       >
                         <SelectTrigger
                           data-testid={propertyStateBinding['data-testid']}
-                          className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                          className={targetForm.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
                         >
                           <SelectValue placeholder="State" />
                         </SelectTrigger>
@@ -1730,8 +1735,8 @@ export default function AdminAddClient() {
                         value={propertyZipBinding.value}
                         onChange={propertyZipBinding.onChange}
                         data-testid={propertyZipBinding['data-testid']}
-                        readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
-                        className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                        readOnly={targetForm.watch('currentLoan.attachedToProperty') !== 'Other'}
+                        className={targetForm.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
                       />
                     </div>
                     
@@ -1743,8 +1748,8 @@ export default function AdminAddClient() {
                         value={propertyCountyBinding.value}
                         onChange={propertyCountyBinding.onChange}
                         data-testid={propertyCountyBinding['data-testid']}
-                        readOnly={form.watch('currentLoan.attachedToProperty') !== 'Other'}
-                        className={form.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                        readOnly={targetForm.watch('currentLoan.attachedToProperty') !== 'Other'}
+                        className={targetForm.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
                       />
                     </div>
                   </div>
@@ -1764,7 +1769,8 @@ export default function AdminAddClient() {
     borderVariant, 
     isOpen, 
     setIsOpen,
-    onAddSecondLoan 
+    onAddSecondLoan,
+    formInstance 
   }: {
     mode: 'canonical' | 'mirror';
     idPrefix?: string;
@@ -1772,14 +1778,16 @@ export default function AdminAddClient() {
     isOpen: boolean;
     setIsOpen: (open: boolean) => void;
     onAddSecondLoan?: () => void;
+    formInstance?: any;
   }) => {
-    const form = useFormContext();
-    const currentBalanceBinding = useFieldBinding('currentLoan.currentBalance', mode, idPrefix);
-    const currentRateBinding = useFieldBinding('currentLoan.currentRate', mode, idPrefix);
-    const principalInterestBinding = useFieldBinding('currentLoan.principalAndInterestPayment', mode, idPrefix);
-    const escrowPaymentBinding = useFieldBinding('currentLoan.escrowPayment.amount', mode, idPrefix);
-    const totalMonthlyBinding = useFieldBinding('currentLoan.totalMonthlyPayment', mode, idPrefix);
-    const hoaPaymentBinding = useFieldBinding('currentLoan.hoaPayment', mode, idPrefix);
+    const contextForm = useFormContext();
+    const targetForm = formInstance || contextForm;
+    const currentBalanceBinding = useFieldBinding('currentLoan.currentBalance', mode, idPrefix, targetForm);
+    const currentRateBinding = useFieldBinding('currentLoan.currentRate', mode, idPrefix, targetForm);
+    const principalInterestBinding = useFieldBinding('currentLoan.principalAndInterestPayment', mode, idPrefix, targetForm);
+    const escrowPaymentBinding = useFieldBinding('currentLoan.escrowPayment.amount', mode, idPrefix, targetForm);
+    const totalMonthlyBinding = useFieldBinding('currentLoan.totalMonthlyPayment', mode, idPrefix, targetForm);
+    const hoaPaymentBinding = useFieldBinding('currentLoan.hoaPayment', mode, idPrefix, targetForm);
     
     const cardClassName = borderVariant === 'blue' ? 'border-l-4 border-l-blue-500' : '';
     
@@ -7502,183 +7510,28 @@ export default function AdminAddClient() {
                               </div>
                             )}
 
-                            {/* Loan Details Box - Only show when activeSecuredLoan is 'yes' for all property types */}
-                            {form.watch(`property.properties.${index}.activeSecuredLoan` as const) === 'yes' && (
-                            <Card className="border-2 border-dashed border-gray-500">
-                              <Collapsible open={isLoanDetailsOpen[propertyId] ?? true} onOpenChange={() => toggleLoanDetailsOpen(propertyId)}>
-                                <CardHeader>
-                                  <div className="flex items-center justify-between">
-                                    <CardTitle className="text-lg">Loan Details</CardTitle>
-                                    <CollapsibleTrigger asChild>
-                                      <Button 
-                                        variant="ghost" 
-                                        size="sm" 
-                                        className="hover:bg-orange-500 hover:text-white" 
-                                        data-testid={`button-toggle-loan-details-${propertyId}`}
-                                        title={(isLoanDetailsOpen[propertyId] ?? true) ? 'Minimize' : 'Expand'}
-                                        key={`loan-details-${propertyId}-${isLoanDetailsOpen[propertyId] ?? true}`}
-                                      >
-                                        {(isLoanDetailsOpen[propertyId] ?? true) ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                                      </Button>
-                                    </CollapsibleTrigger>
-                                  </div>
-                                </CardHeader>
-                                <CollapsibleContent>
-                                  <CardContent>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                  <div className="space-y-2">
-                                    <Label htmlFor={`property-lender-name-${propertyId}`}>Lender Name</Label>
-                                    <Input
-                                      id={`property-lender-name-${propertyId}`}
-                                      {...form.register(`property.properties.${index}.loan.lenderName` as const)}
-                                      data-testid={`input-property-lender-name-${propertyId}`}
-                                    />
-                                  </div>
-                                  
-                                  <div className="space-y-2">
-                                    <Label htmlFor={`property-loan-number-${propertyId}`}>Loan Number</Label>
-                                    <Input
-                                      id={`property-loan-number-${propertyId}`}
-                                      {...form.register(`property.properties.${index}.loan.loanNumber` as const)}
-                                      data-testid={`input-property-loan-number-${propertyId}`}
-                                    />
-                                  </div>
-                                  
-                                  <div className="space-y-2">
-                                    <div className="flex items-center justify-between">
-                                      <Label htmlFor={`property-mortgage-balance-${propertyId}`}>
-                                        {getMortgageBalanceLabel(propertyId)}
-                                      </Label>
-                                      <Button
-                                        type="button"
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => toggleMortgageBalanceFieldType(propertyId)}
-                                        className="h-6 px-2 text-xs hover:bg-orange-500 hover:text-white hover:border-orange-500"
-                                        data-testid={`button-toggle-mortgage-balance-type-${propertyId}`}
-                                      >
-                                        Toggle
-                                      </Button>
-                                    </div>
-                                    <Input
-                                      id={`property-mortgage-balance-${propertyId}`}
-                                      {...form.register(`property.properties.${index}.loan.mortgageBalance` as const)}
-                                      placeholder="$0.00"
-                                      data-testid={`input-property-mortgage-balance-${propertyId}`}
-                                    />
-                                  </div>
-                                  
-                                  <div className="space-y-2">
-                                    <Label htmlFor={`property-pi-payment-${propertyId}`}>Principal & Interest Payment</Label>
-                                    <Input
-                                      id={`property-pi-payment-${propertyId}`}
-                                      {...form.register(`property.properties.${index}.loan.piPayment` as const)}
-                                      placeholder="$0.00"
-                                      onChange={(e) => {
-                                        form.setValue(`property.properties.${index}.loan.piPayment` as const, e.target.value);
-                                        calculateTotalMonthlyPayment(propertyId);
-                                      }}
-                                      data-testid={`input-property-pi-payment-${propertyId}`}
-                                    />
-                                  </div>
-                                  
-                                  <div className="space-y-2">
-                                    <div className="flex items-center justify-between">
-                                      <Label htmlFor={`property-escrow-payment-${propertyId}`}>
-                                        {getEscrowPaymentLabel(propertyId)}
-                                      </Label>
-                                      <Button
-                                        type="button"
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => toggleEscrowPaymentFieldType(propertyId)}
-                                        className="h-6 px-2 text-xs hover:bg-orange-500 hover:text-white hover:border-orange-500"
-                                        data-testid={`button-toggle-escrow-payment-type-${propertyId}`}
-                                      >
-                                        Toggle
-                                      </Button>
-                                    </div>
-                                    <Input
-                                      id={`property-escrow-payment-${propertyId}`}
-                                      {...form.register(`property.properties.${index}.loan.escrowPayment` as const)}
-                                      placeholder="$0.00"
-                                      onChange={(e) => {
-                                        form.setValue(`property.properties.${index}.loan.escrowPayment` as const, e.target.value);
-                                        calculateTotalMonthlyPayment(propertyId);
-                                      }}
-                                      data-testid={`input-property-escrow-payment-${propertyId}`}
-                                    />
-                                  </div>
-                                  
-                                  <div className="space-y-2">
-                                    <Label htmlFor={`property-total-payment-${propertyId}`}>Total Monthly Payment</Label>
-                                    <Input
-                                      id={`property-total-payment-${propertyId}`}
-                                      {...form.register(`property.properties.${index}.loan.totalMonthlyPayment` as const)}
-                                      placeholder="$0.00"
-                                      readOnly
-                                      className="bg-muted"
-                                      data-testid={`input-property-total-payment-${propertyId}`}
-                                    />
-                                  </div>
-                                  
-                                  {/* Investment Property Rental Fields */}
-                                  {property.use === 'investment' && (
-                                    <>
-                                      <div className="space-y-2">
-                                        <Label htmlFor={`property-is-rented-${propertyId}`}>Is this Property Rented?</Label>
-                                        <Select
-                                          value={form.watch(`property.properties.${index}.loan.isPropertyRented` as const) || ''}
-                                          onValueChange={(value) => form.setValue(`property.properties.${index}.loan.isPropertyRented` as const, value)}
-                                        >
-                                          <SelectTrigger data-testid={`select-property-is-rented-${propertyId}`}>
-                                            <SelectValue placeholder="Select" />
-                                          </SelectTrigger>
-                                          <SelectContent>
-                                            <SelectItem value="yes">Yes</SelectItem>
-                                            <SelectItem value="no">No</SelectItem>
-                                          </SelectContent>
-                                        </Select>
-                                      </div>
-                                      
-                                      <div className="space-y-2">
-                                        <Label htmlFor={`property-monthly-rental-${propertyId}`}>Monthly Rental</Label>
-                                        <Input
-                                          id={`property-monthly-rental-${propertyId}`}
-                                          {...form.register(`property.properties.${index}.loan.monthlyRental` as const)}
-                                          placeholder="$0.00"
-                                          onChange={(e) => {
-                                            form.setValue(`property.properties.${index}.loan.monthlyRental` as const, e.target.value);
-                                            calculateInvestmentIncome(propertyId);
-                                          }}
-                                          data-testid={`input-property-monthly-rental-${propertyId}`}
-                                        />
-                                      </div>
-                                      
-                                      <div className="space-y-2">
-                                        <Label htmlFor={`property-monthly-income-${propertyId}`}>Monthly Income</Label>
-                                        <Input
-                                          id={`property-monthly-income-${propertyId}`}
-                                          {...form.register(`property.properties.${index}.loan.monthlyIncome` as const)}
-                                          placeholder="$0.00"
-                                          readOnly
-                                          className={(() => {
-                                            const value = form.watch(`property.properties.${index}.loan.monthlyIncome` as const) || '';
-                                            let colorClass = '';
-                                            if (value.startsWith('-')) colorClass = 'text-red-600';
-                                            else if (value && !value.startsWith('$0') && parseFloat(value.replace(/[$,]/g, '')) > 0) colorClass = 'text-green-600';
-                                            return `bg-muted ${colorClass}`;
-                                          })()}
-                                          data-testid={`input-property-monthly-income-${propertyId}`}
-                                        />
-                                      </div>
-                                    </>
-                                  )}
-                                </div>
-                              </CardContent>
-                                </CollapsibleContent>
-                              </Collapsible>
-                            </Card>
+                            {/* Current Loan Cards - Only show for Primary Residence when activeSecuredLoan is 'yes' */}
+                            {property.use === 'primary' && form.watch(`property.properties.${index}.activeSecuredLoan` as const) === 'yes' && (
+                              <div className="border-l-4 border-l-green-500 pl-4 space-y-4">
+                                <CurrentLoanCard
+                                  mode="mirror"
+                                  idPrefix="property-"
+                                  borderVariant="blue"
+                                  isOpen={isLoanDetailsOpen[propertyId] ?? true}
+                                  setIsOpen={() => toggleLoanDetailsOpen(propertyId)}
+                                  onAutoCopyAddress={autoCopyPropertyAddressToCurrentLoan}
+                                  formInstance={form}
+                                />
+
+                                <CurrentLoanTermsCard
+                                  mode="mirror"
+                                  idPrefix="property-"
+                                  borderVariant="none"
+                                  isOpen={isLoanDetailsOpen[propertyId] ?? true}
+                                  setIsOpen={() => toggleLoanDetailsOpen(propertyId)}
+                                  formInstance={form}
+                                />
+                              </div>
                             )}
 
                             {/* Second Loan Details Box - Only show when activeSecondLoan is 'yes' for all property types */}
@@ -8017,6 +7870,7 @@ export default function AdminAddClient() {
                     setIsOpen={setIsCurrentLoanOpen}
                     onRemove={removeCurrentLoan}
                     onAutoCopyAddress={autoCopyPropertyAddressToCurrentLoan}
+                    formInstance={form}
                   />
 
                   <CurrentLoanTermsCard
@@ -8026,6 +7880,7 @@ export default function AdminAddClient() {
                     isOpen={isCurrentLoanOpen}
                     setIsOpen={setIsCurrentLoanOpen}
                     onAddSecondLoan={handleAddSecondLoan}
+                    formInstance={form}
                   />
                 </>
               ) : (
