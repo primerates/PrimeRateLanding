@@ -3632,7 +3632,7 @@ export default function AdminAddClient() {
                       )}
                     </div>
                     
-                    <div className="space-y-2 md:col-span-2">
+                    <div className="space-y-2 md:col-span-1">
                       <Label htmlFor="borrower-years-address">Years at this Address</Label>
                       <Input
                         id="borrower-years-address"
@@ -3644,7 +3644,7 @@ export default function AdminAddClient() {
                       />
                     </div>
                     
-                    <div className="space-y-2 md:col-span-2">
+                    <div className="space-y-2 md:col-span-1">
                       <Label htmlFor="borrower-months-address">Months at this Address</Label>
                       <Input
                         id="borrower-months-address"
