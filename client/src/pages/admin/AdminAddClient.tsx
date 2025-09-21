@@ -3252,13 +3252,12 @@ export default function AdminAddClient() {
                       )}
                     </div>
                     
-                    <div className="space-y-2 md:col-span-1" style={{ maxWidth: "60px" }}>
+                    <div className="space-y-2">
                       <Label htmlFor="borrower-middleName">Middle Name</Label>
                       <Input
                         id="borrower-middleName"
                         {...form.register('borrower.middleName')}
                         data-testid="input-borrower-middleName"
-                        className="w-full"
                       />
                     </div>
                     
@@ -3882,110 +3881,134 @@ export default function AdminAddClient() {
                   )}
                 </CardHeader>
                 {hasCoBorrower && (
-                  <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="coBorrower-firstName">First Name</Label>
-                      <Input
-                        id="coBorrower-firstName"
-                        {...form.register('coBorrower.firstName')}
-                        data-testid="input-coborrower-firstName"
-                      />
+                  <CardContent className="space-y-4">
+                    {/* Row 1: First Name, Middle Name, Last Name, Date of Birth, SSN */}
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="coBorrower-firstName">First Name</Label>
+                        <Input
+                          id="coBorrower-firstName"
+                          {...form.register('coBorrower.firstName')}
+                          data-testid="input-coborrower-firstName"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="coBorrower-middleName">Middle Name</Label>
+                        <Input
+                          id="coBorrower-middleName"
+                          {...form.register('coBorrower.middleName')}
+                          data-testid="input-coborrower-middleName"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="coBorrower-lastName">Last Name</Label>
+                        <Input
+                          id="coBorrower-lastName"
+                          {...form.register('coBorrower.lastName')}
+                          data-testid="input-coborrower-lastName"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="coBorrower-dateOfBirth">Date of Birth</Label>
+                        <Input
+                          id="coBorrower-dateOfBirth"
+                          type="date"
+                          {...form.register('coBorrower.dateOfBirth')}
+                          data-testid="input-coborrower-dateOfBirth"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="coBorrower-ssn">SSN</Label>
+                        <Input
+                          id="coBorrower-ssn"
+                          {...form.register('coBorrower.ssn')}
+                          placeholder="XXX-XX-XXXX"
+                          data-testid="input-coborrower-ssn"
+                        />
+                      </div>
                     </div>
                     
-                    <div className="space-y-2">
-                      <Label htmlFor="coBorrower-middleName">Middle Name</Label>
-                      <Input
-                        id="coBorrower-middleName"
-                        {...form.register('coBorrower.middleName')}
-                        data-testid="input-coborrower-middleName"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="coBorrower-lastName">Last Name</Label>
-                      <Input
-                        id="coBorrower-lastName"
-                        {...form.register('coBorrower.lastName')}
-                        data-testid="input-coborrower-lastName"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="coBorrower-phone">Phone</Label>
-                      <Input
-                        id="coBorrower-phone"
-                        value={form.watch('coBorrower.phone') || ''}
-                        onChange={(e) => handlePhoneChange('coBorrower.phone', e.target.value)}
-                        placeholder="(XXX) XXX-XXXX"
-                        data-testid="input-coborrower-phone"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="coBorrower-email">Email</Label>
-                      <Input
-                        id="coBorrower-email"
-                        type="email"
-                        {...form.register('coBorrower.email')}
-                        data-testid="input-coborrower-email"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="coBorrower-maritalStatus">Marital Status</Label>
-                      <Select 
-                        value={form.watch('coBorrower.maritalStatus') || 'single'}
-                        onValueChange={(value) => form.setValue('coBorrower.maritalStatus', value as any)}
-                      >
-                        <SelectTrigger data-testid="select-coborrower-maritalStatus">
-                          <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="single">Single</SelectItem>
-                          <SelectItem value="married">Married</SelectItem>
-                          <SelectItem value="divorced">Divorced</SelectItem>
-                          <SelectItem value="widowed">Widowed</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                    {/* Row 2: Marital Status, Relationship to Borrower, Phone, Email, Preferred Contact Time */}
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="coBorrower-maritalStatus">Marital Status</Label>
+                        <Select 
+                          value={form.watch('coBorrower.maritalStatus') || 'single'}
+                          onValueChange={(value) => form.setValue('coBorrower.maritalStatus', value as any)}
+                        >
+                          <SelectTrigger data-testid="select-coborrower-maritalStatus">
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="single">Single</SelectItem>
+                            <SelectItem value="married">Married</SelectItem>
+                            <SelectItem value="divorced">Divorced</SelectItem>
+                            <SelectItem value="widowed">Widowed</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="coBorrower-relationshipToBorrower">Relationship to Borrower</Label>
-                      <Select 
-                        value={form.watch('coBorrower.relationshipToBorrower') || ''}
-                        onValueChange={(value) => form.setValue('coBorrower.relationshipToBorrower', value as any)}
-                      >
-                        <SelectTrigger data-testid="select-coborrower-relationshipToBorrower">
-                          <SelectValue placeholder="Select relationship" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="spouse">Spouse</SelectItem>
-                          <SelectItem value="partner">Partner</SelectItem>
-                          <SelectItem value="family">Family</SelectItem>
-                          <SelectItem value="friend">Friend</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="coBorrower-dateOfBirth">Date of Birth</Label>
-                      <Input
-                        id="coBorrower-dateOfBirth"
-                        type="date"
-                        {...form.register('coBorrower.dateOfBirth')}
-                        data-testid="input-coborrower-dateOfBirth"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="coBorrower-ssn">SSN</Label>
-                      <Input
-                        id="coBorrower-ssn"
-                        {...form.register('coBorrower.ssn')}
-                        placeholder="XXX-XX-XXXX"
-                        data-testid="input-coborrower-ssn"
-                      />
+                      <div className="space-y-2">
+                        <Label htmlFor="coBorrower-relationshipToBorrower">Relationship to Borrower</Label>
+                        <Select 
+                          value={form.watch('coBorrower.relationshipToBorrower') || ''}
+                          onValueChange={(value) => form.setValue('coBorrower.relationshipToBorrower', value as any)}
+                        >
+                          <SelectTrigger data-testid="select-coborrower-relationshipToBorrower">
+                            <SelectValue placeholder="Select relationship" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="spouse">Spouse</SelectItem>
+                            <SelectItem value="partner">Partner</SelectItem>
+                            <SelectItem value="family">Family</SelectItem>
+                            <SelectItem value="friend">Friend</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="coBorrower-phone">Phone</Label>
+                        <Input
+                          id="coBorrower-phone"
+                          value={form.watch('coBorrower.phone') || ''}
+                          onChange={(e) => handlePhoneChange('coBorrower.phone', e.target.value)}
+                          placeholder="(XXX) XXX-XXXX"
+                          data-testid="input-coborrower-phone"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="coBorrower-email">Email</Label>
+                        <Input
+                          id="coBorrower-email"
+                          type="email"
+                          {...form.register('coBorrower.email')}
+                          data-testid="input-coborrower-email"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="coBorrower-preferredContactTime">Preferred Contact Time</Label>
+                        <Select 
+                          value={form.watch('coBorrower.preferredContactTime') || 'Select'}
+                          onValueChange={(value) => form.setValue('coBorrower.preferredContactTime', value as any)}
+                        >
+                          <SelectTrigger data-testid="select-coborrower-preferredContactTime">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Select">Select</SelectItem>
+                            <SelectItem value="Morning">Morning</SelectItem>
+                            <SelectItem value="Afternoon">Afternoon</SelectItem>
+                            <SelectItem value="Evening">Evening</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
                   </CardContent>
                 )}
