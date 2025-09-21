@@ -505,6 +505,7 @@ export default function AdminAddClient() {
   // Address box collapsible states
   const [isBorrowerResidenceOpen, setIsBorrowerResidenceOpen] = useState(true);
   const [isBorrowerPriorResidenceOpen, setIsBorrowerPriorResidenceOpen] = useState(true);
+  const [isShowingMonthsAtAddress, setIsShowingMonthsAtAddress] = useState(false);
   const [isCoBorrowerResidenceOpen, setIsCoBorrowerResidenceOpen] = useState(true);
   const [isCoBorrowerPriorResidenceOpen, setIsCoBorrowerPriorResidenceOpen] = useState(true);
 
@@ -3537,7 +3538,7 @@ export default function AdminAddClient() {
                       />
                     </div>
                     
-                    <div className="space-y-2 md:col-span-1">
+                    <div className="space-y-2 md:col-span-2">
                       <Label htmlFor="borrower-residence-city">City *</Label>
                       <Input
                         id="borrower-residence-city"
@@ -3632,35 +3633,35 @@ export default function AdminAddClient() {
                       )}
                     </div>
                     
-                    <div className="space-y-2 md:col-span-1">
-                      <Label htmlFor="borrower-years-address">Years Resided</Label>
+                    <div className="space-y-2 md:col-span-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="borrower-time-address" className="text-sm">
+                          {isShowingMonthsAtAddress ? 'Months at this Address' : 'Years at this Address'}
+                        </Label>
+                        <Switch
+                          checked={isShowingMonthsAtAddress}
+                          onCheckedChange={setIsShowingMonthsAtAddress}
+                          data-testid="toggle-borrower-time-address"
+                        />
+                      </div>
                       <Input
-                        id="borrower-years-address"
+                        id="borrower-time-address"
                         type="number"
                         min="0"
-                        max="99"
-                        {...form.register('borrower.yearsAtAddress')}
-                        data-testid="input-borrower-years-address"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2 md:col-span-1">
-                      <Label htmlFor="borrower-months-address">Months Resided</Label>
-                      <Input
-                        id="borrower-months-address"
-                        type="number"
-                        min="0"
-                        max="11"
+                        max={isShowingMonthsAtAddress ? 11 : 99}
                         placeholder="0"
-                        {...form.register('borrower.monthsAtAddress')}
-                        data-testid="input-borrower-months-address"
+                        {...form.register(isShowingMonthsAtAddress ? 'borrower.monthsAtAddress' : 'borrower.yearsAtAddress')}
+                        data-testid="input-borrower-time-address"
                       />
                     </div>
                   </div>
                   
-                  {/* Years and months fields moved to header */}
-                  {form.formState.errors.borrower?.yearsAtAddress && (
+                  {/* Error handling for time at address field */}
+                  {form.formState.errors.borrower?.yearsAtAddress && !isShowingMonthsAtAddress && (
                     <p className="text-sm text-destructive">{form.formState.errors.borrower.yearsAtAddress.message}</p>
+                  )}
+                  {form.formState.errors.borrower?.monthsAtAddress && isShowingMonthsAtAddress && (
+                    <p className="text-sm text-destructive">{form.formState.errors.borrower.monthsAtAddress.message}</p>
                   )}
                     </CardContent>
                   </CollapsibleContent>
