@@ -3511,150 +3511,154 @@ export default function AdminAddClient() {
                   </CardHeader>
                   <CollapsibleContent>
                     <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-8 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="borrower-residence-street">Street Address *</Label>
-                      <Input
-                        id="borrower-residence-street"
-                        {...form.register('borrower.residenceAddress.street', {
-                          onChange: () => setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100)
-                        })}
-                        data-testid="input-borrower-residence-street"
-                      />
-                      {form.formState.errors.borrower?.residenceAddress?.street && (
-                        <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.street.message}</p>
-                      )}
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="borrower-residence-unit">Unit/Apt</Label>
-                      <Input
-                        id="borrower-residence-unit"
-                        {...form.register('borrower.residenceAddress.unit', {
-                          onChange: () => setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100)
-                        })}
-                        data-testid="input-borrower-residence-unit"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="borrower-residence-city">City *</Label>
-                      <Input
-                        id="borrower-residence-city"
-                        {...form.register('borrower.residenceAddress.city', {
-                          onChange: () => setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100)
-                        })}
-                        data-testid="input-borrower-residence-city"
-                      />
-                      {form.formState.errors.borrower?.residenceAddress?.city && (
-                        <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.city.message}</p>
-                      )}
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="borrower-residence-state">State *</Label>
-                      <Select
-                        value={form.watch('borrower.residenceAddress.state') || ''}
-                        onValueChange={(value) => {
-                          form.setValue('borrower.residenceAddress.state', value);
-                          setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100);
-                        }}
-                      >
-                        <SelectTrigger data-testid="select-borrower-residence-state">
-                          <SelectValue placeholder="State" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {US_STATES.map((state) => (
-                            <SelectItem key={state.value} value={state.value}>
-                              {state.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {form.formState.errors.borrower?.residenceAddress?.state && (
-                        <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.state.message}</p>
-                      )}
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="borrower-residence-zip">ZIP Code *</Label>
-                      <Input
-                        id="borrower-residence-zip"
-                        {...form.register('borrower.residenceAddress.zip', {
-                          onChange: () => setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100)
-                        })}
-                        onBlur={(e) => handleBorrowerZipCodeLookup(e.target.value)}
-                        data-testid="input-borrower-residence-zip"
-                      />
-                      {form.formState.errors.borrower?.residenceAddress?.zip && (
-                        <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.zip.message}</p>
-                      )}
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="borrower-residence-county">County</Label>
-                      {borrowerCountyOptions.length > 0 ? (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-8 gap-4">
+                      <div className="space-y-2 md:col-span-3">
+                        <Label htmlFor="borrower-residence-street">Street Address *</Label>
+                        <Input
+                          id="borrower-residence-street"
+                          {...form.register('borrower.residenceAddress.street', {
+                            onChange: () => setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100)
+                          })}
+                          data-testid="input-borrower-residence-street"
+                        />
+                        {form.formState.errors.borrower?.residenceAddress?.street && (
+                          <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.street.message}</p>
+                        )}
+                      </div>
+                      
+                      <div className="space-y-2 md:col-span-1">
+                        <Label htmlFor="borrower-residence-unit">Unit/Apt</Label>
+                        <Input
+                          id="borrower-residence-unit"
+                          {...form.register('borrower.residenceAddress.unit', {
+                            onChange: () => setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100)
+                          })}
+                          data-testid="input-borrower-residence-unit"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2 md:col-span-2">
+                        <Label htmlFor="borrower-residence-city">City *</Label>
+                        <Input
+                          id="borrower-residence-city"
+                          {...form.register('borrower.residenceAddress.city', {
+                            onChange: () => setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100)
+                          })}
+                          data-testid="input-borrower-residence-city"
+                        />
+                        {form.formState.errors.borrower?.residenceAddress?.city && (
+                          <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.city.message}</p>
+                        )}
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="borrower-residence-state">State *</Label>
                         <Select
-                          value={form.watch('borrower.residenceAddress.county') || ''}
+                          value={form.watch('borrower.residenceAddress.state') || ''}
                           onValueChange={(value) => {
-                            if (value === 'manual-entry') {
-                              form.setValue('borrower.residenceAddress.county', '');
-                              setBorrowerCountyOptions([]);
-                            } else {
-                              // Find the selected county to get its label for display
-                              const selectedCounty = borrowerCountyOptions.find(county => county.value === value);
-                              form.setValue('borrower.residenceAddress.county', selectedCounty?.label || value, { shouldDirty: true });
-                            }
+                            form.setValue('borrower.residenceAddress.state', value);
+                            setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100);
                           }}
                         >
-                          <SelectTrigger data-testid="select-borrower-residence-county">
-                            <SelectValue placeholder={countyLookupLoading.borrower ? "Looking up counties..." : "Select county"} />
+                          <SelectTrigger data-testid="select-borrower-residence-state">
+                            <SelectValue placeholder="State" />
                           </SelectTrigger>
                           <SelectContent>
-                            {borrowerCountyOptions.map((county) => (
-                              <SelectItem key={county.value} value={county.value}>
-                                {county.label}
+                            {US_STATES.map((state) => (
+                              <SelectItem key={state.value} value={state.value}>
+                                {state.label}
                               </SelectItem>
                             ))}
-                            <SelectItem value="manual-entry" className="text-muted-foreground border-t">
-                              Enter county manually
-                            </SelectItem>
                           </SelectContent>
                         </Select>
-                      ) : (
+                        {form.formState.errors.borrower?.residenceAddress?.state && (
+                          <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.state.message}</p>
+                        )}
+                      </div>
+                      
+                      <div className="space-y-2 md:col-span-1">
+                        <Label htmlFor="borrower-residence-zip">ZIP Code *</Label>
                         <Input
-                          id="borrower-residence-county"
-                          {...form.register('borrower.residenceAddress.county')}
-                          placeholder={countyLookupLoading.borrower ? "Looking up counties..." : "Enter county name"}
-                          disabled={countyLookupLoading.borrower}
-                          data-testid="input-borrower-residence-county"
+                          id="borrower-residence-zip"
+                          {...form.register('borrower.residenceAddress.zip', {
+                            onChange: () => setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100)
+                          })}
+                          onBlur={(e) => handleBorrowerZipCodeLookup(e.target.value)}
+                          data-testid="input-borrower-residence-zip"
                         />
-                      )}
+                        {form.formState.errors.borrower?.residenceAddress?.zip && (
+                          <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.zip.message}</p>
+                        )}
+                      </div>
                     </div>
                     
-                    <div className="space-y-2">
-                      <Label htmlFor="borrower-years-address">Years at this Address</Label>
-                      <Input
-                        id="borrower-years-address"
-                        type="number"
-                        min="0"
-                        max="99"
-                        {...form.register('borrower.yearsAtAddress')}
-                        data-testid="input-borrower-years-address"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="borrower-months-address">Months at this Address</Label>
-                      <Input
-                        id="borrower-months-address"
-                        type="number"
-                        min="0"
-                        max="11"
-                        placeholder="0"
-                        {...form.register('borrower.monthsAtAddress')}
-                        data-testid="input-borrower-months-address"
-                      />
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="borrower-residence-county">County</Label>
+                        {borrowerCountyOptions.length > 0 ? (
+                          <Select
+                            value={form.watch('borrower.residenceAddress.county') || ''}
+                            onValueChange={(value) => {
+                              if (value === 'manual-entry') {
+                                form.setValue('borrower.residenceAddress.county', '');
+                                setBorrowerCountyOptions([]);
+                              } else {
+                                // Find the selected county to get its label for display
+                                const selectedCounty = borrowerCountyOptions.find(county => county.value === value);
+                                form.setValue('borrower.residenceAddress.county', selectedCounty?.label || value, { shouldDirty: true });
+                              }
+                            }}
+                          >
+                            <SelectTrigger data-testid="select-borrower-residence-county">
+                              <SelectValue placeholder={countyLookupLoading.borrower ? "Looking up counties..." : "Select county"} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {borrowerCountyOptions.map((county) => (
+                                <SelectItem key={county.value} value={county.value}>
+                                  {county.label}
+                                </SelectItem>
+                              ))}
+                              <SelectItem value="manual-entry" className="text-muted-foreground border-t">
+                                Enter county manually
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <Input
+                            id="borrower-residence-county"
+                            {...form.register('borrower.residenceAddress.county')}
+                            placeholder={countyLookupLoading.borrower ? "Looking up counties..." : "Enter county name"}
+                            disabled={countyLookupLoading.borrower}
+                            data-testid="input-borrower-residence-county"
+                          />
+                        )}
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="borrower-years-address">Years at this Address</Label>
+                        <Input
+                          id="borrower-years-address"
+                          type="number"
+                          min="0"
+                          max="99"
+                          {...form.register('borrower.yearsAtAddress')}
+                          data-testid="input-borrower-years-address"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="borrower-months-address">Months at this Address</Label>
+                        <Input
+                          id="borrower-months-address"
+                          type="number"
+                          min="0"
+                          max="11"
+                          placeholder="0"
+                          {...form.register('borrower.monthsAtAddress')}
+                          data-testid="input-borrower-months-address"
+                        />
+                      </div>
                     </div>
                   </div>
                   
@@ -7286,10 +7290,10 @@ export default function AdminAddClient() {
                 };
 
                 return (
-                  <Card key={propertyId} className={`border-l-4 ${
-                    property.use === 'primary' ? 'border-l-green-500' : 
-                    property.use === 'second-home' ? 'border-l-blue-500' : 
-                    property.use === 'investment' ? 'border-l-purple-500' : ''
+                  <Card key={propertyId} className={`border-l-4 transition-colors duration-200 ${
+                    property.use === 'primary' ? 'border-l-green-500 hover:border-l-green-500 focus-within:border-l-green-500' : 
+                    property.use === 'second-home' ? 'border-l-blue-500 hover:border-l-blue-500 focus-within:border-l-blue-500' : 
+                    property.use === 'investment' ? 'border-l-purple-500 hover:border-l-purple-500 focus-within:border-l-purple-500' : ''
                   }`}>
                     <Collapsible 
                       open={isOpen} 
