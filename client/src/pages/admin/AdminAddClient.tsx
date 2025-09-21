@@ -3512,7 +3512,7 @@ export default function AdminAddClient() {
                   <CollapsibleContent>
                     <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                    <div className="space-y-2 md:col-span-2">
+                    <div className="space-y-2 md:col-span-4">
                       <Label htmlFor="borrower-residence-street">Street Address *</Label>
                       <Input
                         id="borrower-residence-street"
