@@ -1177,6 +1177,19 @@ export default function AdminAddClient() {
     [totalHouseholdIncome]
   );
 
+  // Calculate Current Loan Total Monthly Payment - optimized with useMemo
+  const currentLoanData = form.watch('currentLoan');
+  const totalCurrentLoanPayment = useMemo(() => {
+    const principalAndInterest = parseMonetaryValue(currentLoanData?.principalAndInterestPayment);
+    const escrow = parseMonetaryValue(currentLoanData?.escrowPayment);
+    return principalAndInterest + escrow;
+  }, [currentLoanData?.principalAndInterestPayment, currentLoanData?.escrowPayment]);
+  
+  const totalCurrentLoanPaymentFormatted = useMemo(() => 
+    totalCurrentLoanPayment > 0 ? `$${totalCurrentLoanPayment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '',
+    [totalCurrentLoanPayment]
+  );
+
   // Helper functions removed - now using optimized useMemo values above
 
   // Auto-sync rental property income with property data
@@ -1570,32 +1583,45 @@ export default function AdminAddClient() {
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="currentLoan-principalInterestPayment">Principal & Interest Payment</Label>
-                  <Input
-                    id="currentLoan-principalInterestPayment"
-                    {...form.register('currentLoan.principalAndInterestPayment')}
-                    placeholder="$0.00"
-                    data-testid="input-currentLoan-principalInterestPayment"
-                  />
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="currentLoan-principalInterestPayment"
+                      {...form.register('currentLoan.principalAndInterestPayment')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-currentLoan-principalInterestPayment"
+                    />
+                  </div>
                 </div>
                 
                 <div className="space-y-2">
                   <Label htmlFor="currentLoan-escrowPayment">Escrow Payment</Label>
-                  <Input
-                    id="currentLoan-escrowPayment"
-                    {...form.register('currentLoan.escrowPayment')}
-                    placeholder="$0.00"
-                    data-testid="input-currentLoan-escrowPayment"
-                  />
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="currentLoan-escrowPayment"
+                      {...form.register('currentLoan.escrowPayment')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-currentLoan-escrowPayment"
+                    />
+                  </div>
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor={totalMonthlyPaymentBinding.id}>Total Monthly Payment</Label>
-                  <Input
-                    id={totalMonthlyPaymentBinding.id}
-                    {...totalMonthlyPaymentBinding.field}
-                    placeholder="$0.00"
-                    data-testid={totalMonthlyPaymentBinding['data-testid']}
-                  />
+                  <Label htmlFor="currentLoan-totalMonthlyPayment">Total Monthly Payment</Label>
+                  <div className="flex items-center border border-input bg-gray-50 px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="currentLoan-totalMonthlyPayment"
+                      value={totalCurrentLoanPaymentFormatted.replace('$', '')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0 cursor-default"
+                      readOnly
+                      data-testid="input-currentLoan-totalMonthlyPayment"
+                    />
+                  </div>
                 </div>
                 
                 <div className="space-y-2">
@@ -3464,23 +3490,51 @@ export default function AdminAddClient() {
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <CardTitle>Borrower Residence Address</CardTitle>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <CollapsibleTrigger asChild>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="hover:bg-orange-500 hover:text-black"
-                              data-testid="button-toggle-borrower-residence"
-                            >
-                              {isBorrowerResidenceOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                            </Button>
-                          </CollapsibleTrigger>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>{isBorrowerResidenceOpen ? 'Minimize' : 'Expand'}</p>
-                        </TooltipContent>
-                      </Tooltip>
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3">
+                          <div className="space-y-1">
+                            <Label htmlFor="borrower-years-header" className="text-xs text-muted-foreground">Years</Label>
+                            <Input
+                              id="borrower-years-header"
+                              type="number"
+                              min="0"
+                              max="99"
+                              className="h-8 w-16 text-center"
+                              {...form.register('borrower.yearsAtAddress')}
+                              data-testid="input-borrower-years-header"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label htmlFor="borrower-months-header" className="text-xs text-muted-foreground">Months</Label>
+                            <Input
+                              id="borrower-months-header"
+                              type="number"
+                              min="0"
+                              max="11"
+                              className="h-8 w-16 text-center"
+                              {...form.register('borrower.monthsAtAddress')}
+                              data-testid="input-borrower-months-header"
+                            />
+                          </div>
+                        </div>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <CollapsibleTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="hover:bg-orange-500 hover:text-black"
+                                data-testid="button-toggle-borrower-residence"
+                              >
+                                {isBorrowerResidenceOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{isBorrowerResidenceOpen ? 'Minimize' : 'Expand'}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
                     </div>
                   </CardHeader>
                   <CollapsibleContent>
@@ -3607,35 +3661,10 @@ export default function AdminAddClient() {
                     </div>
                   </div>
                   
-                  <div className="space-y-2">
-                    <div className="grid grid-cols-4 gap-4">
-                      <div>
-                        <Label htmlFor="borrower-years">Years at this Address</Label>
-                        <Input
-                          id="borrower-years"
-                          type="number"
-                          min="0"
-                          max="99"
-                          {...form.register('borrower.yearsAtAddress')}
-                          data-testid="input-borrower-years"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="borrower-months">Months at this Address</Label>
-                        <Input
-                          id="borrower-months"
-                          type="number"
-                          min="0"
-                          max="11"
-                          {...form.register('borrower.monthsAtAddress')}
-                          data-testid="input-borrower-months"
-                        />
-                      </div>
-                    </div>
-                    {form.formState.errors.borrower?.yearsAtAddress && (
-                      <p className="text-sm text-destructive">{form.formState.errors.borrower.yearsAtAddress.message}</p>
-                    )}
-                  </div>
+                  {/* Years and months fields moved to header */}
+                  {form.formState.errors.borrower?.yearsAtAddress && (
+                    <p className="text-sm text-destructive">{form.formState.errors.borrower.yearsAtAddress.message}</p>
+                  )}
                     </CardContent>
                   </CollapsibleContent>
                 </Collapsible>
