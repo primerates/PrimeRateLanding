@@ -5972,8 +5972,8 @@ export default function AdminAddClient() {
                     <CollapsibleContent>
                       <CardContent>
                         <div className="space-y-6">
-                          {/* Basic Employment Information */}
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                          {/* Co-Borrower Employment Information - Single Row */}
+                          <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
                             <div className="space-y-2">
                               <Label htmlFor="coBorrowerIncome-employerName">Employer Name</Label>
                               <Input
@@ -6003,52 +6003,8 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-employmentType">Full-Time / Part-Time</Label>
-                              <Select
-                                value={form.watch('coBorrowerIncome.employmentType') || ''}
-                                onValueChange={(value) => form.setValue('coBorrowerIncome.employmentType', value as any)}
-                              >
-                                <SelectTrigger data-testid="select-coborrowerIncome-employmentType">
-                                  <SelectValue placeholder="Select type" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
-                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                  <Label htmlFor="coBorrowerIncome-years">Years Employed</Label>
-                                  <Input
-                                    id="coBorrowerIncome-years"
-                                    type="number"
-                                    min="0"
-                                    max="99"
-                                    {...form.register('coBorrowerIncome.yearsEmployedYears')}
-                                    data-testid="input-coborrowerIncome-years"
-                                  />
-                                </div>
-                                <div>
-                                  <Label htmlFor="coBorrowerIncome-months">Months Employed</Label>
-                                  <Input
-                                    id="coBorrowerIncome-months"
-                                    type="number"
-                                    min="0"
-                                    max="11"
-                                    placeholder="0"
-                                    {...form.register('coBorrowerIncome.yearsEmployedMonths')}
-                                    data-testid="input-coborrowerIncome-months"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                            
-                            <div className="space-y-2 lg:col-span-2">
                               <div className="flex items-center justify-between mb-2">
-                                <Label htmlFor="coBorrowerIncome-employer-phone">
+                                <Label htmlFor="coBorrowerIncome-employer-phone" className="text-xs">
                                   {form.watch('coBorrowerIncome.isShowingEmploymentVerification') ? 'Employment Verification' : 'Employer Phone'}
                                 </Label>
                                 <Switch
@@ -6070,6 +6026,47 @@ export default function AdminAddClient() {
                                   handlePhoneChange(fieldName, e.target.value);
                                 }}
                                 data-testid="input-coborrowerIncome-employer-phone"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-employmentType">Full-Time / Part-Time</Label>
+                              <Select
+                                value={form.watch('coBorrowerIncome.employmentType') || ''}
+                                onValueChange={(value) => form.setValue('coBorrowerIncome.employmentType', value as any)}
+                              >
+                                <SelectTrigger data-testid="select-coborrowerIncome-employmentType">
+                                  <SelectValue placeholder="Select type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
+                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-years">Years Employed</Label>
+                              <Input
+                                id="coBorrowerIncome-years"
+                                type="number"
+                                min="0"
+                                max="99"
+                                {...form.register('coBorrowerIncome.yearsEmployedYears')}
+                                data-testid="input-coborrowerIncome-years"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-months">Months Employed</Label>
+                              <Input
+                                id="coBorrowerIncome-months"
+                                type="number"
+                                min="0"
+                                max="11"
+                                placeholder="0"
+                                {...form.register('coBorrowerIncome.yearsEmployedMonths')}
+                                data-testid="input-coborrowerIncome-months"
                               />
                             </div>
                           </div>
