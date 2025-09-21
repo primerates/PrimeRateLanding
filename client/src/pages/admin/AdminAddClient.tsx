@@ -7366,8 +7366,8 @@ export default function AdminAddClient() {
                               </div>
                             </div>
 
-                            {/* Property Details */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {/* Property Details - Row 1: Property Type, Estimated Property Value, Appraised Value, Purchase Price */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                               <div className="space-y-2">
                                 <Label htmlFor={`property-type-${propertyId}`}>Property Type</Label>
                                 <Select
@@ -7474,22 +7474,25 @@ export default function AdminAddClient() {
                               </div>
                               
                               <div className="space-y-2">
-                                <Label htmlFor={`property-owned-since-${propertyId}`}>Owned Since</Label>
-                                <Input
-                                  id={`property-owned-since-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.ownedSince` as const)}
-                                  placeholder="MM/YYYY"
-                                  data-testid={`input-property-owned-since-${propertyId}`}
-                                />
-                              </div>
-                              
-                              <div className="space-y-2">
                                 <Label htmlFor={`property-purchase-price-${propertyId}`}>Purchase Price</Label>
                                 <Input
                                   id={`property-purchase-price-${propertyId}`}
                                   {...form.register(`property.properties.${index}.purchasePrice` as const)}
                                   placeholder="$0.00"
                                   data-testid={`input-property-purchase-price-${propertyId}`}
+                                />
+                              </div>
+                            </div>
+
+                            {/* Property Details - Row 2: Owned Since, Owned / Title Held By, Secured First Loan, Secured Second Loan */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-owned-since-${propertyId}`}>Owned Since</Label>
+                                <Input
+                                  id={`property-owned-since-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.ownedSince` as const)}
+                                  placeholder="MM/YYYY"
+                                  data-testid={`input-property-owned-since-${propertyId}`}
                                 />
                               </div>
                               
@@ -7512,64 +7515,10 @@ export default function AdminAddClient() {
                                 </Select>
                               </div>
                               
-                            </div>
-
-                            {/* Active Secured Loans for Investment Properties - Below Owned Since */}
-                            {property.use === 'investment' && (
-                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-                                <div className="space-y-2">
+                              <div className="space-y-2">
+                                <div className="flex items-center gap-2">
                                   <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured First Loan</Label>
-                                  <Select
-                                    value={form.watch(`property.properties.${index}.activeSecuredLoan` as const) || ''}
-                                    onValueChange={(value) => form.setValue(`property.properties.${index}.activeSecuredLoan` as const, value)}
-                                  >
-                                    <SelectTrigger data-testid={`select-property-active-secured-loan-${propertyId}`}>
-                                      <SelectValue placeholder="Select" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="yes">Yes</SelectItem>
-                                      <SelectItem value="no-paid-off">No, Paid Off</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                                
-                                <div className="space-y-2">
-                                  <Label htmlFor={`property-active-second-loan-${propertyId}`}>Secured Second Loan</Label>
-                                  <Select
-                                    value={form.watch(`property.properties.${index}.activeSecondLoan` as const) || ''}
-                                    onValueChange={(value) => {
-                                      form.setValue(`property.properties.${index}.activeSecondLoan` as const, value);
-                                      // Clear secondLoan data when toggled to "no" for data hygiene
-                                      if (value !== 'yes') {
-                                        form.setValue(`property.properties.${index}.secondLoan` as const, {
-                                          lenderName: '',
-                                          loanNumber: '',
-                                          mortgageBalance: '',
-                                          piPayment: '',
-                                          escrowPayment: '',
-                                          totalMonthlyPayment: '',
-                                        });
-                                      }
-                                    }}
-                                  >
-                                    <SelectTrigger data-testid={`select-property-active-second-loan-${propertyId}`}>
-                                      <SelectValue placeholder="Select" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="yes">Yes</SelectItem>
-                                      <SelectItem value="no">No</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Active Secured Loans for Primary Residence and Second Home - Side by Side */}
-                            {(property.use === 'primary' || property.use === 'second-home') && (
-                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-                                <div className="space-y-2">
-                                  <div className="flex items-center gap-2">
-                                    <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured First Loan</Label>
+                                  {(property.use === 'primary' || property.use === 'second-home') && (
                                     <button
                                       type="button"
                                       onClick={handleCurrentLoanInfoClick}
@@ -7579,52 +7528,58 @@ export default function AdminAddClient() {
                                     >
                                       <Info className="h-4 w-4 text-gray-500 hover:text-blue-600" />
                                     </button>
-                                  </div>
-                                  <Select
-                                    value={form.watch(`property.properties.${index}.activeSecuredLoan` as const) || ''}
-                                    onValueChange={(value) => form.setValue(`property.properties.${index}.activeSecuredLoan` as const, value)}
-                                  >
-                                    <SelectTrigger data-testid={`select-property-active-secured-loan-${propertyId}`}>
-                                      <SelectValue placeholder="Select" />
-                                    </SelectTrigger>
-                                    <SelectContent>
+                                  )}
+                                </div>
+                                <Select
+                                  value={form.watch(`property.properties.${index}.activeSecuredLoan` as const) || ''}
+                                  onValueChange={(value) => form.setValue(`property.properties.${index}.activeSecuredLoan` as const, value)}
+                                >
+                                  <SelectTrigger data-testid={`select-property-active-secured-loan-${propertyId}`}>
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {(property.use === 'primary' || property.use === 'second-home') && (
                                       <SelectItem value="select">Select</SelectItem>
-                                      <SelectItem value="yes">Yes</SelectItem>
-                                      <SelectItem value="paid-off">Paid Off</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                                
-                                <div className="space-y-2">
-                                  <Label htmlFor={`property-active-second-loan-${propertyId}`}>Secured Second Loan</Label>
-                                  <Select
-                                    value={form.watch(`property.properties.${index}.activeSecondLoan` as const) || ''}
-                                    onValueChange={(value) => {
-                                      form.setValue(`property.properties.${index}.activeSecondLoan` as const, value);
-                                      // Clear secondLoan data when toggled to "no" for data hygiene
-                                      if (value !== 'yes') {
-                                        form.setValue(`property.properties.${index}.secondLoan` as const, {
-                                          lenderName: '',
-                                          loanNumber: '',
-                                          mortgageBalance: '',
-                                          piPayment: '',
-                                          escrowPayment: '',
-                                          totalMonthlyPayment: '',
-                                        });
-                                      }
-                                    }}
-                                  >
-                                    <SelectTrigger data-testid={`select-property-active-second-loan-${propertyId}`}>
-                                      <SelectValue placeholder="Select" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="yes">Yes</SelectItem>
-                                      <SelectItem value="no">No</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
+                                    )}
+                                    <SelectItem value="yes">Yes</SelectItem>
+                                    <SelectItem value={property.use === 'investment' ? 'no-paid-off' : 'paid-off'}>
+                                      {property.use === 'investment' ? 'No, Paid Off' : 'Paid Off'}
+                                    </SelectItem>
+                                  </SelectContent>
+                                </Select>
                               </div>
-                            )}
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-active-second-loan-${propertyId}`}>Secured Second Loan</Label>
+                                <Select
+                                  value={form.watch(`property.properties.${index}.activeSecondLoan` as const) || ''}
+                                  onValueChange={(value) => {
+                                    form.setValue(`property.properties.${index}.activeSecondLoan` as const, value);
+                                    // Clear secondLoan data when toggled to "no" for data hygiene
+                                    if (value !== 'yes') {
+                                      form.setValue(`property.properties.${index}.secondLoan` as const, {
+                                        lenderName: '',
+                                        loanNumber: '',
+                                        mortgageBalance: '',
+                                        piPayment: '',
+                                        escrowPayment: '',
+                                        totalMonthlyPayment: '',
+                                      });
+                                    }
+                                  }}
+                                >
+                                  <SelectTrigger data-testid={`select-property-active-second-loan-${propertyId}`}>
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="yes">Yes</SelectItem>
+                                    <SelectItem value="no">No</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+
+
 
 
                             {/* Second Loan Details Box - Only show when activeSecondLoan is 'yes' for all property types */}
@@ -7844,6 +7799,23 @@ export default function AdminAddClient() {
                                 >
                                   <Plus className="h-4 w-4 mr-2" />
                                   Add Second Home
+                                </Button>
+                              </div>
+                            )}
+
+                            {/* Add Investment Property Button - Only show for investment properties */}
+                            {property.use === 'investment' && (
+                              <div className="flex justify-end mt-6">
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => addProperty('investment')}
+                                  className="hover:bg-orange-500 hover:text-white"
+                                  data-testid={`button-add-investment-property-${propertyId}`}
+                                >
+                                  <Plus className="h-4 w-4 mr-2" />
+                                  Add Investment Property
                                 </Button>
                               </div>
                             )}
