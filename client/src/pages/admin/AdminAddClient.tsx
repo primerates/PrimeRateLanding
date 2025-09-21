@@ -336,6 +336,70 @@ export default function AdminAddClient() {
     setCountyLookupLoading(prev => ({...prev, coBorrowerSecondEmployer: false}));
   };
 
+  // Handler for property address changes - triggers auto-copy functionality
+  const handleAddressChange = (index: number) => {
+    const properties = form.watch('property.properties') || [];
+    if (index < 0 || index >= properties.length) return;
+    
+    const property = properties[index];
+    if (!property || !property.address) return;
+    
+    // Get the property address
+    const propertyAddress = property.address;
+    
+    // If this property has a ZIP code, trigger county lookup
+    if (propertyAddress.zip && propertyAddress.zip.length >= 5) {
+      lookupCountyFromZip(propertyAddress.zip).then(counties => {
+        if (counties.length === 1) {
+          // Auto-fill single county result
+          form.setValue(`property.properties.${index}.address.county`, counties[0].label, { shouldDirty: true });
+        }
+      });
+    }
+    
+    // Auto-copy address to related loan sections if they're attached to this property
+    const propertyUse = property.use;
+    
+    // Check current loan
+    const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+    if (currentLoanAttached === propertyUse) {
+      form.setValue('currentLoan.propertyAddress', {
+        street: propertyAddress.street || '',
+        unit: propertyAddress.unit || '',
+        city: propertyAddress.city || '',
+        state: propertyAddress.state || '',
+        zipCode: propertyAddress.zip || '',
+        county: propertyAddress.county || ''
+      });
+    }
+    
+    // Check second loan
+    const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+    if (secondLoanAttached === propertyUse) {
+      form.setValue('secondLoan.propertyAddress', {
+        street: propertyAddress.street || '',
+        unit: propertyAddress.unit || '',
+        city: propertyAddress.city || '',
+        state: propertyAddress.state || '',
+        zipCode: propertyAddress.zip || '',
+        county: propertyAddress.county || ''
+      });
+    }
+    
+    // Check third loan
+    const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
+    if (thirdLoanAttached === propertyUse) {
+      form.setValue('thirdLoan.propertyAddress', {
+        street: propertyAddress.street || '',
+        unit: propertyAddress.unit || '',
+        city: propertyAddress.city || '',
+        state: propertyAddress.state || '',
+        zipCode: propertyAddress.zip || '',
+        county: propertyAddress.county || ''
+      });
+    }
+  };
+
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
@@ -4319,46 +4383,47 @@ export default function AdminAddClient() {
                               )}
                             </div>
                           </div>
-                      <div className="space-y-2">
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <Label htmlFor="coBorrower-prior-years">Years at this Address</Label>
-                            <Input
-                              id="coBorrower-prior-years"
-                              type="number"
-                              min="0"
-                              max="99"
-                              {...form.register('coBorrower.priorYearsAtAddress')}
-                              data-testid="input-coborrower-prior-years"
-                            />
+                          
+                          <div className="space-y-2">
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <Label htmlFor="coBorrower-prior-years">Years at this Address</Label>
+                                <Input
+                                  id="coBorrower-prior-years"
+                                  type="number"
+                                  min="0"
+                                  max="99"
+                                  {...form.register('coBorrower.priorYearsAtAddress')}
+                                  data-testid="input-coborrower-prior-years"
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="coBorrower-prior-months">Months at this Address</Label>
+                                <Input
+                                  id="coBorrower-prior-months"
+                                  type="number"
+                                  min="0"
+                                  max="11"
+                                  {...form.register('coBorrower.priorMonthsAtAddress')}
+                                  data-testid="input-coborrower-prior-months"
+                                />
+                              </div>
+                            </div>
                           </div>
-                          <div>
-                            <Label htmlFor="coBorrower-prior-months">Months at this Address</Label>
-                            <Input
-                              id="coBorrower-prior-months"
-                              type="number"
-                              min="0"
-                              max="11"
-                              {...form.register('coBorrower.priorMonthsAtAddress')}
-                              data-testid="input-coborrower-prior-months"
-                            />
+                          
+                          <div className="md:col-span-2 lg:col-span-3 flex justify-end mt-4">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={addCoBorrowerPriorAddress}
+                              className="hover:bg-blue-500 hover:text-white"
+                              data-testid="button-add-coborrower-prior-address"
+                            >
+                              <Plus className="h-4 w-4 mr-2" />
+                              Add Prior Address
+                            </Button>
                           </div>
-                        </div>
-                      </div>
-                      
-                      <div className="md:col-span-2 lg:col-span-3 flex justify-end mt-4">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={addCoBorrowerPriorAddress}
-                          className="hover:bg-blue-500 hover:text-white"
-                          data-testid="button-add-coborrower-prior-address"
-                        >
-                          <Plus className="h-4 w-4 mr-2" />
-                          Add Prior Address
-                        </Button>
-                      </div>
                           </CardContent>
                         </CollapsibleContent>
                       </Collapsible>
@@ -8186,7 +8251,7 @@ export default function AdminAddClient() {
                           </div>
                           
                           {/* Conditional Property Address Fields - Show when Attached to Property is selected */}
-                          {form.watch('thirdLoan.attachedToProperty') && form.watch('thirdLoan.attachedToProperty') !== '' && form.watch('thirdLoan.attachedToProperty') !== 'select' && ['Primary Residence', 'Second Home', 'Investment Property', 'Other'].includes(form.watch('thirdLoan.attachedToProperty') || '') && (
+                          {form.watch('thirdLoan.attachedToProperty') && form.watch('thirdLoan.attachedToProperty') !== '' && ['Primary Residence', 'Second Home', 'Investment Property', 'Other'].includes(form.watch('thirdLoan.attachedToProperty') || '') && (
                             <div className="mt-4 p-4 border-t border-gray-200">
                               <Collapsible open={isThirdLoanPropertyAddressOpen} onOpenChange={setIsThirdLoanPropertyAddressOpen}>
                                 <div className="flex items-center justify-between mb-3">
