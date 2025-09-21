@@ -3490,56 +3490,28 @@ export default function AdminAddClient() {
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <CardTitle>Borrower Residence Address</CardTitle>
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-3">
-                          <div className="space-y-1">
-                            <Label htmlFor="borrower-years-header" className="text-xs text-muted-foreground">Years</Label>
-                            <Input
-                              id="borrower-years-header"
-                              type="number"
-                              min="0"
-                              max="99"
-                              className="h-8 w-16 text-center"
-                              {...form.register('borrower.yearsAtAddress')}
-                              data-testid="input-borrower-years-header"
-                            />
-                          </div>
-                          <div className="space-y-1">
-                            <Label htmlFor="borrower-months-header" className="text-xs text-muted-foreground">Months</Label>
-                            <Input
-                              id="borrower-months-header"
-                              type="number"
-                              min="0"
-                              max="11"
-                              className="h-8 w-16 text-center"
-                              {...form.register('borrower.monthsAtAddress')}
-                              data-testid="input-borrower-months-header"
-                            />
-                          </div>
-                        </div>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <CollapsibleTrigger asChild>
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                className="hover:bg-orange-500 hover:text-black"
-                                data-testid="button-toggle-borrower-residence"
-                              >
-                                {isBorrowerResidenceOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                              </Button>
-                            </CollapsibleTrigger>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>{isBorrowerResidenceOpen ? 'Minimize' : 'Expand'}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-black"
+                              data-testid="button-toggle-borrower-residence"
+                            >
+                              {isBorrowerResidenceOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{isBorrowerResidenceOpen ? 'Minimize' : 'Expand'}</p>
+                        </TooltipContent>
+                      </Tooltip>
                     </div>
                   </CardHeader>
                   <CollapsibleContent>
                     <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-8 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="borrower-residence-street">Street Address *</Label>
                       <Input
@@ -3566,6 +3538,18 @@ export default function AdminAddClient() {
                     </div>
                     
                     <div className="space-y-2">
+                      <Label htmlFor="borrower-years-address">Years at this Address</Label>
+                      <Input
+                        id="borrower-years-address"
+                        type="number"
+                        min="0"
+                        max="99"
+                        {...form.register('borrower.yearsAtAddress')}
+                        data-testid="input-borrower-years-address"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
                       <Label htmlFor="borrower-residence-city">City *</Label>
                       <Input
                         id="borrower-residence-city"
@@ -3577,6 +3561,19 @@ export default function AdminAddClient() {
                       {form.formState.errors.borrower?.residenceAddress?.city && (
                         <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.city.message}</p>
                       )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="borrower-months-address">Months at this Address</Label>
+                      <Input
+                        id="borrower-months-address"
+                        type="number"
+                        min="0"
+                        max="11"
+                        placeholder="0"
+                        {...form.register('borrower.monthsAtAddress')}
+                        data-testid="input-borrower-months-address"
+                      />
                     </div>
                     
                     <div className="space-y-2">
