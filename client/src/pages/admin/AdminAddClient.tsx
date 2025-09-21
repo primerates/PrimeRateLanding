@@ -345,6 +345,7 @@ export default function AdminAddClient() {
   const [isSecondLoanOpen, setIsSecondLoanOpen] = useState(true);
   const [showThirdLoan, setShowThirdLoan] = useState(false);
   const [isThirdLoanOpen, setIsThirdLoanOpen] = useState(true);
+  const [isThirdLoanPropertyAddressOpen, setIsThirdLoanPropertyAddressOpen] = useState(false);
   
   // State for Current Loan info popup in Property tab
   const [showCurrentLoanInfoPopup, setShowCurrentLoanInfoPopup] = useState(false);
@@ -1951,8 +1952,8 @@ export default function AdminAddClient() {
                     targetForm.setValue('secondLoan.attachedToProperty', value as any);
                     if (['Primary Residence', 'Second Home', 'Investment Property'].includes(value)) {
                       setTimeout(() => onAutoCopyAddress?.(), 100);
-                    } else if (value === 'Other' || value === '') {
-                      // Clear address fields for Other or empty selection
+                    } else if (value === 'Other' || value === '' || value === 'select') {
+                      // Clear address fields for Other, empty, or select
                       targetForm.setValue('secondLoan.propertyAddress.street', '');
                       targetForm.setValue('secondLoan.propertyAddress.unit', '');
                       targetForm.setValue('secondLoan.propertyAddress.city', '');
@@ -1965,6 +1966,7 @@ export default function AdminAddClient() {
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
                       <SelectItem value="Primary Residence">Primary Residence</SelectItem>
                       <SelectItem value="Second Home">Second Home</SelectItem>
                       <SelectItem value="Investment Property">Investment Property</SelectItem>
@@ -1976,7 +1978,7 @@ export default function AdminAddClient() {
               
               
               {/* Conditional Property Address Fields - Show when Attached to Property is selected */}
-              {targetForm.watch('secondLoan.attachedToProperty') && targetForm.watch('secondLoan.attachedToProperty') !== '' && ['Primary Residence', 'Second Home', 'Investment Property', 'Other'].includes(targetForm.watch('secondLoan.attachedToProperty') || '') && (
+              {targetForm.watch('secondLoan.attachedToProperty') && targetForm.watch('secondLoan.attachedToProperty') !== '' && targetForm.watch('secondLoan.attachedToProperty') !== 'select' && ['Primary Residence', 'Second Home', 'Investment Property', 'Other'].includes(targetForm.watch('secondLoan.attachedToProperty') || '') && (
                 <div className="mt-4 p-4 border-t border-gray-200">
                   <Collapsible open={isPropertyAddressOpen} onOpenChange={setIsPropertyAddressOpen}>
                     <div className="flex items-center justify-between mb-3">
@@ -8466,8 +8468,8 @@ export default function AdminAddClient() {
                                 form.setValue('thirdLoan.attachedToProperty', value as any);
                                 if (['Primary Residence', 'Second Home', 'Investment Property'].includes(value)) {
                                   setTimeout(() => autoCopyPropertyAddressToGlobalThirdLoan(), 100);
-                                } else if (value === 'Other' || value === '') {
-                                  // Clear address fields for Other or empty selection
+                                } else if (value === 'Other' || value === '' || value === 'select') {
+                                  // Clear address fields for Other, empty, or select
                                   form.setValue('thirdLoan.propertyAddress.street', '');
                                   form.setValue('thirdLoan.propertyAddress.unit', '');
                                   form.setValue('thirdLoan.propertyAddress.city', '');
@@ -8480,6 +8482,7 @@ export default function AdminAddClient() {
                                   <SelectValue placeholder="Select" />
                                 </SelectTrigger>
                                 <SelectContent>
+                                  <SelectItem value="select">Select</SelectItem>
                                   <SelectItem value="Primary Residence">Primary Residence</SelectItem>
                                   <SelectItem value="Second Home">Second Home</SelectItem>
                                   <SelectItem value="Investment Property">Investment Property</SelectItem>
@@ -8489,93 +8492,110 @@ export default function AdminAddClient() {
                             </div>
                           </div>
                           
-                          {/* Conditional Address Fields - Show when Attached to Property is selected */}
-                          {form.watch('thirdLoan.attachedToProperty') && form.watch('thirdLoan.attachedToProperty') !== '' && ['Primary Residence', 'Second Home', 'Investment Property', 'Other'].includes(form.watch('thirdLoan.attachedToProperty') || '') && (
+                          {/* Conditional Property Address Fields - Show when Attached to Property is selected */}
+                          {form.watch('thirdLoan.attachedToProperty') && form.watch('thirdLoan.attachedToProperty') !== '' && form.watch('thirdLoan.attachedToProperty') !== 'select' && ['Primary Residence', 'Second Home', 'Investment Property', 'Other'].includes(form.watch('thirdLoan.attachedToProperty') || '') && (
                             <div className="mt-4 p-4 border-t border-gray-200">
-                              <Label className="text-sm font-medium text-gray-700 mb-3 block">
-                                Property Address ({form.watch('thirdLoan.attachedToProperty')})
-                              </Label>
-                              <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                                <div className="space-y-2 md:col-span-4">
-                                  <Label htmlFor="thirdLoan-property-street">Street Address</Label>
-                                  <Input
-                                    id="thirdLoan-property-street"
-                                    {...form.register('thirdLoan.propertyAddress.street')}
-                                    data-testid="input-thirdLoan-property-street"
-                                    readOnly={form.watch('thirdLoan.attachedToProperty') !== 'Other'}
-                                    className={form.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
-                                  />
-                                </div>
-                                
-                                <div className="space-y-2 md:col-span-2">
-                                  <Label htmlFor="thirdLoan-property-unit">Unit/Apt</Label>
-                                  <Input
-                                    id="thirdLoan-property-unit"
-                                    {...form.register('thirdLoan.propertyAddress.unit')}
-                                    data-testid="input-thirdLoan-property-unit"
-                                    readOnly={form.watch('thirdLoan.attachedToProperty') !== 'Other'}
-                                    className={form.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
-                                  />
-                                </div>
-                              </div>
-                              
-                              <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mt-4">
-                                <div className="space-y-2 md:col-span-2">
-                                  <Label htmlFor="thirdLoan-property-city">City</Label>
-                                  <Input
-                                    id="thirdLoan-property-city"
-                                    {...form.register('thirdLoan.propertyAddress.city')}
-                                    data-testid="input-thirdLoan-property-city"
-                                    readOnly={form.watch('thirdLoan.attachedToProperty') !== 'Other'}
-                                    className={form.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
-                                  />
-                                </div>
-                                
-                                <div className="space-y-2 md:col-span-2">
-                                  <Label htmlFor="thirdLoan-property-state">State</Label>
-                                  <Select
-                                    value={form.watch('thirdLoan.propertyAddress.state') || ''}
-                                    onValueChange={(value) => form.setValue('thirdLoan.propertyAddress.state', value)}
-                                    disabled={form.watch('thirdLoan.attachedToProperty') !== 'Other'}
-                                  >
-                                    <SelectTrigger
-                                      data-testid="select-thirdLoan-property-state"
-                                      className={form.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                              <Collapsible open={isThirdLoanPropertyAddressOpen} onOpenChange={setIsThirdLoanPropertyAddressOpen}>
+                                <div className="flex items-center justify-between mb-3">
+                                  <Label className="text-sm font-medium text-gray-700">
+                                    Property Address ({form.watch('thirdLoan.attachedToProperty')})
+                                  </Label>
+                                  <CollapsibleTrigger asChild>
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      className="hover:bg-orange-500 hover:text-white"
+                                      data-testid="button-toggle-property-address-third-loan"
                                     >
-                                      <SelectValue placeholder="State" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {US_STATES.map(state => (
-                                        <SelectItem key={state.value} value={state.value}>
-                                          {state.label}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
+                                      {isThirdLoanPropertyAddressOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                                    </Button>
+                                  </CollapsibleTrigger>
                                 </div>
-                                
-                                <div className="space-y-2">
-                                  <Label htmlFor="thirdLoan-property-zipCode">ZIP Code</Label>
-                                  <Input
-                                    id="thirdLoan-property-zipCode"
-                                    {...form.register('thirdLoan.propertyAddress.zipCode')}
-                                    data-testid="input-thirdLoan-property-zipCode"
-                                    readOnly={form.watch('thirdLoan.attachedToProperty') !== 'Other'}
-                                    className={form.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
-                                  />
-                                </div>
-                                
-                                <div className="space-y-2">
-                                  <Label htmlFor="thirdLoan-property-county">County</Label>
-                                  <Input
-                                    id="thirdLoan-property-county"
-                                    {...form.register('thirdLoan.propertyAddress.county')}
-                                    data-testid="input-thirdLoan-property-county"
-                                    readOnly={form.watch('thirdLoan.attachedToProperty') !== 'Other'}
-                                    className={form.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
-                                  />
-                                </div>
-                              </div>
+                                <CollapsibleContent>
+                                  <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                                    <div className="space-y-2 md:col-span-4">
+                                      <Label htmlFor="thirdLoan-property-street">Street Address</Label>
+                                      <Input
+                                        id="thirdLoan-property-street"
+                                        {...form.register('thirdLoan.propertyAddress.street')}
+                                        data-testid="input-thirdLoan-property-street"
+                                        readOnly={form.watch('thirdLoan.attachedToProperty') !== 'Other'}
+                                        className={form.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                                      />
+                                    </div>
+                                    
+                                    <div className="space-y-2 md:col-span-2">
+                                      <Label htmlFor="thirdLoan-property-unit">Unit/Apt</Label>
+                                      <Input
+                                        id="thirdLoan-property-unit"
+                                        {...form.register('thirdLoan.propertyAddress.unit')}
+                                        data-testid="input-thirdLoan-property-unit"
+                                        readOnly={form.watch('thirdLoan.attachedToProperty') !== 'Other'}
+                                        className={form.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                                      />
+                                    </div>
+                                  </div>
+                                  
+                                  <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mt-4">
+                                    <div className="space-y-2 md:col-span-2">
+                                      <Label htmlFor="thirdLoan-property-city">City</Label>
+                                      <Input
+                                        id="thirdLoan-property-city"
+                                        {...form.register('thirdLoan.propertyAddress.city')}
+                                        data-testid="input-thirdLoan-property-city"
+                                        readOnly={form.watch('thirdLoan.attachedToProperty') !== 'Other'}
+                                        className={form.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                                      />
+                                    </div>
+                                    
+                                    <div className="space-y-2 md:col-span-2">
+                                      <Label htmlFor="thirdLoan-property-state">State</Label>
+                                      <Select
+                                        value={form.watch('thirdLoan.propertyAddress.state') || ''}
+                                        onValueChange={(value) => form.setValue('thirdLoan.propertyAddress.state', value)}
+                                        disabled={form.watch('thirdLoan.attachedToProperty') !== 'Other'}
+                                      >
+                                        <SelectTrigger
+                                          data-testid="select-thirdLoan-property-state"
+                                          className={form.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                                        >
+                                          <SelectValue placeholder="State" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          {US_STATES.map(state => (
+                                            <SelectItem key={state.value} value={state.value}>
+                                              {state.label}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                    </div>
+                                    
+                                    <div className="space-y-2">
+                                      <Label htmlFor="thirdLoan-property-zipCode">ZIP Code</Label>
+                                      <Input
+                                        id="thirdLoan-property-zipCode"
+                                        {...form.register('thirdLoan.propertyAddress.zipCode')}
+                                        data-testid="input-thirdLoan-property-zipCode"
+                                        readOnly={form.watch('thirdLoan.attachedToProperty') !== 'Other'}
+                                        className={form.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                                      />
+                                    </div>
+                                    
+                                    <div className="space-y-2">
+                                      <Label htmlFor="thirdLoan-property-county">County</Label>
+                                      <Input
+                                        id="thirdLoan-property-county"
+                                        {...form.register('thirdLoan.propertyAddress.county')}
+                                        data-testid="input-thirdLoan-property-county"
+                                        readOnly={form.watch('thirdLoan.attachedToProperty') !== 'Other'}
+                                        className={form.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                                      />
+                                    </div>
+                                  </div>
+                                </CollapsibleContent>
+                              </Collapsible>
                             </div>
                           )}
                         </CardContent>
