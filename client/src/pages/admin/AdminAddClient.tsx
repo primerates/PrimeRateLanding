@@ -7042,12 +7042,12 @@ export default function AdminAddClient() {
                         <div className="flex justify-between">
                           <span className={`font-medium ${
                             (form.watch('property.properties') || []).filter(p => p.use === 'investment').length > 0 
-                              ? 'text-orange-500' 
+                              ? 'text-purple-500' 
                               : 'text-foreground'
                           }`}>Investment Property:</span>
                           <span className={`font-medium ${
                             (form.watch('property.properties') || []).filter(p => p.use === 'investment').length > 0 
-                              ? 'text-orange-500' 
+                              ? 'text-purple-500' 
                               : 'text-foreground'
                           }`} data-testid="text-investment-count">
                             {(form.watch('property.properties') || []).filter(p => p.use === 'investment').length}
@@ -7267,7 +7267,7 @@ export default function AdminAddClient() {
 
                             {/* Property Address */}
                             <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                              <div className="space-y-2 md:col-span-4">
+                              <div className="space-y-2 md:col-span-2">
                                 <Label htmlFor={`property-address-street-${propertyId}`}>Street Address</Label>
                                 <Input
                                   id={`property-address-street-${propertyId}`}
@@ -7281,7 +7281,7 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
-                              <div className="space-y-2 md:col-span-2">
+                              <div className="space-y-2">
                                 <Label htmlFor={`property-address-unit-${propertyId}`}>Unit/Apt</Label>
                                 <Input
                                   id={`property-address-unit-${propertyId}`}
@@ -7290,7 +7290,7 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
-                              <div className="space-y-2 md:col-span-2">
+                              <div className="space-y-2">
                                 <Label htmlFor={`property-address-city-${propertyId}`}>City</Label>
                                 <Input
                                   id={`property-address-city-${propertyId}`}
@@ -7331,7 +7331,7 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
-                              <div className="space-y-2 md:col-span-2">
+                              <div className="space-y-2">
                                 <Label htmlFor={`property-address-county-${propertyId}`}>County</Label>
                                 <Input
                                   id={`property-address-county-${propertyId}`}
@@ -7933,7 +7933,7 @@ export default function AdminAddClient() {
               {showThirdLoan && (
                 <>
                   {/* Current Third Loan Information */}
-                  <Card className="border-l-4 border-l-purple-500">
+                  <Card className="border-l-4 border-l-orange-500">
                     <Collapsible open={isThirdLoanOpen} onOpenChange={setIsThirdLoanOpen}>
                       <CardHeader>
                         <div className="flex items-center justify-between">
