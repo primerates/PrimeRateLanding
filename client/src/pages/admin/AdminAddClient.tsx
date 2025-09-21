@@ -3422,7 +3422,7 @@ export default function AdminAddClient() {
                   <CollapsibleContent>
                     <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                    <div className="space-y-2 md:col-span-4">
+                    <div className="space-y-2">
                       <Label htmlFor="borrower-residence-street">Street Address *</Label>
                       <Input
                         id="borrower-residence-street"
@@ -3436,7 +3436,7 @@ export default function AdminAddClient() {
                       )}
                     </div>
                     
-                    <div className="space-y-2 md:col-span-2">
+                    <div className="space-y-2">
                       <Label htmlFor="borrower-residence-unit">Unit/Apt</Label>
                       <Input
                         id="borrower-residence-unit"
@@ -3447,7 +3447,7 @@ export default function AdminAddClient() {
                       />
                     </div>
                     
-                    <div className="space-y-2 md:col-span-2">
+                    <div className="space-y-2">
                       <Label htmlFor="borrower-residence-city">City *</Label>
                       <Input
                         id="borrower-residence-city"
@@ -3501,7 +3501,7 @@ export default function AdminAddClient() {
                       )}
                     </div>
                     
-                    <div className="space-y-2 md:col-span-2">
+                    <div className="space-y-2">
                       <Label htmlFor="borrower-residence-county">County</Label>
                       {borrowerCountyOptions.length > 0 ? (
                         <Select
@@ -3609,98 +3609,100 @@ export default function AdminAddClient() {
                       </div>
                     </CardHeader>
                     <CollapsibleContent>
-                      <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="borrower-prior-street">Street Address</Label>
-                      <Input
-                        id="borrower-prior-street"
-                        {...form.register('borrower.priorResidenceAddress.street')}
-                        data-testid="input-borrower-prior-street"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="borrower-prior-unit">Unit/Apt</Label>
-                      <Input
-                        id="borrower-prior-unit"
-                        {...form.register('borrower.priorResidenceAddress.unit')}
-                        data-testid="input-borrower-prior-unit"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="borrower-prior-city">City</Label>
-                      <Input
-                        id="borrower-prior-city"
-                        {...form.register('borrower.priorResidenceAddress.city')}
-                        data-testid="input-borrower-prior-city"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="borrower-prior-state">State</Label>
-                      <Select
-                        value={form.watch('borrower.priorResidenceAddress.state') || ''}
-                        onValueChange={(value) => form.setValue('borrower.priorResidenceAddress.state', value, { shouldDirty: true })}
-                      >
-                        <SelectTrigger data-testid="select-borrower-prior-state">
-                          <SelectValue placeholder="State" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {US_STATES.map((state) => (
-                            <SelectItem key={state.value} value={state.value}>
-                              {state.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="borrower-prior-zip">ZIP Code</Label>
-                      <Input
-                        id="borrower-prior-zip"
-                        {...form.register('borrower.priorResidenceAddress.zip')}
-                        onBlur={(e) => handleBorrowerPriorZipCodeLookup(e.target.value)}
-                        data-testid="input-borrower-prior-zip"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="borrower-prior-county">County</Label>
-                      {borrowerPriorCountyOptions.length > 0 ? (
-                        <Select
-                          value={form.watch('borrower.priorResidenceAddress.county') || ''}
-                          onValueChange={(value) => {
-                            if (value === 'manual-entry') {
-                              form.setValue('borrower.priorResidenceAddress.county', '');
-                              setBorrowerPriorCountyOptions([]);
-                            } else {
-                              // Find the selected county to get its label for display
-                              const selectedCounty = borrowerPriorCountyOptions.find(county => county.value === value);
-                              form.setValue('borrower.priorResidenceAddress.county', selectedCounty?.label || value, { shouldDirty: true });
-                            }
-                          }}
-                        >
-                          <SelectTrigger data-testid="select-borrower-prior-county">
-                            <SelectValue placeholder={countyLookupLoading.borrowerPrior ? "Looking up counties..." : "Select county"} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {borrowerPriorCountyOptions.map((county) => (
-                              <SelectItem key={county.value} value={county.value}>
-                                {county.label}
-                              </SelectItem>
-                            ))}
-                            <SelectItem value="manual-entry" className="text-muted-foreground border-t">
-                              Enter county manually
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      ) : (
-                        <Input
-                          id="borrower-prior-county"
-                          {...form.register('borrower.priorResidenceAddress.county')}
-                          placeholder={countyLookupLoading.borrowerPrior ? "Looking up counties..." : "Enter county name"}
-                          disabled={countyLookupLoading.borrowerPrior}
-                          data-testid="input-borrower-prior-county"
-                        />
-                      )}
-                    </div>
+                      <CardContent className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="borrower-prior-street">Street Address</Label>
+                          <Input
+                            id="borrower-prior-street"
+                            {...form.register('borrower.priorResidenceAddress.street')}
+                            data-testid="input-borrower-prior-street"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="borrower-prior-unit">Unit/Apt</Label>
+                          <Input
+                            id="borrower-prior-unit"
+                            {...form.register('borrower.priorResidenceAddress.unit')}
+                            data-testid="input-borrower-prior-unit"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="borrower-prior-city">City</Label>
+                          <Input
+                            id="borrower-prior-city"
+                            {...form.register('borrower.priorResidenceAddress.city')}
+                            data-testid="input-borrower-prior-city"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="borrower-prior-state">State</Label>
+                          <Select
+                            value={form.watch('borrower.priorResidenceAddress.state') || ''}
+                            onValueChange={(value) => form.setValue('borrower.priorResidenceAddress.state', value, { shouldDirty: true })}
+                          >
+                            <SelectTrigger data-testid="select-borrower-prior-state">
+                              <SelectValue placeholder="State" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {US_STATES.map((state) => (
+                                <SelectItem key={state.value} value={state.value}>
+                                  {state.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="borrower-prior-zip">ZIP Code</Label>
+                          <Input
+                            id="borrower-prior-zip"
+                            {...form.register('borrower.priorResidenceAddress.zip')}
+                            onBlur={(e) => handleBorrowerPriorZipCodeLookup(e.target.value)}
+                            data-testid="input-borrower-prior-zip"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="borrower-prior-county">County</Label>
+                          {borrowerPriorCountyOptions.length > 0 ? (
+                            <Select
+                              value={form.watch('borrower.priorResidenceAddress.county') || ''}
+                              onValueChange={(value) => {
+                                if (value === 'manual-entry') {
+                                  form.setValue('borrower.priorResidenceAddress.county', '');
+                                  setBorrowerPriorCountyOptions([]);
+                                } else {
+                                  // Find the selected county to get its label for display
+                                  const selectedCounty = borrowerPriorCountyOptions.find(county => county.value === value);
+                                  form.setValue('borrower.priorResidenceAddress.county', selectedCounty?.label || value, { shouldDirty: true });
+                                }
+                              }}
+                            >
+                              <SelectTrigger data-testid="select-borrower-prior-county">
+                                <SelectValue placeholder={countyLookupLoading.borrowerPrior ? "Looking up counties..." : "Select county"} />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {borrowerPriorCountyOptions.map((county) => (
+                                  <SelectItem key={county.value} value={county.value}>
+                                    {county.label}
+                                  </SelectItem>
+                                ))}
+                                <SelectItem value="manual-entry" className="text-muted-foreground border-t">
+                                  Enter county manually
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          ) : (
+                            <Input
+                              id="borrower-prior-county"
+                              {...form.register('borrower.priorResidenceAddress.county')}
+                              placeholder={countyLookupLoading.borrowerPrior ? "Looking up counties..." : "Enter county name"}
+                              disabled={countyLookupLoading.borrowerPrior}
+                              data-testid="input-borrower-prior-county"
+                            />
+                          )}
+                        </div>
+                      </div>
                     <div className="space-y-2">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
@@ -4053,7 +4055,7 @@ export default function AdminAddClient() {
                     <CollapsibleContent>
                       <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                      <div className="space-y-2 md:col-span-4">
+                      <div className="space-y-2">
                         <Label htmlFor="coBorrower-residence-street">Street Address</Label>
                         <Input
                           id="coBorrower-residence-street"
@@ -4064,7 +4066,7 @@ export default function AdminAddClient() {
                         />
                       </div>
                       
-                      <div className="space-y-2 md:col-span-2">
+                      <div className="space-y-2">
                         <Label htmlFor="coBorrower-residence-unit">Unit/Apt</Label>
                         <Input
                           id="coBorrower-residence-unit"
@@ -4075,7 +4077,7 @@ export default function AdminAddClient() {
                         />
                       </div>
                       
-                      <div className="space-y-2 md:col-span-2">
+                      <div className="space-y-2">
                         <Label htmlFor="coBorrower-residence-city">City</Label>
                         <Input
                           id="coBorrower-residence-city"
@@ -4120,7 +4122,7 @@ export default function AdminAddClient() {
                         />
                       </div>
                       
-                      <div className="space-y-2 md:col-span-2">
+                      <div className="space-y-2">
                         <Label htmlFor="coBorrower-residence-county">County</Label>
                         {coBorrowerCountyOptions.length > 0 ? (
                           <Select
@@ -4223,98 +4225,100 @@ export default function AdminAddClient() {
                           </div>
                         </CardHeader>
                         <CollapsibleContent>
-                          <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="coBorrower-prior-street">Street Address</Label>
-                        <Input
-                          id="coBorrower-prior-street"
-                          {...form.register('coBorrower.priorResidenceAddress.street')}
-                          data-testid="input-coborrower-prior-street"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="coBorrower-prior-unit">Unit/Apt</Label>
-                        <Input
-                          id="coBorrower-prior-unit"
-                          {...form.register('coBorrower.priorResidenceAddress.unit')}
-                          data-testid="input-coborrower-prior-unit"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="coBorrower-prior-city">City</Label>
-                        <Input
-                          id="coBorrower-prior-city"
-                          {...form.register('coBorrower.priorResidenceAddress.city')}
-                          data-testid="input-coborrower-prior-city"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="coBorrower-prior-state">State</Label>
-                        <Select
-                          value={form.watch('coBorrower.priorResidenceAddress.state') || ''}
-                          onValueChange={(value) => form.setValue('coBorrower.priorResidenceAddress.state', value, { shouldDirty: true })}
-                        >
-                          <SelectTrigger data-testid="select-coborrower-prior-state">
-                            <SelectValue placeholder="State" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {US_STATES.map((state) => (
-                              <SelectItem key={state.value} value={state.value}>
-                                {state.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="coBorrower-prior-zip">ZIP Code</Label>
-                        <Input
-                          id="coBorrower-prior-zip"
-                          {...form.register('coBorrower.priorResidenceAddress.zip')}
-                          onBlur={(e) => handleCoBorrowerPriorZipCodeLookup(e.target.value)}
-                          data-testid="input-coborrower-prior-zip"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="coBorrower-prior-county">County</Label>
-                        {coBorrowerPriorCountyOptions.length > 0 ? (
-                          <Select
-                            value={form.watch('coBorrower.priorResidenceAddress.county') || ''}
-                            onValueChange={(value) => {
-                              if (value === 'manual-entry') {
-                                form.setValue('coBorrower.priorResidenceAddress.county', '');
-                                setCoBorrowerPriorCountyOptions([]);
-                              } else {
-                                // Find the selected county to get its label for display
-                                const selectedCounty = coBorrowerPriorCountyOptions.find(county => county.value === value);
-                                form.setValue('coBorrower.priorResidenceAddress.county', selectedCounty?.label || value, { shouldDirty: true });
-                              }
-                            }}
-                          >
-                            <SelectTrigger data-testid="select-coborrower-prior-county">
-                              <SelectValue placeholder={countyLookupLoading.coBorrowerPrior ? "Looking up counties..." : "Select county"} />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {coBorrowerPriorCountyOptions.map((county) => (
-                                <SelectItem key={county.value} value={county.value}>
-                                  {county.label}
-                                </SelectItem>
-                              ))}
-                              <SelectItem value="manual-entry" className="text-muted-foreground border-t">
-                                Enter county manually
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                        ) : (
-                          <Input
-                            id="coBorrower-prior-county"
-                            {...form.register('coBorrower.priorResidenceAddress.county')}
-                            placeholder={countyLookupLoading.coBorrowerPrior ? "Looking up counties..." : "Enter county name"}
-                            disabled={countyLookupLoading.coBorrowerPrior}
-                            data-testid="input-coborrower-prior-county"
-                          />
-                        )}
-                      </div>
+                          <CardContent className="space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrower-prior-street">Street Address</Label>
+                              <Input
+                                id="coBorrower-prior-street"
+                                {...form.register('coBorrower.priorResidenceAddress.street')}
+                                data-testid="input-coborrower-prior-street"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrower-prior-unit">Unit/Apt</Label>
+                              <Input
+                                id="coBorrower-prior-unit"
+                                {...form.register('coBorrower.priorResidenceAddress.unit')}
+                                data-testid="input-coborrower-prior-unit"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrower-prior-city">City</Label>
+                              <Input
+                                id="coBorrower-prior-city"
+                                {...form.register('coBorrower.priorResidenceAddress.city')}
+                                data-testid="input-coborrower-prior-city"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrower-prior-state">State</Label>
+                              <Select
+                                value={form.watch('coBorrower.priorResidenceAddress.state') || ''}
+                                onValueChange={(value) => form.setValue('coBorrower.priorResidenceAddress.state', value, { shouldDirty: true })}
+                              >
+                                <SelectTrigger data-testid="select-coborrower-prior-state">
+                                  <SelectValue placeholder="State" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {US_STATES.map((state) => (
+                                    <SelectItem key={state.value} value={state.value}>
+                                      {state.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrower-prior-zip">ZIP Code</Label>
+                              <Input
+                                id="coBorrower-prior-zip"
+                                {...form.register('coBorrower.priorResidenceAddress.zip')}
+                                onBlur={(e) => handleCoBorrowerPriorZipCodeLookup(e.target.value)}
+                                data-testid="input-coborrower-prior-zip"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrower-prior-county">County</Label>
+                              {coBorrowerPriorCountyOptions.length > 0 ? (
+                                <Select
+                                  value={form.watch('coBorrower.priorResidenceAddress.county') || ''}
+                                  onValueChange={(value) => {
+                                    if (value === 'manual-entry') {
+                                      form.setValue('coBorrower.priorResidenceAddress.county', '');
+                                      setCoBorrowerPriorCountyOptions([]);
+                                    } else {
+                                      // Find the selected county to get its label for display
+                                      const selectedCounty = coBorrowerPriorCountyOptions.find(county => county.value === value);
+                                      form.setValue('coBorrower.priorResidenceAddress.county', selectedCounty?.label || value, { shouldDirty: true });
+                                    }
+                                  }}
+                                >
+                                  <SelectTrigger data-testid="select-coborrower-prior-county">
+                                    <SelectValue placeholder={countyLookupLoading.coBorrowerPrior ? "Looking up counties..." : "Select county"} />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {coBorrowerPriorCountyOptions.map((county) => (
+                                      <SelectItem key={county.value} value={county.value}>
+                                        {county.label}
+                                      </SelectItem>
+                                    ))}
+                                    <SelectItem value="manual-entry" className="text-muted-foreground border-t">
+                                      Enter county manually
+                                    </SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              ) : (
+                                <Input
+                                  id="coBorrower-prior-county"
+                                  {...form.register('coBorrower.priorResidenceAddress.county')}
+                                  placeholder={countyLookupLoading.coBorrowerPrior ? "Looking up counties..." : "Enter county name"}
+                                  disabled={countyLookupLoading.coBorrowerPrior}
+                                  data-testid="input-coborrower-prior-county"
+                                />
+                              )}
+                            </div>
+                          </div>
                       <div className="space-y-2">
                         <div className="grid grid-cols-2 gap-4">
                           <div>
