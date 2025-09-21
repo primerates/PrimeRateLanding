@@ -4660,7 +4660,7 @@ export default function AdminAddClient() {
               </Card>
 
               {/* Income Type Selection */}
-              <Card className="border-l-4 border-l-green-500">
+              <Card className="border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
                 <CardHeader>
                   <CardTitle>
                     Borrower Income{' '}
@@ -5907,7 +5907,7 @@ export default function AdminAddClient() {
 
               {/* Co-Borrower Income */}
               {hasCoBorrower && (
-                <Card className="border-l-4 border-l-blue-500">
+                <Card className="border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
                   <CardHeader>
                     <CardTitle>
                       Co-Borrower Income{' '}
