@@ -486,15 +486,6 @@ export default function AdminAddClient() {
   
   const [valuationInput, setValuationInput] = useState('');
   
-  // Auto-valuation state
-  const [autoValuationLoading, setAutoValuationLoading] = useState<{
-    [propertyIndex: number]: {
-      zillow?: boolean;
-      realtor?: boolean;
-      all?: boolean;
-    }
-  }>({});
-  
 
   // Unsaved changes warning dialog state
   const [unsavedChangesDialog, setUnsavedChangesDialog] = useState<{
@@ -825,26 +816,6 @@ export default function AdminAddClient() {
     },
   });
 
-  // Debounced auto-fetch with address watching
-  const debouncedAutoFetch = useCallback(
-    (propertyIndex: number): number => {
-      const timeoutId = window.setTimeout(() => {
-        const address = {
-          street: form.getValues(`property.properties.${propertyIndex}.address.street`),
-          city: form.getValues(`property.properties.${propertyIndex}.address.city`),
-          state: form.getValues(`property.properties.${propertyIndex}.address.state`),
-          zipCode: form.getValues(`property.properties.${propertyIndex}.address.zip`)
-        };
-        
-        if (address.street && address.city && address.state && !autoValuationLoading[propertyIndex]?.all) {
-          autoFetchValuations(propertyIndex, address);
-        }
-      }, 600); // 600ms debounce
-      
-      return timeoutId;
-    },
-    [autoValuationLoading]
-  );
   
   // DISABLED: Auto-sum calculation for Total Monthly Payment
   // This expensive useEffect was causing typing lag by watching fields on every keystroke
@@ -864,40 +835,6 @@ export default function AdminAddClient() {
   //   form.setValue('currentLoan.totalMonthlyPayment', formattedTotal);
   // }, [form.watch('currentLoan.principalAndInterestPayment'), form.watch('currentLoan.escrowPayment')]);
   
-  // Watch address changes for each property
-  useEffect(() => {
-    const timeouts = new Map<number, number>();
-    const subscriptions: Array<{ unsubscribe: () => void }> = [];
-    
-    const properties = form.watch('property.properties') || [];
-    
-    properties.forEach((_, index) => {
-      const subscription = form.watch((value, { name }) => {
-        if (name && (
-          name === `property.properties.${index}.address.street` ||
-          name === `property.properties.${index}.address.city` ||
-          name === `property.properties.${index}.address.state` ||
-          name === `property.properties.${index}.address.zip`
-        )) {
-          // Clear any existing timeout for this property
-          const existingTimeout = timeouts.get(index);
-          if (existingTimeout) {
-            clearTimeout(existingTimeout);
-          }
-          // Set new debounced timeout
-          const timeoutId = debouncedAutoFetch(index);
-          timeouts.set(index, timeoutId);
-        }
-      });
-      
-      subscriptions.push(subscription);
-    });
-    
-    return () => {
-      subscriptions.forEach(sub => sub.unsubscribe());
-      timeouts.forEach(timeout => clearTimeout(timeout));
-    };
-  }, [debouncedAutoFetch, form.watch('property.properties')?.length]);
 
   const addClientMutation = useMutation({
     mutationFn: async (data: InsertClient) => {
@@ -2429,189 +2366,8 @@ export default function AdminAddClient() {
     setValuationSummaryDialog({ isOpen: false, propertyIndex: null });
   };
   
-  // Auto-fetch property valuations
-  const autoFetchValuations = async (propertyIndex: number, address: { street?: string; city?: string; state?: string; zipCode?: string }) => {
-    if (!address.street || !address.city || !address.state) {
-      return;
-    }
-    
-    const fullAddress = `${address.street}, ${address.city}, ${address.state}${address.zipCode ? ' ' + address.zipCode : ''}`;
-    
-    setAutoValuationLoading(prev => ({
-      ...prev,
-      [propertyIndex]: { ...prev[propertyIndex], all: true, zillow: true, realtor: true }
-    }));
-    
-    try {
-      const response = await fetch(`/api/property-valuations?address=${encodeURIComponent(fullAddress)}`);
-      
-      if (!response.ok) {
-        throw new Error(`API request failed: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      
-      if (!data.success) {
-        throw new Error(data.message || 'API request unsuccessful');
-      }
-      
-      const results = [];
-      
-      // Handle Zillow valuation
-      if (data.data.zillow) {
-        if (data.data.zillow.estimate) {
-          const formattedZillowValue = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-          }).format(data.data.zillow.estimate);
-          form.setValue(`property.properties.${propertyIndex}.valuations.zillow`, formattedZillowValue);
-          results.push('Zillow');
-        } else if (data.data.zillow.error) {
-          toast({
-            title: "Zillow Valuation Failed",
-            description: data.data.zillow.error,
-            variant: "destructive"
-          });
-        }
-      }
-      
-      // Handle Realtor.com valuation
-      if (data.data.realtor) {
-        if (data.data.realtor.estimate) {
-          const formattedRealtorValue = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-          }).format(data.data.realtor.estimate);
-          form.setValue(`property.properties.${propertyIndex}.valuations.realtor`, formattedRealtorValue);
-          results.push('Realtor.com');
-        } else if (data.data.realtor.error) {
-          toast({
-            title: "Realtor.com Valuation Failed",
-            description: data.data.realtor.error,
-            variant: "destructive"
-          });
-        }
-      }
-      
-      // Show success toast for successful results
-      if (results.length > 0) {
-        toast({
-          title: "Property Valuations Updated",
-          description: `Auto-fetched from ${results.join(' and ')} for ${address.street}`,
-        });
-      } else {
-        toast({
-          title: "No Valuations Available",
-          description: "No property data found for this address",
-          variant: "destructive"
-        });
-      }
-      
-    } catch (error) {
-      console.error('Auto-fetch valuations error:', error);
-      toast({
-        title: "Valuation Fetch Failed",
-        description: error instanceof Error ? error.message : "Could not retrieve automatic valuations",
-        variant: "destructive"
-      });
-    } finally {
-      setAutoValuationLoading(prev => ({
-        ...prev,
-        [propertyIndex]: { ...prev[propertyIndex], all: false, zillow: false, realtor: false }
-      }));
-    }
-  };
   
-  // Fetch individual service valuation
-  const fetchServiceValuation = async (service: 'zillow' | 'realtor', propertyIndex: number, address: { street?: string; city?: string; state?: string; zipCode?: string }) => {
-    if (!address.street || !address.city || !address.state) {
-      toast({
-        title: "Incomplete Address",
-        description: "Please fill out street, city, and state to fetch valuations",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    const fullAddress = `${address.street}, ${address.city}, ${address.state}${address.zipCode ? ' ' + address.zipCode : ''}`;
-    
-    setAutoValuationLoading(prev => ({
-      ...prev,
-      [propertyIndex]: { ...prev[propertyIndex], [service]: true }
-    }));
-    
-    try {
-      const response = await fetch(`/api/property-valuations/${service}?address=${encodeURIComponent(fullAddress)}`);
-      
-      if (!response.ok) {
-        throw new Error(`API request failed: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      
-      if (!data.success) {
-        throw new Error(data.message || 'API request unsuccessful');
-      }
-      
-      if (data.data && data.data.estimate) {
-        const formattedValue = new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD',
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 0
-        }).format(data.data.estimate);
-        form.setValue(`property.properties.${propertyIndex}.valuations.${service}`, formattedValue);
-        
-        toast({
-          title: `${service.charAt(0).toUpperCase() + service.slice(1)} Valuation Updated`,
-          description: `Fetched: ${formattedValue}`,
-        });
-      } else {
-        toast({
-          title: "No Valuation Found",
-          description: data.message || `No ${service} data available for this address`,
-          variant: "destructive"
-        });
-      }
-      
-    } catch (error) {
-      console.error(`${service} valuation fetch error:`, error);
-      toast({
-        title: `${service.charAt(0).toUpperCase() + service.slice(1)} Valuation Failed`,
-        description: error instanceof Error ? error.message : `Could not retrieve ${service} valuation`,
-        variant: "destructive"
-      });
-    } finally {
-      setAutoValuationLoading(prev => ({
-        ...prev,
-        [propertyIndex]: { ...prev[propertyIndex], [service]: false }
-      }));
-    }
-  };
   
-  // Auto-fetch when address changes
-  const handleAddressChange = (propertyIndex: number) => {
-    const streetValue = form.watch(`property.properties.${propertyIndex}.address.street` as const);
-    const cityValue = form.watch(`property.properties.${propertyIndex}.address.city` as const);
-    const stateValue = form.watch(`property.properties.${propertyIndex}.address.state` as const);
-    const zipCodeValue = form.watch(`property.properties.${propertyIndex}.address.zip` as const);
-    
-    const address = {
-      street: typeof streetValue === 'string' ? streetValue : '',
-      city: typeof cityValue === 'string' ? cityValue : '',
-      state: typeof stateValue === 'string' ? stateValue : '',
-      zipCode: typeof zipCodeValue === 'string' ? zipCodeValue : ''
-    };
-    
-    // Auto-fetch if all required fields are filled
-    if (address.street && address.city && address.state) {
-      autoFetchValuations(propertyIndex, address);
-    }
-  };
 
   // Property management helper functions
   const addProperty = (use: 'primary' | 'second-home' | 'investment') => {
@@ -7653,30 +7409,6 @@ export default function AdminAddClient() {
                                       >
                                         <SiZillow className="h-4 w-4" />
                                       </Button>
-                                      <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="sm"
-                                        className="p-1 h-auto text-blue-500 hover:text-blue-700"
-                                        onClick={() => {
-                                          const address = {
-                                            street: form.getValues(`property.properties.${index}.address.street`),
-                                            city: form.getValues(`property.properties.${index}.address.city`),
-                                            state: form.getValues(`property.properties.${index}.address.state`),
-                                            zipCode: form.getValues(`property.properties.${index}.address.zip`)
-                                          };
-                                          fetchServiceValuation('zillow', index, address);
-                                        }}
-                                        disabled={autoValuationLoading[index]?.zillow}
-                                        data-testid={`button-zillow-auto-${propertyId}`}
-                                        title="Auto-fetch Zillow valuation"
-                                      >
-                                        {autoValuationLoading[index]?.zillow ? (
-                                          <Loader2 className="h-3 w-3 animate-spin" />
-                                        ) : (
-                                          <RefreshCw className="h-3 w-3" />
-                                        )}
-                                      </Button>
                                     </div>
                                     {/* Realtor */}
                                     <div className="flex items-center gap-1">
@@ -7692,30 +7424,6 @@ export default function AdminAddClient() {
                                         title="Enter Realtor.com valuation manually"
                                       >
                                         <MdRealEstateAgent className="h-4 w-4" />
-                                      </Button>
-                                      <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="sm"
-                                        className="p-1 h-auto text-purple-500 hover:text-purple-700"
-                                        onClick={() => {
-                                          const address = {
-                                            street: form.getValues(`property.properties.${index}.address.street`),
-                                            city: form.getValues(`property.properties.${index}.address.city`),
-                                            state: form.getValues(`property.properties.${index}.address.state`),
-                                            zipCode: form.getValues(`property.properties.${index}.address.zip`)
-                                          };
-                                          fetchServiceValuation('realtor', index, address);
-                                        }}
-                                        disabled={autoValuationLoading[index]?.realtor}
-                                        data-testid={`button-realtor-auto-${propertyId}`}
-                                        title="Auto-fetch Realtor.com valuation"
-                                      >
-                                        {autoValuationLoading[index]?.realtor ? (
-                                          <Loader2 className="h-3 w-3 animate-spin" />
-                                        ) : (
-                                          <RefreshCw className="h-3 w-3" />
-                                        )}
                                       </Button>
                                     </div>
                                     {/* Redfin */}
