@@ -4355,16 +4355,20 @@ export default function AdminAddClient() {
                         </CardHeader>
                         <CollapsibleContent>
                           <CardContent className="space-y-4">
-                          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrower-prior-street">Street Address</Label>
+                          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                            <div className="space-y-2 md:col-span-3">
+                              <Label htmlFor="coBorrower-prior-street">Street Address *</Label>
                               <Input
                                 id="coBorrower-prior-street"
                                 {...form.register('coBorrower.priorResidenceAddress.street')}
                                 data-testid="input-coborrower-prior-street"
                               />
+                              {form.formState.errors.coBorrower?.priorResidenceAddress?.street && (
+                                <p className="text-sm text-destructive">{form.formState.errors.coBorrower.priorResidenceAddress.street.message}</p>
+                              )}
                             </div>
-                            <div className="space-y-2">
+                            
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="coBorrower-prior-unit">Unit/Apt</Label>
                               <Input
                                 id="coBorrower-prior-unit"
@@ -4372,16 +4376,21 @@ export default function AdminAddClient() {
                                 data-testid="input-coborrower-prior-unit"
                               />
                             </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrower-prior-city">City</Label>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="coBorrower-prior-city">City *</Label>
                               <Input
                                 id="coBorrower-prior-city"
                                 {...form.register('coBorrower.priorResidenceAddress.city')}
                                 data-testid="input-coborrower-prior-city"
                               />
+                              {form.formState.errors.coBorrower?.priorResidenceAddress?.city && (
+                                <p className="text-sm text-destructive">{form.formState.errors.coBorrower.priorResidenceAddress.city.message}</p>
+                              )}
                             </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrower-prior-state">State</Label>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="coBorrower-prior-state">State *</Label>
                               <Select
                                 value={form.watch('coBorrower.priorResidenceAddress.state') || ''}
                                 onValueChange={(value) => form.setValue('coBorrower.priorResidenceAddress.state', value, { shouldDirty: true })}
@@ -4397,17 +4406,25 @@ export default function AdminAddClient() {
                                   ))}
                                 </SelectContent>
                               </Select>
+                              {form.formState.errors.coBorrower?.priorResidenceAddress?.state && (
+                                <p className="text-sm text-destructive">{form.formState.errors.coBorrower.priorResidenceAddress.state.message}</p>
+                              )}
                             </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrower-prior-zip">ZIP Code</Label>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="coBorrower-prior-zip">ZIP Code *</Label>
                               <Input
                                 id="coBorrower-prior-zip"
                                 {...form.register('coBorrower.priorResidenceAddress.zip')}
                                 onBlur={(e) => handleCoBorrowerPriorZipCodeLookup(e.target.value)}
                                 data-testid="input-coborrower-prior-zip"
                               />
+                              {form.formState.errors.coBorrower?.priorResidenceAddress?.zip && (
+                                <p className="text-sm text-destructive">{form.formState.errors.coBorrower.priorResidenceAddress.zip.message}</p>
+                              )}
                             </div>
-                            <div className="space-y-2">
+                            
+                            <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="coBorrower-prior-county">County</Label>
                               {coBorrowerPriorCountyOptions.length > 0 ? (
                                 <Select
@@ -4447,34 +4464,37 @@ export default function AdminAddClient() {
                                 />
                               )}
                             </div>
-                          </div>
-                          
-                          <div className="space-y-2">
-                            <div className="grid grid-cols-2 gap-4">
-                              <div>
-                                <Label htmlFor="coBorrower-prior-years">Years at this Address</Label>
-                                <Input
-                                  id="coBorrower-prior-years"
-                                  type="number"
-                                  min="0"
-                                  max="99"
-                                  {...form.register('coBorrower.priorYearsAtAddress')}
-                                  data-testid="input-coborrower-prior-years"
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor="coBorrower-prior-time-address" className="text-sm">
+                                  {isShowingCoBorrowerMonthsAtPriorAddress ? 'Months at this Address' : 'Years at this Address'}
+                                </Label>
+                                <Switch
+                                  checked={isShowingCoBorrowerMonthsAtPriorAddress}
+                                  onCheckedChange={setIsShowingCoBorrowerMonthsAtPriorAddress}
+                                  data-testid="toggle-coborrower-prior-time-address"
                                 />
                               </div>
-                              <div>
-                                <Label htmlFor="coBorrower-prior-months">Months at this Address</Label>
-                                <Input
-                                  id="coBorrower-prior-months"
-                                  type="number"
-                                  min="0"
-                                  max="11"
-                                  {...form.register('coBorrower.priorMonthsAtAddress')}
-                                  data-testid="input-coborrower-prior-months"
-                                />
-                              </div>
+                              <Input
+                                id="coBorrower-prior-time-address"
+                                type="number"
+                                min="0"
+                                max={isShowingCoBorrowerMonthsAtPriorAddress ? 11 : 99}
+                                placeholder="0"
+                                {...form.register(isShowingCoBorrowerMonthsAtPriorAddress ? 'coBorrower.priorMonthsAtAddress' : 'coBorrower.priorYearsAtAddress')}
+                                data-testid="input-coborrower-prior-time-address"
+                              />
                             </div>
                           </div>
+                          
+                          {/* Error handling for time at address field */}
+                          {form.formState.errors.coBorrower?.priorYearsAtAddress && !isShowingCoBorrowerMonthsAtPriorAddress && (
+                            <p className="text-sm text-destructive">{form.formState.errors.coBorrower.priorYearsAtAddress.message}</p>
+                          )}
+                          {form.formState.errors.coBorrower?.priorMonthsAtAddress && isShowingCoBorrowerMonthsAtPriorAddress && (
+                            <p className="text-sm text-destructive">{form.formState.errors.coBorrower.priorMonthsAtAddress.message}</p>
+                          )}
                           
                           <div className="md:col-span-2 lg:col-span-3 flex justify-end mt-4">
                             <Button
