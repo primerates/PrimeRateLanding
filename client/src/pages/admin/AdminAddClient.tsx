@@ -479,28 +479,28 @@ export default function AdminAddClient() {
   };
   
   // Borrower income section collapsible states
-  const [isEmploymentIncomeOpen, setIsEmploymentIncomeOpen] = useState(true);
-  const [isPriorEmploymentIncomeOpen, setIsPriorEmploymentIncomeOpen] = useState(true);
-  const [isSecondEmploymentIncomeOpen, setIsSecondEmploymentIncomeOpen] = useState(true);
-  const [isSelfEmploymentIncomeOpen, setIsSelfEmploymentIncomeOpen] = useState(true);
-  const [isSocialSecurityIncomeOpen, setIsSocialSecurityIncomeOpen] = useState(true);
-  const [isVaBenefitsIncomeOpen, setIsVaBenefitsIncomeOpen] = useState(true);
-  const [isDisabilityIncomeOpen, setIsDisabilityIncomeOpen] = useState(true);
-  const [isOtherIncomeOpen, setIsOtherIncomeOpen] = useState(true);
+  const [isEmploymentIncomeOpen, setIsEmploymentIncomeOpen] = useState(false);
+  const [isPriorEmploymentIncomeOpen, setIsPriorEmploymentIncomeOpen] = useState(false);
+  const [isSecondEmploymentIncomeOpen, setIsSecondEmploymentIncomeOpen] = useState(false);
+  const [isSelfEmploymentIncomeOpen, setIsSelfEmploymentIncomeOpen] = useState(false);
+  const [isSocialSecurityIncomeOpen, setIsSocialSecurityIncomeOpen] = useState(false);
+  const [isVaBenefitsIncomeOpen, setIsVaBenefitsIncomeOpen] = useState(false);
+  const [isDisabilityIncomeOpen, setIsDisabilityIncomeOpen] = useState(false);
+  const [isOtherIncomeOpen, setIsOtherIncomeOpen] = useState(false);
 
   // Co-Borrower income collapsible state
-  const [isCoBorrowerEmploymentIncomeOpen, setIsCoBorrowerEmploymentIncomeOpen] = useState(true);
-  const [isCoBorrowerPriorEmploymentIncomeOpen, setIsCoBorrowerPriorEmploymentIncomeOpen] = useState(true);
-  const [isCoBorrowerSecondEmploymentIncomeOpen, setIsCoBorrowerSecondEmploymentIncomeOpen] = useState(true);
-  const [isCoBorrowerSelfEmploymentIncomeOpen, setIsCoBorrowerSelfEmploymentIncomeOpen] = useState(true);
-  const [isCoBorrowerSocialSecurityIncomeOpen, setIsCoBorrowerSocialSecurityIncomeOpen] = useState(true);
-  const [isCoBorrowerVaBenefitsIncomeOpen, setIsCoBorrowerVaBenefitsIncomeOpen] = useState(true);
-  const [isCoBorrowerDisabilityIncomeOpen, setIsCoBorrowerDisabilityIncomeOpen] = useState(true);
-  const [isCoBorrowerOtherIncomeOpen, setIsCoBorrowerOtherIncomeOpen] = useState(true);
+  const [isCoBorrowerEmploymentIncomeOpen, setIsCoBorrowerEmploymentIncomeOpen] = useState(false);
+  const [isCoBorrowerPriorEmploymentIncomeOpen, setIsCoBorrowerPriorEmploymentIncomeOpen] = useState(false);
+  const [isCoBorrowerSecondEmploymentIncomeOpen, setIsCoBorrowerSecondEmploymentIncomeOpen] = useState(false);
+  const [isCoBorrowerSelfEmploymentIncomeOpen, setIsCoBorrowerSelfEmploymentIncomeOpen] = useState(false);
+  const [isCoBorrowerSocialSecurityIncomeOpen, setIsCoBorrowerSocialSecurityIncomeOpen] = useState(false);
+  const [isCoBorrowerVaBenefitsIncomeOpen, setIsCoBorrowerVaBenefitsIncomeOpen] = useState(false);
+  const [isCoBorrowerDisabilityIncomeOpen, setIsCoBorrowerDisabilityIncomeOpen] = useState(false);
+  const [isCoBorrowerOtherIncomeOpen, setIsCoBorrowerOtherIncomeOpen] = useState(false);
 
   // Pension income collapsible state
-  const [isPensionIncomeOpen, setIsPensionIncomeOpen] = useState(true);
-  const [isCoBorrowerPensionIncomeOpen, setIsCoBorrowerPensionIncomeOpen] = useState(true);
+  const [isPensionIncomeOpen, setIsPensionIncomeOpen] = useState(false);
+  const [isCoBorrowerPensionIncomeOpen, setIsCoBorrowerPensionIncomeOpen] = useState(false);
 
   // Address box collapsible states
   const [isBorrowerResidenceOpen, setIsBorrowerResidenceOpen] = useState(false);
