@@ -345,7 +345,6 @@ export default function AdminAddClient() {
   const [isSecondLoanOpen, setIsSecondLoanOpen] = useState(true);
   const [showThirdLoan, setShowThirdLoan] = useState(false);
   const [isThirdLoanOpen, setIsThirdLoanOpen] = useState(true);
-  const [isThirdLoanTermsOpen, setIsThirdLoanTermsOpen] = useState(true);
   
   // State for Current Loan info popup in Property tab
   const [showCurrentLoanInfoPopup, setShowCurrentLoanInfoPopup] = useState(false);
@@ -8406,12 +8405,13 @@ export default function AdminAddClient() {
                       </CardHeader>
                       <CollapsibleContent>
                         <CardContent className="space-y-4">
-                          {/* Row 1: Lender Name, Loan Number, Current Balance */}
+                          {/* Row 1: Lender Name, Loan Number, Pre-Payment Penalty */}
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="space-y-2">
                               <Label htmlFor="thirdLoan-lenderName">Lender Name</Label>
                               <Input
                                 id="thirdLoan-lenderName"
+                                {...form.register('thirdLoan.lenderName')}
                                 placeholder="Enter lender name"
                                 data-testid="input-thirdLoan-lenderName"
                               />
@@ -8421,35 +8421,31 @@ export default function AdminAddClient() {
                               <Label htmlFor="thirdLoan-loanNumber">Loan Number</Label>
                               <Input
                                 id="thirdLoan-loanNumber"
+                                {...form.register('thirdLoan.loanNumber')}
                                 placeholder="Enter loan number"
                                 data-testid="input-thirdLoan-loanNumber"
                               />
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="thirdLoan-currentBalance">Current Balance</Label>
-                              <Input
-                                id="thirdLoan-currentBalance"
-                                placeholder="$0.00"
-                                data-testid="input-thirdLoan-currentBalance"
-                              />
+                              <Label htmlFor="thirdLoan-prepaymentPenalty">Pre-payment Penalty</Label>
+                              <Select value={form.watch('thirdLoan.prepaymentPenalty') || ''} onValueChange={(value: 'Yes - see notes' | 'No') => form.setValue('thirdLoan.prepaymentPenalty', value)}>
+                                <SelectTrigger data-testid="select-thirdLoan-prepaymentPenalty">
+                                  <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="No">No</SelectItem>
+                                  <SelectItem value="Yes - see notes">Yes - see notes</SelectItem>
+                                </SelectContent>
+                              </Select>
                             </div>
                           </div>
                           
-                          {/* Row 2: Current Rate, Loan Category, Loan Program */}
+                          {/* Row 2: Loan Category, Loan Term, Loan Duration */}
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="space-y-2">
-                              <Label htmlFor="thirdLoan-currentRate">Current Rate (%)</Label>
-                              <Input
-                                id="thirdLoan-currentRate"
-                                placeholder="0.00%"
-                                data-testid="input-thirdLoan-currentRate"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
                               <Label htmlFor="thirdLoan-loanCategory">Loan Category</Label>
-                              <Select>
+                              <Select value={form.watch('thirdLoan.loanCategory') || ''} onValueChange={(value) => form.setValue('thirdLoan.loanCategory', value)}>
                                 <SelectTrigger data-testid="select-thirdLoan-loanCategory">
                                   <SelectValue placeholder="Select" />
                                 </SelectTrigger>
@@ -8463,7 +8459,7 @@ export default function AdminAddClient() {
                             
                             <div className="space-y-2">
                               <Label htmlFor="thirdLoan-loanProgram">Loan Term</Label>
-                              <Select>
+                              <Select value={form.watch('thirdLoan.loanProgram') || ''} onValueChange={(value) => form.setValue('thirdLoan.loanProgram', value)}>
                                 <SelectTrigger data-testid="select-thirdLoan-loanProgram">
                                   <SelectValue placeholder="Select" />
                                 </SelectTrigger>
@@ -8477,14 +8473,11 @@ export default function AdminAddClient() {
                                 </SelectContent>
                               </Select>
                             </div>
-                          </div>
-                          
-                          {/* Row 3: Loan Term, Loan Purpose */}
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            
                             <div className="space-y-2">
-                              <Label htmlFor="thirdLoan-loanTerm">Loan Duration</Label>
-                              <Select>
-                                <SelectTrigger data-testid="select-thirdLoan-loanTerm">
+                              <Label htmlFor="thirdLoan-loanDuration">Loan Duration</Label>
+                              <Select value={form.watch('thirdLoan.loanDuration') || ''} onValueChange={(value) => form.setValue('thirdLoan.loanDuration', value)}>
+                                <SelectTrigger data-testid="select-thirdLoan-loanDuration">
                                   <SelectValue placeholder="Select" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -8497,46 +8490,50 @@ export default function AdminAddClient() {
                                 </SelectContent>
                               </Select>
                             </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="thirdLoan-loanPurpose">Loan Purpose</Label>
-                              <Select>
-                                <SelectTrigger data-testid="select-thirdLoan-loanPurpose">
-                                  <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="select">Select</SelectItem>
-                                  <SelectItem value="purchase">Purchase</SelectItem>
-                                  <SelectItem value="debt-pay-off">Debt Pay Off</SelectItem>
-                                  <SelectItem value="home-improvement">Home Improvement</SelectItem>
-                                  <SelectItem value="other">Other</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
                           </div>
                           
-                          {/* Row 4: Pre-payment Penalty, Statement Balance, Attached to Property */}
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          {/* Row 3: Current Balance, Current Rate, Monthly Payment, Attached to Property */}
+                          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div className="space-y-2">
-                              <Label htmlFor="thirdLoan-prepaymentPenalty">Pre-payment Penalty</Label>
-                              <Select>
-                                <SelectTrigger data-testid="select-thirdLoan-prepaymentPenalty">
-                                  <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="no">No</SelectItem>
-                                  <SelectItem value="yes-see-notes">Yes - see notes</SelectItem>
-                                </SelectContent>
-                              </Select>
+                              <Label htmlFor="thirdLoan-currentBalance">Current Balance</Label>
+                              <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                                <span className="text-muted-foreground text-sm">$</span>
+                                <Input
+                                  id="thirdLoan-currentBalance"
+                                  {...form.register('thirdLoan.currentBalance')}
+                                  placeholder="0.00"
+                                  className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                                  data-testid="input-thirdLoan-currentBalance"
+                                />
+                              </div>
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="thirdLoan-statementBalance">Current Balance</Label>
-                              <Input
-                                id="thirdLoan-statementBalance"
-                                placeholder="$0.00"
-                                data-testid="input-thirdLoan-statementBalance"
-                              />
+                              <Label htmlFor="thirdLoan-currentRate">Current Rate</Label>
+                              <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                                <Input
+                                  id="thirdLoan-currentRate"
+                                  {...form.register('thirdLoan.currentRate')}
+                                  placeholder="0.00"
+                                  className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                                  data-testid="input-thirdLoan-currentRate"
+                                />
+                                <span className="text-muted-foreground text-sm">%</span>
+                              </div>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="thirdLoan-monthlyPayment">Monthly Payment</Label>
+                              <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                                <span className="text-muted-foreground text-sm">$</span>
+                                <Input
+                                  id="thirdLoan-monthlyPayment"
+                                  {...form.register('thirdLoan.monthlyPayment')}
+                                  placeholder="0.00"
+                                  className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                                  data-testid="input-thirdLoan-monthlyPayment"
+                                />
+                              </div>
                             </div>
                             
                             <div className="space-y-2">
@@ -8662,60 +8659,6 @@ export default function AdminAddClient() {
                     </Collapsible>
                   </Card>
 
-                  {/* Current Third Loan Terms - Separate Card */}
-                  <Card>
-                    <Collapsible open={isThirdLoanTermsOpen} onOpenChange={setIsThirdLoanTermsOpen}>
-                      <CardHeader>
-                        <div className="flex items-center justify-between">
-                          <CardTitle>Current Third Loan Terms</CardTitle>
-                          <CollapsibleTrigger asChild>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="hover:bg-orange-500 hover:text-white" 
-                              data-testid="button-toggle-third-loan-terms"
-                              title={isThirdLoanTermsOpen ? 'Minimize' : 'Expand'}
-                            >
-                              {isThirdLoanTermsOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                            </Button>
-                          </CollapsibleTrigger>
-                        </div>
-                      </CardHeader>
-                      <CollapsibleContent>
-                        <CardContent className="space-y-4">
-                          {/* Row 1: Current Balance, Current Rate, Principal & Interest Payment */}
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="thirdLoan-terms-currentBalance">Current Balance</Label>
-                              <Input
-                                id="thirdLoan-terms-currentBalance"
-                                placeholder="$0.00"
-                                data-testid="input-thirdLoan-terms-currentBalance"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="thirdLoan-terms-currentRate">Current Rate (%)</Label>
-                              <Input
-                                id="thirdLoan-terms-currentRate"
-                                placeholder="0.00%"
-                                data-testid="input-thirdLoan-terms-currentRate"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="thirdLoan-terms-piPayment">Principal & Interest Payment</Label>
-                              <Input
-                                id="thirdLoan-terms-piPayment"
-                                placeholder="$0.00"
-                                data-testid="input-thirdLoan-terms-piPayment"
-                              />
-                            </div>
-                          </div>
-                        </CardContent>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  </Card>
                 </>
               )}
             </TabsContent>

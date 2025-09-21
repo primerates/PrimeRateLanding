@@ -199,6 +199,7 @@ export const propertySchema = z.object({
 
 export const currentLoanSchema = z.object({
   currentLender: z.string().optional(),
+  lenderName: z.string().optional(),
   loanNumber: z.string().optional(),
   loanStartDate: z.string().optional(),
   remainingTermPerCreditReport: z.string().optional(),
@@ -207,6 +208,7 @@ export const currentLoanSchema = z.object({
   principalAndInterestPayment: z.string().optional(),
   escrowPayment: z.string().optional(),
   totalMonthlyPayment: z.string().optional(),
+  monthlyPayment: z.string().optional(),
   hoaPayment: z.string().optional(),
   prepaymentPenalty: z.enum(['Yes - see notes', 'No']).optional(),
   statementBalance: z.object({
@@ -224,6 +226,7 @@ export const currentLoanSchema = z.object({
   }).optional(),
   loanCategory: z.string().optional(),
   loanProgram: z.string().optional(),
+  loanDuration: z.string().optional(),
   loanTerm: z.string().optional(),
   loanPurpose: z.string().optional(),
 });
