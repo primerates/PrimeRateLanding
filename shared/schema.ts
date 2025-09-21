@@ -46,6 +46,7 @@ export const borrowerInfoSchema = z.object({
   relationshipToBorrower: z.enum(["spouse", "partner", "family", "friend", "other", "not-applicable"]).optional(),
   dateOfBirth: z.string().min(1, "Date of birth is required"),
   ssn: z.string().min(1, "SSN is required"),
+  preferredContactTime: z.enum(["Select", "Morning", "Afternoon", "Evening"]).optional(),
   residenceAddress: addressSchema,
   yearsAtAddress: z.string().min(1, "Years at address is required"),
   monthsAtAddress: z.string().optional(),

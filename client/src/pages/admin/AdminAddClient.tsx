@@ -3237,135 +3237,160 @@ export default function AdminAddClient() {
                 <CardHeader>
                   <CardTitle>Borrower</CardTitle>
                 </CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="borrower-firstName">First Name *</Label>
-                    <Input
-                      id="borrower-firstName"
-                      {...form.register('borrower.firstName')}
-                      data-testid="input-borrower-firstName"
-                    />
-                    {form.formState.errors.borrower?.firstName && (
-                      <p className="text-sm text-destructive">{form.formState.errors.borrower.firstName.message}</p>
-                    )}
+                <CardContent className="space-y-4">
+                  {/* Row 1: First Name, Middle Name (narrower), Last Name, Date of Birth, SSN */}
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="borrower-firstName">First Name *</Label>
+                      <Input
+                        id="borrower-firstName"
+                        {...form.register('borrower.firstName')}
+                        data-testid="input-borrower-firstName"
+                      />
+                      {form.formState.errors.borrower?.firstName && (
+                        <p className="text-sm text-destructive">{form.formState.errors.borrower.firstName.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2 md:col-span-1" style={{ maxWidth: "60px" }}>
+                      <Label htmlFor="borrower-middleName">Middle Name</Label>
+                      <Input
+                        id="borrower-middleName"
+                        {...form.register('borrower.middleName')}
+                        data-testid="input-borrower-middleName"
+                        className="w-full"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="borrower-lastName">Last Name *</Label>
+                      <Input
+                        id="borrower-lastName"
+                        {...form.register('borrower.lastName')}
+                        data-testid="input-borrower-lastName"
+                      />
+                      {form.formState.errors.borrower?.lastName && (
+                        <p className="text-sm text-destructive">{form.formState.errors.borrower.lastName.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="borrower-dateOfBirth">Date of Birth *</Label>
+                      <Input
+                        id="borrower-dateOfBirth"
+                        type="date"
+                        {...form.register('borrower.dateOfBirth')}
+                        data-testid="input-borrower-dateOfBirth"
+                      />
+                      {form.formState.errors.borrower?.dateOfBirth && (
+                        <p className="text-sm text-destructive">{form.formState.errors.borrower.dateOfBirth.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="borrower-ssn">SSN *</Label>
+                      <Input
+                        id="borrower-ssn"
+                        {...form.register('borrower.ssn')}
+                        placeholder="XXX-XX-XXXX"
+                        data-testid="input-borrower-ssn"
+                      />
+                      {form.formState.errors.borrower?.ssn && (
+                        <p className="text-sm text-destructive">{form.formState.errors.borrower.ssn.message}</p>
+                      )}
+                    </div>
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="borrower-middleName">Middle Name</Label>
-                    <Input
-                      id="borrower-middleName"
-                      {...form.register('borrower.middleName')}
-                      data-testid="input-borrower-middleName"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="borrower-lastName">Last Name *</Label>
-                    <Input
-                      id="borrower-lastName"
-                      {...form.register('borrower.lastName')}
-                      data-testid="input-borrower-lastName"
-                    />
-                    {form.formState.errors.borrower?.lastName && (
-                      <p className="text-sm text-destructive">{form.formState.errors.borrower.lastName.message}</p>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="borrower-phone">Phone *</Label>
-                    <Input
-                      id="borrower-phone"
-                      value={form.watch('borrower.phone') || ''}
-                      onChange={(e) => handlePhoneChange('borrower.phone', e.target.value)}
-                      placeholder="(XXX) XXX-XXXX"
-                      data-testid="input-borrower-phone"
-                    />
-                    {form.formState.errors.borrower?.phone && (
-                      <p className="text-sm text-destructive">{form.formState.errors.borrower.phone.message}</p>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="borrower-email">Email *</Label>
-                    <Input
-                      id="borrower-email"
-                      type="email"
-                      {...form.register('borrower.email')}
-                      data-testid="input-borrower-email"
-                    />
-                    {form.formState.errors.borrower?.email && (
-                      <p className="text-sm text-destructive">{form.formState.errors.borrower.email.message}</p>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="borrower-maritalStatus">Marital Status *</Label>
-                    <Select 
-                      value={form.watch('borrower.maritalStatus') || 'single'}
-                      onValueChange={(value) => {
-                        form.setValue('borrower.maritalStatus', value as any);
-                        // Trigger co-borrower popup when married is selected
-                        if (value === 'married' && !hasCoBorrower) {
-                          setMaritalStatusDialog({ isOpen: true });
-                        }
-                      }}
-                    >
-                      <SelectTrigger data-testid="select-borrower-maritalStatus">
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="single">Single</SelectItem>
-                        <SelectItem value="married">Married</SelectItem>
-                        <SelectItem value="divorced">Divorced</SelectItem>
-                        <SelectItem value="widowed">Widowed</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  {/* Row 2: Marital Status, Relationship to Co-Borrower, Phone, Email, Preferred Contact Time */}
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="borrower-maritalStatus">Marital Status *</Label>
+                      <Select 
+                        value={form.watch('borrower.maritalStatus') || 'single'}
+                        onValueChange={(value) => {
+                          form.setValue('borrower.maritalStatus', value as any);
+                          // Trigger co-borrower popup when married is selected
+                          if (value === 'married' && !hasCoBorrower) {
+                            setMaritalStatusDialog({ isOpen: true });
+                          }
+                        }}
+                      >
+                        <SelectTrigger data-testid="select-borrower-maritalStatus">
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="single">Single</SelectItem>
+                          <SelectItem value="married">Married</SelectItem>
+                          <SelectItem value="divorced">Divorced</SelectItem>
+                          <SelectItem value="widowed">Widowed</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="borrower-relationshipToBorrower">Relationship to Co-borrower</Label>
-                    <Select 
-                      value={form.watch('borrower.relationshipToBorrower') || ''}
-                      onValueChange={(value) => form.setValue('borrower.relationshipToBorrower', value as any)}
-                    >
-                      <SelectTrigger data-testid="select-borrower-relationshipToBorrower">
-                        <SelectValue placeholder="Select relationship" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="spouse">Spouse</SelectItem>
-                        <SelectItem value="partner">Partner</SelectItem>
-                        <SelectItem value="family">Family</SelectItem>
-                        <SelectItem value="friend">Friend</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                        <SelectItem value="not-applicable">Not Applicable</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="borrower-dateOfBirth">Date of Birth *</Label>
-                    <Input
-                      id="borrower-dateOfBirth"
-                      type="date"
-                      {...form.register('borrower.dateOfBirth')}
-                      data-testid="input-borrower-dateOfBirth"
-                    />
-                    {form.formState.errors.borrower?.dateOfBirth && (
-                      <p className="text-sm text-destructive">{form.formState.errors.borrower.dateOfBirth.message}</p>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="borrower-ssn">SSN *</Label>
-                    <Input
-                      id="borrower-ssn"
-                      {...form.register('borrower.ssn')}
-                      placeholder="XXX-XX-XXXX"
-                      data-testid="input-borrower-ssn"
-                    />
-                    {form.formState.errors.borrower?.ssn && (
-                      <p className="text-sm text-destructive">{form.formState.errors.borrower.ssn.message}</p>
-                    )}
+                    <div className="space-y-2">
+                      <Label htmlFor="borrower-relationshipToBorrower">Relationship to Co-borrower</Label>
+                      <Select 
+                        value={form.watch('borrower.relationshipToBorrower') || ''}
+                        onValueChange={(value) => form.setValue('borrower.relationshipToBorrower', value as any)}
+                      >
+                        <SelectTrigger data-testid="select-borrower-relationshipToBorrower">
+                          <SelectValue placeholder="Select relationship" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="spouse">Spouse</SelectItem>
+                          <SelectItem value="partner">Partner</SelectItem>
+                          <SelectItem value="family">Family</SelectItem>
+                          <SelectItem value="friend">Friend</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                          <SelectItem value="not-applicable">Not Applicable</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="borrower-phone">Phone *</Label>
+                      <Input
+                        id="borrower-phone"
+                        value={form.watch('borrower.phone') || ''}
+                        onChange={(e) => handlePhoneChange('borrower.phone', e.target.value)}
+                        placeholder="(XXX) XXX-XXXX"
+                        data-testid="input-borrower-phone"
+                      />
+                      {form.formState.errors.borrower?.phone && (
+                        <p className="text-sm text-destructive">{form.formState.errors.borrower.phone.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="borrower-email">Email *</Label>
+                      <Input
+                        id="borrower-email"
+                        type="email"
+                        {...form.register('borrower.email')}
+                        data-testid="input-borrower-email"
+                      />
+                      {form.formState.errors.borrower?.email && (
+                        <p className="text-sm text-destructive">{form.formState.errors.borrower.email.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="borrower-preferredContactTime">Preferred Contact Time</Label>
+                      <Select 
+                        value={form.watch('borrower.preferredContactTime') || 'Select'}
+                        onValueChange={(value) => form.setValue('borrower.preferredContactTime', value as any)}
+                      >
+                        <SelectTrigger data-testid="select-borrower-preferredContactTime">
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Select">Select</SelectItem>
+                          <SelectItem value="Morning">Morning</SelectItem>
+                          <SelectItem value="Afternoon">Afternoon</SelectItem>
+                          <SelectItem value="Evening">Evening</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -7267,7 +7292,7 @@ export default function AdminAddClient() {
 
                             {/* Property Address */}
                             <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                              <div className="space-y-2 md:col-span-2">
+                              <div className="space-y-2">
                                 <Label htmlFor={`property-address-street-${propertyId}`}>Street Address</Label>
                                 <Input
                                   id={`property-address-street-${propertyId}`}
@@ -7963,6 +7988,7 @@ export default function AdminAddClient() {
                               <Button 
                                 variant="ghost" 
                                 size="sm" 
+                                className="hover:bg-orange-500 hover:text-white"
                                 data-testid="button-toggle-third-loan"
                                 title={isThirdLoanOpen ? 'Minimize' : 'Expand'}
                               >
@@ -8145,6 +8171,7 @@ export default function AdminAddClient() {
                                       type="button"
                                       variant="ghost"
                                       size="sm"
+                                      className="hover:bg-orange-500 hover:text-white"
                                       data-testid="button-toggle-property-address-third-loan"
                                       title={isThirdLoanPropertyAddressOpen ? 'Minimize' : 'Expand'}
                                     >
