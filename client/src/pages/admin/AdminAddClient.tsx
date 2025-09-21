@@ -4738,7 +4738,7 @@ export default function AdminAddClient() {
                           
                           {/* Employer Address */}
                           <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                            <div className="space-y-2 md:col-span-4">
+                            <div className="space-y-2">
                               <Label htmlFor="income-employer-street">Street Address</Label>
                               <Input
                                 id="income-employer-street"
@@ -4748,7 +4748,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2">
                               <Label htmlFor="income-employer-unit">Unit/Apt</Label>
                               <Input
                                 id="income-employer-unit"
@@ -4757,7 +4757,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2">
                               <Label htmlFor="income-employer-city">City</Label>
                               <Input
                                 id="income-employer-city"
@@ -4792,7 +4792,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2">
                               <Label htmlFor="income-employer-county">County</Label>
                               {borrowerEmployerCountyOptions.length > 0 ? (
                                 <Select
@@ -4973,7 +4973,7 @@ export default function AdminAddClient() {
                           
                           {/* Employer Address */}
                           <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                            <div className="space-y-2 md:col-span-4">
+                            <div className="space-y-2">
                               <Label htmlFor="income-prior-employer-street">Street Address</Label>
                               <Input
                                 id="income-prior-employer-street"
@@ -4983,7 +4983,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2">
                               <Label htmlFor="income-prior-employer-unit">Unit/Apt</Label>
                               <Input
                                 id="income-prior-employer-unit"
@@ -4992,7 +4992,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2">
                               <Label htmlFor="income-prior-employer-city">City</Label>
                               <Input
                                 id="income-prior-employer-city"
@@ -5027,7 +5027,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2">
                               <Label htmlFor="income-prior-employer-county">County</Label>
                               {borrowerPriorEmployerCountyOptions.length > 0 ? (
                                 <Select
@@ -5202,7 +5202,7 @@ export default function AdminAddClient() {
                           
                           {/* Employer Address */}
                           <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                            <div className="space-y-2 md:col-span-4">
+                            <div className="space-y-2">
                               <Label htmlFor="income-second-employer-street">Street Address</Label>
                               <Input
                                 id="income-second-employer-street"
@@ -5212,7 +5212,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2">
                               <Label htmlFor="income-second-employer-unit">Unit/Apt</Label>
                               <Input
                                 id="income-second-employer-unit"
@@ -5221,7 +5221,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2">
                               <Label htmlFor="income-second-employer-city">City</Label>
                               <Input
                                 id="income-second-employer-city"
@@ -5259,7 +5259,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2">
                               <Label htmlFor="income-second-employer-county">County</Label>
                               {borrowerSecondEmployerCountyOptions.length > 0 ? (
                                 <Select
@@ -5987,7 +5987,7 @@ export default function AdminAddClient() {
                           
                           {/* Employer Address */}
                           <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                            <div className="space-y-2 md:col-span-4">
+                            <div className="space-y-2">
                               <Label htmlFor="coBorrowerIncome-employer-street">Street Address</Label>
                               <Input
                                 id="coBorrowerIncome-employer-street"
@@ -5997,7 +5997,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2">
                               <Label htmlFor="coBorrowerIncome-employer-unit">Unit/Apt</Label>
                               <Input
                                 id="coBorrowerIncome-employer-unit"
@@ -6006,7 +6006,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2">
                               <Label htmlFor="coBorrowerIncome-employer-city">City</Label>
                               <Input
                                 id="coBorrowerIncome-employer-city"
@@ -6041,7 +6041,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2">
                               <Label htmlFor="coBorrowerIncome-employer-county">County</Label>
                               {coBorrowerEmployerCountyOptions.length > 0 ? (
                                 <Select
@@ -6190,7 +6190,7 @@ export default function AdminAddClient() {
                           
                           {/* Employer Address */}
                           <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                            <div className="space-y-2 md:col-span-4">
+                            <div className="space-y-2">
                               <Label htmlFor="coBorrowerIncome-prior-employer-street">Street Address</Label>
                               <Input
                                 id="coBorrowerIncome-prior-employer-street"
@@ -6200,7 +6200,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2">
                               <Label htmlFor="coBorrowerIncome-prior-employer-unit">Unit/Apt</Label>
                               <Input
                                 id="coBorrowerIncome-prior-employer-unit"
@@ -6209,7 +6209,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2">
                               <Label htmlFor="coBorrowerIncome-prior-employer-city">City</Label>
                               <Input
                                 id="coBorrowerIncome-prior-employer-city"
@@ -6244,7 +6244,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2">
                               <Label htmlFor="coBorrowerIncome-prior-employer-county">County</Label>
                               {coBorrowerPriorEmployerCountyOptions.length > 0 ? (
                                 <Select
@@ -6419,7 +6419,7 @@ export default function AdminAddClient() {
                           
                           {/* Employer Address */}
                           <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                            <div className="space-y-2 md:col-span-4">
+                            <div className="space-y-2">
                               <Label htmlFor="coBorrowerIncome-second-employer-street">Street Address</Label>
                               <Input
                                 id="coBorrowerIncome-second-employer-street"
@@ -6429,7 +6429,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2">
                               <Label htmlFor="coBorrowerIncome-second-employer-unit">Unit/Apt</Label>
                               <Input
                                 id="coBorrowerIncome-second-employer-unit"
@@ -6438,7 +6438,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2">
                               <Label htmlFor="coBorrowerIncome-second-employer-city">City</Label>
                               <Input
                                 id="coBorrowerIncome-second-employer-city"
@@ -6476,7 +6476,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2">
                               <Label htmlFor="coBorrowerIncome-second-employer-county">County</Label>
                               {coBorrowerSecondEmployerCountyOptions.length > 0 ? (
                                 <Select
