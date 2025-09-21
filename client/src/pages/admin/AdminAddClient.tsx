@@ -2500,7 +2500,7 @@ export default function AdminAddClient() {
     };
     form.setValue('property.properties', [...currentProperties, newProperty]);
     // Set initial collapsible state for new property
-    setPropertyCardStates(prev => ({ ...prev, [newProperty.id!]: true }));
+    setPropertyCardStates(prev => ({ ...prev, [newProperty.id!]: false }));
   };
 
   const removeProperty = (propertyId: string) => {
@@ -7326,7 +7326,7 @@ export default function AdminAddClient() {
               {/* Dynamic Property Cards */}
               {sortPropertiesByHierarchy(form.watch('property.properties') || []).map((property, index) => {
                 const propertyId = property.id || `property-${index}`;
-                const isOpen = propertyCardStates[propertyId] ?? true;
+                const isOpen = propertyCardStates[propertyId] ?? false;
                 
                 const getPropertyTitle = () => {
                   const typeLabels = {
