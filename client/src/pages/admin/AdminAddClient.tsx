@@ -506,6 +506,9 @@ export default function AdminAddClient() {
   const [isBorrowerResidenceOpen, setIsBorrowerResidenceOpen] = useState(true);
   const [isBorrowerPriorResidenceOpen, setIsBorrowerPriorResidenceOpen] = useState(true);
   const [isShowingMonthsAtAddress, setIsShowingMonthsAtAddress] = useState(false);
+  const [isShowingMonthsAtPriorAddress, setIsShowingMonthsAtPriorAddress] = useState(false);
+  const [isShowingCoBorrowerMonthsAtAddress, setIsShowingCoBorrowerMonthsAtAddress] = useState(false);
+  const [isShowingCoBorrowerMonthsAtPriorAddress, setIsShowingCoBorrowerMonthsAtPriorAddress] = useState(false);
   const [isCoBorrowerResidenceOpen, setIsCoBorrowerResidenceOpen] = useState(true);
   const [isCoBorrowerPriorResidenceOpen, setIsCoBorrowerPriorResidenceOpen] = useState(true);
 
@@ -3701,16 +3704,20 @@ export default function AdminAddClient() {
                     </CardHeader>
                     <CollapsibleContent>
                       <CardContent className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="borrower-prior-street">Street Address</Label>
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                        <div className="space-y-2 md:col-span-3">
+                          <Label htmlFor="borrower-prior-street">Street Address *</Label>
                           <Input
                             id="borrower-prior-street"
                             {...form.register('borrower.priorResidenceAddress.street')}
                             data-testid="input-borrower-prior-street"
                           />
+                          {form.formState.errors.borrower?.priorResidenceAddress?.street && (
+                            <p className="text-sm text-destructive">{form.formState.errors.borrower.priorResidenceAddress.street.message}</p>
+                          )}
                         </div>
-                        <div className="space-y-2">
+                        
+                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="borrower-prior-unit">Unit/Apt</Label>
                           <Input
                             id="borrower-prior-unit"
@@ -3718,16 +3725,21 @@ export default function AdminAddClient() {
                             data-testid="input-borrower-prior-unit"
                           />
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="borrower-prior-city">City</Label>
+                        
+                        <div className="space-y-2 md:col-span-2">
+                          <Label htmlFor="borrower-prior-city">City *</Label>
                           <Input
                             id="borrower-prior-city"
                             {...form.register('borrower.priorResidenceAddress.city')}
                             data-testid="input-borrower-prior-city"
                           />
+                          {form.formState.errors.borrower?.priorResidenceAddress?.city && (
+                            <p className="text-sm text-destructive">{form.formState.errors.borrower.priorResidenceAddress.city.message}</p>
+                          )}
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="borrower-prior-state">State</Label>
+                        
+                        <div className="space-y-2 md:col-span-1">
+                          <Label htmlFor="borrower-prior-state">State *</Label>
                           <Select
                             value={form.watch('borrower.priorResidenceAddress.state') || ''}
                             onValueChange={(value) => form.setValue('borrower.priorResidenceAddress.state', value, { shouldDirty: true })}
@@ -3743,17 +3755,25 @@ export default function AdminAddClient() {
                               ))}
                             </SelectContent>
                           </Select>
+                          {form.formState.errors.borrower?.priorResidenceAddress?.state && (
+                            <p className="text-sm text-destructive">{form.formState.errors.borrower.priorResidenceAddress.state.message}</p>
+                          )}
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="borrower-prior-zip">ZIP Code</Label>
+                        
+                        <div className="space-y-2 md:col-span-1">
+                          <Label htmlFor="borrower-prior-zip">ZIP Code *</Label>
                           <Input
                             id="borrower-prior-zip"
                             {...form.register('borrower.priorResidenceAddress.zip')}
                             onBlur={(e) => handleBorrowerPriorZipCodeLookup(e.target.value)}
                             data-testid="input-borrower-prior-zip"
                           />
+                          {form.formState.errors.borrower?.priorResidenceAddress?.zip && (
+                            <p className="text-sm text-destructive">{form.formState.errors.borrower.priorResidenceAddress.zip.message}</p>
+                          )}
                         </div>
-                        <div className="space-y-2">
+                        
+                        <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="borrower-prior-county">County</Label>
                           {borrowerPriorCountyOptions.length > 0 ? (
                             <Select
@@ -3793,33 +3813,37 @@ export default function AdminAddClient() {
                             />
                           )}
                         </div>
-                      </div>
-                    <div className="space-y-2">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="borrower-prior-years">Years at this Address</Label>
+                        
+                        <div className="space-y-2 md:col-span-2">
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="borrower-prior-time-address" className="text-sm">
+                              {isShowingMonthsAtPriorAddress ? 'Months at this Address' : 'Years at this Address'}
+                            </Label>
+                            <Switch
+                              checked={isShowingMonthsAtPriorAddress}
+                              onCheckedChange={setIsShowingMonthsAtPriorAddress}
+                              data-testid="toggle-borrower-prior-time-address"
+                            />
+                          </div>
                           <Input
-                            id="borrower-prior-years"
+                            id="borrower-prior-time-address"
                             type="number"
                             min="0"
-                            max="99"
-                            {...form.register('borrower.priorYearsAtAddress')}
-                            data-testid="input-borrower-prior-years"
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="borrower-prior-months">Months at this Address</Label>
-                          <Input
-                            id="borrower-prior-months"
-                            type="number"
-                            min="0"
-                            max="11"
-                            {...form.register('borrower.priorMonthsAtAddress')}
-                            data-testid="input-borrower-prior-months"
+                            max={isShowingMonthsAtPriorAddress ? 11 : 99}
+                            placeholder="0"
+                            {...form.register(isShowingMonthsAtPriorAddress ? 'borrower.priorMonthsAtAddress' : 'borrower.priorYearsAtAddress')}
+                            data-testid="input-borrower-prior-time-address"
                           />
                         </div>
                       </div>
-                    </div>
+                      
+                      {/* Error handling for time at address field */}
+                      {form.formState.errors.borrower?.priorYearsAtAddress && !isShowingMonthsAtPriorAddress && (
+                        <p className="text-sm text-destructive">{form.formState.errors.borrower.priorYearsAtAddress.message}</p>
+                      )}
+                      {form.formState.errors.borrower?.priorMonthsAtAddress && isShowingMonthsAtPriorAddress && (
+                        <p className="text-sm text-destructive">{form.formState.errors.borrower.priorMonthsAtAddress.message}</p>
+                      )}
                     
                     {/* Add Prior Address Button - positioned at bottom right */}
                     <div className="md:col-span-2 lg:col-span-3 flex justify-end mt-4">
@@ -3858,86 +3882,83 @@ export default function AdminAddClient() {
                       Remove
                     </Button>
                   </CardHeader>
-                  <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor={`borrower-prior-street-${address.id}`}>Street Address</Label>
-                      <Input
-                        id={`borrower-prior-street-${address.id}`}
-                        placeholder="Street Address"
-                        data-testid={`input-borrower-prior-street-${address.id}`}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor={`borrower-prior-unit-${address.id}`}>Unit/Apt</Label>
-                      <Input
-                        id={`borrower-prior-unit-${address.id}`}
-                        placeholder="Unit/Apt"
-                        data-testid={`input-borrower-prior-unit-${address.id}`}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor={`borrower-prior-city-${address.id}`}>City</Label>
-                      <Input
-                        id={`borrower-prior-city-${address.id}`}
-                        placeholder="City"
-                        data-testid={`input-borrower-prior-city-${address.id}`}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor={`borrower-prior-state-${address.id}`}>State</Label>
-                      <Select defaultValue="">
-                        <SelectTrigger data-testid={`select-borrower-prior-state-${address.id}`}>
-                          <SelectValue placeholder="State" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {US_STATES.map((state) => (
-                            <SelectItem key={state.value} value={state.value}>
-                              {state.value}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor={`borrower-prior-zip-${address.id}`}>ZIP Code</Label>
-                      <Input
-                        id={`borrower-prior-zip-${address.id}`}
-                        placeholder="ZIP Code"
-                        data-testid={`input-borrower-prior-zip-${address.id}`}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor={`borrower-prior-county-${address.id}`}>County</Label>
-                      <Input
-                        id={`borrower-prior-county-${address.id}`}
-                        placeholder="County"
-                        data-testid={`input-borrower-prior-county-${address.id}`}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor={`borrower-prior-years-${address.id}`}>Years at this Address</Label>
-                          <Input
-                            id={`borrower-prior-years-${address.id}`}
-                            type="number"
-                            min="0"
-                            max="99"
-                            placeholder="Years"
-                            data-testid={`input-borrower-prior-years-${address.id}`}
-                          />
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                      <div className="space-y-2 md:col-span-3">
+                        <Label htmlFor={`borrower-prior-street-${address.id}`}>Street Address *</Label>
+                        <Input
+                          id={`borrower-prior-street-${address.id}`}
+                          placeholder="Street Address"
+                          data-testid={`input-borrower-prior-street-${address.id}`}
+                        />
+                      </div>
+                      
+                      <div className="space-y-2 md:col-span-1">
+                        <Label htmlFor={`borrower-prior-unit-${address.id}`}>Unit/Apt</Label>
+                        <Input
+                          id={`borrower-prior-unit-${address.id}`}
+                          placeholder="Unit/Apt"
+                          data-testid={`input-borrower-prior-unit-${address.id}`}
+                        />
+                      </div>
+                      
+                      <div className="space-y-2 md:col-span-2">
+                        <Label htmlFor={`borrower-prior-city-${address.id}`}>City *</Label>
+                        <Input
+                          id={`borrower-prior-city-${address.id}`}
+                          placeholder="City"
+                          data-testid={`input-borrower-prior-city-${address.id}`}
+                        />
+                      </div>
+                      
+                      <div className="space-y-2 md:col-span-1">
+                        <Label htmlFor={`borrower-prior-state-${address.id}`}>State *</Label>
+                        <Select defaultValue="">
+                          <SelectTrigger data-testid={`select-borrower-prior-state-${address.id}`}>
+                            <SelectValue placeholder="State" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {US_STATES.map((state) => (
+                              <SelectItem key={state.value} value={state.value}>
+                                {state.value}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="space-y-2 md:col-span-1">
+                        <Label htmlFor={`borrower-prior-zip-${address.id}`}>ZIP Code *</Label>
+                        <Input
+                          id={`borrower-prior-zip-${address.id}`}
+                          placeholder="ZIP Code"
+                          data-testid={`input-borrower-prior-zip-${address.id}`}
+                        />
+                      </div>
+                      
+                      <div className="space-y-2 md:col-span-2">
+                        <Label htmlFor={`borrower-prior-county-${address.id}`}>County</Label>
+                        <Input
+                          id={`borrower-prior-county-${address.id}`}
+                          placeholder="County"
+                          data-testid={`input-borrower-prior-county-${address.id}`}
+                        />
+                      </div>
+                      
+                      <div className="space-y-2 md:col-span-2">
+                        <div className="flex items-center justify-between mb-2">
+                          <Label htmlFor={`borrower-prior-time-address-${address.id}`} className="text-sm">
+                            Years at this Address
+                          </Label>
                         </div>
-                        <div>
-                          <Label htmlFor={`borrower-prior-months-${address.id}`}>Months at this Address</Label>
-                          <Input
-                            id={`borrower-prior-months-${address.id}`}
-                            type="number"
-                            min="0"
-                            max="11"
-                            placeholder="Months"
-                            data-testid={`input-borrower-prior-months-${address.id}`}
-                          />
-                        </div>
+                        <Input
+                          id={`borrower-prior-time-address-${address.id}`}
+                          type="number"
+                          min="0"
+                          max="99"
+                          placeholder="0"
+                          data-testid={`input-borrower-prior-time-address-${address.id}`}
+                        />
                       </div>
                     </div>
                   </CardContent>
@@ -4145,9 +4166,9 @@ export default function AdminAddClient() {
                     </CardHeader>
                     <CollapsibleContent>
                       <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="coBorrower-residence-street">Street Address</Label>
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                      <div className="space-y-2 md:col-span-3">
+                        <Label htmlFor="coBorrower-residence-street">Street Address *</Label>
                         <Input
                           id="coBorrower-residence-street"
                           {...form.register('coBorrower.residenceAddress.street', {
@@ -4155,9 +4176,12 @@ export default function AdminAddClient() {
                           })}
                           data-testid="input-coborrower-residence-street"
                         />
+                        {form.formState.errors.coBorrower?.residenceAddress?.street && (
+                          <p className="text-sm text-destructive">{form.formState.errors.coBorrower.residenceAddress.street.message}</p>
+                        )}
                       </div>
                       
-                      <div className="space-y-2">
+                      <div className="space-y-2 md:col-span-1">
                         <Label htmlFor="coBorrower-residence-unit">Unit/Apt</Label>
                         <Input
                           id="coBorrower-residence-unit"
@@ -4168,8 +4192,8 @@ export default function AdminAddClient() {
                         />
                       </div>
                       
-                      <div className="space-y-2">
-                        <Label htmlFor="coBorrower-residence-city">City</Label>
+                      <div className="space-y-2 md:col-span-2">
+                        <Label htmlFor="coBorrower-residence-city">City *</Label>
                         <Input
                           id="coBorrower-residence-city"
                           {...form.register('coBorrower.residenceAddress.city', {
@@ -4177,10 +4201,13 @@ export default function AdminAddClient() {
                           })}
                           data-testid="input-coborrower-residence-city"
                         />
+                        {form.formState.errors.coBorrower?.residenceAddress?.city && (
+                          <p className="text-sm text-destructive">{form.formState.errors.coBorrower.residenceAddress.city.message}</p>
+                        )}
                       </div>
                       
-                      <div className="space-y-2">
-                        <Label htmlFor="coBorrower-residence-state">State</Label>
+                      <div className="space-y-2 md:col-span-1">
+                        <Label htmlFor="coBorrower-residence-state">State *</Label>
                         <Select
                           value={form.watch('coBorrower.residenceAddress.state') || ''}
                           onValueChange={(value) => {
@@ -4189,7 +4216,7 @@ export default function AdminAddClient() {
                           }}
                         >
                           <SelectTrigger data-testid="select-coborrower-residence-state">
-                            <SelectValue placeholder="Select state" />
+                            <SelectValue placeholder="State" />
                           </SelectTrigger>
                           <SelectContent>
                             {US_STATES.map((state) => (
@@ -4199,10 +4226,13 @@ export default function AdminAddClient() {
                             ))}
                           </SelectContent>
                         </Select>
+                        {form.formState.errors.coBorrower?.residenceAddress?.state && (
+                          <p className="text-sm text-destructive">{form.formState.errors.coBorrower.residenceAddress.state.message}</p>
+                        )}
                       </div>
                       
-                      <div className="space-y-2">
-                        <Label htmlFor="coBorrower-residence-zip">ZIP Code</Label>
+                      <div className="space-y-2 md:col-span-1">
+                        <Label htmlFor="coBorrower-residence-zip">ZIP Code *</Label>
                         <Input
                           id="coBorrower-residence-zip"
                           {...form.register('coBorrower.residenceAddress.zip', {
@@ -4211,9 +4241,12 @@ export default function AdminAddClient() {
                           onBlur={(e) => handleCoBorrowerZipCodeLookup(e.target.value)}
                           data-testid="input-coborrower-residence-zip"
                         />
+                        {form.formState.errors.coBorrower?.residenceAddress?.zip && (
+                          <p className="text-sm text-destructive">{form.formState.errors.coBorrower.residenceAddress.zip.message}</p>
+                        )}
                       </div>
                       
-                      <div className="space-y-2">
+                      <div className="space-y-2 md:col-span-2">
                         <Label htmlFor="coBorrower-residence-county">County</Label>
                         {coBorrowerCountyOptions.length > 0 ? (
                           <Select
@@ -4223,7 +4256,9 @@ export default function AdminAddClient() {
                                 form.setValue('coBorrower.residenceAddress.county', '');
                                 setCoBorrowerCountyOptions([]);
                               } else {
-                                form.setValue('coBorrower.residenceAddress.county', value, { shouldDirty: true });
+                                // Find the selected county to get its label for display
+                                const selectedCounty = coBorrowerCountyOptions.find(county => county.value === value);
+                                form.setValue('coBorrower.residenceAddress.county', selectedCounty?.label || value, { shouldDirty: true });
                               }
                             }}
                           >
@@ -4251,34 +4286,37 @@ export default function AdminAddClient() {
                           />
                         )}
                       </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div className="grid grid-cols-4 gap-4">
-                        <div>
-                          <Label htmlFor="coBorrower-years">Years at this Address</Label>
-                          <Input
-                            id="coBorrower-years"
-                            type="number"
-                            min="0"
-                            max="99"
-                            {...form.register('coBorrower.yearsAtAddress')}
-                            data-testid="input-coborrower-years"
+                      
+                      <div className="space-y-2 md:col-span-2">
+                        <div className="flex items-center justify-between mb-2">
+                          <Label htmlFor="coBorrower-time-address" className="text-sm">
+                            {isShowingCoBorrowerMonthsAtAddress ? 'Months at this Address' : 'Years at this Address'}
+                          </Label>
+                          <Switch
+                            checked={isShowingCoBorrowerMonthsAtAddress}
+                            onCheckedChange={setIsShowingCoBorrowerMonthsAtAddress}
+                            data-testid="toggle-coborrower-time-address"
                           />
                         </div>
-                        <div>
-                          <Label htmlFor="coBorrower-months">Months at this Address</Label>
-                          <Input
-                            id="coBorrower-months"
-                            type="number"
-                            min="0"
-                            max="11"
-                            {...form.register('coBorrower.monthsAtAddress')}
-                            data-testid="input-coborrower-months"
-                          />
-                        </div>
+                        <Input
+                          id="coBorrower-time-address"
+                          type="number"
+                          min="0"
+                          max={isShowingCoBorrowerMonthsAtAddress ? 11 : 99}
+                          placeholder="0"
+                          {...form.register(isShowingCoBorrowerMonthsAtAddress ? 'coBorrower.monthsAtAddress' : 'coBorrower.yearsAtAddress')}
+                          data-testid="input-coborrower-time-address"
+                        />
                       </div>
                     </div>
+                    
+                    {/* Error handling for time at address field */}
+                    {form.formState.errors.coBorrower?.yearsAtAddress && !isShowingCoBorrowerMonthsAtAddress && (
+                      <p className="text-sm text-destructive">{form.formState.errors.coBorrower.yearsAtAddress.message}</p>
+                    )}
+                    {form.formState.errors.coBorrower?.monthsAtAddress && isShowingCoBorrowerMonthsAtAddress && (
+                      <p className="text-sm text-destructive">{form.formState.errors.coBorrower.monthsAtAddress.message}</p>
+                    )}
                       </CardContent>
                     </CollapsibleContent>
                   </Collapsible>
@@ -4473,86 +4511,83 @@ export default function AdminAddClient() {
                           Remove
                         </Button>
                       </CardHeader>
-                      <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor={`coBorrower-prior-street-${address.id}`}>Street Address</Label>
-                          <Input
-                            id={`coBorrower-prior-street-${address.id}`}
-                            placeholder="Street Address"
-                            data-testid={`input-coborrower-prior-street-${address.id}`}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor={`coBorrower-prior-unit-${address.id}`}>Unit/Apt</Label>
-                          <Input
-                            id={`coBorrower-prior-unit-${address.id}`}
-                            placeholder="Unit/Apt"
-                            data-testid={`input-coborrower-prior-unit-${address.id}`}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor={`coBorrower-prior-city-${address.id}`}>City</Label>
-                          <Input
-                            id={`coBorrower-prior-city-${address.id}`}
-                            placeholder="City"
-                            data-testid={`input-coborrower-prior-city-${address.id}`}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor={`coBorrower-prior-state-${address.id}`}>State</Label>
-                          <Select defaultValue="">
-                            <SelectTrigger data-testid={`select-coborrower-prior-state-${address.id}`}>
-                              <SelectValue placeholder="State" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {US_STATES.map((state) => (
-                                <SelectItem key={state.value} value={state.value}>
-                                  {state.value}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor={`coBorrower-prior-zip-${address.id}`}>ZIP Code</Label>
-                          <Input
-                            id={`coBorrower-prior-zip-${address.id}`}
-                            placeholder="ZIP Code"
-                            data-testid={`input-coborrower-prior-zip-${address.id}`}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor={`coBorrower-prior-county-${address.id}`}>County</Label>
-                          <Input
-                            id={`coBorrower-prior-county-${address.id}`}
-                            placeholder="County"
-                            data-testid={`input-coborrower-prior-county-${address.id}`}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <Label htmlFor={`coBorrower-prior-years-${address.id}`}>Years at this Address</Label>
-                              <Input
-                                id={`coBorrower-prior-years-${address.id}`}
-                                type="number"
-                                min="0"
-                                max="99"
-                                placeholder="Years"
-                                data-testid={`input-coborrower-prior-years-${address.id}`}
-                              />
+                      <CardContent>
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                          <div className="space-y-2 md:col-span-3">
+                            <Label htmlFor={`coBorrower-prior-street-${address.id}`}>Street Address *</Label>
+                            <Input
+                              id={`coBorrower-prior-street-${address.id}`}
+                              placeholder="Street Address"
+                              data-testid={`input-coborrower-prior-street-${address.id}`}
+                            />
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-1">
+                            <Label htmlFor={`coBorrower-prior-unit-${address.id}`}>Unit/Apt</Label>
+                            <Input
+                              id={`coBorrower-prior-unit-${address.id}`}
+                              placeholder="Unit/Apt"
+                              data-testid={`input-coborrower-prior-unit-${address.id}`}
+                            />
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor={`coBorrower-prior-city-${address.id}`}>City *</Label>
+                            <Input
+                              id={`coBorrower-prior-city-${address.id}`}
+                              placeholder="City"
+                              data-testid={`input-coborrower-prior-city-${address.id}`}
+                            />
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-1">
+                            <Label htmlFor={`coBorrower-prior-state-${address.id}`}>State *</Label>
+                            <Select defaultValue="">
+                              <SelectTrigger data-testid={`select-coborrower-prior-state-${address.id}`}>
+                                <SelectValue placeholder="State" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {US_STATES.map((state) => (
+                                  <SelectItem key={state.value} value={state.value}>
+                                    {state.value}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-1">
+                            <Label htmlFor={`coBorrower-prior-zip-${address.id}`}>ZIP Code *</Label>
+                            <Input
+                              id={`coBorrower-prior-zip-${address.id}`}
+                              placeholder="ZIP Code"
+                              data-testid={`input-coborrower-prior-zip-${address.id}`}
+                            />
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor={`coBorrower-prior-county-${address.id}`}>County</Label>
+                            <Input
+                              id={`coBorrower-prior-county-${address.id}`}
+                              placeholder="County"
+                              data-testid={`input-coborrower-prior-county-${address.id}`}
+                            />
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-2">
+                            <div className="flex items-center justify-between mb-2">
+                              <Label htmlFor={`coBorrower-prior-time-address-${address.id}`} className="text-sm">
+                                Years at this Address
+                              </Label>
                             </div>
-                            <div>
-                              <Label htmlFor={`coBorrower-prior-months-${address.id}`}>Months at this Address</Label>
-                              <Input
-                                id={`coBorrower-prior-months-${address.id}`}
-                                type="number"
-                                min="0"
-                                max="11"
-                                placeholder="Months"
-                                data-testid={`input-coborrower-prior-months-${address.id}`}
-                              />
-                            </div>
+                            <Input
+                              id={`coBorrower-prior-time-address-${address.id}`}
+                              type="number"
+                              min="0"
+                              max="99"
+                              placeholder="0"
+                              data-testid={`input-coborrower-prior-time-address-${address.id}`}
+                            />
                           </div>
                         </div>
                       </CardContent>
