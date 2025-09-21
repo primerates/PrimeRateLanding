@@ -4732,8 +4732,8 @@ export default function AdminAddClient() {
                     <CollapsibleContent>
                       <CardContent>
                         <div className="space-y-6">
-                          {/* Basic Employment Information */}
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                          {/* Employment Information - Single Row */}
+                          <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
                             <div className="space-y-2">
                               <Label htmlFor="income-employerName">Employer Name</Label>
                               <Input
@@ -4763,52 +4763,8 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="income-employmentType">Full-Time / Part-Time</Label>
-                              <Select
-                                value={form.watch('income.employmentType') || ''}
-                                onValueChange={(value) => form.setValue('income.employmentType', value as any)}
-                              >
-                                <SelectTrigger data-testid="select-income-employmentType">
-                                  <SelectValue placeholder="Select type" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
-                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                  <Label htmlFor="income-years">Years Employed</Label>
-                                  <Input
-                                    id="income-years"
-                                    type="number"
-                                    min="0"
-                                    max="99"
-                                    {...form.register('income.yearsEmployedYears')}
-                                    data-testid="input-income-years"
-                                  />
-                                </div>
-                                <div>
-                                  <Label htmlFor="income-months">Months Employed</Label>
-                                  <Input
-                                    id="income-months"
-                                    type="number"
-                                    min="0"
-                                    max="11"
-                                    placeholder="0"
-                                    {...form.register('income.yearsEmployedMonths')}
-                                    data-testid="input-income-months"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                            
-                            <div className="space-y-2 lg:col-span-2">
                               <div className="flex items-center justify-between mb-2">
-                                <Label htmlFor="income-employer-phone">
+                                <Label htmlFor="income-employer-phone" className="text-xs">
                                   {form.watch('income.isShowingEmploymentVerification') ? 'Employment Verification' : 'Employer Phone'}
                                 </Label>
                                 <Switch
@@ -4830,6 +4786,47 @@ export default function AdminAddClient() {
                                   handlePhoneChange(fieldName, e.target.value);
                                 }}
                                 data-testid="input-income-employer-phone"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-employmentType">Full-Time / Part-Time</Label>
+                              <Select
+                                value={form.watch('income.employmentType') || ''}
+                                onValueChange={(value) => form.setValue('income.employmentType', value as any)}
+                              >
+                                <SelectTrigger data-testid="select-income-employmentType">
+                                  <SelectValue placeholder="Select type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
+                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-years">Years Employed</Label>
+                              <Input
+                                id="income-years"
+                                type="number"
+                                min="0"
+                                max="99"
+                                {...form.register('income.yearsEmployedYears')}
+                                data-testid="input-income-years"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-months">Months Employed</Label>
+                              <Input
+                                id="income-months"
+                                type="number"
+                                min="0"
+                                max="11"
+                                placeholder="0"
+                                {...form.register('income.yearsEmployedMonths')}
+                                data-testid="input-income-months"
                               />
                             </div>
                           </div>
@@ -4967,8 +4964,8 @@ export default function AdminAddClient() {
                     <CollapsibleContent>
                       <CardContent>
                         <div className="space-y-6">
-                          {/* Basic Employment Information */}
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                          {/* Prior Employment Information - Single Row */}
+                          <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
                             <div className="space-y-2">
                               <Label htmlFor="income-priorEmployerName">Employer Name</Label>
                               <Input
@@ -4998,52 +4995,8 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="income-priorEmploymentType">Full-Time / Part-Time</Label>
-                              <Select
-                                value={form.watch('income.priorEmploymentType') || ''}
-                                onValueChange={(value) => form.setValue('income.priorEmploymentType', value as any)}
-                              >
-                                <SelectTrigger data-testid="select-income-priorEmploymentType">
-                                  <SelectValue placeholder="Select type" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
-                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                  <Label htmlFor="income-prior-years">Years Employed</Label>
-                                  <Input
-                                    id="income-prior-years"
-                                    type="number"
-                                    min="0"
-                                    max="99"
-                                    {...form.register('income.priorYearsEmployedYears')}
-                                    data-testid="input-income-prior-years"
-                                  />
-                                </div>
-                                <div>
-                                  <Label htmlFor="income-prior-months">Months Employed</Label>
-                                  <Input
-                                    id="income-prior-months"
-                                    type="number"
-                                    min="0"
-                                    max="11"
-                                    placeholder="0"
-                                    {...form.register('income.priorYearsEmployedMonths')}
-                                    data-testid="input-income-prior-months"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                            
-                            <div className="space-y-2 lg:col-span-2">
                               <div className="flex items-center justify-between mb-2">
-                                <Label htmlFor="income-prior-employer-phone">
+                                <Label htmlFor="income-prior-employer-phone" className="text-xs">
                                   {form.watch('income.priorIsShowingEmploymentVerification') ? 'Employment Verification' : 'Employer Phone'}
                                 </Label>
                                 <Switch
@@ -5065,6 +5018,47 @@ export default function AdminAddClient() {
                                   handlePhoneChange(fieldName, e.target.value);
                                 }}
                                 data-testid="input-income-prior-employer-phone"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-priorEmploymentType">Full-Time / Part-Time</Label>
+                              <Select
+                                value={form.watch('income.priorEmploymentType') || ''}
+                                onValueChange={(value) => form.setValue('income.priorEmploymentType', value as any)}
+                              >
+                                <SelectTrigger data-testid="select-income-priorEmploymentType">
+                                  <SelectValue placeholder="Select type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
+                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-prior-years">Years Employed</Label>
+                              <Input
+                                id="income-prior-years"
+                                type="number"
+                                min="0"
+                                max="99"
+                                {...form.register('income.priorYearsEmployedYears')}
+                                data-testid="input-income-prior-years"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-prior-months">Months Employed</Label>
+                              <Input
+                                id="income-prior-months"
+                                type="number"
+                                min="0"
+                                max="11"
+                                placeholder="0"
+                                {...form.register('income.priorYearsEmployedMonths')}
+                                data-testid="input-income-prior-months"
                               />
                             </div>
                           </div>
@@ -5196,8 +5190,8 @@ export default function AdminAddClient() {
                     <CollapsibleContent>
                       <CardContent>
                         <div className="space-y-6">
-                          {/* Basic Employment Information */}
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                          {/* Second Employment Information - Single Row */}
+                          <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
                             <div className="space-y-2">
                               <Label htmlFor="income-secondEmployerName">Employer Name</Label>
                               <Input
@@ -5227,52 +5221,8 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="income-secondEmploymentType">Full-Time / Part-Time</Label>
-                              <Select
-                                value={form.watch('income.secondEmploymentType') || ''}
-                                onValueChange={(value) => form.setValue('income.secondEmploymentType', value as any)}
-                              >
-                                <SelectTrigger data-testid="select-income-secondEmploymentType">
-                                  <SelectValue placeholder="Select type" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
-                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                  <Label htmlFor="income-second-years">Years Employed</Label>
-                                  <Input
-                                    id="income-second-years"
-                                    type="number"
-                                    min="0"
-                                    max="99"
-                                    {...form.register('income.secondYearsEmployedYears')}
-                                    data-testid="input-income-second-years"
-                                  />
-                                </div>
-                                <div>
-                                  <Label htmlFor="income-second-months">Months Employed</Label>
-                                  <Input
-                                    id="income-second-months"
-                                    type="number"
-                                    min="0"
-                                    max="11"
-                                    placeholder="0"
-                                    {...form.register('income.secondYearsEmployedMonths')}
-                                    data-testid="input-income-second-months"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                            
-                            <div className="space-y-2 lg:col-span-2">
                               <div className="flex items-center justify-between mb-2">
-                                <Label htmlFor="income-second-employer-phone">
+                                <Label htmlFor="income-second-employer-phone" className="text-xs">
                                   {form.watch('income.secondIsShowingEmploymentVerification') ? 'Employment Verification' : 'Employer Phone'}
                                 </Label>
                                 <Switch
@@ -5294,6 +5244,47 @@ export default function AdminAddClient() {
                                   handlePhoneChange(fieldName, e.target.value);
                                 }}
                                 data-testid="input-income-second-employer-phone"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-secondEmploymentType">Full-Time / Part-Time</Label>
+                              <Select
+                                value={form.watch('income.secondEmploymentType') || ''}
+                                onValueChange={(value) => form.setValue('income.secondEmploymentType', value as any)}
+                              >
+                                <SelectTrigger data-testid="select-income-secondEmploymentType">
+                                  <SelectValue placeholder="Select type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
+                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-second-years">Years Employed</Label>
+                              <Input
+                                id="income-second-years"
+                                type="number"
+                                min="0"
+                                max="99"
+                                {...form.register('income.secondYearsEmployedYears')}
+                                data-testid="input-income-second-years"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-second-months">Months Employed</Label>
+                              <Input
+                                id="income-second-months"
+                                type="number"
+                                min="0"
+                                max="11"
+                                placeholder="0"
+                                {...form.register('income.secondYearsEmployedMonths')}
+                                data-testid="input-income-second-months"
                               />
                             </div>
                           </div>
@@ -6216,8 +6207,8 @@ export default function AdminAddClient() {
                     <CollapsibleContent>
                       <CardContent>
                         <div className="space-y-6">
-                          {/* Basic Employment Information */}
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {/* Co-Borrower Prior Employment Information - Single Row */}
+                          <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
                             <div className="space-y-2">
                               <Label htmlFor="coBorrowerIncome-priorEmployerName">Employer Name</Label>
                               <Input
@@ -6237,41 +6228,13 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-priorMonthlyIncome">Monthly Income</Label>
+                              <Label htmlFor="coBorrowerIncome-priorMonthlyIncome">Gross Monthly Income</Label>
                               <Input
                                 id="coBorrowerIncome-priorMonthlyIncome"
                                 {...form.register('coBorrowerIncome.priorMonthlyIncome')}
                                 placeholder="$0.00"
                                 data-testid="input-coborrowerIncome-priorMonthlyIncome"
                               />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                  <Label htmlFor="coBorrowerIncome-prior-years">Years Employed</Label>
-                                  <Input
-                                    id="coBorrowerIncome-prior-years"
-                                    type="number"
-                                    min="0"
-                                    max="99"
-                                    {...form.register('coBorrowerIncome.priorYearsEmployedYears')}
-                                    data-testid="input-coborrowerIncome-prior-years"
-                                  />
-                                </div>
-                                <div>
-                                  <Label htmlFor="coBorrowerIncome-prior-months">Months Employed</Label>
-                                  <Input
-                                    id="coBorrowerIncome-prior-months"
-                                    type="number"
-                                    min="0"
-                                    max="11"
-                                    placeholder="0"
-                                    {...form.register('coBorrowerIncome.priorYearsEmployedMonths')}
-                                    data-testid="input-coBorrowerIncome-prior-months"
-                                  />
-                                </div>
-                              </div>
                             </div>
                             
                             <div className="space-y-2">
@@ -6282,6 +6245,47 @@ export default function AdminAddClient() {
                                 value={form.watch('coBorrowerIncome.priorEmployerPhone') || ''}
                                 onChange={(e) => handlePhoneChange('coBorrowerIncome.priorEmployerPhone', e.target.value)}
                                 data-testid="input-coBorrowerIncome-prior-employer-phone"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-priorEmploymentType">Full-Time / Part-Time</Label>
+                              <Select
+                                value={form.watch('coBorrowerIncome.priorEmploymentType') || ''}
+                                onValueChange={(value) => form.setValue('coBorrowerIncome.priorEmploymentType', value as any)}
+                              >
+                                <SelectTrigger data-testid="select-coBorrowerIncome-priorEmploymentType">
+                                  <SelectValue placeholder="Select type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
+                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-prior-years">Years Employed</Label>
+                              <Input
+                                id="coBorrowerIncome-prior-years"
+                                type="number"
+                                min="0"
+                                max="99"
+                                {...form.register('coBorrowerIncome.priorYearsEmployedYears')}
+                                data-testid="input-coborrowerIncome-prior-years"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-prior-months">Months Employed</Label>
+                              <Input
+                                id="coBorrowerIncome-prior-months"
+                                type="number"
+                                min="0"
+                                max="11"
+                                placeholder="0"
+                                {...form.register('coBorrowerIncome.priorYearsEmployedMonths')}
+                                data-testid="input-coBorrowerIncome-prior-months"
                               />
                             </div>
                           </div>
@@ -6413,8 +6417,8 @@ export default function AdminAddClient() {
                     <CollapsibleContent>
                       <CardContent>
                         <div className="space-y-6">
-                          {/* Basic Employment Information */}
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                          {/* Co-Borrower Second Employment Information - Single Row */}
+                          <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
                             <div className="space-y-2">
                               <Label htmlFor="coBorrowerIncome-secondEmployerName">Employer Name</Label>
                               <Input
@@ -6444,52 +6448,8 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-secondEmploymentType">Full-Time / Part-Time</Label>
-                              <Select
-                                value={form.watch('coBorrowerIncome.secondEmploymentType') || ''}
-                                onValueChange={(value) => form.setValue('coBorrowerIncome.secondEmploymentType', value as any)}
-                              >
-                                <SelectTrigger data-testid="select-coborrowerIncome-secondEmploymentType">
-                                  <SelectValue placeholder="Select type" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
-                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                  <Label htmlFor="coBorrowerIncome-second-years">Years Employed</Label>
-                                  <Input
-                                    id="coBorrowerIncome-second-years"
-                                    type="number"
-                                    min="0"
-                                    max="99"
-                                    {...form.register('coBorrowerIncome.secondYearsEmployedYears')}
-                                    data-testid="input-coborrowerIncome-second-years"
-                                  />
-                                </div>
-                                <div>
-                                  <Label htmlFor="coBorrowerIncome-second-months">Months Employed</Label>
-                                  <Input
-                                    id="coBorrowerIncome-second-months"
-                                    type="number"
-                                    min="0"
-                                    max="11"
-                                    placeholder="0"
-                                    {...form.register('coBorrowerIncome.secondYearsEmployedMonths')}
-                                    data-testid="input-coborrowerIncome-second-months"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                            
-                            <div className="space-y-2 lg:col-span-2">
                               <div className="flex items-center justify-between mb-2">
-                                <Label htmlFor="coBorrowerIncome-second-employer-phone">
+                                <Label htmlFor="coBorrowerIncome-second-employer-phone" className="text-xs">
                                   {form.watch('coBorrowerIncome.secondIsShowingEmploymentVerification') ? 'Employment Verification' : 'Employer Phone'}
                                 </Label>
                                 <Switch
@@ -6511,6 +6471,47 @@ export default function AdminAddClient() {
                                   handlePhoneChange(fieldName, e.target.value);
                                 }}
                                 data-testid="input-coborrowerIncome-second-employer-phone"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-secondEmploymentType">Full-Time / Part-Time</Label>
+                              <Select
+                                value={form.watch('coBorrowerIncome.secondEmploymentType') || ''}
+                                onValueChange={(value) => form.setValue('coBorrowerIncome.secondEmploymentType', value as any)}
+                              >
+                                <SelectTrigger data-testid="select-coborrowerIncome-secondEmploymentType">
+                                  <SelectValue placeholder="Select type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
+                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-second-years">Years Employed</Label>
+                              <Input
+                                id="coBorrowerIncome-second-years"
+                                type="number"
+                                min="0"
+                                max="99"
+                                {...form.register('coBorrowerIncome.secondYearsEmployedYears')}
+                                data-testid="input-coborrowerIncome-second-years"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-second-months">Months Employed</Label>
+                              <Input
+                                id="coBorrowerIncome-second-months"
+                                type="number"
+                                min="0"
+                                max="11"
+                                placeholder="0"
+                                {...form.register('coBorrowerIncome.secondYearsEmployedMonths')}
+                                data-testid="input-coborrowerIncome-second-months"
                               />
                             </div>
                           </div>
