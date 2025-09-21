@@ -1817,8 +1817,8 @@ export default function AdminAddClient() {
           </CardHeader>
           <CollapsibleContent>
             <CardContent className="space-y-4">
-              {/* Row 1: Lender Name, Loan Number, Pre-Payment Penalty */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Row 1: Lender Name, Loan Number, Loan Category, Loan Term, Loan Duration */}
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="secondLoan-lenderName">Lender Name</Label>
                   <Input
@@ -1839,22 +1839,6 @@ export default function AdminAddClient() {
                   />
                 </div>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="secondLoan-prepaymentPenalty">Pre-payment Penalty</Label>
-                  <Select value={targetForm.watch('secondLoan.prepaymentPenalty') || ''} onValueChange={(value: 'Yes - see notes' | 'No') => targetForm.setValue('secondLoan.prepaymentPenalty', value)}>
-                    <SelectTrigger data-testid="select-secondLoan-prepaymentPenalty">
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="No">No</SelectItem>
-                      <SelectItem value="Yes - see notes">Yes - see notes</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              
-              {/* Row 2: Loan Category, Loan Term, Loan Duration */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="secondLoan-loanCategory">Loan Category</Label>
                   <Select value={targetForm.watch('secondLoan.loanCategory') || ''} onValueChange={(value) => targetForm.setValue('secondLoan.loanCategory', value)}>
@@ -1904,8 +1888,8 @@ export default function AdminAddClient() {
                 </div>
               </div>
               
-              {/* Row 3: Current Balance, Current Rate, Monthly Payment, Attached to Property */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {/* Row 2: Current Balance, Current Rate, Monthly Payment, Pre-Payment Penalty, Attached to Property */}
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="secondLoan-currentBalance">Current Balance</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
@@ -1946,6 +1930,19 @@ export default function AdminAddClient() {
                       data-testid="input-secondLoan-monthlyPayment"
                     />
                   </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="secondLoan-prepaymentPenalty">Pre-payment Penalty</Label>
+                  <Select value={targetForm.watch('secondLoan.prepaymentPenalty') || ''} onValueChange={(value: 'Yes - see notes' | 'No') => targetForm.setValue('secondLoan.prepaymentPenalty', value)}>
+                    <SelectTrigger data-testid="select-secondLoan-prepaymentPenalty">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="No">No</SelectItem>
+                      <SelectItem value="Yes - see notes">Yes - see notes</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 
                 <div className="space-y-2">
@@ -8335,8 +8332,8 @@ export default function AdminAddClient() {
                       </CardHeader>
                       <CollapsibleContent>
                         <CardContent className="space-y-4">
-                          {/* Row 1: Lender Name, Loan Number, Pre-Payment Penalty */}
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          {/* Row 1: Lender Name, Loan Number, Loan Category, Loan Term, Loan Duration */}
+                          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                             <div className="space-y-2">
                               <Label htmlFor="thirdLoan-lenderName">Lender Name</Label>
                               <Input
@@ -8357,22 +8354,6 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2">
-                              <Label htmlFor="thirdLoan-prepaymentPenalty">Pre-payment Penalty</Label>
-                              <Select value={form.watch('thirdLoan.prepaymentPenalty') || ''} onValueChange={(value: 'Yes - see notes' | 'No') => form.setValue('thirdLoan.prepaymentPenalty', value)}>
-                                <SelectTrigger data-testid="select-thirdLoan-prepaymentPenalty">
-                                  <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="No">No</SelectItem>
-                                  <SelectItem value="Yes - see notes">Yes - see notes</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </div>
-                          
-                          {/* Row 2: Loan Category, Loan Term, Loan Duration */}
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="space-y-2">
                               <Label htmlFor="thirdLoan-loanCategory">Loan Category</Label>
                               <Select value={form.watch('thirdLoan.loanCategory') || ''} onValueChange={(value) => form.setValue('thirdLoan.loanCategory', value)}>
@@ -8422,8 +8403,8 @@ export default function AdminAddClient() {
                             </div>
                           </div>
                           
-                          {/* Row 3: Current Balance, Current Rate, Monthly Payment, Attached to Property */}
-                          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                          {/* Row 2: Current Balance, Current Rate, Monthly Payment, Pre-Payment Penalty, Attached to Property */}
+                          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                             <div className="space-y-2">
                               <Label htmlFor="thirdLoan-currentBalance">Current Balance</Label>
                               <div className="flex items-center border border-input bg-background px-3 rounded-md">
@@ -8464,6 +8445,19 @@ export default function AdminAddClient() {
                                   data-testid="input-thirdLoan-monthlyPayment"
                                 />
                               </div>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="thirdLoan-prepaymentPenalty">Pre-payment Penalty</Label>
+                              <Select value={form.watch('thirdLoan.prepaymentPenalty') || ''} onValueChange={(value: 'Yes - see notes' | 'No') => form.setValue('thirdLoan.prepaymentPenalty', value)}>
+                                <SelectTrigger data-testid="select-thirdLoan-prepaymentPenalty">
+                                  <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="No">No</SelectItem>
+                                  <SelectItem value="Yes - see notes">Yes - see notes</SelectItem>
+                                </SelectContent>
+                              </Select>
                             </div>
                             
                             <div className="space-y-2">
