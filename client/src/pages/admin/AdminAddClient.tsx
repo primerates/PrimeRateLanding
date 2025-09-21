@@ -7287,7 +7287,7 @@ export default function AdminAddClient() {
 
                 return (
                   <Card key={propertyId} className={`border-l-4 transition-colors duration-200 ${
-                    property.use === 'primary' ? 'border-l-green-500 hover:border-l-green-500 focus-within:border-l-green-500' : 
+                    property.use === 'primary' ? 'border-l-green-500 hover:border-green-500 focus-within:border-green-500' : 
                     property.use === 'second-home' ? 'border-l-blue-500 hover:border-l-blue-500 focus-within:border-l-blue-500' : 
                     property.use === 'investment' ? 'border-l-purple-500 hover:border-l-purple-500 focus-within:border-l-purple-500' : ''
                   }`}>
