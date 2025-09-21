@@ -2076,7 +2076,7 @@ export default function AdminAddClient() {
                             <SelectContent>
                               {US_STATES.map(state => (
                                 <SelectItem key={state.value} value={state.value}>
-                                  {state.label}
+                                  {state.value}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -3566,7 +3566,7 @@ export default function AdminAddClient() {
                         <SelectContent>
                           {US_STATES.map((state) => (
                             <SelectItem key={state.value} value={state.value}>
-                              {state.label}
+                              {state.value}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -3737,7 +3737,7 @@ export default function AdminAddClient() {
                             <SelectContent>
                               {US_STATES.map((state) => (
                                 <SelectItem key={state.value} value={state.value}>
-                                  {state.label}
+                                  {state.value}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -3891,7 +3891,7 @@ export default function AdminAddClient() {
                         <SelectContent>
                           {US_STATES.map((state) => (
                             <SelectItem key={state.value} value={state.value}>
-                              {state.label}
+                              {state.value}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -4193,7 +4193,7 @@ export default function AdminAddClient() {
                           <SelectContent>
                             {US_STATES.map((state) => (
                               <SelectItem key={state.value} value={state.value}>
-                                {state.label}
+                                {state.value}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -4353,7 +4353,7 @@ export default function AdminAddClient() {
                                 <SelectContent>
                                   {US_STATES.map((state) => (
                                     <SelectItem key={state.value} value={state.value}>
-                                      {state.label}
+                                      {state.value}
                                     </SelectItem>
                                   ))}
                                 </SelectContent>
@@ -4506,7 +4506,7 @@ export default function AdminAddClient() {
                             <SelectContent>
                               {US_STATES.map((state) => (
                                 <SelectItem key={state.value} value={state.value}>
-                                  {state.label}
+                                  {state.value}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -4867,7 +4867,7 @@ export default function AdminAddClient() {
                                 <SelectContent>
                                   {US_STATES.map((state) => (
                                     <SelectItem key={state.value} value={state.value}>
-                                      {state.label}
+                                      {state.value}
                                     </SelectItem>
                                   ))}
                                 </SelectContent>
@@ -5099,7 +5099,7 @@ export default function AdminAddClient() {
                                 <SelectContent>
                                   {US_STATES.map((state) => (
                                     <SelectItem key={state.value} value={state.value}>
-                                      {state.label}
+                                      {state.value}
                                     </SelectItem>
                                   ))}
                                 </SelectContent>
@@ -5328,7 +5328,7 @@ export default function AdminAddClient() {
                                 <SelectContent>
                                   {US_STATES.map((state) => (
                                     <SelectItem key={state.value} value={state.value}>
-                                      {state.label}
+                                      {state.value}
                                     </SelectItem>
                                   ))}
                                 </SelectContent>
@@ -5504,7 +5504,7 @@ export default function AdminAddClient() {
                                 <SelectContent>
                                   {US_STATES.map((state) => (
                                     <SelectItem key={state.value} value={state.value}>
-                                      {state.label}
+                                      {state.value}
                                     </SelectItem>
                                   ))}
                                 </SelectContent>
@@ -6107,7 +6107,7 @@ export default function AdminAddClient() {
                                 <SelectContent>
                                   {US_STATES.map((state) => (
                                     <SelectItem key={state.value} value={state.value}>
-                                      {state.label}
+                                      {state.value}
                                     </SelectItem>
                                   ))}
                                 </SelectContent>
@@ -6323,7 +6323,7 @@ export default function AdminAddClient() {
                                 <SelectContent>
                                   {US_STATES.map((state) => (
                                     <SelectItem key={state.value} value={state.value}>
-                                      {state.label}
+                                      {state.value}
                                     </SelectItem>
                                   ))}
                                 </SelectContent>
@@ -6552,7 +6552,7 @@ export default function AdminAddClient() {
                                 <SelectContent>
                                   {US_STATES.map((state) => (
                                     <SelectItem key={state.value} value={state.value}>
-                                      {state.label}
+                                      {state.value}
                                     </SelectItem>
                                   ))}
                                 </SelectContent>
@@ -6728,7 +6728,7 @@ export default function AdminAddClient() {
                                 <SelectContent>
                                   {US_STATES.map((state) => (
                                     <SelectItem key={state.value} value={state.value}>
-                                      {state.label}
+                                      {state.value}
                                     </SelectItem>
                                   ))}
                                 </SelectContent>
@@ -7456,7 +7456,7 @@ export default function AdminAddClient() {
                                   <SelectContent>
                                     {US_STATES.map((state) => (
                                       <SelectItem key={state.value} value={state.value}>
-                                        {state.label}
+                                        {state.value}
                                       </SelectItem>
                                     ))}
                                   </SelectContent>
@@ -8348,7 +8348,7 @@ export default function AdminAddClient() {
                                         <SelectContent>
                                           {US_STATES.map(state => (
                                             <SelectItem key={state.value} value={state.value}>
-                                              {state.label}
+                                              {state.value}
                                             </SelectItem>
                                           ))}
                                         </SelectContent>
