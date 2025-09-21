@@ -400,7 +400,7 @@ export default function AdminAddClient() {
     }
   };
 
-  const [hasCoBorrower, setHasCoBorrower] = useState(false);
+  const [hasCoBorrower, setHasCoBorrower] = useState(true);
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
   const [isReadOnlyCurrentLoanOpen, setIsReadOnlyCurrentLoanOpen] = useState(true);
@@ -503,14 +503,14 @@ export default function AdminAddClient() {
   const [isCoBorrowerPensionIncomeOpen, setIsCoBorrowerPensionIncomeOpen] = useState(true);
 
   // Address box collapsible states
-  const [isBorrowerResidenceOpen, setIsBorrowerResidenceOpen] = useState(true);
-  const [isBorrowerPriorResidenceOpen, setIsBorrowerPriorResidenceOpen] = useState(true);
+  const [isBorrowerResidenceOpen, setIsBorrowerResidenceOpen] = useState(false);
+  const [isBorrowerPriorResidenceOpen, setIsBorrowerPriorResidenceOpen] = useState(false);
   const [isShowingMonthsAtAddress, setIsShowingMonthsAtAddress] = useState(false);
   const [isShowingMonthsAtPriorAddress, setIsShowingMonthsAtPriorAddress] = useState(false);
   const [isShowingCoBorrowerMonthsAtAddress, setIsShowingCoBorrowerMonthsAtAddress] = useState(false);
   const [isShowingCoBorrowerMonthsAtPriorAddress, setIsShowingCoBorrowerMonthsAtPriorAddress] = useState(false);
-  const [isCoBorrowerResidenceOpen, setIsCoBorrowerResidenceOpen] = useState(true);
-  const [isCoBorrowerPriorResidenceOpen, setIsCoBorrowerPriorResidenceOpen] = useState(true);
+  const [isCoBorrowerResidenceOpen, setIsCoBorrowerResidenceOpen] = useState(false);
+  const [isCoBorrowerPriorResidenceOpen, setIsCoBorrowerPriorResidenceOpen] = useState(false);
 
   // Loan details collapsible state (per property)
   const [isLoanDetailsOpen, setIsLoanDetailsOpen] = useState<Record<string, boolean>>({});
