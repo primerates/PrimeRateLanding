@@ -3167,15 +3167,15 @@ export default function AdminAddClient() {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <Tabs defaultValue="client" className="space-y-6">
             <TabsList className="grid w-full grid-cols-9">
-              <TabsTrigger value="client" data-testid="tab-client" className="data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Borrower</TabsTrigger>
-              <TabsTrigger value="income" data-testid="tab-income" className="data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Income</TabsTrigger>
-              <TabsTrigger value="property" data-testid="tab-property" className="data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Property</TabsTrigger>
-              <TabsTrigger value="credit" data-testid="tab-credit" className="data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Credit</TabsTrigger>
-              <TabsTrigger value="loan" data-testid="tab-loan" className="data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Loan</TabsTrigger>
-              <TabsTrigger value="status" data-testid="tab-status" className="data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Status</TabsTrigger>
-              <TabsTrigger value="vendors" data-testid="tab-vendors" className="data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Vendors</TabsTrigger>
-              <TabsTrigger value="quote" data-testid="tab-quote" className="data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Quote</TabsTrigger>
-              <TabsTrigger value="notes" data-testid="tab-notes" className="data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Notes</TabsTrigger>
+              <TabsTrigger value="client" data-testid="tab-client" className="text-gray-900 dark:text-gray-100 data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Borrower</TabsTrigger>
+              <TabsTrigger value="income" data-testid="tab-income" className="text-gray-900 dark:text-gray-100 data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Income</TabsTrigger>
+              <TabsTrigger value="property" data-testid="tab-property" className="text-gray-900 dark:text-gray-100 data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Property</TabsTrigger>
+              <TabsTrigger value="credit" data-testid="tab-credit" className="text-gray-900 dark:text-gray-100 data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Credit</TabsTrigger>
+              <TabsTrigger value="loan" data-testid="tab-loan" className="text-gray-900 dark:text-gray-100 data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Loan</TabsTrigger>
+              <TabsTrigger value="status" data-testid="tab-status" className="text-gray-900 dark:text-gray-100 data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Status</TabsTrigger>
+              <TabsTrigger value="vendors" data-testid="tab-vendors" className="text-gray-900 dark:text-gray-100 data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Vendors</TabsTrigger>
+              <TabsTrigger value="quote" data-testid="tab-quote" className="text-gray-900 dark:text-gray-100 data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Quote</TabsTrigger>
+              <TabsTrigger value="notes" data-testid="tab-notes" className="text-gray-900 dark:text-gray-100 data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Notes</TabsTrigger>
             </TabsList>
 
             {/* Client Tab */}
@@ -7148,7 +7148,7 @@ export default function AdminAddClient() {
                   <Card key={propertyId} className={`border-l-4 ${
                     property.use === 'primary' ? 'border-l-green-500' : 
                     property.use === 'second-home' ? 'border-l-blue-500' : 
-                    property.use === 'investment' ? 'border-l-orange-500' : ''
+                    property.use === 'investment' ? 'border-l-purple-500' : ''
                   }`}>
                     <Collapsible 
                       open={isOpen} 
@@ -7902,7 +7902,6 @@ export default function AdminAddClient() {
               ) : (
                 <Card className="border-2 border-dashed border-gray-300">
                   <CardContent className="flex flex-col items-center justify-center py-12">
-                    <p className="text-muted-foreground mb-4">Current loan information is not added</p>
                     <Button
                       type="button"
                       variant="outline"
@@ -7934,7 +7933,7 @@ export default function AdminAddClient() {
               {showThirdLoan && (
                 <>
                   {/* Current Third Loan Information */}
-                  <Card className="border-l-4 border-l-orange-500">
+                  <Card className="border-l-4 border-l-purple-500">
                     <Collapsible open={isThirdLoanOpen} onOpenChange={setIsThirdLoanOpen}>
                       <CardHeader>
                         <div className="flex items-center justify-between">
@@ -7964,7 +7963,6 @@ export default function AdminAddClient() {
                               <Button 
                                 variant="ghost" 
                                 size="sm" 
-                                className="hover:bg-orange-500 hover:text-white" 
                                 data-testid="button-toggle-third-loan"
                                 title={isThirdLoanOpen ? 'Minimize' : 'Expand'}
                               >
@@ -8147,7 +8145,6 @@ export default function AdminAddClient() {
                                       type="button"
                                       variant="ghost"
                                       size="sm"
-                                      className="hover:bg-orange-500 hover:text-white"
                                       data-testid="button-toggle-property-address-third-loan"
                                       title={isThirdLoanPropertyAddressOpen ? 'Minimize' : 'Expand'}
                                     >
