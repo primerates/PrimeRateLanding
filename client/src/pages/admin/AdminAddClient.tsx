@@ -4152,6 +4152,7 @@ export default function AdminAddClient() {
                               <Button 
                                 variant="ghost" 
                                 size="sm" 
+                                className="hover:bg-orange-500 hover:text-black"
                                 data-testid="button-toggle-coborrower-residence"
                               >
                                 {isCoBorrowerResidenceOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
@@ -4341,6 +4342,7 @@ export default function AdminAddClient() {
                                   <Button 
                                     variant="ghost" 
                                     size="sm" 
+                                    className="hover:bg-orange-500 hover:text-black"
                                     data-testid="button-toggle-coborrower-prior-residence"
                                   >
                                     {isCoBorrowerPriorResidenceOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
