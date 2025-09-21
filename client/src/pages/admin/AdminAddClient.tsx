@@ -1811,7 +1811,7 @@ export default function AdminAddClient() {
     const targetForm = formInstance || contextForm;
     const [isPropertyAddressOpen, setIsPropertyAddressOpen] = useState(false);
     
-    const cardClassName = borderVariant === 'blue' ? 'border-l-4 border-l-purple-500' : '';
+    const cardClassName = borderVariant === 'blue' ? 'border-l-4 border-l-purple-500 hover:border-purple-500 focus-within:border-purple-500 transition-colors duration-200' : '';
     
     return (
       <Card className={cardClassName}>
@@ -8130,7 +8130,7 @@ export default function AdminAddClient() {
               {showThirdLoan && (
                 <>
                   {/* Current Third Loan Information */}
-                  <Card className="border-l-4 border-l-orange-500">
+                  <Card className="border-l-4 border-l-orange-500 hover:border-orange-500 focus-within:border-orange-500 transition-colors duration-200">
                     <Collapsible open={isThirdLoanOpen} onOpenChange={setIsThirdLoanOpen}>
                       <CardHeader>
                         <div className="flex items-center justify-between">
