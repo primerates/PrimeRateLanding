@@ -3489,35 +3489,7 @@ export default function AdminAddClient() {
                 <Collapsible open={isBorrowerResidenceOpen} onOpenChange={setIsBorrowerResidenceOpen}>
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <CardTitle>Borrower Residence Address</CardTitle>
-                        <div className="flex items-center gap-3">
-                          <div className="space-y-1">
-                            <Label htmlFor="borrower-years-header" className="text-xs text-muted-foreground">Years at this Address</Label>
-                            <Input
-                              id="borrower-years-header"
-                              type="number"
-                              min="0"
-                              max="99"
-                              className="h-8 w-20 text-center"
-                              {...form.register('borrower.yearsAtAddress')}
-                              data-testid="input-borrower-years-header"
-                            />
-                          </div>
-                          <div className="space-y-1">
-                            <Label htmlFor="borrower-months-header" className="text-xs text-muted-foreground">Months at this Address</Label>
-                            <Input
-                              id="borrower-months-header"
-                              type="number"
-                              min="0"
-                              max="11"
-                              className="h-8 w-20 text-center"
-                              {...form.register('borrower.monthsAtAddress')}
-                              data-testid="input-borrower-months-header"
-                            />
-                          </div>
-                        </div>
-                      </div>
+                      <CardTitle>Borrower Residence Address</CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <CollapsibleTrigger asChild>
@@ -3539,7 +3511,7 @@ export default function AdminAddClient() {
                   </CardHeader>
                   <CollapsibleContent>
                     <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-8 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="borrower-residence-street">Street Address *</Label>
                       <Input
@@ -3658,6 +3630,31 @@ export default function AdminAddClient() {
                           data-testid="input-borrower-residence-county"
                         />
                       )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="borrower-years-address">Years at this Address</Label>
+                      <Input
+                        id="borrower-years-address"
+                        type="number"
+                        min="0"
+                        max="99"
+                        {...form.register('borrower.yearsAtAddress')}
+                        data-testid="input-borrower-years-address"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="borrower-months-address">Months at this Address</Label>
+                      <Input
+                        id="borrower-months-address"
+                        type="number"
+                        min="0"
+                        max="11"
+                        placeholder="0"
+                        {...form.register('borrower.monthsAtAddress')}
+                        data-testid="input-borrower-months-address"
+                      />
                     </div>
                   </div>
                   
@@ -3947,7 +3944,7 @@ export default function AdminAddClient() {
               ))}
 
               {/* Co-Borrower Section */}
-<Card className="mt-16 border-l-4 border-l-blue-500">
+<Card className="mt-16 border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>Co-Borrower</CardTitle>
                   {!hasCoBorrower ? (
