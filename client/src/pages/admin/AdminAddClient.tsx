@@ -3592,7 +3592,7 @@ export default function AdminAddClient() {
                       )}
                     </div>
                     
-                    <div className="space-y-2 md:col-span-1">
+                    <div className="space-y-2 md:col-span-2">
                       <Label htmlFor="borrower-residence-county">County</Label>
                       {borrowerCountyOptions.length > 0 ? (
                         <Select
