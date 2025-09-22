@@ -414,6 +414,9 @@ export default function AdminAddClient() {
   // State for Current Loan info popup in Property tab
   const [isCurrentLoanPreviewOpen, setIsCurrentLoanPreviewOpen] = useState(false);
   
+  // State for Current Second Loan info popup in Property tab
+  const [isCurrentSecondLoanPreviewOpen, setIsCurrentSecondLoanPreviewOpen] = useState(false);
+  
   // Multiple prior addresses state management
   const [borrowerPriorAddresses, setBorrowerPriorAddresses] = useState<{ id: string }[]>([]);
 
@@ -1295,6 +1298,154 @@ export default function AdminAddClient() {
                 <span className="text-sm">{prepaymentPenalty || 'Not specified'}</span>
               </div>
             </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Attached to Property</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{attachedToProperty || 'Not specified'}</span>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  // Sub-component for Current Second Loan preview modal - read-only display with live updates
+  interface CurrentSecondLoanPreviewProps {
+    control: any; // Control from parent useForm
+  }
+
+  const CurrentSecondLoanPreview: React.FC<CurrentSecondLoanPreviewProps> = ({ control }) => {
+    // Use useWatch to get live data updates for preview
+    const lenderName = useWatch({ control, name: 'secondLoan.lenderName' }) || '';
+    const loanNumber = useWatch({ control, name: 'secondLoan.loanNumber' }) || '';
+    const loanCategory = useWatch({ control, name: 'secondLoan.loanCategory' }) || '';
+    const loanProgram = useWatch({ control, name: 'secondLoan.loanProgram' }) || '';
+    const loanTerm = useWatch({ control, name: 'secondLoan.loanTerm' }) || '';
+    const loanPurpose = useWatch({ control, name: 'secondLoan.loanPurpose' }) || '';
+    const statementBalance = useWatch({ control, name: 'secondLoan.statementBalance.amount' }) || '';
+    const currentRate = useWatch({ control, name: 'secondLoan.currentRate' }) || '';
+    const principalPayment = useWatch({ control, name: 'secondLoan.principalAndInterestPayment' }) || '';
+    const escrowPayment = useWatch({ control, name: 'secondLoan.escrowPayment' }) || '';
+    const prepaymentPenalty = useWatch({ control, name: 'secondLoan.prepaymentPenalty' }) || '';
+    const attachedToProperty = useWatch({ control, name: 'secondLoan.attachedToProperty' }) || '';
+
+    // Format monetary values for display
+    const formatCurrency = (value: string) => {
+      if (!value || value.trim() === '') return '';
+      const cleaned = value.replace(/[^0-9.]/g, '');
+      const num = parseFloat(cleaned);
+      return isNaN(num) ? value : `$${num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    };
+
+    // Total payment calculation component for second loan
+    const TotalSecondLoanPayment = () => {
+      const principalAmount = useWatch({ control, name: 'secondLoan.principalAndInterestPayment' }) || '';
+      const escrowAmount = useWatch({ control, name: 'secondLoan.escrowPayment' }) || '';
+      
+      const principal = parseMonetaryValue(principalAmount);
+      const escrow = parseMonetaryValue(escrowAmount);
+      const total = principal + escrow;
+      
+      return (
+        <div className="space-y-2">
+          <Label className="text-sm font-medium text-muted-foreground">Total Monthly Payment</Label>
+          <div className="p-2 bg-orange-50 rounded-md border border-orange-200">
+            <span className="text-sm font-semibold text-orange-700">
+              ${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </span>
+          </div>
+        </div>
+      );
+    };
+
+    return (
+      <Card className="border-l-4 border-l-orange-500 hover:border-orange-500 focus-within:border-orange-500 transition-colors duration-200">
+        <CardHeader>
+          <CardTitle>Current Second Loan Preview</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Row 1: Lender Name, Loan Number, Loan Category, Loan Program */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Lender Name</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{lenderName || 'Not specified'}</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Loan Number</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{loanNumber || 'Not specified'}</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Loan Category</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{loanCategory || 'Not specified'}</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Loan Program</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{loanProgram || 'Not specified'}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Row 2: Loan Term, Loan Purpose, Statement Balance, Current Rate */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Loan Term</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{loanTerm || 'Not specified'}</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Loan Purpose</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{loanPurpose || 'Not specified'}</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Statement Balance</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{formatCurrency(statementBalance) || 'Not specified'}</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Current Rate</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{currentRate ? `${currentRate}%` : 'Not specified'}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Row 3: Principal & Interest Payment, Escrow Payment, Total Payment, Pre-Payment Penalty */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Principal & Interest Payment</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{formatCurrency(principalPayment) || 'Not specified'}</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Escrow Payment</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{formatCurrency(escrowPayment) || 'Not specified'}</span>
+              </div>
+            </div>
+            <TotalSecondLoanPayment />
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Pre-Payment Penalty</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{prepaymentPenalty || 'Not specified'}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Row 4: Attached to Property */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="space-y-2">
               <Label className="text-sm font-medium text-muted-foreground">Attached to Property</Label>
               <div className="p-2 bg-gray-50 rounded-md border">
@@ -8051,8 +8202,21 @@ export default function AdminAddClient() {
                               </div>
                               
                               <div className="space-y-2">
-                                <div className="min-h-5 flex items-center">
+                                <div className="min-h-5 flex items-center gap-2">
                                   <Label htmlFor={`property-active-second-loan-${propertyId}`}>Secured Second Loan</Label>
+                                  {showSecondLoan && (
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                      onClick={() => setIsCurrentSecondLoanPreviewOpen(true)}
+                                      title="View Current Second Loan Details"
+                                      data-testid="button-current-second-loan-info"
+                                    >
+                                      <Info className="h-4 w-4" />
+                                    </Button>
+                                  )}
                                 </div>
                                 <Select
                                   value={form.watch(`property.properties.${index}.activeSecondLoan` as const) || ''}
@@ -9329,6 +9493,24 @@ export default function AdminAddClient() {
             <Button
               onClick={() => setIsCurrentLoanPreviewOpen(false)}
               data-testid="button-current-loan-preview-close"
+            >
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Current Second Loan Preview Modal */}
+      <Dialog open={isCurrentSecondLoanPreviewOpen} onOpenChange={setIsCurrentSecondLoanPreviewOpen}>
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto" data-testid="dialog-current-second-loan-preview">
+          <DialogHeader>
+            <DialogTitle>Current Second Loan Details</DialogTitle>
+          </DialogHeader>
+          <CurrentSecondLoanPreview control={form.control} />
+          <DialogFooter>
+            <Button
+              onClick={() => setIsCurrentSecondLoanPreviewOpen(false)}
+              data-testid="button-current-second-loan-preview-close"
             >
               Close
             </Button>
