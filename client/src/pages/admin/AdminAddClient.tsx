@@ -2265,7 +2265,53 @@ export default function AdminAddClient() {
                         }}
                       />
                     </div>
-                      </div>
+                  </div>
+
+                  {/* Second row for Property Type */}
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
+                    <div className="space-y-2 md:col-span-3">
+                      <Label htmlFor={`${idPrefix}currentLoan-property-type`}>Property Type</Label>
+                      <Select
+                        value={(() => {
+                          const attachedPropertyId = targetForm.watch('currentLoan.attachedToProperty');
+                          if (attachedPropertyId === 'Other') {
+                            return targetForm.watch('currentLoan.propertyType') || '';
+                          }
+                          const properties = targetForm.watch('property.properties') || [];
+                          const selectedProperty = properties.find((p: any) => p.id === attachedPropertyId);
+                          return selectedProperty?.propertyType || '';
+                        })()}
+                        onValueChange={(value) => {
+                          const attachedPropertyId = targetForm.watch('currentLoan.attachedToProperty');
+                          if (attachedPropertyId === 'Other') {
+                            targetForm.setValue('currentLoan.propertyType', value);
+                          } else {
+                            toast({
+                              title: "Property type is read-only",
+                              description: "Please edit property information using the Property tab",
+                              variant: "default",
+                            });
+                          }
+                        }}
+                        disabled={targetForm.watch('currentLoan.attachedToProperty') !== 'Other'}
+                      >
+                        <SelectTrigger
+                          data-testid={`select-${idPrefix}currentLoan-property-type`}
+                          className={targetForm.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                        >
+                          <SelectValue placeholder="Select property type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="single-family">Single Family</SelectItem>
+                          <SelectItem value="condo">Condo</SelectItem>
+                          <SelectItem value="townhome">Townhome</SelectItem>
+                          <SelectItem value="duplex">Duplex</SelectItem>
+                          <SelectItem value="multi-family">Multi-Family</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
                     </CollapsibleContent>
                   </Collapsible>
                 </div>
@@ -2691,6 +2737,52 @@ export default function AdminAddClient() {
                               }
                             }}
                           />
+                        </div>
+                      </div>
+
+                      {/* Second row for Property Type */}
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
+                        <div className="space-y-2 md:col-span-3">
+                          <Label htmlFor="secondLoan-property-type">Property Type</Label>
+                          <Select
+                            value={(() => {
+                              const attachedPropertyId = targetForm.watch('secondLoan.attachedToProperty');
+                              if (attachedPropertyId === 'Other') {
+                                return targetForm.watch('secondLoan.propertyType') || '';
+                              }
+                              const properties = targetForm.watch('property.properties') || [];
+                              const selectedProperty = properties.find((p: any) => p.id === attachedPropertyId);
+                              return selectedProperty?.propertyType || '';
+                            })()}
+                            onValueChange={(value) => {
+                              const attachedPropertyId = targetForm.watch('secondLoan.attachedToProperty');
+                              if (attachedPropertyId === 'Other') {
+                                targetForm.setValue('secondLoan.propertyType', value);
+                              } else {
+                                toast({
+                                  title: "Property type is read-only",
+                                  description: "Please edit property information using the Property tab",
+                                  variant: "default",
+                                });
+                              }
+                            }}
+                            disabled={targetForm.watch('secondLoan.attachedToProperty') !== 'Other'}
+                          >
+                            <SelectTrigger
+                              data-testid="select-secondLoan-property-type"
+                              className={targetForm.watch('secondLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                            >
+                              <SelectValue placeholder="Select property type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="single-family">Single Family</SelectItem>
+                              <SelectItem value="condo">Condo</SelectItem>
+                              <SelectItem value="townhome">Townhome</SelectItem>
+                              <SelectItem value="duplex">Duplex</SelectItem>
+                              <SelectItem value="multi-family">Multi-Family</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
                     </CollapsibleContent>
