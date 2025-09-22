@@ -1,0 +1,145 @@
+Based on reviewing the provided code, the typing responsiveness issues (e.g., only allowing single digits effectively, feeling "limited," and potential lag or cursor resets) stem from how the onChange handlers for both the "Estimated Value" and "Appraised Value" inputs work. Here's a breakdown:Core Problem: The inputs are fully controlled via value={form.watch(...)} and onChange that immediately parses, formats (with $, commas via toLocaleString, and forced 2 decimal places), and calls form.setValue. This happens on every keystroke.When you type a digit (e.g., '1'), it formats to "$1.00". The cursor is now at the end.
+Typing another digit (e.g., '0' for "10") appends to "$1.00", becoming "$1.000". The replace(/[^\d.]/g, '') strips to "1.000", parseFloat yields 1, and it reformats back to "$1.00"—effectively discarding the '0' because it's interpreted as a decimal addition that's rounded away.
+This creates the "single digit" limitation: Additional digits are treated as decimals due to the ".00" in the displayed value, and small decimal additions (e.g., 0.001) get rounded out by maximumFractionDigits: 2.
+Additionally, changing the value prop on each keystroke can cause cursor "jumps" (e.g., to the end) because React doesn't automatically preserve the cursor position when the string length or content changes unexpectedly. This is exacerbated in larger forms where re-renders (from setValue triggering useWatch in AppraisalIcon) add perceived lag.
+The AppraisalIcon is well-optimized with React.memo and useMemo, but useWatch still subscribes to form changes, potentially contributing to minor re-render overhead on keystrokes.
+This is a common pitfall with real-time formatted inputs in React (especially currency), as confirmed by common developer discussions and solutions online.Suggestions to Improve/Fix Typing ResponsivenessTo fix this while keeping the $ icon color change functional (which relies on parsing the form values), I recommend one of the following approaches, ordered from simplest/quickest to more robust. All maintain real-time icon updates where possible, but prioritize smooth typing. I'll include code snippets tailored to your setup (assuming TypeScript and react-hook-form).1. Quick Fix: Manually Restore Cursor Position in onChange (Minimal Changes, Keeps Real-Time Formatting)Why? This addresses cursor jumps without altering the formatting logic. It won't fully fix the "discarded digits" issue (e.g., appending to ".00"), but it makes typing feel smoother by keeping the cursor where the user expects. For the digit loss, users may need to manually position the cursor before the decimal when editing integers.
+Trade-off: Still formats on every keystroke, so very long numbers might have slight lag, but it's synchronous and minimal.
+Implementation: Add cursor management using requestAnimationFrame (a common hack to run after React's render). Use a ref for the input to access selectionStart.
+
+   Updated Input for Estimated Value (apply similarly to Appraised):tsx
+
+import { useRef } from 'react';
+// ... other imports
+
+// Inside your component (e.g., where the form is rendered)
+const estimatedInputRef = useRef<HTMLInputElement>(null);
+
+<Input
+  ref={estimatedInputRef}  // Add ref
+  id={`property-estimated-value-${propertyId}`}
+  value={form.watch(`property.properties.${index}.estimatedValue` as const) || ''}
+  onChange={(e) => {
+    const caret = e.target.selectionStart;  // Save current position
+    const element = e.target;
+    let value = e.target.value.replace(/[^\d.]/g, '');
+    if (value) {
+      const numValue = parseFloat(value);
+      if (!isNaN(numValue)) {
+        value = `$${numValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      }
+    }
+    form.setValue(`property.properties.${index}.estimatedValue` as const, value);
+
+    // Restore cursor after render
+    requestAnimationFrame(() => {
+      if (element && caret !== null) {
+        element.selectionStart = caret;
+        element.selectionEnd = caret;
+      }
+    });
+  }}
+  placeholder="$0.00"
+  data-testid={`input-property-estimated-value-${propertyId}`}
+/>
+
+Expected Improvement: Cursor stays put, reducing "limited" feel. Test on mobile/desktop. If digit loss persists as an issue, move to option 2 or 3.
+
+2. Better UX: Format on Blur, Edit as Plain Number (No Libraries, Smooth Typing)Why? During editing (on focus), show a raw numeric string (e.g., "1234.56" without "$" or commas) for natural typing. Format only on blur. This eliminates cursor jumps and digit misinterpretation entirely, as there's no real-time reformatting. Typing feels "excellent" like a standard number input.
+Trade-off: No $ or commas visible while typing, but icon color still updates real-time (since parseValue can handle raw or formatted strings). Form stores the formatted value after blur.
+Implementation: Use local state for the input during edit mode. Sync to form on blur. Update parseValue if needed to handle raw strings (but your current version already strips non-digits).
+
+   Wrap each Input in a custom component for cleanliness:tsx
+
+import { useState, useEffect } from 'react';
+
+const CurrencyInput = ({ form, name, placeholder, ...props }) => {
+  const [localValue, setLocalValue] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
+
+  // Sync local with form on mount or form change
+  useEffect(() => {
+    if (!isFocused) {
+      setLocalValue(form.watch(name) || '');
+    }
+  }, [form.watch(name)]);
+
+  const handleChange = (e) => {
+    const value = e.target.value.replace(/[^\d.]/g, '');  // Restrict to digits/decimal
+    setLocalValue(value);
+    // Optional: Parse and set to form for real-time icon update (as raw)
+    const num = parseFloat(value) || 0;
+    form.setValue(name, value);  // Store raw during edit, format on blur
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+    const num = parseFloat(localValue) || 0;
+    const formatted = `$${num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    setLocalValue(formatted);
+    form.setValue(name, formatted);
+  };
+
+  const handleFocus = () => {
+    setIsFocused(true);
+    const raw = localValue.replace(/[^\d.]/g, '');  // Strip to raw for editing
+    setLocalValue(raw);
+  };
+
+  return (
+    <Input
+      value={localValue}
+      onChange={handleChange}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+      placeholder={placeholder}
+      {...props}
+    />
+  );
+};
+
+// Usage for Estimated Value:
+<CurrencyInput
+  form={form}
+  name={`property.properties.${index}.estimatedValue` as const}
+  id={`property-estimated-value-${propertyId}`}
+  placeholder="$0.00"
+  data-testid={`input-property-estimated-value-${propertyId}`}
+/>
+
+Expected Improvement: Typing is fluid (e.g., "1" -> "10" -> "100.50" without issues). Icon updates on keystroke if you set raw to form in handleChange; full format on blur. Adjust parseValue in AppraisalIcon if raw values cause issues (e.g., add logic for missing decimals).
+
+3. Robust Solution: Use a Masking Library with react-hook-form Controller (Handles Everything Automatically)Why? Libraries like react-number-format (or react-currency-input-field) manage formatting, masking, and cursor position out-of-the-box, preventing jumps and lag. Integrate via Controller for RHF compatibility. This is a best practice for currency inputs to avoid custom bugs.
+Trade-off: Adds a dependency (install via npm i react-number-format), but it's lightweight and solves all issues.
+Implementation: Replace your Input with NumericFormat inside Controller. The library handles thousands separators, prefix, decimals, and cursor.
+
+tsx
+
+import { Controller } from 'react-hook-form';
+import { NumericFormat } from 'react-number-format';
+
+// For Estimated Value (apply similarly to Appraised):
+<Controller
+  control={form.control}
+  name={`property.properties.${index}.estimatedValue` as const}
+  render={({ field: { ref, ...field } }) => (
+    <NumericFormat
+      {...field}
+      getInputRef={ref}  // For RHF focus/ref
+      thousandSeparator=","
+      decimalSeparator="."
+      prefix="$"
+      decimalScale={2}
+      fixedDecimalScale  // Keeps .00 visible
+      placeholder="$0.00"
+      id={`property-estimated-value-${propertyId}`}
+      data-testid={`input-property-estimated-value-${propertyId}`}
+      onValueChange={(values) => {
+        field.onChange(values.formattedValue);  // Sync formatted to form
+      }}
+    />
+  )}
+/>
+
+Expected Improvement: Full real-time formatting without jumps or lag—library manages cursor and parsing. Icon works as-is since form gets formatted string. For validation, add RHF rules (e.g., rules={{ required: true }}).
+

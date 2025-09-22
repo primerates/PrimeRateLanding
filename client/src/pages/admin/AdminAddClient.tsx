@@ -26,6 +26,59 @@ import { nanoid } from 'nanoid';
 import { insertClientSchema, type InsertClient } from '@shared/schema';
 import { apiRequest } from '@/lib/queryClient';
 
+// CurrencyInput component that formats only on blur to prevent typing lag
+const CurrencyInput = React.memo<{
+  form: any;
+  name: string;
+  placeholder?: string;
+  id?: string;
+  'data-testid'?: string;
+}>(({ form, name, placeholder, id, 'data-testid': dataTestId }) => {
+  const [localValue, setLocalValue] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
+
+  // Sync local value with form value when not focused
+  useEffect(() => {
+    if (!isFocused) {
+      setLocalValue(form.watch(name) || '');
+    }
+  }, [form.watch(name), isFocused, name]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^\d.]/g, ''); // Only allow digits and decimal
+    setLocalValue(value);
+    
+    // Update form with raw value for real-time AppraisalIcon updates
+    form.setValue(name, value);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+    const num = parseFloat(localValue) || 0;
+    const formatted = num > 0 ? `$${num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '';
+    setLocalValue(formatted);
+    form.setValue(name, formatted);
+  };
+
+  const handleFocus = () => {
+    setIsFocused(true);
+    const raw = localValue.replace(/[^\d.]/g, ''); // Strip to raw for editing
+    setLocalValue(raw);
+  };
+
+  return (
+    <Input
+      id={id}
+      value={localValue}
+      onChange={handleChange}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+      placeholder={placeholder}
+      data-testid={dataTestId}
+    />
+  );
+});
+
 // Memoized AppraisalIcon component to prevent typing lag
 const AppraisalIcon = React.memo<{ index: number; control: any }>(({ index, control }) => {
   const estimatedValue = useWatch({ 
@@ -40,6 +93,7 @@ const AppraisalIcon = React.memo<{ index: number; control: any }>(({ index, cont
   const iconClass = useMemo(() => {
     const parseValue = (value: string) => {
       if (!value) return 0;
+      // Handle both raw numbers and formatted currency
       const cleaned = value.replace(/[^\d.]/g, '');
       return cleaned ? parseFloat(cleaned) : 0;
     };
