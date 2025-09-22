@@ -9163,9 +9163,59 @@ export default function AdminAddClient() {
                                     })()}
                                   </div>
                                   {(() => {
-                                    const attachedPropertyId = form.watch('currentLoan.attachedToProperty');
                                     const currentProperty = property;
-                                    const isAttachedToCurrentProperty = Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                    
+                                    // Check which loan is attached to this property
+                                    const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                    const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                    
+                                    const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                    const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                    
+                                    const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
+                                    const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
+                                    
+                                    // Check additional loans
+                                    const additionalLoansData = additionalLoans || [];
+                                    const attachedAdditionalLoan = additionalLoansData.find(loan => {
+                                      const attachedPropertyId = getDyn(`${loan.id}.attachedToProperty`);
+                                      return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                    });
+                                    
+                                    const hasAnyLoanAttached = isCurrentLoanAttached || isSecondLoanAttached || isThirdLoanAttached || Boolean(attachedAdditionalLoan);
+                                    
+                                    if (!hasAnyLoanAttached) return null;
+                                    
+                                    // Determine which modal to open and appropriate title
+                                    let onClickHandler = () => {};
+                                    let title = "View Loan Details";
+                                    
+                                    if (isCurrentLoanAttached) {
+                                      onClickHandler = () => setIsCurrentLoanPreviewOpen(true);
+                                      title = "View Current Loan 1 Details";
+                                    } else if (isSecondLoanAttached) {
+                                      onClickHandler = () => setIsCurrentSecondLoanPreviewOpen(true);
+                                      title = "View Current Loan 2 Details";
+                                    } else if (isThirdLoanAttached) {
+                                      onClickHandler = () => {
+                                        toast({
+                                          title: "Current Loan 3 Details",
+                                          description: "Current Loan 3 is attached to this property. View full details in the Loan tab.",
+                                          duration: 3000,
+                                        });
+                                      };
+                                      title = "View Current Loan 3 Details";
+                                    } else if (attachedAdditionalLoan) {
+                                      // For additional loans, we'll need to show a generic loan info (could expand this later)
+                                      onClickHandler = () => {
+                                        toast({
+                                          title: "Loan Details",
+                                          description: `${attachedAdditionalLoan.id.charAt(0).toUpperCase() + attachedAdditionalLoan.id.slice(1)} is attached to this property`,
+                                          duration: 3000,
+                                        });
+                                      };
+                                      title = `View ${attachedAdditionalLoan.id.charAt(0).toUpperCase() + attachedAdditionalLoan.id.slice(1)} Details`;
+                                    }
                                     
                                     return (
                                       <Button
@@ -9173,13 +9223,9 @@ export default function AdminAddClient() {
                                         variant="ghost"
                                         size="sm"
                                         className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                                        onClick={() => {
-                                          if (isAttachedToCurrentProperty) {
-                                            setIsCurrentLoanPreviewOpen(true);
-                                          }
-                                        }}
-                                        title="View Current Loan 1 Details"
-                                        data-testid="button-current-loan-info"
+                                        onClick={onClickHandler}
+                                        title={title}
+                                        data-testid="button-secured-first-loan-info"
                                       >
                                         <Info className="h-4 w-4" />
                                       </Button>
