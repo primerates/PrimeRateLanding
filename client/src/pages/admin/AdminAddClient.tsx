@@ -1205,10 +1205,15 @@ export default function AdminAddClient() {
     form.setValue('coBorrower.monthsAtAddress', borrowerMonthsAtAddress);
   };
 
-  // Phone number formatting
+  // Phone number formatting - allows complete erasure
   const formatPhoneNumber = (value: string) => {
     // Remove all non-numeric characters
     const phoneNumber = value.replace(/\D/g, '');
+    
+    // Allow empty string for complete erasure
+    if (phoneNumber.length === 0) {
+      return '';
+    }
     
     // Format as (XXX) XXX-XXXX
     if (phoneNumber.length >= 10) {
