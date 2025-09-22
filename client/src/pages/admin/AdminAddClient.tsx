@@ -5419,25 +5419,6 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="income-jobTitle">Job Title</Label>
-                              <Input
-                                id="income-jobTitle"
-                                {...form.register('income.jobTitle')}
-                                data-testid="input-income-jobTitle"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="income-monthlyIncome">Gross Monthly Income</Label>
-                              <Input
-                                id="income-monthlyIncome"
-                                {...form.register('income.monthlyIncome')}
-                                placeholder="$0.00"
-                                data-testid="input-income-monthlyIncome"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
                               <div className="flex items-center justify-between mb-2">
                                 <Label htmlFor="income-employer-phone" className="text-xs">
                                   {form.watch('income.isShowingEmploymentVerification') ? 'Employment Verification' : 'Employer Phone'}
@@ -5461,6 +5442,25 @@ export default function AdminAddClient() {
                                   handlePhoneChange(fieldName, e.target.value);
                                 }}
                                 data-testid="input-income-employer-phone"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-jobTitle">Job Title</Label>
+                              <Input
+                                id="income-jobTitle"
+                                {...form.register('income.jobTitle')}
+                                data-testid="input-income-jobTitle"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-monthlyIncome">Gross Monthly Income</Label>
+                              <Input
+                                id="income-monthlyIncome"
+                                {...form.register('income.monthlyIncome')}
+                                placeholder="$0.00"
+                                data-testid="input-income-monthlyIncome"
                               />
                             </div>
                             
@@ -5506,20 +5506,19 @@ export default function AdminAddClient() {
                             </div>
                           </div>
                           
-                          {/* Employer Address */}
-                          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                            <div className="space-y-2">
+                          {/* Employer Address Row (standardized format) */}
+                          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                            <div className="space-y-2 md:col-span-3">
                               <Label htmlFor="income-employer-street">Street Address</Label>
                               <Input
                                 id="income-employer-street"
-                                placeholder="123 Main St"
                                 {...form.register('income.employerAddress.street')}
                                 data-testid="input-income-employer-street"
                               />
                             </div>
                             
-                            <div className="space-y-2">
-                              <Label htmlFor="income-employer-unit">Unit/Apt</Label>
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="income-employer-unit">Unit/Suite</Label>
                               <Input
                                 id="income-employer-unit"
                                 {...form.register('income.employerAddress.unit')}
@@ -5527,7 +5526,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="income-employer-city">City</Label>
                               <Input
                                 id="income-employer-city"
@@ -5536,9 +5535,12 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="income-employer-state">State</Label>
-                              <Select onValueChange={(value) => form.setValue('income.employerAddress.state', value)}>
+                              <Select
+                                value={form.watch('income.employerAddress.state') || ''}
+                                onValueChange={(value) => form.setValue('income.employerAddress.state', value)}
+                              >
                                 <SelectTrigger data-testid="select-income-employer-state">
                                   <SelectValue placeholder="State" />
                                 </SelectTrigger>
@@ -5552,54 +5554,22 @@ export default function AdminAddClient() {
                               </Select>
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="income-employer-zip">ZIP Code</Label>
                               <Input
                                 id="income-employer-zip"
                                 {...form.register('income.employerAddress.zip')}
-                                onBlur={(e) => handleBorrowerEmployerZipCodeLookup(e.target.value)}
                                 data-testid="input-income-employer-zip"
                               />
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-4">
                               <Label htmlFor="income-employer-county">County</Label>
-                              {borrowerEmployerCountyOptions.length > 0 ? (
-                                <Select
-                                  value={form.watch('income.employerAddress.county') || ''}
-                                  onValueChange={(value) => {
-                                    if (value === 'manual-entry') {
-                                      form.setValue('income.employerAddress.county', '');
-                                      setBorrowerEmployerCountyOptions([]);
-                                    } else {
-                                      const selectedCounty = borrowerEmployerCountyOptions.find(county => county.value === value);
-                                      form.setValue('income.employerAddress.county', selectedCounty?.label || value, { shouldDirty: true });
-                                    }
-                                  }}
-                                >
-                                  <SelectTrigger data-testid="select-income-employer-county">
-                                    <SelectValue placeholder={countyLookupLoading.borrowerEmployer ? "Looking up counties..." : "Select county"} />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {borrowerEmployerCountyOptions.map((county) => (
-                                      <SelectItem key={county.value} value={county.value}>
-                                        {county.label}
-                                      </SelectItem>
-                                    ))}
-                                    <SelectItem value="manual-entry" className="text-muted-foreground border-t">
-                                      Enter county manually
-                                    </SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              ) : (
-                                <Input
-                                  id="income-employer-county"
-                                  {...form.register('income.employerAddress.county')}
-                                  placeholder={countyLookupLoading.borrowerEmployer ? "Looking up counties..." : "Enter county name"}
-                                  disabled={countyLookupLoading.borrowerEmployer}
-                                  data-testid="input-income-employer-county"
-                                />
-                              )}
+                              <Input
+                                id="income-employer-county"
+                                {...form.register('income.employerAddress.county')}
+                                data-testid="input-income-employer-county"
+                              />
                             </div>
                           </div>
                         </div>
@@ -5651,25 +5621,6 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="income-priorJobTitle">Job Title</Label>
-                              <Input
-                                id="income-priorJobTitle"
-                                {...form.register('income.priorJobTitle')}
-                                data-testid="input-income-priorJobTitle"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="income-priorMonthlyIncome">Gross Monthly Income</Label>
-                              <Input
-                                id="income-priorMonthlyIncome"
-                                {...form.register('income.priorMonthlyIncome')}
-                                placeholder="$0.00"
-                                data-testid="input-income-priorMonthlyIncome"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
                               <div className="flex items-center justify-between mb-2">
                                 <Label htmlFor="income-prior-employer-phone" className="text-xs">
                                   {form.watch('income.priorIsShowingEmploymentVerification') ? 'Employment Verification' : 'Employer Phone'}
@@ -5693,6 +5644,25 @@ export default function AdminAddClient() {
                                   handlePhoneChange(fieldName, e.target.value);
                                 }}
                                 data-testid="input-income-prior-employer-phone"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-priorJobTitle">Job Title</Label>
+                              <Input
+                                id="income-priorJobTitle"
+                                {...form.register('income.priorJobTitle')}
+                                data-testid="input-income-priorJobTitle"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-priorMonthlyIncome">Gross Monthly Income</Label>
+                              <Input
+                                id="income-priorMonthlyIncome"
+                                {...form.register('income.priorMonthlyIncome')}
+                                placeholder="$0.00"
+                                data-testid="input-income-priorMonthlyIncome"
                               />
                             </div>
                             
@@ -5738,20 +5708,19 @@ export default function AdminAddClient() {
                             </div>
                           </div>
                           
-                          {/* Employer Address */}
-                          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                            <div className="space-y-2">
+                          {/* Employer Address Row (standardized format) */}
+                          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                            <div className="space-y-2 md:col-span-3">
                               <Label htmlFor="income-prior-employer-street">Street Address</Label>
                               <Input
                                 id="income-prior-employer-street"
-                                placeholder="123 Main St"
                                 {...form.register('income.priorEmployerAddress.street')}
                                 data-testid="input-income-prior-employer-street"
                               />
                             </div>
                             
-                            <div className="space-y-2">
-                              <Label htmlFor="income-prior-employer-unit">Unit/Apt</Label>
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="income-prior-employer-unit">Unit/Suite</Label>
                               <Input
                                 id="income-prior-employer-unit"
                                 {...form.register('income.priorEmployerAddress.unit')}
@@ -5759,7 +5728,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="income-prior-employer-city">City</Label>
                               <Input
                                 id="income-prior-employer-city"
@@ -5768,9 +5737,12 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="income-prior-employer-state">State</Label>
-                              <Select onValueChange={(value) => form.setValue('income.priorEmployerAddress.state', value)}>
+                              <Select
+                                value={form.watch('income.priorEmployerAddress.state') || ''}
+                                onValueChange={(value) => form.setValue('income.priorEmployerAddress.state', value)}
+                              >
                                 <SelectTrigger data-testid="select-income-prior-employer-state">
                                   <SelectValue placeholder="State" />
                                 </SelectTrigger>
@@ -5784,54 +5756,22 @@ export default function AdminAddClient() {
                               </Select>
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="income-prior-employer-zip">ZIP Code</Label>
                               <Input
                                 id="income-prior-employer-zip"
                                 {...form.register('income.priorEmployerAddress.zip')}
-                                onBlur={(e) => handleBorrowerPriorEmployerZipCodeLookup(e.target.value)}
                                 data-testid="input-income-prior-employer-zip"
                               />
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-4">
                               <Label htmlFor="income-prior-employer-county">County</Label>
-                              {borrowerPriorEmployerCountyOptions.length > 0 ? (
-                                <Select
-                                  value={form.watch('income.priorEmployerAddress.county') || ''}
-                                  onValueChange={(value) => {
-                                    if (value === 'manual-entry') {
-                                      form.setValue('income.priorEmployerAddress.county', '');
-                                      setBorrowerPriorEmployerCountyOptions([]);
-                                    } else {
-                                      const selectedCounty = borrowerPriorEmployerCountyOptions.find(county => county.value === value);
-                                      form.setValue('income.priorEmployerAddress.county', selectedCounty?.label || value, { shouldDirty: true });
-                                    }
-                                  }}
-                                >
-                                  <SelectTrigger data-testid="select-income-prior-employer-county">
-                                    <SelectValue placeholder={countyLookupLoading.borrowerPriorEmployer ? "Looking up counties..." : "Select county"} />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {borrowerPriorEmployerCountyOptions.map((county) => (
-                                      <SelectItem key={county.value} value={county.value}>
-                                        {county.label}
-                                      </SelectItem>
-                                    ))}
-                                    <SelectItem value="manual-entry" className="text-muted-foreground border-t">
-                                      Enter county manually
-                                    </SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              ) : (
-                                <Input
-                                  id="income-prior-employer-county"
-                                  {...form.register('income.priorEmployerAddress.county')}
-                                  placeholder={countyLookupLoading.borrowerPriorEmployer ? "Looking up counties..." : "Enter county name"}
-                                  disabled={countyLookupLoading.borrowerPriorEmployer}
-                                  data-testid="input-income-prior-employer-county"
-                                />
-                              )}
+                              <Input
+                                id="income-prior-employer-county"
+                                {...form.register('income.priorEmployerAddress.county')}
+                                data-testid="input-income-prior-employer-county"
+                              />
                             </div>
                           </div>
                         </div>
@@ -5877,25 +5817,6 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="income-secondJobTitle">Job Title</Label>
-                              <Input
-                                id="income-secondJobTitle"
-                                {...form.register('income.secondJobTitle')}
-                                data-testid="input-income-secondJobTitle"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="income-secondMonthlyIncome">Gross Monthly Income</Label>
-                              <Input
-                                id="income-secondMonthlyIncome"
-                                {...form.register('income.secondMonthlyIncome')}
-                                placeholder="$0.00"
-                                data-testid="input-income-secondMonthlyIncome"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
                               <div className="flex items-center justify-between mb-2">
                                 <Label htmlFor="income-second-employer-phone" className="text-xs">
                                   {form.watch('income.secondIsShowingEmploymentVerification') ? 'Employment Verification' : 'Employer Phone'}
@@ -5919,6 +5840,25 @@ export default function AdminAddClient() {
                                   handlePhoneChange(fieldName, e.target.value);
                                 }}
                                 data-testid="input-income-second-employer-phone"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-secondJobTitle">Job Title</Label>
+                              <Input
+                                id="income-secondJobTitle"
+                                {...form.register('income.secondJobTitle')}
+                                data-testid="input-income-secondJobTitle"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-secondMonthlyIncome">Gross Monthly Income</Label>
+                              <Input
+                                id="income-secondMonthlyIncome"
+                                {...form.register('income.secondMonthlyIncome')}
+                                placeholder="$0.00"
+                                data-testid="input-income-secondMonthlyIncome"
                               />
                             </div>
                             
@@ -5964,20 +5904,19 @@ export default function AdminAddClient() {
                             </div>
                           </div>
                           
-                          {/* Employer Address */}
-                          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                            <div className="space-y-2">
+                          {/* Employer Address Row (standardized format) */}
+                          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                            <div className="space-y-2 md:col-span-3">
                               <Label htmlFor="income-second-employer-street">Street Address</Label>
                               <Input
                                 id="income-second-employer-street"
-                                placeholder="123 Main St"
                                 {...form.register('income.secondEmployerAddress.street')}
                                 data-testid="input-income-second-employer-street"
                               />
                             </div>
                             
-                            <div className="space-y-2">
-                              <Label htmlFor="income-second-employer-unit">Unit/Apt</Label>
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="income-second-employer-unit">Unit/Suite</Label>
                               <Input
                                 id="income-second-employer-unit"
                                 {...form.register('income.secondEmployerAddress.unit')}
@@ -5985,7 +5924,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="income-second-employer-city">City</Label>
                               <Input
                                 id="income-second-employer-city"
@@ -5994,7 +5933,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="income-second-employer-state">State</Label>
                               <Select
                                 value={form.watch('income.secondEmployerAddress.state') || ''}
@@ -6013,54 +5952,22 @@ export default function AdminAddClient() {
                               </Select>
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="income-second-employer-zip">ZIP Code</Label>
                               <Input
                                 id="income-second-employer-zip"
                                 {...form.register('income.secondEmployerAddress.zip')}
-                                onBlur={(e) => handleBorrowerSecondEmployerZipCodeLookup(e.target.value)}
                                 data-testid="input-income-second-employer-zip"
                               />
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-4">
                               <Label htmlFor="income-second-employer-county">County</Label>
-                              {borrowerSecondEmployerCountyOptions.length > 0 ? (
-                                <Select
-                                  value={form.watch('income.secondEmployerAddress.county') || ''}
-                                  onValueChange={(value) => {
-                                    if (value === 'manual-entry') {
-                                      form.setValue('income.secondEmployerAddress.county', '');
-                                      setBorrowerSecondEmployerCountyOptions([]);
-                                    } else {
-                                      const selectedCounty = borrowerSecondEmployerCountyOptions.find(county => county.value === value);
-                                      form.setValue('income.secondEmployerAddress.county', selectedCounty?.label || value, { shouldDirty: true });
-                                    }
-                                  }}
-                                >
-                                  <SelectTrigger data-testid="select-income-second-employer-county">
-                                    <SelectValue placeholder={countyLookupLoading.borrowerSecondEmployer ? "Looking up counties..." : "Select county"} />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {borrowerSecondEmployerCountyOptions.map((county) => (
-                                      <SelectItem key={county.value} value={county.value}>
-                                        {county.label}
-                                      </SelectItem>
-                                    ))}
-                                    <SelectItem value="manual-entry" className="text-muted-foreground border-t">
-                                      Enter county manually
-                                    </SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              ) : (
-                                <Input
-                                  id="income-second-employer-county"
-                                  {...form.register('income.secondEmployerAddress.county')}
-                                  placeholder={countyLookupLoading.borrowerSecondEmployer ? "Looking up counties..." : "Enter county name"}
-                                  disabled={countyLookupLoading.borrowerSecondEmployer}
-                                  data-testid="input-income-second-employer-county"
-                                />
-                              )}
+                              <Input
+                                id="income-second-employer-county"
+                                {...form.register('income.secondEmployerAddress.county')}
+                                data-testid="input-income-second-employer-county"
+                              />
                             </div>
                           </div>
                         </div>
@@ -6734,25 +6641,6 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-jobTitle">Job Title</Label>
-                              <Input
-                                id="coBorrowerIncome-jobTitle"
-                                {...form.register('coBorrowerIncome.jobTitle')}
-                                data-testid="input-coborrowerIncome-jobTitle"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-monthlyIncome">Gross Monthly Income</Label>
-                              <Input
-                                id="coBorrowerIncome-monthlyIncome"
-                                {...form.register('coBorrowerIncome.monthlyIncome')}
-                                placeholder="$0.00"
-                                data-testid="input-coborrowerIncome-monthlyIncome"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
                               <div className="flex items-center justify-between mb-2">
                                 <Label htmlFor="coBorrowerIncome-employer-phone" className="text-xs">
                                   {form.watch('coBorrowerIncome.isShowingEmploymentVerification') ? 'Employment Verification' : 'Employer Phone'}
@@ -6776,6 +6664,25 @@ export default function AdminAddClient() {
                                   handlePhoneChange(fieldName, e.target.value);
                                 }}
                                 data-testid="input-coborrowerIncome-employer-phone"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-jobTitle">Job Title</Label>
+                              <Input
+                                id="coBorrowerIncome-jobTitle"
+                                {...form.register('coBorrowerIncome.jobTitle')}
+                                data-testid="input-coborrowerIncome-jobTitle"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-monthlyIncome">Gross Monthly Income</Label>
+                              <Input
+                                id="coBorrowerIncome-monthlyIncome"
+                                {...form.register('coBorrowerIncome.monthlyIncome')}
+                                placeholder="$0.00"
+                                data-testid="input-coborrowerIncome-monthlyIncome"
                               />
                             </div>
                             
@@ -6821,20 +6728,19 @@ export default function AdminAddClient() {
                             </div>
                           </div>
                           
-                          {/* Employer Address */}
-                          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                            <div className="space-y-2">
+                          {/* Employer Address Row (standardized format) */}
+                          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                            <div className="space-y-2 md:col-span-3">
                               <Label htmlFor="coBorrowerIncome-employer-street">Street Address</Label>
                               <Input
                                 id="coBorrowerIncome-employer-street"
-                                placeholder="123 Main St"
                                 {...form.register('coBorrowerIncome.employerAddress.street')}
                                 data-testid="input-coborrowerIncome-employer-street"
                               />
                             </div>
                             
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-employer-unit">Unit/Apt</Label>
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="coBorrowerIncome-employer-unit">Unit/Suite</Label>
                               <Input
                                 id="coBorrowerIncome-employer-unit"
                                 {...form.register('coBorrowerIncome.employerAddress.unit')}
@@ -6842,7 +6748,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="coBorrowerIncome-employer-city">City</Label>
                               <Input
                                 id="coBorrowerIncome-employer-city"
@@ -6851,9 +6757,12 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="coBorrowerIncome-employer-state">State</Label>
-                              <Select onValueChange={(value) => form.setValue('coBorrowerIncome.employerAddress.state', value)}>
+                              <Select
+                                value={form.watch('coBorrowerIncome.employerAddress.state') || ''}
+                                onValueChange={(value) => form.setValue('coBorrowerIncome.employerAddress.state', value)}
+                              >
                                 <SelectTrigger data-testid="select-coborrowerIncome-employer-state">
                                   <SelectValue placeholder="State" />
                                 </SelectTrigger>
@@ -6867,54 +6776,22 @@ export default function AdminAddClient() {
                               </Select>
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="coBorrowerIncome-employer-zip">ZIP Code</Label>
                               <Input
                                 id="coBorrowerIncome-employer-zip"
                                 {...form.register('coBorrowerIncome.employerAddress.zip')}
-                                onBlur={(e) => handleCoBorrowerEmployerZipCodeLookup(e.target.value)}
                                 data-testid="input-coborrowerIncome-employer-zip"
                               />
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-4">
                               <Label htmlFor="coBorrowerIncome-employer-county">County</Label>
-                              {coBorrowerEmployerCountyOptions.length > 0 ? (
-                                <Select
-                                  value={form.watch('coBorrowerIncome.employerAddress.county') || ''}
-                                  onValueChange={(value) => {
-                                    if (value === 'manual-entry') {
-                                      form.setValue('coBorrowerIncome.employerAddress.county', '');
-                                      setCoBorrowerEmployerCountyOptions([]);
-                                    } else {
-                                      const selectedCounty = coBorrowerEmployerCountyOptions.find(county => county.value === value);
-                                      form.setValue('coBorrowerIncome.employerAddress.county', selectedCounty?.label || value, { shouldDirty: true });
-                                    }
-                                  }}
-                                >
-                                  <SelectTrigger data-testid="select-coborrowerIncome-employer-county">
-                                    <SelectValue placeholder={countyLookupLoading.coBorrowerEmployer ? "Looking up counties..." : "Select county"} />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {coBorrowerEmployerCountyOptions.map((county) => (
-                                      <SelectItem key={county.value} value={county.value}>
-                                        {county.label}
-                                      </SelectItem>
-                                    ))}
-                                    <SelectItem value="manual-entry" className="text-muted-foreground border-t">
-                                      Enter county manually
-                                    </SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              ) : (
-                                <Input
-                                  id="coBorrowerIncome-employer-county"
-                                  {...form.register('coBorrowerIncome.employerAddress.county')}
-                                  placeholder={countyLookupLoading.coBorrowerEmployer ? "Looking up counties..." : "Enter county name"}
-                                  disabled={countyLookupLoading.coBorrowerEmployer}
-                                  data-testid="input-coborrowerIncome-employer-county"
-                                />
-                              )}
+                              <Input
+                                id="coBorrowerIncome-employer-county"
+                                {...form.register('coBorrowerIncome.employerAddress.county')}
+                                data-testid="input-coborrowerIncome-employer-county"
+                              />
                             </div>
                           </div>
                         </div>
@@ -6966,6 +6843,17 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-prior-employer-phone">Employer Phone</Label>
+                              <Input
+                                id="coBorrowerIncome-prior-employer-phone"
+                                placeholder="(XXX) XXX-XXXX"
+                                value={form.watch('coBorrowerIncome.priorEmployerPhone') || ''}
+                                onChange={(e) => handlePhoneChange('coBorrowerIncome.priorEmployerPhone', e.target.value)}
+                                data-testid="input-coBorrowerIncome-prior-employer-phone"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
                               <Label htmlFor="coBorrowerIncome-priorJobTitle">Job Title</Label>
                               <Input
                                 id="coBorrowerIncome-priorJobTitle"
@@ -6981,17 +6869,6 @@ export default function AdminAddClient() {
                                 {...form.register('coBorrowerIncome.priorMonthlyIncome')}
                                 placeholder="$0.00"
                                 data-testid="input-coborrowerIncome-priorMonthlyIncome"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-prior-employer-phone">Employer Phone</Label>
-                              <Input
-                                id="coBorrowerIncome-prior-employer-phone"
-                                placeholder="(XXX) XXX-XXXX"
-                                value={form.watch('coBorrowerIncome.priorEmployerPhone') || ''}
-                                onChange={(e) => handlePhoneChange('coBorrowerIncome.priorEmployerPhone', e.target.value)}
-                                data-testid="input-coBorrowerIncome-prior-employer-phone"
                               />
                             </div>
                             
@@ -7037,20 +6914,19 @@ export default function AdminAddClient() {
                             </div>
                           </div>
                           
-                          {/* Employer Address */}
-                          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                            <div className="space-y-2">
+                          {/* Employer Address Row (standardized format) */}
+                          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                            <div className="space-y-2 md:col-span-3">
                               <Label htmlFor="coBorrowerIncome-prior-employer-street">Street Address</Label>
                               <Input
                                 id="coBorrowerIncome-prior-employer-street"
-                                placeholder="123 Main St"
                                 {...form.register('coBorrowerIncome.priorEmployerAddress.street')}
                                 data-testid="input-coBorrowerIncome-prior-employer-street"
                               />
                             </div>
                             
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-prior-employer-unit">Unit/Apt</Label>
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="coBorrowerIncome-prior-employer-unit">Unit/Suite</Label>
                               <Input
                                 id="coBorrowerIncome-prior-employer-unit"
                                 {...form.register('coBorrowerIncome.priorEmployerAddress.unit')}
@@ -7058,7 +6934,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="coBorrowerIncome-prior-employer-city">City</Label>
                               <Input
                                 id="coBorrowerIncome-prior-employer-city"
@@ -7067,9 +6943,12 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="coBorrowerIncome-prior-employer-state">State</Label>
-                              <Select onValueChange={(value) => form.setValue('coBorrowerIncome.priorEmployerAddress.state', value)}>
+                              <Select
+                                value={form.watch('coBorrowerIncome.priorEmployerAddress.state') || ''}
+                                onValueChange={(value) => form.setValue('coBorrowerIncome.priorEmployerAddress.state', value)}
+                              >
                                 <SelectTrigger data-testid="select-coBorrowerIncome-prior-employer-state">
                                   <SelectValue placeholder="State" />
                                 </SelectTrigger>
@@ -7083,54 +6962,22 @@ export default function AdminAddClient() {
                               </Select>
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="coBorrowerIncome-prior-employer-zip">ZIP Code</Label>
                               <Input
                                 id="coBorrowerIncome-prior-employer-zip"
                                 {...form.register('coBorrowerIncome.priorEmployerAddress.zip')}
-                                onBlur={(e) => handleCoBorrowerPriorEmployerZipCodeLookup(e.target.value)}
                                 data-testid="input-coBorrowerIncome-prior-employer-zip"
                               />
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-4">
                               <Label htmlFor="coBorrowerIncome-prior-employer-county">County</Label>
-                              {coBorrowerPriorEmployerCountyOptions.length > 0 ? (
-                                <Select
-                                  value={form.watch('coBorrowerIncome.priorEmployerAddress.county') || ''}
-                                  onValueChange={(value) => {
-                                    if (value === 'manual-entry') {
-                                      form.setValue('coBorrowerIncome.priorEmployerAddress.county', '');
-                                      setCoBorrowerPriorEmployerCountyOptions([]);
-                                    } else {
-                                      const selectedCounty = coBorrowerPriorEmployerCountyOptions.find(county => county.value === value);
-                                      form.setValue('coBorrowerIncome.priorEmployerAddress.county', selectedCounty?.label || value, { shouldDirty: true });
-                                    }
-                                  }}
-                                >
-                                  <SelectTrigger data-testid="select-coBorrowerIncome-prior-employer-county">
-                                    <SelectValue placeholder={countyLookupLoading.coBorrowerPriorEmployer ? "Looking up counties..." : "Select county"} />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {coBorrowerPriorEmployerCountyOptions.map((county) => (
-                                      <SelectItem key={county.value} value={county.value}>
-                                        {county.label}
-                                      </SelectItem>
-                                    ))}
-                                    <SelectItem value="manual-entry" className="text-muted-foreground border-t">
-                                      Enter county manually
-                                    </SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              ) : (
-                                <Input
-                                  id="coBorrowerIncome-prior-employer-county"
-                                  {...form.register('coBorrowerIncome.priorEmployerAddress.county')}
-                                  placeholder={countyLookupLoading.coBorrowerPriorEmployer ? "Looking up counties..." : "Enter county name"}
-                                  disabled={countyLookupLoading.coBorrowerPriorEmployer}
-                                  data-testid="input-coBorrowerIncome-prior-employer-county"
-                                />
-                              )}
+                              <Input
+                                id="coBorrowerIncome-prior-employer-county"
+                                {...form.register('coBorrowerIncome.priorEmployerAddress.county')}
+                                data-testid="input-coBorrowerIncome-prior-employer-county"
+                              />
                             </div>
                           </div>
                         </div>
@@ -7176,25 +7023,6 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-secondJobTitle">Job Title</Label>
-                              <Input
-                                id="coBorrowerIncome-secondJobTitle"
-                                {...form.register('coBorrowerIncome.secondJobTitle')}
-                                data-testid="input-coborrowerIncome-secondJobTitle"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-secondMonthlyIncome">Gross Monthly Income</Label>
-                              <Input
-                                id="coBorrowerIncome-secondMonthlyIncome"
-                                {...form.register('coBorrowerIncome.secondMonthlyIncome')}
-                                placeholder="$0.00"
-                                data-testid="input-coborrowerIncome-secondMonthlyIncome"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
                               <div className="flex items-center justify-between mb-2">
                                 <Label htmlFor="coBorrowerIncome-second-employer-phone" className="text-xs">
                                   {form.watch('coBorrowerIncome.secondIsShowingEmploymentVerification') ? 'Employment Verification' : 'Employer Phone'}
@@ -7218,6 +7046,25 @@ export default function AdminAddClient() {
                                   handlePhoneChange(fieldName, e.target.value);
                                 }}
                                 data-testid="input-coborrowerIncome-second-employer-phone"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-secondJobTitle">Job Title</Label>
+                              <Input
+                                id="coBorrowerIncome-secondJobTitle"
+                                {...form.register('coBorrowerIncome.secondJobTitle')}
+                                data-testid="input-coborrowerIncome-secondJobTitle"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-secondMonthlyIncome">Gross Monthly Income</Label>
+                              <Input
+                                id="coBorrowerIncome-secondMonthlyIncome"
+                                {...form.register('coBorrowerIncome.secondMonthlyIncome')}
+                                placeholder="$0.00"
+                                data-testid="input-coborrowerIncome-secondMonthlyIncome"
                               />
                             </div>
                             
@@ -7263,20 +7110,19 @@ export default function AdminAddClient() {
                             </div>
                           </div>
                           
-                          {/* Employer Address */}
-                          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                            <div className="space-y-2">
+                          {/* Employer Address Row (standardized format) */}
+                          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                            <div className="space-y-2 md:col-span-3">
                               <Label htmlFor="coBorrowerIncome-second-employer-street">Street Address</Label>
                               <Input
                                 id="coBorrowerIncome-second-employer-street"
-                                placeholder="123 Main St"
                                 {...form.register('coBorrowerIncome.secondEmployerAddress.street')}
                                 data-testid="input-coborrowerIncome-second-employer-street"
                               />
                             </div>
                             
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-second-employer-unit">Unit/Apt</Label>
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="coBorrowerIncome-second-employer-unit">Unit/Suite</Label>
                               <Input
                                 id="coBorrowerIncome-second-employer-unit"
                                 {...form.register('coBorrowerIncome.secondEmployerAddress.unit')}
@@ -7284,7 +7130,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="coBorrowerIncome-second-employer-city">City</Label>
                               <Input
                                 id="coBorrowerIncome-second-employer-city"
@@ -7293,7 +7139,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="coBorrowerIncome-second-employer-state">State</Label>
                               <Select
                                 value={form.watch('coBorrowerIncome.secondEmployerAddress.state') || ''}
@@ -7312,54 +7158,22 @@ export default function AdminAddClient() {
                               </Select>
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="coBorrowerIncome-second-employer-zip">ZIP Code</Label>
                               <Input
                                 id="coBorrowerIncome-second-employer-zip"
                                 {...form.register('coBorrowerIncome.secondEmployerAddress.zip')}
-                                onBlur={(e) => handleCoBorrowerSecondEmployerZipCodeLookup(e.target.value)}
                                 data-testid="input-coborrowerIncome-second-employer-zip"
                               />
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-4">
                               <Label htmlFor="coBorrowerIncome-second-employer-county">County</Label>
-                              {coBorrowerSecondEmployerCountyOptions.length > 0 ? (
-                                <Select
-                                  value={form.watch('coBorrowerIncome.secondEmployerAddress.county') || ''}
-                                  onValueChange={(value) => {
-                                    if (value === 'manual-entry') {
-                                      form.setValue('coBorrowerIncome.secondEmployerAddress.county', '');
-                                      setCoBorrowerSecondEmployerCountyOptions([]);
-                                    } else {
-                                      const selectedCounty = coBorrowerSecondEmployerCountyOptions.find(county => county.value === value);
-                                      form.setValue('coBorrowerIncome.secondEmployerAddress.county', selectedCounty?.label || value, { shouldDirty: true });
-                                    }
-                                  }}
-                                >
-                                  <SelectTrigger data-testid="select-coborrowerIncome-second-employer-county">
-                                    <SelectValue placeholder={countyLookupLoading.coBorrowerSecondEmployer ? "Looking up counties..." : "Select county"} />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {coBorrowerSecondEmployerCountyOptions.map((county) => (
-                                      <SelectItem key={county.value} value={county.value}>
-                                        {county.label}
-                                      </SelectItem>
-                                    ))}
-                                    <SelectItem value="manual-entry" className="text-muted-foreground border-t">
-                                      Enter county manually
-                                    </SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              ) : (
-                                <Input
-                                  id="coBorrowerIncome-second-employer-county"
-                                  {...form.register('coBorrowerIncome.secondEmployerAddress.county')}
-                                  placeholder={countyLookupLoading.coBorrowerSecondEmployer ? "Looking up counties..." : "Enter county name"}
-                                  disabled={countyLookupLoading.coBorrowerSecondEmployer}
-                                  data-testid="input-coborrowerIncome-second-employer-county"
-                                />
-                              )}
+                              <Input
+                                id="coBorrowerIncome-second-employer-county"
+                                {...form.register('coBorrowerIncome.secondEmployerAddress.county')}
+                                data-testid="input-coborrowerIncome-second-employer-county"
+                              />
                             </div>
                           </div>
                         </div>
