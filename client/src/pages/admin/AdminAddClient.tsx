@@ -2293,10 +2293,10 @@ export default function AdminAddClient() {
                             });
                           }
                         }}
-                        disabled={targetForm.watch('currentLoan.attachedToProperty') !== 'Other'}
                       >
                         <SelectTrigger
                           data-testid={`select-${idPrefix}currentLoan-property-type`}
+                          disabled={targetForm.watch('currentLoan.attachedToProperty') !== 'Other'}
                           className={targetForm.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
                         >
                           <SelectValue placeholder="Select property type" />
@@ -2766,10 +2766,10 @@ export default function AdminAddClient() {
                                 });
                               }
                             }}
-                            disabled={targetForm.watch('secondLoan.attachedToProperty') !== 'Other'}
                           >
                             <SelectTrigger
                               data-testid="select-secondLoan-property-type"
+                              disabled={targetForm.watch('secondLoan.attachedToProperty') !== 'Other'}
                               className={targetForm.watch('secondLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
                             >
                               <SelectValue placeholder="Select property type" />
