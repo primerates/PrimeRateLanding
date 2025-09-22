@@ -5530,26 +5530,41 @@ export default function AdminAddClient() {
                           </Select>
                         </div>
                         
-                        <div className="space-y-2">
-                          <Label htmlFor="income-ownershipPercentage">Ownership %</Label>
+                        <div className="space-y-2" style={{width: '50%'}}>
+                          <Label htmlFor="income-ownershipPercentage">Ownhership</Label>
                           <Input
                             id="income-ownershipPercentage"
-                            type="number"
-                            min="0"
-                            max="100"
-                            placeholder="0"
-                            {...form.register('income.ownershipPercentage')}
+                            type="text"
+                            placeholder="0%"
+                            value={(() => {
+                              const val = form.watch('income.ownershipPercentage');
+                              if (!val) return '';
+                              return val.includes('%') ? val : `${val}%`;
+                            })()}
+                            onChange={(e) => {
+                              const value = e.target.value.replace('%', '').replace(/[^\d]/g, '');
+                              if (value === '' || (parseInt(value) >= 0 && parseInt(value) <= 100)) {
+                                form.setValue('income.ownershipPercentage', value, { shouldDirty: true, shouldTouch: true });
+                              }
+                            }}
                             data-testid="input-income-ownershipPercentage"
                           />
                         </div>
                         
                         <div className="space-y-2">
                           <Label htmlFor="income-taxesPreparedBy">Taxes Prepared By</Label>
-                          <Input
-                            id="income-taxesPreparedBy"
-                            {...form.register('income.taxesPreparedBy')}
-                            data-testid="input-income-taxesPreparedBy"
-                          />
+                          <Select onValueChange={(value) => form.setValue('income.taxesPreparedBy', value, { shouldDirty: true, shouldTouch: true })} value={form.watch('income.taxesPreparedBy') || ''}>
+                            <SelectTrigger data-testid="select-income-taxesPreparedBy">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Select" data-testid="select-item-select">Select</SelectItem>
+                              <SelectItem value="Self-Prepared" data-testid="select-item-self-prepared">Self-Prepared</SelectItem>
+                              <SelectItem value="Tax Preparer" data-testid="select-item-tax-preparer">Tax Preparer</SelectItem>
+                              <SelectItem value="CPA" data-testid="select-item-cpa">CPA</SelectItem>
+                              <SelectItem value="Other" data-testid="select-item-other-tax">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                         
                         <div className="space-y-2">
@@ -5574,7 +5589,7 @@ export default function AdminAddClient() {
                           </div>
                           
                           <div className="space-y-2 md:col-span-1">
-                            <Label htmlFor="income-business-unit">Unit/Apt</Label>
+                            <Label htmlFor="income-business-unit">Unit/Suite</Label>
                             <Input
                               id="income-business-unit"
                               {...form.register('income.businessAddress.unit')}
@@ -5625,6 +5640,26 @@ export default function AdminAddClient() {
                               id="income-business-county"
                               {...form.register('income.businessAddress.county')}
                               data-testid="input-income-business-county"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="income-grossAnnualRevenue">Gross annual revenue</Label>
+                            <Input
+                              id="income-grossAnnualRevenue"
+                              type="text"
+                              placeholder="$0"
+                              value={(() => {
+                                const val = form.watch('income.grossAnnualRevenue');
+                                if (!val) return '';
+                                const numVal = val.replace(/[^\d]/g, '');
+                                return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
+                              })()}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/[^\d]/g, '');
+                                form.setValue('income.grossAnnualRevenue', value, { shouldDirty: true, shouldTouch: true });
+                              }}
+                              data-testid="input-income-grossAnnualRevenue"
                             />
                           </div>
                         </div>
