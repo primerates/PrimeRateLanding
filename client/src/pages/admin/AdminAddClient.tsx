@@ -358,11 +358,11 @@ export default function AdminAddClient() {
     }
     
     // Auto-copy address to related loan sections if they're attached to this property
-    const propertyUse = property.use;
+    const propertyId = property.id;
     
     // Check current loan
     const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
-    if (currentLoanAttached === propertyUse) {
+    if (currentLoanAttached === propertyId) {
       form.setValue('currentLoan.propertyAddress', {
         street: propertyAddress.street || '',
         unit: propertyAddress.unit || '',
@@ -375,7 +375,7 @@ export default function AdminAddClient() {
     
     // Check second loan
     const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
-    if (secondLoanAttached === propertyUse) {
+    if (secondLoanAttached === propertyId) {
       form.setValue('secondLoan.propertyAddress', {
         street: propertyAddress.street || '',
         unit: propertyAddress.unit || '',
@@ -388,7 +388,7 @@ export default function AdminAddClient() {
     
     // Check third loan
     const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
-    if (thirdLoanAttached === propertyUse) {
+    if (thirdLoanAttached === propertyId) {
       form.setValue('thirdLoan.propertyAddress', {
         street: propertyAddress.street || '',
         unit: propertyAddress.unit || '',
@@ -1978,7 +1978,7 @@ export default function AdminAddClient() {
                                                property.use === 'investment' ? 'Investment Property' : 'Property';
                             const displayText = `${streetAddress} (${propertyType})`;
                             return (
-                              <SelectItem key={`property-${index}`} value={streetAddress}>
+                              <SelectItem key={`property-${property.id}`} value={property.id}>
                                 {displayText}
                               </SelectItem>
                             );
@@ -1995,7 +1995,13 @@ export default function AdminAddClient() {
                 <div className="mt-4 p-4 border-t border-gray-200">
                   <div className="flex items-center justify-between mb-3">
                     <Label className="text-sm font-medium text-gray-700">
-                      Property Address ({targetForm.watch('currentLoan.attachedToProperty')})
+                      Property Address ({(() => {
+                        const attachedPropertyId = targetForm.watch('currentLoan.attachedToProperty');
+                        if (attachedPropertyId === 'Other') return 'Other';
+                        const properties = targetForm.watch('property.properties') || [];
+                        const selectedProperty = properties.find((p: any) => p.id === attachedPropertyId);
+                        return selectedProperty?.address?.street || attachedPropertyId;
+                      })()})
                     </Label>
                     <Button 
                       type="button"
@@ -2368,7 +2374,7 @@ export default function AdminAddClient() {
                                                property.use === 'investment' ? 'Investment Property' : 'Property';
                             const displayText = `${streetAddress} (${propertyType})`;
                             return (
-                              <SelectItem key={`property-${index}`} value={streetAddress}>
+                              <SelectItem key={`property-${property.id}`} value={property.id}>
                                 {displayText}
                               </SelectItem>
                             );
@@ -2387,7 +2393,13 @@ export default function AdminAddClient() {
                   <Collapsible open={isPropertyAddressOpen} onOpenChange={setIsPropertyAddressOpen}>
                     <div className="flex items-center justify-between mb-3">
                       <Label className="text-sm font-medium text-gray-700">
-                        Property Address ({targetForm.watch('secondLoan.attachedToProperty')})
+                        Property Address ({(() => {
+                          const attachedPropertyId = targetForm.watch('secondLoan.attachedToProperty');
+                          if (attachedPropertyId === 'Other') return 'Other';
+                          const properties = targetForm.watch('property.properties') || [];
+                          const selectedProperty = properties.find((p: any) => p.id === attachedPropertyId);
+                          return selectedProperty?.address?.street || attachedPropertyId;
+                        })()})
                       </Label>
                       <CollapsibleTrigger asChild>
                         <Button
@@ -3277,12 +3289,12 @@ export default function AdminAddClient() {
   
   // Auto-copy property address to Current Loan based on Attached to Property selection
   const autoCopyPropertyAddressToCurrentLoan = () => {
-    const attachedProperty = form.getValues('currentLoan.attachedToProperty') as string;
+    const attachedPropertyId = form.getValues('currentLoan.attachedToProperty') as string;
     
-    if (attachedProperty && attachedProperty !== 'Other' && attachedProperty !== 'select') {
-      // Find property by street address since attachedToProperty now contains the street address
+    if (attachedPropertyId && attachedPropertyId !== 'Other' && attachedPropertyId !== 'select') {
+      // Find property by ID since attachedToProperty now contains the property ID
       const properties = form.getValues('property.properties') || [];
-      const selectedProperty = properties.find((p: any) => p.address?.street === attachedProperty);
+      const selectedProperty = properties.find((p: any) => p.id === attachedPropertyId);
       
       if (selectedProperty?.address) {
         // Copy address from the selected property
@@ -3293,7 +3305,7 @@ export default function AdminAddClient() {
         form.setValue('currentLoan.propertyAddress.zipCode', selectedProperty.address.zip || '');
         form.setValue('currentLoan.propertyAddress.county', selectedProperty.address.county || '');
       }
-    } else if (attachedProperty === 'Other' || attachedProperty === 'select') {
+    } else if (attachedPropertyId === 'Other' || attachedPropertyId === 'select') {
       // Clear fields for manual entry or when no selection
       form.setValue('currentLoan.propertyAddress.street', '');
       form.setValue('currentLoan.propertyAddress.unit', '');
@@ -3306,12 +3318,12 @@ export default function AdminAddClient() {
 
   // Auto-copy property address to Loan tab Second Loan based on Attached to Property selection
   const autoCopyPropertyAddressToLoanTabSecondLoan = () => {
-    const attachedProperty = form.getValues('secondLoan.attachedToProperty') as string;
+    const attachedPropertyId = form.getValues('secondLoan.attachedToProperty') as string;
     
-    if (attachedProperty && attachedProperty !== 'Other' && attachedProperty !== 'select') {
-      // Find property by street address since attachedToProperty now contains the street address
+    if (attachedPropertyId && attachedPropertyId !== 'Other' && attachedPropertyId !== 'select') {
+      // Find property by ID since attachedToProperty now contains the property ID
       const properties = form.getValues('property.properties') || [];
-      const selectedProperty = properties.find((p: any) => p.address?.street === attachedProperty);
+      const selectedProperty = properties.find((p: any) => p.id === attachedPropertyId);
       
       if (selectedProperty?.address) {
         // Copy address from the selected property
@@ -3322,7 +3334,7 @@ export default function AdminAddClient() {
         form.setValue('secondLoan.propertyAddress.zipCode', selectedProperty.address.zip || '');
         form.setValue('secondLoan.propertyAddress.county', selectedProperty.address.county || '');
       }
-    } else if (attachedProperty === 'Other' || attachedProperty === 'select') {
+    } else if (attachedPropertyId === 'Other' || attachedPropertyId === 'select') {
       // Clear fields for manual entry or when no selection
       form.setValue('secondLoan.propertyAddress.street', '');
       form.setValue('secondLoan.propertyAddress.unit', '');
