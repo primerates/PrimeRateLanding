@@ -5478,8 +5478,8 @@ export default function AdminAddClient() {
                     <CollapsibleContent>
                       <CardContent className="space-y-4">
                       {/* First row with business details */}
-                      <div className="grid grid-cols-1 md:grid-cols-8 gap-4">
-                        <div className="space-y-2 md:col-span-2">
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                        <div className="space-y-2 md:col-span-3">
                           <Label htmlFor="income-businessName">Business / DBA Name</Label>
                           <Input
                             id="income-businessName"
@@ -5488,7 +5488,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2">
+                        <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="income-businessPhone">Phone</Label>
                           <Input
                             id="income-businessPhone"
@@ -5499,7 +5499,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2">
+                        <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="income-formationDate">Formation Date</Label>
                           <Input
                             id="income-formationDate"
@@ -5509,7 +5509,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2">
+                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="income-formation">Formation</Label>
                           <Select onValueChange={(value) => form.setValue('income.formation', value)} value={form.watch('income.formation') || ''}>
                             <SelectTrigger data-testid="select-income-formation">
@@ -5534,7 +5534,7 @@ export default function AdminAddClient() {
                           </Select>
                         </div>
                         
-                        <div className="space-y-2" style={{width: '50%'}}>
+                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="income-ownershipPercentage">Ownhership</Label>
                           <Input
                             id="income-ownershipPercentage"
@@ -5555,10 +5555,10 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2">
+                        <div className="space-y-2 md:col-span-2">
                           <div className="flex items-center justify-between mb-2">
                             <Label htmlFor="income-annualRevenue" className="text-sm">
-                              {isShowingNetRevenue ? 'Net Annual Revenue' : 'Gross annual revenue'}
+                              {isShowingNetRevenue ? 'Net Annual Revenue' : 'Gross Annual Revenue'}
                             </Label>
                             <Switch
                               checked={isShowingNetRevenue}
@@ -5586,7 +5586,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2">
+                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="income-businessDescription">Description</Label>
                           <Input
                             id="income-businessDescription"
@@ -6777,8 +6777,8 @@ export default function AdminAddClient() {
                     <CollapsibleContent>
                       <CardContent className="space-y-4">
                       {/* First row with business details */}
-                      <div className="grid grid-cols-1 md:grid-cols-8 gap-4">
-                        <div className="space-y-2 md:col-span-2">
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                        <div className="space-y-2 md:col-span-3">
                           <Label htmlFor="coBorrowerIncome-businessName">Business / DBA Name</Label>
                           <Input
                             id="coBorrowerIncome-businessName"
@@ -6787,7 +6787,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2">
+                        <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="coBorrowerIncome-businessPhone">Phone</Label>
                           <Input
                             id="coBorrowerIncome-businessPhone"
@@ -6798,7 +6798,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2">
+                        <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="coBorrowerIncome-formationDate">Formation Date</Label>
                           <Input
                             id="coBorrowerIncome-formationDate"
@@ -6808,7 +6808,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2">
+                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="coBorrowerIncome-formation">Formation</Label>
                           <Select onValueChange={(value) => form.setValue('coBorrowerIncome.formation', value)} value={form.watch('coBorrowerIncome.formation') || ''}>
                             <SelectTrigger data-testid="select-coborrowerIncome-formation">
@@ -6833,7 +6833,7 @@ export default function AdminAddClient() {
                           </Select>
                         </div>
                         
-                        <div className="space-y-2" style={{width: '50%'}}>
+                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="coBorrowerIncome-ownershipPercentage">Ownhership</Label>
                           <Input
                             id="coBorrowerIncome-ownershipPercentage"
@@ -6854,10 +6854,10 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2">
+                        <div className="space-y-2 md:col-span-2">
                           <div className="flex items-center justify-between mb-2">
                             <Label htmlFor="coBorrowerIncome-annualRevenue" className="text-sm">
-                              {isCoBorrowerShowingNetRevenue ? 'Net Annual Revenue' : 'Gross annual revenue'}
+                              {isCoBorrowerShowingNetRevenue ? 'Net Annual Revenue' : 'Gross Annual Revenue'}
                             </Label>
                             <Switch
                               checked={isCoBorrowerShowingNetRevenue}
@@ -6885,7 +6885,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2">
+                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="coBorrowerIncome-businessDescription">Description</Label>
                           <Input
                             id="coBorrowerIncome-businessDescription"
