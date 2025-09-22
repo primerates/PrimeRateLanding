@@ -33,7 +33,8 @@ const CurrencyInput = React.memo<{
   placeholder?: string;
   id?: string;
   'data-testid'?: string;
-}>(({ form, name, placeholder, id, 'data-testid': dataTestId }) => {
+  shadowColor?: 'green' | 'red' | 'none';
+}>(({ form, name, placeholder, id, 'data-testid': dataTestId, shadowColor = 'none' }) => {
   const [localValue, setLocalValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
 
@@ -66,6 +67,16 @@ const CurrencyInput = React.memo<{
     setLocalValue(raw);
   };
 
+  // Apply shadow styling based on color
+  const getShadowClass = () => {
+    if (shadowColor === 'green') {
+      return 'shadow-lg shadow-green-200 border-green-300';
+    } else if (shadowColor === 'red') {
+      return 'shadow-lg shadow-red-200 border-red-300';
+    }
+    return '';
+  };
+
   return (
     <Input
       id={id}
@@ -75,9 +86,33 @@ const CurrencyInput = React.memo<{
       onBlur={handleBlur}
       placeholder={placeholder}
       data-testid={dataTestId}
+      className={getShadowClass()}
     />
   );
 });
+
+// Helper function to calculate color state based on estimated vs appraised values
+const getValueComparisonColor = (estimatedValue: string, appraisedValue: string): { iconClass: string; shadowColor: 'green' | 'red' | 'none' } => {
+  const parseValue = (value: string) => {
+    if (!value) return 0;
+    // Handle both raw numbers and formatted currency
+    const cleaned = value.replace(/[^\d.]/g, '');
+    return cleaned ? parseFloat(cleaned) : 0;
+  };
+
+  const estimatedNum = parseValue(estimatedValue || '');
+  const appraisedNum = parseValue(appraisedValue || '');
+
+  if (appraisedNum === 0 || estimatedNum === 0) {
+    return { iconClass: 'text-black hover:text-gray-600', shadowColor: 'none' };
+  } else if (appraisedNum > estimatedNum) {
+    return { iconClass: 'text-green-600 hover:text-green-800', shadowColor: 'green' };
+  } else if (appraisedNum < estimatedNum) {
+    return { iconClass: 'text-red-600 hover:text-red-800', shadowColor: 'red' };
+  } else {
+    return { iconClass: 'text-black hover:text-gray-600', shadowColor: 'none' };
+  }
+};
 
 // Memoized AppraisalIcon component to prevent typing lag
 const AppraisalIcon = React.memo<{ index: number; control: any }>(({ index, control }) => {
@@ -90,27 +125,9 @@ const AppraisalIcon = React.memo<{ index: number; control: any }>(({ index, cont
     name: `property.properties.${index}.appraisedValue` as const 
   });
 
-  const iconClass = useMemo(() => {
-    const parseValue = (value: string) => {
-      if (!value) return 0;
-      // Handle both raw numbers and formatted currency
-      const cleaned = value.replace(/[^\d.]/g, '');
-      return cleaned ? parseFloat(cleaned) : 0;
-    };
-
-    const estimatedNum = parseValue(estimatedValue || '');
-    const appraisedNum = parseValue(appraisedValue || '');
-
-    if (appraisedNum === 0 || estimatedNum === 0) {
-      return 'text-black hover:text-gray-600';
-    } else if (appraisedNum > estimatedNum) {
-      return 'text-green-600 hover:text-green-800';
-    } else if (appraisedNum < estimatedNum) {
-      return 'text-red-600 hover:text-red-800';
-    } else {
-      return 'text-black hover:text-gray-600';
-    }
-  }, [estimatedValue, appraisedValue, index]);
+  const { iconClass } = useMemo(() => {
+    return getValueComparisonColor(estimatedValue || '', appraisedValue || '');
+  }, [estimatedValue, appraisedValue]);
 
   return <DollarSign className={`h-4 w-4 ${iconClass}`} />;
 });
@@ -8462,6 +8479,11 @@ export default function AdminAddClient() {
                                   id={`property-appraised-value-${propertyId}`}
                                   placeholder="$0.00"
                                   data-testid={`input-property-appraised-value-${propertyId}`}
+                                  shadowColor={(() => {
+                                    const estimatedValue = form.watch(`property.properties.${index}.estimatedValue` as const) || '';
+                                    const appraisedValue = form.watch(`property.properties.${index}.appraisedValue` as const) || '';
+                                    return getValueComparisonColor(estimatedValue, appraisedValue).shadowColor;
+                                  })()}
                                 />
                               </div>
                               
