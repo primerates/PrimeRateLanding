@@ -8168,24 +8168,32 @@ export default function AdminAddClient() {
                               <div className="space-y-2">
                                 <div className="min-h-5 flex items-center gap-2">
                                   <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured First Loan</Label>
-                                  {showCurrentLoan && (
-                                    <Button
-                                      type="button"
-                                      variant="ghost"
-                                      size="sm"
-                                      className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                                      onClick={() => {
-                                        const attachedProperty = form.getValues('currentLoan.attachedToProperty');
-                                        if (attachedProperty === 'Primary Residence') {
-                                          setIsCurrentLoanPreviewOpen(true);
-                                        }
-                                      }}
-                                      title="View Current Loan Details"
-                                      data-testid="button-current-loan-info"
-                                    >
-                                      <Info className="h-4 w-4" />
-                                    </Button>
-                                  )}
+                                  {showCurrentLoan && (() => {
+                                    const attachedProperty = form.watch('currentLoan.attachedToProperty');
+                                    const isAttachedToPrimary = attachedProperty === 'Primary Residence';
+                                    
+                                    return (
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className={`p-1 h-auto ${
+                                          isAttachedToPrimary 
+                                            ? 'text-white bg-green-600 hover:bg-green-700' 
+                                            : 'text-blue-600 hover:text-blue-800'
+                                        }`}
+                                        onClick={() => {
+                                          if (isAttachedToPrimary) {
+                                            setIsCurrentLoanPreviewOpen(true);
+                                          }
+                                        }}
+                                        title="View Current Loan Details"
+                                        data-testid="button-current-loan-info"
+                                      >
+                                        <Info className="h-4 w-4" />
+                                      </Button>
+                                    );
+                                  })()}
                                 </div>
                                 <Select
                                   value={form.watch(`property.properties.${index}.activeSecuredLoan` as const) || ''}
@@ -8209,24 +8217,32 @@ export default function AdminAddClient() {
                               <div className="space-y-2">
                                 <div className="min-h-5 flex items-center gap-2">
                                   <Label htmlFor={`property-active-second-loan-${propertyId}`}>Secured Second Loan</Label>
-                                  {showSecondLoan && (
-                                    <Button
-                                      type="button"
-                                      variant="ghost"
-                                      size="sm"
-                                      className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                                      onClick={() => {
-                                        const attachedProperty = form.getValues('secondLoan.attachedToProperty');
-                                        if (attachedProperty === 'Primary Residence') {
-                                          setIsCurrentSecondLoanPreviewOpen(true);
-                                        }
-                                      }}
-                                      title="View Current Second Loan Details"
-                                      data-testid="button-current-second-loan-info"
-                                    >
-                                      <Info className="h-4 w-4" />
-                                    </Button>
-                                  )}
+                                  {showSecondLoan && (() => {
+                                    const attachedProperty = form.watch('secondLoan.attachedToProperty');
+                                    const isAttachedToPrimary = attachedProperty === 'Primary Residence';
+                                    
+                                    return (
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className={`p-1 h-auto ${
+                                          isAttachedToPrimary 
+                                            ? 'text-white bg-green-600 hover:bg-green-700' 
+                                            : 'text-blue-600 hover:text-blue-800'
+                                        }`}
+                                        onClick={() => {
+                                          if (isAttachedToPrimary) {
+                                            setIsCurrentSecondLoanPreviewOpen(true);
+                                          }
+                                        }}
+                                        title="View Current Second Loan Details"
+                                        data-testid="button-current-second-loan-info"
+                                      >
+                                        <Info className="h-4 w-4" />
+                                      </Button>
+                                    );
+                                  })()}
                                 </div>
                                 <Select
                                   value={form.watch(`property.properties.${index}.activeSecondLoan` as const) || ''}
