@@ -4121,8 +4121,8 @@ export default function AdminAddClient() {
               <TabsTrigger value="client" data-testid="tab-client" className="text-gray-900 dark:text-gray-100 data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Borrower</TabsTrigger>
               <TabsTrigger value="income" data-testid="tab-income" className="text-gray-900 dark:text-gray-100 data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Income</TabsTrigger>
               <TabsTrigger value="property" data-testid="tab-property" className="text-gray-900 dark:text-gray-100 data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Property</TabsTrigger>
-              <TabsTrigger value="credit" data-testid="tab-credit" className="text-gray-900 dark:text-gray-100 data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Credit</TabsTrigger>
               <TabsTrigger value="loan" data-testid="tab-loan" className="text-gray-900 dark:text-gray-100 data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Loan</TabsTrigger>
+              <TabsTrigger value="credit" data-testid="tab-credit" className="text-gray-900 dark:text-gray-100 data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Credit</TabsTrigger>
               <TabsTrigger value="status" data-testid="tab-status" className="text-gray-900 dark:text-gray-100 data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Status</TabsTrigger>
               <TabsTrigger value="vendors" data-testid="tab-vendors" className="text-gray-900 dark:text-gray-100 data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Vendors</TabsTrigger>
               <TabsTrigger value="quote" data-testid="tab-quote" className="text-gray-900 dark:text-gray-100 data-[state=active]:bg-blue-200 data-[state=active]:text-blue-900">Quote</TabsTrigger>
