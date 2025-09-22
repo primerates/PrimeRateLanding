@@ -8079,9 +8079,9 @@ export default function AdminAddClient() {
                             </Card>
 
                             {/* Property Address - Row 1: Street Address, Unit/Apt, City, State, ZIP Code, County */}
-                            <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                              <div className="space-y-2">
-                                <Label htmlFor={`property-address-street-${propertyId}`}>Street Address</Label>
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                              <div className="space-y-2 md:col-span-3">
+                                <Label htmlFor={`property-address-street-${propertyId}`}>Street Address *</Label>
                                 <Input
                                   id={`property-address-street-${propertyId}`}
                                   {...form.register(`property.properties.${index}.address.street` as const)}
@@ -8094,7 +8094,7 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
-                              <div className="space-y-2">
+                              <div className="space-y-2 md:col-span-1">
                                 <Label htmlFor={`property-address-unit-${propertyId}`}>Unit/Apt</Label>
                                 <Input
                                   id={`property-address-unit-${propertyId}`}
@@ -8103,8 +8103,8 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
-                              <div className="space-y-2">
-                                <Label htmlFor={`property-address-city-${propertyId}`}>City</Label>
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`property-address-city-${propertyId}`}>City *</Label>
                                 <Input
                                   id={`property-address-city-${propertyId}`}
                                   {...form.register(`property.properties.${index}.address.city` as const)}
@@ -8116,8 +8116,8 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
-                              <div className="space-y-2">
-                                <Label htmlFor={`property-address-state-${propertyId}`}>State</Label>
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`property-address-state-${propertyId}`}>State *</Label>
                                 <Select
                                   value={form.watch(`property.properties.${index}.address.state` as const) || ''}
                                   onValueChange={(value) => form.setValue(`property.properties.${index}.address.state` as const, value)}
@@ -8135,8 +8135,8 @@ export default function AdminAddClient() {
                                 </Select>
                               </div>
                               
-                              <div className="space-y-2">
-                                <Label htmlFor={`property-address-zip-${propertyId}`}>ZIP Code</Label>
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`property-address-zip-${propertyId}`}>ZIP Code *</Label>
                                 <Input
                                   id={`property-address-zip-${propertyId}`}
                                   {...form.register(`property.properties.${index}.address.zip` as const)}
@@ -8144,7 +8144,7 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
-                              <div className="space-y-2">
+                              <div className="space-y-2 md:col-span-2">
                                 <Label htmlFor={`property-address-county-${propertyId}`}>County</Label>
                                 <Input
                                   id={`property-address-county-${propertyId}`}
