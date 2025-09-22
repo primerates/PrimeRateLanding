@@ -1186,12 +1186,34 @@ export default function AdminAddClient() {
   );
 
   // Calculate Current Loan Total Monthly Payment - optimized with useMemo
-  const currentLoanData = form.watch('currentLoan');
+  // Use useState and useEffect with debouncing to prevent typing lag
+  const [debouncedPrincipalPayment, setDebouncedPrincipalPayment] = useState('');
+  const [debouncedEscrowPayment, setDebouncedEscrowPayment] = useState('');
+  
+  // Watch fields with debouncing to prevent performance issues
+  const currentPrincipalPayment = form.watch('currentLoan.principalAndInterestPayment') || '';
+  const currentEscrowPayment = form.watch('currentLoan.escrowPayment') || '';
+  
+  // Debounce the watched values to reduce calculation frequency
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedPrincipalPayment(currentPrincipalPayment);
+    }, 300); // 300ms debounce
+    return () => clearTimeout(timer);
+  }, [currentPrincipalPayment]);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedEscrowPayment(currentEscrowPayment);
+    }, 300); // 300ms debounce
+    return () => clearTimeout(timer);
+  }, [currentEscrowPayment]);
+  
   const totalCurrentLoanPayment = useMemo(() => {
-    const principalAndInterest = parseMonetaryValue(currentLoanData?.principalAndInterestPayment);
-    const escrow = parseMonetaryValue(currentLoanData?.escrowPayment);
+    const principalAndInterest = parseMonetaryValue(debouncedPrincipalPayment);
+    const escrow = parseMonetaryValue(debouncedEscrowPayment);
     return principalAndInterest + escrow;
-  }, [currentLoanData?.principalAndInterestPayment, currentLoanData?.escrowPayment]);
+  }, [debouncedPrincipalPayment, debouncedEscrowPayment]);
   
   const totalCurrentLoanPaymentFormatted = useMemo(() => 
     totalCurrentLoanPayment > 0 ? `$${totalCurrentLoanPayment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '',
