@@ -2084,12 +2084,25 @@ export default function AdminAddClient() {
                         return properties
                           .filter((property: any) => property.address?.street) // Only show properties with street addresses
                           .map((property: any, index: number) => {
-                            const streetAddress = property.address.street;
-                            const propertyType = property.use === 'home-purchase' ? 'Home Purchase' :
-                                               property.use === 'primary' ? 'Primary Residence' : 
-                                               property.use === 'second-home' ? 'Second Home' : 
-                                               property.use === 'investment' ? 'Investment Property' : 'Property';
-                            const displayText = `${streetAddress} (${propertyType})`;
+                            const address = property.address;
+                            const streetAddress = address.street;
+                            const city = address.city;
+                            const state = address.state;
+                            const zipCode = address.zip;
+                            
+                            // Build display text using address components for uniqueness
+                            let displayText = streetAddress;
+                            if (city && state) {
+                              displayText += `, ${city}, ${state}`;
+                            } else if (city) {
+                              displayText += `, ${city}`;
+                            } else if (state) {
+                              displayText += `, ${state}`;
+                            }
+                            if (zipCode) {
+                              displayText += ` ${zipCode}`;
+                            }
+                            
                             return (
                               <SelectItem key={`property-${property.id}`} value={property.id}>
                                 {displayText}
@@ -2550,12 +2563,25 @@ export default function AdminAddClient() {
                         return properties
                           .filter((property: any) => property.address?.street) // Only show properties with street addresses
                           .map((property: any, index: number) => {
-                            const streetAddress = property.address.street;
-                            const propertyType = property.use === 'home-purchase' ? 'Home Purchase' :
-                                               property.use === 'primary' ? 'Primary Residence' : 
-                                               property.use === 'second-home' ? 'Second Home' : 
-                                               property.use === 'investment' ? 'Investment Property' : 'Property';
-                            const displayText = `${streetAddress} (${propertyType})`;
+                            const address = property.address;
+                            const streetAddress = address.street;
+                            const city = address.city;
+                            const state = address.state;
+                            const zipCode = address.zip;
+                            
+                            // Build display text using address components for uniqueness
+                            let displayText = streetAddress;
+                            if (city && state) {
+                              displayText += `, ${city}, ${state}`;
+                            } else if (city) {
+                              displayText += `, ${city}`;
+                            } else if (state) {
+                              displayText += `, ${state}`;
+                            }
+                            if (zipCode) {
+                              displayText += ` ${zipCode}`;
+                            }
+                            
                             return (
                               <SelectItem key={`property-${property.id}`} value={property.id}>
                                 {displayText}
@@ -8806,11 +8832,18 @@ export default function AdminAddClient() {
                                       const isAttachedToCurrentProperty = Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
                                       
                                       return (
-                                        <div className={`w-3 h-3 rounded-full border-2 ${
-                                          isAttachedToCurrentProperty 
-                                            ? 'bg-green-500 border-green-500' 
-                                            : 'bg-gray-200 border-gray-300'
-                                        }`} />
+                                        <div 
+                                          className={`w-3 h-3 rounded-full border-2 ${
+                                            isAttachedToCurrentProperty 
+                                              ? 'bg-green-500 border-green-500' 
+                                              : 'bg-gray-200 border-gray-300'
+                                          }`}
+                                          style={{
+                                            backgroundColor: isAttachedToCurrentProperty ? '#10b981' : '#e5e7eb',
+                                            borderColor: isAttachedToCurrentProperty ? '#10b981' : '#d1d5db'
+                                          }}
+                                          data-testid={`indicator-secured-first-loan-${property.id}`}
+                                        />
                                       );
                                     })()}
                                   </div>
@@ -8867,11 +8900,18 @@ export default function AdminAddClient() {
                                       const isAttachedToCurrentProperty = Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
                                       
                                       return (
-                                        <div className={`w-3 h-3 rounded-full border-2 ${
-                                          isAttachedToCurrentProperty 
-                                            ? 'bg-green-500 border-green-500' 
-                                            : 'bg-gray-200 border-gray-300'
-                                        }`} />
+                                        <div 
+                                          className={`w-3 h-3 rounded-full border-2 ${
+                                            isAttachedToCurrentProperty 
+                                              ? 'bg-green-500 border-green-500' 
+                                              : 'bg-gray-200 border-gray-300'
+                                          }`}
+                                          style={{
+                                            backgroundColor: isAttachedToCurrentProperty ? '#10b981' : '#e5e7eb',
+                                            borderColor: isAttachedToCurrentProperty ? '#10b981' : '#d1d5db'
+                                          }}
+                                          data-testid={`indicator-secured-second-loan-${property.id}`}
+                                        />
                                       );
                                     })()}
                                   </div>
