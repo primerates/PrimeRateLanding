@@ -1,0 +1,132 @@
+Step 1: Install html2canvas (if needed)Run npm install html2canvas in your Replit terminal.Step 2: Create a Context for Shared StateThis shares the snapshot URL and a flag across tabs. Create a new file CurrentLoanContext.tsx:tsx
+
+import { createContext, useContext, useState, ReactNode } from 'react';
+
+interface CurrentLoanContextType {
+  hasCurrentLoan: boolean;
+  setHasCurrentLoan: (value: boolean) => void;
+  currentLoanSnapshot: string | null; // Data URL of the snapshot
+  setCurrentLoanSnapshot: (url: string | null) => void;
+}
+
+const CurrentLoanContext = createContext<CurrentLoanContextType | undefined>(undefined);
+
+export const CurrentLoanProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [hasCurrentLoan, setHasCurrentLoan] = useState(false);
+  const [currentLoanSnapshot, setCurrentLoanSnapshot] = useState<string | null>(null);
+
+  return (
+    <CurrentLoanContext.Provider value={{ hasCurrentLoan, setHasCurrentLoan, currentLoanSnapshot, setCurrentLoanSnapshot }}>
+      {children}
+    </CurrentLoanContext.Provider>
+  );
+};
+
+export const useCurrentLoan = () => {
+  const context = useContext(CurrentLoanContext);
+  if (!context) {
+    throw new Error('useCurrentLoan must be used within a CurrentLoanProvider');
+  }
+  return context;
+};
+
+Wrap your app or tabs container with <CurrentLoanProvider> in your top-level component (e.g., App.tsx):tsx
+
+// In App.tsx or main component
+<CurrentLoanProvider>
+  {/* Your <Tabs> or app content */}
+</CurrentLoanProvider>
+
+Step 3: Update the "Current Loan" Card ComponentAdd a ref to the card's root div for snapshot capture.
+When the card mounts (via useEffect), set the flag to true, capture the snapshot asynchronously, and store it in context.
+This runs only once per creation (not on re-renders or typing).
+No changes to your form fields or auto-sum logic.
+
+Assuming your "Current Loan" card is a component like CurrentLoanCard.tsx (rendered conditionally in one tab when triggered, e.g., via a button):tsx
+
+import { useEffect, useRef } from 'react';
+import html2canvas from 'html2canvas';
+import { useCurrentLoan } from './CurrentLoanContext'; // Adjust path
+// ... other imports, including your form hooks, fields, etc. ...
+
+const CurrentLoanCard: React.FC = () => {
+  const { setHasCurrentLoan, setCurrentLoanSnapshot } = useCurrentLoan();
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setHasCurrentLoan(true); // Trigger the indicator on other tabs
+
+    // Capture snapshot asynchronously after mount
+    const captureSnapshot = async () => {
+      if (cardRef.current) {
+        try {
+          const canvas = await html2canvas(cardRef.current, {
+            scale: 1, // Adjust for quality vs. size
+            useCORS: true, // If any images in card
+            backgroundColor: '#ffffff', // Or match your card's bg
+          });
+          const dataUrl = canvas.toDataURL('image/png');
+          setCurrentLoanSnapshot(dataUrl);
+        } catch (error) {
+          console.error('Snapshot failed:', error);
+          // Optionally handle fallback, e.g., set to null
+        }
+      }
+    };
+
+    // Delay slightly to ensure DOM is fully rendered
+    const timer = setTimeout(captureSnapshot, 500); // Adjust if needed
+
+    return () => clearTimeout(timer);
+  }, [setHasCurrentLoan, setCurrentLoanSnapshot]); // Runs only on mount
+
+  return (
+    <div ref={cardRef} className="border rounded-md p-4 bg-white"> {/* Your card wrapper */}
+      <h2>Current Loan</h2>
+      {/* Your ~10 input fields, form logic, auto-sum, etc. - unchanged */}
+    </div>
+  );
+};
+
+export default CurrentLoanCard;
+
+Step 4: Add the Indicator to the Other TabIn the component for the "other tab" (e.g., OtherTabContent.tsx), use the context to conditionally show the "i" icon. On click/hover, show a popover with the image.tsx
+
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'; // Shadcn/UI import
+import { useCurrentLoan } from './CurrentLoanContext'; // Adjust path
+// ... other imports ...
+
+const OtherTabContent: React.FC = () => {
+  const { hasCurrentLoan, currentLoanSnapshot } = useCurrentLoan();
+
+  return (
+    <div>
+      {/* Your other tab's content, fields, etc. - typing remains fast */}
+
+      {hasCurrentLoan && (
+        <Popover>
+          <PopoverTrigger asChild>
+            <button className="ml-2 text-blue-500 cursor-pointer">ℹ️</button> {/* Or use an icon component */}
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0">
+            {currentLoanSnapshot ? (
+              <img 
+                src={currentLoanSnapshot} 
+                alt="Current Loan Preview" 
+                className="max-w-md" // Adjust size
+              />
+            ) : (
+              <p>Loading preview...</p> // Fallback if snapshot not ready
+            )}
+          </PopoverContent>
+        </Popover>
+      )}
+
+      {/* Example: A field in this tab - typing unaffected */}
+      <Input placeholder="Type here..." />
+    </div>
+  );
+};
+
+export default OtherTabContent;
+
