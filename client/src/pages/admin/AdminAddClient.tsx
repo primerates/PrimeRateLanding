@@ -8802,13 +8802,12 @@ export default function AdminAddClient() {
                                     <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured First Loan</Label>
                                     {(() => {
                                       const attachedPropertyId = form.watch('currentLoan.attachedToProperty');
-                                      const properties = form.watch('property.properties') || [];
-                                      const primaryProperty = properties.find((p: any) => p.use === 'primary');
-                                      const isAttachedToPrimary = Boolean(attachedPropertyId && primaryProperty?.id && attachedPropertyId === primaryProperty.id);
+                                      const currentProperty = property;
+                                      const isAttachedToCurrentProperty = Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
                                       
                                       return (
                                         <div className={`w-3 h-3 rounded-full border-2 ${
-                                          isAttachedToPrimary 
+                                          isAttachedToCurrentProperty 
                                             ? 'bg-green-500 border-green-500' 
                                             : 'bg-gray-200 border-gray-300'
                                         }`} />
@@ -8817,9 +8816,8 @@ export default function AdminAddClient() {
                                   </div>
                                   {(() => {
                                     const attachedPropertyId = form.watch('currentLoan.attachedToProperty');
-                                    const properties = form.watch('property.properties') || [];
-                                    const primaryProperty = properties.find((p: any) => p.use === 'primary');
-                                    const isAttachedToPrimary = Boolean(attachedPropertyId && primaryProperty?.id && attachedPropertyId === primaryProperty.id);
+                                    const currentProperty = property;
+                                    const isAttachedToCurrentProperty = Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
                                     
                                     return (
                                       <Button
@@ -8828,7 +8826,7 @@ export default function AdminAddClient() {
                                         size="sm"
                                         className="p-1 h-auto text-blue-600 hover:text-blue-800"
                                         onClick={() => {
-                                          if (isAttachedToPrimary) {
+                                          if (isAttachedToCurrentProperty) {
                                             setIsCurrentLoanPreviewOpen(true);
                                           }
                                         }}
@@ -8865,13 +8863,12 @@ export default function AdminAddClient() {
                                     <Label htmlFor={`property-active-second-loan-${propertyId}`}>Secured Second Loan</Label>
                                     {(() => {
                                       const attachedPropertyId = form.watch('secondLoan.attachedToProperty');
-                                      const properties = form.watch('property.properties') || [];
-                                      const primaryProperty = properties.find((p: any) => p.use === 'primary');
-                                      const isAttachedToPrimary = Boolean(attachedPropertyId && primaryProperty?.id && attachedPropertyId === primaryProperty.id);
+                                      const currentProperty = property;
+                                      const isAttachedToCurrentProperty = Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
                                       
                                       return (
                                         <div className={`w-3 h-3 rounded-full border-2 ${
-                                          isAttachedToPrimary 
+                                          isAttachedToCurrentProperty 
                                             ? 'bg-green-500 border-green-500' 
                                             : 'bg-gray-200 border-gray-300'
                                         }`} />
@@ -8880,9 +8877,8 @@ export default function AdminAddClient() {
                                   </div>
                                   {(() => {
                                     const attachedPropertyId = form.watch('secondLoan.attachedToProperty');
-                                    const properties = form.watch('property.properties') || [];
-                                    const primaryProperty = properties.find((p: any) => p.use === 'primary');
-                                    const isAttachedToPrimary = Boolean(attachedPropertyId && primaryProperty?.id && attachedPropertyId === primaryProperty.id);
+                                    const currentProperty = property;
+                                    const isAttachedToCurrentProperty = Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
                                     
                                     return (
                                       <Button
@@ -8891,7 +8887,7 @@ export default function AdminAddClient() {
                                         size="sm"
                                         className="p-1 h-auto text-blue-600 hover:text-blue-800"
                                         onClick={() => {
-                                          if (isAttachedToPrimary) {
+                                          if (isAttachedToCurrentProperty) {
                                             setIsCurrentSecondLoanPreviewOpen(true);
                                           }
                                         }}
