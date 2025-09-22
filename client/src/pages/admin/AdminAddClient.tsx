@@ -8174,7 +8174,12 @@ export default function AdminAddClient() {
                                       variant="ghost"
                                       size="sm"
                                       className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                                      onClick={() => setIsCurrentLoanPreviewOpen(true)}
+                                      onClick={() => {
+                                        const attachedProperty = form.getValues('currentLoan.attachedToProperty');
+                                        if (attachedProperty === 'Primary Residence') {
+                                          setIsCurrentLoanPreviewOpen(true);
+                                        }
+                                      }}
                                       title="View Current Loan Details"
                                       data-testid="button-current-loan-info"
                                     >
@@ -8210,7 +8215,12 @@ export default function AdminAddClient() {
                                       variant="ghost"
                                       size="sm"
                                       className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                                      onClick={() => setIsCurrentSecondLoanPreviewOpen(true)}
+                                      onClick={() => {
+                                        const attachedProperty = form.getValues('secondLoan.attachedToProperty');
+                                        if (attachedProperty === 'Primary Residence') {
+                                          setIsCurrentSecondLoanPreviewOpen(true);
+                                        }
+                                      }}
                                       title="View Current Second Loan Details"
                                       data-testid="button-current-second-loan-info"
                                     >
