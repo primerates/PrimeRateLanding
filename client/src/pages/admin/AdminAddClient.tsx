@@ -533,10 +533,10 @@ export default function AdminAddClient() {
   const [additionalLoans, setAdditionalLoans] = useState<Array<{id: string, isOpen: boolean}>>([]);
   const [isThirdLoanPropertyAddressOpen, setIsThirdLoanPropertyAddressOpen] = useState(false);
   
-  // State for Current Loan info popup in Property tab
+  // State for Current Loan 1 info popup in Property tab
   const [isCurrentLoanPreviewOpen, setIsCurrentLoanPreviewOpen] = useState(false);
   
-  // State for Current Second Loan info popup in Property tab
+  // State for Current Loan 2 info popup in Property tab
   const [isCurrentSecondLoanPreviewOpen, setIsCurrentSecondLoanPreviewOpen] = useState(false);
   
   // Multiple prior addresses state management
@@ -1312,7 +1312,7 @@ export default function AdminAddClient() {
     );
   };
 
-  // Sub-component for Current Loan preview modal - read-only display with live updates
+  // Sub-component for Current Loan 1 preview modal - read-only display with live updates
   interface CurrentLoanPreviewProps {
     control: any; // Control from parent useForm
   }
@@ -1343,7 +1343,7 @@ export default function AdminAddClient() {
     return (
       <Card className="border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
         <CardHeader>
-          <CardTitle>Current Loan Preview</CardTitle>
+          <CardTitle>Current Loan 1 Preview</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Row 1: Lender Name, Loan Number, Loan Category, Loan Program */}
@@ -1437,7 +1437,7 @@ export default function AdminAddClient() {
     );
   };
 
-  // Sub-component for Current Second Loan preview modal - read-only display with live updates
+  // Sub-component for Current Loan 2 preview modal - read-only display with live updates
   interface CurrentSecondLoanPreviewProps {
     control: any; // Control from parent useForm
   }
@@ -1489,7 +1489,7 @@ export default function AdminAddClient() {
     return (
       <Card className="border-l-4 border-l-orange-500 hover:border-orange-500 focus-within:border-orange-500 transition-colors duration-200">
         <CardHeader>
-          <CardTitle>Current Second Loan Preview</CardTitle>
+          <CardTitle>Current Loan 2 Preview</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Row 1: Lender Name, Loan Number, Loan Category, Loan Program */}
@@ -1680,7 +1680,7 @@ export default function AdminAddClient() {
     }
   }, [form.watch('property.properties')]);
 
-  // Bidirectional sync between Property Tab (Primary Residence) and Loan Tab (Current Loan)
+  // Bidirectional sync between Property Tab (Primary Residence) and Loan Tab (Current Loan 1)
   const syncInProgress = useRef(false);
   
   // DISABLED: Bidirectional sync - Removed to improve typing performance
@@ -1867,7 +1867,7 @@ export default function AdminAddClient() {
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Current Loan</CardTitle>
+              <CardTitle>Current Loan 1</CardTitle>
               <div className="flex items-center gap-2">
                 {onRemove && (
                   <Button
@@ -2394,7 +2394,7 @@ export default function AdminAddClient() {
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Current Second Loan</CardTitle>
+              <CardTitle>Current Loan 2</CardTitle>
               <div className="flex items-center gap-2">
                 {onRemove && (
                   <Button
@@ -2849,7 +2849,7 @@ export default function AdminAddClient() {
     );
   };
 
-  // AdditionalLoanCard component - using Current Second Loan structure
+  // AdditionalLoanCard component - using Current Loan 2 structure
   const AdditionalLoanCard = ({ 
     loanId,
     loanNumber,
@@ -3356,7 +3356,7 @@ export default function AdminAddClient() {
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Current Loan (Read-only)</CardTitle>
+              <CardTitle>Current Loan 1 (Read-only)</CardTitle>
               <CollapsibleTrigger asChild>
                 <Button 
                   variant="ghost" 
@@ -4068,7 +4068,7 @@ export default function AdminAddClient() {
     }
   };
   
-  // Auto-copy property address to Current Loan based on Attached to Property selection
+  // Auto-copy property address to Current Loan 1 based on Attached to Property selection
   const autoCopyPropertyAddressToCurrentLoan = () => {
     const attachedPropertyId = form.getValues('currentLoan.attachedToProperty') as string;
     
@@ -9178,7 +9178,7 @@ export default function AdminAddClient() {
                                             setIsCurrentLoanPreviewOpen(true);
                                           }
                                         }}
-                                        title="View Current Loan Details"
+                                        title="View Current Loan 1 Details"
                                         data-testid="button-current-loan-info"
                                       >
                                         <Info className="h-4 w-4" />
@@ -9187,18 +9187,37 @@ export default function AdminAddClient() {
                                   })()}
                                 </div>
 {(() => {
-                                  // Dynamic connection display field
-                                  const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
-                                  const isCurrentLoanAttachedToThisProperty = Boolean(currentLoanAttached && property?.id && currentLoanAttached === property.id);
+                                  // Dynamic connection display field - checks ALL loans
+                                  const currentProperty = property;
                                   
-                                  const displayValue = isCurrentLoanAttachedToThisProperty ? 'Yes' : 'connect';
+                                  // Check current loan
+                                  const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                  const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                  
+                                  // Check second loan
+                                  const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                  const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                  
+                                  // Check third loan
+                                  const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
+                                  const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
+                                  
+                                  // Check additional loans (loan3, loan4, loan5, etc.)
+                                  const additionalLoansData = additionalLoans || [];
+                                  const isAdditionalLoanAttached = additionalLoansData.some(loan => {
+                                    const attachedPropertyId = getDyn(`${loan.id}.attachedToProperty`);
+                                    return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                  });
+                                  
+                                  const hasAnyLoanAttached = isCurrentLoanAttached || isSecondLoanAttached || isThirdLoanAttached || isAdditionalLoanAttached;
+                                  const displayValue = hasAnyLoanAttached ? 'Yes' : 'connect';
                                   
                                   return (
                                     <div 
                                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background cursor-default"
                                       data-testid={`display-property-active-secured-loan-${propertyId}`}
                                     >
-                                      <span className={isCurrentLoanAttachedToThisProperty ? 'text-foreground' : 'text-muted-foreground'}>
+                                      <span className={hasAnyLoanAttached ? 'text-foreground' : 'text-muted-foreground'}>
                                         {displayValue}
                                       </span>
                                     </div>
@@ -9259,7 +9278,7 @@ export default function AdminAddClient() {
                                             setIsCurrentSecondLoanPreviewOpen(true);
                                           }
                                         }}
-                                        title="View Current Second Loan Details"
+                                        title="View Current Loan 2 Details"
                                         data-testid="button-current-second-loan-info"
                                       >
                                         <Info className="h-4 w-4" />
@@ -9545,7 +9564,7 @@ export default function AdminAddClient() {
                       data-testid="button-add-current-loan"
                     >
                       <Plus className="h-4 w-4 mr-2" />
-                      Add Current Loan
+                      Add Current Loan 1
                     </Button>
                   </CardContent>
                 </Card>
@@ -10429,11 +10448,11 @@ export default function AdminAddClient() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Current Loan Preview Modal */}
+      {/* Current Loan 1 Preview Modal */}
       <Dialog open={isCurrentLoanPreviewOpen} onOpenChange={setIsCurrentLoanPreviewOpen}>
         <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto" data-testid="dialog-current-loan-preview">
           <DialogHeader>
-            <DialogTitle>Current Loan Details</DialogTitle>
+            <DialogTitle>Current Loan 1 Details</DialogTitle>
           </DialogHeader>
           <CurrentLoanPreview control={form.control} />
           <DialogFooter>
@@ -10447,11 +10466,11 @@ export default function AdminAddClient() {
         </DialogContent>
       </Dialog>
 
-      {/* Current Second Loan Preview Modal */}
+      {/* Current Loan 2 Preview Modal */}
       <Dialog open={isCurrentSecondLoanPreviewOpen} onOpenChange={setIsCurrentSecondLoanPreviewOpen}>
         <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto" data-testid="dialog-current-second-loan-preview">
           <DialogHeader>
-            <DialogTitle>Current Second Loan Details</DialogTitle>
+            <DialogTitle>Current Loan 2 Details</DialogTitle>
           </DialogHeader>
           <CurrentSecondLoanPreview control={form.control} />
           <DialogFooter>
