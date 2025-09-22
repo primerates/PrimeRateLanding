@@ -84,6 +84,7 @@ export const incomeSchema = z.object({
   employerPhone: z.string().optional(),
   employmentVerificationPhone: z.string().optional(),
   isShowingEmploymentVerification: z.boolean().optional(),
+  employerRemote: z.string().optional(),
   
   // Prior Employment fields
   priorEmployerName: z.string().optional(),
@@ -96,6 +97,7 @@ export const incomeSchema = z.object({
   priorEmployerPhone: z.string().optional(),
   priorEmploymentVerificationPhone: z.string().optional(),
   priorIsShowingEmploymentVerification: z.boolean().optional(),
+  priorEmployerRemote: z.string().optional(),
   
   // Second Employment fields
   secondEmployerName: z.string().optional(),
@@ -108,6 +110,7 @@ export const incomeSchema = z.object({
   secondEmployerPhone: z.string().optional(),
   secondEmploymentVerificationPhone: z.string().optional(),
   secondIsShowingEmploymentVerification: z.boolean().optional(),
+  secondEmployerRemote: z.string().optional(),
   
   // Self-Employment fields
   businessName: z.string().optional(),

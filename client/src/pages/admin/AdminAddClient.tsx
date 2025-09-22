@@ -5563,13 +5563,30 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-4">
+                            <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="income-employer-county">County</Label>
                               <Input
                                 id="income-employer-county"
                                 {...form.register('income.employerAddress.county')}
                                 data-testid="input-income-employer-county"
                               />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="income-employer-remote">Remote Job</Label>
+                              <Select
+                                value={form.watch('income.employerRemote') || ''}
+                                onValueChange={(value) => form.setValue('income.employerRemote', value)}
+                              >
+                                <SelectTrigger data-testid="select-income-employer-remote">
+                                  <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Select">Select</SelectItem>
+                                  <SelectItem value="Yes">Yes</SelectItem>
+                                  <SelectItem value="No">No</SelectItem>
+                                </SelectContent>
+                              </Select>
                             </div>
                           </div>
                         </div>
@@ -5765,13 +5782,30 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-4">
+                            <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="income-prior-employer-county">County</Label>
                               <Input
                                 id="income-prior-employer-county"
                                 {...form.register('income.priorEmployerAddress.county')}
                                 data-testid="input-income-prior-employer-county"
                               />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="income-prior-employer-remote">Remote Job</Label>
+                              <Select
+                                value={form.watch('income.priorEmployerRemote') || ''}
+                                onValueChange={(value) => form.setValue('income.priorEmployerRemote', value)}
+                              >
+                                <SelectTrigger data-testid="select-income-prior-employer-remote">
+                                  <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Select">Select</SelectItem>
+                                  <SelectItem value="Yes">Yes</SelectItem>
+                                  <SelectItem value="No">No</SelectItem>
+                                </SelectContent>
+                              </Select>
                             </div>
                           </div>
                         </div>
@@ -5961,13 +5995,30 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-4">
+                            <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="income-second-employer-county">County</Label>
                               <Input
                                 id="income-second-employer-county"
                                 {...form.register('income.secondEmployerAddress.county')}
                                 data-testid="input-income-second-employer-county"
                               />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="income-second-employer-remote">Remote Job</Label>
+                              <Select
+                                value={form.watch('income.secondEmployerRemote') || ''}
+                                onValueChange={(value) => form.setValue('income.secondEmployerRemote', value)}
+                              >
+                                <SelectTrigger data-testid="select-income-second-employer-remote">
+                                  <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Select">Select</SelectItem>
+                                  <SelectItem value="Yes">Yes</SelectItem>
+                                  <SelectItem value="No">No</SelectItem>
+                                </SelectContent>
+                              </Select>
                             </div>
                           </div>
                         </div>
@@ -6785,13 +6836,30 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-4">
+                            <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="coBorrowerIncome-employer-county">County</Label>
                               <Input
                                 id="coBorrowerIncome-employer-county"
                                 {...form.register('coBorrowerIncome.employerAddress.county')}
                                 data-testid="input-coborrowerIncome-employer-county"
                               />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="coBorrowerIncome-employer-remote">Remote Job</Label>
+                              <Select
+                                value={form.watch('coBorrowerIncome.employerRemote') || ''}
+                                onValueChange={(value) => form.setValue('coBorrowerIncome.employerRemote', value)}
+                              >
+                                <SelectTrigger data-testid="select-coBorrowerIncome-employer-remote">
+                                  <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Select">Select</SelectItem>
+                                  <SelectItem value="Yes">Yes</SelectItem>
+                                  <SelectItem value="No">No</SelectItem>
+                                </SelectContent>
+                              </Select>
                             </div>
                           </div>
                         </div>
@@ -6971,13 +7039,30 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-4">
+                            <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="coBorrowerIncome-prior-employer-county">County</Label>
                               <Input
                                 id="coBorrowerIncome-prior-employer-county"
                                 {...form.register('coBorrowerIncome.priorEmployerAddress.county')}
                                 data-testid="input-coBorrowerIncome-prior-employer-county"
                               />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="coBorrowerIncome-prior-employer-remote">Remote Job</Label>
+                              <Select
+                                value={form.watch('coBorrowerIncome.priorEmployerRemote') || ''}
+                                onValueChange={(value) => form.setValue('coBorrowerIncome.priorEmployerRemote', value)}
+                              >
+                                <SelectTrigger data-testid="select-coBorrowerIncome-prior-employer-remote">
+                                  <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Select">Select</SelectItem>
+                                  <SelectItem value="Yes">Yes</SelectItem>
+                                  <SelectItem value="No">No</SelectItem>
+                                </SelectContent>
+                              </Select>
                             </div>
                           </div>
                         </div>
@@ -7167,13 +7252,30 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-4">
+                            <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="coBorrowerIncome-second-employer-county">County</Label>
                               <Input
                                 id="coBorrowerIncome-second-employer-county"
                                 {...form.register('coBorrowerIncome.secondEmployerAddress.county')}
                                 data-testid="input-coborrowerIncome-second-employer-county"
                               />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="coBorrowerIncome-second-employer-remote">Remote Job</Label>
+                              <Select
+                                value={form.watch('coBorrowerIncome.secondEmployerRemote') || ''}
+                                onValueChange={(value) => form.setValue('coBorrowerIncome.secondEmployerRemote', value)}
+                              >
+                                <SelectTrigger data-testid="select-coBorrowerIncome-second-employer-remote">
+                                  <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Select">Select</SelectItem>
+                                  <SelectItem value="Yes">Yes</SelectItem>
+                                  <SelectItem value="No">No</SelectItem>
+                                </SelectContent>
+                              </Select>
                             </div>
                           </div>
                         </div>
