@@ -7999,7 +7999,22 @@ export default function AdminAddClient() {
                               </div>
                               
                               <div className="space-y-2">
+                                <div className="flex items-center gap-2">
                                   <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured First Loan</Label>
+                                  {showCurrentLoan && (
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                      onClick={() => setIsCurrentLoanPreviewOpen(true)}
+                                      title="View Current Loan Details"
+                                      data-testid="button-current-loan-info"
+                                    >
+                                      <Info className="h-4 w-4" />
+                                    </Button>
+                                  )}
+                                </div>
                                 <Select
                                   value={form.watch(`property.properties.${index}.activeSecuredLoan` as const) || ''}
                                   onValueChange={(value) => form.setValue(`property.properties.${index}.activeSecuredLoan` as const, value)}
