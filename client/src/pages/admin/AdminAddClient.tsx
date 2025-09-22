@@ -412,6 +412,7 @@ export default function AdminAddClient() {
   const [isThirdLoanPropertyAddressOpen, setIsThirdLoanPropertyAddressOpen] = useState(false);
   
   // State for Current Loan info popup in Property tab
+  const [isCurrentLoanPreviewOpen, setIsCurrentLoanPreviewOpen] = useState(false);
   
   // Multiple prior addresses state management
   const [borrowerPriorAddresses, setBorrowerPriorAddresses] = useState<{ id: string }[]>([]);
