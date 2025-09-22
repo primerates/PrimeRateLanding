@@ -8433,19 +8433,10 @@ export default function AdminAddClient() {
                                     </div>
                                   </div>
                                 </div>
-                                <Input
+                                <CurrencyInput
+                                  form={form}
+                                  name={`property.properties.${index}.estimatedValue` as const}
                                   id={`property-estimated-value-${propertyId}`}
-                                  value={form.watch(`property.properties.${index}.estimatedValue` as const) || ''}
-                                  onChange={(e) => {
-                                    let value = e.target.value.replace(/[^\d.]/g, '');
-                                    if (value) {
-                                      const numValue = parseFloat(value);
-                                      if (!isNaN(numValue)) {
-                                        value = `$${numValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                                      }
-                                    }
-                                    form.setValue(`property.properties.${index}.estimatedValue` as const, value);
-                                  }}
                                   placeholder="$0.00"
                                   data-testid={`input-property-estimated-value-${propertyId}`}
                                 />
@@ -8465,19 +8456,10 @@ export default function AdminAddClient() {
                                     <AppraisalIcon index={index} control={form.control} />
                                   </Button>
                                 </div>
-                                <Input
+                                <CurrencyInput
+                                  form={form}
+                                  name={`property.properties.${index}.appraisedValue` as const}
                                   id={`property-appraised-value-${propertyId}`}
-                                  value={form.watch(`property.properties.${index}.appraisedValue` as const) || ''}
-                                  onChange={(e) => {
-                                    let value = e.target.value.replace(/[^\d.]/g, '');
-                                    if (value) {
-                                      const numValue = parseFloat(value);
-                                      if (!isNaN(numValue)) {
-                                        value = `$${numValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                                      }
-                                    }
-                                    form.setValue(`property.properties.${index}.appraisedValue` as const, value);
-                                  }}
                                   placeholder="$0.00"
                                   data-testid={`input-property-appraised-value-${propertyId}`}
                                 />
