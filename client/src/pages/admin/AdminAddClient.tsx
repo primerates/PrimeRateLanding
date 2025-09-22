@@ -1181,6 +1181,131 @@ export default function AdminAddClient() {
     );
   };
 
+  // Sub-component for Current Loan preview modal - read-only display with live updates
+  interface CurrentLoanPreviewProps {
+    control: any; // Control from parent useForm
+  }
+
+  const CurrentLoanPreview: React.FC<CurrentLoanPreviewProps> = ({ control }) => {
+    // Use useWatch to get live data updates for preview
+    const currentLenderName = useWatch({ control, name: 'currentLoan.currentLender' }) || '';
+    const loanNumber = useWatch({ control, name: 'currentLoan.loanNumber' }) || '';
+    const loanCategory = useWatch({ control, name: 'currentLoan.loanCategory' }) || '';
+    const loanProgram = useWatch({ control, name: 'currentLoan.loanProgram' }) || '';
+    const loanTerm = useWatch({ control, name: 'currentLoan.loanTerm' }) || '';
+    const loanPurpose = useWatch({ control, name: 'currentLoan.loanPurpose' }) || '';
+    const statementBalance = useWatch({ control, name: 'currentLoan.statementBalance.amount' }) || '';
+    const currentRate = useWatch({ control, name: 'currentLoan.currentRate' }) || '';
+    const principalPayment = useWatch({ control, name: 'currentLoan.principalAndInterestPayment' }) || '';
+    const escrowPayment = useWatch({ control, name: 'currentLoan.escrowPayment' }) || '';
+    const prepaymentPenalty = useWatch({ control, name: 'currentLoan.prepaymentPenalty' }) || '';
+    const attachedToProperty = useWatch({ control, name: 'currentLoan.attachedToProperty' }) || '';
+
+    // Format monetary values for display
+    const formatCurrency = (value: string) => {
+      if (!value || value.trim() === '') return '';
+      const cleaned = value.replace(/[^0-9.]/g, '');
+      const num = parseFloat(cleaned);
+      return isNaN(num) ? value : `$${num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    };
+
+    return (
+      <Card className="border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
+        <CardHeader>
+          <CardTitle>Current Loan Preview</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Row 1: Lender Name, Loan Number, Loan Category, Loan Program */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Lender Name</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{currentLenderName || 'Not specified'}</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Loan Number</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{loanNumber || 'Not specified'}</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Loan Category</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{loanCategory || 'Not specified'}</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Loan Program</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{loanProgram || 'Not specified'}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Row 2: Loan Term, Loan Purpose, Statement Balance, Current Rate */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Loan Term</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{loanTerm || 'Not specified'}</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Loan Purpose</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{loanPurpose || 'Not specified'}</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Statement Balance</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{formatCurrency(statementBalance) || 'Not specified'}</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Loan Rate</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{currentRate ? `${currentRate}%` : 'Not specified'}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Row 3: Payment Fields with Total */}
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Principal & Interest Payment</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{formatCurrency(principalPayment) || 'Not specified'}</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Escrow Payment</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{formatCurrency(escrowPayment) || 'Not specified'}</span>
+              </div>
+            </div>
+            <div className="col-span-1">
+              <TotalCurrentLoanPayment control={control} />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Pre-Payment Penalty</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{prepaymentPenalty || 'Not specified'}</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Attached to Property</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{attachedToProperty || 'Not specified'}</span>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
   // Calculate total monthly income - optimized with useMemo
   const borrowerIncomeData = form.watch('income');
   const totalBorrowerIncome = useMemo(() => {
