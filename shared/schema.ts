@@ -176,7 +176,7 @@ export const loanDetailSchema = z.object({
 // Individual property entry schema
 export const propertyEntrySchema = z.object({
   id: z.string().min(1), // Required: stable ID for property attachment system
-  use: z.enum(["primary", "second-home", "investment"]).optional(),
+  use: z.enum(["primary", "second-home", "investment", "home-purchase"]).optional(),
   isSubject: z.boolean().optional(),
   address: addressSchema.partial().optional(),
   propertyType: z.string().optional(),

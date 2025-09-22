@@ -2079,7 +2079,8 @@ export default function AdminAddClient() {
                           .filter((property: any) => property.address?.street) // Only show properties with street addresses
                           .map((property: any, index: number) => {
                             const streetAddress = property.address.street;
-                            const propertyType = property.use === 'primary' ? 'Primary Residence' : 
+                            const propertyType = property.use === 'home-purchase' ? 'Home Purchase' :
+                                               property.use === 'primary' ? 'Primary Residence' : 
                                                property.use === 'second-home' ? 'Second Home' : 
                                                property.use === 'investment' ? 'Investment Property' : 'Property';
                             const displayText = `${streetAddress} (${propertyType})`;
@@ -2499,7 +2500,8 @@ export default function AdminAddClient() {
                           .filter((property: any) => property.address?.street) // Only show properties with street addresses
                           .map((property: any, index: number) => {
                             const streetAddress = property.address.street;
-                            const propertyType = property.use === 'primary' ? 'Primary Residence' : 
+                            const propertyType = property.use === 'home-purchase' ? 'Home Purchase' :
+                                               property.use === 'primary' ? 'Primary Residence' : 
                                                property.use === 'second-home' ? 'Second Home' : 
                                                property.use === 'investment' ? 'Investment Property' : 'Property';
                             const displayText = `${streetAddress} (${propertyType})`;
@@ -3037,7 +3039,7 @@ export default function AdminAddClient() {
   
 
   // Property management helper functions
-  const addProperty = (use: 'primary' | 'second-home' | 'investment') => {
+  const addProperty = (use: 'primary' | 'second-home' | 'investment' | 'home-purchase') => {
     const currentProperties = form.watch('property.properties') || [];
     const newProperty = {
       id: nanoid(),
@@ -3175,7 +3177,7 @@ export default function AdminAddClient() {
   };
 
   // Property type management functions
-  const addPropertyType = (type: 'primary' | 'second-home' | 'investment') => {
+  const addPropertyType = (type: 'primary' | 'second-home' | 'investment' | 'home-purchase') => {
     const currentProperties = form.watch('property.properties') || [];
     
     // For primary residence, ensure only one exists
@@ -3231,11 +3233,12 @@ export default function AdminAddClient() {
     }
   };
 
-  const removePropertyType = (type: 'primary' | 'second-home' | 'investment') => {
+  const removePropertyType = (type: 'primary' | 'second-home' | 'investment' | 'home-purchase') => {
     const typeLabels = {
       'primary': 'Primary Residence',
       'second-home': 'Second Home',
-      'investment': 'Investment Property'
+      'investment': 'Investment Property',
+      'home-purchase': 'Home Purchase'
     };
     
     setConfirmRemovalDialog({
@@ -3264,7 +3267,7 @@ export default function AdminAddClient() {
     });
   };
 
-  const hasPropertyType = (type: 'primary' | 'second-home' | 'investment'): boolean => {
+  const hasPropertyType = (type: 'primary' | 'second-home' | 'investment' | 'home-purchase'): boolean => {
     const currentProperties = form.watch('property.properties') || [];
     return currentProperties.some(property => property.use === type);
   };
@@ -3547,6 +3550,16 @@ export default function AdminAddClient() {
         form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.zipCode`, investmentProperty.address.zip || '');
         form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.county`, investmentProperty.address.county || '');
       }
+    } else if (attachedProperty === 'Home Purchase') {
+      const homePurchaseProperty = properties.find(property => property.use === 'home-purchase');
+      if (homePurchaseProperty?.address) {
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.street`, homePurchaseProperty.address.street || '');
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.unit`, homePurchaseProperty.address.unit || '');
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.city`, homePurchaseProperty.address.city || '');
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.state`, homePurchaseProperty.address.state || '');
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.zipCode`, homePurchaseProperty.address.zip || '');
+        form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.county`, homePurchaseProperty.address.county || '');
+      }
     } else if (attachedProperty === 'Other') {
       // Clear all fields for Other
       form.setValue(`property.properties.${propertyIndex}.secondLoan.propertyAddress.street`, '');
@@ -3606,6 +3619,16 @@ export default function AdminAddClient() {
         form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.zipCode`, investmentProperty.address.zip || '');
         form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.county`, investmentProperty.address.county || '');
       }
+    } else if (attachedProperty === 'Home Purchase') {
+      const homePurchaseProperty = properties.find(property => property.use === 'home-purchase');
+      if (homePurchaseProperty?.address) {
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.street`, homePurchaseProperty.address.street || '');
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.unit`, homePurchaseProperty.address.unit || '');
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.city`, homePurchaseProperty.address.city || '');
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.state`, homePurchaseProperty.address.state || '');
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.zipCode`, homePurchaseProperty.address.zip || '');
+        form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.county`, homePurchaseProperty.address.county || '');
+      }
     } else if (attachedProperty === 'Other') {
       // Clear all fields for Other
       form.setValue(`property.properties.${propertyIndex}.thirdLoan.propertyAddress.street`, '');
@@ -3663,6 +3686,17 @@ export default function AdminAddClient() {
         form.setValue('secondLoan.propertyAddress.state', investmentProperty.address.state || '');
         form.setValue('secondLoan.propertyAddress.zipCode', investmentProperty.address.zip || '');
         form.setValue('secondLoan.propertyAddress.county', investmentProperty.address.county || '');
+      }
+    } else if (attachedProperty === 'Home Purchase') {
+      const properties = form.getValues('property.properties') || [];
+      const homePurchaseProperty = properties.find(property => property.use === 'home-purchase');
+      if (homePurchaseProperty?.address) {
+        form.setValue('secondLoan.propertyAddress.street', homePurchaseProperty.address.street || '');
+        form.setValue('secondLoan.propertyAddress.unit', homePurchaseProperty.address.unit || '');
+        form.setValue('secondLoan.propertyAddress.city', homePurchaseProperty.address.city || '');
+        form.setValue('secondLoan.propertyAddress.state', homePurchaseProperty.address.state || '');
+        form.setValue('secondLoan.propertyAddress.zipCode', homePurchaseProperty.address.zip || '');
+        form.setValue('secondLoan.propertyAddress.county', homePurchaseProperty.address.county || '');
       }
     } else if (attachedProperty === 'Other') {
       // Clear fields for manual entry
@@ -3722,6 +3756,17 @@ export default function AdminAddClient() {
         form.setValue('thirdLoan.propertyAddress.zipCode', investmentProperty.address.zip || '');
         form.setValue('thirdLoan.propertyAddress.county', investmentProperty.address.county || '');
       }
+    } else if (attachedProperty === 'Home Purchase') {
+      const properties = form.getValues('property.properties') || [];
+      const homePurchaseProperty = properties.find(property => property.use === 'home-purchase');
+      if (homePurchaseProperty?.address) {
+        form.setValue('thirdLoan.propertyAddress.street', homePurchaseProperty.address.street || '');
+        form.setValue('thirdLoan.propertyAddress.unit', homePurchaseProperty.address.unit || '');
+        form.setValue('thirdLoan.propertyAddress.city', homePurchaseProperty.address.city || '');
+        form.setValue('thirdLoan.propertyAddress.state', homePurchaseProperty.address.state || '');
+        form.setValue('thirdLoan.propertyAddress.zipCode', homePurchaseProperty.address.zip || '');
+        form.setValue('thirdLoan.propertyAddress.county', homePurchaseProperty.address.county || '');
+      }
     } else if (attachedProperty === 'Other') {
       // Clear fields for manual entry
       form.setValue('thirdLoan.propertyAddress.street', '');
@@ -3767,9 +3812,9 @@ export default function AdminAddClient() {
     }
   };
 
-  // Sort properties by hierarchy: Primary Residence, Second Homes, Investment Properties
+  // Sort properties by hierarchy: Home Purchase, Primary Residence, Second Homes, Investment Properties
   const sortPropertiesByHierarchy = (properties: any[]) => {
-    const hierarchyOrder = { 'primary': 1, 'second-home': 2, 'investment': 3 };
+    const hierarchyOrder = { 'home-purchase': 1, 'primary': 2, 'second-home': 3, 'investment': 4 };
     return [...properties].sort((a, b) => {
       const aOrder = hierarchyOrder[a.use as keyof typeof hierarchyOrder] || 999;
       const bOrder = hierarchyOrder[b.use as keyof typeof hierarchyOrder] || 999;
@@ -7986,7 +8031,7 @@ export default function AdminAddClient() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="property-type-primary"
@@ -8040,6 +8085,24 @@ export default function AdminAddClient() {
                           Investment Property
                         </Label>
                       </div>
+
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="property-type-home-purchase"
+                          checked={hasPropertyType('home-purchase')}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              addPropertyType('home-purchase');
+                            } else {
+                              removePropertyType('home-purchase');
+                            }
+                          }}
+                          data-testid="checkbox-property-home-purchase"
+                        />
+                        <Label htmlFor="property-type-home-purchase" className="font-medium">
+                          Home Purchase
+                        </Label>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -8052,6 +8115,7 @@ export default function AdminAddClient() {
                 
                 const getPropertyTitle = () => {
                   const typeLabels = {
+                    'home-purchase': 'Home Purchase',
                     'primary': 'Primary Residence',
                     'second-home': 'Second Home',
                     'investment': 'Investment Property'
@@ -8060,11 +8124,12 @@ export default function AdminAddClient() {
                   const sameTypeCount = (form.watch('property.properties') || [])
                     .filter(p => p.use === property.use)
                     .findIndex(p => p.id === property.id) + 1;
-                  return property.use === 'primary' ? baseTitle : `${baseTitle} ${sameTypeCount}`;
+                  return (property.use === 'primary' || property.use === 'home-purchase') ? baseTitle : `${baseTitle} ${sameTypeCount}`;
                 };
 
                 return (
                   <Card key={propertyId} className={`border-l-4 transition-colors duration-200 ${
+                    property.use === 'home-purchase' ? 'border-l-cyan-500 hover:border-cyan-500 focus-within:border-cyan-500' :
                     property.use === 'primary' ? 'border-l-green-500 hover:border-green-500 focus-within:border-green-500' : 
                     property.use === 'second-home' ? 'border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500' : 
                     property.use === 'investment' ? 'border-l-purple-500 hover:border-purple-500 focus-within:border-purple-500' : ''
@@ -8539,7 +8604,7 @@ export default function AdminAddClient() {
                                     <SelectValue placeholder="Select" />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    {(property.use === 'primary' || property.use === 'second-home') && (
+                                    {(property.use === 'home-purchase' || property.use === 'primary' || property.use === 'second-home') && (
                                       <SelectItem value="select">Select</SelectItem>
                                     )}
                                     <SelectItem value="yes">Yes</SelectItem>
@@ -8748,7 +8813,7 @@ export default function AdminAddClient() {
                             )}
 
                             {/* Third Loan Details Box - Only show when activeThirdLoan is 'yes' and property is primary/second-home */}
-                            {(property.use === 'primary' || property.use === 'second-home') && form.watch(`property.properties.${index}.activeThirdLoan` as const) === 'yes' && (
+                            {(property.use === 'home-purchase' || property.use === 'primary' || property.use === 'second-home') && form.watch(`property.properties.${index}.activeThirdLoan` as const) === 'yes' && (
                             <Card className="border-2 border-dashed border-gray-500">
                               <CardHeader className="flex flex-row items-center justify-between">
                                 <CardTitle className="text-lg">Third Loan Details</CardTitle>
@@ -9189,7 +9254,7 @@ export default function AdminAddClient() {
                               <Label htmlFor="thirdLoan-attachedToProperty">Attached to Property</Label>
                               <Select value={form.watch('thirdLoan.attachedToProperty') || ''} onValueChange={(value) => {
                                 form.setValue('thirdLoan.attachedToProperty', value as any);
-                                if (['Primary Residence', 'Second Home', 'Investment Property'].includes(value)) {
+                                if (['Home Purchase', 'Primary Residence', 'Second Home', 'Investment Property'].includes(value)) {
                                   setTimeout(() => autoCopyPropertyAddressToGlobalThirdLoan(), 100);
                                 } else if (value === 'Other' || value === '' || value === 'select') {
                                   // Clear address fields for Other, empty, or select
@@ -9206,6 +9271,7 @@ export default function AdminAddClient() {
                                 </SelectTrigger>
                                 <SelectContent>
                                   <SelectItem value="select">Select</SelectItem>
+                                  <SelectItem value="Home Purchase">Home Purchase</SelectItem>
                                   <SelectItem value="Primary Residence">Primary Residence</SelectItem>
                                   <SelectItem value="Second Home">Second Home</SelectItem>
                                   <SelectItem value="Investment Property">Investment Property</SelectItem>
@@ -9216,7 +9282,7 @@ export default function AdminAddClient() {
                           </div>
                           
                           {/* Conditional Property Address Fields - Show when Attached to Property is selected */}
-                          {form.watch('thirdLoan.attachedToProperty') && form.watch('thirdLoan.attachedToProperty') !== '' && ['Primary Residence', 'Second Home', 'Investment Property', 'Other'].includes(form.watch('thirdLoan.attachedToProperty') || '') && (
+                          {form.watch('thirdLoan.attachedToProperty') && form.watch('thirdLoan.attachedToProperty') !== '' && ['Home Purchase', 'Primary Residence', 'Second Home', 'Investment Property', 'Other'].includes(form.watch('thirdLoan.attachedToProperty') || '') && (
                             <div className="mt-4 p-4 border-t border-gray-200">
                               <Collapsible open={isThirdLoanPropertyAddressOpen} onOpenChange={setIsThirdLoanPropertyAddressOpen}>
                                 <div className="flex items-center justify-between mb-3">
