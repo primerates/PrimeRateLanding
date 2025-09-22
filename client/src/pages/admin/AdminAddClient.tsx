@@ -26,6 +26,42 @@ import { nanoid } from 'nanoid';
 import { insertClientSchema, type InsertClient } from '@shared/schema';
 import { apiRequest } from '@/lib/queryClient';
 
+// Memoized AppraisalIcon component to prevent typing lag
+const AppraisalIcon = React.memo<{ index: number }>(({ index }) => {
+  const { control } = useFormContext();
+  const estimatedValue = useWatch({ 
+    control, 
+    name: `property.properties.${index}.estimatedValue` as const 
+  });
+  const appraisedValue = useWatch({ 
+    control, 
+    name: `property.properties.${index}.appraisedValue` as const 
+  });
+
+  const iconClass = useMemo(() => {
+    const parseValue = (value: string) => {
+      if (!value) return 0;
+      const cleaned = value.replace(/[^\d.]/g, '');
+      return cleaned ? parseFloat(cleaned) : 0;
+    };
+
+    const estimatedNum = parseValue(estimatedValue || '');
+    const appraisedNum = parseValue(appraisedValue || '');
+
+    if (appraisedNum === 0 || estimatedNum === 0) {
+      return 'text-black hover:text-gray-600';
+    } else if (appraisedNum > estimatedNum) {
+      return 'text-green-600 hover:text-green-800';
+    } else if (appraisedNum < estimatedNum) {
+      return 'text-red-600 hover:text-red-800';
+    } else {
+      return 'text-black hover:text-gray-600';
+    }
+  }, [estimatedValue, appraisedValue]);
+
+  return <DollarSign className={`h-4 w-4 ${iconClass}`} />;
+});
+
 // US States for dropdown
 const US_STATES = [
   { value: 'AL', label: 'Alabama' },
