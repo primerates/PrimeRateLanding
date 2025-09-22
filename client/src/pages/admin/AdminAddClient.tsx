@@ -5473,9 +5473,10 @@ export default function AdminAddClient() {
                     </CardHeader>
                     <CollapsibleContent>
                       <CardContent className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {/* First row with business details */}
+                      <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="income-businessName">Business Name</Label>
+                          <Label htmlFor="income-businessName">Business / DBA Name</Label>
                           <Input
                             id="income-businessName"
                             {...form.register('income.businessName')}
@@ -5484,122 +5485,138 @@ export default function AdminAddClient() {
                         </div>
                         
                         <div className="space-y-2">
-                          <Label htmlFor="income-businessMonthlyIncome">Monthly Net Income</Label>
+                          <Label htmlFor="income-businessPhone">Phone</Label>
                           <Input
-                            id="income-businessMonthlyIncome"
-                            {...form.register('income.businessMonthlyIncome')}
-                            placeholder="$0.00"
-                            data-testid="input-income-businessMonthlyIncome"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label>Years in Business</Label>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <Label htmlFor="income-business-years">Years</Label>
-                              <Input
-                                id="income-business-years"
-                                type="number"
-                                min="0"
-                                max="99"
-                                {...form.register('income.yearsInBusinessYears')}
-                                data-testid="input-income-business-years"
-                              />
-                            </div>
-                            <div>
-                              <Label htmlFor="income-business-months">Months</Label>
-                              <Input
-                                id="income-business-months"
-                                type="number"
-                                min="0"
-                                max="11"
-                                placeholder="0"
-                                {...form.register('income.yearsInBusinessMonths')}
-                                data-testid="input-income-business-months"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="space-y-2 md:col-span-3">
-                          <Label className="text-base font-semibold">Business Address</Label>
-                          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                            <div className="space-y-2 md:col-span-4">
-                              <Label htmlFor="income-business-street">Street Address</Label>
-                              <Input
-                                id="income-business-street"
-                                placeholder="123 Main St"
-                                {...form.register('income.businessAddress.street')}
-                                data-testid="input-income-business-street"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="income-business-unit">Unit/Suite</Label>
-                              <Input
-                                id="income-business-unit"
-                                {...form.register('income.businessAddress.unit')}
-                                data-testid="input-income-business-unit"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="income-business-city">City</Label>
-                              <Input
-                                id="income-business-city"
-                                {...form.register('income.businessAddress.city')}
-                                data-testid="input-income-business-city"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="income-business-state">State</Label>
-                              <Select onValueChange={(value) => form.setValue('income.businessAddress.state', value)}>
-                                <SelectTrigger data-testid="select-income-business-state">
-                                  <SelectValue placeholder="State" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {US_STATES.map((state) => (
-                                    <SelectItem key={state.value} value={state.value}>
-                                      {state.value}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="income-business-zip">ZIP Code</Label>
-                              <Input
-                                id="income-business-zip"
-                                {...form.register('income.businessAddress.zip')}
-                                data-testid="input-income-business-zip"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="income-business-county">County</Label>
-                              <Input
-                                id="income-business-county"
-                                {...form.register('income.businessAddress.county')}
-                                data-testid="input-income-business-county"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="income-business-phone">Business Phone</Label>
-                          <Input
-                            id="income-business-phone"
+                            id="income-businessPhone"
                             placeholder="(XXX) XXX-XXXX"
                             value={form.watch('income.businessPhone') || ''}
                             onChange={(e) => handlePhoneChange('income.businessPhone', e.target.value)}
-                            data-testid="input-income-business-phone"
+                            data-testid="input-income-businessPhone"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="income-formationDate">Formation Date</Label>
+                          <Input
+                            id="income-formationDate"
+                            type="date"
+                            {...form.register('income.formationDate')}
+                            data-testid="input-income-formationDate"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="income-formation">Formation</Label>
+                          <Select onValueChange={(value) => form.setValue('income.formation', value)} value={form.watch('income.formation') || ''}>
+                            <SelectTrigger data-testid="select-income-formation">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="LLC" data-testid="select-item-llc">LLC</SelectItem>
+                              <SelectItem value="Corporation" data-testid="select-item-corporation">Corporation</SelectItem>
+                              <SelectItem value="Partnership" data-testid="select-item-partnership">Partnership</SelectItem>
+                              <SelectItem value="Sole Proprietorship" data-testid="select-item-sole-proprietorship">Sole Proprietorship</SelectItem>
+                              <SelectItem value="Other" data-testid="select-item-other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="income-ownershipPercentage">Ownership %</Label>
+                          <Input
+                            id="income-ownershipPercentage"
+                            type="number"
+                            min="0"
+                            max="100"
+                            placeholder="0"
+                            {...form.register('income.ownershipPercentage')}
+                            data-testid="input-income-ownershipPercentage"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="income-taxesPreparedBy">Taxes Prepared By</Label>
+                          <Input
+                            id="income-taxesPreparedBy"
+                            {...form.register('income.taxesPreparedBy')}
+                            data-testid="input-income-taxesPreparedBy"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="income-businessDescription">Description</Label>
+                          <Input
+                            id="income-businessDescription"
+                            {...form.register('income.businessDescription')}
+                            data-testid="input-income-businessDescription"
                           />
                         </div>
                       </div>
+                        
+                        {/* Address fields without "Business Address" title */}
+                        <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                          <div className="space-y-2 md:col-span-4">
+                            <Label htmlFor="income-business-street">Street Address</Label>
+                            <Input
+                              id="income-business-street"
+                              placeholder="123 Main St"
+                              {...form.register('income.businessAddress.street')}
+                              data-testid="input-income-business-street"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="income-business-unit">Unit/Suite</Label>
+                            <Input
+                              id="income-business-unit"
+                              {...form.register('income.businessAddress.unit')}
+                              data-testid="input-income-business-unit"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="income-business-city">City</Label>
+                            <Input
+                              id="income-business-city"
+                              {...form.register('income.businessAddress.city')}
+                              data-testid="input-income-business-city"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <Label htmlFor="income-business-state">State</Label>
+                            <Select onValueChange={(value) => form.setValue('income.businessAddress.state', value)}>
+                              <SelectTrigger data-testid="select-income-business-state">
+                                <SelectValue placeholder="State" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {US_STATES.map((state) => (
+                                  <SelectItem key={state.value} value={state.value}>
+                                    {state.value}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <Label htmlFor="income-business-zip">ZIP Code</Label>
+                            <Input
+                              id="income-business-zip"
+                              {...form.register('income.businessAddress.zip')}
+                              data-testid="input-income-business-zip"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="income-business-county">County</Label>
+                            <Input
+                              id="income-business-county"
+                              {...form.register('income.businessAddress.county')}
+                              data-testid="input-income-business-county"
+                            />
+                          </div>
+                        </div>
                       </CardContent>
                     </CollapsibleContent>
                   </Collapsible>

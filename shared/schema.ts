@@ -116,6 +116,11 @@ export const incomeSchema = z.object({
   yearsInBusinessMonths: z.string().optional(),
   businessAddress: addressSchema.partial().optional(),
   businessPhone: z.string().optional(),
+  formationDate: z.string().optional(),
+  formation: z.string().optional(),
+  ownershipPercentage: z.string().optional(),
+  taxesPreparedBy: z.string().optional(),
+  businessDescription: z.string().optional(),
   
   // Pension fields (multiple pensions)
   pensions: z.array(pensionSchema).optional(),
