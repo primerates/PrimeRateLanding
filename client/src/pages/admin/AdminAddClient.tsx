@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useLocation } from 'wouter';
 import { useForm, useFormContext, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8405,32 +8405,11 @@ export default function AdminAddClient() {
                                     type="button"
                                     variant="ghost"
                                     size="sm"
-                                    className={`p-1 h-auto ${(() => {
-                                      const appraisedValue = form.watch(`property.properties.${index}.appraisedValue` as const) || '';
-                                      const estimatedValue = form.watch(`property.properties.${index}.estimatedValue` as const) || '';
-                                      
-                                      const parseValue = (value: string) => {
-                                        const cleaned = value.replace(/[^\d.]/g, '');
-                                        return cleaned ? parseFloat(cleaned) : 0;
-                                      };
-                                      
-                                      const appraisedNum = parseValue(appraisedValue);
-                                      const estimatedNum = parseValue(estimatedValue);
-                                      
-                                      if (appraisedNum === 0 || estimatedNum === 0) {
-                                        return 'text-black hover:text-gray-600';
-                                      } else if (appraisedNum > estimatedNum) {
-                                        return 'text-green-600 hover:text-green-800';
-                                      } else if (appraisedNum < estimatedNum) {
-                                        return 'text-red-600 hover:text-red-800';
-                                      } else {
-                                        return 'text-black hover:text-gray-600';
-                                      }
-                                    })()}`}
+                                    className="p-1 h-auto"
                                     title="Appraised Property Value"
                                     data-testid={`button-appraised-value-info-${propertyId}`}
                                   >
-                                    <DollarSign className="h-4 w-4" />
+                                    <AppraisalIcon index={index} />
                                   </Button>
                                 </div>
                                 <Input
