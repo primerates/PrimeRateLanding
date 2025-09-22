@@ -8228,7 +8228,7 @@ export default function AdminAddClient() {
                               
                               <div className="space-y-2 md:col-span-2">
                                 <div className="flex items-center gap-2">
-                                  <Label htmlFor={`property-estimated-value-${propertyId}`}>Estimated Property Value</Label>
+                                  <Label htmlFor={`property-estimated-value-${propertyId}`}>Est. Value</Label>
                                   <div className="flex items-center gap-1">
                                     {/* Zillow */}
                                     <div className="flex items-center gap-1">
@@ -8299,9 +8299,9 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
-                              <div className="space-y-2 md:col-span-2">
+                              <div className="space-y-2 md:col-span-1">
                                 <div className="flex items-center gap-2">
-                                  <Label htmlFor={`property-appraised-value-${propertyId}`}>Appraised Value</Label>
+                                  <Label htmlFor={`property-appraised-value-${propertyId}`}>Appraised</Label>
                                   <Button
                                     type="button"
                                     variant="ghost"
