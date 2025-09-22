@@ -8179,7 +8179,10 @@ export default function AdminAddClient() {
                             {/* Property Details - Row 2: Purchase Price, Owned Since, Title Held By, Estimated Property Value, Appraised Value, Secured First Loan, Secured Second Loan */}
                             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
                               <div className="space-y-2 md:col-span-1">
-                                <Label htmlFor={`property-purchase-price-${propertyId}`}>Purchase Price</Label>
+                                <div className="flex items-center gap-2">
+                                  <DollarSign className="h-4 w-4 text-black" />
+                                  <Label htmlFor={`property-purchase-price-${propertyId}`}>Purchase $</Label>
+                                </div>
                                 <Input
                                   id={`property-purchase-price-${propertyId}`}
                                   {...form.register(`property.properties.${index}.purchasePrice` as const)}
@@ -8190,7 +8193,7 @@ export default function AdminAddClient() {
                               
                               <div className="space-y-2 md:col-span-1">
                                 <div className="min-h-5 flex items-center">
-                                  <Label htmlFor={`property-owned-since-${propertyId}`}>Owned Since</Label>
+                                  <Label htmlFor={`property-owned-since-${propertyId}`}>Purchased</Label>
                                 </div>
                                 <Input
                                   id={`property-owned-since-${propertyId}`}
@@ -8202,7 +8205,7 @@ export default function AdminAddClient() {
                               
                               <div className="space-y-2 md:col-span-1">
                                 <div className="min-h-5 flex items-center">
-                                  <Label htmlFor={`property-title-held-by-${propertyId}`}>Title Held By</Label>
+                                  <Label htmlFor={`property-title-held-by-${propertyId}`}>Title Held</Label>
                                 </div>
                                 <Select
                                   value={form.watch(`property.properties.${index}.ownedHeldBy` as const) || ''}
@@ -8223,7 +8226,7 @@ export default function AdminAddClient() {
                                 </Select>
                               </div>
                               
-                              <div className="space-y-2 md:col-span-3">
+                              <div className="space-y-2 md:col-span-2">
                                 <div className="flex items-center gap-2">
                                   <Label htmlFor={`property-estimated-value-${propertyId}`}>Estimated Property Value</Label>
                                   <div className="flex items-center gap-1">
@@ -8296,7 +8299,7 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
-                              <div className="space-y-2 md:col-span-1">
+                              <div className="space-y-2 md:col-span-2">
                                 <div className="flex items-center gap-2">
                                   <Label htmlFor={`property-appraised-value-${propertyId}`}>Appraised Value</Label>
                                   <Button
