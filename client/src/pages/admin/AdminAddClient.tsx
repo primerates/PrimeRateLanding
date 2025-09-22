@@ -8211,8 +8211,25 @@ export default function AdminAddClient() {
                               </div>
                               
                               <div className="space-y-2 md:col-span-1">
-                                <div className="min-h-5 flex items-center">
+                                <div className="min-h-5 flex items-center gap-2">
                                   <Label htmlFor={`property-owned-since-${propertyId}`}>Purchased</Label>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                    onClick={() => {
+                                      toast({
+                                        title: "Purchase Information",
+                                        description: "Please see purchase and record dates in title report located in vendor page.",
+                                        duration: 5000,
+                                      });
+                                    }}
+                                    data-testid={`button-purchased-info-${propertyId}`}
+                                    title="Purchase Information"
+                                  >
+                                    <Info className="h-4 w-4" />
+                                  </Button>
                                 </div>
                                 <Input
                                   id={`property-owned-since-${propertyId}`}
@@ -8223,8 +8240,25 @@ export default function AdminAddClient() {
                               </div>
                               
                               <div className="space-y-2 md:col-span-2">
-                                <div className="min-h-5 flex items-center">
+                                <div className="min-h-5 flex items-center gap-2">
                                   <Label htmlFor={`property-title-held-by-${propertyId}`}>Title Held</Label>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                    onClick={() => {
+                                      toast({
+                                        title: "Title Information",
+                                        description: "Please see title report in vendor page.",
+                                        duration: 5000,
+                                      });
+                                    }}
+                                    data-testid={`button-title-held-info-${propertyId}`}
+                                    title="Title Information"
+                                  >
+                                    <Info className="h-4 w-4" />
+                                  </Button>
                                 </div>
                                 <Select
                                   value={form.watch(`property.properties.${index}.ownedHeldBy` as const) || ''}
