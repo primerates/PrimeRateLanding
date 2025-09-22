@@ -7970,7 +7970,9 @@ export default function AdminAddClient() {
                             {/* Property Details - Row 2: Owned Since, Owned / Title Held By, Secured First Loan, Secured Second Loan */}
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
                               <div className="space-y-2">
-                                <Label htmlFor={`property-owned-since-${propertyId}`}>Owned Since</Label>
+                                <div className="min-h-5 flex items-center">
+                                  <Label htmlFor={`property-owned-since-${propertyId}`}>Owned Since</Label>
+                                </div>
                                 <Input
                                   id={`property-owned-since-${propertyId}`}
                                   {...form.register(`property.properties.${index}.ownedSince` as const)}
@@ -7980,7 +7982,9 @@ export default function AdminAddClient() {
                               </div>
                               
                               <div className="space-y-2">
-                                <Label htmlFor={`property-owned-held-by-${propertyId}`}>Owned / Title Held By</Label>
+                                <div className="min-h-5 flex items-center">
+                                  <Label htmlFor={`property-owned-held-by-${propertyId}`}>Owned / Title Held By</Label>
+                                </div>
                                 <Select
                                   value={form.watch(`property.properties.${index}.ownedHeldBy` as const) || ''}
                                   onValueChange={(value: "borrower" | "borrower-coborrower" | "borrower-others") => {
@@ -7999,7 +8003,7 @@ export default function AdminAddClient() {
                               </div>
                               
                               <div className="space-y-2">
-                                <div className="flex items-center gap-2">
+                                <div className="min-h-5 flex items-center gap-2">
                                   <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured First Loan</Label>
                                   {showCurrentLoan && (
                                     <Button
@@ -8035,7 +8039,9 @@ export default function AdminAddClient() {
                               </div>
                               
                               <div className="space-y-2">
-                                <Label htmlFor={`property-active-second-loan-${propertyId}`}>Secured Second Loan</Label>
+                                <div className="min-h-5 flex items-center">
+                                  <Label htmlFor={`property-active-second-loan-${propertyId}`}>Secured Second Loan</Label>
+                                </div>
                                 <Select
                                   value={form.watch(`property.properties.${index}.activeSecondLoan` as const) || ''}
                                   onValueChange={(value) => {
