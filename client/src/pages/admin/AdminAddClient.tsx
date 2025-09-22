@@ -5479,7 +5479,7 @@ export default function AdminAddClient() {
                       <CardContent className="space-y-4">
                       {/* First row with business details */}
                       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                        <div className="space-y-2 md:col-span-3">
+                        <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="income-businessName">Business / DBA Name</Label>
                           <Input
                             id="income-businessName"
@@ -5488,7 +5488,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2 md:col-span-1">
+                        <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="income-businessPhone">Phone</Label>
                           <Input
                             id="income-businessPhone"
@@ -6778,7 +6778,7 @@ export default function AdminAddClient() {
                       <CardContent className="space-y-4">
                       {/* First row with business details */}
                       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                        <div className="space-y-2 md:col-span-3">
+                        <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="coBorrowerIncome-businessName">Business / DBA Name</Label>
                           <Input
                             id="coBorrowerIncome-businessName"
@@ -6787,7 +6787,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2 md:col-span-1">
+                        <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="coBorrowerIncome-businessPhone">Phone</Label>
                           <Input
                             id="coBorrowerIncome-businessPhone"
