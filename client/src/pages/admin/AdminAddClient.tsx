@@ -8338,7 +8338,7 @@ export default function AdminAddClient() {
                                       );
                                     })()}
                                   </div>
-                                  {showCurrentLoan && (() => {
+                                  {(() => {
                                     const attachedPropertyId = form.watch('currentLoan.attachedToProperty');
                                     const properties = form.watch('property.properties') || [];
                                     const primaryProperty = properties.find((p: any) => p.use === 'primary');
@@ -8401,7 +8401,7 @@ export default function AdminAddClient() {
                                       );
                                     })()}
                                   </div>
-                                  {showSecondLoan && (() => {
+                                  {(() => {
                                     const attachedPropertyId = form.watch('secondLoan.attachedToProperty');
                                     const properties = form.watch('property.properties') || [];
                                     const primaryProperty = properties.find((p: any) => p.use === 'primary');
