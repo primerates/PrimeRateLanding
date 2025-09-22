@@ -1659,20 +1659,7 @@ export default function AdminAddClient() {
                   </div>
                 </div>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="currentLoan-totalMonthlyPayment">Total Monthly Payment</Label>
-                  <div className="flex items-center border border-input bg-gray-50 px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="currentLoan-totalMonthlyPayment"
-                      value={totalCurrentLoanPaymentFormatted.replace('$', '')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0 cursor-default"
-                      readOnly
-                      data-testid="input-currentLoan-totalMonthlyPayment"
-                    />
-                  </div>
-                </div>
+                <TotalCurrentLoanPayment control={form.control} />
                 
                 <div className="space-y-2">
                   <Label htmlFor={`${idPrefix}currentLoan-prepaymentPenalty`}>Pre-Payment Penalty</Label>
