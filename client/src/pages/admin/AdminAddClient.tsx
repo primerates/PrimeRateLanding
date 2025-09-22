@@ -2029,7 +2029,11 @@ export default function AdminAddClient() {
                         onClick={(e) => {
                           if (targetForm.watch('currentLoan.attachedToProperty') !== 'Other') {
                             e.preventDefault();
-                            alert('Please enter or edit property address information using the property menu option');
+                            toast({
+                              title: "Address is read-only",
+                              description: "Please edit property address information using the Property tab",
+                              variant: "default",
+                            });
                           }
                         }}
                       />
@@ -2046,7 +2050,11 @@ export default function AdminAddClient() {
                         onClick={(e) => {
                           if (targetForm.watch('currentLoan.attachedToProperty') !== 'Other') {
                             e.preventDefault();
-                            alert('Please enter or edit property address information using the property menu option');
+                            toast({
+                              title: "Address is read-only",
+                              description: "Please edit property address information using the Property tab",
+                              variant: "default",
+                            });
                           }
                         }}
                       />
@@ -2063,7 +2071,11 @@ export default function AdminAddClient() {
                         onClick={(e) => {
                           if (targetForm.watch('currentLoan.attachedToProperty') !== 'Other') {
                             e.preventDefault();
-                            alert('Please enter or edit property address information using the property menu option');
+                            toast({
+                              title: "Address is read-only",
+                              description: "Please edit property address information using the Property tab",
+                              variant: "default",
+                            });
                           }
                         }}
                       />
@@ -2081,7 +2093,11 @@ export default function AdminAddClient() {
                           onClick={(e) => {
                             if (targetForm.watch('currentLoan.attachedToProperty') !== 'Other') {
                               e.preventDefault();
-                              alert('Please enter or edit property address information using the property menu option');
+                              toast({
+                              title: "Address is read-only",
+                              description: "Please edit property address information using the Property tab",
+                              variant: "default",
+                            });
                             }
                           }}
                         >
@@ -2106,7 +2122,11 @@ export default function AdminAddClient() {
                         onClick={(e) => {
                           if (targetForm.watch('currentLoan.attachedToProperty') !== 'Other') {
                             e.preventDefault();
-                            alert('Please enter or edit property address information using the property menu option');
+                            toast({
+                              title: "Address is read-only",
+                              description: "Please edit property address information using the Property tab",
+                              variant: "default",
+                            });
                           }
                         }}
                       />
@@ -2123,7 +2143,11 @@ export default function AdminAddClient() {
                         onClick={(e) => {
                           if (targetForm.watch('currentLoan.attachedToProperty') !== 'Other') {
                             e.preventDefault();
-                            alert('Please enter or edit property address information using the property menu option');
+                            toast({
+                              title: "Address is read-only",
+                              description: "Please edit property address information using the Property tab",
+                              variant: "default",
+                            });
                           }
                         }}
                       />
@@ -2426,7 +2450,11 @@ export default function AdminAddClient() {
                             onClick={(e) => {
                               if (targetForm.watch('secondLoan.attachedToProperty') !== 'Other') {
                                 e.preventDefault();
-                                alert('Please enter or edit property address information using the property menu option');
+                                toast({
+                              title: "Address is read-only",
+                              description: "Please edit property address information using the Property tab",
+                              variant: "default",
+                            });
                               }
                             }}
                           />
@@ -2443,7 +2471,11 @@ export default function AdminAddClient() {
                             onClick={(e) => {
                               if (targetForm.watch('secondLoan.attachedToProperty') !== 'Other') {
                                 e.preventDefault();
-                                alert('Please enter or edit property address information using the property menu option');
+                                toast({
+                              title: "Address is read-only",
+                              description: "Please edit property address information using the Property tab",
+                              variant: "default",
+                            });
                               }
                             }}
                           />
@@ -2460,7 +2492,11 @@ export default function AdminAddClient() {
                             onClick={(e) => {
                               if (targetForm.watch('secondLoan.attachedToProperty') !== 'Other') {
                                 e.preventDefault();
-                                alert('Please enter or edit property address information using the property menu option');
+                                toast({
+                              title: "Address is read-only",
+                              description: "Please edit property address information using the Property tab",
+                              variant: "default",
+                            });
                               }
                             }}
                           />
@@ -2479,7 +2515,11 @@ export default function AdminAddClient() {
                               onClick={(e) => {
                                 if (targetForm.watch('secondLoan.attachedToProperty') !== 'Other') {
                                   e.preventDefault();
-                                  alert('Please enter or edit property address information using the property menu option');
+                                  toast({
+                              title: "Address is read-only",
+                              description: "Please edit property address information using the Property tab",
+                              variant: "default",
+                            });
                                 }
                               }}
                             >
@@ -2506,7 +2546,11 @@ export default function AdminAddClient() {
                             onClick={(e) => {
                               if (targetForm.watch('secondLoan.attachedToProperty') !== 'Other') {
                                 e.preventDefault();
-                                alert('Please enter or edit property address information using the property menu option');
+                                toast({
+                              title: "Address is read-only",
+                              description: "Please edit property address information using the Property tab",
+                              variant: "default",
+                            });
                               }
                             }}
                           />
@@ -2523,7 +2567,11 @@ export default function AdminAddClient() {
                             onClick={(e) => {
                               if (targetForm.watch('secondLoan.attachedToProperty') !== 'Other') {
                                 e.preventDefault();
-                                alert('Please enter or edit property address information using the property menu option');
+                                toast({
+                              title: "Address is read-only",
+                              description: "Please edit property address information using the Property tab",
+                              variant: "default",
+                            });
                               }
                             }}
                           />
