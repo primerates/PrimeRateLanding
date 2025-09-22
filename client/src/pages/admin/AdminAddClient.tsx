@@ -515,6 +515,7 @@ export default function AdminAddClient() {
   const [isSecondLoanOpen, setIsSecondLoanOpen] = useState(true);
   const [showThirdLoan, setShowThirdLoan] = useState(false);
   const [isThirdLoanOpen, setIsThirdLoanOpen] = useState(true);
+  const [additionalLoans, setAdditionalLoans] = useState<Array<{id: string, isOpen: boolean}>>([]);
   const [isThirdLoanPropertyAddressOpen, setIsThirdLoanPropertyAddressOpen] = useState(false);
   
   // State for Current Loan info popup in Property tab
@@ -2299,6 +2300,7 @@ export default function AdminAddClient() {
     setIsOpen, 
     onRemove,
     onAutoCopyAddress,
+    onAddAdditionalLoan,
     formInstance 
   }: {
     idPrefix?: string;
@@ -2307,6 +2309,7 @@ export default function AdminAddClient() {
     setIsOpen: (open: boolean) => void;
     onRemove?: () => void;
     onAutoCopyAddress?: () => void;
+    onAddAdditionalLoan?: () => void;
     formInstance?: any;
   }) => {
     const contextForm = useFormContext();
@@ -2692,6 +2695,233 @@ export default function AdminAddClient() {
                       </div>
                     </CollapsibleContent>
                   </Collapsible>
+                </div>
+              )}
+              
+              {/* Add Additional Loan Button - positioned in lower right corner */}
+              {onAddAdditionalLoan && (
+                <div className="flex justify-end mt-4">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={onAddAdditionalLoan}
+                    className="hover:bg-orange-500 hover:text-white hover:border-orange-500 no-default-hover-elevate no-default-active-elevate"
+                    data-testid={`button-add-additional-loan-${idPrefix}`}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Additional Loan
+                  </Button>
+                </div>
+              )}
+              
+            </CardContent>
+          </CollapsibleContent>
+        </Collapsible>
+      </Card>
+    );
+  };
+
+  // AdditionalLoanCard component - similar to CurrentSecondLoanCard but with orange border and dynamic numbering
+  const AdditionalLoanCard = ({ 
+    loanId,
+    loanNumber,
+    isOpen, 
+    setIsOpen, 
+    onRemove,
+    onAddAdditionalLoan,
+    formInstance 
+  }: {
+    loanId: string;
+    loanNumber: number;
+    isOpen: boolean;
+    setIsOpen: (open: boolean) => void;
+    onRemove?: () => void;
+    onAddAdditionalLoan?: () => void;
+    formInstance?: any;
+  }) => {
+    const contextForm = useFormContext();
+    const targetForm = formInstance || contextForm;
+    const [isPropertyAddressOpen, setIsPropertyAddressOpen] = useState(false);
+    
+    const cardClassName = 'border-l-4 border-l-orange-500 hover:border-orange-500 focus-within:border-orange-500 transition-colors duration-200';
+    
+    return (
+      <Card className={cardClassName}>
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Current Loan {loanNumber}</CardTitle>
+              <div className="flex items-center gap-2">
+                {onRemove && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={onRemove}
+                    className="hover:bg-red-500 hover:text-white"
+                    data-testid={`button-remove-additional-loan-${loanId}`}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                )}
+                <CollapsibleTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="hover:bg-orange-500 hover:text-white" 
+                    data-testid={`button-toggle-additional-loan-${loanId}`}
+                    title={isOpen ? 'Minimize' : 'Expand'}
+                  >
+                    {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                  </Button>
+                </CollapsibleTrigger>
+              </div>
+            </div>
+          </CardHeader>
+          <CollapsibleContent>
+            <CardContent className="space-y-4">
+              {/* Row 1: Lender Name, Loan Number, Loan Category, Loan Term, Loan Duration */}
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor={`${loanId}-lenderName`}>Lender Name</Label>
+                  <Input
+                    id={`${loanId}-lenderName`}
+                    {...targetForm.register(`${loanId}.currentLender`)}
+                    data-testid={`input-${loanId}-lenderName`}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${loanId}-loanNumber`}>Loan Number</Label>
+                  <Input
+                    id={`${loanId}-loanNumber`}
+                    {...targetForm.register(`${loanId}.loanNumber`)}
+                    data-testid={`input-${loanId}-loanNumber`}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${loanId}-loanCategory`}>Loan Category</Label>
+                  <Select
+                    value={targetForm.watch(`${loanId}.loanCategory`) || ''}
+                    onValueChange={(value) => targetForm.setValue(`${loanId}.loanCategory`, value)}
+                  >
+                    <SelectTrigger data-testid={`select-${loanId}-loanCategory`}>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      <SelectItem value="heloc">HELOC</SelectItem>
+                      <SelectItem value="fixed-second-loan">Fixed Second Loan</SelectItem>
+                      <SelectItem value="adjustable-second-loan">Adjustable Second Loan</SelectItem>
+                      <SelectItem value="home-improvement-loan">Home Improvement Loan</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${loanId}-loanTerm`}>Loan Term</Label>
+                  <Select
+                    value={targetForm.watch(`${loanId}.loanTerm`) || ''}
+                    onValueChange={(value) => targetForm.setValue(`${loanId}.loanTerm`, value)}
+                  >
+                    <SelectTrigger data-testid={`select-${loanId}-loanTerm`}>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      <SelectItem value="10-years">10 Years</SelectItem>
+                      <SelectItem value="15-years">15 Years</SelectItem>
+                      <SelectItem value="20-years">20 Years</SelectItem>
+                      <SelectItem value="25-years">25 Years</SelectItem>
+                      <SelectItem value="30-years">30 Years</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${loanId}-loanDuration`}>Loan Duration</Label>
+                  <Input
+                    id={`${loanId}-loanDuration`}
+                    {...targetForm.register(`${loanId}.loanDuration`)}
+                    placeholder="Years"
+                    data-testid={`input-${loanId}-loanDuration`}
+                  />
+                </div>
+              </div>
+
+              {/* Row 2: Statement Balance/Pay Off Demand, Current Rate, P&I Payment, Escrow Payment, Total Monthly Payment */}
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor={`${loanId}-statementBalance`}>Statement Balance</Label>
+                  <Input
+                    id={`${loanId}-statementBalance`}
+                    {...targetForm.register(`${loanId}.statementBalance.amount`)}
+                    placeholder="$0.00"
+                    data-testid={`input-${loanId}-statementBalance`}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${loanId}-currentRate`}>Current Rate</Label>
+                  <Input
+                    id={`${loanId}-currentRate`}
+                    {...targetForm.register(`${loanId}.currentRate`)}
+                    placeholder="0.00%"
+                    data-testid={`input-${loanId}-currentRate`}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${loanId}-principalAndInterestPayment`}>Principal & Interest Payment</Label>
+                  <Input
+                    id={`${loanId}-principalAndInterestPayment`}
+                    {...targetForm.register(`${loanId}.principalAndInterestPayment`)}
+                    placeholder="$0.00"
+                    data-testid={`input-${loanId}-principalAndInterestPayment`}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${loanId}-escrowPayment`}>Escrow Payment</Label>
+                  <Input
+                    id={`${loanId}-escrowPayment`}
+                    {...targetForm.register(`${loanId}.escrowPayment`)}
+                    placeholder="$0.00"
+                    data-testid={`input-${loanId}-escrowPayment`}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${loanId}-totalMonthlyPayment`}>Total Monthly Payment</Label>
+                  <Input
+                    id={`${loanId}-totalMonthlyPayment`}
+                    {...targetForm.register(`${loanId}.totalMonthlyPayment`)}
+                    placeholder="$0.00"
+                    readOnly
+                    className="bg-muted"
+                    data-testid={`input-${loanId}-totalMonthlyPayment`}
+                  />
+                </div>
+              </div>
+              
+              {/* Add Additional Loan Button - positioned in lower right corner */}
+              {onAddAdditionalLoan && (
+                <div className="flex justify-end mt-4">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={onAddAdditionalLoan}
+                    className="hover:bg-orange-500 hover:text-white hover:border-orange-500 no-default-hover-elevate no-default-active-elevate"
+                    data-testid={`button-add-additional-loan-${loanId}`}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Additional Loan
+                  </Button>
                 </div>
               )}
               
@@ -3371,6 +3601,27 @@ export default function AdminAddClient() {
   // Handle showing second loan sections
   const handleAddSecondLoan = () => {
     setShowSecondLoan(true);
+  };
+
+  // Handle adding additional loans
+  const handleAddAdditionalLoan = () => {
+    // Generate a unique ID based on timestamp to avoid conflicts
+    const newLoanId = `loan-${Date.now()}`;
+    setAdditionalLoans(prev => [...prev, { id: newLoanId, isOpen: true }]);
+  };
+
+  // Handle removing additional loan
+  const removeAdditionalLoan = (loanId: string) => {
+    setAdditionalLoans(prev => prev.filter(loan => loan.id !== loanId));
+  };
+
+  // Toggle additional loan collapsible state
+  const toggleAdditionalLoanOpen = (loanId: string) => {
+    setAdditionalLoans(prev =>
+      prev.map(loan =>
+        loan.id === loanId ? { ...loan, isOpen: !loan.isOpen } : loan
+      )
+    );
   };
 
   // Handle removing second loan
@@ -8859,9 +9110,24 @@ export default function AdminAddClient() {
                   setIsOpen={setIsSecondLoanOpen}
                   onRemove={removeSecondLoan}
                   onAutoCopyAddress={autoCopyPropertyAddressToLoanTabSecondLoan}
+                  onAddAdditionalLoan={handleAddAdditionalLoan}
                   formInstance={form}
                 />
               )}
+
+              {/* Additional Loan Cards - Render all additional loans with sequential numbering: 3, 4, 5, etc. */}
+              {additionalLoans.map((loan, index) => (
+                <AdditionalLoanCard
+                  key={loan.id}
+                  loanId={loan.id}
+                  loanNumber={3 + index}
+                  isOpen={loan.isOpen}
+                  setIsOpen={(open) => toggleAdditionalLoanOpen(loan.id)}
+                  onRemove={() => removeAdditionalLoan(loan.id)}
+                  onAddAdditionalLoan={handleAddAdditionalLoan}
+                  formInstance={form}
+                />
+              ))}
 
               {/* Third Loan Sections - Only show when added */}
               {showThirdLoan && (
