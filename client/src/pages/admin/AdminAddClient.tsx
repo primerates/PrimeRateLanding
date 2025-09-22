@@ -7773,106 +7773,8 @@ export default function AdminAddClient() {
                               </CardContent>
                             </Card>
 
-                            {/* Property Address */}
-                            <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                              <div className="space-y-2">
-                                <Label htmlFor={`property-address-street-${propertyId}`}>Street Address</Label>
-                                <Input
-                                  id={`property-address-street-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.address.street` as const)}
-                                  placeholder="123 Main St"
-                                  data-testid={`input-property-street-${propertyId}`}
-                                  onBlur={() => {
-                                    // Trigger auto-fetch after a delay to allow other fields to be filled
-                                    setTimeout(() => handleAddressChange(index), 1000);
-                                  }}
-                                />
-                              </div>
-                              
-                              <div className="space-y-2">
-                                <Label htmlFor={`property-address-unit-${propertyId}`}>Unit/Apt</Label>
-                                <Input
-                                  id={`property-address-unit-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.address.unit` as const)}
-                                  data-testid={`input-property-unit-${propertyId}`}
-                                />
-                              </div>
-                              
-                              <div className="space-y-2">
-                                <Label htmlFor={`property-address-city-${propertyId}`}>City</Label>
-                                <Input
-                                  id={`property-address-city-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.address.city` as const)}
-                                  data-testid={`input-property-city-${propertyId}`}
-                                  onBlur={() => {
-                                    // Trigger auto-fetch after a delay
-                                    setTimeout(() => handleAddressChange(index), 1000);
-                                  }}
-                                />
-                              </div>
-                              
-                              <div className="space-y-2">
-                                <Label htmlFor={`property-address-state-${propertyId}`}>State</Label>
-                                <Select
-                                  value={form.watch(`property.properties.${index}.address.state` as const) || ''}
-                                  onValueChange={(value) => form.setValue(`property.properties.${index}.address.state` as const, value)}
-                                >
-                                  <SelectTrigger data-testid={`select-property-state-${propertyId}`}>
-                                    <SelectValue placeholder="State" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {US_STATES.map((state) => (
-                                      <SelectItem key={state.value} value={state.value}>
-                                        {state.value}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                              
-                              <div className="space-y-2">
-                                <Label htmlFor={`property-address-zip-${propertyId}`}>ZIP Code</Label>
-                                <Input
-                                  id={`property-address-zip-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.address.zip` as const)}
-                                  data-testid={`input-property-zip-${propertyId}`}
-                                />
-                              </div>
-                              
-                              <div className="space-y-2">
-                                <Label htmlFor={`property-address-county-${propertyId}`}>County</Label>
-                                <Input
-                                  id={`property-address-county-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.address.county` as const)}
-                                  data-testid={`input-property-county-${propertyId}`}
-                                />
-                              </div>
-                            </div>
-
-                            {/* Property Details - Row 1: Property Type, Estimated Property Value, Appraised Value, Purchase Price */}
+                            {/* Property Details - Row 1: Estimated Property Value, Appraised Value, Secured First Loan, Secured Second Loan */}
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                              <div className="space-y-2">
-                                <Label htmlFor={`property-type-${propertyId}`}>Property Type</Label>
-                                <Select
-                                  value={form.watch(`property.properties.${index}.propertyType` as const) || ''}
-                                  onValueChange={(value) => form.setValue(`property.properties.${index}.propertyType` as const, value)}
-                                >
-                                  <SelectTrigger data-testid={`select-property-type-${propertyId}`}>
-                                    <SelectValue placeholder="Select type" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="single-family">Single Family</SelectItem>
-                                    <SelectItem value="condo">Condo</SelectItem>
-                                    <SelectItem value="townhouse">Townhouse</SelectItem>
-                                    <SelectItem value="duplex">Duplex</SelectItem>
-                                    <SelectItem value="multi-family">Multi-Family</SelectItem>
-                                    <SelectItem value="mobile-home-sw">Mobile Home SW</SelectItem>
-                                    <SelectItem value="mobile-home-dw">Mobile Home DW</SelectItem>
-                                    <SelectItem value="other">Other</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                              
                               <div className="space-y-2">
                                 <div className="flex items-center gap-2">
                                   <Label htmlFor={`property-estimated-value-${propertyId}`}>Estimated Property Value</Label>
@@ -7957,52 +7859,6 @@ export default function AdminAddClient() {
                               </div>
                               
                               <div className="space-y-2">
-                                <Label htmlFor={`property-purchase-price-${propertyId}`}>Purchase Price</Label>
-                                <Input
-                                  id={`property-purchase-price-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.purchasePrice` as const)}
-                                  placeholder="$0.00"
-                                  data-testid={`input-property-purchase-price-${propertyId}`}
-                                />
-                              </div>
-                            </div>
-
-                            {/* Property Details - Row 2: Owned Since, Owned / Title Held By, Secured First Loan, Secured Second Loan */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-                              <div className="space-y-2">
-                                <div className="min-h-5 flex items-center">
-                                  <Label htmlFor={`property-owned-since-${propertyId}`}>Owned Since</Label>
-                                </div>
-                                <Input
-                                  id={`property-owned-since-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.ownedSince` as const)}
-                                  placeholder="MM/YYYY"
-                                  data-testid={`input-property-owned-since-${propertyId}`}
-                                />
-                              </div>
-                              
-                              <div className="space-y-2">
-                                <div className="min-h-5 flex items-center">
-                                  <Label htmlFor={`property-owned-held-by-${propertyId}`}>Owned / Title Held By</Label>
-                                </div>
-                                <Select
-                                  value={form.watch(`property.properties.${index}.ownedHeldBy` as const) || ''}
-                                  onValueChange={(value: "borrower" | "borrower-coborrower" | "borrower-others") => {
-                                    form.setValue(`property.properties.${index}.ownedHeldBy` as const, value);
-                                  }}
-                                >
-                                  <SelectTrigger data-testid={`select-property-owned-held-by-${propertyId}`}>
-                                    <SelectValue placeholder="Select" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="borrower">Borrower</SelectItem>
-                                    <SelectItem value="borrower-coborrower">Borrower & Co-Borrower</SelectItem>
-                                    <SelectItem value="borrower-others">Borrower(s) & Others</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                              
-                              <div className="space-y-2">
                                 <div className="min-h-5 flex items-center gap-2">
                                   <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured First Loan</Label>
                                   {showCurrentLoan && (
@@ -8067,6 +7923,150 @@ export default function AdminAddClient() {
                                     <SelectItem value="no">No</SelectItem>
                                   </SelectContent>
                                 </Select>
+                              </div>
+                            </div>
+
+                            {/* Property Details - Row 2: Purchase Price, Property Type, Owned Since, Owned / Title Held By */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-purchase-price-${propertyId}`}>Purchase Price</Label>
+                                <Input
+                                  id={`property-purchase-price-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.purchasePrice` as const)}
+                                  placeholder="$0.00"
+                                  data-testid={`input-property-purchase-price-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-type-${propertyId}`}>Property Type</Label>
+                                <Select
+                                  value={form.watch(`property.properties.${index}.propertyType` as const) || ''}
+                                  onValueChange={(value) => form.setValue(`property.properties.${index}.propertyType` as const, value)}
+                                >
+                                  <SelectTrigger data-testid={`select-property-type-${propertyId}`}>
+                                    <SelectValue placeholder="Select type" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="single-family">Single Family</SelectItem>
+                                    <SelectItem value="condo">Condo</SelectItem>
+                                    <SelectItem value="townhouse">Townhouse</SelectItem>
+                                    <SelectItem value="duplex">Duplex</SelectItem>
+                                    <SelectItem value="multi-family">Multi-Family</SelectItem>
+                                    <SelectItem value="mobile-home-sw">Mobile Home SW</SelectItem>
+                                    <SelectItem value="mobile-home-dw">Mobile Home DW</SelectItem>
+                                    <SelectItem value="other">Other</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <div className="min-h-5 flex items-center">
+                                  <Label htmlFor={`property-owned-since-${propertyId}`}>Owned Since</Label>
+                                </div>
+                                <Input
+                                  id={`property-owned-since-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.ownedSince` as const)}
+                                  placeholder="MM/YYYY"
+                                  data-testid={`input-property-owned-since-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <div className="min-h-5 flex items-center">
+                                  <Label htmlFor={`property-owned-held-by-${propertyId}`}>Owned / Title Held By</Label>
+                                </div>
+                                <Select
+                                  value={form.watch(`property.properties.${index}.ownedHeldBy` as const) || ''}
+                                  onValueChange={(value: "borrower" | "borrower-coborrower" | "borrower-others") => {
+                                    form.setValue(`property.properties.${index}.ownedHeldBy` as const, value);
+                                  }}
+                                >
+                                  <SelectTrigger data-testid={`select-property-owned-held-by-${propertyId}`}>
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="borrower">Borrower</SelectItem>
+                                    <SelectItem value="borrower-coborrower">Borrower & Co-Borrower</SelectItem>
+                                    <SelectItem value="borrower-others">Borrower(s) & Others</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+
+                            {/* Property Address - Row 3: Street Address, Unit/Apt, City, State, ZIP Code, County */}
+                            <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mt-4">
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-address-street-${propertyId}`}>Street Address</Label>
+                                <Input
+                                  id={`property-address-street-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.address.street` as const)}
+                                  placeholder="123 Main St"
+                                  data-testid={`input-property-street-${propertyId}`}
+                                  onBlur={() => {
+                                    // Trigger auto-fetch after a delay to allow other fields to be filled
+                                    setTimeout(() => handleAddressChange(index), 1000);
+                                  }}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-address-unit-${propertyId}`}>Unit/Apt</Label>
+                                <Input
+                                  id={`property-address-unit-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.address.unit` as const)}
+                                  data-testid={`input-property-unit-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-address-city-${propertyId}`}>City</Label>
+                                <Input
+                                  id={`property-address-city-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.address.city` as const)}
+                                  data-testid={`input-property-city-${propertyId}`}
+                                  onBlur={() => {
+                                    // Trigger auto-fetch after a delay
+                                    setTimeout(() => handleAddressChange(index), 1000);
+                                  }}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-address-state-${propertyId}`}>State</Label>
+                                <Select
+                                  value={form.watch(`property.properties.${index}.address.state` as const) || ''}
+                                  onValueChange={(value) => form.setValue(`property.properties.${index}.address.state` as const, value)}
+                                >
+                                  <SelectTrigger data-testid={`select-property-state-${propertyId}`}>
+                                    <SelectValue placeholder="State" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {US_STATES.map((state) => (
+                                      <SelectItem key={state.value} value={state.value}>
+                                        {state.value}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-address-zip-${propertyId}`}>ZIP Code</Label>
+                                <Input
+                                  id={`property-address-zip-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.address.zip` as const)}
+                                  data-testid={`input-property-zip-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-address-county-${propertyId}`}>County</Label>
+                                <Input
+                                  id={`property-address-county-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.address.county` as const)}
+                                  data-testid={`input-property-county-${propertyId}`}
+                                />
                               </div>
                             </div>
 
