@@ -2011,8 +2011,8 @@ export default function AdminAddClient() {
                   </div>
                   <Collapsible open={isPropertyAddressOpen} onOpenChange={setIsPropertyAddressOpen}>
                     <CollapsibleContent>
-                  <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                    <div className="space-y-2 md:col-span-4">
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                    <div className="space-y-2 md:col-span-3">
                       <Label htmlFor={propertyStreetBinding.id}>Street Address</Label>
                       <Input
                         id={propertyStreetBinding.id}
@@ -2020,10 +2020,16 @@ export default function AdminAddClient() {
                         data-testid={propertyStreetBinding['data-testid']}
                         readOnly={targetForm.watch('currentLoan.attachedToProperty') !== 'Other'}
                         className={targetForm.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                        onClick={(e) => {
+                          if (targetForm.watch('currentLoan.attachedToProperty') !== 'Other') {
+                            e.preventDefault();
+                            alert('Please enter or edit property address information using the property menu option');
+                          }
+                        }}
                       />
                     </div>
                     
-                    <div className="space-y-2 md:col-span-2">
+                    <div className="space-y-2 md:col-span-1">
                       <Label htmlFor={propertyUnitBinding.id}>Unit/Apt</Label>
                       <Input
                         id={propertyUnitBinding.id}
@@ -2031,6 +2037,12 @@ export default function AdminAddClient() {
                         data-testid={propertyUnitBinding['data-testid']}
                         readOnly={targetForm.watch('currentLoan.attachedToProperty') !== 'Other'}
                         className={targetForm.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                        onClick={(e) => {
+                          if (targetForm.watch('currentLoan.attachedToProperty') !== 'Other') {
+                            e.preventDefault();
+                            alert('Please enter or edit property address information using the property menu option');
+                          }
+                        }}
                       />
                     </div>
                     
@@ -2042,10 +2054,16 @@ export default function AdminAddClient() {
                         data-testid={propertyCityBinding['data-testid']}
                         readOnly={targetForm.watch('currentLoan.attachedToProperty') !== 'Other'}
                         className={targetForm.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                        onClick={(e) => {
+                          if (targetForm.watch('currentLoan.attachedToProperty') !== 'Other') {
+                            e.preventDefault();
+                            alert('Please enter or edit property address information using the property menu option');
+                          }
+                        }}
                       />
                     </div>
                     
-                    <div className="space-y-2 md:col-span-2">
+                    <div className="space-y-2 md:col-span-1">
                       <Label htmlFor={`${idPrefix}currentLoan-property-state`}>State</Label>
                       <Select
                         {...propertyStateBinding}
@@ -2054,6 +2072,12 @@ export default function AdminAddClient() {
                         <SelectTrigger
                           data-testid={propertyStateBinding['data-testid']}
                           className={targetForm.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                          onClick={(e) => {
+                            if (targetForm.watch('currentLoan.attachedToProperty') !== 'Other') {
+                              e.preventDefault();
+                              alert('Please enter or edit property address information using the property menu option');
+                            }
+                          }}
                         >
                           <SelectValue placeholder="State" />
                         </SelectTrigger>
@@ -2065,7 +2089,7 @@ export default function AdminAddClient() {
                       </Select>
                     </div>
                     
-                    <div className="space-y-2">
+                    <div className="space-y-2 md:col-span-1">
                       <Label htmlFor={propertyZipBinding.id}>ZIP Code</Label>
                       <Input
                         id={propertyZipBinding.id}
@@ -2073,10 +2097,16 @@ export default function AdminAddClient() {
                         data-testid={propertyZipBinding['data-testid']}
                         readOnly={targetForm.watch('currentLoan.attachedToProperty') !== 'Other'}
                         className={targetForm.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                        onClick={(e) => {
+                          if (targetForm.watch('currentLoan.attachedToProperty') !== 'Other') {
+                            e.preventDefault();
+                            alert('Please enter or edit property address information using the property menu option');
+                          }
+                        }}
                       />
                     </div>
                     
-                    <div className="space-y-2">
+                    <div className="space-y-2 md:col-span-2">
                       <Label htmlFor={propertyCountyBinding.id}>County</Label>
                       <Input
                         id={propertyCountyBinding.id}
@@ -2084,6 +2114,12 @@ export default function AdminAddClient() {
                         data-testid={propertyCountyBinding['data-testid']}
                         readOnly={targetForm.watch('currentLoan.attachedToProperty') !== 'Other'}
                         className={targetForm.watch('currentLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                        onClick={(e) => {
+                          if (targetForm.watch('currentLoan.attachedToProperty') !== 'Other') {
+                            e.preventDefault();
+                            alert('Please enter or edit property address information using the property menu option');
+                          }
+                        }}
                       />
                     </div>
                       </div>
@@ -2366,8 +2402,8 @@ export default function AdminAddClient() {
                       </CollapsibleTrigger>
                     </div>
                     <CollapsibleContent>
-                      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                        <div className="space-y-2 md:col-span-4">
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                        <div className="space-y-2 md:col-span-3">
                           <Label htmlFor="secondLoan-property-street">Street Address</Label>
                           <Input
                             id="secondLoan-property-street"
@@ -2375,10 +2411,16 @@ export default function AdminAddClient() {
                             data-testid="input-secondLoan-property-street"
                             readOnly={targetForm.watch('secondLoan.attachedToProperty') !== 'Other'}
                             className={targetForm.watch('secondLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                            onClick={(e) => {
+                              if (targetForm.watch('secondLoan.attachedToProperty') !== 'Other') {
+                                e.preventDefault();
+                                alert('Please enter or edit property address information using the property menu option');
+                              }
+                            }}
                           />
                         </div>
                         
-                        <div className="space-y-2 md:col-span-2">
+                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="secondLoan-property-unit">Unit/Apt</Label>
                           <Input
                             id="secondLoan-property-unit"
@@ -2386,11 +2428,15 @@ export default function AdminAddClient() {
                             data-testid="input-secondLoan-property-unit"
                             readOnly={targetForm.watch('secondLoan.attachedToProperty') !== 'Other'}
                             className={targetForm.watch('secondLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                            onClick={(e) => {
+                              if (targetForm.watch('secondLoan.attachedToProperty') !== 'Other') {
+                                e.preventDefault();
+                                alert('Please enter or edit property address information using the property menu option');
+                              }
+                            }}
                           />
                         </div>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mt-4">
+                        
                         <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="secondLoan-property-city">City</Label>
                           <Input
@@ -2399,10 +2445,16 @@ export default function AdminAddClient() {
                             data-testid="input-secondLoan-property-city"
                             readOnly={targetForm.watch('secondLoan.attachedToProperty') !== 'Other'}
                             className={targetForm.watch('secondLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                            onClick={(e) => {
+                              if (targetForm.watch('secondLoan.attachedToProperty') !== 'Other') {
+                                e.preventDefault();
+                                alert('Please enter or edit property address information using the property menu option');
+                              }
+                            }}
                           />
                         </div>
                         
-                        <div className="space-y-2 md:col-span-2">
+                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="secondLoan-property-state">State</Label>
                           <Select
                             value={targetForm.watch('secondLoan.propertyAddress.state') || ''}
@@ -2412,6 +2464,12 @@ export default function AdminAddClient() {
                             <SelectTrigger
                               data-testid="select-secondLoan-property-state"
                               className={targetForm.watch('secondLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                              onClick={(e) => {
+                                if (targetForm.watch('secondLoan.attachedToProperty') !== 'Other') {
+                                  e.preventDefault();
+                                  alert('Please enter or edit property address information using the property menu option');
+                                }
+                              }}
                             >
                               <SelectValue placeholder="State" />
                             </SelectTrigger>
@@ -2425,7 +2483,7 @@ export default function AdminAddClient() {
                           </Select>
                         </div>
                         
-                        <div className="space-y-2">
+                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="secondLoan-property-zipCode">ZIP Code</Label>
                           <Input
                             id="secondLoan-property-zipCode"
@@ -2433,10 +2491,16 @@ export default function AdminAddClient() {
                             data-testid="input-secondLoan-property-zipCode"
                             readOnly={targetForm.watch('secondLoan.attachedToProperty') !== 'Other'}
                             className={targetForm.watch('secondLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                            onClick={(e) => {
+                              if (targetForm.watch('secondLoan.attachedToProperty') !== 'Other') {
+                                e.preventDefault();
+                                alert('Please enter or edit property address information using the property menu option');
+                              }
+                            }}
                           />
                         </div>
                         
-                        <div className="space-y-2">
+                        <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="secondLoan-property-county">County</Label>
                           <Input
                             id="secondLoan-property-county"
@@ -2444,6 +2508,12 @@ export default function AdminAddClient() {
                             data-testid="input-secondLoan-property-county"
                             readOnly={targetForm.watch('secondLoan.attachedToProperty') !== 'Other'}
                             className={targetForm.watch('secondLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
+                            onClick={(e) => {
+                              if (targetForm.watch('secondLoan.attachedToProperty') !== 'Other') {
+                                e.preventDefault();
+                                alert('Please enter or edit property address information using the property menu option');
+                              }
+                            }}
                           />
                         </div>
                       </div>
@@ -3207,63 +3277,59 @@ export default function AdminAddClient() {
   
   // Auto-copy property address to Current Loan based on Attached to Property selection
   const autoCopyPropertyAddressToCurrentLoan = () => {
-    const attachedProperty = form.getValues('currentLoan.attachedToProperty');
+    const attachedProperty = form.getValues('currentLoan.attachedToProperty') as string;
     
-    if (attachedProperty === 'Primary Residence') {
-      // First priority: Check Property tab Primary Residence address
+    if (attachedProperty && attachedProperty !== 'Other' && attachedProperty !== 'select') {
+      // Find property by street address since attachedToProperty now contains the street address
       const properties = form.getValues('property.properties') || [];
-      const primaryProperty = properties.find(p => p.use === 'primary');
+      const selectedProperty = properties.find((p: any) => p.address?.street === attachedProperty);
       
-      if (primaryProperty?.address && (primaryProperty.address.street || primaryProperty.address.city)) {
-        // Use Property tab Primary Residence address
-        form.setValue('currentLoan.propertyAddress.street', primaryProperty.address.street || '');
-        form.setValue('currentLoan.propertyAddress.unit', primaryProperty.address.unit || '');
-        form.setValue('currentLoan.propertyAddress.city', primaryProperty.address.city || '');
-        form.setValue('currentLoan.propertyAddress.state', primaryProperty.address.state || '');
-        form.setValue('currentLoan.propertyAddress.zipCode', primaryProperty.address.zip || '');
-        form.setValue('currentLoan.propertyAddress.county', primaryProperty.address.county || '');
-      } else {
-        // Fallback: Use Borrower tab Residence Address
-        const borrowerAddress = form.getValues('borrower.residenceAddress');
-        if (borrowerAddress) {
-          form.setValue('currentLoan.propertyAddress.street', borrowerAddress.street || '');
-          form.setValue('currentLoan.propertyAddress.unit', borrowerAddress.unit || '');
-          form.setValue('currentLoan.propertyAddress.city', borrowerAddress.city || '');
-          form.setValue('currentLoan.propertyAddress.state', borrowerAddress.state || '');
-          form.setValue('currentLoan.propertyAddress.zipCode', borrowerAddress.zip || '');
-          form.setValue('currentLoan.propertyAddress.county', borrowerAddress.county || '');
-        }
+      if (selectedProperty?.address) {
+        // Copy address from the selected property
+        form.setValue('currentLoan.propertyAddress.street', selectedProperty.address.street || '');
+        form.setValue('currentLoan.propertyAddress.unit', selectedProperty.address.unit || '');
+        form.setValue('currentLoan.propertyAddress.city', selectedProperty.address.city || '');
+        form.setValue('currentLoan.propertyAddress.state', selectedProperty.address.state || '');
+        form.setValue('currentLoan.propertyAddress.zipCode', selectedProperty.address.zip || '');
+        form.setValue('currentLoan.propertyAddress.county', selectedProperty.address.county || '');
       }
-    } else if (attachedProperty === 'Second Home') {
-      const properties = form.getValues('property.properties') || [];
-      const secondHome = properties.find(property => property.use === 'second-home');
-      if (secondHome?.address) {
-        form.setValue('currentLoan.propertyAddress.street', secondHome.address.street || '');
-        form.setValue('currentLoan.propertyAddress.unit', secondHome.address.unit || '');
-        form.setValue('currentLoan.propertyAddress.city', secondHome.address.city || '');
-        form.setValue('currentLoan.propertyAddress.state', secondHome.address.state || '');
-        form.setValue('currentLoan.propertyAddress.zipCode', secondHome.address.zip || '');
-        form.setValue('currentLoan.propertyAddress.county', secondHome.address.county || '');
-      }
-    } else if (attachedProperty === 'Investment Property') {
-      const properties = form.getValues('property.properties') || [];
-      const investmentProperty = properties.find(property => property.use === 'investment');
-      if (investmentProperty?.address) {
-        form.setValue('currentLoan.propertyAddress.street', investmentProperty.address.street || '');
-        form.setValue('currentLoan.propertyAddress.unit', investmentProperty.address.unit || '');
-        form.setValue('currentLoan.propertyAddress.city', investmentProperty.address.city || '');
-        form.setValue('currentLoan.propertyAddress.state', investmentProperty.address.state || '');
-        form.setValue('currentLoan.propertyAddress.zipCode', investmentProperty.address.zip || '');
-        form.setValue('currentLoan.propertyAddress.county', investmentProperty.address.county || '');
-      }
-    } else if (attachedProperty === 'Other') {
-      // Clear fields for manual entry
+    } else if (attachedProperty === 'Other' || attachedProperty === 'select') {
+      // Clear fields for manual entry or when no selection
       form.setValue('currentLoan.propertyAddress.street', '');
       form.setValue('currentLoan.propertyAddress.unit', '');
       form.setValue('currentLoan.propertyAddress.city', '');
       form.setValue('currentLoan.propertyAddress.state', '');
       form.setValue('currentLoan.propertyAddress.zipCode', '');
       form.setValue('currentLoan.propertyAddress.county', '');
+    }
+  };
+
+  // Auto-copy property address to Loan tab Second Loan based on Attached to Property selection
+  const autoCopyPropertyAddressToLoanTabSecondLoan = () => {
+    const attachedProperty = form.getValues('secondLoan.attachedToProperty') as string;
+    
+    if (attachedProperty && attachedProperty !== 'Other' && attachedProperty !== 'select') {
+      // Find property by street address since attachedToProperty now contains the street address
+      const properties = form.getValues('property.properties') || [];
+      const selectedProperty = properties.find((p: any) => p.address?.street === attachedProperty);
+      
+      if (selectedProperty?.address) {
+        // Copy address from the selected property
+        form.setValue('secondLoan.propertyAddress.street', selectedProperty.address.street || '');
+        form.setValue('secondLoan.propertyAddress.unit', selectedProperty.address.unit || '');
+        form.setValue('secondLoan.propertyAddress.city', selectedProperty.address.city || '');
+        form.setValue('secondLoan.propertyAddress.state', selectedProperty.address.state || '');
+        form.setValue('secondLoan.propertyAddress.zipCode', selectedProperty.address.zip || '');
+        form.setValue('secondLoan.propertyAddress.county', selectedProperty.address.county || '');
+      }
+    } else if (attachedProperty === 'Other' || attachedProperty === 'select') {
+      // Clear fields for manual entry or when no selection
+      form.setValue('secondLoan.propertyAddress.street', '');
+      form.setValue('secondLoan.propertyAddress.unit', '');
+      form.setValue('secondLoan.propertyAddress.city', '');
+      form.setValue('secondLoan.propertyAddress.state', '');
+      form.setValue('secondLoan.propertyAddress.zipCode', '');
+      form.setValue('secondLoan.propertyAddress.county', '');
     }
   };
 
