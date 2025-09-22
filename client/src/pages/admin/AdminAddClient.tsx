@@ -1126,6 +1126,61 @@ export default function AdminAddClient() {
     return isNaN(parsed) ? 0 : parsed;
   };
 
+  // Sub-component for isolated auto sum calculation - prevents main form re-renders
+  interface TotalCurrentLoanPaymentProps {
+    control: any; // Control from parent useForm
+  }
+
+  const TotalCurrentLoanPayment: React.FC<TotalCurrentLoanPaymentProps> = ({ control }) => {
+    // Use useWatch to subscribe only here (isolates re-renders to this component)
+    const principalPayment = useWatch({ control, name: 'currentLoan.principalAndInterestPayment' }) || '';
+    const escrowPayment = useWatch({ control, name: 'currentLoan.escrowPayment' }) || '';
+
+    // Optional: Light debouncing for smooth total updates (300ms delay)
+    const [debouncedPrincipal, setDebouncedPrincipal] = useState(principalPayment);
+    const [debouncedEscrow, setDebouncedEscrow] = useState(escrowPayment);
+
+    useEffect(() => {
+      const timer = setTimeout(() => setDebouncedPrincipal(principalPayment), 300);
+      return () => clearTimeout(timer);
+    }, [principalPayment]);
+
+    useEffect(() => {
+      const timer = setTimeout(() => setDebouncedEscrow(escrowPayment), 300);
+      return () => clearTimeout(timer);
+    }, [escrowPayment]);
+
+    // Calculate total using debounced values
+    const total = useMemo(() => {
+      const principal = parseMonetaryValue(debouncedPrincipal);
+      const escrow = parseMonetaryValue(debouncedEscrow);
+      return principal + escrow;
+    }, [debouncedPrincipal, debouncedEscrow]);
+
+    // Format for display
+    const formattedTotal = useMemo(() => 
+      total > 0 ? total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '',
+      [total]
+    );
+
+    return (
+      <div className="space-y-2">
+        <Label htmlFor="currentLoan-totalMonthlyPayment">Total Monthly Payment</Label>
+        <div className="flex items-center border border-input bg-gray-50 px-3 rounded-md">
+          <span className="text-muted-foreground text-sm">$</span>
+          <Input
+            id="currentLoan-totalMonthlyPayment"
+            value={formattedTotal}
+            placeholder="0.00"
+            className="border-0 bg-transparent px-2 focus-visible:ring-0 cursor-default"
+            readOnly
+            data-testid="input-currentLoan-totalMonthlyPayment"
+          />
+        </div>
+      </div>
+    );
+  };
+
   // Calculate total monthly income - optimized with useMemo
   const borrowerIncomeData = form.watch('income');
   const totalBorrowerIncome = useMemo(() => {
