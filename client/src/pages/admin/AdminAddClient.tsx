@@ -5512,11 +5512,20 @@ export default function AdminAddClient() {
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="LLC" data-testid="select-item-llc">LLC</SelectItem>
-                              <SelectItem value="Corporation" data-testid="select-item-corporation">Corporation</SelectItem>
-                              <SelectItem value="Partnership" data-testid="select-item-partnership">Partnership</SelectItem>
                               <SelectItem value="Sole Proprietorship" data-testid="select-item-sole-proprietorship">Sole Proprietorship</SelectItem>
-                              <SelectItem value="Other" data-testid="select-item-other">Other</SelectItem>
+                              <SelectItem value="General Partnership (GP)" data-testid="select-item-general-partnership">General Partnership (GP)</SelectItem>
+                              <SelectItem value="Limited Partnership (LP)" data-testid="select-item-limited-partnership">Limited Partnership (LP)</SelectItem>
+                              <SelectItem value="Limited Liability Partnership (LLP)" data-testid="select-item-llp">Limited Liability Partnership (LLP)</SelectItem>
+                              <SelectItem value="LLC taxed as S-Corp" data-testid="select-item-llc-s-corp">LLC taxed as S-Corp</SelectItem>
+                              <SelectItem value="LLC taxed as C-Corp" data-testid="select-item-llc-c-corp">LLC taxed as C-Corp</SelectItem>
+                              <SelectItem value="C Corporation (C-Corp)" data-testid="select-item-c-corporation">C Corporation (C-Corp)</SelectItem>
+                              <SelectItem value="S Corporation (S-Corp)" data-testid="select-item-s-corporation">S Corporation (S-Corp)</SelectItem>
+                              <SelectItem value="Benefit Corporation (B-Corp)" data-testid="select-item-benefit-corporation">Benefit Corporation (B-Corp)</SelectItem>
+                              <SelectItem value="Close Corporation" data-testid="select-item-close-corporation">Close Corporation</SelectItem>
+                              <SelectItem value="Non-Profit Corporation" data-testid="select-item-non-profit-corporation">Non-Profit Corporation</SelectItem>
+                              <SelectItem value="Professional Corporation (PC)" data-testid="select-item-professional-corporation">Professional Corporation (PC)</SelectItem>
+                              <SelectItem value="Professional LLC (PLLC)" data-testid="select-item-professional-llc">Professional LLC (PLLC)</SelectItem>
+                              <SelectItem value="Joint Venture" data-testid="select-item-joint-venture">Joint Venture</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -5552,6 +5561,73 @@ export default function AdminAddClient() {
                           />
                         </div>
                       </div>
+                        
+                        {/* Business Address Row (copied from borrower residence address) */}
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                          <div className="space-y-2 md:col-span-3">
+                            <Label htmlFor="income-business-street">Street Address</Label>
+                            <Input
+                              id="income-business-street"
+                              {...form.register('income.businessAddress.street')}
+                              data-testid="input-income-business-street"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-1">
+                            <Label htmlFor="income-business-unit">Unit/Apt</Label>
+                            <Input
+                              id="income-business-unit"
+                              {...form.register('income.businessAddress.unit')}
+                              data-testid="input-income-business-unit"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="income-business-city">City</Label>
+                            <Input
+                              id="income-business-city"
+                              {...form.register('income.businessAddress.city')}
+                              data-testid="input-income-business-city"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-1">
+                            <Label htmlFor="income-business-state">State</Label>
+                            <Select
+                              value={form.watch('income.businessAddress.state') || ''}
+                              onValueChange={(value) => form.setValue('income.businessAddress.state', value)}
+                            >
+                              <SelectTrigger data-testid="select-income-business-state">
+                                <SelectValue placeholder="State" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {US_STATES.map((state) => (
+                                  <SelectItem key={state.value} value={state.value}>
+                                    {state.value}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-1">
+                            <Label htmlFor="income-business-zip">ZIP Code</Label>
+                            <Input
+                              id="income-business-zip"
+                              {...form.register('income.businessAddress.zip')}
+                              data-testid="input-income-business-zip"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="income-business-county">County</Label>
+                            <Input
+                              id="income-business-county"
+                              {...form.register('income.businessAddress.county')}
+                              data-testid="input-income-business-county"
+                            />
+                          </div>
+                        </div>
                         
                       </CardContent>
                     </CollapsibleContent>
