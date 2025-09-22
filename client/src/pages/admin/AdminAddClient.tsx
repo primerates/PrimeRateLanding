@@ -8180,8 +8180,8 @@ export default function AdminAddClient() {
                             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
                               <div className="space-y-2 md:col-span-1">
                                 <div className="flex items-center gap-2">
+                                  <Label htmlFor={`property-purchase-price-${propertyId}`}>Purchase</Label>
                                   <DollarSign className="h-4 w-4 text-black" />
-                                  <Label htmlFor={`property-purchase-price-${propertyId}`}>Purchase $</Label>
                                 </div>
                                 <Input
                                   id={`property-purchase-price-${propertyId}`}
@@ -8203,7 +8203,7 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
-                              <div className="space-y-2 md:col-span-1">
+                              <div className="space-y-2 md:col-span-2">
                                 <div className="min-h-5 flex items-center">
                                   <Label htmlFor={`property-title-held-by-${propertyId}`}>Title Held</Label>
                                 </div>
