@@ -9186,23 +9186,24 @@ export default function AdminAddClient() {
                                     );
                                   })()}
                                 </div>
-                                <Select
-                                  value={form.watch(`property.properties.${index}.activeSecuredLoan` as const) || ''}
-                                  onValueChange={(value) => form.setValue(`property.properties.${index}.activeSecuredLoan` as const, value)}
-                                >
-                                  <SelectTrigger data-testid={`select-property-active-secured-loan-${propertyId}`}>
-                                    <SelectValue placeholder="Select" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {(property.use === 'home-purchase' || property.use === 'primary' || property.use === 'second-home') && (
-                                      <SelectItem value="select">Select</SelectItem>
-                                    )}
-                                    <SelectItem value="yes">Yes</SelectItem>
-                                    <SelectItem value={property.use === 'investment' ? 'no-paid-off' : 'paid-off'}>
-                                      {property.use === 'investment' ? 'No, Paid Off' : 'Paid Off'}
-                                    </SelectItem>
-                                  </SelectContent>
-                                </Select>
+{(() => {
+                                  // Dynamic connection display field
+                                  const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                  const isCurrentLoanAttachedToThisProperty = Boolean(currentLoanAttached && property?.id && currentLoanAttached === property.id);
+                                  
+                                  const displayValue = isCurrentLoanAttachedToThisProperty ? 'Yes' : 'connect';
+                                  
+                                  return (
+                                    <div 
+                                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background cursor-default"
+                                      data-testid={`display-property-active-secured-loan-${propertyId}`}
+                                    >
+                                      <span className={isCurrentLoanAttachedToThisProperty ? 'text-foreground' : 'text-muted-foreground'}>
+                                        {displayValue}
+                                      </span>
+                                    </div>
+                                  );
+                                })()}
                               </div>
                               
                               <div className="space-y-2 md:col-span-2">
