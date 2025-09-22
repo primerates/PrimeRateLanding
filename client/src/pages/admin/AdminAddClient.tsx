@@ -8180,13 +8180,13 @@ export default function AdminAddClient() {
                             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
                               <div className="space-y-2 md:col-span-1">
                                 <div className="flex items-center gap-2">
-                                  <Label htmlFor={`property-purchase-price-${propertyId}`}>Purchase</Label>
+                                  <Label htmlFor={`property-purchase-price-${propertyId}`}>Purchased</Label>
                                   <Button
                                     type="button"
                                     variant="ghost"
                                     size="sm"
-                                    className="p-1 h-auto text-green-600 hover:text-green-800"
-                                    title="Appraised Property Value"
+                                    className="p-1 h-auto text-black hover:text-gray-600"
+                                    title="Purchase Property Value"
                                     data-testid={`button-purchase-price-info-${propertyId}`}
                                   >
                                     <DollarSign className="h-4 w-4" />
@@ -8241,7 +8241,7 @@ export default function AdminAddClient() {
                               
                               <div className="space-y-2 md:col-span-2">
                                 <div className="min-h-5 flex items-center gap-2">
-                                  <Label htmlFor={`property-title-held-by-${propertyId}`}>Title Held</Label>
+                                  <Label htmlFor={`property-title-held-by-${propertyId}`}>Title Held By</Label>
                                   <Button
                                     type="button"
                                     variant="ghost"
@@ -8369,7 +8369,28 @@ export default function AdminAddClient() {
                                     type="button"
                                     variant="ghost"
                                     size="sm"
-                                    className="p-1 h-auto text-green-600 hover:text-green-800"
+                                    className={`p-1 h-auto ${(() => {
+                                      const appraisedValue = form.watch(`property.properties.${index}.appraisedValue` as const) || '';
+                                      const estimatedValue = form.watch(`property.properties.${index}.estimatedValue` as const) || '';
+                                      
+                                      const parseValue = (value: string) => {
+                                        const cleaned = value.replace(/[^\d.]/g, '');
+                                        return cleaned ? parseFloat(cleaned) : 0;
+                                      };
+                                      
+                                      const appraisedNum = parseValue(appraisedValue);
+                                      const estimatedNum = parseValue(estimatedValue);
+                                      
+                                      if (appraisedNum === 0 || estimatedNum === 0) {
+                                        return 'text-black hover:text-gray-600';
+                                      } else if (appraisedNum > estimatedNum) {
+                                        return 'text-green-600 hover:text-green-800';
+                                      } else if (appraisedNum < estimatedNum) {
+                                        return 'text-red-600 hover:text-red-800';
+                                      } else {
+                                        return 'text-black hover:text-gray-600';
+                                      }
+                                    })()}`}
                                     title="Appraised Property Value"
                                     data-testid={`button-appraised-value-info-${propertyId}`}
                                   >
