@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useLocation } from 'wouter';
-import { useForm, useFormContext, useWatch } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -27,8 +27,7 @@ import { insertClientSchema, type InsertClient } from '@shared/schema';
 import { apiRequest } from '@/lib/queryClient';
 
 // Memoized AppraisalIcon component to prevent typing lag
-const AppraisalIcon = React.memo<{ index: number }>(({ index }) => {
-  const { control } = useFormContext();
+const AppraisalIcon = React.memo<{ index: number; control: any }>(({ index, control }) => {
   const estimatedValue = useWatch({ 
     control, 
     name: `property.properties.${index}.estimatedValue` as const 
@@ -57,7 +56,7 @@ const AppraisalIcon = React.memo<{ index: number }>(({ index }) => {
     } else {
       return 'text-black hover:text-gray-600';
     }
-  }, [estimatedValue, appraisedValue]);
+  }, [estimatedValue, appraisedValue, index]);
 
   return <DollarSign className={`h-4 w-4 ${iconClass}`} />;
 });
@@ -8409,7 +8408,7 @@ export default function AdminAddClient() {
                                     title="Appraised Property Value"
                                     data-testid={`button-appraised-value-info-${propertyId}`}
                                   >
-                                    <AppraisalIcon index={index} />
+                                    <AppraisalIcon index={index} control={form.control} />
                                   </Button>
                                 </div>
                                 <Input
