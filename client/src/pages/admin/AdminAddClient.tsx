@@ -5488,7 +5488,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2 md:col-span-2">
+                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="income-businessPhone">Phone</Label>
                           <Input
                             id="income-businessPhone"
@@ -5500,16 +5500,6 @@ export default function AdminAddClient() {
                         </div>
                         
                         <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="income-formationDate">Formation Date</Label>
-                          <Input
-                            id="income-formationDate"
-                            type="date"
-                            {...form.register('income.formationDate')}
-                            data-testid="input-income-formationDate"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="income-formation">Formation</Label>
                           <Select onValueChange={(value) => form.setValue('income.formation', value)} value={form.watch('income.formation') || ''}>
                             <SelectTrigger data-testid="select-income-formation">
@@ -5532,6 +5522,16 @@ export default function AdminAddClient() {
                               <SelectItem value="Joint Venture" data-testid="select-item-joint-venture">Joint Venture</SelectItem>
                             </SelectContent>
                           </Select>
+                        </div>
+                        
+                        <div className="space-y-2 md:col-span-1">
+                          <Label htmlFor="income-formationDate">Start Date</Label>
+                          <Input
+                            id="income-formationDate"
+                            type="date"
+                            {...form.register('income.formationDate')}
+                            data-testid="input-income-formationDate"
+                          />
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
@@ -5586,7 +5586,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2 md:col-span-1">
+                        <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="income-businessDescription">Description</Label>
                           <Input
                             id="income-businessDescription"
@@ -6787,7 +6787,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2 md:col-span-2">
+                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="coBorrowerIncome-businessPhone">Phone</Label>
                           <Input
                             id="coBorrowerIncome-businessPhone"
@@ -6799,16 +6799,6 @@ export default function AdminAddClient() {
                         </div>
                         
                         <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="coBorrowerIncome-formationDate">Formation Date</Label>
-                          <Input
-                            id="coBorrowerIncome-formationDate"
-                            type="date"
-                            {...form.register('coBorrowerIncome.formationDate')}
-                            data-testid="input-coborrowerIncome-formationDate"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="coBorrowerIncome-formation">Formation</Label>
                           <Select onValueChange={(value) => form.setValue('coBorrowerIncome.formation', value)} value={form.watch('coBorrowerIncome.formation') || ''}>
                             <SelectTrigger data-testid="select-coborrowerIncome-formation">
@@ -6831,6 +6821,16 @@ export default function AdminAddClient() {
                               <SelectItem value="Joint Venture" data-testid="select-item-joint-venture">Joint Venture</SelectItem>
                             </SelectContent>
                           </Select>
+                        </div>
+                        
+                        <div className="space-y-2 md:col-span-1">
+                          <Label htmlFor="coBorrowerIncome-formationDate">Start Date</Label>
+                          <Input
+                            id="coBorrowerIncome-formationDate"
+                            type="date"
+                            {...form.register('coBorrowerIncome.formationDate')}
+                            data-testid="input-coborrowerIncome-formationDate"
+                          />
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
@@ -6885,7 +6885,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2 md:col-span-1">
+                        <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="coBorrowerIncome-businessDescription">Description</Label>
                           <Input
                             id="coBorrowerIncome-businessDescription"
