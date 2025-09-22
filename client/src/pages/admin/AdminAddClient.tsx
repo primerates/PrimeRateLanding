@@ -8180,8 +8180,17 @@ export default function AdminAddClient() {
                             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
                               <div className="space-y-2 md:col-span-1">
                                 <div className="flex items-center gap-2">
-                                  <Label htmlFor={`property-purchase-price-${propertyId}`}>Purchase</Label>
-                                  <DollarSign className="h-4 w-4 text-black" />
+                                  <Label htmlFor={`property-purchase-price-${propertyId}`}>Appraised</Label>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="p-1 h-auto text-green-600 hover:text-green-800"
+                                    title="Appraised Property Value"
+                                    data-testid={`button-purchase-price-info-${propertyId}`}
+                                  >
+                                    <DollarSign className="h-4 w-4" />
+                                  </Button>
                                 </div>
                                 <Input
                                   id={`property-purchase-price-${propertyId}`}
