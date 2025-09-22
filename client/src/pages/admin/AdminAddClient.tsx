@@ -67,12 +67,12 @@ const CurrencyInput = React.memo<{
     setLocalValue(raw);
   };
 
-  // Apply shadow styling based on color
+  // Apply shadow styling based on color - keep border black
   const getShadowClass = () => {
     if (shadowColor === 'green') {
-      return 'shadow-lg shadow-green-200 border-green-300';
+      return 'shadow-lg shadow-green-200';
     } else if (shadowColor === 'red') {
-      return 'shadow-lg shadow-red-200 border-red-300';
+      return 'shadow-lg shadow-red-200';
     }
     return '';
   };
