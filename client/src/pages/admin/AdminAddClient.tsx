@@ -55,7 +55,7 @@ const CurrencyInput = React.memo<{
   const handleBlur = () => {
     setIsFocused(false);
     const num = parseFloat(localValue) || 0;
-    const formatted = num > 0 ? `$${num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '';
+    const formatted = num > 0 ? `$${num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` : '';
     setLocalValue(formatted);
     form.setValue(name, formatted);
   };
