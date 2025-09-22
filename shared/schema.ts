@@ -122,6 +122,7 @@ export const incomeSchema = z.object({
   taxesPreparedBy: z.string().optional(),
   businessDescription: z.string().optional(),
   grossAnnualRevenue: z.string().optional(),
+  netAnnualRevenue: z.string().optional(),
   
   // Pension fields (multiple pensions)
   pensions: z.array(pensionSchema).optional(),

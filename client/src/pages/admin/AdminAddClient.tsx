@@ -512,6 +512,10 @@ export default function AdminAddClient() {
   const [isCoBorrowerResidenceOpen, setIsCoBorrowerResidenceOpen] = useState(false);
   const [isCoBorrowerPriorResidenceOpen, setIsCoBorrowerPriorResidenceOpen] = useState(false);
 
+  // Revenue toggle states for self-employment
+  const [isShowingNetRevenue, setIsShowingNetRevenue] = useState(false);
+  const [isCoBorrowerShowingNetRevenue, setIsCoBorrowerShowingNetRevenue] = useState(false);
+
   // Loan details collapsible state (per property)
   const [isLoanDetailsOpen, setIsLoanDetailsOpen] = useState<Record<string, boolean>>({});
   const [isSecondLoanDetailsOpen, setIsSecondLoanDetailsOpen] = useState<Record<string, boolean>>({});
@@ -5474,8 +5478,8 @@ export default function AdminAddClient() {
                     <CollapsibleContent>
                       <CardContent className="space-y-4">
                       {/* First row with business details */}
-                      <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
-                        <div className="space-y-2">
+                      <div className="grid grid-cols-1 md:grid-cols-8 gap-4">
+                        <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="income-businessName">Business / DBA Name</Label>
                           <Input
                             id="income-businessName"
@@ -5552,19 +5556,34 @@ export default function AdminAddClient() {
                         </div>
                         
                         <div className="space-y-2">
-                          <Label htmlFor="income-taxesPreparedBy">Taxes Prepared By</Label>
-                          <Select onValueChange={(value) => form.setValue('income.taxesPreparedBy', value, { shouldDirty: true, shouldTouch: true })} value={form.watch('income.taxesPreparedBy') || ''}>
-                            <SelectTrigger data-testid="select-income-taxesPreparedBy">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="Select" data-testid="select-item-select">Select</SelectItem>
-                              <SelectItem value="Self-Prepared" data-testid="select-item-self-prepared">Self-Prepared</SelectItem>
-                              <SelectItem value="Tax Preparer" data-testid="select-item-tax-preparer">Tax Preparer</SelectItem>
-                              <SelectItem value="CPA" data-testid="select-item-cpa">CPA</SelectItem>
-                              <SelectItem value="Other" data-testid="select-item-other-tax">Other</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="income-annualRevenue" className="text-sm">
+                              {isShowingNetRevenue ? 'Net Annual Revenue' : 'Gross annual revenue'}
+                            </Label>
+                            <Switch
+                              checked={isShowingNetRevenue}
+                              onCheckedChange={setIsShowingNetRevenue}
+                              data-testid="toggle-income-annual-revenue"
+                            />
+                          </div>
+                          <Input
+                            id="income-annualRevenue"
+                            type="text"
+                            placeholder="$0"
+                            value={(() => {
+                              const fieldName = isShowingNetRevenue ? 'income.netAnnualRevenue' : 'income.grossAnnualRevenue';
+                              const val = form.watch(fieldName as any);
+                              if (!val) return '';
+                              const numVal = val.replace(/[^\d]/g, '');
+                              return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
+                            })()}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/[^\d]/g, '');
+                              const fieldName = isShowingNetRevenue ? 'income.netAnnualRevenue' : 'income.grossAnnualRevenue';
+                              form.setValue(fieldName as any, value, { shouldDirty: true, shouldTouch: true });
+                            }}
+                            data-testid="input-income-annualRevenue"
+                          />
                         </div>
                         
                         <div className="space-y-2">
@@ -5644,23 +5663,19 @@ export default function AdminAddClient() {
                           </div>
                           
                           <div className="space-y-2 md:col-span-2">
-                            <Label htmlFor="income-grossAnnualRevenue">Gross annual revenue</Label>
-                            <Input
-                              id="income-grossAnnualRevenue"
-                              type="text"
-                              placeholder="$0"
-                              value={(() => {
-                                const val = form.watch('income.grossAnnualRevenue');
-                                if (!val) return '';
-                                const numVal = val.replace(/[^\d]/g, '');
-                                return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                              })()}
-                              onChange={(e) => {
-                                const value = e.target.value.replace(/[^\d]/g, '');
-                                form.setValue('income.grossAnnualRevenue', value, { shouldDirty: true, shouldTouch: true });
-                              }}
-                              data-testid="input-income-grossAnnualRevenue"
-                            />
+                            <Label htmlFor="income-taxesPreparedBy">Taxes Prepared By</Label>
+                            <Select onValueChange={(value) => form.setValue('income.taxesPreparedBy', value, { shouldDirty: true, shouldTouch: true })} value={form.watch('income.taxesPreparedBy') || ''}>
+                              <SelectTrigger data-testid="select-income-taxesPreparedBy">
+                                <SelectValue placeholder="Select" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Select" data-testid="select-item-select">Select</SelectItem>
+                                <SelectItem value="Self-Prepared" data-testid="select-item-self-prepared">Self-Prepared</SelectItem>
+                                <SelectItem value="Tax Preparer" data-testid="select-item-tax-preparer">Tax Preparer</SelectItem>
+                                <SelectItem value="CPA" data-testid="select-item-cpa">CPA</SelectItem>
+                                <SelectItem value="Other" data-testid="select-item-other-tax">Other</SelectItem>
+                              </SelectContent>
+                            </Select>
                           </div>
                         </div>
                         
@@ -6761,9 +6776,10 @@ export default function AdminAddClient() {
                     </CardHeader>
                     <CollapsibleContent>
                       <CardContent className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="coBorrowerIncome-businessName">Business Name</Label>
+                      {/* First row with business details */}
+                      <div className="grid grid-cols-1 md:grid-cols-8 gap-4">
+                        <div className="space-y-2 md:col-span-2">
+                          <Label htmlFor="coBorrowerIncome-businessName">Business / DBA Name</Label>
                           <Input
                             id="coBorrowerIncome-businessName"
                             {...form.register('coBorrowerIncome.businessName')}
@@ -6772,122 +6788,196 @@ export default function AdminAddClient() {
                         </div>
                         
                         <div className="space-y-2">
-                          <Label htmlFor="coBorrowerIncome-businessMonthlyIncome">Monthly Net Income</Label>
+                          <Label htmlFor="coBorrowerIncome-businessPhone">Phone</Label>
                           <Input
-                            id="coBorrowerIncome-businessMonthlyIncome"
-                            {...form.register('coBorrowerIncome.businessMonthlyIncome')}
-                            placeholder="$0.00"
-                            data-testid="input-coborrowerIncome-businessMonthlyIncome"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label>Years in Business</Label>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <Label htmlFor="coBorrowerIncome-business-years">Years</Label>
-                              <Input
-                                id="coBorrowerIncome-business-years"
-                                type="number"
-                                min="0"
-                                max="99"
-                                {...form.register('coBorrowerIncome.yearsInBusinessYears')}
-                                data-testid="input-coborrowerIncome-business-years"
-                              />
-                            </div>
-                            <div>
-                              <Label htmlFor="coBorrowerIncome-business-months">Months</Label>
-                              <Input
-                                id="coBorrowerIncome-business-months"
-                                type="number"
-                                min="0"
-                                max="11"
-                                placeholder="0"
-                                {...form.register('coBorrowerIncome.yearsInBusinessMonths')}
-                                data-testid="input-coborrowerIncome-business-months"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="space-y-2 md:col-span-3">
-                          <Label className="text-base font-semibold">Business Address</Label>
-                          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                            <div className="space-y-2 md:col-span-4">
-                              <Label htmlFor="coBorrowerIncome-business-street">Street Address</Label>
-                              <Input
-                                id="coBorrowerIncome-business-street"
-                                placeholder="123 Main St"
-                                {...form.register('coBorrowerIncome.businessAddress.street')}
-                                data-testid="input-coborrowerIncome-business-street"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="coBorrowerIncome-business-unit">Unit/Suite</Label>
-                              <Input
-                                id="coBorrowerIncome-business-unit"
-                                {...form.register('coBorrowerIncome.businessAddress.unit')}
-                                data-testid="input-coborrowerIncome-business-unit"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="coBorrowerIncome-business-city">City</Label>
-                              <Input
-                                id="coBorrowerIncome-business-city"
-                                {...form.register('coBorrowerIncome.businessAddress.city')}
-                                data-testid="input-coborrowerIncome-business-city"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-business-state">State</Label>
-                              <Select onValueChange={(value) => form.setValue('coBorrowerIncome.businessAddress.state', value)}>
-                                <SelectTrigger data-testid="select-coborrowerIncome-business-state">
-                                  <SelectValue placeholder="State" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {US_STATES.map((state) => (
-                                    <SelectItem key={state.value} value={state.value}>
-                                      {state.value}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-business-zip">ZIP Code</Label>
-                              <Input
-                                id="coBorrowerIncome-business-zip"
-                                {...form.register('coBorrowerIncome.businessAddress.zip')}
-                                data-testid="input-coborrowerIncome-business-zip"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="coBorrowerIncome-business-county">County</Label>
-                              <Input
-                                id="coBorrowerIncome-business-county"
-                                {...form.register('coBorrowerIncome.businessAddress.county')}
-                                data-testid="input-coborrowerIncome-business-county"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="coBorrowerIncome-business-phone">Business Phone</Label>
-                          <Input
-                            id="coBorrowerIncome-business-phone"
+                            id="coBorrowerIncome-businessPhone"
                             placeholder="(XXX) XXX-XXXX"
                             value={form.watch('coBorrowerIncome.businessPhone') || ''}
                             onChange={(e) => handlePhoneChange('coBorrowerIncome.businessPhone', e.target.value)}
-                            data-testid="input-coborrowerIncome-business-phone"
+                            data-testid="input-coborrowerIncome-businessPhone"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="coBorrowerIncome-formationDate">Formation Date</Label>
+                          <Input
+                            id="coBorrowerIncome-formationDate"
+                            type="date"
+                            {...form.register('coBorrowerIncome.formationDate')}
+                            data-testid="input-coborrowerIncome-formationDate"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="coBorrowerIncome-formation">Formation</Label>
+                          <Select onValueChange={(value) => form.setValue('coBorrowerIncome.formation', value)} value={form.watch('coBorrowerIncome.formation') || ''}>
+                            <SelectTrigger data-testid="select-coborrowerIncome-formation">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Sole Proprietorship" data-testid="select-item-sole-proprietorship">Sole Proprietorship</SelectItem>
+                              <SelectItem value="General Partnership (GP)" data-testid="select-item-general-partnership">General Partnership (GP)</SelectItem>
+                              <SelectItem value="Limited Partnership (LP)" data-testid="select-item-limited-partnership">Limited Partnership (LP)</SelectItem>
+                              <SelectItem value="Limited Liability Partnership (LLP)" data-testid="select-item-llp">Limited Liability Partnership (LLP)</SelectItem>
+                              <SelectItem value="LLC taxed as S-Corp" data-testid="select-item-llc-s-corp">LLC taxed as S-Corp</SelectItem>
+                              <SelectItem value="LLC taxed as C-Corp" data-testid="select-item-llc-c-corp">LLC taxed as C-Corp</SelectItem>
+                              <SelectItem value="C Corporation (C-Corp)" data-testid="select-item-c-corporation">C Corporation (C-Corp)</SelectItem>
+                              <SelectItem value="S Corporation (S-Corp)" data-testid="select-item-s-corporation">S Corporation (S-Corp)</SelectItem>
+                              <SelectItem value="Benefit Corporation (B-Corp)" data-testid="select-item-benefit-corporation">Benefit Corporation (B-Corp)</SelectItem>
+                              <SelectItem value="Close Corporation" data-testid="select-item-close-corporation">Close Corporation</SelectItem>
+                              <SelectItem value="Non-Profit Corporation" data-testid="select-item-non-profit-corporation">Non-Profit Corporation</SelectItem>
+                              <SelectItem value="Professional Corporation (PC)" data-testid="select-item-professional-corporation">Professional Corporation (PC)</SelectItem>
+                              <SelectItem value="Professional LLC (PLLC)" data-testid="select-item-professional-llc">Professional LLC (PLLC)</SelectItem>
+                              <SelectItem value="Joint Venture" data-testid="select-item-joint-venture">Joint Venture</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div className="space-y-2" style={{width: '50%'}}>
+                          <Label htmlFor="coBorrowerIncome-ownershipPercentage">Ownhership</Label>
+                          <Input
+                            id="coBorrowerIncome-ownershipPercentage"
+                            type="text"
+                            placeholder="0%"
+                            value={(() => {
+                              const val = form.watch('coBorrowerIncome.ownershipPercentage');
+                              if (!val) return '';
+                              return val.includes('%') ? val : `${val}%`;
+                            })()}
+                            onChange={(e) => {
+                              const value = e.target.value.replace('%', '').replace(/[^\d]/g, '');
+                              if (value === '' || (parseInt(value) >= 0 && parseInt(value) <= 100)) {
+                                form.setValue('coBorrowerIncome.ownershipPercentage', value, { shouldDirty: true, shouldTouch: true });
+                              }
+                            }}
+                            data-testid="input-coborrowerIncome-ownershipPercentage"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="coBorrowerIncome-annualRevenue" className="text-sm">
+                              {isCoBorrowerShowingNetRevenue ? 'Net Annual Revenue' : 'Gross annual revenue'}
+                            </Label>
+                            <Switch
+                              checked={isCoBorrowerShowingNetRevenue}
+                              onCheckedChange={setIsCoBorrowerShowingNetRevenue}
+                              data-testid="toggle-coborrowerIncome-annual-revenue"
+                            />
+                          </div>
+                          <Input
+                            id="coBorrowerIncome-annualRevenue"
+                            type="text"
+                            placeholder="$0"
+                            value={(() => {
+                              const fieldName = isCoBorrowerShowingNetRevenue ? 'coBorrowerIncome.netAnnualRevenue' : 'coBorrowerIncome.grossAnnualRevenue';
+                              const val = form.watch(fieldName as any);
+                              if (!val) return '';
+                              const numVal = val.replace(/[^\d]/g, '');
+                              return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
+                            })()}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/[^\d]/g, '');
+                              const fieldName = isCoBorrowerShowingNetRevenue ? 'coBorrowerIncome.netAnnualRevenue' : 'coBorrowerIncome.grossAnnualRevenue';
+                              form.setValue(fieldName as any, value, { shouldDirty: true, shouldTouch: true });
+                            }}
+                            data-testid="input-coborrowerIncome-annualRevenue"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="coBorrowerIncome-businessDescription">Description</Label>
+                          <Input
+                            id="coBorrowerIncome-businessDescription"
+                            {...form.register('coBorrowerIncome.businessDescription')}
+                            data-testid="input-coborrowerIncome-businessDescription"
                           />
                         </div>
                       </div>
+                        
+                        {/* Business Address Row (copied from borrower residence address) */}
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                          <div className="space-y-2 md:col-span-3">
+                            <Label htmlFor="coBorrowerIncome-business-street">Street Address</Label>
+                            <Input
+                              id="coBorrowerIncome-business-street"
+                              {...form.register('coBorrowerIncome.businessAddress.street')}
+                              data-testid="input-coborrowerIncome-business-street"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-1">
+                            <Label htmlFor="coBorrowerIncome-business-unit">Unit/Suite</Label>
+                            <Input
+                              id="coBorrowerIncome-business-unit"
+                              {...form.register('coBorrowerIncome.businessAddress.unit')}
+                              data-testid="input-coborrowerIncome-business-unit"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="coBorrowerIncome-business-city">City</Label>
+                            <Input
+                              id="coBorrowerIncome-business-city"
+                              {...form.register('coBorrowerIncome.businessAddress.city')}
+                              data-testid="input-coborrowerIncome-business-city"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-1">
+                            <Label htmlFor="coBorrowerIncome-business-state">State</Label>
+                            <Select
+                              value={form.watch('coBorrowerIncome.businessAddress.state') || ''}
+                              onValueChange={(value) => form.setValue('coBorrowerIncome.businessAddress.state', value)}
+                            >
+                              <SelectTrigger data-testid="select-coborrowerIncome-business-state">
+                                <SelectValue placeholder="State" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {US_STATES.map((state) => (
+                                  <SelectItem key={state.value} value={state.value}>
+                                    {state.value}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-1">
+                            <Label htmlFor="coBorrowerIncome-business-zip">ZIP Code</Label>
+                            <Input
+                              id="coBorrowerIncome-business-zip"
+                              {...form.register('coBorrowerIncome.businessAddress.zip')}
+                              data-testid="input-coborrowerIncome-business-zip"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="coBorrowerIncome-business-county">County</Label>
+                            <Input
+                              id="coBorrowerIncome-business-county"
+                              {...form.register('coBorrowerIncome.businessAddress.county')}
+                              data-testid="input-coborrowerIncome-business-county"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="coBorrowerIncome-taxesPreparedBy">Taxes Prepared By</Label>
+                            <Select onValueChange={(value) => form.setValue('coBorrowerIncome.taxesPreparedBy', value, { shouldDirty: true, shouldTouch: true })} value={form.watch('coBorrowerIncome.taxesPreparedBy') || ''}>
+                              <SelectTrigger data-testid="select-coborrowerIncome-taxesPreparedBy">
+                                <SelectValue placeholder="Select" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Select" data-testid="select-item-select">Select</SelectItem>
+                                <SelectItem value="Self-Prepared" data-testid="select-item-self-prepared">Self-Prepared</SelectItem>
+                                <SelectItem value="Tax Preparer" data-testid="select-item-tax-preparer">Tax Preparer</SelectItem>
+                                <SelectItem value="CPA" data-testid="select-item-cpa">CPA</SelectItem>
+                                <SelectItem value="Other" data-testid="select-item-other-tax">Other</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                        
                       </CardContent>
                     </CollapsibleContent>
                   </Collapsible>
