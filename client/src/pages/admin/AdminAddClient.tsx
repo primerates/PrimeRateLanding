@@ -8078,7 +8078,7 @@ export default function AdminAddClient() {
                               </CardContent>
                             </Card>
 
-                            {/* Property Address - Row 1: Street Address, Unit/Apt, City, State, ZIP Code, County */}
+                            {/* Property Address - Row 1: Street Address, Unit/Apt, City, State, ZIP Code, County, Property Type */}
                             <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                               <div className="space-y-2 md:col-span-3">
                                 <Label htmlFor={`property-address-street-${propertyId}`}>Street Address *</Label>
@@ -8152,21 +8152,8 @@ export default function AdminAddClient() {
                                   data-testid={`input-property-county-${propertyId}`}
                                 />
                               </div>
-                            </div>
-
-                            {/* Property Details - Row 2: Purchase Price, Property Type, Owned Since, Owned / Title Held By */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-                              <div className="space-y-2">
-                                <Label htmlFor={`property-purchase-price-${propertyId}`}>Purchase Price</Label>
-                                <Input
-                                  id={`property-purchase-price-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.purchasePrice` as const)}
-                                  placeholder="$0.00"
-                                  data-testid={`input-property-purchase-price-${propertyId}`}
-                                />
-                              </div>
                               
-                              <div className="space-y-2">
+                              <div className="space-y-2 md:col-span-2">
                                 <Label htmlFor={`property-type-${propertyId}`}>Property Type</Label>
                                 <Select
                                   value={form.watch(`property.properties.${index}.propertyType` as const) || ''}
@@ -8187,8 +8174,21 @@ export default function AdminAddClient() {
                                   </SelectContent>
                                 </Select>
                               </div>
+                            </div>
+
+                            {/* Property Details - Row 2: Purchase Price, Owned Since, Title Held By, Estimated Property Value, Appraised Value, Secured First Loan, Secured Second Loan */}
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`property-purchase-price-${propertyId}`}>Purchase Price</Label>
+                                <Input
+                                  id={`property-purchase-price-${propertyId}`}
+                                  {...form.register(`property.properties.${index}.purchasePrice` as const)}
+                                  placeholder="$0.00"
+                                  data-testid={`input-property-purchase-price-${propertyId}`}
+                                />
+                              </div>
                               
-                              <div className="space-y-2">
+                              <div className="space-y-2 md:col-span-1">
                                 <div className="min-h-5 flex items-center">
                                   <Label htmlFor={`property-owned-since-${propertyId}`}>Owned Since</Label>
                                 </div>
@@ -8200,31 +8200,30 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
-                              <div className="space-y-2">
+                              <div className="space-y-2 md:col-span-1">
                                 <div className="min-h-5 flex items-center">
-                                  <Label htmlFor={`property-owned-held-by-${propertyId}`}>Owned / Title Held By</Label>
+                                  <Label htmlFor={`property-title-held-by-${propertyId}`}>Title Held By</Label>
                                 </div>
                                 <Select
                                   value={form.watch(`property.properties.${index}.ownedHeldBy` as const) || ''}
-                                  onValueChange={(value: "borrower" | "borrower-coborrower" | "borrower-others") => {
-                                    form.setValue(`property.properties.${index}.ownedHeldBy` as const, value);
+                                  onValueChange={(value: string) => {
+                                    form.setValue(`property.properties.${index}.ownedHeldBy` as const, value as any);
                                   }}
                                 >
-                                  <SelectTrigger data-testid={`select-property-owned-held-by-${propertyId}`}>
+                                  <SelectTrigger data-testid={`select-property-title-held-by-${propertyId}`}>
                                     <SelectValue placeholder="Select" />
                                   </SelectTrigger>
                                   <SelectContent>
+                                    <SelectItem value="select">Select</SelectItem>
                                     <SelectItem value="borrower">Borrower</SelectItem>
-                                    <SelectItem value="borrower-coborrower">Borrower & Co-Borrower</SelectItem>
-                                    <SelectItem value="borrower-others">Borrower(s) & Others</SelectItem>
+                                    <SelectItem value="borrowers">Borrowers</SelectItem>
+                                    <SelectItem value="co-borrower">Co-Borrower</SelectItem>
+                                    <SelectItem value="other">Other</SelectItem>
                                   </SelectContent>
                                 </Select>
                               </div>
-                            </div>
-
-                            {/* Property Details - Row 3: Estimated Property Value, Appraised Value, Secured First Loan, Secured Second Loan */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-                              <div className="space-y-2">
+                              
+                              <div className="space-y-2 md:col-span-3">
                                 <div className="flex items-center gap-2">
                                   <Label htmlFor={`property-estimated-value-${propertyId}`}>Estimated Property Value</Label>
                                   <div className="flex items-center gap-1">
@@ -8297,7 +8296,7 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
-                              <div className="space-y-2">
+                              <div className="space-y-2 md:col-span-1">
                                 <div className="flex items-center gap-2">
                                   <Label htmlFor={`property-appraised-value-${propertyId}`}>Appraised Value</Label>
                                   <Button
@@ -8319,7 +8318,7 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
-                              <div className="space-y-2">
+                              <div className="space-y-2 md:col-span-2">
                                 <div className="min-h-5 flex items-center gap-2">
                                   <div className="flex items-center gap-2">
                                     <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured First Loan</Label>
@@ -8382,7 +8381,7 @@ export default function AdminAddClient() {
                                 </Select>
                               </div>
                               
-                              <div className="space-y-2">
+                              <div className="space-y-2 md:col-span-2">
                                 <div className="min-h-5 flex items-center gap-2">
                                   <div className="flex items-center gap-2">
                                     <Label htmlFor={`property-active-second-loan-${propertyId}`}>Secured Second Loan</Label>
@@ -8453,6 +8452,7 @@ export default function AdminAddClient() {
                                 </Select>
                               </div>
                             </div>
+
 
 
 
