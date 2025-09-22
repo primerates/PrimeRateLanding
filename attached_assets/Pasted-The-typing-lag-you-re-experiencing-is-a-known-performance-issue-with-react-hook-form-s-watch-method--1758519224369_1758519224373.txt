@@ -1,0 +1,134 @@
+The typing lag you're experiencing is a known performance issue with react-hook-form's watch method, as it subscribes to field changes and triggers re-renders of the entire component (or even higher up) on every keystroke. This happens even with your debouncing in place, because the re-renders occur immediately from the watch calls, not just when the debounced states update. For large or complex forms, this can make inputs feel sluggish, especially in environments like Replit where resources might be limited.To fix this while keeping the auto-sum feature:Remove the watch calls entirely to stop the unnecessary re-renders during typing.
+Isolate the subscription and calculation logic into a separate sub-component for the read-only total field. Use useWatch (from react-hook-form) inside that sub-component to monitor the two fields. This confines re-renders to just the small sub-component when values change, leaving the main form component stable during typing.
+Pass the control object from your useForm hook to the sub-component as a prop.
+No debounce is strictly needed anymore (since re-renders are now isolated and cheap), but I've included an optional lightweight version if you still want delayed updates for the total.
+Your inputs remain uncontrolled via register, so typing stays native and responsive.
+No changes needed to your parseMonetaryValue helper.
+
+Assuming you have import { useForm, useWatch } from 'react-hook-form'; at the top (add useWatch if missing), here's the updated code:1. New Sub-Component for Total (e.g., in a separate file or same file)tsx
+
+import { useWatch, Control } from 'react-hook-form';
+import { useMemo, useState, useEffect } from 'react';
+
+// Your existing parse helper (unchanged)
+const parseMonetaryValue = (value: string | undefined): number => {
+  if (!value || value.trim() === '') return 0;
+  const cleaned = value.replace(/[$,]/g, '');
+  const parsed = parseFloat(cleaned);
+  return isNaN(parsed) ? 0 : parsed;
+};
+
+interface TotalCurrentLoanPaymentProps {
+  control: Control<any>; // Pass control from parent useForm
+}
+
+const TotalCurrentLoanPayment: React.FC<TotalCurrentLoanPaymentProps> = ({ control }) => {
+  // Use useWatch to subscribe only here (isolates re-renders to this component)
+  const principalPayment = useWatch({ control, name: 'currentLoan.principalAndInterestPayment' }) || '';
+  const escrowPayment = useWatch({ control, name: 'currentLoan.escrowPayment' }) || '';
+
+  // Optional: If you still want debouncing for the calculation (e.g., to delay total updates),
+  // add this. Otherwise, skip and compute total directly below.
+  const [debouncedPrincipal, setDebouncedPrincipal] = useState(principalPayment);
+  const [debouncedEscrow, setDebouncedEscrow] = useState(escrowPayment);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedPrincipal(principalPayment), 300);
+    return () => clearTimeout(timer);
+  }, [principalPayment]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedEscrow(escrowPayment), 300);
+    return () => clearTimeout(timer);
+  }, [escrowPayment]);
+
+  // Calculate total (use debounced values if you added the optional debounce above)
+  const total = useMemo(() => {
+    const principal = parseMonetaryValue(debouncedPrincipal); // or principalPayment without debounce
+    const escrow = parseMonetaryValue(debouncedEscrow); // or escrowPayment without debounce
+    return principal + escrow;
+  }, [debouncedPrincipal, debouncedEscrow]); // Adjust deps if skipping debounce
+
+  // Format for display
+  const formattedTotal = useMemo(() => 
+    total > 0 ? total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '',
+    [total]
+  );
+
+  return (
+    <div className="space-y-2">
+      <Label htmlFor="currentLoan-totalMonthlyPayment">Total Monthly Payment</Label>
+      <div className="flex items-center border border-input bg-gray-50 px-3 rounded-md">
+        <span className="text-muted-foreground text-sm">$</span>
+        <Input
+          id="currentLoan-totalMonthlyPayment"
+          value={formattedTotal}
+          placeholder="0.00"
+          className="border-0 bg-transparent px-2 focus-visible:ring-0 cursor-default"
+          readOnly
+          data-testid="input-currentLoan-totalMonthlyPayment"
+        />
+      </div>
+    </div>
+  );
+};
+
+export default TotalCurrentLoanPayment;
+
+2. Updated Main Component/FormRemove all the watch/debounce/useMemo logic for the total from your main component. Keep the two input fields as-is (no changes needed). Add the new sub-component and pass control to it.tsx
+
+// ... other imports ...
+
+// In your main form component
+const YourFormComponent = () => {
+  const { control, register } = useForm(); // Assuming your useForm setup
+
+  // No watch or calculation logic here anymore
+
+  return (
+    // ... your form wrapper ...
+
+    {/* Principal & Interest Payment Field (unchanged) */}
+    <div className="space-y-2">
+      <Label htmlFor="currentLoan-principalInterestPayment">Principal & Interest Payment</Label>
+      <div className="flex items-center border border-input bg-background px-3 rounded-md">
+        <span className="text-muted-foreground text-sm">$</span>
+        <Input
+          id="currentLoan-principalInterestPayment"
+          {...register('currentLoan.principalAndInterestPayment')}
+          placeholder="0.00"
+          className="border-0 bg-transparent px-2 focus-visible:ring-0"
+          data-testid="input-currentLoan-principalInterestPayment"
+        />
+      </div>
+    </div>
+
+    {/* Escrow Payment Field (unchanged) */}
+    <div className="space-y-2">
+      <Label htmlFor="currentLoan-escrowPayment">Escrow Payment</Label>
+      <div className="flex items-center border border-input bg-background px-3 rounded-md">
+        <span className="text-muted-foreground text-sm">$</span>
+        <Input
+          id="currentLoan-escrowPayment"
+          {...register('currentLoan.escrowPayment')}
+          placeholder="0.00"
+          className="border-0 bg-transparent px-2 focus-visible:ring-0"
+          data-testid="input-currentLoan-escrowPayment"
+        />
+      </div>
+    </div>
+
+    {/* New isolated total component */}
+    <TotalCurrentLoanPayment control={control} />
+
+    // ... rest of form ...
+  );
+};
+
+This should restore fast typing responsiveness while keeping the auto-sum. If your form has validation or other logic tied to these fields, test that it still works. If the lag persists (e.g., due to a very large form), consider breaking the form into more sub-components or adding React.memo to non-changing parts. Let me know if you have more details about your setup!
+React Hook Form Optimization Techniques
+
+Currency Input Libraries
+
+Add Form Validation Handling
+
