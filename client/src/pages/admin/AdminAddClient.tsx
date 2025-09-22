@@ -9300,6 +9300,23 @@ export default function AdminAddClient() {
         </AlertDialogContent>
       </AlertDialog>
 
+      {/* Current Loan Preview Modal */}
+      <Dialog open={isCurrentLoanPreviewOpen} onOpenChange={setIsCurrentLoanPreviewOpen}>
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto" data-testid="dialog-current-loan-preview">
+          <DialogHeader>
+            <DialogTitle>Current Loan Details</DialogTitle>
+          </DialogHeader>
+          <CurrentLoanPreview control={form.control} />
+          <DialogFooter>
+            <Button
+              onClick={() => setIsCurrentLoanPreviewOpen(false)}
+              data-testid="button-current-loan-preview-close"
+            >
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       </div>
     </TooltipProvider>
