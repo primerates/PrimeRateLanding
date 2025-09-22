@@ -8324,10 +8324,10 @@ export default function AdminAddClient() {
                                   <div className="flex items-center gap-2">
                                     <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured First Loan</Label>
                                     {(() => {
-                                      const attachedProperty = form.watch('currentLoan.attachedToProperty');
+                                      const attachedPropertyId = form.watch('currentLoan.attachedToProperty');
                                       const properties = form.watch('property.properties') || [];
-                                      const primaryProperty = properties.find((p: any) => p.use === 'primary' && p.address?.street);
-                                      const isAttachedToPrimary = attachedProperty && primaryProperty && primaryProperty.address && attachedProperty === primaryProperty.address.street;
+                                      const primaryProperty = properties.find((p: any) => p.use === 'primary');
+                                      const isAttachedToPrimary = Boolean(attachedPropertyId && primaryProperty?.id && attachedPropertyId === primaryProperty.id);
                                       
                                       return (
                                         <div className={`w-3 h-3 rounded-full border-2 ${
@@ -8339,10 +8339,10 @@ export default function AdminAddClient() {
                                     })()}
                                   </div>
                                   {showCurrentLoan && (() => {
-                                    const attachedProperty = form.watch('currentLoan.attachedToProperty');
+                                    const attachedPropertyId = form.watch('currentLoan.attachedToProperty');
                                     const properties = form.watch('property.properties') || [];
-                                    const primaryProperty = properties.find((p: any) => p.use === 'primary' && p.address?.street);
-                                    const isAttachedToPrimary = attachedProperty && primaryProperty && primaryProperty.address && attachedProperty === primaryProperty.address.street;
+                                    const primaryProperty = properties.find((p: any) => p.use === 'primary');
+                                    const isAttachedToPrimary = Boolean(attachedPropertyId && primaryProperty?.id && attachedPropertyId === primaryProperty.id);
                                     
                                     return (
                                       <Button
@@ -8387,10 +8387,10 @@ export default function AdminAddClient() {
                                   <div className="flex items-center gap-2">
                                     <Label htmlFor={`property-active-second-loan-${propertyId}`}>Secured Second Loan</Label>
                                     {(() => {
-                                      const attachedProperty = form.watch('secondLoan.attachedToProperty');
+                                      const attachedPropertyId = form.watch('secondLoan.attachedToProperty');
                                       const properties = form.watch('property.properties') || [];
-                                      const primaryProperty = properties.find((p: any) => p.use === 'primary' && p.address?.street);
-                                      const isAttachedToPrimary = attachedProperty && primaryProperty && primaryProperty.address && attachedProperty === primaryProperty.address.street;
+                                      const primaryProperty = properties.find((p: any) => p.use === 'primary');
+                                      const isAttachedToPrimary = Boolean(attachedPropertyId && primaryProperty?.id && attachedPropertyId === primaryProperty.id);
                                       
                                       return (
                                         <div className={`w-3 h-3 rounded-full border-2 ${
@@ -8402,10 +8402,10 @@ export default function AdminAddClient() {
                                     })()}
                                   </div>
                                   {showSecondLoan && (() => {
-                                    const attachedProperty = form.watch('secondLoan.attachedToProperty');
+                                    const attachedPropertyId = form.watch('secondLoan.attachedToProperty');
                                     const properties = form.watch('property.properties') || [];
-                                    const primaryProperty = properties.find((p: any) => p.use === 'primary' && p.address?.street);
-                                    const isAttachedToPrimary = attachedProperty && primaryProperty && primaryProperty.address && attachedProperty === primaryProperty.address.street;
+                                    const primaryProperty = properties.find((p: any) => p.use === 'primary');
+                                    const isAttachedToPrimary = Boolean(attachedPropertyId && primaryProperty?.id && attachedPropertyId === primaryProperty.id);
                                     
                                     return (
                                       <Button
