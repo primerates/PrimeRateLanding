@@ -1866,17 +1866,6 @@ export default function AdminAddClient() {
                     <Minus className="h-4 w-4" />
                   </Button>
                 )}
-                <CollapsibleTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="hover:bg-orange-500 hover:text-white" 
-                    data-testid={`button-toggle-current-loan-${idPrefix}`}
-                    title={isOpen ? 'Minimize' : 'Expand'}
-                  >
-                    {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                  </Button>
-                </CollapsibleTrigger>
               </div>
             </div>
           </CardHeader>
@@ -2245,7 +2234,7 @@ export default function AdminAddClient() {
                       />
                     </div>
                     
-                    <div className="space-y-2 md:col-span-2">
+                    <div className="space-y-2 md:col-span-1">
                       <Label htmlFor={propertyCountyBinding.id}>County</Label>
                       <Input
                         id={propertyCountyBinding.id}
@@ -2265,10 +2254,7 @@ export default function AdminAddClient() {
                         }}
                       />
                     </div>
-                  </div>
-
-                  {/* Second row for Property Type */}
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
+                    
                     <div className="space-y-2 md:col-span-3">
                       <Label htmlFor={`${idPrefix}currentLoan-property-type`}>Property Type</Label>
                       <Select
@@ -2317,8 +2303,20 @@ export default function AdminAddClient() {
                 </div>
               )}
               
-              {/* Add Second Loan Button - positioned in lower right corner */}
-              <div className="flex justify-end mt-4">
+              {/* Minimize/Expand and Add Second Loan Button - positioned at bottom */}
+              <div className="flex justify-between items-center mt-4">
+                <CollapsibleTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="hover:bg-orange-500 hover:text-white" 
+                    data-testid={`button-toggle-current-loan-${idPrefix}`}
+                    title={isOpen ? 'Minimize' : 'Expand'}
+                  >
+                    {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                    <span className="ml-2">{isOpen ? 'Minimize' : 'Expand'}</span>
+                  </Button>
+                </CollapsibleTrigger>
                 <Button 
                   type="button" 
                   variant="outline" 
@@ -2383,17 +2381,6 @@ export default function AdminAddClient() {
                     <Minus className="h-4 w-4" />
                   </Button>
                 )}
-                <CollapsibleTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="hover:bg-orange-500 hover:text-white" 
-                    data-testid={`button-toggle-second-loan-${idPrefix}`}
-                    title={isOpen ? 'Minimize' : 'Expand'}
-                  >
-                    {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                  </Button>
-                </CollapsibleTrigger>
               </div>
             </div>
           </CardHeader>
@@ -2718,7 +2705,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2 md:col-span-2">
+                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="secondLoan-property-county">County</Label>
                           <Input
                             id="secondLoan-property-county"
@@ -2738,10 +2725,7 @@ export default function AdminAddClient() {
                             }}
                           />
                         </div>
-                      </div>
-
-                      {/* Second row for Property Type */}
-                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
+                        
                         <div className="space-y-2 md:col-span-3">
                           <Label htmlFor="secondLoan-property-type">Property Type</Label>
                           <Select
@@ -2790,9 +2774,21 @@ export default function AdminAddClient() {
                 </div>
               )}
               
-              {/* Add Additional Loan Button - positioned in lower right corner */}
-              {onAddAdditionalLoan && (
-                <div className="flex justify-end mt-4">
+              {/* Minimize/Expand and Add Additional Loan Button - positioned at bottom */}
+              <div className="flex justify-between items-center mt-4">
+                <CollapsibleTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="hover:bg-orange-500 hover:text-white" 
+                    data-testid={`button-toggle-second-loan-${idPrefix}`}
+                    title={isOpen ? 'Minimize' : 'Expand'}
+                  >
+                    {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                    <span className="ml-2">{isOpen ? 'Minimize' : 'Expand'}</span>
+                  </Button>
+                </CollapsibleTrigger>
+                {onAddAdditionalLoan && (
                   <Button 
                     type="button" 
                     variant="outline" 
@@ -2804,8 +2800,8 @@ export default function AdminAddClient() {
                     <Plus className="h-4 w-4 mr-2" />
                     Additional Loan
                   </Button>
-                </div>
-              )}
+                )}
+              </div>
               
             </CardContent>
           </CollapsibleContent>
