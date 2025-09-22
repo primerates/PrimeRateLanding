@@ -8195,7 +8195,23 @@ export default function AdminAddClient() {
                               
                               <div className="space-y-2">
                                 <div className="min-h-5 flex items-center gap-2">
-                                  <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured First Loan</Label>
+                                  <div className="flex items-center gap-2">
+                                    <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured First Loan</Label>
+                                    {(() => {
+                                      const attachedProperty = form.watch('currentLoan.attachedToProperty');
+                                      const properties = form.watch('property.properties') || [];
+                                      const primaryProperty = properties.find((p: any) => p.use === 'primary' && p.address?.street);
+                                      const isAttachedToPrimary = attachedProperty && primaryProperty && primaryProperty.address && attachedProperty === primaryProperty.address.street;
+                                      
+                                      return (
+                                        <div className={`w-3 h-3 rounded-full border-2 ${
+                                          isAttachedToPrimary 
+                                            ? 'bg-green-500 border-green-500' 
+                                            : 'bg-gray-200 border-gray-300'
+                                        }`} />
+                                      );
+                                    })()}
+                                  </div>
                                   {showCurrentLoan && (() => {
                                     const attachedProperty = form.watch('currentLoan.attachedToProperty');
                                     const properties = form.watch('property.properties') || [];
@@ -8207,11 +8223,7 @@ export default function AdminAddClient() {
                                         type="button"
                                         variant="ghost"
                                         size="sm"
-                                        className={`p-1 h-auto ${
-                                          isAttachedToPrimary 
-                                            ? 'text-white bg-green-600 hover:bg-green-700' 
-                                            : 'text-blue-600 hover:text-blue-800'
-                                        }`}
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
                                         onClick={() => {
                                           if (isAttachedToPrimary) {
                                             setIsCurrentLoanPreviewOpen(true);
@@ -8246,7 +8258,23 @@ export default function AdminAddClient() {
                               
                               <div className="space-y-2">
                                 <div className="min-h-5 flex items-center gap-2">
-                                  <Label htmlFor={`property-active-second-loan-${propertyId}`}>Secured Second Loan</Label>
+                                  <div className="flex items-center gap-2">
+                                    <Label htmlFor={`property-active-second-loan-${propertyId}`}>Secured Second Loan</Label>
+                                    {(() => {
+                                      const attachedProperty = form.watch('secondLoan.attachedToProperty');
+                                      const properties = form.watch('property.properties') || [];
+                                      const primaryProperty = properties.find((p: any) => p.use === 'primary' && p.address?.street);
+                                      const isAttachedToPrimary = attachedProperty && primaryProperty && primaryProperty.address && attachedProperty === primaryProperty.address.street;
+                                      
+                                      return (
+                                        <div className={`w-3 h-3 rounded-full border-2 ${
+                                          isAttachedToPrimary 
+                                            ? 'bg-green-500 border-green-500' 
+                                            : 'bg-gray-200 border-gray-300'
+                                        }`} />
+                                      );
+                                    })()}
+                                  </div>
                                   {showSecondLoan && (() => {
                                     const attachedProperty = form.watch('secondLoan.attachedToProperty');
                                     const properties = form.watch('property.properties') || [];
@@ -8258,11 +8286,7 @@ export default function AdminAddClient() {
                                         type="button"
                                         variant="ghost"
                                         size="sm"
-                                        className={`p-1 h-auto ${
-                                          isAttachedToPrimary 
-                                            ? 'text-white bg-green-600 hover:bg-green-700' 
-                                            : 'text-blue-600 hover:text-blue-800'
-                                        }`}
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
                                         onClick={() => {
                                           if (isAttachedToPrimary) {
                                             setIsCurrentSecondLoanPreviewOpen(true);
