@@ -8180,7 +8180,7 @@ export default function AdminAddClient() {
                             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
                               <div className="space-y-2 md:col-span-1">
                                 <div className="flex items-center gap-2">
-                                  <Label htmlFor={`property-purchase-price-${propertyId}`}>Appraised</Label>
+                                  <Label htmlFor={`property-purchase-price-${propertyId}`}>Purchase</Label>
                                   <Button
                                     type="button"
                                     variant="ghost"
@@ -8194,7 +8194,17 @@ export default function AdminAddClient() {
                                 </div>
                                 <Input
                                   id={`property-purchase-price-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.purchasePrice` as const)}
+                                  value={form.watch(`property.properties.${index}.purchasePrice` as const) || ''}
+                                  onChange={(e) => {
+                                    let value = e.target.value.replace(/[^\d.]/g, '');
+                                    if (value) {
+                                      const numValue = parseFloat(value);
+                                      if (!isNaN(numValue)) {
+                                        value = `$${numValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                                      }
+                                    }
+                                    form.setValue(`property.properties.${index}.purchasePrice` as const, value);
+                                  }}
                                   placeholder="$0.00"
                                   data-testid={`input-property-purchase-price-${propertyId}`}
                                 />
@@ -8235,9 +8245,9 @@ export default function AdminAddClient() {
                                 </Select>
                               </div>
                               
-                              <div className="space-y-2 md:col-span-2">
+                              <div className="space-y-2 md:col-span-3">
                                 <div className="flex items-center gap-2">
-                                  <Label htmlFor={`property-estimated-value-${propertyId}`}>Est. Value</Label>
+                                  <Label htmlFor={`property-estimated-value-${propertyId}`}>Estimated Value</Label>
                                   <div className="flex items-center gap-1">
                                     {/* Zillow */}
                                     <div className="flex items-center gap-1">
@@ -8302,7 +8312,17 @@ export default function AdminAddClient() {
                                 </div>
                                 <Input
                                   id={`property-estimated-value-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.estimatedValue` as const)}
+                                  value={form.watch(`property.properties.${index}.estimatedValue` as const) || ''}
+                                  onChange={(e) => {
+                                    let value = e.target.value.replace(/[^\d.]/g, '');
+                                    if (value) {
+                                      const numValue = parseFloat(value);
+                                      if (!isNaN(numValue)) {
+                                        value = `$${numValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                                      }
+                                    }
+                                    form.setValue(`property.properties.${index}.estimatedValue` as const, value);
+                                  }}
                                   placeholder="$0.00"
                                   data-testid={`input-property-estimated-value-${propertyId}`}
                                 />
@@ -8324,7 +8344,17 @@ export default function AdminAddClient() {
                                 </div>
                                 <Input
                                   id={`property-appraised-value-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.appraisedValue` as const)}
+                                  value={form.watch(`property.properties.${index}.appraisedValue` as const) || ''}
+                                  onChange={(e) => {
+                                    let value = e.target.value.replace(/[^\d.]/g, '');
+                                    if (value) {
+                                      const numValue = parseFloat(value);
+                                      if (!isNaN(numValue)) {
+                                        value = `$${numValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                                      }
+                                    }
+                                    form.setValue(`property.properties.${index}.appraisedValue` as const, value);
+                                  }}
                                   placeholder="$0.00"
                                   data-testid={`input-property-appraised-value-${propertyId}`}
                                 />
