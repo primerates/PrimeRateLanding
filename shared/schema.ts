@@ -161,8 +161,8 @@ export const loanDetailSchema = z.object({
   isPropertyRented: z.string().optional(),
   monthlyRental: z.string().optional(),
   monthlyIncome: z.string().optional(),
-  // Attached to Property fields for second and third loans
-  attachedToProperty: z.enum(['', 'Primary Residence', 'Second Home', 'Investment Property', 'Other']).optional(),
+  // Attached to Property fields for second and third loans (property ID)
+  attachedToProperty: z.string().optional(),
   propertyAddress: z.object({
     street: z.string().optional(),
     unit: z.string().optional(),
@@ -175,7 +175,7 @@ export const loanDetailSchema = z.object({
 
 // Individual property entry schema
 export const propertyEntrySchema = z.object({
-  id: z.string().optional(),
+  id: z.string().min(1), // Required: stable ID for property attachment system
   use: z.enum(["primary", "second-home", "investment"]).optional(),
   isSubject: z.boolean().optional(),
   address: addressSchema.partial().optional(),
@@ -223,7 +223,7 @@ export const currentLoanSchema = z.object({
     mode: z.enum(['Statement Balance', 'Pay Off Demand']).optional(),
     amount: z.string().optional(),
   }).optional(),
-  attachedToProperty: z.enum(['', 'Primary Residence', 'Second Home', 'Investment Property', 'Other']).optional(),
+  attachedToProperty: z.string().optional(), // Property ID for attachment system
   propertyAddress: z.object({
     street: z.string().optional(),
     unit: z.string().optional(),
