@@ -2314,20 +2314,8 @@ export default function AdminAddClient() {
                 </div>
               )}
               
-              {/* Minimize/Expand and Add Second Loan Button - positioned at bottom */}
-              <div className="flex justify-between items-center mt-4">
-                <CollapsibleTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="hover:bg-orange-500 hover:text-white" 
-                    data-testid={`button-toggle-current-loan-${idPrefix}`}
-                    title={isOpen ? 'Minimize' : 'Expand'}
-                  >
-                    {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                    <span className="ml-2">{isOpen ? 'Minimize' : 'Expand'}</span>
-                  </Button>
-                </CollapsibleTrigger>
+              {/* Add Second Loan Button - positioned at bottom right */}
+              <div className="flex justify-end mt-4">
                 <Button 
                   type="button" 
                   variant="outline" 
@@ -2392,6 +2380,17 @@ export default function AdminAddClient() {
                     <Minus className="h-4 w-4" />
                   </Button>
                 )}
+                <CollapsibleTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="hover:bg-orange-500 hover:text-white" 
+                    data-testid={`button-toggle-second-loan-${idPrefix}`}
+                    title={isOpen ? 'Minimize' : 'Expand'}
+                  >
+                    {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                  </Button>
+                </CollapsibleTrigger>
               </div>
             </div>
           </CardHeader>
@@ -2785,21 +2784,9 @@ export default function AdminAddClient() {
                 </div>
               )}
               
-              {/* Minimize/Expand and Add Additional Loan Button - positioned at bottom */}
-              <div className="flex justify-between items-center mt-4">
-                <CollapsibleTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="hover:bg-orange-500 hover:text-white" 
-                    data-testid={`button-toggle-second-loan-${idPrefix}`}
-                    title={isOpen ? 'Minimize' : 'Expand'}
-                  >
-                    {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                    <span className="ml-2">{isOpen ? 'Minimize' : 'Expand'}</span>
-                  </Button>
-                </CollapsibleTrigger>
-                {onAddAdditionalLoan && (
+              {/* Add Additional Loan Button - positioned at bottom right */}
+              {onAddAdditionalLoan && (
+                <div className="flex justify-end mt-4">
                   <Button 
                     type="button" 
                     variant="outline" 
@@ -2811,8 +2798,8 @@ export default function AdminAddClient() {
                     <Plus className="h-4 w-4 mr-2" />
                     Additional Loan
                   </Button>
-                )}
-              </div>
+                </div>
+              )}
               
             </CardContent>
           </CollapsibleContent>
