@@ -8777,7 +8777,7 @@ export default function AdminAddClient() {
                   isOpen={isSecondLoanOpen}
                   setIsOpen={setIsSecondLoanOpen}
                   onRemove={removeSecondLoan}
-                  onAutoCopyAddress={autoCopyPropertyAddressToGlobalSecondLoan}
+                  onAutoCopyAddress={autoCopyPropertyAddressToLoanTabSecondLoan}
                   formInstance={form}
                 />
               )}
