@@ -1356,15 +1356,12 @@ export default function AdminAddClient() {
       const address = property.address;
       if (!address) return 'Address not specified';
       
-      // Build address string from components
+      // Build address string from components (street address only)
       let addressParts = [];
       if (address.street) addressParts.push(address.street);
       if (address.unit) addressParts.push(`Unit ${address.unit}`);
-      if (address.city) addressParts.push(address.city);
-      if (address.state) addressParts.push(address.state);
-      if (address.zipCode) addressParts.push(address.zipCode);
       
-      return addressParts.length > 0 ? addressParts.join(', ') : 'Address not specified';
+      return addressParts.length > 0 ? addressParts.join(' ') : 'Address not specified';
     };
 
     // Format monetary values for display
@@ -10789,7 +10786,7 @@ export default function AdminAddClient() {
       <Dialog open={isCurrentLoanPreviewOpen} onOpenChange={setIsCurrentLoanPreviewOpen}>
         <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto" data-testid="dialog-current-loan-preview">
           <DialogHeader>
-            <DialogTitle>Current Loan 1 Details</DialogTitle>
+            <DialogTitle>Current Loan</DialogTitle>
           </DialogHeader>
           <CurrentLoanPreview control={form.control} />
           <DialogFooter>
