@@ -8428,38 +8428,27 @@ export default function AdminAddClient() {
                               </div>
                               
                               <div className="space-y-2">
-                                <div className="flex items-center justify-between mb-2">
-                                  <Label htmlFor="template-bonusIncome" className="text-sm">
-                                    Monthly Bonus
-                                  </Label>
-                                  <Switch
-                                    data-testid="toggle-template-bonus"
-                                  />
-                                </div>
+                                <Label htmlFor="template-startDate">Start Date</Label>
                                 <Input
-                                  id="template-bonusIncome"
-                                  placeholder="$0.00"
-                                  data-testid="input-template-bonusIncome"
+                                  id="template-startDate"
+                                  placeholder="MM/DD/YYYY"
+                                  data-testid="input-template-startDate"
                                 />
                               </div>
                               
                               <div className="space-y-2">
-                                <Label htmlFor="template-employmentType">Full-Time / Part-Time</Label>
-                                <Select>
-                                  <SelectTrigger data-testid="select-template-employmentType">
-                                    <SelectValue placeholder="Select type" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="Full-Time">Full-Time</SelectItem>
-                                    <SelectItem value="Part-Time">Part-Time</SelectItem>
-                                  </SelectContent>
-                                </Select>
+                                <Label htmlFor="template-endDate">End Date</Label>
+                                <Input
+                                  id="template-endDate"
+                                  placeholder="MM/DD/YYYY"
+                                  data-testid="input-template-endDate"
+                                />
                               </div>
                               
                               <div className="space-y-2">
                                 <div className="flex items-center justify-between mb-2">
                                   <Label htmlFor="template-employment-duration" className="text-sm">
-                                    Years Employed
+                                    Employment Term
                                   </Label>
                                   <Switch
                                     data-testid="toggle-template-employment-duration"
