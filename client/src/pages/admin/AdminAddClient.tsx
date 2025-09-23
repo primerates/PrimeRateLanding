@@ -570,6 +570,33 @@ export default function AdminAddClient() {
     });
   };
 
+  // Helper function to handle income type changes with warning
+  const handleIncomeTypeChange = (fieldPath: string, checked: boolean, incomeTypeName: string, isCoBorrower = false) => {
+    if (!checked) {
+      // Show warning when trying to uncheck/remove income type
+      setConfirmRemovalDialog({
+        isOpen: true,
+        type: 'income',
+        itemType: incomeTypeName,
+        onConfirm: () => {
+          form.setValue(fieldPath as any, false);
+          setConfirmRemovalDialog({ isOpen: false, type: null });
+        }
+      });
+    } else {
+      // No warning needed when checking
+      form.setValue(fieldPath as any, true);
+      // Auto-expand employment cards when selected
+      if (fieldPath.includes('employment') && !fieldPath.includes('secondEmployment')) {
+        if (isCoBorrower) {
+          setIsCoBorrowerEmploymentIncomeOpen(true);
+        } else {
+          setIsEmploymentIncomeOpen(true);
+        }
+      }
+    }
+  };
+
   // Co-borrower multiple prior addresses state management
   const [coBorrowerPriorAddresses, setCoBorrowerPriorAddresses] = useState<{ id: string }[]>([]);
 
@@ -6287,12 +6314,7 @@ export default function AdminAddClient() {
                         <Checkbox
                           id="income-type-employment"
                           checked={form.watch('income.incomeTypes.employment') || false}
-                          onCheckedChange={(checked) => {
-                            form.setValue('income.incomeTypes.employment', !!checked);
-                            if (checked) {
-                              setIsEmploymentIncomeOpen(true);
-                            }
-                          }}
+                          onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.employment', !!checked, 'Employment')}
                           data-testid="checkbox-employment"
                         />
                         <Label htmlFor="income-type-employment">Employment</Label>
@@ -6301,7 +6323,7 @@ export default function AdminAddClient() {
                         <Checkbox
                           id="income-type-secondEmployment"
                           checked={form.watch('income.incomeTypes.secondEmployment') || false}
-                          onCheckedChange={(checked) => form.setValue('income.incomeTypes.secondEmployment', !!checked)}
+                          onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.secondEmployment', !!checked, 'Second Employment')}
                           data-testid="checkbox-secondEmployment"
                         />
                         <Label htmlFor="income-type-secondEmployment">Second Employment</Label>
@@ -6310,7 +6332,7 @@ export default function AdminAddClient() {
                         <Checkbox
                           id="income-type-selfEmployment"
                           checked={form.watch('income.incomeTypes.selfEmployment') || false}
-                          onCheckedChange={(checked) => form.setValue('income.incomeTypes.selfEmployment', !!checked)}
+                          onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.selfEmployment', !!checked, 'Self-Employment')}
                           data-testid="checkbox-selfEmployment"
                         />
                         <Label htmlFor="income-type-selfEmployment">Self-Employment</Label>
@@ -6319,7 +6341,7 @@ export default function AdminAddClient() {
                         <Checkbox
                           id="income-type-pension"
                           checked={form.watch('income.incomeTypes.pension') || false}
-                          onCheckedChange={(checked) => form.setValue('income.incomeTypes.pension', !!checked)}
+                          onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.pension', !!checked, 'Pension')}
                           data-testid="checkbox-pension"
                         />
                         <Label htmlFor="income-type-pension">Pension</Label>
@@ -6328,7 +6350,7 @@ export default function AdminAddClient() {
                         <Checkbox
                           id="income-type-socialSecurity"
                           checked={form.watch('income.incomeTypes.socialSecurity') || false}
-                          onCheckedChange={(checked) => form.setValue('income.incomeTypes.socialSecurity', !!checked)}
+                          onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.socialSecurity', !!checked, 'Social Security')}
                           data-testid="checkbox-socialSecurity"
                         />
                         <Label htmlFor="income-type-socialSecurity">Social Security</Label>
@@ -6337,7 +6359,7 @@ export default function AdminAddClient() {
                         <Checkbox
                           id="income-type-vaBenefits"
                           checked={form.watch('income.incomeTypes.vaBenefits') || false}
-                          onCheckedChange={(checked) => form.setValue('income.incomeTypes.vaBenefits', !!checked)}
+                          onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.vaBenefits', !!checked, 'VA Disability')}
                           data-testid="checkbox-vaBenefits"
                         />
                         <Label htmlFor="income-type-vaBenefits">VA Disability</Label>
@@ -6346,7 +6368,7 @@ export default function AdminAddClient() {
                         <Checkbox
                           id="income-type-disability"
                           checked={form.watch('income.incomeTypes.disability') || false}
-                          onCheckedChange={(checked) => form.setValue('income.incomeTypes.disability', !!checked)}
+                          onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.disability', !!checked, 'Disability')}
                           data-testid="checkbox-disability"
                         />
                         <Label htmlFor="income-type-disability">Disability</Label>
@@ -7572,12 +7594,7 @@ export default function AdminAddClient() {
                           <Checkbox
                             id="coBorrowerIncome-type-employment"
                             checked={form.watch('coBorrowerIncome.incomeTypes.employment') || false}
-                            onCheckedChange={(checked) => {
-                              form.setValue('coBorrowerIncome.incomeTypes.employment', !!checked);
-                              if (checked) {
-                                setIsCoBorrowerEmploymentIncomeOpen(true);
-                              }
-                            }}
+                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.employment', !!checked, 'Employment', true)}
                             data-testid="checkbox-coborrower-employment"
                           />
                           <Label htmlFor="coBorrowerIncome-type-employment">Employment</Label>
@@ -7586,7 +7603,7 @@ export default function AdminAddClient() {
                           <Checkbox
                             id="coBorrowerIncome-type-secondEmployment"
                             checked={form.watch('coBorrowerIncome.incomeTypes.secondEmployment') || false}
-                            onCheckedChange={(checked) => form.setValue('coBorrowerIncome.incomeTypes.secondEmployment', !!checked)}
+                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.secondEmployment', !!checked, 'Second Employment', true)}
                             data-testid="checkbox-coborrower-secondEmployment"
                           />
                           <Label htmlFor="coBorrowerIncome-type-secondEmployment">Second Employment</Label>
@@ -7595,7 +7612,7 @@ export default function AdminAddClient() {
                           <Checkbox
                             id="coBorrowerIncome-type-selfEmployment"
                             checked={form.watch('coBorrowerIncome.incomeTypes.selfEmployment') || false}
-                            onCheckedChange={(checked) => form.setValue('coBorrowerIncome.incomeTypes.selfEmployment', !!checked)}
+                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.selfEmployment', !!checked, 'Self-Employment', true)}
                             data-testid="checkbox-coborrower-selfEmployment"
                           />
                           <Label htmlFor="coBorrowerIncome-type-selfEmployment">Self-Employment</Label>
@@ -7604,7 +7621,7 @@ export default function AdminAddClient() {
                           <Checkbox
                             id="coBorrowerIncome-type-pension"
                             checked={form.watch('coBorrowerIncome.incomeTypes.pension') || false}
-                            onCheckedChange={(checked) => form.setValue('coBorrowerIncome.incomeTypes.pension', !!checked)}
+                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.pension', !!checked, 'Pension', true)}
                             data-testid="checkbox-coborrower-pension"
                           />
                           <Label htmlFor="coBorrowerIncome-type-pension">Pension</Label>
@@ -7613,7 +7630,7 @@ export default function AdminAddClient() {
                           <Checkbox
                             id="coBorrowerIncome-type-socialSecurity"
                             checked={form.watch('coBorrowerIncome.incomeTypes.socialSecurity') || false}
-                            onCheckedChange={(checked) => form.setValue('coBorrowerIncome.incomeTypes.socialSecurity', !!checked)}
+                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.socialSecurity', !!checked, 'Social Security', true)}
                             data-testid="checkbox-coborrower-socialSecurity"
                           />
                           <Label htmlFor="coBorrowerIncome-type-socialSecurity">Social Security</Label>
@@ -7622,7 +7639,7 @@ export default function AdminAddClient() {
                           <Checkbox
                             id="coBorrowerIncome-type-vaBenefits"
                             checked={form.watch('coBorrowerIncome.incomeTypes.vaBenefits') || false}
-                            onCheckedChange={(checked) => form.setValue('coBorrowerIncome.incomeTypes.vaBenefits', !!checked)}
+                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.vaBenefits', !!checked, 'VA Disability', true)}
                             data-testid="checkbox-coborrower-vaBenefits"
                           />
                           <Label htmlFor="coBorrowerIncome-type-vaBenefits">VA Disability</Label>
@@ -7631,7 +7648,7 @@ export default function AdminAddClient() {
                           <Checkbox
                             id="coBorrowerIncome-type-disability"
                             checked={form.watch('coBorrowerIncome.incomeTypes.disability') || false}
-                            onCheckedChange={(checked) => form.setValue('coBorrowerIncome.incomeTypes.disability', !!checked)}
+                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.disability', !!checked, 'Disability', true)}
                             data-testid="checkbox-coborrower-disability"
                           />
                           <Label htmlFor="coBorrowerIncome-type-disability">Disability</Label>
@@ -7640,7 +7657,7 @@ export default function AdminAddClient() {
                           <Checkbox
                             id="coBorrowerIncome-type-other"
                             checked={form.watch('coBorrowerIncome.incomeTypes.other') || false}
-                            onCheckedChange={(checked) => form.setValue('coBorrowerIncome.incomeTypes.other', !!checked)}
+                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.other', !!checked, 'Other', true)}
                             data-testid="checkbox-coborrower-other"
                           />
                           <Label htmlFor="coBorrowerIncome-type-other">Other</Label>
