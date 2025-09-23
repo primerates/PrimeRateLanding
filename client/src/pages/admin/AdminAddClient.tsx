@@ -5660,12 +5660,13 @@ export default function AdminAddClient() {
                 </Card>
               ))}
 
-              {/* Co-Borrower Section */}
-<Card className="mt-16 border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
-                <CardHeader>
-                  <CardTitle>Co-Borrower</CardTitle>
-                </CardHeader>
-                {hasCoBorrower && (
+              {/* Co-Borrower Section - Only show when co-borrower is added */}
+              {hasCoBorrower && (
+                <>
+                <Card className="mt-16 border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
+                  <CardHeader>
+                    <CardTitle>Co-Borrower</CardTitle>
+                  </CardHeader>
                   <CardContent className="space-y-4">
                     {/* Row 1: First Name, Middle Name, Last Name, Date of Birth, SSN */}
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -5796,12 +5797,9 @@ export default function AdminAddClient() {
                       </div>
                     </div>
                   </CardContent>
-                )}
-              </Card>
+                </Card>
 
-              {/* Co-Borrower Residence Address */}
-              {hasCoBorrower && (
-                <>
+                {/* Co-Borrower Residence Address */}
                 <Card>
                   <Collapsible open={isCoBorrowerResidenceOpen} onOpenChange={setIsCoBorrowerResidenceOpen}>
                     <CardHeader className="flex flex-row items-center justify-between">
