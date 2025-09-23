@@ -6546,6 +6546,7 @@ export default function AdminAddClient() {
                           }}
                           placeholder="%"
                           data-testid="input-income-frontDTI"
+                          className="w-1/2"
                         />
                       )}
                     />
@@ -6566,6 +6567,7 @@ export default function AdminAddClient() {
                           }}
                           placeholder="%"
                           data-testid="input-income-backDTI"
+                          className="w-1/2"
                         />
                       )}
                     />
