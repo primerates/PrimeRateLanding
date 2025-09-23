@@ -6584,7 +6584,7 @@ export default function AdminAddClient() {
                             <div className="space-y-2">
                               <div className="flex items-center justify-between mb-2">
                                 <Label htmlFor="income-bonusIncome" className="text-sm">
-                                  {isShowingAnnualBonus ? 'Annual Bonus Income' : 'Monthly Bonus Income'}
+                                  {isShowingAnnualBonus ? 'Annual Bonus' : 'Monthly Bonus'}
                                 </Label>
                                 <Switch
                                   checked={isShowingAnnualBonus}
@@ -7873,7 +7873,7 @@ export default function AdminAddClient() {
                             <div className="space-y-2">
                               <div className="flex items-center justify-between mb-2">
                                 <Label htmlFor="coBorrowerIncome-bonusIncome" className="text-sm">
-                                  {isCoBorrowerShowingAnnualBonus ? 'Annual Bonus Income' : 'Monthly Bonus Income'}
+                                  {isCoBorrowerShowingAnnualBonus ? 'Annual Bonus' : 'Monthly Bonus'}
                                 </Label>
                                 <Switch
                                   checked={isCoBorrowerShowingAnnualBonus}
