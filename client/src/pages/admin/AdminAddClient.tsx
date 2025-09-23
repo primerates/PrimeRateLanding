@@ -1340,6 +1340,32 @@ export default function AdminAddClient() {
     const escrowPayment = useWatch({ control, name: 'currentLoan.escrowPayment' }) || '';
     const prepaymentPenalty = useWatch({ control, name: 'currentLoan.prepaymentPenalty' }) || '';
     const attachedToProperty = useWatch({ control, name: 'currentLoan.attachedToProperty' }) || '';
+    
+    // Get all properties to look up address by ID
+    const properties = useWatch({ control, name: 'property.properties' }) || [];
+    
+    // Function to get property address display from property ID
+    const getPropertyAddressDisplay = (propertyId: string) => {
+      if (!propertyId || propertyId === 'Other' || propertyId === 'Select') {
+        return propertyId || 'Not specified';
+      }
+      
+      const property = properties.find((prop: any) => prop.id === propertyId);
+      if (!property) return 'Property not found';
+      
+      const address = property.address;
+      if (!address) return 'Address not specified';
+      
+      // Build address string from components
+      let addressParts = [];
+      if (address.street) addressParts.push(address.street);
+      if (address.unit) addressParts.push(`Unit ${address.unit}`);
+      if (address.city) addressParts.push(address.city);
+      if (address.state) addressParts.push(address.state);
+      if (address.zipCode) addressParts.push(address.zipCode);
+      
+      return addressParts.length > 0 ? addressParts.join(', ') : 'Address not specified';
+    };
 
     // Format monetary values for display
     const formatCurrency = (value: string) => {
@@ -1352,7 +1378,7 @@ export default function AdminAddClient() {
     return (
       <Card className="border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
         <CardHeader>
-          <CardTitle>Current Loan 1 Preview</CardTitle>
+          <CardTitle>Current Loan</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Row 1: Lender Name, Loan Number, Loan Category, Loan Program */}
@@ -1437,7 +1463,7 @@ export default function AdminAddClient() {
             <div className="space-y-2">
               <Label className="text-sm font-medium text-muted-foreground">Attached to Property</Label>
               <div className="p-2 bg-gray-50 rounded-md border">
-                <span className="text-sm">{attachedToProperty || 'Not specified'}</span>
+                <span className="text-sm">{getPropertyAddressDisplay(attachedToProperty)}</span>
               </div>
             </div>
           </div>
