@@ -1542,11 +1542,31 @@ export default function AdminAddClient() {
       );
     };
 
+    // Get all properties to look up address by ID
+    const properties = useWatch({ control, name: 'property.properties' }) || [];
+    
+    // Function to get property address display from property ID
+    const getPropertyAddressDisplay = (propertyId: string) => {
+      if (!propertyId || propertyId === 'Other' || propertyId === 'Select') {
+        return propertyId || 'Not specified';
+      }
+      
+      const property = properties.find((prop: any) => prop.id === propertyId);
+      if (!property) return 'Property not found';
+      
+      const address = property.address;
+      if (!address) return 'Address not specified';
+      
+      // Build address string from components (street address only)
+      let addressParts = [];
+      if (address.street) addressParts.push(address.street);
+      if (address.unit) addressParts.push(`Unit ${address.unit}`);
+      
+      return addressParts.length > 0 ? addressParts.join(' ') : 'Address not specified';
+    };
+
     return (
-      <Card className="border-l-4 border-l-orange-500 hover:border-orange-500 focus-within:border-orange-500 transition-colors duration-200">
-        <CardHeader>
-          <CardTitle>Current Loan 2 Preview</CardTitle>
-        </CardHeader>
+      <Card className="border-l-4 border-l-purple-500 hover:border-purple-500 focus-within:border-purple-500 transition-colors duration-200">
         <CardContent className="space-y-4">
           {/* Row 1: Lender Name, Loan Number, Loan Category, Loan Program */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -1597,15 +1617,15 @@ export default function AdminAddClient() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-muted-foreground">Current Rate</Label>
+              <Label className="text-sm font-medium text-muted-foreground">Loan Rate</Label>
               <div className="p-2 bg-gray-50 rounded-md border">
                 <span className="text-sm">{currentRate ? `${currentRate}%` : 'Not specified'}</span>
               </div>
             </div>
           </div>
 
-          {/* Row 3: Principal & Interest Payment, Escrow Payment, Total Payment, Pre-Payment Penalty */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {/* Row 3: Payment Fields with Total */}
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div className="space-y-2">
               <Label className="text-sm font-medium text-muted-foreground">Principal & Interest Payment</Label>
               <div className="p-2 bg-gray-50 rounded-md border">
@@ -1618,21 +1638,19 @@ export default function AdminAddClient() {
                 <span className="text-sm">{formatCurrency(escrowPayment) || 'Not specified'}</span>
               </div>
             </div>
-            <TotalSecondLoanPayment />
+            <div className="col-span-1">
+              <TotalSecondLoanPayment />
+            </div>
             <div className="space-y-2">
               <Label className="text-sm font-medium text-muted-foreground">Pre-Payment Penalty</Label>
               <div className="p-2 bg-gray-50 rounded-md border">
                 <span className="text-sm">{prepaymentPenalty || 'Not specified'}</span>
               </div>
             </div>
-          </div>
-
-          {/* Row 4: Attached to Property */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="space-y-2">
               <Label className="text-sm font-medium text-muted-foreground">Attached to Property</Label>
               <div className="p-2 bg-gray-50 rounded-md border">
-                <span className="text-sm">{attachedToProperty || 'Not specified'}</span>
+                <span className="text-sm">{getPropertyAddressDisplay(attachedToProperty)}</span>
               </div>
             </div>
           </div>
@@ -1745,7 +1763,7 @@ export default function AdminAddClient() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-muted-foreground">Current Rate</Label>
+              <Label className="text-sm font-medium text-muted-foreground">Loan Rate</Label>
               <div className="p-2 bg-gray-50 rounded-md border">
                 <span className="text-sm">{currentRate ? `${currentRate}%` : 'Not specified'}</span>
               </div>
@@ -1899,7 +1917,7 @@ export default function AdminAddClient() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-muted-foreground">Current Rate</Label>
+              <Label className="text-sm font-medium text-muted-foreground">Loan Rate</Label>
               <div className="p-2 bg-gray-50 rounded-md border">
                 <span className="text-sm">{currentRate ? `${currentRate}%` : 'Not specified'}</span>
               </div>
@@ -10830,7 +10848,7 @@ export default function AdminAddClient() {
       <Dialog open={isCurrentSecondLoanPreviewOpen} onOpenChange={setIsCurrentSecondLoanPreviewOpen}>
         <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto" data-testid="dialog-current-second-loan-preview">
           <DialogHeader>
-            <DialogTitle>Current Loan 2 Details</DialogTitle>
+            <DialogTitle>Current Loan 2</DialogTitle>
           </DialogHeader>
           <CurrentSecondLoanPreview control={form.control} />
           <DialogFooter>
