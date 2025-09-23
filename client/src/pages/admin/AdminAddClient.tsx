@@ -18,7 +18,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, Trash2 } from 'lucide-react';
 import { SiZillow } from 'react-icons/si';
 import { MdRealEstateAgent } from 'react-icons/md';
 import { FaHome } from 'react-icons/fa';
@@ -619,6 +619,130 @@ export default function AdminAddClient() {
     });
   };
 
+  // Function to remove borrower first prior employer
+  const removeBorrowerPriorEmployer = () => {
+    setConfirmRemovalDialog({
+      isOpen: true,
+      type: 'prior-employer',
+      itemType: 'borrower-first-prior',
+      onConfirm: () => {
+        // Clear all borrower first prior employer fields
+        form.setValue('income.priorEmployerName', '');
+        form.setValue('income.priorEmployerPhone', '');
+        form.setValue('income.priorEmploymentVerificationPhone', '');
+        form.setValue('income.priorIsShowingEmploymentVerification', false);
+        form.setValue('income.priorJobTitle', '');
+        form.setValue('income.priorMonthlyIncome', '');
+        form.setValue('income.priorMonthlyBonusIncome', '');
+        form.setValue('income.priorAnnualBonusIncome', '');
+        form.setValue('income.priorEmploymentType', '');
+        form.setValue('income.priorYearsEmployedYears', '');
+        form.setValue('income.priorYearsEmployedMonths', '');
+        form.setValue('income.priorEmployerAddress.street', '');
+        form.setValue('income.priorEmployerAddress.unit', '');
+        form.setValue('income.priorEmployerAddress.city', '');
+        form.setValue('income.priorEmployerAddress.state', '');
+        form.setValue('income.priorEmployerAddress.zip', '');
+        form.setValue('income.priorEmployerAddress.county', '');
+        form.setValue('income.priorEmployerRemote', '');
+        setConfirmRemovalDialog({ isOpen: false, type: null });
+      }
+    });
+  };
+
+  // Function to remove borrower second prior employer
+  const removeBorrowerSecondPriorEmployer = () => {
+    setConfirmRemovalDialog({
+      isOpen: true,
+      type: 'prior-employer',
+      itemType: 'borrower-second-prior',
+      onConfirm: () => {
+        // Clear all borrower second prior employer fields
+        form.setValue('income.secondPriorEmployerName', '');
+        form.setValue('income.secondPriorEmployerPhone', '');
+        form.setValue('income.secondPriorEmploymentVerificationPhone', '');
+        form.setValue('income.secondPriorIsShowingEmploymentVerification', false);
+        form.setValue('income.secondPriorJobTitle', '');
+        form.setValue('income.secondPriorMonthlyIncome', '');
+        form.setValue('income.secondPriorMonthlyBonusIncome', '');
+        form.setValue('income.secondPriorAnnualBonusIncome', '');
+        form.setValue('income.secondPriorEmploymentType', '');
+        form.setValue('income.secondPriorYearsEmployedYears', '');
+        form.setValue('income.secondPriorYearsEmployedMonths', '');
+        form.setValue('income.secondPriorEmployerAddress.street', '');
+        form.setValue('income.secondPriorEmployerAddress.unit', '');
+        form.setValue('income.secondPriorEmployerAddress.city', '');
+        form.setValue('income.secondPriorEmployerAddress.state', '');
+        form.setValue('income.secondPriorEmployerAddress.zip', '');
+        form.setValue('income.secondPriorEmployerAddress.county', '');
+        form.setValue('income.secondPriorEmployerRemote', '');
+        setConfirmRemovalDialog({ isOpen: false, type: null });
+      }
+    });
+  };
+
+  // Function to remove co-borrower first prior employer
+  const removeCoBorrowerPriorEmployer = () => {
+    setConfirmRemovalDialog({
+      isOpen: true,
+      type: 'prior-employer',
+      itemType: 'coborrower-first-prior',
+      onConfirm: () => {
+        // Clear all co-borrower first prior employer fields
+        form.setValue('coBorrowerIncome.priorEmployerName', '');
+        form.setValue('coBorrowerIncome.priorEmployerPhone', '');
+        form.setValue('coBorrowerIncome.priorEmploymentVerificationPhone', '');
+        form.setValue('coBorrowerIncome.priorIsShowingEmploymentVerification', false);
+        form.setValue('coBorrowerIncome.priorJobTitle', '');
+        form.setValue('coBorrowerIncome.priorMonthlyIncome', '');
+        form.setValue('coBorrowerIncome.priorMonthlyBonusIncome', '');
+        form.setValue('coBorrowerIncome.priorAnnualBonusIncome', '');
+        form.setValue('coBorrowerIncome.priorEmploymentType', '');
+        form.setValue('coBorrowerIncome.priorYearsEmployedYears', '');
+        form.setValue('coBorrowerIncome.priorYearsEmployedMonths', '');
+        form.setValue('coBorrowerIncome.priorEmployerAddress.street', '');
+        form.setValue('coBorrowerIncome.priorEmployerAddress.unit', '');
+        form.setValue('coBorrowerIncome.priorEmployerAddress.city', '');
+        form.setValue('coBorrowerIncome.priorEmployerAddress.state', '');
+        form.setValue('coBorrowerIncome.priorEmployerAddress.zip', '');
+        form.setValue('coBorrowerIncome.priorEmployerAddress.county', '');
+        form.setValue('coBorrowerIncome.priorEmployerRemote', '');
+        setConfirmRemovalDialog({ isOpen: false, type: null });
+      }
+    });
+  };
+
+  // Function to remove co-borrower second prior employer
+  const removeCoBorrowerSecondPriorEmployer = () => {
+    setConfirmRemovalDialog({
+      isOpen: true,
+      type: 'prior-employer',
+      itemType: 'coborrower-second-prior',
+      onConfirm: () => {
+        // Clear all co-borrower second prior employer fields
+        form.setValue('coBorrowerIncome.secondPriorEmployerName', '');
+        form.setValue('coBorrowerIncome.secondPriorEmployerPhone', '');
+        form.setValue('coBorrowerIncome.secondPriorEmploymentVerificationPhone', '');
+        form.setValue('coBorrowerIncome.secondPriorIsShowingEmploymentVerification', false);
+        form.setValue('coBorrowerIncome.secondPriorJobTitle', '');
+        form.setValue('coBorrowerIncome.secondPriorMonthlyIncome', '');
+        form.setValue('coBorrowerIncome.secondPriorMonthlyBonusIncome', '');
+        form.setValue('coBorrowerIncome.secondPriorAnnualBonusIncome', '');
+        form.setValue('coBorrowerIncome.secondPriorEmploymentType', '');
+        form.setValue('coBorrowerIncome.secondPriorYearsEmployedYears', '');
+        form.setValue('coBorrowerIncome.secondPriorYearsEmployedMonths', '');
+        form.setValue('coBorrowerIncome.secondPriorEmployerAddress.street', '');
+        form.setValue('coBorrowerIncome.secondPriorEmployerAddress.unit', '');
+        form.setValue('coBorrowerIncome.secondPriorEmployerAddress.city', '');
+        form.setValue('coBorrowerIncome.secondPriorEmployerAddress.state', '');
+        form.setValue('coBorrowerIncome.secondPriorEmployerAddress.zip', '');
+        form.setValue('coBorrowerIncome.secondPriorEmployerAddress.county', '');
+        form.setValue('coBorrowerIncome.secondPriorEmployerRemote', '');
+        setConfirmRemovalDialog({ isOpen: false, type: null });
+      }
+    });
+  };
+
   
   // Function to remove a third loan
   const removeThirdLoan = (propertyIndex: number) => {
@@ -708,7 +832,7 @@ export default function AdminAddClient() {
   // Removal confirmation dialog state
   const [confirmRemovalDialog, setConfirmRemovalDialog] = useState<{
     isOpen: boolean;
-    type: 'co-borrower' | 'property' | 'property-type' | 'income' | 'prior-address' | 'third-loan' | 'second-loan' | 'current-loan' | null;
+    type: 'co-borrower' | 'property' | 'property-type' | 'income' | 'prior-address' | 'third-loan' | 'second-loan' | 'current-loan' | 'prior-employer' | null;
     itemId?: string;
     itemType?: string;
     onConfirm?: () => void;
@@ -6818,18 +6942,37 @@ export default function AdminAddClient() {
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Borrower - Prior Employer</CardTitle>
-                        <CollapsibleTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="hover:bg-orange-500 hover:text-white" 
-                            data-testid="button-toggle-prior-employment-income"
-                            title={isPriorEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
-                            key={`prior-employment-income-${isPriorEmploymentIncomeOpen}`}
-                          >
-                            {isPriorEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                          </Button>
-                        </CollapsibleTrigger>
+                        <div className="flex items-center gap-2">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive border border-destructive/20"
+                                onClick={removeBorrowerPriorEmployer}
+                                data-testid="button-delete-borrower-prior-employer"
+                                title="Delete Prior Employer"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Delete Prior Employer</p>
+                            </TooltipContent>
+                          </Tooltip>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-prior-employment-income"
+                              title={isPriorEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
+                              key={`prior-employment-income-${isPriorEmploymentIncomeOpen}`}
+                            >
+                              {isPriorEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
                       </div>
                     </CardHeader>
                     <CollapsibleContent>
@@ -7081,18 +7224,37 @@ export default function AdminAddClient() {
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Borrower - Prior Employer</CardTitle>
-                        <CollapsibleTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="hover:bg-orange-500 hover:text-white" 
-                            data-testid="button-toggle-second-prior-employment-income"
-                            title={isSecondPriorEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
-                            key={`second-prior-employment-income-${isSecondPriorEmploymentIncomeOpen}`}
-                          >
-                            {isSecondPriorEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                          </Button>
-                        </CollapsibleTrigger>
+                        <div className="flex items-center gap-2">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive border border-destructive/20"
+                                onClick={removeBorrowerSecondPriorEmployer}
+                                data-testid="button-delete-borrower-second-prior-employer"
+                                title="Delete Prior Employer"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Delete Prior Employer</p>
+                            </TooltipContent>
+                          </Tooltip>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-second-prior-employment-income"
+                              title={isSecondPriorEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
+                              key={`second-prior-employment-income-${isSecondPriorEmploymentIncomeOpen}`}
+                            >
+                              {isSecondPriorEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
                       </div>
                     </CardHeader>
                     <CollapsibleContent>
@@ -8431,18 +8593,37 @@ export default function AdminAddClient() {
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower - Prior Employer</CardTitle>
-                        <CollapsibleTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="hover:bg-orange-500 hover:text-white" 
-                            data-testid="button-toggle-coborrower-prior-employment-income"
-                            title={isCoBorrowerPriorEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
-                            key={`coborrower-prior-employment-income-${isCoBorrowerPriorEmploymentIncomeOpen}`}
-                          >
-                            {isCoBorrowerPriorEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                          </Button>
-                        </CollapsibleTrigger>
+                        <div className="flex items-center gap-2">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive border border-destructive/20"
+                                onClick={removeCoBorrowerPriorEmployer}
+                                data-testid="button-delete-coborrower-prior-employer"
+                                title="Delete Prior Employer"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Delete Prior Employer</p>
+                            </TooltipContent>
+                          </Tooltip>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-coborrower-prior-employment-income"
+                              title={isCoBorrowerPriorEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
+                              key={`coborrower-prior-employment-income-${isCoBorrowerPriorEmploymentIncomeOpen}`}
+                            >
+                              {isCoBorrowerPriorEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
                       </div>
                     </CardHeader>
                     <CollapsibleContent>
@@ -8696,18 +8877,37 @@ export default function AdminAddClient() {
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower - Prior Employer</CardTitle>
-                        <CollapsibleTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="hover:bg-orange-500 hover:text-white" 
-                            data-testid="button-toggle-coborrower-second-prior-employment-income"
-                            title={isCoBorrowerSecondPriorEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
-                            key={`coborrower-second-prior-employment-income-${isCoBorrowerSecondPriorEmploymentIncomeOpen}`}
-                          >
-                            {isCoBorrowerSecondPriorEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                          </Button>
-                        </CollapsibleTrigger>
+                        <div className="flex items-center gap-2">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive border border-destructive/20"
+                                onClick={removeCoBorrowerSecondPriorEmployer}
+                                data-testid="button-delete-coborrower-second-prior-employer"
+                                title="Delete Prior Employer"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Delete Prior Employer</p>
+                            </TooltipContent>
+                          </Tooltip>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-coborrower-second-prior-employment-income"
+                              title={isCoBorrowerSecondPriorEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
+                              key={`coborrower-second-prior-employment-income-${isCoBorrowerSecondPriorEmploymentIncomeOpen}`}
+                            >
+                              {isCoBorrowerSecondPriorEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
                       </div>
                     </CardHeader>
                     <CollapsibleContent>
@@ -11269,6 +11469,8 @@ export default function AdminAddClient() {
                   ? "Removing the second loan will delete all entered data. Would you like to continue?"
                   : confirmRemovalDialog.type === 'third-loan'
                   ? "Would you like to create a third current loan?"
+                  : confirmRemovalDialog.type === 'prior-employer'
+                  ? "Removing the prior employer will delete all entered data. Would you like to continue?"
                   : "Removing this information will delete any corresponding data. Would you like to still continue?"
                 }
               </span>
