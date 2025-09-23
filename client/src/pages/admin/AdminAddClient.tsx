@@ -5986,7 +5986,7 @@ export default function AdminAddClient() {
                           type="number"
                           min="0"
                           max={isShowingCoBorrowerMonthsAtAddress ? 11 : 99}
-                          placeholder="0"
+                          placeholder={isShowingCoBorrowerMonthsAtAddress ? "Enter months" : "Enter years"}
                           {...form.register(isShowingCoBorrowerMonthsAtAddress ? 'coBorrower.monthsAtAddress' : 'coBorrower.yearsAtAddress')}
                           data-testid="input-coborrower-time-address"
                         />
@@ -6007,10 +6007,29 @@ export default function AdminAddClient() {
 
                 {/* Prior Co-Borrower Residence Address - Show if less than 2 years at current address */}
                 {(() => {
-                  const years = parseInt(form.watch('coBorrower.yearsAtAddress') || '0');
-                  const months = parseInt(form.watch('coBorrower.monthsAtAddress') || '0');
-                  const showPriorAddress = years < 2 || (years === 0 && months < 24);
-                  return showPriorAddress;
+                  // Make sure co-borrower object exists before checking time values
+                  const coBorrower = form.watch('coBorrower');
+                  if (!coBorrower) {
+                    return false; // No co-borrower object, hide card
+                  }
+                  
+                  const yearsValue = coBorrower.yearsAtAddress;
+                  const monthsValue = coBorrower.monthsAtAddress;
+                  
+                  // Check if any time value has been entered (handle numeric zero properly)
+                  const hasYears = yearsValue !== undefined && yearsValue !== null && String(yearsValue).trim() !== '';
+                  const hasMonths = monthsValue !== undefined && monthsValue !== null && String(monthsValue).trim() !== '';
+                  
+                  if (!hasYears && !hasMonths) {
+                    return false; // No time values entered, hide card
+                  }
+                  
+                  // Calculate total months at current address
+                  const years = hasYears ? parseInt(String(yearsValue)) : 0;
+                  const months = hasMonths ? parseInt(String(monthsValue)) : 0;
+                  const totalMonths = (isNaN(years) ? 0 : years) * 12 + (isNaN(months) ? 0 : months);
+                  
+                  return totalMonths < 24; // Show if less than 2 years (24 months) total
                 })() && (
                   <>
                     <Card>
