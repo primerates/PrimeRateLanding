@@ -5155,6 +5155,32 @@ export default function AdminAddClient() {
                     </div>
                   </div>
                 </CardContent>
+                <div className="flex justify-end p-4 pt-0">
+                  {!hasCoBorrower ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addCoBorrower}
+                      className="hover:bg-orange-500 hover:text-white"
+                      data-testid="button-add-coborrower-from-borrower"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Co-Borrower
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={removeCoBorrower}
+                      className="hover:bg-orange-500 hover:text-white"
+                      data-testid="button-remove-coborrower-from-borrower"
+                    >
+                      Remove Co-Borrower
+                    </Button>
+                  )}
+                </div>
               </Card>
 
               {/* Residence Address */}
