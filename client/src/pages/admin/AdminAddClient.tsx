@@ -521,7 +521,7 @@ export default function AdminAddClient() {
     });
   };
 
-  const [hasCoBorrower, setHasCoBorrower] = useState(true);
+  const [hasCoBorrower, setHasCoBorrower] = useState(false);
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
   const [isReadOnlyCurrentLoanOpen, setIsReadOnlyCurrentLoanOpen] = useState(true);
