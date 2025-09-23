@@ -522,7 +522,6 @@ export default function AdminAddClient() {
   };
 
   const [hasCoBorrower, setHasCoBorrower] = useState(true);
-  const [isCoBorrowerCardVisible, setIsCoBorrowerCardVisible] = useState(false);
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
   const [isReadOnlyCurrentLoanOpen, setIsReadOnlyCurrentLoanOpen] = useState(true);
@@ -5155,26 +5154,6 @@ export default function AdminAddClient() {
                       </Select>
                     </div>
                   </div>
-                  
-                  {/* Add Co-Borrower Button - Bottom Right */}
-                  {!isCoBorrowerCardVisible && (
-                    <div className="flex justify-end mt-4">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setIsCoBorrowerCardVisible(true);
-                          setHasCoBorrower(true);
-                        }}
-                        className="hover:bg-orange-500 hover:text-white"
-                        data-testid="button-add-coborrower"
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Co-Borrower
-                      </Button>
-                    </div>
-                  )}
                 </CardContent>
               </Card>
 
@@ -5655,25 +5634,34 @@ export default function AdminAddClient() {
                 </Card>
               ))}
 
-              {/* Co-Borrower Section - Only show when button is clicked */}
-              {isCoBorrowerCardVisible && (
-                <>
-                <Card className="mt-16 border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
+              {/* Co-Borrower Section */}
+<Card className="mt-16 border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>Co-Borrower</CardTitle>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setIsCoBorrowerCardVisible(false);
-                      setHasCoBorrower(false);
-                    }}
-                    className="hover:bg-orange-500 hover:text-white"
-                    data-testid="button-remove-coborrower"
-                  >
-                    Remove Co-Borrower
-                  </Button>
+                  {!hasCoBorrower ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addCoBorrower}
+                      className="hover:bg-orange-500 hover:text-white"
+                      data-testid="button-add-coborrower"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Co-Borrower
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={removeCoBorrower}
+                      className="hover:bg-orange-500 hover:text-white"
+                      data-testid="button-remove-coborrower"
+                    >
+                      Remove Co-Borrower
+                    </Button>
+                  )}
                 </CardHeader>
                 {hasCoBorrower && (
                   <CardContent className="space-y-4">
@@ -5807,9 +5795,10 @@ export default function AdminAddClient() {
                     </div>
                   </CardContent>
                 )}
+              </Card>
 
-                {/* Co-Borrower Residence Address */}
-                {hasCoBorrower && (
+              {/* Co-Borrower Residence Address */}
+              {hasCoBorrower && (
                 <>
                 <Card>
                   <Collapsible open={isCoBorrowerResidenceOpen} onOpenChange={setIsCoBorrowerResidenceOpen}>
@@ -6002,8 +5991,6 @@ export default function AdminAddClient() {
                     </CollapsibleContent>
                   </Collapsible>
                 </Card>
-                </>
-                )}
 
                 {/* Prior Co-Borrower Residence Address - Show if less than 2 years at current address */}
                 {(() => {
@@ -6297,9 +6284,9 @@ export default function AdminAddClient() {
                       </CardContent>
                     </Card>
                   ))}
+                  </>
+                )}
                 </>
-              )}
-              </>
               )}
             </TabsContent>
 
@@ -10940,9 +10927,6 @@ export default function AdminAddClient() {
         </Dialog>
       )}
 
-          </Tabs>
-        </form>
-      </div>
       </div>
     </TooltipProvider>
   );
