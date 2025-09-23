@@ -9464,6 +9464,10 @@ export default function AdminAddClient() {
                                       const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
                                       const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
                                       
+                                      // Check third loan
+                                      const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
+                                      const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
+                                      
                                       // Check additional loans (loan3, loan4, loan5, etc.)
                                       const additionalLoansData = additionalLoans || [];
                                       const isAdditionalLoanAttached = additionalLoansData.some(loan => {
@@ -9471,7 +9475,7 @@ export default function AdminAddClient() {
                                         return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
                                       });
                                       
-                                      const hasAnyLoanAttached = isCurrentLoanAttached || isSecondLoanAttached || isAdditionalLoanAttached;
+                                      const hasAnyLoanAttached = isCurrentLoanAttached || isSecondLoanAttached || isThirdLoanAttached || isAdditionalLoanAttached;
                                       
                                       return (
                                         <div className="flex items-center gap-1">
@@ -9502,10 +9506,14 @@ export default function AdminAddClient() {
                                             data-testid={`indicator-secured-loan-2-${property.id}`}
                                           />
                                           <div 
-                                            className="w-3 h-3 rounded-full border-2 bg-gray-200 border-gray-300"
+                                            className={`w-3 h-3 rounded-full border-2 ${
+                                              isThirdLoanAttached
+                                                ? 'bg-orange-500 border-orange-500'
+                                                : 'bg-gray-200 border-gray-300'
+                                            }`}
                                             style={{
-                                              backgroundColor: '#e5e7eb',
-                                              borderColor: '#d1d5db'
+                                              backgroundColor: isThirdLoanAttached ? '#f97316' : '#e5e7eb',
+                                              borderColor: isThirdLoanAttached ? '#f97316' : '#d1d5db'
                                             }}
                                             data-testid={`indicator-secured-loan-3-${property.id}`}
                                           />
