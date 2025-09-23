@@ -852,6 +852,15 @@ export default function AdminAddClient() {
   // Property collapsible state (using object to manage multiple property cards)
   const [propertyCardStates, setPropertyCardStates] = useState<Record<string, boolean>>({});
   
+  // Borrower Employer cards state management
+  const [borrowerEmployerCards, setBorrowerEmployerCards] = useState<string[]>(['default']);
+  
+  // Delete confirmation dialog state for Borrower Employer
+  const [deleteEmployerDialog, setDeleteEmployerDialog] = useState<{
+    isOpen: boolean;
+    cardId: string;
+  }>({ isOpen: false, cardId: '' });
+  
   // Subject property confirmation dialog state
   const [subjectConfirmDialog, setSubjectConfirmDialog] = useState<{
     isOpen: boolean;
@@ -8308,13 +8317,13 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
-              {/* Template Card */}
-              {(() => {
-                const propertyId = 'template-card';
+              {/* Borrower Employer Cards */}
+              {borrowerEmployerCards.map((cardId, index) => {
+                const propertyId = cardId === 'default' ? 'template-card' : cardId;
                 const isOpen = propertyCardStates[propertyId] ?? false;
                 
                 return (
-                  <Card className="border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
+                  <Card key={cardId} className="border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
                     <Collapsible 
                       open={isOpen} 
                       onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
@@ -8327,6 +8336,35 @@ export default function AdminAddClient() {
                             </CardTitle>
                           </div>
                           <div className="flex items-center gap-2">
+                            {/* Add Employer Button */}
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                const newId = `employer-${Date.now()}`;
+                                setBorrowerEmployerCards(prev => [...prev, newId]);
+                              }}
+                              className="hover:bg-green-500 hover:text-white"
+                              data-testid="button-add-employer"
+                              title="Add New Employer"
+                            >
+                              <Plus className="h-4 w-4" />
+                            </Button>
+                            
+                            {/* Delete Employer Button - only show if more than 1 card */}
+                            {borrowerEmployerCards.length > 1 && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setDeleteEmployerDialog({ isOpen: true, cardId: propertyId })}
+                                className="hover:bg-red-500 hover:text-white"
+                                data-testid="button-delete-employer"
+                                title="Delete"
+                              >
+                                <Minus className="h-4 w-4" />
+                              </Button>
+                            )}
+                            
                             <CollapsibleTrigger asChild>
                               <Button 
                                 variant="ghost" 
@@ -8542,7 +8580,7 @@ export default function AdminAddClient() {
                     </Collapsible>
                   </Card>
                 );
-              })()}
+              })}
 
               {/* Co-Borrower Income */}
               {hasCoBorrower && (
@@ -12176,6 +12214,39 @@ export default function AdminAddClient() {
               }}
             >
               Yes
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Borrower Employer Confirmation Dialog */}
+      <AlertDialog open={deleteEmployerDialog.isOpen} onOpenChange={(open) => !open && setDeleteEmployerDialog({ isOpen: false, cardId: '' })}>
+        <AlertDialogContent data-testid="dialog-delete-employer">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Employer Card</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this employer card? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteEmployerDialog({ isOpen: false, cardId: '' })}
+              data-testid="button-cancel-delete-employer"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                const cardToDelete = deleteEmployerDialog.cardId;
+                setBorrowerEmployerCards(prev => prev.filter(id => 
+                  cardToDelete === 'template-card' ? id !== 'default' : id !== cardToDelete
+                ));
+                setDeleteEmployerDialog({ isOpen: false, cardId: '' });
+              }}
+              data-testid="button-confirm-delete-employer"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
