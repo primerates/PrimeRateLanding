@@ -2180,7 +2180,7 @@ export default function AdminAddClient() {
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Current Loan 1</CardTitle>
+              <CardTitle>Current Loan</CardTitle>
               <div className="flex items-center gap-2">
                 {onRemove && (
                   <Button
