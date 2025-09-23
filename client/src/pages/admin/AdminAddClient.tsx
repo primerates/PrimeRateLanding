@@ -2271,6 +2271,7 @@ export default function AdminAddClient() {
                     onClick={onRemove}
                     className="hover:bg-red-500 hover:text-white"
                     data-testid={`button-remove-current-loan-${idPrefix}`}
+                    title="Delete"
                   >
                     <Minus className="h-4 w-4" />
                   </Button>
@@ -2798,6 +2799,7 @@ export default function AdminAddClient() {
                     onClick={onRemove}
                     className="hover:bg-red-500 hover:text-white"
                     data-testid={`button-remove-second-loan-${idPrefix}`}
+                    title="Delete"
                   >
                     <Minus className="h-4 w-4" />
                   </Button>
@@ -3285,6 +3287,7 @@ export default function AdminAddClient() {
                     onClick={onRemove}
                     className="hover:bg-red-500 hover:text-white"
                     data-testid={`button-remove-additional-loan-${loanId}`}
+                    title="Delete"
                   >
                     <Minus className="h-4 w-4" />
                   </Button>
@@ -10020,6 +10023,7 @@ export default function AdminAddClient() {
                               }}
                               className="hover:bg-red-500 hover:text-white"
                               data-testid="button-remove-third-loan"
+                              title="Delete"
                             >
                               <Minus className="h-4 w-4" />
                             </Button>
