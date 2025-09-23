@@ -8305,6 +8305,276 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
+              {/* Primary Residence (Copy from Property Tab) */}
+              {(() => {
+                const properties = form.watch('property.properties') || [];
+                const primaryProperty = properties.find(p => p.use === 'primary');
+                const primaryPropertyIndex = properties.findIndex(p => p.use === 'primary');
+                
+                if (!primaryProperty || primaryPropertyIndex === -1) return null;
+                
+                const propertyId = primaryProperty.id || `property-${primaryPropertyIndex}`;
+                const isOpen = propertyCardStates[propertyId] ?? false;
+                
+                return (
+                  <Card className="border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
+                    <Collapsible 
+                      open={isOpen} 
+                      onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
+                    >
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-8">
+                            <CardTitle className={`flex items-center gap-2 ${primaryProperty.isSubject ? 'text-green-600' : ''}`}>
+                              Primary Residence
+                              {primaryProperty.isSubject && (
+                                <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
+                                  - Subject Property
+                                </span>
+                              )}
+                            </CardTitle>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <CollapsibleTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="hover:bg-orange-500 hover:text-white" 
+                                data-testid={`button-toggle-income-property-${propertyId}`}
+                                title={isOpen ? 'Minimize' : 'Expand'}
+                                key={`income-property-toggle-${propertyId}-${isOpen}`}
+                              >
+                                {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      
+                      <CollapsibleContent>
+                        <CardContent>
+                          <div className="space-y-6">
+                            {/* Subject Property Status (Read-only) */}
+                            <Card className="bg-muted">
+                              <CardContent className="pt-6">
+                                <div className="space-y-3">
+                                  <Label className="text-base font-semibold">Subject Property Status:</Label>
+                                  <div className="flex items-center space-x-2">
+                                    <span className={`px-3 py-1 rounded text-sm font-medium ${
+                                      primaryProperty.isSubject 
+                                        ? 'bg-green-100 text-green-800 border border-green-300' 
+                                        : 'bg-gray-100 text-gray-800 border border-gray-300'
+                                    }`}>
+                                      {primaryProperty.isSubject ? 'Yes - Subject Property' : 'No - Not Subject Property'}
+                                    </span>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+
+                            {/* Property Address */}
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                              <div className="space-y-2 md:col-span-3">
+                                <Label htmlFor={`income-property-address-street-${propertyId}`}>Street Address *</Label>
+                                <Input
+                                  id={`income-property-address-street-${propertyId}`}
+                                  value={primaryProperty.address?.street || ''}
+                                  readOnly
+                                  className="bg-muted"
+                                  data-testid={`input-income-property-street-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`income-property-address-unit-${propertyId}`}>Unit/Apt</Label>
+                                <Input
+                                  id={`income-property-address-unit-${propertyId}`}
+                                  value={primaryProperty.address?.unit || ''}
+                                  readOnly
+                                  className="bg-muted"
+                                  data-testid={`input-income-property-unit-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`income-property-address-city-${propertyId}`}>City *</Label>
+                                <Input
+                                  id={`income-property-address-city-${propertyId}`}
+                                  value={primaryProperty.address?.city || ''}
+                                  readOnly
+                                  className="bg-muted"
+                                  data-testid={`input-income-property-city-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`income-property-address-state-${propertyId}`}>State *</Label>
+                                <Input
+                                  id={`income-property-address-state-${propertyId}`}
+                                  value={primaryProperty.address?.state || ''}
+                                  readOnly
+                                  className="bg-muted"
+                                  data-testid={`input-income-property-state-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`income-property-address-zip-${propertyId}`}>ZIP Code *</Label>
+                                <Input
+                                  id={`income-property-address-zip-${propertyId}`}
+                                  value={primaryProperty.address?.zip || ''}
+                                  readOnly
+                                  className="bg-muted"
+                                  data-testid={`input-income-property-zip-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`income-property-address-county-${propertyId}`}>County</Label>
+                                <Input
+                                  id={`income-property-address-county-${propertyId}`}
+                                  value={primaryProperty.address?.county || ''}
+                                  readOnly
+                                  className="bg-muted"
+                                  data-testid={`input-income-property-county-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`income-property-type-${propertyId}`}>Property Type</Label>
+                                <Input
+                                  id={`income-property-type-${propertyId}`}
+                                  value={primaryProperty.propertyType || ''}
+                                  readOnly
+                                  className="bg-muted"
+                                  data-testid={`input-income-property-type-${propertyId}`}
+                                />
+                              </div>
+                            </div>
+
+                            {/* Property Details */}
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`income-property-purchase-price-${propertyId}`}>Purchase Price</Label>
+                                <Input
+                                  id={`income-property-purchase-price-${propertyId}`}
+                                  value={primaryProperty.purchasePrice || ''}
+                                  readOnly
+                                  className="bg-muted"
+                                  data-testid={`input-income-property-purchase-price-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`income-property-owned-since-${propertyId}`}>Purchased</Label>
+                                <Input
+                                  id={`income-property-owned-since-${propertyId}`}
+                                  value={primaryProperty.ownedSince || ''}
+                                  readOnly
+                                  className="bg-muted"
+                                  data-testid={`input-income-property-owned-since-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`income-property-title-held-by-${propertyId}`}>Title Held By</Label>
+                                <Input
+                                  id={`income-property-title-held-by-${propertyId}`}
+                                  value={primaryProperty.ownedHeldBy || ''}
+                                  readOnly
+                                  className="bg-muted"
+                                  data-testid={`input-income-property-title-held-by-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-3">
+                                <Label htmlFor={`income-property-estimated-value-${propertyId}`}>Estimated Value</Label>
+                                <Input
+                                  id={`income-property-estimated-value-${propertyId}`}
+                                  value={primaryProperty.estimatedValue || ''}
+                                  readOnly
+                                  className="bg-muted"
+                                  data-testid={`input-income-property-estimated-value-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`income-property-appraised-value-${propertyId}`}>Appraised Value</Label>
+                                <Input
+                                  id={`income-property-appraised-value-${propertyId}`}
+                                  value={primaryProperty.appraisedValue || ''}
+                                  readOnly
+                                  className={`bg-muted ${(() => {
+                                    const estimatedValue = primaryProperty.estimatedValue || '';
+                                    const appraisedValue = primaryProperty.appraisedValue || '';
+                                    const shadowColor = getValueComparisonColor(estimatedValue, appraisedValue).shadowColor;
+                                    if (shadowColor === 'green') {
+                                      return 'shadow-lg shadow-green-200';
+                                    } else if (shadowColor === 'red') {
+                                      return 'shadow-lg shadow-red-200';
+                                    }
+                                    return '';
+                                  })()}`}
+                                  data-testid={`input-income-property-appraised-value-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`income-property-active-secured-loan-${propertyId}`}>Secured Loan Status</Label>
+                                <div className="flex items-center gap-3 h-10 px-3 py-2 border border-input bg-muted rounded-md">
+                                  {(() => {
+                                    // Check ALL loans for attachment to this property
+                                    const currentProperty = primaryProperty;
+                                    
+                                    // Check current loan
+                                    const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                    const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                    
+                                    // Check second loan
+                                    const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                    const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                    
+                                    const hasAnyLoanAttached = isCurrentLoanAttached || isSecondLoanAttached;
+                                    
+                                    return (
+                                      <>
+                                        <div className="flex items-center gap-1">
+                                          <div 
+                                            className={`w-3 h-3 rounded-full border-2 ${
+                                              isCurrentLoanAttached
+                                                ? 'bg-blue-500 border-blue-500'
+                                                : hasAnyLoanAttached 
+                                                  ? 'bg-green-500 border-green-500' 
+                                                  : 'bg-gray-200 border-gray-300'
+                                            }`}
+                                            data-testid={`indicator-income-secured-loan-1-${propertyId}`}
+                                          />
+                                          <div 
+                                            className={`w-3 h-3 rounded-full border-2 ${
+                                              isSecondLoanAttached
+                                                ? 'bg-purple-500 border-purple-500'
+                                                : 'bg-gray-200 border-gray-300'
+                                            }`}
+                                            data-testid={`indicator-income-secured-loan-2-${propertyId}`}
+                                          />
+                                        </div>
+                                        <span className="text-sm text-muted-foreground">
+                                          {hasAnyLoanAttached ? 'Yes' : 'No loans attached'}
+                                        </span>
+                                      </>
+                                    );
+                                  })()}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  </Card>
+                );
+              })()}
+
               {/* Co-Borrower Income */}
               {hasCoBorrower && (
                 <Card className="border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
