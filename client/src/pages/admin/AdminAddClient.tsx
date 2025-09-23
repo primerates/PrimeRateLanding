@@ -5027,7 +5027,7 @@ export default function AdminAddClient() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="borrower-callDate">Initial call date</Label>
+                    <Label htmlFor="borrower-callDate">Initial Call Date</Label>
                     <Input
                       id="borrower-callDate"
                       type="date"
@@ -6420,7 +6420,7 @@ export default function AdminAddClient() {
                             const rawValue = parsePercentageInput(e.target.value);
                             field.onChange(rawValue);
                           }}
-                          placeholder="25%"
+                          placeholder="%"
                           data-testid="input-income-frontDTI"
                         />
                       )}
@@ -6440,7 +6440,7 @@ export default function AdminAddClient() {
                             const rawValue = parsePercentageInput(e.target.value);
                             field.onChange(rawValue);
                           }}
-                          placeholder="25%"
+                          placeholder="%"
                           data-testid="input-income-backDTI"
                         />
                       )}
