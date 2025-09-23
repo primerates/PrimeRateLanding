@@ -9010,7 +9010,7 @@ export default function AdminAddClient() {
                   const sameTypeCount = (form.watch('property.properties') || [])
                     .filter(p => p.use === property.use)
                     .findIndex(p => p.id === property.id) + 1;
-                  return (property.use === 'primary' || property.use === 'home-purchase' || property.use === 'second-home') ? baseTitle : `${baseTitle} ${sameTypeCount}`;
+                  return (property.use === 'primary' || property.use === 'home-purchase' || property.use === 'second-home' || property.use === 'investment') ? baseTitle : `${baseTitle} ${sameTypeCount}`;
                 };
 
                 return (
