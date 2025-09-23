@@ -5027,7 +5027,7 @@ export default function AdminAddClient() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="borrower-callDate">Call Date</Label>
+                    <Label htmlFor="borrower-callDate">Initial call date</Label>
                     <Input
                       id="borrower-callDate"
                       type="date"
@@ -5037,7 +5037,7 @@ export default function AdminAddClient() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="borrower-startDate">Start Date</Label>
+                    <Label htmlFor="borrower-startDate">Loan Start Date</Label>
                     <Input
                       id="borrower-startDate"
                       type="date"
@@ -8679,15 +8679,17 @@ export default function AdminAddClient() {
                 const yearsValue = form.watch('coBorrowerIncome.priorYearsEmployedYears') || '';
                 const monthsValue = form.watch('coBorrowerIncome.priorYearsEmployedMonths') || '';
                 
-                // Parse both values
-                const years = parseInt(yearsValue);
-                const months = parseInt(monthsValue);
+                // Parse both values, defaulting to 0 if not provided
+                const years = yearsValue !== '' ? parseInt(yearsValue) : 0;
+                const months = monthsValue !== '' ? parseInt(monthsValue) : 0;
                 
-                // Return true if either field has a value under the threshold
-                const hasYearsUnderThreshold = yearsValue !== '' && !isNaN(years) && years < 2;
-                const hasMonthsUnderThreshold = monthsValue !== '' && !isNaN(months) && months < 24;
+                // Calculate total tenure in months
+                const totalMonths = (isNaN(years) ? 0 : years * 12) + (isNaN(months) ? 0 : months);
                 
-                return hasYearsUnderThreshold || hasMonthsUnderThreshold;
+                // Only show if there's a value entered and total tenure is less than 24 months
+                const hasAnyInput = yearsValue !== '' || monthsValue !== '';
+                
+                return hasAnyInput && totalMonths < 24;
               })() && (
                 <Card>
                   <Collapsible open={isCoBorrowerSecondPriorEmploymentIncomeOpen} onOpenChange={setIsCoBorrowerSecondPriorEmploymentIncomeOpen}>
