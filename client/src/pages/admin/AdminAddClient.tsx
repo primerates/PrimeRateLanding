@@ -9451,7 +9451,7 @@ export default function AdminAddClient() {
                               <div className="space-y-2 md:col-span-2">
                                 <div className="min-h-5 flex items-center gap-2">
                                   <div className="flex items-center gap-2">
-                                    <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured First Loan</Label>
+                                    <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured Loan</Label>
                                     {(() => {
                                       // Check ALL loans for attachment to this property
                                       const currentProperty = property;
@@ -9470,18 +9470,36 @@ export default function AdminAddClient() {
                                       const hasAnyLoanAttached = isCurrentLoanAttached || isAdditionalLoanAttached;
                                       
                                       return (
-                                        <div 
-                                          className={`w-3 h-3 rounded-full border-2 ${
-                                            hasAnyLoanAttached 
-                                              ? 'bg-green-500 border-green-500' 
-                                              : 'bg-gray-200 border-gray-300'
-                                          }`}
-                                          style={{
-                                            backgroundColor: hasAnyLoanAttached ? '#10b981' : '#e5e7eb',
-                                            borderColor: hasAnyLoanAttached ? '#10b981' : '#d1d5db'
-                                          }}
-                                          data-testid={`indicator-secured-first-loan-${property.id}`}
-                                        />
+                                        <div className="flex items-center gap-1">
+                                          <div 
+                                            className={`w-3 h-3 rounded-full border-2 ${
+                                              hasAnyLoanAttached 
+                                                ? 'bg-green-500 border-green-500' 
+                                                : 'bg-gray-200 border-gray-300'
+                                            }`}
+                                            style={{
+                                              backgroundColor: hasAnyLoanAttached ? '#10b981' : '#e5e7eb',
+                                              borderColor: hasAnyLoanAttached ? '#10b981' : '#d1d5db'
+                                            }}
+                                            data-testid={`indicator-secured-loan-1-${property.id}`}
+                                          />
+                                          <div 
+                                            className="w-3 h-3 rounded-full border-2 bg-gray-200 border-gray-300"
+                                            style={{
+                                              backgroundColor: '#e5e7eb',
+                                              borderColor: '#d1d5db'
+                                            }}
+                                            data-testid={`indicator-secured-loan-2-${property.id}`}
+                                          />
+                                          <div 
+                                            className="w-3 h-3 rounded-full border-2 bg-gray-200 border-gray-300"
+                                            style={{
+                                              backgroundColor: '#e5e7eb',
+                                              borderColor: '#d1d5db'
+                                            }}
+                                            data-testid={`indicator-secured-loan-3-${property.id}`}
+                                          />
+                                        </div>
                                       );
                                     })()}
                                   </div>
