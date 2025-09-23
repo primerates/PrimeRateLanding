@@ -1305,6 +1305,50 @@ export default function AdminAddClient() {
     return isNaN(parsed) ? 0 : parsed;
   };
 
+  // Format percentage value for display
+  const formatPercentage = (value: string): string => {
+    // Remove all non-numeric characters except decimal points
+    const numericValue = value.replace(/[^0-9.]/g, '');
+    
+    // Allow empty string for complete erasure
+    if (numericValue === '') return '';
+    
+    // Add percentage sign if there's a numeric value
+    if (numericValue && !isNaN(parseFloat(numericValue))) {
+      return `${numericValue}%`;
+    }
+    
+    return numericValue;
+  };
+
+  // Handle percentage change
+  const handlePercentageChange = (fieldName: string, value: string) => {
+    const formatted = formatPercentage(value);
+    form.setValue(fieldName as any, formatted);
+  };
+
+  // Format dollar value for display
+  const formatDollarValue = (value: string): string => {
+    // Remove all non-numeric characters except decimal points
+    const numericValue = value.replace(/[^0-9.]/g, '');
+    
+    // Allow empty string for complete erasure
+    if (numericValue === '') return '';
+    
+    // Add dollar sign if there's a numeric value
+    if (numericValue && !isNaN(parseFloat(numericValue))) {
+      return `$${numericValue}`;
+    }
+    
+    return numericValue;
+  };
+
+  // Handle dollar value change
+  const handleDollarChange = (fieldName: string, value: string) => {
+    const formatted = formatDollarValue(value);
+    form.setValue(fieldName as any, formatted);
+  };
+
   // Sub-component for isolated auto sum calculation - prevents main form re-renders
   interface TotalCurrentLoanPaymentProps {
     control: any; // Control from parent useForm
