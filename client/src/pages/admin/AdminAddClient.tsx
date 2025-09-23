@@ -8821,6 +8821,23 @@ export default function AdminAddClient() {
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
+                      <Label className="text-sm font-medium text-muted-foreground">Subject Property Is</Label>
+                      <div className="text-lg font-medium" data-testid="text-subject-property">
+                        {(() => {
+                          const properties = form.watch('property.properties') || [];
+                          const subjectProperty = properties.find(p => p.isSubject);
+                          if (!subjectProperty) return 'Not selected';
+                          const typeLabels = {
+                            'primary': 'Primary Residence',
+                            'second-home': 'Second Home', 
+                            'investment': 'Investment Property'
+                          };
+                          return typeLabels[subjectProperty.use as keyof typeof typeLabels] || 'Unknown';
+                        })()}
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
                       <Label>
                         {(() => {
                           const properties = form.watch('property.properties') || [];
@@ -8869,23 +8886,6 @@ export default function AdminAddClient() {
                           })()}
                         </div>
                         <span className="text-lg font-medium">%</span>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium text-muted-foreground">Subject Property Is</Label>
-                      <div className="text-lg font-medium" data-testid="text-subject-property">
-                        {(() => {
-                          const properties = form.watch('property.properties') || [];
-                          const subjectProperty = properties.find(p => p.isSubject);
-                          if (!subjectProperty) return 'Not selected';
-                          const typeLabels = {
-                            'primary': 'Primary Residence',
-                            'second-home': 'Second Home', 
-                            'investment': 'Investment Property'
-                          };
-                          return typeLabels[subjectProperty.use as keyof typeof typeLabels] || 'Unknown';
-                        })()}
                       </div>
                     </div>
                     
