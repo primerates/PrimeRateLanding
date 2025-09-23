@@ -5347,7 +5347,7 @@ export default function AdminAddClient() {
                         type="number"
                         min="0"
                         max={isShowingMonthsAtAddress ? 11 : 99}
-                        placeholder="0"
+                        placeholder={isShowingMonthsAtAddress ? "Enter months" : "Enter years"}
                         {...form.register(isShowingMonthsAtAddress ? 'borrower.monthsAtAddress' : 'borrower.yearsAtAddress')}
                         data-testid="input-borrower-time-address"
                       />
@@ -5368,10 +5368,23 @@ export default function AdminAddClient() {
 
               {/* Prior Borrower Residence Address - Show if less than 2 years at current address */}
               {(() => {
-                const years = parseInt(form.watch('borrower.yearsAtAddress') || '0');
-                const months = parseInt(form.watch('borrower.monthsAtAddress') || '0');
-                const showPriorAddress = years < 2 || (years === 0 && months < 24);
-                return showPriorAddress;
+                const yearsValue = form.watch('borrower.yearsAtAddress');
+                const monthsValue = form.watch('borrower.monthsAtAddress');
+                
+                // Check if any time value has been entered
+                const hasYears = yearsValue && String(yearsValue).trim() !== '';
+                const hasMonths = monthsValue && String(monthsValue).trim() !== '';
+                
+                if (!hasYears && !hasMonths) {
+                  return false; // No time values entered, hide card
+                }
+                
+                // Calculate total months at current address
+                const years = hasYears ? parseInt(String(yearsValue)) : 0;
+                const months = hasMonths ? parseInt(String(monthsValue)) : 0;
+                const totalMonths = (isNaN(years) ? 0 : years) * 12 + (isNaN(months) ? 0 : months);
+                
+                return totalMonths < 24; // Show if less than 2 years (24 months) total
               })() && (
                 <Card>
                   <Collapsible open={isBorrowerPriorResidenceOpen} onOpenChange={setIsBorrowerPriorResidenceOpen}>
