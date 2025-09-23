@@ -818,7 +818,7 @@ export default function AdminAddClient() {
         lastName: '',
         phone: '',
         email: '',
-        maritalStatus: 'single',
+        maritalStatus: 'Select',
         dateOfBirth: '',
         ssn: '',
         residenceAddress: {
@@ -842,7 +842,7 @@ export default function AdminAddClient() {
         priorMonthsAtAddress: '',
         subjectProperty: undefined,
         leadRef: '',
-        source: '',
+        source: 'Select',
         callDate: '',
         startDate: '',
       },
@@ -1158,7 +1158,7 @@ export default function AdminAddClient() {
       lastName: '',
       phone: '',
       email: '',
-      maritalStatus: 'single',
+      maritalStatus: 'Select',
       dateOfBirth: '',
       ssn: '',
       residenceAddress: {
@@ -4963,7 +4963,7 @@ export default function AdminAddClient() {
                     <Input
                       id="borrower-leadRef"
                       {...form.register(isShowingDMBatch ? 'borrower.dmBatch' : 'borrower.leadRef')}
-                      placeholder={isShowingDMBatch ? "Enter DM batch" : "Enter lead reference"}
+                      placeholder={isShowingDMBatch ? "Enter" : "Enter"}
                       data-testid="input-borrower-leadRef"
                     />
                   </div>
@@ -4971,13 +4971,14 @@ export default function AdminAddClient() {
                   <div className="space-y-2">
                     <Label htmlFor="borrower-source">Source</Label>
                     <Select
-                      value={form.watch('borrower.source') || ''}
-                      onValueChange={(value) => form.setValue('borrower.source', value)}
+                      value={form.watch('borrower.source') || 'Select'}
+                      onValueChange={(value) => form.setValue('borrower.source', value as any)}
                     >
                       <SelectTrigger data-testid="select-borrower-source">
-                        <SelectValue placeholder="Select source" />
+                        <SelectValue placeholder="Select" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="Select">Select</SelectItem>
                         <SelectItem value="Direct Mail">Direct Mail</SelectItem>
                         <SelectItem value="Social Media">Social Media</SelectItem>
                         <SelectItem value="Client Referral">Client Referral</SelectItem>
@@ -5011,7 +5012,7 @@ export default function AdminAddClient() {
                     <Input
                       id="borrower-loanDuration"
                       {...form.register('borrower.loanDuration')}
-                      placeholder="Enter loan duration"
+                      placeholder="Enter"
                       data-testid="input-borrower-loanDuration"
                     />
                   </div>
@@ -5091,7 +5092,7 @@ export default function AdminAddClient() {
                     <div className="space-y-2">
                       <Label htmlFor="borrower-maritalStatus">Marital Status *</Label>
                       <Select 
-                        value={form.watch('borrower.maritalStatus') || 'single'}
+                        value={form.watch('borrower.maritalStatus') || 'Select'}
                         onValueChange={(value) => {
                           form.setValue('borrower.maritalStatus', value as any);
                           // Trigger co-borrower popup when married is selected
@@ -5101,9 +5102,10 @@ export default function AdminAddClient() {
                         }}
                       >
                         <SelectTrigger data-testid="select-borrower-maritalStatus">
-                          <SelectValue placeholder="Select status" />
+                          <SelectValue placeholder="Select" />
                         </SelectTrigger>
                         <SelectContent>
+                          <SelectItem value="Select">Select</SelectItem>
                           <SelectItem value="single">Single</SelectItem>
                           <SelectItem value="married">Married</SelectItem>
                           <SelectItem value="divorced">Divorced</SelectItem>
@@ -5115,13 +5117,14 @@ export default function AdminAddClient() {
                     <div className="space-y-2">
                       <Label htmlFor="borrower-relationshipToBorrower">Relationship to Co-borrower</Label>
                       <Select 
-                        value={form.watch('borrower.relationshipToBorrower') || ''}
+                        value={form.watch('borrower.relationshipToBorrower') || 'N/A'}
                         onValueChange={(value) => form.setValue('borrower.relationshipToBorrower', value as any)}
                       >
                         <SelectTrigger data-testid="select-borrower-relationshipToBorrower">
-                          <SelectValue placeholder="Select relationship" />
+                          <SelectValue placeholder="N/A" />
                         </SelectTrigger>
                         <SelectContent>
+                          <SelectItem value="N/A">N/A</SelectItem>
                           <SelectItem value="spouse">Spouse</SelectItem>
                           <SelectItem value="partner">Partner</SelectItem>
                           <SelectItem value="family">Family</SelectItem>
@@ -5347,7 +5350,7 @@ export default function AdminAddClient() {
                         <Input
                           id="borrower-residence-county"
                           {...form.register('borrower.residenceAddress.county')}
-                          placeholder={countyLookupLoading.borrower ? "Looking up counties..." : "Enter county name"}
+                          placeholder={countyLookupLoading.borrower ? "Looking up counties..." : "Enter"}
                           disabled={countyLookupLoading.borrower}
                           data-testid="input-borrower-residence-county"
                         />
@@ -5538,7 +5541,7 @@ export default function AdminAddClient() {
                             <Input
                               id="borrower-prior-county"
                               {...form.register('borrower.priorResidenceAddress.county')}
-                              placeholder={countyLookupLoading.borrowerPrior ? "Looking up counties..." : "Enter county name"}
+                              placeholder={countyLookupLoading.borrowerPrior ? "Looking up counties..." : "Enter"}
                               disabled={countyLookupLoading.borrowerPrior}
                               data-testid="input-borrower-prior-county"
                             />
@@ -5759,13 +5762,14 @@ export default function AdminAddClient() {
                       <div className="space-y-2">
                         <Label htmlFor="coBorrower-maritalStatus">Marital Status</Label>
                         <Select 
-                          value={form.watch('coBorrower.maritalStatus') || 'single'}
+                          value={form.watch('coBorrower.maritalStatus') || 'Select'}
                           onValueChange={(value) => form.setValue('coBorrower.maritalStatus', value as any)}
                         >
                           <SelectTrigger data-testid="select-coborrower-maritalStatus">
-                            <SelectValue placeholder="Select status" />
+                            <SelectValue placeholder="Select" />
                           </SelectTrigger>
                           <SelectContent>
+                            <SelectItem value="Select">Select</SelectItem>
                             <SelectItem value="single">Single</SelectItem>
                             <SelectItem value="married">Married</SelectItem>
                             <SelectItem value="divorced">Divorced</SelectItem>
@@ -5777,13 +5781,14 @@ export default function AdminAddClient() {
                       <div className="space-y-2">
                         <Label htmlFor="coBorrower-relationshipToBorrower">Relationship to Borrower</Label>
                         <Select 
-                          value={form.watch('coBorrower.relationshipToBorrower') || ''}
+                          value={form.watch('coBorrower.relationshipToBorrower') || 'N/A'}
                           onValueChange={(value) => form.setValue('coBorrower.relationshipToBorrower', value as any)}
                         >
                           <SelectTrigger data-testid="select-coborrower-relationshipToBorrower">
-                            <SelectValue placeholder="Select relationship" />
+                            <SelectValue placeholder="N/A" />
                           </SelectTrigger>
                           <SelectContent>
+                            <SelectItem value="N/A">N/A</SelectItem>
                             <SelectItem value="spouse">Spouse</SelectItem>
                             <SelectItem value="partner">Partner</SelectItem>
                             <SelectItem value="family">Family</SelectItem>
@@ -5986,7 +5991,7 @@ export default function AdminAddClient() {
                           <Input
                             id="coBorrower-residence-county"
                             {...form.register('coBorrower.residenceAddress.county')}
-                            placeholder={countyLookupLoading.coBorrower ? "Looking up counties..." : "Enter county name"}
+                            placeholder={countyLookupLoading.coBorrower ? "Looking up counties..." : "Enter"}
                             disabled={countyLookupLoading.coBorrower}
                             data-testid="input-coborrower-residence-county"
                           />
@@ -6184,7 +6189,7 @@ export default function AdminAddClient() {
                                 <Input
                                   id="coBorrower-prior-county"
                                   {...form.register('coBorrower.priorResidenceAddress.county')}
-                                  placeholder={countyLookupLoading.coBorrowerPrior ? "Looking up counties..." : "Enter county name"}
+                                  placeholder={countyLookupLoading.coBorrowerPrior ? "Looking up counties..." : "Enter"}
                                   disabled={countyLookupLoading.coBorrowerPrior}
                                   data-testid="input-coborrower-prior-county"
                                 />
