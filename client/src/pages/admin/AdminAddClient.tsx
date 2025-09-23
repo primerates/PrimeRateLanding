@@ -644,6 +644,7 @@ export default function AdminAddClient() {
   // Borrower income section collapsible states
   const [isEmploymentIncomeOpen, setIsEmploymentIncomeOpen] = useState(false);
   const [isPriorEmploymentIncomeOpen, setIsPriorEmploymentIncomeOpen] = useState(false);
+  const [isSecondPriorEmploymentIncomeOpen, setIsSecondPriorEmploymentIncomeOpen] = useState(false);
   const [isSecondEmploymentIncomeOpen, setIsSecondEmploymentIncomeOpen] = useState(false);
   const [isSelfEmploymentIncomeOpen, setIsSelfEmploymentIncomeOpen] = useState(false);
   const [isSocialSecurityIncomeOpen, setIsSocialSecurityIncomeOpen] = useState(false);
@@ -7058,6 +7059,268 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
+              {/* Second Prior Employment - Show if first prior employer has less than 2 years experience */}
+              {form.watch('income.incomeTypes.employment') && (() => {
+                // Check both years and months fields for the first prior employer
+                const yearsValue = form.watch('income.priorYearsEmployedYears') || '';
+                const monthsValue = form.watch('income.priorYearsEmployedMonths') || '';
+                
+                // Parse both values
+                const years = parseInt(yearsValue);
+                const months = parseInt(monthsValue);
+                
+                // Return true if either field has a value under the threshold
+                const hasYearsUnderThreshold = yearsValue !== '' && !isNaN(years) && years < 2;
+                const hasMonthsUnderThreshold = monthsValue !== '' && !isNaN(months) && months < 24;
+                
+                return hasYearsUnderThreshold || hasMonthsUnderThreshold;
+              })() && (
+                <Card>
+                  <Collapsible open={isSecondPriorEmploymentIncomeOpen} onOpenChange={setIsSecondPriorEmploymentIncomeOpen}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Borrower - Prior Employer</CardTitle>
+                        <CollapsibleTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:bg-orange-500 hover:text-white" 
+                            data-testid="button-toggle-second-prior-employment-income"
+                            title={isSecondPriorEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
+                            key={`second-prior-employment-income-${isSecondPriorEmploymentIncomeOpen}`}
+                          >
+                            {isSecondPriorEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                          </Button>
+                        </CollapsibleTrigger>
+                      </div>
+                    </CardHeader>
+                    <CollapsibleContent>
+                      <CardContent>
+                        <div className="space-y-6">
+                          {/* Second Prior Employment Information - Single Row */}
+                          <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="income-secondPriorEmployerName">Employer Name</Label>
+                              <Input
+                                id="income-secondPriorEmployerName"
+                                {...form.register('income.secondPriorEmployerName')}
+                                data-testid="input-income-secondPriorEmployerName"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor="income-second-prior-employer-phone" className="text-xs">
+                                  {form.watch('income.secondPriorIsShowingEmploymentVerification') ? 'Employment Verification' : 'Employer Phone'}
+                                </Label>
+                                <Switch
+                                  checked={form.watch('income.secondPriorIsShowingEmploymentVerification') || false}
+                                  onCheckedChange={(checked) => form.setValue('income.secondPriorIsShowingEmploymentVerification', checked)}
+                                  data-testid="toggle-second-prior-employment-verification"
+                                />
+                              </div>
+                              <Input
+                                id="income-second-prior-employer-phone"
+                                placeholder="(XXX) XXX-XXXX"
+                                value={form.watch('income.secondPriorIsShowingEmploymentVerification') 
+                                  ? (form.watch('income.secondPriorEmploymentVerificationPhone') || '')
+                                  : (form.watch('income.secondPriorEmployerPhone') || '')}
+                                onChange={(e) => {
+                                  const fieldName = form.watch('income.secondPriorIsShowingEmploymentVerification') 
+                                    ? 'income.secondPriorEmploymentVerificationPhone'
+                                    : 'income.secondPriorEmployerPhone';
+                                  handlePhoneChange(fieldName, e.target.value);
+                                }}
+                                data-testid="input-income-second-prior-employer-phone"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-secondPriorJobTitle">Job Title</Label>
+                              <Input
+                                id="income-secondPriorJobTitle"
+                                {...form.register('income.secondPriorJobTitle')}
+                                data-testid="input-income-secondPriorJobTitle"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-secondPriorMonthlyIncome">Gross Monthly Income</Label>
+                              <Controller
+                                control={form.control}
+                                name="income.secondPriorMonthlyIncome"
+                                render={({ field }) => (
+                                  <Input
+                                    id="income-secondPriorMonthlyIncome"
+                                    value={formatDollarDisplay(field.value)}
+                                    onChange={(e) => {
+                                      const rawValue = parseDollarInput(e.target.value);
+                                      field.onChange(rawValue);
+                                    }}
+                                    placeholder="$0.00"
+                                    data-testid="input-income-secondPriorMonthlyIncome"
+                                  />
+                                )}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor="income-second-prior-bonusIncome" className="text-sm">
+                                  {isShowingAnnualBonus ? 'Annual Bonus' : 'Monthly Bonus'}
+                                </Label>
+                                <Switch
+                                  checked={isShowingAnnualBonus}
+                                  onCheckedChange={setIsShowingAnnualBonus}
+                                  data-testid="toggle-income-second-prior-bonus"
+                                />
+                              </div>
+                              <Controller
+                                control={form.control}
+                                name={isShowingAnnualBonus ? 'income.secondPriorAnnualBonusIncome' : 'income.secondPriorMonthlyBonusIncome'}
+                                render={({ field }) => (
+                                  <Input
+                                    id="income-second-prior-bonusIncome"
+                                    value={formatDollarDisplay(field.value)}
+                                    onChange={(e) => {
+                                      const rawValue = parseDollarInput(e.target.value);
+                                      field.onChange(rawValue);
+                                    }}
+                                    placeholder="$0.00"
+                                    data-testid="input-income-second-prior-bonusIncome"
+                                  />
+                                )}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-secondPriorEmploymentType">Full-Time / Part-Time</Label>
+                              <Select
+                                value={form.watch('income.secondPriorEmploymentType') || ''}
+                                onValueChange={(value) => form.setValue('income.secondPriorEmploymentType', value as any)}
+                              >
+                                <SelectTrigger data-testid="select-income-secondPriorEmploymentType">
+                                  <SelectValue placeholder="Select type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
+                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor="income-second-prior-employment-duration" className="text-sm">
+                                  {isShowingMonthsEmployed ? 'Months Employed' : 'Years Employed'}
+                                </Label>
+                                <Switch
+                                  checked={isShowingMonthsEmployed}
+                                  onCheckedChange={setIsShowingMonthsEmployed}
+                                  data-testid="toggle-income-second-prior-employment-duration"
+                                />
+                              </div>
+                              <Input
+                                id="income-second-prior-employment-duration"
+                                type="number"
+                                min="0"
+                                max={isShowingMonthsEmployed ? "999" : "99"}
+                                {...form.register(isShowingMonthsEmployed ? 'income.secondPriorYearsEmployedMonths' : 'income.secondPriorYearsEmployedYears')}
+                                placeholder={isShowingMonthsEmployed ? "Enter Months" : "Enter Years"}
+                                data-testid="input-income-second-prior-employment-duration"
+                              />
+                            </div>
+                          </div>
+                          
+                          {/* Second Prior Employer Address Row (standardized format) */}
+                          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                            <div className="space-y-2 md:col-span-3">
+                              <Label htmlFor="income-second-prior-employer-street">Street Address</Label>
+                              <Input
+                                id="income-second-prior-employer-street"
+                                {...form.register('income.secondPriorEmployerAddress.street')}
+                                data-testid="input-income-second-prior-employer-street"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="income-second-prior-employer-unit">Unit/Suite</Label>
+                              <Input
+                                id="income-second-prior-employer-unit"
+                                {...form.register('income.secondPriorEmployerAddress.unit')}
+                                data-testid="input-income-second-prior-employer-unit"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="income-second-prior-employer-city">City</Label>
+                              <Input
+                                id="income-second-prior-employer-city"
+                                {...form.register('income.secondPriorEmployerAddress.city')}
+                                data-testid="input-income-second-prior-employer-city"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="income-second-prior-employer-state">State</Label>
+                              <Select
+                                value={form.watch('income.secondPriorEmployerAddress.state') || ''}
+                                onValueChange={(value) => form.setValue('income.secondPriorEmployerAddress.state', value)}
+                              >
+                                <SelectTrigger data-testid="select-income-second-prior-employer-state">
+                                  <SelectValue placeholder="State" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {US_STATES.map((state) => (
+                                    <SelectItem key={state.value} value={state.value}>
+                                      {state.value}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="income-second-prior-employer-zip">ZIP Code</Label>
+                              <Input
+                                id="income-second-prior-employer-zip"
+                                {...form.register('income.secondPriorEmployerAddress.zip')}
+                                data-testid="input-income-second-prior-employer-zip"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="income-second-prior-employer-county">County</Label>
+                              <Input
+                                id="income-second-prior-employer-county"
+                                {...form.register('income.secondPriorEmployerAddress.county')}
+                                data-testid="input-income-second-prior-employer-county"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="income-second-prior-employer-remote">Remote Job</Label>
+                              <Select
+                                value={form.watch('income.secondPriorEmployerRemote') || ''}
+                                onValueChange={(value) => form.setValue('income.secondPriorEmployerRemote', value)}
+                              >
+                                <SelectTrigger data-testid="select-income-second-prior-employer-remote">
+                                  <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Select">Select</SelectItem>
+                                  <SelectItem value="Yes">Yes</SelectItem>
+                                  <SelectItem value="No">No</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </Card>
+              )}
 
               {/* Second Employment Income Card */}
               {form.watch('income.incomeTypes.secondEmployment') && (
