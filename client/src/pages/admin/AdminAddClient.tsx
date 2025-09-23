@@ -6811,19 +6811,6 @@ export default function AdminAddClient() {
                 </CardContent>
               </Card>
 
-              {/* Prior Employment - Show if less than 2 years at current employment */}
-              {form.watch('income.incomeTypes.employment') && (() => {
-                // Check if showing months or years based on toggle state
-                if (isShowingMonthsEmployed) {
-                  const monthsValue = form.watch('income.yearsEmployedMonths') || '';
-                  const months = parseInt(monthsValue);
-                  return monthsValue !== '' && !isNaN(months) && months < 24;
-                } else {
-                  const yearsValue = form.watch('income.yearsEmployedYears') || '';
-                  const years = parseInt(yearsValue);
-                  return yearsValue !== '' && !isNaN(years) && years < 2;
-                }
-              })() && (
                 <Card>
                   <Collapsible open={isPriorEmploymentIncomeOpen} onOpenChange={setIsPriorEmploymentIncomeOpen}>
                     <CardHeader>
@@ -7087,25 +7074,7 @@ export default function AdminAddClient() {
                       </CardContent>
                     </CollapsibleContent>
                   </Collapsible>
-                </Card>
-              )}
 
-              {/* Second Prior Employment - Show if first prior employer has less than 2 years experience */}
-              {form.watch('income.incomeTypes.employment') && (() => {
-                // Check both years and months fields for the first prior employer
-                const yearsValue = form.watch('income.priorYearsEmployedYears') || '';
-                const monthsValue = form.watch('income.priorYearsEmployedMonths') || '';
-                
-                // Parse both values
-                const years = parseInt(yearsValue);
-                const months = parseInt(monthsValue);
-                
-                // Return true if either field has a value under the threshold
-                const hasYearsUnderThreshold = yearsValue !== '' && !isNaN(years) && years < 2;
-                const hasMonthsUnderThreshold = monthsValue !== '' && !isNaN(months) && months < 24;
-                
-                return hasYearsUnderThreshold || hasMonthsUnderThreshold;
-              })() && (
                 <Card>
                   <Collapsible open={isSecondPriorEmploymentIncomeOpen} onOpenChange={setIsSecondPriorEmploymentIncomeOpen}>
                     <CardHeader>
