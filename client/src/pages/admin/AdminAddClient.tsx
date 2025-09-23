@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useLocation } from 'wouter';
-import { useForm, useWatch, useFormContext, UseFormReturn } from 'react-hook-form';
+import { useForm, useWatch, useFormContext, UseFormReturn, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -1305,48 +1305,32 @@ export default function AdminAddClient() {
     return isNaN(parsed) ? 0 : parsed;
   };
 
-  // Format percentage value for display
-  const formatPercentage = (value: string): string => {
-    // Remove all non-numeric characters except decimal points
-    const numericValue = value.replace(/[^0-9.]/g, '');
-    
-    // Allow empty string for complete erasure
-    if (numericValue === '') return '';
-    
-    // Add percentage sign if there's a numeric value
-    if (numericValue && !isNaN(parseFloat(numericValue))) {
-      return `${numericValue}%`;
-    }
-    
+  // Format percentage value for display only
+  const formatPercentageDisplay = (value: string | number | undefined): string => {
+    if (!value && value !== 0) return '';
+    const numericValue = typeof value === 'string' ? value.replace(/[^0-9.]/g, '') : value.toString();
+    if (numericValue === '' || numericValue === '0') return numericValue === '0' ? '0%' : '';
+    return `${numericValue}%`;
+  };
+
+  // Parse percentage input and return raw numeric value
+  const parsePercentageInput = (input: string): string => {
+    const numericValue = input.replace(/[^0-9.]/g, '');
     return numericValue;
   };
 
-  // Handle percentage change
-  const handlePercentageChange = (fieldName: string, value: string) => {
-    const formatted = formatPercentage(value);
-    form.setValue(fieldName as any, formatted);
+  // Format dollar value for display only
+  const formatDollarDisplay = (value: string | number | undefined): string => {
+    if (!value && value !== 0) return '';
+    const numericValue = typeof value === 'string' ? value.replace(/[^0-9.]/g, '') : value.toString();
+    if (numericValue === '' || numericValue === '0') return numericValue === '0' ? '$0' : '';
+    return `$${numericValue}`;
   };
 
-  // Format dollar value for display
-  const formatDollarValue = (value: string): string => {
-    // Remove all non-numeric characters except decimal points
-    const numericValue = value.replace(/[^0-9.]/g, '');
-    
-    // Allow empty string for complete erasure
-    if (numericValue === '') return '';
-    
-    // Add dollar sign if there's a numeric value
-    if (numericValue && !isNaN(parseFloat(numericValue))) {
-      return `$${numericValue}`;
-    }
-    
+  // Parse dollar input and return raw numeric value
+  const parseDollarInput = (input: string): string => {
+    const numericValue = input.replace(/[^0-9.]/g, '');
     return numericValue;
-  };
-
-  // Handle dollar value change
-  const handleDollarChange = (fieldName: string, value: string) => {
-    const formatted = formatDollarValue(value);
-    form.setValue(fieldName as any, formatted);
   };
 
   // Sub-component for isolated auto sum calculation - prevents main form re-renders
@@ -6423,21 +6407,41 @@ export default function AdminAddClient() {
                   
                   <div className="space-y-2">
                     <Label htmlFor="income-frontDTI">Front DTI</Label>
-                    <Input
-                      id="income-frontDTI"
-                      {...form.register('income.frontDTI')}
-                      placeholder="0.00%"
-                      data-testid="input-income-frontDTI"
+                    <Controller
+                      control={form.control}
+                      name="income.frontDTI"
+                      render={({ field }) => (
+                        <Input
+                          id="income-frontDTI"
+                          value={formatPercentageDisplay(field.value)}
+                          onChange={(e) => {
+                            const rawValue = parsePercentageInput(e.target.value);
+                            field.onChange(rawValue);
+                          }}
+                          placeholder="25%"
+                          data-testid="input-income-frontDTI"
+                        />
+                      )}
                     />
                   </div>
                   
                   <div className="space-y-2">
                     <Label htmlFor="income-backDTI">Back DTI</Label>
-                    <Input
-                      id="income-backDTI"
-                      {...form.register('income.backDTI')}
-                      placeholder="0.00%"
-                      data-testid="input-income-backDTI"
+                    <Controller
+                      control={form.control}
+                      name="income.backDTI"
+                      render={({ field }) => (
+                        <Input
+                          id="income-backDTI"
+                          value={formatPercentageDisplay(field.value)}
+                          onChange={(e) => {
+                            const rawValue = parsePercentageInput(e.target.value);
+                            field.onChange(rawValue);
+                          }}
+                          placeholder="25%"
+                          data-testid="input-income-backDTI"
+                        />
+                      )}
                     />
                   </div>
                 </CardContent>
@@ -6618,11 +6622,21 @@ export default function AdminAddClient() {
                             
                             <div className="space-y-2">
                               <Label htmlFor="income-monthlyIncome">Gross Monthly Income</Label>
-                              <Input
-                                id="income-monthlyIncome"
-                                {...form.register('income.monthlyIncome')}
-                                placeholder="$0.00"
-                                data-testid="input-income-monthlyIncome"
+                              <Controller
+                                control={form.control}
+                                name="income.monthlyIncome"
+                                render={({ field }) => (
+                                  <Input
+                                    id="income-monthlyIncome"
+                                    value={formatDollarDisplay(field.value)}
+                                    onChange={(e) => {
+                                      const rawValue = parseDollarInput(e.target.value);
+                                      field.onChange(rawValue);
+                                    }}
+                                    placeholder="$0.00"
+                                    data-testid="input-income-monthlyIncome"
+                                  />
+                                )}
                               />
                             </div>
                             
@@ -6637,11 +6651,21 @@ export default function AdminAddClient() {
                                   data-testid="toggle-income-bonus"
                                 />
                               </div>
-                              <Input
-                                id="income-bonusIncome"
-                                {...form.register(isShowingAnnualBonus ? 'income.annualBonusIncome' : 'income.monthlyBonusIncome')}
-                                placeholder="$0.00"
-                                data-testid="input-income-bonusIncome"
+                              <Controller
+                                control={form.control}
+                                name={isShowingAnnualBonus ? 'income.annualBonusIncome' : 'income.monthlyBonusIncome'}
+                                render={({ field }) => (
+                                  <Input
+                                    id="income-bonusIncome"
+                                    value={formatDollarDisplay(field.value)}
+                                    onChange={(e) => {
+                                      const rawValue = parseDollarInput(e.target.value);
+                                      field.onChange(rawValue);
+                                    }}
+                                    placeholder="$0.00"
+                                    data-testid="input-income-bonusIncome"
+                                  />
+                                )}
                               />
                             </div>
                             
@@ -6858,11 +6882,21 @@ export default function AdminAddClient() {
                             
                             <div className="space-y-2">
                               <Label htmlFor="income-priorMonthlyIncome">Gross Monthly Income</Label>
-                              <Input
-                                id="income-priorMonthlyIncome"
-                                {...form.register('income.priorMonthlyIncome')}
-                                placeholder="$0.00"
-                                data-testid="input-income-priorMonthlyIncome"
+                              <Controller
+                                control={form.control}
+                                name="income.priorMonthlyIncome"
+                                render={({ field }) => (
+                                  <Input
+                                    id="income-priorMonthlyIncome"
+                                    value={formatDollarDisplay(field.value)}
+                                    onChange={(e) => {
+                                      const rawValue = parseDollarInput(e.target.value);
+                                      field.onChange(rawValue);
+                                    }}
+                                    placeholder="$0.00"
+                                    data-testid="input-income-priorMonthlyIncome"
+                                  />
+                                )}
                               />
                             </div>
                             
@@ -6877,11 +6911,21 @@ export default function AdminAddClient() {
                                   data-testid="toggle-income-prior-bonus"
                                 />
                               </div>
-                              <Input
-                                id="income-prior-bonusIncome"
-                                {...form.register(isShowingAnnualBonus ? 'income.priorAnnualBonusIncome' : 'income.priorMonthlyBonusIncome')}
-                                placeholder="$0.00"
-                                data-testid="input-income-prior-bonusIncome"
+                              <Controller
+                                control={form.control}
+                                name={isShowingAnnualBonus ? 'income.priorAnnualBonusIncome' : 'income.priorMonthlyBonusIncome'}
+                                render={({ field }) => (
+                                  <Input
+                                    id="income-prior-bonusIncome"
+                                    value={formatDollarDisplay(field.value)}
+                                    onChange={(e) => {
+                                      const rawValue = parseDollarInput(e.target.value);
+                                      field.onChange(rawValue);
+                                    }}
+                                    placeholder="$0.00"
+                                    data-testid="input-income-prior-bonusIncome"
+                                  />
+                                )}
                               />
                             </div>
                             
@@ -7929,11 +7973,21 @@ export default function AdminAddClient() {
                             
                             <div className="space-y-2">
                               <Label htmlFor="coBorrowerIncome-monthlyIncome">Gross Monthly Income</Label>
-                              <Input
-                                id="coBorrowerIncome-monthlyIncome"
-                                {...form.register('coBorrowerIncome.monthlyIncome')}
-                                placeholder="$0.00"
-                                data-testid="input-coborrowerIncome-monthlyIncome"
+                              <Controller
+                                control={form.control}
+                                name="coBorrowerIncome.monthlyIncome"
+                                render={({ field }) => (
+                                  <Input
+                                    id="coBorrowerIncome-monthlyIncome"
+                                    value={formatDollarDisplay(field.value)}
+                                    onChange={(e) => {
+                                      const rawValue = parseDollarInput(e.target.value);
+                                      field.onChange(rawValue);
+                                    }}
+                                    placeholder="$0.00"
+                                    data-testid="input-coborrowerIncome-monthlyIncome"
+                                  />
+                                )}
                               />
                             </div>
                             
@@ -7948,11 +8002,21 @@ export default function AdminAddClient() {
                                   data-testid="toggle-coBorrowerIncome-bonus"
                                 />
                               </div>
-                              <Input
-                                id="coBorrowerIncome-bonusIncome"
-                                {...form.register(isCoBorrowerShowingAnnualBonus ? 'coBorrowerIncome.annualBonusIncome' : 'coBorrowerIncome.monthlyBonusIncome')}
-                                placeholder="$0.00"
-                                data-testid="input-coBorrowerIncome-bonusIncome"
+                              <Controller
+                                control={form.control}
+                                name={isCoBorrowerShowingAnnualBonus ? 'coBorrowerIncome.annualBonusIncome' : 'coBorrowerIncome.monthlyBonusIncome'}
+                                render={({ field }) => (
+                                  <Input
+                                    id="coBorrowerIncome-bonusIncome"
+                                    value={formatDollarDisplay(field.value)}
+                                    onChange={(e) => {
+                                      const rawValue = parseDollarInput(e.target.value);
+                                      field.onChange(rawValue);
+                                    }}
+                                    placeholder="$0.00"
+                                    data-testid="input-coBorrowerIncome-bonusIncome"
+                                  />
+                                )}
                               />
                             </div>
                             
@@ -8169,11 +8233,21 @@ export default function AdminAddClient() {
                             
                             <div className="space-y-2">
                               <Label htmlFor="coBorrowerIncome-priorMonthlyIncome">Gross Monthly Income</Label>
-                              <Input
-                                id="coBorrowerIncome-priorMonthlyIncome"
-                                {...form.register('coBorrowerIncome.priorMonthlyIncome')}
-                                placeholder="$0.00"
-                                data-testid="input-coborrowerIncome-priorMonthlyIncome"
+                              <Controller
+                                control={form.control}
+                                name="coBorrowerIncome.priorMonthlyIncome"
+                                render={({ field }) => (
+                                  <Input
+                                    id="coBorrowerIncome-priorMonthlyIncome"
+                                    value={formatDollarDisplay(field.value)}
+                                    onChange={(e) => {
+                                      const rawValue = parseDollarInput(e.target.value);
+                                      field.onChange(rawValue);
+                                    }}
+                                    placeholder="$0.00"
+                                    data-testid="input-coborrowerIncome-priorMonthlyIncome"
+                                  />
+                                )}
                               />
                             </div>
                             
@@ -8188,11 +8262,21 @@ export default function AdminAddClient() {
                                   data-testid="toggle-coBorrowerIncome-prior-bonus"
                                 />
                               </div>
-                              <Input
-                                id="coBorrowerIncome-prior-bonusIncome"
-                                {...form.register(isCoBorrowerShowingAnnualBonus ? 'coBorrowerIncome.priorAnnualBonusIncome' : 'coBorrowerIncome.priorMonthlyBonusIncome')}
-                                placeholder="$0.00"
-                                data-testid="input-coBorrowerIncome-prior-bonusIncome"
+                              <Controller
+                                control={form.control}
+                                name={isCoBorrowerShowingAnnualBonus ? 'coBorrowerIncome.priorAnnualBonusIncome' : 'coBorrowerIncome.priorMonthlyBonusIncome'}
+                                render={({ field }) => (
+                                  <Input
+                                    id="coBorrowerIncome-prior-bonusIncome"
+                                    value={formatDollarDisplay(field.value)}
+                                    onChange={(e) => {
+                                      const rawValue = parseDollarInput(e.target.value);
+                                      field.onChange(rawValue);
+                                    }}
+                                    placeholder="$0.00"
+                                    data-testid="input-coBorrowerIncome-prior-bonusIncome"
+                                  />
+                                )}
                               />
                             </div>
                             
