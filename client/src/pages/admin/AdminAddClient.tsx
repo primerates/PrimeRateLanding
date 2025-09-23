@@ -10882,7 +10882,7 @@ export default function AdminAddClient() {
       <Dialog open={isCurrentThirdLoanPreviewOpen} onOpenChange={setIsCurrentThirdLoanPreviewOpen}>
         <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto" data-testid="dialog-current-third-loan-preview">
           <DialogHeader>
-            <DialogTitle>Current Loan 3 Details</DialogTitle>
+            <DialogTitle>Current Loan 3</DialogTitle>
           </DialogHeader>
           <CurrentThirdLoanPreview control={form.control} />
           <DialogFooter>
