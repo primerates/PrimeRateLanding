@@ -6811,7 +6811,7 @@ export default function AdminAddClient() {
                 </CardContent>
               </Card>
 
-                <Card>
+              <Card>
                   <Collapsible open={isPriorEmploymentIncomeOpen} onOpenChange={setIsPriorEmploymentIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
@@ -7074,8 +7074,9 @@ export default function AdminAddClient() {
                       </CardContent>
                     </CollapsibleContent>
                   </Collapsible>
+                </Card>
 
-                <Card>
+              <Card>
                   <Collapsible open={isSecondPriorEmploymentIncomeOpen} onOpenChange={setIsSecondPriorEmploymentIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
@@ -7339,7 +7340,6 @@ export default function AdminAddClient() {
                     </CollapsibleContent>
                   </Collapsible>
                 </Card>
-              )}
 
               {/* Second Employment Income Card */}
               {form.watch('income.incomeTypes.secondEmployment') && (
