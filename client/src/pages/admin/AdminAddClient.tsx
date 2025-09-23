@@ -7619,10 +7619,12 @@ export default function AdminAddClient() {
                 
                 priorTotalMonths = ((!isNaN(priorYears) ? priorYears : 0) * 12) + (!isNaN(priorMonths) ? priorMonths : 0);
                 
-                // Show third prior card if combined employment history is less than 24 months
-                // and there's some employment data entered
-                const hasSomeEmploymentData = (form.watch('income.yearsEmployedYears') || form.watch('income.yearsEmployedMonths') || form.watch('income.priorYearsEmployedYears') || form.watch('income.priorYearsEmployedMonths'));
+                // Calculate combined employment history
                 const combinedMonths = currentTotalMonths + priorTotalMonths;
+                
+                // Show third prior card ONLY if combined employment history is STRICTLY less than 24 months
+                // 24 months (2 years) or more should NOT show the third prior employer card
+                const hasSomeEmploymentData = (form.watch('income.yearsEmployedYears') || form.watch('income.yearsEmployedMonths') || form.watch('income.priorYearsEmployedYears') || form.watch('income.priorYearsEmployedMonths'));
                 
                 return hasSomeEmploymentData && combinedMonths < 24;
               })() && (
