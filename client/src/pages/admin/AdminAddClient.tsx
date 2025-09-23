@@ -9473,13 +9473,15 @@ export default function AdminAddClient() {
                                         <div className="flex items-center gap-1">
                                           <div 
                                             className={`w-3 h-3 rounded-full border-2 ${
-                                              hasAnyLoanAttached 
-                                                ? 'bg-green-500 border-green-500' 
-                                                : 'bg-gray-200 border-gray-300'
+                                              isCurrentLoanAttached
+                                                ? 'bg-blue-500 border-blue-500'
+                                                : hasAnyLoanAttached 
+                                                  ? 'bg-green-500 border-green-500' 
+                                                  : 'bg-gray-200 border-gray-300'
                                             }`}
                                             style={{
-                                              backgroundColor: hasAnyLoanAttached ? '#10b981' : '#e5e7eb',
-                                              borderColor: hasAnyLoanAttached ? '#10b981' : '#d1d5db'
+                                              backgroundColor: isCurrentLoanAttached ? '#3b82f6' : hasAnyLoanAttached ? '#10b981' : '#e5e7eb',
+                                              borderColor: isCurrentLoanAttached ? '#3b82f6' : hasAnyLoanAttached ? '#10b981' : '#d1d5db'
                                             }}
                                             data-testid={`indicator-secured-loan-1-${property.id}`}
                                           />
