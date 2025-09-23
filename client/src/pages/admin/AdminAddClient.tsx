@@ -9564,6 +9564,23 @@ export default function AdminAddClient() {
                                       </div>
                                     );
                                   })()}
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                    onClick={() => {
+                                      toast({
+                                        title: "Loan Information",
+                                        description: "Please complete loans associated with this property using the loan menu option",
+                                        duration: 5000,
+                                      });
+                                    }}
+                                    title="Loan completion instructions"
+                                    data-testid={`button-secured-loan-info-${propertyId}`}
+                                  >
+                                    <Info className="h-4 w-4" />
+                                  </Button>
                                 </div>
 {(() => {
                                   // Dynamic connection display field - checks ALL loans
