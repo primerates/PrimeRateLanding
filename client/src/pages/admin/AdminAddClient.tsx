@@ -618,6 +618,7 @@ export default function AdminAddClient() {
       }
     });
   };
+
   
   // Function to remove a third loan
   const removeThirdLoan = (propertyIndex: number) => {
@@ -6953,6 +6954,7 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
+
               {/* Second Employment Income Card */}
               {form.watch('income.incomeTypes.secondEmployment') && (
                 <Card>
@@ -8230,6 +8232,7 @@ export default function AdminAddClient() {
                   </Collapsible>
                 </Card>
               )}
+
 
               {/* Co-Borrower Second Employment Income Card */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.secondEmployment') && (
