@@ -6731,11 +6731,14 @@ export default function AdminAddClient() {
 
               {/* Prior Employment - Show if less than 2 years at current employment */}
               {form.watch('income.incomeTypes.employment') && (() => {
-                const years = parseInt(form.watch('income.yearsEmployedYears') || '0');
-                const months = parseInt(form.watch('income.yearsEmployedMonths') || '0');
-                const totalMonths = years * 12 + months;
-                const showPriorEmployment = totalMonths < 24;
-                return showPriorEmployment;
+                // Check if showing months or years based on toggle state
+                if (isShowingMonthsEmployed) {
+                  const months = parseInt(form.watch('income.yearsEmployedMonths') || '0');
+                  return months < 24;
+                } else {
+                  const years = parseInt(form.watch('income.yearsEmployedYears') || '0');
+                  return years < 2;
+                }
               })() && (
                 <Card>
                   <Collapsible open={isPriorEmploymentIncomeOpen} onOpenChange={setIsPriorEmploymentIncomeOpen}>
@@ -8020,11 +8023,14 @@ export default function AdminAddClient() {
 
               {/* Co-Borrower Prior Employment - Show if less than 2 years at current employment */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.employment') && (() => {
-                const years = parseInt(form.watch('coBorrowerIncome.yearsEmployedYears') || '0');
-                const months = parseInt(form.watch('coBorrowerIncome.yearsEmployedMonths') || '0');
-                const totalMonths = years * 12 + months;
-                const showPriorEmployment = totalMonths < 24;
-                return showPriorEmployment;
+                // Check if showing months or years based on toggle state
+                if (isCoBorrowerShowingMonthsEmployed) {
+                  const months = parseInt(form.watch('coBorrowerIncome.yearsEmployedMonths') || '0');
+                  return months < 24;
+                } else {
+                  const years = parseInt(form.watch('coBorrowerIncome.yearsEmployedYears') || '0');
+                  return years < 2;
+                }
               })() && (
                 <Card>
                   <Collapsible open={isCoBorrowerPriorEmploymentIncomeOpen} onOpenChange={setIsCoBorrowerPriorEmploymentIncomeOpen}>
