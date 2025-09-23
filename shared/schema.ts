@@ -135,21 +135,6 @@ export const incomeSchema = z.object({
   secondPriorIsShowingEmploymentVerification: z.boolean().optional(),
   secondPriorEmployerRemote: z.string().optional(),
   
-  // Third prior employer fields for additional cascading employment history
-  thirdPriorEmployerName: z.string().optional(),
-  thirdPriorJobTitle: z.string().optional(),
-  thirdPriorMonthlyIncome: z.string().optional(),
-  thirdPriorMonthlyBonusIncome: z.string().optional(),
-  thirdPriorAnnualBonusIncome: z.string().optional(),
-  thirdPriorEmploymentType: z.enum(["Full-Time", "Part-Time"]).optional(),
-  thirdPriorYearsEmployedYears: z.string().optional(),
-  thirdPriorYearsEmployedMonths: z.string().optional(),
-  thirdPriorEmployerAddress: addressSchema.partial().optional(),
-  thirdPriorEmployerPhone: z.string().optional(),
-  thirdPriorEmploymentVerificationPhone: z.string().optional(),
-  thirdPriorIsShowingEmploymentVerification: z.boolean().optional(),
-  thirdPriorEmployerRemote: z.string().optional(),
-  
   // Self-Employment fields
   businessName: z.string().optional(),
   businessMonthlyIncome: z.string().optional(),
