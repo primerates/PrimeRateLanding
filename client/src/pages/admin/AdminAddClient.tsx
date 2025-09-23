@@ -8819,7 +8819,7 @@ export default function AdminAddClient() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
                       <Label className="text-sm font-medium text-muted-foreground">Subject Property Is</Label>
                       <div className="text-lg font-medium" data-testid="text-subject-property">
