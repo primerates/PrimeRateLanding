@@ -6634,7 +6634,7 @@ export default function AdminAddClient() {
                                 min="0"
                                 max={isShowingMonthsEmployed ? "999" : "99"}
                                 {...form.register(isShowingMonthsEmployed ? 'income.yearsEmployedMonths' : 'income.yearsEmployedYears')}
-                                placeholder="Enter"
+                                placeholder={isShowingMonthsEmployed ? "Enter Months" : "Enter Years"}
                                 data-testid="input-income-employment-duration"
                               />
                             </div>
@@ -6747,7 +6747,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isPriorEmploymentIncomeOpen} onOpenChange={setIsPriorEmploymentIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Borrower Prior Employment</CardTitle>
+                        <CardTitle>Borrower - Prior Employer</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button 
                             variant="ghost" 
@@ -7929,7 +7929,7 @@ export default function AdminAddClient() {
                                 min="0"
                                 max={isCoBorrowerShowingMonthsEmployed ? "999" : "99"}
                                 {...form.register(isCoBorrowerShowingMonthsEmployed ? 'coBorrowerIncome.yearsEmployedMonths' : 'coBorrowerIncome.yearsEmployedYears')}
-                                placeholder="Enter"
+                                placeholder={isCoBorrowerShowingMonthsEmployed ? "Enter Months" : "Enter Years"}
                                 data-testid="input-coBorrowerIncome-employment-duration"
                               />
                             </div>
@@ -8042,7 +8042,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isCoBorrowerPriorEmploymentIncomeOpen} onOpenChange={setIsCoBorrowerPriorEmploymentIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Co-Borrower Prior Employment</CardTitle>
+                        <CardTitle>Co-Borrower - Prior Employer</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button 
                             variant="ghost" 
