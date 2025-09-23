@@ -114,6 +114,29 @@ const getValueComparisonColor = (estimatedValue: string, appraisedValue: string)
   }
 };
 
+// Helper function to calculate color state based on Back DTI vs Guideline DTI comparison
+const getDTIComparisonColor = (backDTI: string, guidelineDTI: string): { labelClass: string; shadowColor: 'green' | 'red' | 'none' } => {
+  const parsePercentage = (value: string) => {
+    if (!value) return 0;
+    // Handle both raw numbers and formatted percentages
+    const cleaned = value.replace(/[^\d.]/g, '');
+    return cleaned ? parseFloat(cleaned) : 0;
+  };
+
+  const backDTINum = parsePercentage(backDTI || '');
+  const guidelineDTINum = parsePercentage(guidelineDTI || '');
+
+  if (backDTINum === 0 || guidelineDTINum === 0) {
+    return { labelClass: 'text-black', shadowColor: 'none' };
+  } else if (backDTINum > guidelineDTINum) {
+    return { labelClass: 'text-red-600', shadowColor: 'red' };
+  } else if (backDTINum < guidelineDTINum) {
+    return { labelClass: 'text-green-600', shadowColor: 'green' };
+  } else {
+    return { labelClass: 'text-black', shadowColor: 'none' };
+  }
+};
+
 // Memoized AppraisalIcon component to prevent typing lag
 const AppraisalIcon = React.memo<{ index: number; control: any }>(({ index, control }) => {
   const estimatedValue = useWatch({ 
@@ -6578,7 +6601,14 @@ export default function AdminAddClient() {
                   
                   <div className="space-y-2">
                     <div className="flex items-center justify-between mb-2">
-                      <Label htmlFor="income-guidelineDTI" className="text-sm">
+                      <Label 
+                        htmlFor="income-guidelineDTI" 
+                        className={`text-sm ${(() => {
+                          const backDTI = form.watch('income.backDTI') || '';
+                          const guidelineDTI = form.watch('income.guidelineDTI') || '';
+                          return getDTIComparisonColor(backDTI, guidelineDTI).labelClass;
+                        })()}`}
+                      >
                         {isShowingGuidelineFrontDTI ? 'Guideline - Front DTI' : 'Guideline DTI'}
                       </Label>
                       <Switch
@@ -6600,6 +6630,17 @@ export default function AdminAddClient() {
                           }}
                           placeholder="%"
                           data-testid="input-income-guidelineDTI"
+                          className={(() => {
+                            const backDTI = form.watch('income.backDTI') || '';
+                            const guidelineDTI = form.watch('income.guidelineDTI') || '';
+                            const shadowColor = getDTIComparisonColor(backDTI, guidelineDTI).shadowColor;
+                            if (shadowColor === 'green') {
+                              return 'shadow-lg shadow-green-200';
+                            } else if (shadowColor === 'red') {
+                              return 'shadow-lg shadow-red-200';
+                            }
+                            return '';
+                          })()}
                         />
                       )}
                     />
