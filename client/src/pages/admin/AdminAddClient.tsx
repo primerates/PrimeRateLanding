@@ -8819,24 +8819,7 @@ export default function AdminAddClient() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium text-muted-foreground">Subject Property Is</Label>
-                      <div className="text-lg font-medium" data-testid="text-subject-property">
-                        {(() => {
-                          const properties = form.watch('property.properties') || [];
-                          const subjectProperty = properties.find(p => p.isSubject);
-                          if (!subjectProperty) return 'Not selected';
-                          const typeLabels = {
-                            'primary': 'Primary Residence',
-                            'second-home': 'Second Home', 
-                            'investment': 'Investment Property'
-                          };
-                          return typeLabels[subjectProperty.use as keyof typeof typeLabels] || 'Unknown';
-                        })()}
-                      </div>
-                    </div>
-                    
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
                       <Label>
                         {(() => {
@@ -8889,112 +8872,67 @@ export default function AdminAddClient() {
                       </div>
                     </div>
                     
-                    <div className="space-y-2 flex flex-col justify-center h-full">
-                      <div className="space-y-3 text-sm">
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium text-muted-foreground">Subject Property Is</Label>
+                      <div className="text-lg font-medium" data-testid="text-subject-property">
                         {(() => {
-                          // Function to count loans associated with properties of a specific type
-                          const getLoansAssociatedWithPropertyType = (propertyType: string) => {
-                            const properties = form.watch('property.properties') || [];
-                            const propertiesOfType = properties.filter(p => p.use === propertyType);
-                            
-                            let totalLoans = 0;
-                            
-                            propertiesOfType.forEach(property => {
-                              // Check current loan attachment
-                              const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
-                              if (currentLoanAttached === property.id) totalLoans++;
-                              
-                              // Check second loan attachment
-                              const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
-                              if (secondLoanAttached === property.id) totalLoans++;
-                              
-                              // Check third loan (first additional loan - Current Loan 3)
-                              const additionalLoansData = additionalLoans || [];
-                              const firstAdditionalLoan = additionalLoansData[0];
-                              if (firstAdditionalLoan) {
-                                const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
-                                if (attachedPropertyId === property.id) totalLoans++;
-                              }
-                              
-                              // Check other additional loans
-                              additionalLoansData.slice(1).forEach(loan => {
-                                const attachedPropertyId = getDyn(`${loan.id}.attachedToProperty`);
-                                if (attachedPropertyId === property.id) totalLoans++;
-                              });
-                            });
-                            
-                            return totalLoans;
+                          const properties = form.watch('property.properties') || [];
+                          const subjectProperty = properties.find(p => p.isSubject);
+                          if (!subjectProperty) return 'Not selected';
+                          const typeLabels = {
+                            'primary': 'Primary Residence',
+                            'second-home': 'Second Home', 
+                            'investment': 'Investment Property'
                           };
-
-                          const primaryCount = (form.watch('property.properties') || []).filter(p => p.use === 'primary').length;
-                          const secondHomeCount = (form.watch('property.properties') || []).filter(p => p.use === 'second-home').length;
-                          const investmentCount = (form.watch('property.properties') || []).filter(p => p.use === 'investment').length;
-                          
-                          const primaryLoans = getLoansAssociatedWithPropertyType('primary');
-                          const secondHomeLoans = getLoansAssociatedWithPropertyType('second-home');
-                          const investmentLoans = getLoansAssociatedWithPropertyType('investment');
-
-                          return (
-                            <>
-                              <div className="space-y-1">
-                                <div className="flex items-center gap-2">
-                                  <span className={`font-medium ${
-                                    primaryCount > 0 ? 'text-green-800' : 'text-foreground'
-                                  }`}>Primary Residence</span>
-                                  <span className={`font-medium ${
-                                    primaryCount > 0 ? 'text-green-800' : 'text-foreground'
-                                  }`} data-testid="text-primary-count">
-                                    {primaryCount}
-                                  </span>
-                                </div>
-                                <div className="flex items-center gap-2 ml-4">
-                                  <span className="text-xs text-muted-foreground">Loans Associated</span>
-                                  <span className="text-xs font-medium" data-testid="text-primary-loans">
-                                    {primaryLoans}
-                                  </span>
-                                </div>
-                              </div>
-                              
-                              <div className="space-y-1">
-                                <div className="flex items-center gap-2">
-                                  <span className={`font-medium ${
-                                    secondHomeCount > 0 ? 'text-blue-500' : 'text-foreground'
-                                  }`}>Second Home</span>
-                                  <span className={`font-medium ${
-                                    secondHomeCount > 0 ? 'text-blue-500' : 'text-foreground'
-                                  }`} data-testid="text-second-home-count">
-                                    {secondHomeCount}
-                                  </span>
-                                </div>
-                                <div className="flex items-center gap-2 ml-4">
-                                  <span className="text-xs text-muted-foreground">Loans Associated</span>
-                                  <span className="text-xs font-medium" data-testid="text-second-home-loans">
-                                    {secondHomeLoans}
-                                  </span>
-                                </div>
-                              </div>
-                              
-                              <div className="space-y-1">
-                                <div className="flex items-center gap-2">
-                                  <span className={`font-medium ${
-                                    investmentCount > 0 ? 'text-purple-500' : 'text-foreground'
-                                  }`}>Investment Property</span>
-                                  <span className={`font-medium ${
-                                    investmentCount > 0 ? 'text-purple-500' : 'text-foreground'
-                                  }`} data-testid="text-investment-count">
-                                    {investmentCount}
-                                  </span>
-                                </div>
-                                <div className="flex items-center gap-2 ml-4">
-                                  <span className="text-xs text-muted-foreground">Loans Associated</span>
-                                  <span className="text-xs font-medium" data-testid="text-investment-loans">
-                                    {investmentLoans}
-                                  </span>
-                                </div>
-                              </div>
-                            </>
-                          );
+                          return typeLabels[subjectProperty.use as keyof typeof typeLabels] || 'Unknown';
                         })()}
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2 flex flex-col justify-center h-full">
+                      <div className="space-y-1 text-sm">
+                        <div className="flex justify-between">
+                          <span className={`font-medium ${
+                            (form.watch('property.properties') || []).filter(p => p.use === 'primary').length > 0 
+                              ? 'text-green-800' 
+                              : 'text-foreground'
+                          }`}>Primary Residence:</span>
+                          <span className={`font-medium ${
+                            (form.watch('property.properties') || []).filter(p => p.use === 'primary').length > 0 
+                              ? 'text-green-800' 
+                              : 'text-foreground'
+                          }`} data-testid="text-primary-count">
+                            {(form.watch('property.properties') || []).filter(p => p.use === 'primary').length}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className={`font-medium ${
+                            (form.watch('property.properties') || []).filter(p => p.use === 'second-home').length > 0 
+                              ? 'text-blue-500' 
+                              : 'text-foreground'
+                          }`}>Second Home:</span>
+                          <span className={`font-medium ${
+                            (form.watch('property.properties') || []).filter(p => p.use === 'second-home').length > 0 
+                              ? 'text-blue-500' 
+                              : 'text-foreground'
+                          }`} data-testid="text-second-home-count">
+                            {(form.watch('property.properties') || []).filter(p => p.use === 'second-home').length}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className={`font-medium ${
+                            (form.watch('property.properties') || []).filter(p => p.use === 'investment').length > 0 
+                              ? 'text-purple-500' 
+                              : 'text-foreground'
+                          }`}>Investment Property:</span>
+                          <span className={`font-medium ${
+                            (form.watch('property.properties') || []).filter(p => p.use === 'investment').length > 0 
+                              ? 'text-purple-500' 
+                              : 'text-foreground'
+                          }`} data-testid="text-investment-count">
+                            {(form.watch('property.properties') || []).filter(p => p.use === 'investment').length}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
