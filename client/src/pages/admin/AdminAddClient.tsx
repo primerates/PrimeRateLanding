@@ -8350,7 +8350,6 @@ export default function AdminAddClient() {
                             <Card className="bg-muted">
                               <CardContent className="pt-6">
                                 <div className="space-y-3">
-                                  <Label className="text-base font-semibold">Is this for Current or Prior Employment?</Label>
                                   <div className="flex gap-4">
                                     <div className="flex items-center space-x-2">
                                       <input
@@ -8359,7 +8358,7 @@ export default function AdminAddClient() {
                                         name={`employment-type-${propertyId}`}
                                         data-testid={`radio-employment-current-${propertyId}`}
                                       />
-                                      <Label htmlFor={`employment-current-${propertyId}`}>Current</Label>
+                                      <Label htmlFor={`employment-current-${propertyId}`}>Current Employer</Label>
                                     </div>
                                     
                                     <div className="flex items-center space-x-2">
@@ -8369,7 +8368,7 @@ export default function AdminAddClient() {
                                         name={`employment-type-${propertyId}`}
                                         data-testid={`radio-employment-prior-${propertyId}`}
                                       />
-                                      <Label htmlFor={`employment-prior-${propertyId}`}>Prior</Label>
+                                      <Label htmlFor={`employment-prior-${propertyId}`}>Prior Employer</Label>
                                     </div>
                                   </div>
                                 </div>
@@ -8521,18 +8520,17 @@ export default function AdminAddClient() {
                               </div>
                               
                               <div className="space-y-2 md:col-span-2">
-                                <Label htmlFor="template-employer-remote">Remote Job</Label>
+                                <Label htmlFor="template-employer-employment-type">Full-Time / Part-Time</Label>
                                 <Select
                                   value=""
                                   onValueChange={() => {}}
                                 >
-                                  <SelectTrigger data-testid="select-template-employer-remote">
-                                    <SelectValue placeholder="Select" />
+                                  <SelectTrigger data-testid="select-template-employer-employment-type">
+                                    <SelectValue placeholder="Select type" />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    <SelectItem value="Select">Select</SelectItem>
-                                    <SelectItem value="Yes">Yes</SelectItem>
-                                    <SelectItem value="No">No</SelectItem>
+                                    <SelectItem value="Full-Time">Full-Time</SelectItem>
+                                    <SelectItem value="Part-Time">Part-Time</SelectItem>
                                   </SelectContent>
                                 </Select>
                               </div>
