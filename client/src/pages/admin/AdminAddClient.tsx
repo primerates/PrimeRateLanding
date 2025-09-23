@@ -18,7 +18,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, Trash2 } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign } from 'lucide-react';
 import { SiZillow } from 'react-icons/si';
 import { MdRealEstateAgent } from 'react-icons/md';
 import { FaHome } from 'react-icons/fa';
@@ -6531,7 +6531,7 @@ export default function AdminAddClient() {
                     </div>
                   </div>
                   
-                  <div className="space-y-2">
+                  <div className="space-y-2 max-w-[50%]">
                     <Label htmlFor="income-frontDTI">Front DTI</Label>
                     <Controller
                       control={form.control}
@@ -6546,13 +6546,12 @@ export default function AdminAddClient() {
                           }}
                           placeholder="%"
                           data-testid="input-income-frontDTI"
-                          className="w-1/2"
                         />
                       )}
                     />
                   </div>
                   
-                  <div className="space-y-2">
+                  <div className="space-y-2 max-w-[50%]">
                     <Label htmlFor="income-backDTI">Back DTI</Label>
                     <Controller
                       control={form.control}
@@ -6567,7 +6566,6 @@ export default function AdminAddClient() {
                           }}
                           placeholder="%"
                           data-testid="input-income-backDTI"
-                          className="w-1/2"
                         />
                       )}
                     />
@@ -6950,12 +6948,12 @@ export default function AdminAddClient() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive border border-destructive/20"
+                                className="h-8 w-8 text-black hover:bg-orange-500 hover:text-white border border-gray-300"
                                 onClick={removeBorrowerPriorEmployer}
                                 data-testid="button-delete-borrower-prior-employer"
                                 title="Delete Prior Employer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                X
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
@@ -7232,12 +7230,12 @@ export default function AdminAddClient() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive border border-destructive/20"
+                                className="h-8 w-8 text-black hover:bg-orange-500 hover:text-white border border-gray-300"
                                 onClick={removeBorrowerSecondPriorEmployer}
                                 data-testid="button-delete-borrower-second-prior-employer"
                                 title="Delete Prior Employer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                X
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
@@ -8601,12 +8599,12 @@ export default function AdminAddClient() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive border border-destructive/20"
+                                className="h-8 w-8 text-black hover:bg-orange-500 hover:text-white border border-gray-300"
                                 onClick={removeCoBorrowerPriorEmployer}
                                 data-testid="button-delete-coborrower-prior-employer"
                                 title="Delete Prior Employer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                X
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
@@ -8885,12 +8883,12 @@ export default function AdminAddClient() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive border border-destructive/20"
+                                className="h-8 w-8 text-black hover:bg-orange-500 hover:text-white border border-gray-300"
                                 onClick={removeCoBorrowerSecondPriorEmployer}
                                 data-testid="button-delete-coborrower-second-prior-employer"
                                 title="Delete Prior Employer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                X
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
