@@ -8326,7 +8326,7 @@ export default function AdminAddClient() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-8">
                             <CardTitle className={`flex items-center gap-2 ${primaryProperty.isSubject ? 'text-green-600' : ''}`}>
-                              Primary Residence
+                              Template
                               {primaryProperty.isSubject && (
                                 <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
                                   - Subject Property
