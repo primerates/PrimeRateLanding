@@ -1057,6 +1057,7 @@ export default function AdminAddClient() {
         otherIncomeMonthlyAmount: '',
         frontDTI: '',
         backDTI: '',
+        guidelineDTI: '',
       },
       coBorrowerIncome: {
         incomeTypes: {
@@ -1133,6 +1134,7 @@ export default function AdminAddClient() {
         otherIncomeMonthlyAmount: '',
         frontDTI: '',
         backDTI: '',
+        guidelineDTI: '',
       },
       property: {
         estimatedLTV: '',
@@ -6517,7 +6519,7 @@ export default function AdminAddClient() {
             <TabsContent value="income" className="space-y-6">
               {/* Household Income Summary */}
               <Card>
-                <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6">
+                <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
                   <div className="space-y-2">
                     <Label htmlFor="household-income-total" className="text-2xl font-semibold">Total Household Income</Label>
                     <div 
@@ -6531,7 +6533,7 @@ export default function AdminAddClient() {
                     </div>
                   </div>
                   
-                  <div className="space-y-2 max-w-[50%]">
+                  <div className="space-y-2">
                     <Label htmlFor="income-frontDTI">Front DTI</Label>
                     <Controller
                       control={form.control}
@@ -6551,7 +6553,7 @@ export default function AdminAddClient() {
                     />
                   </div>
                   
-                  <div className="space-y-2 max-w-[50%]">
+                  <div className="space-y-2">
                     <Label htmlFor="income-backDTI">Back DTI</Label>
                     <Controller
                       control={form.control}
@@ -6566,6 +6568,26 @@ export default function AdminAddClient() {
                           }}
                           placeholder="%"
                           data-testid="input-income-backDTI"
+                        />
+                      )}
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="income-guidelineDTI">Guideline DTI</Label>
+                    <Controller
+                      control={form.control}
+                      name="income.guidelineDTI"
+                      render={({ field }) => (
+                        <Input
+                          id="income-guidelineDTI"
+                          value={formatPercentageDisplay(field.value)}
+                          onChange={(e) => {
+                            const rawValue = parsePercentageInput(e.target.value);
+                            field.onChange(rawValue);
+                          }}
+                          placeholder="%"
+                          data-testid="input-income-guidelineDTI"
                         />
                       )}
                     />

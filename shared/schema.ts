@@ -173,6 +173,7 @@ export const incomeSchema = z.object({
   // DTI fields
   frontDTI: z.string().optional(),
   backDTI: z.string().optional(),
+  guidelineDTI: z.string().optional(),
 });
 
 // Loan details schema for property loan information
