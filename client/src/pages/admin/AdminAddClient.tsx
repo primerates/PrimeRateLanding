@@ -8027,11 +8027,13 @@ export default function AdminAddClient() {
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.employment') && (() => {
                 // Check if showing months or years based on toggle state
                 if (isCoBorrowerShowingMonthsEmployed) {
-                  const months = parseInt(form.watch('coBorrowerIncome.yearsEmployedMonths') || '0');
-                  return months < 24;
+                  const monthsValue = form.watch('coBorrowerIncome.yearsEmployedMonths') || '';
+                  const months = parseInt(monthsValue);
+                  return monthsValue !== '' && !isNaN(months) && months < 24;
                 } else {
-                  const years = parseInt(form.watch('coBorrowerIncome.yearsEmployedYears') || '0');
-                  return years < 2;
+                  const yearsValue = form.watch('coBorrowerIncome.yearsEmployedYears') || '';
+                  const years = parseInt(yearsValue);
+                  return yearsValue !== '' && !isNaN(years) && years < 2;
                 }
               })() && (
                 <Card>
