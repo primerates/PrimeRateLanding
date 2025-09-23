@@ -6002,6 +6002,8 @@ export default function AdminAddClient() {
                     </CollapsibleContent>
                   </Collapsible>
                 </Card>
+                </>
+                )}
 
                 {/* Prior Co-Borrower Residence Address - Show if less than 2 years at current address */}
                 {(() => {
@@ -6296,6 +6298,8 @@ export default function AdminAddClient() {
                     </Card>
                   ))}
                 </>
+              )}
+              </>
               )}
             </TabsContent>
 
