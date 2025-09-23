@@ -6823,6 +6823,25 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor="income-prior-bonusIncome" className="text-sm">
+                                  {isShowingAnnualBonus ? 'Annual Bonus' : 'Monthly Bonus'}
+                                </Label>
+                                <Switch
+                                  checked={isShowingAnnualBonus}
+                                  onCheckedChange={setIsShowingAnnualBonus}
+                                  data-testid="toggle-income-prior-bonus"
+                                />
+                              </div>
+                              <Input
+                                id="income-prior-bonusIncome"
+                                {...form.register(isShowingAnnualBonus ? 'income.priorAnnualBonusIncome' : 'income.priorMonthlyBonusIncome')}
+                                placeholder="$0.00"
+                                data-testid="input-income-prior-bonusIncome"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
                               <Label htmlFor="income-priorEmploymentType">Full-Time / Part-Time</Label>
                               <Select
                                 value={form.watch('income.priorEmploymentType') || ''}
@@ -6839,27 +6858,24 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="income-prior-years">Years Employed</Label>
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor="income-prior-employment-duration" className="text-sm">
+                                  {isShowingMonthsEmployed ? 'Months Employed' : 'Years Employed'}
+                                </Label>
+                                <Switch
+                                  checked={isShowingMonthsEmployed}
+                                  onCheckedChange={setIsShowingMonthsEmployed}
+                                  data-testid="toggle-income-prior-employment-duration"
+                                />
+                              </div>
                               <Input
-                                id="income-prior-years"
+                                id="income-prior-employment-duration"
                                 type="number"
                                 min="0"
-                                max="99"
-                                {...form.register('income.priorYearsEmployedYears')}
-                                data-testid="input-income-prior-years"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="income-prior-months">Months Employed</Label>
-                              <Input
-                                id="income-prior-months"
-                                type="number"
-                                min="0"
-                                max="11"
-                                placeholder="0"
-                                {...form.register('income.priorYearsEmployedMonths')}
-                                data-testid="input-income-prior-months"
+                                max={isShowingMonthsEmployed ? "999" : "99"}
+                                {...form.register(isShowingMonthsEmployed ? 'income.priorYearsEmployedMonths' : 'income.priorYearsEmployedYears')}
+                                placeholder={isShowingMonthsEmployed ? "Enter Months" : "Enter Years"}
+                                data-testid="input-income-prior-employment-duration"
                               />
                             </div>
                           </div>
@@ -8072,12 +8088,28 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-prior-employer-phone">Employer Phone</Label>
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor="coBorrowerIncome-prior-employer-phone" className="text-xs">
+                                  {form.watch('coBorrowerIncome.priorIsShowingEmploymentVerification') ? 'Employment Verification' : 'Employer Phone'}
+                                </Label>
+                                <Switch
+                                  checked={form.watch('coBorrowerIncome.priorIsShowingEmploymentVerification') || false}
+                                  onCheckedChange={(checked) => form.setValue('coBorrowerIncome.priorIsShowingEmploymentVerification', checked)}
+                                  data-testid="toggle-coborrower-prior-employment-verification"
+                                />
+                              </div>
                               <Input
                                 id="coBorrowerIncome-prior-employer-phone"
                                 placeholder="(XXX) XXX-XXXX"
-                                value={form.watch('coBorrowerIncome.priorEmployerPhone') || ''}
-                                onChange={(e) => handlePhoneChange('coBorrowerIncome.priorEmployerPhone', e.target.value)}
+                                value={form.watch('coBorrowerIncome.priorIsShowingEmploymentVerification') 
+                                  ? (form.watch('coBorrowerIncome.priorEmploymentVerificationPhone') || '')
+                                  : (form.watch('coBorrowerIncome.priorEmployerPhone') || '')}
+                                onChange={(e) => {
+                                  const fieldName = form.watch('coBorrowerIncome.priorIsShowingEmploymentVerification') 
+                                    ? 'coBorrowerIncome.priorEmploymentVerificationPhone'
+                                    : 'coBorrowerIncome.priorEmployerPhone';
+                                  handlePhoneChange(fieldName, e.target.value);
+                                }}
                                 data-testid="input-coBorrowerIncome-prior-employer-phone"
                               />
                             </div>
@@ -8102,6 +8134,25 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor="coBorrowerIncome-prior-bonusIncome" className="text-sm">
+                                  {isCoBorrowerShowingAnnualBonus ? 'Annual Bonus' : 'Monthly Bonus'}
+                                </Label>
+                                <Switch
+                                  checked={isCoBorrowerShowingAnnualBonus}
+                                  onCheckedChange={setIsCoBorrowerShowingAnnualBonus}
+                                  data-testid="toggle-coBorrowerIncome-prior-bonus"
+                                />
+                              </div>
+                              <Input
+                                id="coBorrowerIncome-prior-bonusIncome"
+                                {...form.register(isCoBorrowerShowingAnnualBonus ? 'coBorrowerIncome.priorAnnualBonusIncome' : 'coBorrowerIncome.priorMonthlyBonusIncome')}
+                                placeholder="$0.00"
+                                data-testid="input-coBorrowerIncome-prior-bonusIncome"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
                               <Label htmlFor="coBorrowerIncome-priorEmploymentType">Full-Time / Part-Time</Label>
                               <Select
                                 value={form.watch('coBorrowerIncome.priorEmploymentType') || ''}
@@ -8118,27 +8169,24 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-prior-years">Years Employed</Label>
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor="coBorrowerIncome-prior-employment-duration" className="text-sm">
+                                  {isCoBorrowerShowingMonthsEmployed ? 'Months Employed' : 'Years Employed'}
+                                </Label>
+                                <Switch
+                                  checked={isCoBorrowerShowingMonthsEmployed}
+                                  onCheckedChange={setIsCoBorrowerShowingMonthsEmployed}
+                                  data-testid="toggle-coBorrowerIncome-prior-employment-duration"
+                                />
+                              </div>
                               <Input
-                                id="coBorrowerIncome-prior-years"
+                                id="coBorrowerIncome-prior-employment-duration"
                                 type="number"
                                 min="0"
-                                max="99"
-                                {...form.register('coBorrowerIncome.priorYearsEmployedYears')}
-                                data-testid="input-coborrowerIncome-prior-years"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-prior-months">Months Employed</Label>
-                              <Input
-                                id="coBorrowerIncome-prior-months"
-                                type="number"
-                                min="0"
-                                max="11"
-                                placeholder="0"
-                                {...form.register('coBorrowerIncome.priorYearsEmployedMonths')}
-                                data-testid="input-coBorrowerIncome-prior-months"
+                                max={isCoBorrowerShowingMonthsEmployed ? "999" : "99"}
+                                {...form.register(isCoBorrowerShowingMonthsEmployed ? 'coBorrowerIncome.priorYearsEmployedMonths' : 'coBorrowerIncome.priorYearsEmployedYears')}
+                                placeholder={isCoBorrowerShowingMonthsEmployed ? "Enter Months" : "Enter Years"}
+                                data-testid="input-coBorrowerIncome-prior-employment-duration"
                               />
                             </div>
                           </div>
