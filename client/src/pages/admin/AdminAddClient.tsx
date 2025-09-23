@@ -8459,6 +8459,85 @@ export default function AdminAddClient() {
                               </div>
                             </div>
 
+                            {/* Employer Address Row */}
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                              <div className="space-y-2 md:col-span-3">
+                                <Label htmlFor="template-employer-street">Street Address</Label>
+                                <Input
+                                  id="template-employer-street"
+                                  data-testid="input-template-employer-street"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor="template-employer-unit">Unit/Suite</Label>
+                                <Input
+                                  id="template-employer-unit"
+                                  data-testid="input-template-employer-unit"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor="template-employer-city">City</Label>
+                                <Input
+                                  id="template-employer-city"
+                                  data-testid="input-template-employer-city"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor="template-employer-state">State</Label>
+                                <Select
+                                  value=""
+                                  onValueChange={() => {}}
+                                >
+                                  <SelectTrigger data-testid="select-template-employer-state">
+                                    <SelectValue placeholder="State" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {US_STATES.map((state) => (
+                                      <SelectItem key={state.value} value={state.value}>
+                                        {state.value}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor="template-employer-zip">ZIP Code</Label>
+                                <Input
+                                  id="template-employer-zip"
+                                  data-testid="input-template-employer-zip"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor="template-employer-county">County</Label>
+                                <Input
+                                  id="template-employer-county"
+                                  data-testid="input-template-employer-county"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor="template-employer-remote">Remote Job</Label>
+                                <Select
+                                  value=""
+                                  onValueChange={() => {}}
+                                >
+                                  <SelectTrigger data-testid="select-template-employer-remote">
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="Select">Select</SelectItem>
+                                    <SelectItem value="Yes">Yes</SelectItem>
+                                    <SelectItem value="No">No</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+
                           </div>
                         </CardContent>
                       </CollapsibleContent>
