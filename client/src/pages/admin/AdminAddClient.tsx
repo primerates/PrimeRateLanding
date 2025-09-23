@@ -9540,27 +9540,39 @@ export default function AdminAddClient() {
                                             data-testid={`indicator-secured-loan-1-${property.id}`}
                                           />
                                           <div 
-                                            className={`w-3 h-3 rounded-full border-2 ${
+                                            className={`w-3 h-3 rounded-full border-2 cursor-pointer ${
                                               isSecondLoanAttached
-                                                ? 'bg-purple-500 border-purple-500'
+                                                ? 'bg-purple-500 border-purple-500 hover:bg-purple-600'
                                                 : 'bg-gray-200 border-gray-300'
                                             }`}
                                             style={{
                                               backgroundColor: isSecondLoanAttached ? '#8b5cf6' : '#e5e7eb',
                                               borderColor: isSecondLoanAttached ? '#8b5cf6' : '#d1d5db'
                                             }}
+                                            onClick={() => {
+                                              if (isSecondLoanAttached) {
+                                                setIsCurrentSecondLoanPreviewOpen(true);
+                                              }
+                                            }}
+                                            title={isSecondLoanAttached ? "View Current Loan 2 Details" : ""}
                                             data-testid={`indicator-secured-loan-2-${property.id}`}
                                           />
                                           <div 
-                                            className={`w-3 h-3 rounded-full border-2 ${
+                                            className={`w-3 h-3 rounded-full border-2 cursor-pointer ${
                                               isThirdLoanAttached
-                                                ? 'bg-orange-500 border-orange-500'
+                                                ? 'bg-orange-500 border-orange-500 hover:bg-orange-600'
                                                 : 'bg-gray-200 border-gray-300'
                                             }`}
                                             style={{
                                               backgroundColor: isThirdLoanAttached ? '#f97316' : '#e5e7eb',
                                               borderColor: isThirdLoanAttached ? '#f97316' : '#d1d5db'
                                             }}
+                                            onClick={() => {
+                                              if (isThirdLoanAttached) {
+                                                setIsCurrentThirdLoanPreviewOpen(true);
+                                              }
+                                            }}
+                                            title={isThirdLoanAttached ? "View Current Loan 3 Details" : ""}
                                             data-testid={`indicator-secured-loan-3-${property.id}`}
                                           />
                                         </div>
