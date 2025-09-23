@@ -9247,7 +9247,7 @@ export default function AdminAddClient() {
                             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
                               <div className="space-y-2 md:col-span-2">
                                 <div className="flex items-center gap-2">
-                                  <Label htmlFor={`property-purchase-price-${propertyId}`}>Purchased</Label>
+                                  <Label htmlFor={`property-purchase-price-${propertyId}`}>Purchase Price</Label>
                                   <Button
                                     type="button"
                                     variant="ghost"
@@ -9401,7 +9401,7 @@ export default function AdminAddClient() {
                                         type="button"
                                         variant="ghost"
                                         size="sm"
-                                        className="p-1 h-auto text-gray-600 hover:text-gray-800"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
                                         onClick={() => openValuationSummary(index)}
                                         data-testid={`button-valuation-info-${propertyId}`}
                                         title="View all valuation estimates"
@@ -9422,7 +9422,7 @@ export default function AdminAddClient() {
                               
                               <div className="space-y-2 md:col-span-2">
                                 <div className="flex items-center gap-2">
-                                  <Label htmlFor={`property-appraised-value-${propertyId}`}>Appraised</Label>
+                                  <Label htmlFor={`property-appraised-value-${propertyId}`}>Appraised Value</Label>
                                   <Button
                                     type="button"
                                     variant="ghost"
