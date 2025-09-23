@@ -4972,7 +4972,7 @@ export default function AdminAddClient() {
                     <Input
                       id="borrower-leadRef"
                       {...form.register(isShowingDMBatch ? 'borrower.dmBatch' : 'borrower.leadRef')}
-                      placeholder={isShowingDMBatch ? "Enter" : "Enter"}
+                      placeholder=""
                       data-testid="input-borrower-leadRef"
                     />
                   </div>
@@ -5021,7 +5021,7 @@ export default function AdminAddClient() {
                     <Input
                       id="borrower-loanDuration"
                       {...form.register('borrower.loanDuration')}
-                      placeholder="Enter"
+                      placeholder=""
                       data-testid="input-borrower-loanDuration"
                     />
                   </div>
@@ -5223,7 +5223,7 @@ export default function AdminAddClient() {
                 <Collapsible open={isBorrowerResidenceOpen} onOpenChange={setIsBorrowerResidenceOpen}>
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <CardTitle>Borrower - Residence</CardTitle>
+                      <CardTitle>Borrower Residence</CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <CollapsibleTrigger asChild>
@@ -5359,7 +5359,7 @@ export default function AdminAddClient() {
                         <Input
                           id="borrower-residence-county"
                           {...form.register('borrower.residenceAddress.county')}
-                          placeholder={countyLookupLoading.borrower ? "Looking up counties..." : "Enter"}
+                          placeholder={countyLookupLoading.borrower ? "Looking up counties..." : ""}
                           disabled={countyLookupLoading.borrower}
                           data-testid="input-borrower-residence-county"
                         />
@@ -5550,7 +5550,7 @@ export default function AdminAddClient() {
                             <Input
                               id="borrower-prior-county"
                               {...form.register('borrower.priorResidenceAddress.county')}
-                              placeholder={countyLookupLoading.borrowerPrior ? "Looking up counties..." : "Enter"}
+                              placeholder={countyLookupLoading.borrowerPrior ? "Looking up counties..." : ""}
                               disabled={countyLookupLoading.borrowerPrior}
                               data-testid="input-borrower-prior-county"
                             />
@@ -5683,7 +5683,7 @@ export default function AdminAddClient() {
                         <Label htmlFor={`borrower-prior-county-${address.id}`}>County</Label>
                         <Input
                           id={`borrower-prior-county-${address.id}`}
-                          placeholder="County"
+                          placeholder=""
                           data-testid={`input-borrower-prior-county-${address.id}`}
                         />
                       </div>
@@ -5853,7 +5853,7 @@ export default function AdminAddClient() {
                 <Card>
                   <Collapsible open={isCoBorrowerResidenceOpen} onOpenChange={setIsCoBorrowerResidenceOpen}>
                     <CardHeader className="flex flex-row items-center justify-between">
-                      <CardTitle>Co-Borrower - Residence</CardTitle>
+                      <CardTitle>Co-Borrower Residence</CardTitle>
                       <div className="flex items-center gap-2">
                         <Button
                           type="button"
@@ -6000,7 +6000,7 @@ export default function AdminAddClient() {
                           <Input
                             id="coBorrower-residence-county"
                             {...form.register('coBorrower.residenceAddress.county')}
-                            placeholder={countyLookupLoading.coBorrower ? "Looking up counties..." : "Enter"}
+                            placeholder={countyLookupLoading.coBorrower ? "Looking up counties..." : ""}
                             disabled={countyLookupLoading.coBorrower}
                             data-testid="input-coborrower-residence-county"
                           />
@@ -6198,7 +6198,7 @@ export default function AdminAddClient() {
                                 <Input
                                   id="coBorrower-prior-county"
                                   {...form.register('coBorrower.priorResidenceAddress.county')}
-                                  placeholder={countyLookupLoading.coBorrowerPrior ? "Looking up counties..." : "Enter"}
+                                  placeholder={countyLookupLoading.coBorrowerPrior ? "Looking up counties..." : ""}
                                   disabled={countyLookupLoading.coBorrowerPrior}
                                   data-testid="input-coborrower-prior-county"
                                 />
@@ -6329,7 +6329,7 @@ export default function AdminAddClient() {
                             <Label htmlFor={`coBorrower-prior-county-${address.id}`}>County</Label>
                             <Input
                               id={`coBorrower-prior-county-${address.id}`}
-                              placeholder="County"
+                              placeholder=""
                               data-testid={`input-coborrower-prior-county-${address.id}`}
                             />
                           </div>
