@@ -5662,32 +5662,8 @@ export default function AdminAddClient() {
 
               {/* Co-Borrower Section */}
 <Card className="mt-16 border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
-                <CardHeader className="flex flex-row items-center justify-between">
+                <CardHeader>
                   <CardTitle>Co-Borrower</CardTitle>
-                  {!hasCoBorrower ? (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={addCoBorrower}
-                      className="hover:bg-orange-500 hover:text-white"
-                      data-testid="button-add-coborrower"
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Co-Borrower
-                    </Button>
-                  ) : (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={removeCoBorrower}
-                      className="hover:bg-orange-500 hover:text-white"
-                      data-testid="button-remove-coborrower"
-                    >
-                      Remove Co-Borrower
-                    </Button>
-                  )}
                 </CardHeader>
                 {hasCoBorrower && (
                   <CardContent className="space-y-4">
