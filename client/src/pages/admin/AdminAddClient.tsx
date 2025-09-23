@@ -6759,7 +6759,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isEmploymentIncomeOpen} onOpenChange={setIsEmploymentIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Borrower Employer</CardTitle>
+                        <CardTitle>Old Template</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button 
                             variant="ghost" 
@@ -8323,7 +8323,7 @@ export default function AdminAddClient() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-8">
                             <CardTitle className="flex items-center gap-2">
-                              Template
+                              Borrower Employer
                             </CardTitle>
                           </div>
                           <div className="flex items-center gap-2">
