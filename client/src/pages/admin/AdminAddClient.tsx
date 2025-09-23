@@ -677,6 +677,14 @@ export default function AdminAddClient() {
   const [isCoBorrowerResidenceOpen, setIsCoBorrowerResidenceOpen] = useState(false);
   const [isCoBorrowerPriorResidenceOpen, setIsCoBorrowerPriorResidenceOpen] = useState(false);
 
+  // Employment toggle states - Years/Months Employed
+  const [isShowingMonthsEmployed, setIsShowingMonthsEmployed] = useState(false);
+  const [isCoBorrowerShowingMonthsEmployed, setIsCoBorrowerShowingMonthsEmployed] = useState(false);
+  
+  // Employment toggle states - Monthly/Annual Bonus Income  
+  const [isShowingAnnualBonus, setIsShowingAnnualBonus] = useState(false);
+  const [isCoBorrowerShowingAnnualBonus, setIsCoBorrowerShowingAnnualBonus] = useState(false);
+
   // Revenue toggle states for self-employment
   const [isShowingNetRevenue, setIsShowingNetRevenue] = useState(false);
   const [isCoBorrowerShowingNetRevenue, setIsCoBorrowerShowingNetRevenue] = useState(false);
@@ -6574,6 +6582,25 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor="income-bonusIncome" className="text-sm">
+                                  {isShowingAnnualBonus ? 'Annual Bonus Income' : 'Monthly Bonus Income'}
+                                </Label>
+                                <Switch
+                                  checked={isShowingAnnualBonus}
+                                  onCheckedChange={setIsShowingAnnualBonus}
+                                  data-testid="toggle-income-bonus"
+                                />
+                              </div>
+                              <Input
+                                id="income-bonusIncome"
+                                {...form.register(isShowingAnnualBonus ? 'income.annualBonusIncome' : 'income.monthlyBonusIncome')}
+                                placeholder="$0.00"
+                                data-testid="input-income-bonusIncome"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
                               <Label htmlFor="income-employmentType">Full-Time / Part-Time</Label>
                               <Select
                                 value={form.watch('income.employmentType') || ''}
@@ -6590,27 +6617,24 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="income-years">Years Employed</Label>
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor="income-employment-duration" className="text-sm">
+                                  {isShowingMonthsEmployed ? 'Months Employed' : 'Years Employed'}
+                                </Label>
+                                <Switch
+                                  checked={isShowingMonthsEmployed}
+                                  onCheckedChange={setIsShowingMonthsEmployed}
+                                  data-testid="toggle-income-employment-duration"
+                                />
+                              </div>
                               <Input
-                                id="income-years"
+                                id="income-employment-duration"
                                 type="number"
                                 min="0"
-                                max="99"
-                                {...form.register('income.yearsEmployedYears')}
-                                data-testid="input-income-years"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="income-months">Months Employed</Label>
-                              <Input
-                                id="income-months"
-                                type="number"
-                                min="0"
-                                max="11"
-                                placeholder="0"
-                                {...form.register('income.yearsEmployedMonths')}
-                                data-testid="input-income-months"
+                                max={isShowingMonthsEmployed ? "999" : "99"}
+                                {...form.register(isShowingMonthsEmployed ? 'income.yearsEmployedMonths' : 'income.yearsEmployedYears')}
+                                placeholder="Enter"
+                                data-testid="input-income-employment-duration"
                               />
                             </div>
                           </div>
@@ -7847,6 +7871,25 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor="coBorrowerIncome-bonusIncome" className="text-sm">
+                                  {isCoBorrowerShowingAnnualBonus ? 'Annual Bonus Income' : 'Monthly Bonus Income'}
+                                </Label>
+                                <Switch
+                                  checked={isCoBorrowerShowingAnnualBonus}
+                                  onCheckedChange={setIsCoBorrowerShowingAnnualBonus}
+                                  data-testid="toggle-coBorrowerIncome-bonus"
+                                />
+                              </div>
+                              <Input
+                                id="coBorrowerIncome-bonusIncome"
+                                {...form.register(isCoBorrowerShowingAnnualBonus ? 'coBorrowerIncome.annualBonusIncome' : 'coBorrowerIncome.monthlyBonusIncome')}
+                                placeholder="$0.00"
+                                data-testid="input-coBorrowerIncome-bonusIncome"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
                               <Label htmlFor="coBorrowerIncome-employmentType">Full-Time / Part-Time</Label>
                               <Select
                                 value={form.watch('coBorrowerIncome.employmentType') || ''}
@@ -7863,27 +7906,24 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-years">Years Employed</Label>
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor="coBorrowerIncome-employment-duration" className="text-sm">
+                                  {isCoBorrowerShowingMonthsEmployed ? 'Months Employed' : 'Years Employed'}
+                                </Label>
+                                <Switch
+                                  checked={isCoBorrowerShowingMonthsEmployed}
+                                  onCheckedChange={setIsCoBorrowerShowingMonthsEmployed}
+                                  data-testid="toggle-coBorrowerIncome-employment-duration"
+                                />
+                              </div>
                               <Input
-                                id="coBorrowerIncome-years"
+                                id="coBorrowerIncome-employment-duration"
                                 type="number"
                                 min="0"
-                                max="99"
-                                {...form.register('coBorrowerIncome.yearsEmployedYears')}
-                                data-testid="input-coborrowerIncome-years"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-months">Months Employed</Label>
-                              <Input
-                                id="coBorrowerIncome-months"
-                                type="number"
-                                min="0"
-                                max="11"
-                                placeholder="0"
-                                {...form.register('coBorrowerIncome.yearsEmployedMonths')}
-                                data-testid="input-coborrowerIncome-months"
+                                max={isCoBorrowerShowingMonthsEmployed ? "999" : "99"}
+                                {...form.register(isCoBorrowerShowingMonthsEmployed ? 'coBorrowerIncome.yearsEmployedMonths' : 'coBorrowerIncome.yearsEmployedYears')}
+                                placeholder="Enter"
+                                data-testid="input-coBorrowerIncome-employment-duration"
                               />
                             </div>
                           </div>
