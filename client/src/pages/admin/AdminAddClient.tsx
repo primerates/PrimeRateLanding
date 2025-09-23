@@ -9245,7 +9245,7 @@ export default function AdminAddClient() {
 
                             {/* Property Details - Row 2: Purchase Price, Owned Since, Title Held By, Estimated Property Value, Appraised Value, Secured First Loan, Secured Second Loan */}
                             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
-                              <div className="space-y-2 md:col-span-1">
+                              <div className="space-y-2 md:col-span-2">
                                 <div className="flex items-center gap-2">
                                   <Label htmlFor={`property-purchase-price-${propertyId}`}>Purchased</Label>
                                   <Button
@@ -9420,7 +9420,7 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
-                              <div className="space-y-2 md:col-span-1">
+                              <div className="space-y-2 md:col-span-2">
                                 <div className="flex items-center gap-2">
                                   <Label htmlFor={`property-appraised-value-${propertyId}`}>Appraised</Label>
                                   <Button
@@ -9584,94 +9584,6 @@ export default function AdminAddClient() {
                                     </div>
                                   );
                                 })()}
-                              </div>
-                              
-                              <div className="space-y-2 md:col-span-2">
-                                <div className="min-h-5 flex items-center gap-2">
-                                  <div className="flex items-center gap-2">
-                                    <Label htmlFor={`property-active-second-loan-${propertyId}`}>Secured Second Loan</Label>
-                                    {(() => {
-                                      // Check second loan and additional loans for attachment to this property
-                                      const currentProperty = property;
-                                      
-                                      // Check second loan
-                                      const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
-                                      const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
-                                      
-                                      // Check additional loans (loan3, loan4, loan5, etc.) - excluding currentLoan since that's covered by first indicator
-                                      const additionalLoansData = additionalLoans || [];
-                                      const isAdditionalLoanAttached = additionalLoansData.some(loan => {
-                                        const attachedPropertyId = getDyn(`${loan.id}.attachedToProperty`);
-                                        return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
-                                      });
-                                      
-                                      const hasSecondaryLoanAttached = isSecondLoanAttached || isAdditionalLoanAttached;
-                                      
-                                      return (
-                                        <div 
-                                          className={`w-3 h-3 rounded-full border-2 ${
-                                            hasSecondaryLoanAttached 
-                                              ? 'bg-green-500 border-green-500' 
-                                              : 'bg-gray-200 border-gray-300'
-                                          }`}
-                                          style={{
-                                            backgroundColor: hasSecondaryLoanAttached ? '#10b981' : '#e5e7eb',
-                                            borderColor: hasSecondaryLoanAttached ? '#10b981' : '#d1d5db'
-                                          }}
-                                          data-testid={`indicator-secured-second-loan-${property.id}`}
-                                        />
-                                      );
-                                    })()}
-                                  </div>
-                                  {(() => {
-                                    const attachedPropertyId = form.watch('secondLoan.attachedToProperty');
-                                    const currentProperty = property;
-                                    const isAttachedToCurrentProperty = Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
-                                    
-                                    return (
-                                      <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="sm"
-                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                                        onClick={() => {
-                                          if (isAttachedToCurrentProperty) {
-                                            setIsCurrentSecondLoanPreviewOpen(true);
-                                          }
-                                        }}
-                                        title="View Current Loan 2 Details"
-                                        data-testid="button-current-second-loan-info"
-                                      >
-                                        <Info className="h-4 w-4" />
-                                      </Button>
-                                    );
-                                  })()}
-                                </div>
-                                <Select
-                                  value={form.watch(`property.properties.${index}.activeSecondLoan` as const) || ''}
-                                  onValueChange={(value) => {
-                                    form.setValue(`property.properties.${index}.activeSecondLoan` as const, value);
-                                    // Clear secondLoan data when toggled to "no" for data hygiene
-                                    if (value !== 'yes') {
-                                      form.setValue(`property.properties.${index}.secondLoan` as const, {
-                                        lenderName: '',
-                                        loanNumber: '',
-                                        mortgageBalance: '',
-                                        piPayment: '',
-                                        escrowPayment: '',
-                                        totalMonthlyPayment: '',
-                                      });
-                                    }
-                                  }}
-                                >
-                                  <SelectTrigger data-testid={`select-property-active-second-loan-${propertyId}`}>
-                                    <SelectValue placeholder="Select" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="yes">Yes</SelectItem>
-                                    <SelectItem value="no">No</SelectItem>
-                                  </SelectContent>
-                                </Select>
                               </div>
                             </div>
 
