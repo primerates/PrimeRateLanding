@@ -808,6 +808,9 @@ export default function AdminAddClient() {
   const [isShowingMonthsEmployed, setIsShowingMonthsEmployed] = useState(false);
   const [isCoBorrowerShowingMonthsEmployed, setIsCoBorrowerShowingMonthsEmployed] = useState(false);
   
+  // Guideline DTI toggle state - Guideline DTI / Guideline - Front DTI
+  const [isShowingGuidelineFrontDTI, setIsShowingGuidelineFrontDTI] = useState(false);
+  
   // Employment toggle states - Monthly/Annual Bonus Income  
   const [isShowingAnnualBonus, setIsShowingAnnualBonus] = useState(false);
   const [isCoBorrowerShowingAnnualBonus, setIsCoBorrowerShowingAnnualBonus] = useState(false);
@@ -6574,7 +6577,16 @@ export default function AdminAddClient() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="income-guidelineDTI">Guideline DTI</Label>
+                    <div className="flex items-center justify-between mb-2">
+                      <Label htmlFor="income-guidelineDTI" className="text-sm">
+                        {isShowingGuidelineFrontDTI ? 'Guideline - Front DTI' : 'Guideline DTI'}
+                      </Label>
+                      <Switch
+                        checked={isShowingGuidelineFrontDTI}
+                        onCheckedChange={setIsShowingGuidelineFrontDTI}
+                        data-testid="toggle-guideline-dti"
+                      />
+                    </div>
                     <Controller
                       control={form.control}
                       name="income.guidelineDTI"
