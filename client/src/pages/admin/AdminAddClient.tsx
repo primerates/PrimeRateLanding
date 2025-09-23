@@ -8318,7 +8318,7 @@ export default function AdminAddClient() {
               )}
 
               {/* Borrower Employer Cards */}
-              {borrowerEmployerCards.map((cardId, index) => {
+              {(borrowerEmployerCards || ['default']).map((cardId, index) => {
                 const propertyId = cardId === 'default' ? 'template-card' : cardId;
                 const isOpen = propertyCardStates[propertyId] ?? false;
                 
@@ -8342,7 +8342,7 @@ export default function AdminAddClient() {
                               size="sm"
                               onClick={() => {
                                 const newId = `employer-${Date.now()}`;
-                                setBorrowerEmployerCards(prev => [...prev, newId]);
+                                setBorrowerEmployerCards(prev => [...(prev || ['default']), newId]);
                               }}
                               className="hover:bg-green-500 hover:text-white"
                               data-testid="button-add-employer"
@@ -8352,7 +8352,7 @@ export default function AdminAddClient() {
                             </Button>
                             
                             {/* Delete Employer Button - only show if more than 1 card */}
-                            {borrowerEmployerCards.length > 1 && (
+                            {(borrowerEmployerCards || []).length > 1 && (
                               <Button
                                 variant="ghost"
                                 size="sm"
