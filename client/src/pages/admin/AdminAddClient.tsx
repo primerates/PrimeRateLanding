@@ -3991,8 +3991,8 @@ export default function AdminAddClient() {
       },
     };
     form.setValue('property.properties', [...currentProperties, newProperty]);
-    // Set initial collapsible state for new property
-    setPropertyCardStates(prev => ({ ...prev, [newProperty.id!]: false }));
+    // Set initial collapsible state for new property - expand Primary Residence by default
+    setPropertyCardStates(prev => ({ ...prev, [newProperty.id!]: use === 'primary' ? true : false }));
   };
 
   const removeProperty = (propertyId: string) => {
@@ -6267,7 +6267,12 @@ export default function AdminAddClient() {
                         <Checkbox
                           id="income-type-employment"
                           checked={form.watch('income.incomeTypes.employment') || false}
-                          onCheckedChange={(checked) => form.setValue('income.incomeTypes.employment', !!checked)}
+                          onCheckedChange={(checked) => {
+                            form.setValue('income.incomeTypes.employment', !!checked);
+                            if (checked) {
+                              setIsEmploymentIncomeOpen(true);
+                            }
+                          }}
                           data-testid="checkbox-employment"
                         />
                         <Label htmlFor="income-type-employment">Employment</Label>
@@ -7547,7 +7552,12 @@ export default function AdminAddClient() {
                           <Checkbox
                             id="coBorrowerIncome-type-employment"
                             checked={form.watch('coBorrowerIncome.incomeTypes.employment') || false}
-                            onCheckedChange={(checked) => form.setValue('coBorrowerIncome.incomeTypes.employment', !!checked)}
+                            onCheckedChange={(checked) => {
+                              form.setValue('coBorrowerIncome.incomeTypes.employment', !!checked);
+                              if (checked) {
+                                setIsCoBorrowerEmploymentIncomeOpen(true);
+                              }
+                            }}
                             data-testid="checkbox-coborrower-employment"
                           />
                           <Label htmlFor="coBorrowerIncome-type-employment">Employment</Label>
