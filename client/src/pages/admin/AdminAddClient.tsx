@@ -9449,7 +9449,7 @@ export default function AdminAddClient() {
                               </div>
                               
                               <div className="space-y-2 md:col-span-2">
-                                <div className="min-h-5 flex items-center gap-2">
+                                <div className="flex items-center gap-2">
                                   <div className="flex items-center gap-2">
                                     <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured Loan</Label>
                                     {(() => {
