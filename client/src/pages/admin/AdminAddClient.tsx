@@ -8465,43 +8465,43 @@ export default function AdminAddClient() {
                             {/* Employment Information - Single Row */}
                             <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
                               <div className="space-y-2">
-                                <Label htmlFor="template-employerName">Employer Name</Label>
+                                <Label htmlFor={`${propertyId}-employerName`}>Employer Name</Label>
                                 <Input
-                                  id="template-employerName"
-                                  data-testid="input-template-employerName"
+                                  id={`${propertyId}-employerName`}
+                                  data-testid={`input-${propertyId}-employerName`}
                                 />
                               </div>
                               
                               <div className="space-y-2">
                                 <div className="flex items-center justify-between mb-2">
-                                  <Label htmlFor="template-employer-phone" className="text-xs">
+                                  <Label htmlFor={`${propertyId}-employer-phone`} className="text-xs">
                                     Employer Phone
                                   </Label>
                                   <Switch
-                                    data-testid="toggle-template-employment-verification"
+                                    data-testid={`toggle-${propertyId}-employment-verification`}
                                   />
                                 </div>
                                 <Input
-                                  id="template-employer-phone"
+                                  id={`${propertyId}-employer-phone`}
                                   placeholder="(XXX) XXX-XXXX"
-                                  data-testid="input-template-employer-phone"
+                                  data-testid={`input-${propertyId}-employer-phone`}
                                 />
                               </div>
                               
                               <div className="space-y-2">
-                                <Label htmlFor="template-jobTitle">Job Title</Label>
+                                <Label htmlFor={`${propertyId}-jobTitle`}>Job Title</Label>
                                 <Input
-                                  id="template-jobTitle"
-                                  data-testid="input-template-jobTitle"
+                                  id={`${propertyId}-jobTitle`}
+                                  data-testid={`input-${propertyId}-jobTitle`}
                                 />
                               </div>
                               
                               <div className="space-y-2">
-                                <Label htmlFor="template-monthlyIncome">Gross Monthly Income</Label>
+                                <Label htmlFor={`${propertyId}-monthlyIncome`}>Gross Monthly Income</Label>
                                 <Input
-                                  id="template-monthlyIncome"
+                                  id={`${propertyId}-monthlyIncome`}
                                   placeholder="$0.00"
-                                  data-testid="input-template-monthlyIncome"
+                                  data-testid={`input-${propertyId}-monthlyIncome`}
                                 />
                               </div>
                               
