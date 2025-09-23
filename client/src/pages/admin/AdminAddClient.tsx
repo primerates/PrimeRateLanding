@@ -8308,15 +8308,9 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
-              {/* Primary Residence (Copy from Property Tab) */}
+              {/* Template Card */}
               {(() => {
-                const properties = form.watch('property.properties') || [];
-                const primaryProperty = properties.find(p => p.use === 'primary');
-                const primaryPropertyIndex = properties.findIndex(p => p.use === 'primary');
-                
-                if (!primaryProperty || primaryPropertyIndex === -1) return null;
-                
-                const propertyId = primaryProperty.id || `property-${primaryPropertyIndex}`;
+                const propertyId = 'template-card';
                 const isOpen = propertyCardStates[propertyId] ?? false;
                 
                 return (
@@ -8328,13 +8322,8 @@ export default function AdminAddClient() {
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-8">
-                            <CardTitle className={`flex items-center gap-2 ${primaryProperty.isSubject ? 'text-green-600' : ''}`}>
+                            <CardTitle className="flex items-center gap-2">
                               Template
-                              {primaryProperty.isSubject && (
-                                <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
-                                  - Subject Property
-                                </span>
-                              )}
                             </CardTitle>
                           </div>
                           <div className="flex items-center gap-2">
