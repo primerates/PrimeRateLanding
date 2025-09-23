@@ -5657,6 +5657,7 @@ export default function AdminAddClient() {
 
               {/* Co-Borrower Section - Only show when button is clicked */}
               {isCoBorrowerCardVisible && (
+                <>
                 <Card className="mt-16 border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>Co-Borrower</CardTitle>
@@ -6294,7 +6295,8 @@ export default function AdminAddClient() {
                       </CardContent>
                     </Card>
                   ))}
-                )}
+                </>
+              )}
             </TabsContent>
 
             {/* Income Tab */}
@@ -10934,6 +10936,9 @@ export default function AdminAddClient() {
         </Dialog>
       )}
 
+          </Tabs>
+        </form>
+      </div>
       </div>
     </TooltipProvider>
   );
