@@ -834,6 +834,9 @@ export default function AdminAddClient() {
   // Guideline DTI toggle state - Guideline DTI / Guideline - Front DTI
   const [isShowingGuidelineFrontDTI, setIsShowingGuidelineFrontDTI] = useState(false);
   
+  // Template card toggle state - End Date / Present
+  const [isShowingPresent, setIsShowingPresent] = useState(false);
+  
   // Employment toggle states - Monthly/Annual Bonus Income  
   const [isShowingAnnualBonus, setIsShowingAnnualBonus] = useState(false);
   const [isCoBorrowerShowingAnnualBonus, setIsCoBorrowerShowingAnnualBonus] = useState(false);
@@ -8437,23 +8440,28 @@ export default function AdminAddClient() {
                               </div>
                               
                               <div className="space-y-2">
-                                <Label htmlFor="template-endDate">End Date</Label>
+                                <div className="flex items-center justify-between mb-2">
+                                  <Label htmlFor="template-endDate" className="text-sm">
+                                    {isShowingPresent ? 'Present' : 'End Date'}
+                                  </Label>
+                                  <Switch
+                                    checked={isShowingPresent}
+                                    onCheckedChange={setIsShowingPresent}
+                                    data-testid="toggle-template-present"
+                                  />
+                                </div>
                                 <Input
                                   id="template-endDate"
-                                  placeholder="MM/DD/YYYY"
+                                  value={isShowingPresent ? 'Present' : ''}
+                                  placeholder={isShowingPresent ? 'Present' : 'MM/DD/YYYY'}
+                                  readOnly={isShowingPresent}
+                                  className={isShowingPresent ? 'bg-muted' : ''}
                                   data-testid="input-template-endDate"
                                 />
                               </div>
                               
                               <div className="space-y-2">
-                                <div className="flex items-center justify-between mb-2">
-                                  <Label htmlFor="template-employment-duration" className="text-sm">
-                                    Employment Term
-                                  </Label>
-                                  <Switch
-                                    data-testid="toggle-template-employment-duration"
-                                  />
-                                </div>
+                                <Label htmlFor="template-employment-duration">Employment Term</Label>
                                 <Input
                                   id="template-employment-duration"
                                   placeholder="0"
