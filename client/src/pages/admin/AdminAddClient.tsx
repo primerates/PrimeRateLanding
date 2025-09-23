@@ -6733,11 +6733,13 @@ export default function AdminAddClient() {
               {form.watch('income.incomeTypes.employment') && (() => {
                 // Check if showing months or years based on toggle state
                 if (isShowingMonthsEmployed) {
-                  const months = parseInt(form.watch('income.yearsEmployedMonths') || '0');
-                  return months < 24;
+                  const monthsValue = form.watch('income.yearsEmployedMonths') || '';
+                  const months = parseInt(monthsValue);
+                  return monthsValue !== '' && !isNaN(months) && months < 24;
                 } else {
-                  const years = parseInt(form.watch('income.yearsEmployedYears') || '0');
-                  return years < 2;
+                  const yearsValue = form.watch('income.yearsEmployedYears') || '';
+                  const years = parseInt(yearsValue);
+                  return yearsValue !== '' && !isNaN(years) && years < 2;
                 }
               })() && (
                 <Card>
