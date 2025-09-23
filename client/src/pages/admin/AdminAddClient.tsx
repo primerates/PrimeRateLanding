@@ -8354,19 +8354,31 @@ export default function AdminAddClient() {
                       <CollapsibleContent>
                         <CardContent>
                           <div className="space-y-6">
-                            {/* Subject Property Status (Read-only) */}
+                            {/* Employment Type Selection */}
                             <Card className="bg-muted">
                               <CardContent className="pt-6">
                                 <div className="space-y-3">
-                                  <Label className="text-base font-semibold">Subject Property Status:</Label>
-                                  <div className="flex items-center space-x-2">
-                                    <span className={`px-3 py-1 rounded text-sm font-medium ${
-                                      primaryProperty.isSubject 
-                                        ? 'bg-green-100 text-green-800 border border-green-300' 
-                                        : 'bg-gray-100 text-gray-800 border border-gray-300'
-                                    }`}>
-                                      {primaryProperty.isSubject ? 'Yes - Subject Property' : 'No - Not Subject Property'}
-                                    </span>
+                                  <Label className="text-base font-semibold">Is this for Current or Prior Employment?</Label>
+                                  <div className="flex gap-4">
+                                    <div className="flex items-center space-x-2">
+                                      <input
+                                        type="radio"
+                                        id={`employment-current-${propertyId}`}
+                                        name={`employment-type-${propertyId}`}
+                                        data-testid={`radio-employment-current-${propertyId}`}
+                                      />
+                                      <Label htmlFor={`employment-current-${propertyId}`}>Current</Label>
+                                    </div>
+                                    
+                                    <div className="flex items-center space-x-2">
+                                      <input
+                                        type="radio"
+                                        id={`employment-prior-${propertyId}`}
+                                        name={`employment-type-${propertyId}`}
+                                        data-testid={`radio-employment-prior-${propertyId}`}
+                                      />
+                                      <Label htmlFor={`employment-prior-${propertyId}`}>Prior</Label>
+                                    </div>
                                   </div>
                                 </div>
                               </CardContent>
