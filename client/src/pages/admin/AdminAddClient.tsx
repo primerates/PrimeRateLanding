@@ -9146,6 +9146,7 @@ export default function AdminAddClient() {
                                   size="sm"
                                   onClick={() => setAddPropertyDialog({ isOpen: true, propertyType: property.use as 'second-home' | 'investment' })}
                                   data-testid={`button-add-${property.use}`}
+                                  title="add"
                                 >
                                   <Plus className="h-3 w-3" />
                                 </Button>
@@ -9155,6 +9156,7 @@ export default function AdminAddClient() {
                                   size="sm"
                                   onClick={() => removeProperty(propertyId)}
                                   data-testid={`button-remove-${property.use}-${propertyId}`}
+                                  title="Delete"
                                 >
                                   <Minus className="h-3 w-3" />
                                 </Button>
