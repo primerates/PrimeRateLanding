@@ -9855,7 +9855,7 @@ export default function AdminAddClient() {
                       data-testid="button-add-current-loan"
                     >
                       <Plus className="h-4 w-4 mr-2" />
-                      Add Current Loan 1
+                      + Add Current Loan Info
                     </Button>
                   </CardContent>
                 </Card>
