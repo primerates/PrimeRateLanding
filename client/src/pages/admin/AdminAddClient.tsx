@@ -5214,7 +5214,7 @@ export default function AdminAddClient() {
                 <Collapsible open={isBorrowerResidenceOpen} onOpenChange={setIsBorrowerResidenceOpen}>
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <CardTitle>Borrower - Residence Address</CardTitle>
+                      <CardTitle>Borrower - Residence</CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <CollapsibleTrigger asChild>
@@ -5416,7 +5416,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isBorrowerPriorResidenceOpen} onOpenChange={setIsBorrowerPriorResidenceOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Borrower - Prior Residence Address</CardTitle>
+                        <CardTitle>Borrower - Prior Residence</CardTitle>
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <CollapsibleTrigger asChild>
@@ -5603,7 +5603,7 @@ export default function AdminAddClient() {
               {borrowerPriorAddresses.map((address, index) => (
                 <Card key={address.id}>
                   <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle>Borrower - Prior Residence Address #{index + 2}</CardTitle>
+                    <CardTitle>Borrower - Prior Residence {index + 2}</CardTitle>
                     <Button
                       type="button"
                       variant="outline"
@@ -5844,7 +5844,7 @@ export default function AdminAddClient() {
                 <Card>
                   <Collapsible open={isCoBorrowerResidenceOpen} onOpenChange={setIsCoBorrowerResidenceOpen}>
                     <CardHeader className="flex flex-row items-center justify-between">
-                      <CardTitle>Co-Borrower - Residence Address</CardTitle>
+                      <CardTitle>Co-Borrower - Residence</CardTitle>
                       <div className="flex items-center gap-2">
                         <Button
                           type="button"
@@ -6064,7 +6064,7 @@ export default function AdminAddClient() {
                       <Collapsible open={isCoBorrowerPriorResidenceOpen} onOpenChange={setIsCoBorrowerPriorResidenceOpen}>
                         <CardHeader>
                           <div className="flex items-center justify-between">
-                            <CardTitle>Co-Borrower - Prior Residence Address</CardTitle>
+                            <CardTitle>Co-Borrower - Prior Residence</CardTitle>
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <CollapsibleTrigger asChild>
@@ -6249,7 +6249,7 @@ export default function AdminAddClient() {
                   {coBorrowerPriorAddresses.map((address, index) => (
                     <Card key={address.id}>
                       <CardHeader className="flex flex-row items-center justify-between">
-                        <CardTitle>Co-Borrower - Prior Residence Address #{index + 2}</CardTitle>
+                        <CardTitle>Co-Borrower - Prior Residence {index + 2}</CardTitle>
                         <Button
                           type="button"
                           variant="outline"
