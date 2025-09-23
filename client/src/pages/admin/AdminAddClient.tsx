@@ -671,6 +671,9 @@ export default function AdminAddClient() {
   const [isShowingMonthsAtPriorAddress, setIsShowingMonthsAtPriorAddress] = useState(false);
   const [isShowingCoBorrowerMonthsAtAddress, setIsShowingCoBorrowerMonthsAtAddress] = useState(false);
   const [isShowingCoBorrowerMonthsAtPriorAddress, setIsShowingCoBorrowerMonthsAtPriorAddress] = useState(false);
+  
+  // Lead Reference toggle state
+  const [isShowingDMBatch, setIsShowingDMBatch] = useState(false);
   const [isCoBorrowerResidenceOpen, setIsCoBorrowerResidenceOpen] = useState(false);
   const [isCoBorrowerPriorResidenceOpen, setIsCoBorrowerPriorResidenceOpen] = useState(false);
 
@@ -4945,12 +4948,22 @@ export default function AdminAddClient() {
             <TabsContent value="client" className="space-y-6">
               {/* Lead Information Fields */}
               <Card>
-                <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
+                <CardContent className="grid grid-cols-1 md:grid-cols-5 gap-4 pt-6">
                   <div className="space-y-2">
-                    <Label htmlFor="borrower-leadRef">Lead Reference</Label>
+                    <div className="flex items-center justify-between mb-2">
+                      <Label htmlFor="borrower-leadRef" className="text-sm">
+                        {isShowingDMBatch ? 'DM Batch' : 'Lead Reference'}
+                      </Label>
+                      <Switch
+                        checked={isShowingDMBatch}
+                        onCheckedChange={setIsShowingDMBatch}
+                        data-testid="toggle-borrower-leadref"
+                      />
+                    </div>
                     <Input
                       id="borrower-leadRef"
-                      {...form.register('borrower.leadRef')}
+                      {...form.register(isShowingDMBatch ? 'borrower.dmBatch' : 'borrower.leadRef')}
+                      placeholder={isShowingDMBatch ? "Enter DM batch" : "Enter lead reference"}
                       data-testid="input-borrower-leadRef"
                     />
                   </div>
@@ -4990,6 +5003,16 @@ export default function AdminAddClient() {
                       type="date"
                       {...form.register('borrower.startDate')}
                       data-testid="input-borrower-startDate"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="borrower-loanDuration">Loan Duration</Label>
+                    <Input
+                      id="borrower-loanDuration"
+                      {...form.register('borrower.loanDuration')}
+                      placeholder="Enter loan duration"
+                      data-testid="input-borrower-loanDuration"
                     />
                   </div>
                 </CardContent>

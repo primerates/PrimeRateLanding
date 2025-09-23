@@ -55,9 +55,11 @@ export const borrowerInfoSchema = z.object({
   priorMonthsAtAddress: z.string().optional(),
   subjectProperty: addressSchema.partial().optional(),
   leadRef: z.string().optional(),
+  dmBatch: z.string().optional(),
   source: z.string().optional(),
   callDate: z.string().optional(),
   startDate: z.string().optional(),
+  loanDuration: z.string().optional(),
 });
 
 export const incomeSchema = z.object({
