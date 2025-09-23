@@ -9483,9 +9483,9 @@ export default function AdminAddClient() {
                                       return (
                                         <div className="flex items-center gap-1">
                                           <div 
-                                            className={`w-3 h-3 rounded-full border-2 ${
+                                            className={`w-3 h-3 rounded-full border-2 cursor-pointer ${
                                               isCurrentLoanAttached
-                                                ? 'bg-blue-500 border-blue-500'
+                                                ? 'bg-blue-500 border-blue-500 hover:bg-blue-600'
                                                 : hasAnyLoanAttached 
                                                   ? 'bg-green-500 border-green-500' 
                                                   : 'bg-gray-200 border-gray-300'
@@ -9494,6 +9494,12 @@ export default function AdminAddClient() {
                                               backgroundColor: isCurrentLoanAttached ? '#3b82f6' : hasAnyLoanAttached ? '#10b981' : '#e5e7eb',
                                               borderColor: isCurrentLoanAttached ? '#3b82f6' : hasAnyLoanAttached ? '#10b981' : '#d1d5db'
                                             }}
+                                            onClick={() => {
+                                              if (isCurrentLoanAttached) {
+                                                setIsCurrentLoanPreviewOpen(true);
+                                              }
+                                            }}
+                                            title={isCurrentLoanAttached ? "View Current Loan Details" : ""}
                                             data-testid={`indicator-secured-loan-1-${property.id}`}
                                           />
                                           <div 
@@ -9527,62 +9533,35 @@ export default function AdminAddClient() {
                                   {(() => {
                                     const currentProperty = property;
                                     
-                                    // Check which loan is attached to this property
+                                    // Check which loans are attached to this property for counter
                                     const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
                                     const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
                                     
                                     const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
                                     const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
                                     
-                                    const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
-                                    const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
-                                    
-                                    // Check additional loans
+                                    // Check third loan (first additional loan - Current Loan 3)
                                     const additionalLoansData = additionalLoans || [];
-                                    const attachedAdditionalLoan = additionalLoansData.find(loan => {
-                                      const attachedPropertyId = getDyn(`${loan.id}.attachedToProperty`);
+                                    const firstAdditionalLoan = additionalLoansData[0];
+                                    const isThirdLoanAttached = firstAdditionalLoan ? (() => {
+                                      const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
                                       return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
-                                    });
+                                    })() : false;
                                     
-                                    const hasAnyLoanAttached = isCurrentLoanAttached || isSecondLoanAttached || isThirdLoanAttached || Boolean(attachedAdditionalLoan);
-                                    
-                                    if (!hasAnyLoanAttached) return null;
-                                    
-                                    // Determine which modal to open and appropriate title
-                                    let onClickHandler = () => {};
-                                    let title = "View Loan Details";
-                                    
-                                    if (isCurrentLoanAttached) {
-                                      onClickHandler = () => setIsCurrentLoanPreviewOpen(true);
-                                      title = "View Current Loan 1 Details";
-                                    } else if (isSecondLoanAttached) {
-                                      onClickHandler = () => setIsCurrentSecondLoanPreviewOpen(true);
-                                      title = "View Current Loan 2 Details";
-                                    } else if (isThirdLoanAttached) {
-                                      onClickHandler = () => setIsCurrentThirdLoanPreviewOpen(true);
-                                      title = "View Current Loan 3 Details";
-                                    } else if (attachedAdditionalLoan) {
-                                      onClickHandler = () => {
-                                        setAdditionalLoanPreview({
-                                          isOpen: true,
-                                          loanId: attachedAdditionalLoan.id
-                                        });
-                                      };
-                                      title = `View ${attachedAdditionalLoan.id.charAt(0).toUpperCase() + attachedAdditionalLoan.id.slice(1)} Details`;
-                                    }
+                                    // Count active loans
+                                    let activeLoansCount = 0;
+                                    if (isCurrentLoanAttached) activeLoansCount++;
+                                    if (isSecondLoanAttached) activeLoansCount++;
+                                    if (isThirdLoanAttached) activeLoansCount++;
                                     
                                     return (
-                                      <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="sm"
-                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                                        onClick={onClickHandler}
-                                        title={title}
-                                        data-testid="button-secured-first-loan-info"
+                                      <div 
+                                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 border border-gray-300 text-xs font-semibold text-gray-600"
+                                        data-testid={`loan-counter-${property.id}`}
+                                        title={`${activeLoansCount} loan(s) connected`}
                                       >
-                                        <Info className="h-4 w-4" />
-                                      </Button>
+                                        {activeLoansCount}
+                                      </div>
                                     );
                                   })()}
                                 </div>
