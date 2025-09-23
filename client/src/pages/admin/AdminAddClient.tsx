@@ -8384,82 +8384,91 @@ export default function AdminAddClient() {
                               </CardContent>
                             </Card>
 
-                            {/* Property Address */}
-                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                              <div className="space-y-2 md:col-span-3">
-                                <Label htmlFor={`income-property-address-street-${propertyId}`}>Street Address *</Label>
+                            {/* Employment Information - Single Row */}
+                            <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
+                              <div className="space-y-2">
+                                <Label htmlFor="template-employerName">Employer Name</Label>
                                 <Input
-                                  id={`income-property-address-street-${propertyId}`}
-                                  value={primaryProperty.address?.street || ''}
-                                  readOnly
-                                  className="bg-muted"
-                                  data-testid={`input-income-property-street-${propertyId}`}
+                                  id="template-employerName"
+                                  data-testid="input-template-employerName"
                                 />
                               </div>
                               
-                              <div className="space-y-2 md:col-span-1">
-                                <Label htmlFor={`income-property-address-unit-${propertyId}`}>Unit/Apt</Label>
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between mb-2">
+                                  <Label htmlFor="template-employer-phone" className="text-xs">
+                                    Employer Phone
+                                  </Label>
+                                  <Switch
+                                    data-testid="toggle-template-employment-verification"
+                                  />
+                                </div>
                                 <Input
-                                  id={`income-property-address-unit-${propertyId}`}
-                                  value={primaryProperty.address?.unit || ''}
-                                  readOnly
-                                  className="bg-muted"
-                                  data-testid={`input-income-property-unit-${propertyId}`}
+                                  id="template-employer-phone"
+                                  placeholder="(XXX) XXX-XXXX"
+                                  data-testid="input-template-employer-phone"
                                 />
                               </div>
                               
-                              <div className="space-y-2 md:col-span-2">
-                                <Label htmlFor={`income-property-address-city-${propertyId}`}>City *</Label>
+                              <div className="space-y-2">
+                                <Label htmlFor="template-jobTitle">Job Title</Label>
                                 <Input
-                                  id={`income-property-address-city-${propertyId}`}
-                                  value={primaryProperty.address?.city || ''}
-                                  readOnly
-                                  className="bg-muted"
-                                  data-testid={`input-income-property-city-${propertyId}`}
+                                  id="template-jobTitle"
+                                  data-testid="input-template-jobTitle"
                                 />
                               </div>
                               
-                              <div className="space-y-2 md:col-span-1">
-                                <Label htmlFor={`income-property-address-state-${propertyId}`}>State *</Label>
+                              <div className="space-y-2">
+                                <Label htmlFor="template-monthlyIncome">Gross Monthly Income</Label>
                                 <Input
-                                  id={`income-property-address-state-${propertyId}`}
-                                  value={primaryProperty.address?.state || ''}
-                                  readOnly
-                                  className="bg-muted"
-                                  data-testid={`input-income-property-state-${propertyId}`}
+                                  id="template-monthlyIncome"
+                                  placeholder="$0.00"
+                                  data-testid="input-template-monthlyIncome"
                                 />
                               </div>
                               
-                              <div className="space-y-2 md:col-span-1">
-                                <Label htmlFor={`income-property-address-zip-${propertyId}`}>ZIP Code *</Label>
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between mb-2">
+                                  <Label htmlFor="template-bonusIncome" className="text-sm">
+                                    Monthly Bonus
+                                  </Label>
+                                  <Switch
+                                    data-testid="toggle-template-bonus"
+                                  />
+                                </div>
                                 <Input
-                                  id={`income-property-address-zip-${propertyId}`}
-                                  value={primaryProperty.address?.zip || ''}
-                                  readOnly
-                                  className="bg-muted"
-                                  data-testid={`input-income-property-zip-${propertyId}`}
+                                  id="template-bonusIncome"
+                                  placeholder="$0.00"
+                                  data-testid="input-template-bonusIncome"
                                 />
                               </div>
                               
-                              <div className="space-y-2 md:col-span-2">
-                                <Label htmlFor={`income-property-address-county-${propertyId}`}>County</Label>
-                                <Input
-                                  id={`income-property-address-county-${propertyId}`}
-                                  value={primaryProperty.address?.county || ''}
-                                  readOnly
-                                  className="bg-muted"
-                                  data-testid={`input-income-property-county-${propertyId}`}
-                                />
+                              <div className="space-y-2">
+                                <Label htmlFor="template-employmentType">Full-Time / Part-Time</Label>
+                                <Select>
+                                  <SelectTrigger data-testid="select-template-employmentType">
+                                    <SelectValue placeholder="Select type" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="Full-Time">Full-Time</SelectItem>
+                                    <SelectItem value="Part-Time">Part-Time</SelectItem>
+                                  </SelectContent>
+                                </Select>
                               </div>
                               
-                              <div className="space-y-2 md:col-span-2">
-                                <Label htmlFor={`income-property-type-${propertyId}`}>Property Type</Label>
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between mb-2">
+                                  <Label htmlFor="template-employment-duration" className="text-sm">
+                                    Years Employed
+                                  </Label>
+                                  <Switch
+                                    data-testid="toggle-template-employment-duration"
+                                  />
+                                </div>
                                 <Input
-                                  id={`income-property-type-${propertyId}`}
-                                  value={primaryProperty.propertyType || ''}
-                                  readOnly
-                                  className="bg-muted"
-                                  data-testid={`input-income-property-type-${propertyId}`}
+                                  id="template-employment-duration"
+                                  placeholder="0"
+                                  data-testid="input-template-employment-duration"
                                 />
                               </div>
                             </div>
