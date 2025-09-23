@@ -837,6 +837,20 @@ export default function AdminAddClient() {
   // Template card toggle state - End Date / Present
   const [isShowingPresent, setIsShowingPresent] = useState(false);
   
+  // Update employment duration when dates change
+  const updateEmploymentDuration = (cardId: string, startDate: string, endDate: string, isPresent: boolean) => {
+    const duration = calculateEmploymentDuration(startDate, endDate, isPresent);
+    setEmploymentDates(prev => ({
+      ...prev,
+      [cardId]: {
+        startDate,
+        endDate,
+        isPresent,
+        duration
+      }
+    }));
+  };
+  
   // Employment toggle states - Monthly/Annual Bonus Income  
   const [isShowingAnnualBonus, setIsShowingAnnualBonus] = useState(false);
   const [isCoBorrowerShowingAnnualBonus, setIsCoBorrowerShowingAnnualBonus] = useState(false);
@@ -855,11 +869,46 @@ export default function AdminAddClient() {
   // Borrower Employer cards state management
   const [borrowerEmployerCards, setBorrowerEmployerCards] = useState<string[]>(['default']);
   
+  // Employment dates state for each card
+  const [employmentDates, setEmploymentDates] = useState<Record<string, {
+    startDate: string;
+    endDate: string;
+    isPresent: boolean;
+    duration: string;
+  }>>({});
+  
   // Delete confirmation dialog state for Borrower Employer
   const [deleteEmployerDialog, setDeleteEmployerDialog] = useState<{
     isOpen: boolean;
     cardId: string;
   }>({ isOpen: false, cardId: '' });
+
+  // Employment duration calculation function
+  const calculateEmploymentDuration = (startDate: string, endDate: string, isPresent: boolean = false) => {
+    if (!startDate) return '';
+    
+    const start = new Date(startDate);
+    const end = isPresent ? new Date() : new Date(endDate);
+    
+    if (!endDate && !isPresent) return '';
+    if (start > end) return '';
+    
+    // Calculate difference in months
+    const monthsDiff = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+    const daysDiff = end.getDate() - start.getDate();
+    
+    // Adjust for partial months
+    const totalMonths = monthsDiff + (daysDiff >= 0 ? 0 : -1) + (daysDiff / 30);
+    
+    if (totalMonths < 1) {
+      return `${totalMonths.toFixed(1)} months`;
+    } else if (totalMonths < 12) {
+      return `${totalMonths.toFixed(1)} months`;
+    } else {
+      const years = totalMonths / 12;
+      return `${years.toFixed(1)} years`;
+    }
+  };
   
   // Subject property confirmation dialog state
   const [subjectConfirmDialog, setSubjectConfirmDialog] = useState<{
@@ -8457,41 +8506,60 @@ export default function AdminAddClient() {
                               </div>
                               
                               <div className="space-y-2">
-                                <Label htmlFor="template-startDate">Start Date</Label>
+                                <Label htmlFor={`${propertyId}-startDate`}>Start Date</Label>
                                 <Input
-                                  id="template-startDate"
+                                  id={`${propertyId}-startDate`}
+                                  type="date"
+                                  value={employmentDates[propertyId]?.startDate || ''}
+                                  onChange={(e) => {
+                                    const startDate = e.target.value;
+                                    const currentData = employmentDates[propertyId] || { endDate: '', isPresent: false, duration: '' };
+                                    updateEmploymentDuration(propertyId, startDate, currentData.endDate, currentData.isPresent);
+                                  }}
                                   placeholder="MM/DD/YYYY"
-                                  data-testid="input-template-startDate"
+                                  data-testid={`input-${propertyId}-startDate`}
                                 />
                               </div>
                               
                               <div className="space-y-2">
                                 <div className="flex items-center justify-between mb-2">
-                                  <Label htmlFor="template-endDate" className="text-sm">
-                                    {isShowingPresent ? 'Present' : 'End Date'}
+                                  <Label htmlFor={`${propertyId}-endDate`} className="text-sm">
+                                    {employmentDates[propertyId]?.isPresent ? 'Present' : 'End Date'}
                                   </Label>
                                   <Switch
-                                    checked={isShowingPresent}
-                                    onCheckedChange={setIsShowingPresent}
-                                    data-testid="toggle-template-present"
+                                    checked={employmentDates[propertyId]?.isPresent || false}
+                                    onCheckedChange={(checked) => {
+                                      const currentData = employmentDates[propertyId] || { startDate: '', endDate: '', duration: '' };
+                                      updateEmploymentDuration(propertyId, currentData.startDate, currentData.endDate, checked);
+                                    }}
+                                    data-testid={`toggle-${propertyId}-present`}
                                   />
                                 </div>
                                 <Input
-                                  id="template-endDate"
-                                  value={isShowingPresent ? 'Present' : ''}
-                                  placeholder={isShowingPresent ? 'Present' : 'MM/DD/YYYY'}
-                                  readOnly={isShowingPresent}
-                                  className={isShowingPresent ? 'bg-muted' : ''}
-                                  data-testid="input-template-endDate"
+                                  id={`${propertyId}-endDate`}
+                                  type="date"
+                                  value={employmentDates[propertyId]?.isPresent ? '' : (employmentDates[propertyId]?.endDate || '')}
+                                  onChange={(e) => {
+                                    const endDate = e.target.value;
+                                    const currentData = employmentDates[propertyId] || { startDate: '', isPresent: false, duration: '' };
+                                    updateEmploymentDuration(propertyId, currentData.startDate, endDate, currentData.isPresent);
+                                  }}
+                                  placeholder={employmentDates[propertyId]?.isPresent ? 'Present' : 'MM/DD/YYYY'}
+                                  readOnly={employmentDates[propertyId]?.isPresent}
+                                  className={employmentDates[propertyId]?.isPresent ? 'bg-muted' : ''}
+                                  data-testid={`input-${propertyId}-endDate`}
                                 />
                               </div>
                               
                               <div className="space-y-2">
-                                <Label htmlFor="template-employment-duration">Employment Term</Label>
+                                <Label htmlFor={`${propertyId}-employment-duration`}>Employment Term</Label>
                                 <Input
-                                  id="template-employment-duration"
+                                  id={`${propertyId}-employment-duration`}
+                                  value={employmentDates[propertyId]?.duration || ''}
                                   placeholder="0"
-                                  data-testid="input-template-employment-duration"
+                                  readOnly
+                                  className="bg-muted"
+                                  data-testid={`input-${propertyId}-employment-duration`}
                                 />
                               </div>
                             </div>
