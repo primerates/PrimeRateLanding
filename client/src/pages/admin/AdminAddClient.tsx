@@ -1374,9 +1374,6 @@ export default function AdminAddClient() {
 
     return (
       <Card className="border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
-        <CardHeader>
-          <CardTitle>Current Loan</CardTitle>
-        </CardHeader>
         <CardContent className="space-y-4">
           {/* Row 1: Lender Name, Loan Number, Loan Category, Loan Program */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
