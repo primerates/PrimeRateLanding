@@ -36,9 +36,8 @@ export default function ServicesSection() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
+        // Animate both ways - slide down when entering, slide up when leaving
+        setIsVisible(entry.isIntersecting);
       },
       {
         threshold: 0.3, // Trigger when 30% of the section is visible
