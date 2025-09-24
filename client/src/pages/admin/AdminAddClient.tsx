@@ -6649,7 +6649,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isSelfEmploymentIncomeOpen} onOpenChange={setIsSelfEmploymentIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Borrower Self-Employment Income</CardTitle>
+                        <CardTitle>Borrower Self-Employment</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button 
                             variant="ghost" 
@@ -6666,6 +6666,35 @@ export default function AdminAddClient() {
                     </CardHeader>
                     <CollapsibleContent>
                       <CardContent className="space-y-4">
+                      {/* Employment Type Selection */}
+                      <Card className="bg-muted">
+                        <CardContent className="pt-6">
+                          <div className="space-y-3">
+                            <div className="flex gap-4">
+                              <div className="flex items-center space-x-2">
+                                <input
+                                  type="radio"
+                                  id="self-employment-current"
+                                  name="self-employment-type"
+                                  data-testid="radio-self-employment-current"
+                                />
+                                <Label htmlFor="self-employment-current">Current Employer</Label>
+                              </div>
+                              
+                              <div className="flex items-center space-x-2">
+                                <input
+                                  type="radio"
+                                  id="self-employment-prior"
+                                  name="self-employment-type"
+                                  data-testid="radio-self-employment-prior"
+                                />
+                                <Label htmlFor="self-employment-prior">Prior Employer</Label>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
                       {/* First row with business details */}
                       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                         <div className="space-y-2 md:col-span-2">
@@ -8145,7 +8174,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isCoBorrowerSelfEmploymentIncomeOpen} onOpenChange={setIsCoBorrowerSelfEmploymentIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Co-Borrower Self-Employment Income</CardTitle>
+                        <CardTitle>Co-Borrower Self-Employment</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button 
                             variant="ghost" 
