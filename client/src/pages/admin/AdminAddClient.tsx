@@ -424,27 +424,29 @@ export default function AdminAddClient() {
     setCountyLookupLoading(prev => ({...prev, coBorrowerPriorEmployer: false}));
   };
 
-  // Handler for co-borrower second employer ZIP code lookup
-  const handleCoBorrowerSecondEmployerZipCodeLookup = async (zipCode: string) => {
+  // Handler for co-borrower second employer ZIP code lookup - dynamic per card
+  const handleCoBorrowerSecondEmployerZipCodeLookup = async (zipCode: string, cardId: string) => {
+    const loadingKey = `coBorrowerSecondEmployer-${cardId}`;
+    
     if (!zipCode || zipCode.length < 5) {
-      setCoBorrowerSecondEmployerCountyOptions([]);
-      form.setValue('coBorrowerIncome.secondEmployerAddress.county', '');
+      setCoBorrowerSecondEmployerCountyOptions(prev => ({...prev, [cardId]: []}));
+      form.setValue(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerAddress.county') as any, '');
       return;
     }
     
-    setCountyLookupLoading(prev => ({...prev, coBorrowerSecondEmployer: true}));
+    setCountyLookupLoading(prev => ({...prev, [loadingKey]: true}));
     const counties = await lookupCountyFromZip(zipCode);
     
     if (counties.length === 1) {
-      form.setValue('coBorrowerIncome.secondEmployerAddress.county', counties[0].label, { shouldDirty: true });
-      setCoBorrowerSecondEmployerCountyOptions([]);
+      form.setValue(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerAddress.county') as any, counties[0].label, { shouldDirty: true });
+      setCoBorrowerSecondEmployerCountyOptions(prev => ({...prev, [cardId]: []}));
     } else if (counties.length > 1) {
-      setCoBorrowerSecondEmployerCountyOptions(counties);
+      setCoBorrowerSecondEmployerCountyOptions(prev => ({...prev, [cardId]: counties}));
     } else {
-      setCoBorrowerSecondEmployerCountyOptions([]);
+      setCoBorrowerSecondEmployerCountyOptions(prev => ({...prev, [cardId]: []}));
     }
     
-    setCountyLookupLoading(prev => ({...prev, coBorrowerSecondEmployer: false}));
+    setCountyLookupLoading(prev => ({...prev, [loadingKey]: false}));
   };
 
   // Handler for property address changes - triggers auto-copy functionality
@@ -665,7 +667,6 @@ export default function AdminAddClient() {
 
   // Co-Borrower income collapsible state
   const [isCoBorrowerEmploymentIncomeOpen, setIsCoBorrowerEmploymentIncomeOpen] = useState(false);
-  const [isCoBorrowerSecondEmploymentIncomeOpen, setIsCoBorrowerSecondEmploymentIncomeOpen] = useState(false);
   const [isCoBorrowerSelfEmploymentIncomeOpen, setIsCoBorrowerSelfEmploymentIncomeOpen] = useState(false);
   const [isCoBorrowerSocialSecurityIncomeOpen, setIsCoBorrowerSocialSecurityIncomeOpen] = useState(false);
   const [isCoBorrowerVaBenefitsIncomeOpen, setIsCoBorrowerVaBenefitsIncomeOpen] = useState(false);
@@ -704,6 +705,12 @@ export default function AdminAddClient() {
     const cleanCardId = cardId === 'default' ? 'default' : cardId;
     return `income.secondEmployers.${cleanCardId}.${fieldName}` as const;
   };
+
+  // Helper function to generate dynamic field paths for co-borrower second employer cards
+  const getCoBorrowerSecondEmployerFieldPath = (cardId: string, fieldName: string) => {
+    const cleanCardId = cardId === 'default' ? 'default' : cardId;
+    return `coBorrowerIncome.secondEmployers.${cleanCardId}.${fieldName}` as const;
+  };
   
   // Update employment duration when dates change
   const updateEmploymentDuration = (cardId: string, startDate: string, endDate: string, isPresent: boolean) => {
@@ -740,6 +747,9 @@ export default function AdminAddClient() {
   // Borrower Second Employer cards state management
   const [borrowerSecondEmployerCards, setBorrowerSecondEmployerCards] = useState<string[]>(['default']);
   
+  // Co-borrower Second Employer cards state management
+  const [coBorrowerSecondEmployerCards, setCoBorrowerSecondEmployerCards] = useState<string[]>(['default']);
+  
   // Borrower Self-Employment cards state management
   const [borrowerSelfEmploymentCards, setBorrowerSelfEmploymentCards] = useState<string[]>(['default']);
   
@@ -759,6 +769,12 @@ export default function AdminAddClient() {
 
   // Delete confirmation dialog state for Borrower Second Employer
   const [deleteSecondEmployerDialog, setDeleteSecondEmployerDialog] = useState<{
+    isOpen: boolean;
+    cardId: string;
+  }>({ isOpen: false, cardId: '' });
+
+  // Delete confirmation dialog state for Co-borrower Second Employer
+  const [deleteCoBorrowerSecondEmployerDialog, setDeleteCoBorrowerSecondEmployerDialog] = useState<{
     isOpen: boolean;
     cardId: string;
   }>({ isOpen: false, cardId: '' });
@@ -871,7 +887,7 @@ export default function AdminAddClient() {
   const [borrowerPriorEmployerCountyOptions, setBorrowerPriorEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
   const [coBorrowerEmployerCountyOptions, setCoBorrowerEmployerCountyOptions] = useState<Record<string, Array<{value: string, label: string}>>>({});
   const [coBorrowerPriorEmployerCountyOptions, setCoBorrowerPriorEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
-  const [coBorrowerSecondEmployerCountyOptions, setCoBorrowerSecondEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
+  const [coBorrowerSecondEmployerCountyOptions, setCoBorrowerSecondEmployerCountyOptions] = useState<Record<string, Array<{value: string, label: string}>>>({});
   
   const [countyLookupLoading, setCountyLookupLoading] = useState<{
     borrower: boolean, 
@@ -8455,165 +8471,282 @@ export default function AdminAddClient() {
                 );
               })}
 
-              {/* Co-Borrower Second Employment Income Card */}
-              {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.secondEmployment') && (
-                <Card>
-                  <Collapsible open={isCoBorrowerSecondEmploymentIncomeOpen} onOpenChange={setIsCoBorrowerSecondEmploymentIncomeOpen}>
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle>Co-Borrower Second Employment Income</CardTitle>
-                        <CollapsibleTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="hover:bg-orange-500 hover:text-white" 
-                            data-testid="button-toggle-coborrower-second-employment-income"
-                            title={isCoBorrowerSecondEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
-                            key={`coborrower-second-employment-income-${isCoBorrowerSecondEmploymentIncomeOpen}`}
-                          >
-                            {isCoBorrowerSecondEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                          </Button>
-                        </CollapsibleTrigger>
-                      </div>
-                    </CardHeader>
+              {/* Co-borrower Second Employment Cards */}
+              {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.secondEmployment') && (coBorrowerSecondEmployerCards || ['default']).map((cardId, index) => {
+                const propertyId = cardId === 'default' ? 'coborrower-second-template-card' : cardId;
+                const isOpen = propertyCardStates[propertyId] ?? false;
+                
+                return (
+                  <Card key={cardId} className="border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
+                    <Collapsible 
+                      open={isOpen} 
+                      onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
+                    >
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-8">
+                            <CardTitle className="flex items-center gap-2">
+                              Co-borrower - Second Employer
+                            </CardTitle>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {/* Add Employer Button */}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                const newId = `coborrower-second-employer-${Date.now()}`;
+                                setCoBorrowerSecondEmployerCards(prev => [...(prev || ['default']), newId]);
+                              }}
+                              className="hover:bg-blue-500 hover:text-white"
+                              data-testid="button-add-coborrower-second-employer"
+                              title="Add New Employer"
+                            >
+                              <Plus className="h-4 w-4 mr-2" />
+                              Add Employer
+                            </Button>
+                            
+                            {/* Delete Employer Button - only show if more than 1 card */}
+                            {(coBorrowerSecondEmployerCards || []).length > 1 && (
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setDeleteCoBorrowerSecondEmployerDialog({ isOpen: true, cardId: propertyId })}
+                                className="hover:bg-red-500 hover:text-white"
+                                data-testid="button-delete-coborrower-second-employer"
+                                title="Delete Employer"
+                              >
+                                <Minus className="h-4 w-4 mr-2" />
+                                Remove
+                              </Button>
+                            )}
+                            
+                            <CollapsibleTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="hover:bg-orange-500 hover:text-white" 
+                                data-testid={`button-toggle-coborrower-second-employment-income-${propertyId}`}
+                                title={isOpen ? 'Minimize' : 'Expand'}
+                                key={`coborrower-second-employment-income-${propertyId}-${isOpen}`}
+                              >
+                                {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </div>
+                        </div>
+                      </CardHeader>
+                    
                     <CollapsibleContent>
                       <CardContent>
                         <div className="space-y-6">
-                          {/* Co-Borrower Second Employment Information - Single Row */}
+                          {/* Employment Type Selection */}
+                          <Card className="bg-muted">
+                            <CardContent className="pt-6">
+                              <div className="space-y-3">
+                                <div className="flex gap-4">
+                                  <div className="flex items-center space-x-2">
+                                    <input
+                                      type="radio"
+                                      id="coborrower-second-employment-current"
+                                      name="coborrower-second-employment-type"
+                                      data-testid="radio-coborrower-second-employment-current"
+                                    />
+                                    <Label htmlFor="coborrower-second-employment-current">Current Employer</Label>
+                                  </div>
+                                  
+                                  <div className="flex items-center space-x-2">
+                                    <input
+                                      type="radio"
+                                      id="coborrower-second-employment-prior"
+                                      name="coborrower-second-employment-type"
+                                      data-testid="radio-coborrower-second-employment-prior"
+                                    />
+                                    <Label htmlFor="coborrower-second-employment-prior">Prior Employer</Label>
+                                  </div>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+
+                          {/* Employment Information - Single Row */}
                           <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
                             <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-secondEmployerName">Employer Name</Label>
+                              <Label htmlFor={`coBorrowerIncome-secondEmployerName-${cardId}`}>Employer Name</Label>
                               <Input
-                                id="coBorrowerIncome-secondEmployerName"
-                                {...form.register('coBorrowerIncome.secondEmployerName')}
-                                data-testid="input-coborrowerIncome-secondEmployerName"
+                                id={`coBorrowerIncome-secondEmployerName-${cardId}`}
+                                {...form.register(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerName'))}
+                                data-testid={`input-coBorrowerIncome-secondEmployerName-${cardId}`}
                               />
                             </div>
                             
                             <div className="space-y-2">
                               <div className="flex items-center justify-between mb-2">
-                                <Label htmlFor="coBorrowerIncome-second-employer-phone" className="text-xs">
-                                  {form.watch('coBorrowerIncome.secondIsShowingEmploymentVerification') ? 'Employment Verification' : 'Employer Phone'}
+                                <Label htmlFor={`coBorrowerIncome-second-employer-phone-${cardId}`} className="text-xs">
+                                  {form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) ? 'Job Verification' : 'Employer Phone'}
                                 </Label>
                                 <Switch
-                                  checked={form.watch('coBorrowerIncome.secondIsShowingEmploymentVerification') || false}
-                                  onCheckedChange={(checked) => form.setValue('coBorrowerIncome.secondIsShowingEmploymentVerification', checked)}
-                                  data-testid="toggle-coborrower-second-employment-verification"
+                                  checked={form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) || false}
+                                  onCheckedChange={(checked) => form.setValue(getCoBorrowerSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification') as any, checked)}
+                                  data-testid={`toggle-coborrower-second-employment-verification-${cardId}`}
                                 />
                               </div>
                               <Input
-                                id="coBorrowerIncome-second-employer-phone"
+                                id={`coBorrowerIncome-second-employer-phone-${cardId}`}
                                 placeholder="(XXX) XXX-XXXX"
-                                value={form.watch('coBorrowerIncome.secondIsShowingEmploymentVerification') 
-                                  ? (form.watch('coBorrowerIncome.secondEmploymentVerificationPhone') || '')
-                                  : (form.watch('coBorrowerIncome.secondEmployerPhone') || '')}
+                                value={form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) 
+                                  ? (form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'employmentVerificationPhone')) || '')
+                                  : (form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerPhone')) || '')}
                                 onChange={(e) => {
-                                  const fieldName = form.watch('coBorrowerIncome.secondIsShowingEmploymentVerification') 
-                                    ? 'coBorrowerIncome.secondEmploymentVerificationPhone'
-                                    : 'coBorrowerIncome.secondEmployerPhone';
+                                  const fieldName = form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) 
+                                    ? getCoBorrowerSecondEmployerFieldPath(cardId, 'employmentVerificationPhone')
+                                    : getCoBorrowerSecondEmployerFieldPath(cardId, 'employerPhone');
                                   handlePhoneChange(fieldName, e.target.value);
                                 }}
-                                data-testid="input-coborrowerIncome-second-employer-phone"
+                                data-testid={`input-coBorrowerIncome-second-employer-phone-${cardId}`}
                               />
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-secondJobTitle">Job Title</Label>
+                              <Label htmlFor={`coBorrowerIncome-secondJobTitle-${cardId}`}>Job Title</Label>
                               <Input
-                                id="coBorrowerIncome-secondJobTitle"
-                                {...form.register('coBorrowerIncome.secondJobTitle')}
-                                data-testid="input-coborrowerIncome-secondJobTitle"
+                                id={`coBorrowerIncome-secondJobTitle-${cardId}`}
+                                {...form.register(getCoBorrowerSecondEmployerFieldPath(cardId, 'jobTitle'))}
+                                data-testid={`input-coBorrowerIncome-secondJobTitle-${cardId}`}
                               />
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-secondMonthlyIncome">Gross Monthly Income</Label>
-                              <Input
-                                id="coBorrowerIncome-secondMonthlyIncome"
-                                {...form.register('coBorrowerIncome.secondMonthlyIncome')}
-                                placeholder="$0.00"
-                                data-testid="input-coborrowerIncome-secondMonthlyIncome"
+                              <Label htmlFor={`coBorrowerIncome-secondMonthlyIncome-${cardId}`}>Gross Monthly Income</Label>
+                              <Controller
+                                control={form.control}
+                                name={getCoBorrowerSecondEmployerFieldPath(cardId, 'monthlyIncome')}
+                                render={({ field }) => (
+                                  <Input
+                                    id={`coBorrowerIncome-secondMonthlyIncome-${cardId}`}
+                                    value={formatDollarDisplay(field.value)}
+                                    onChange={(e) => {
+                                      const rawValue = parseDollarInput(e.target.value);
+                                      field.onChange(rawValue);
+                                    }}
+                                    placeholder="$0.00"
+                                    data-testid={`input-coBorrowerIncome-secondMonthlyIncome-${cardId}`}
+                                  />
+                                )}
                               />
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-secondEmploymentType">Full-Time / Part-Time</Label>
-                              <Select
-                                value={form.watch('coBorrowerIncome.secondEmploymentType') || ''}
-                                onValueChange={(value) => form.setValue('coBorrowerIncome.secondEmploymentType', value as any)}
-                              >
-                                <SelectTrigger data-testid="select-coborrowerIncome-secondEmploymentType">
-                                  <SelectValue placeholder="Select type" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
-                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-second-years">Years Employed</Label>
+                              <Label htmlFor={`coBorrowerIncome-second-startDate-${cardId}`}>Start Date</Label>
                               <Input
-                                id="coBorrowerIncome-second-years"
-                                type="number"
-                                min="0"
-                                max="99"
-                                {...form.register('coBorrowerIncome.secondYearsEmployedYears')}
-                                data-testid="input-coborrowerIncome-second-years"
+                                id={`coBorrowerIncome-second-startDate-${cardId}`}
+                                type="date"
+                                value={employmentDates[`coborrower-second-employment-${cardId}`]?.startDate || ''}
+                                onChange={(e) => {
+                                  const startDate = e.target.value;
+                                  const currentData = employmentDates[`coborrower-second-employment-${cardId}`] || { endDate: '', isPresent: false, duration: '' };
+                                  updateEmploymentDuration(`coborrower-second-employment-${cardId}`, startDate, currentData.endDate, currentData.isPresent);
+                                }}
+                                placeholder="MM/DD/YYYY"
+                                data-testid={`input-coBorrowerIncome-second-startDate-${cardId}`}
                               />
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-second-months">Months Employed</Label>
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor={`coBorrowerIncome-second-endDate-${cardId}`} className="text-sm">
+                                  {employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent ? 'Present' : 'End Date'}
+                                </Label>
+                                <Switch
+                                  checked={employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent || false}
+                                  onCheckedChange={(checked) => {
+                                    const currentData = employmentDates[`coborrower-second-employment-${cardId}`] || { startDate: '', endDate: '', duration: '' };
+                                    updateEmploymentDuration(`coborrower-second-employment-${cardId}`, currentData.startDate, currentData.endDate, checked);
+                                  }}
+                                  data-testid="toggle-coborrower-second-employment-present"
+                                />
+                              </div>
                               <Input
-                                id="coBorrowerIncome-second-months"
-                                type="number"
-                                min="0"
-                                max="11"
-                                placeholder="0"
-                                {...form.register('coBorrowerIncome.secondYearsEmployedMonths')}
-                                data-testid="input-coborrowerIncome-second-months"
+                                id={`coBorrowerIncome-second-endDate-${cardId}`}
+                                type={employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent ? 'text' : 'date'}
+                                value={employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent ? 'present' : (employmentDates[`coborrower-second-employment-${cardId}`]?.endDate || '')}
+                                onChange={(e) => {
+                                  if (!employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent) {
+                                    const endDate = e.target.value;
+                                    const currentData = employmentDates[`coborrower-second-employment-${cardId}`] || { startDate: '', isPresent: false, duration: '' };
+                                    updateEmploymentDuration(`coborrower-second-employment-${cardId}`, currentData.startDate, endDate, currentData.isPresent);
+                                  }
+                                }}
+                                placeholder={employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent ? 'Enter' : 'MM/DD/YYYY'}
+                                readOnly={employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent}
+                                className={employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent ? 'bg-muted' : ''}
+                                data-testid={`input-coBorrowerIncome-second-endDate-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="coBorrowerIncome-second-employment-duration">Employment Duration</Label>
+                              <Input
+                                id="coBorrowerIncome-second-employment-duration"
+                                value={employmentDates['coborrower-second-employment']?.duration || ''}
+                                placeholder={employmentDates['coborrower-second-employment']?.isPresent ? 'Enter' : '0'}
+                                readOnly={!employmentDates['coborrower-second-employment']?.isPresent}
+                                className={!employmentDates['coborrower-second-employment']?.isPresent ? 'bg-muted' : ''}
+                                onChange={(e) => {
+                                  if (employmentDates['coborrower-second-employment']?.isPresent) {
+                                    const currentData = employmentDates['coborrower-second-employment'] || { startDate: '', endDate: '', isPresent: false };
+                                    setEmploymentDates(prev => ({
+                                      ...prev,
+                                      'coborrower-second-employment': {
+                                        ...currentData,
+                                        duration: e.target.value
+                                      }
+                                    }));
+                                  }
+                                }}
+                                data-testid="input-coBorrowerIncome-second-employment-duration"
                               />
                             </div>
                           </div>
-                          
-                          {/* Employer Address Row (standardized format) */}
+
+                          {/* Employer Address Row */}
                           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                             <div className="space-y-2 md:col-span-3">
-                              <Label htmlFor="coBorrowerIncome-second-employer-street">Street Address</Label>
+                              <Label htmlFor={`coBorrowerIncome-secondEmployerAddress-street-${cardId}`}>Street Address</Label>
                               <Input
-                                id="coBorrowerIncome-second-employer-street"
-                                {...form.register('coBorrowerIncome.secondEmployerAddress.street')}
-                                data-testid="input-coborrowerIncome-second-employer-street"
+                                id={`coBorrowerIncome-secondEmployerAddress-street-${cardId}`}
+                                {...form.register(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerAddress.street'))}
+                                data-testid={`input-coBorrowerIncome-secondEmployerAddress-street-${cardId}`}
                               />
                             </div>
                             
                             <div className="space-y-2 md:col-span-1">
-                              <Label htmlFor="coBorrowerIncome-second-employer-unit">Unit/Suite</Label>
+                              <Label htmlFor={`coBorrowerIncome-secondEmployerAddress-unit-${cardId}`}>Unit/Suite</Label>
                               <Input
-                                id="coBorrowerIncome-second-employer-unit"
-                                {...form.register('coBorrowerIncome.secondEmployerAddress.unit')}
-                                data-testid="input-coborrowerIncome-second-employer-unit"
+                                id={`coBorrowerIncome-secondEmployerAddress-unit-${cardId}`}
+                                {...form.register(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerAddress.unit'))}
+                                data-testid={`input-coBorrowerIncome-secondEmployerAddress-unit-${cardId}`}
                               />
                             </div>
                             
                             <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="coBorrowerIncome-second-employer-city">City</Label>
+                              <Label htmlFor="coBorrowerIncome-secondEmployerAddress-city">City</Label>
                               <Input
-                                id="coBorrowerIncome-second-employer-city"
-                                {...form.register('coBorrowerIncome.secondEmployerAddress.city')}
-                                data-testid="input-coborrowerIncome-second-employer-city"
+                                id={`coBorrowerIncome-secondEmployerAddress-city-${cardId}`}
+                                {...form.register(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerAddress.city'))}
+                                data-testid={`input-coBorrowerIncome-secondEmployerAddress-city-${cardId}`}
                               />
                             </div>
                             
                             <div className="space-y-2 md:col-span-1">
-                              <Label htmlFor="coBorrowerIncome-second-employer-state">State</Label>
+                              <Label htmlFor="coBorrowerIncome-secondEmployerAddress-state">State</Label>
                               <Select
-                                value={form.watch('coBorrowerIncome.secondEmployerAddress.state') || ''}
-                                onValueChange={(value) => form.setValue('coBorrowerIncome.secondEmployerAddress.state', value)}
+                                value={form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerAddress.state')) || ''}
+                                onValueChange={(value) => form.setValue(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerAddress.state') as any, value)}
                               >
-                                <SelectTrigger data-testid="select-coborrowerIncome-second-employer-state">
+                                <SelectTrigger data-testid="select-coBorrowerIncome-secondEmployerAddress-state">
                                   <SelectValue placeholder="State" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -8627,46 +8760,69 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2 md:col-span-1">
-                              <Label htmlFor="coBorrowerIncome-second-employer-zip">ZIP Code</Label>
+                              <Label htmlFor="coBorrowerIncome-secondEmployerAddress-zip">ZIP Code</Label>
                               <Input
-                                id="coBorrowerIncome-second-employer-zip"
-                                {...form.register('coBorrowerIncome.secondEmployerAddress.zip')}
-                                data-testid="input-coborrowerIncome-second-employer-zip"
+                                id={`coBorrowerIncome-secondEmployerAddress-zip-${cardId}`}
+                                {...form.register(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerAddress.zip'))}
+                                onChange={(e) => {
+                                  form.setValue(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerAddress.zip') as any, e.target.value);
+                                  handleCoBorrowerSecondEmployerZipCodeLookup(e.target.value, cardId);
+                                }}
+                                data-testid={`input-coBorrowerIncome-secondEmployerAddress-zip-${cardId}`}
                               />
                             </div>
                             
                             <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="coBorrowerIncome-second-employer-county">County</Label>
-                              <Input
-                                id="coBorrowerIncome-second-employer-county"
-                                {...form.register('coBorrowerIncome.secondEmployerAddress.county')}
-                                data-testid="input-coborrowerIncome-second-employer-county"
-                              />
+                              <Label htmlFor="coBorrowerIncome-secondEmployerAddress-county">County</Label>
+                              {(coBorrowerSecondEmployerCountyOptions[cardId] || []).length > 0 ? (
+                                <Select
+                                  value={form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerAddress.county')) || ''}
+                                  onValueChange={(value) => form.setValue(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerAddress.county') as any, value)}
+                                >
+                                  <SelectTrigger data-testid={`select-coBorrowerIncome-secondEmployerAddress-county-${cardId}`}>
+                                    <SelectValue placeholder="Select county" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {(coBorrowerSecondEmployerCountyOptions[cardId] || []).map((county) => (
+                                      <SelectItem key={county.value} value={county.label}>
+                                        {county.label}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              ) : (
+                                <Input
+                                  id={`coBorrowerIncome-secondEmployerAddress-county-${cardId}`}
+                                  {...form.register(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerAddress.county'))}
+                                  data-testid={`input-coBorrowerIncome-secondEmployerAddress-county-${cardId}`}
+                                />
+                              )}
                             </div>
                             
                             <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="coBorrowerIncome-second-employer-remote">Remote Job</Label>
+                              <Label htmlFor="coBorrowerIncome-secondEmploymentType">Full-Time / Part-Time</Label>
                               <Select
-                                value={form.watch('coBorrowerIncome.secondEmployerRemote') || ''}
-                                onValueChange={(value) => form.setValue('coBorrowerIncome.secondEmployerRemote', value)}
+                                value={form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'employmentType')) || ''}
+                                onValueChange={(value) => form.setValue(getCoBorrowerSecondEmployerFieldPath(cardId, 'employmentType') as any, value)}
                               >
-                                <SelectTrigger data-testid="select-coBorrowerIncome-second-employer-remote">
-                                  <SelectValue placeholder="Select" />
+                                <SelectTrigger data-testid="select-coBorrowerIncome-secondEmploymentType">
+                                  <SelectValue placeholder="Select type" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value="Select">Select</SelectItem>
-                                  <SelectItem value="Yes">Yes</SelectItem>
-                                  <SelectItem value="No">No</SelectItem>
+                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
+                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
                                 </SelectContent>
                               </Select>
                             </div>
                           </div>
+
                         </div>
                       </CardContent>
                     </CollapsibleContent>
                   </Collapsible>
                 </Card>
-              )}
+                );
+              })}
 
               {/* Co-Borrower Self-Employment Income Card */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.selfEmployment') && (
@@ -11242,6 +11398,39 @@ export default function AdminAddClient() {
                 setDeleteSecondEmployerDialog({ isOpen: false, cardId: '' });
               }}
               data-testid="button-confirm-delete-second-employer"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Co-Borrower Second Employer Confirmation Dialog */}
+      <AlertDialog open={deleteCoBorrowerSecondEmployerDialog.isOpen} onOpenChange={(open) => !open && setDeleteCoBorrowerSecondEmployerDialog({ isOpen: false, cardId: '' })}>
+        <AlertDialogContent data-testid="dialog-delete-coborrower-second-employer">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Co-borrower Second Employer Card</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this co-borrower second employer card? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteCoBorrowerSecondEmployerDialog({ isOpen: false, cardId: '' })}
+              data-testid="button-cancel-delete-coborrower-second-employer"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                const cardToDelete = deleteCoBorrowerSecondEmployerDialog.cardId;
+                setCoBorrowerSecondEmployerCards(prev => prev.filter(id => 
+                  cardToDelete === 'coborrower-second-template-card' ? id !== 'default' : id !== cardToDelete
+                ));
+                setDeleteCoBorrowerSecondEmployerDialog({ isOpen: false, cardId: '' });
+              }}
+              data-testid="button-confirm-delete-coborrower-second-employer"
               className="bg-red-600 hover:bg-red-700"
             >
               Delete
