@@ -12003,9 +12003,35 @@ export default function AdminAddClient() {
             <AlertDialogAction 
               onClick={() => {
                 const cardToDelete = deleteCoBorrowerEmployerDialog.cardId;
+                
+                // Remove card from state
                 setCoBorrowerEmployerCards(prev => prev.filter(id => 
                   cardToDelete === 'coborrower-template-card' ? id !== 'default' : id !== cardToDelete
                 ));
+                
+                // Clear form data for the deleted card
+                const cleanCardId = cardToDelete === 'coborrower-template-card' ? 'default' : cardToDelete;
+                const basePath = `coBorrowerIncome.employers.${cleanCardId}` as const;
+                
+                // Clear all co-borrower employer fields for this card
+                form.setValue(`${basePath}.employerName`, '');
+                form.setValue(`${basePath}.jobTitle`, '');
+                form.setValue(`${basePath}.monthlyIncome`, '');
+                form.setValue(`${basePath}.monthlyBonusIncome`, '');
+                form.setValue(`${basePath}.annualBonusIncome`, '');
+                form.setValue(`${basePath}.employmentType`, 'Full-Time');
+                form.setValue(`${basePath}.yearsEmployedYears`, '');
+                form.setValue(`${basePath}.yearsEmployedMonths`, '');
+                form.setValue(`${basePath}.employerAddress.street`, '');
+                form.setValue(`${basePath}.employerAddress.unit`, '');
+                form.setValue(`${basePath}.employerAddress.city`, '');
+                form.setValue(`${basePath}.employerAddress.state`, '');
+                form.setValue(`${basePath}.employerAddress.zip`, '');
+                form.setValue(`${basePath}.employerAddress.county`, '');
+                form.setValue(`${basePath}.employerPhone`, '');
+                form.setValue(`${basePath}.employmentVerificationPhone`, '');
+                form.setValue(`${basePath}.employerRemote`, '');
+                
                 setDeleteCoBorrowerEmployerDialog({ isOpen: false, cardId: '' });
               }}
               data-testid="button-confirm-delete-coborrower-employer"
