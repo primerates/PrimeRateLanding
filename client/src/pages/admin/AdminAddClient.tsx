@@ -1042,6 +1042,31 @@ export default function AdminAddClient() {
           county: ''
         },
         employerPhone: '',
+        // Multiple Main Employers (new structure for dynamic cards)
+        employers: {
+          default: {
+            employerName: '',
+            jobTitle: '',
+            monthlyIncome: '',
+            monthlyBonusIncome: '',
+            annualBonusIncome: '',
+            employmentType: 'Full-Time' as const,
+            yearsEmployedYears: '',
+            yearsEmployedMonths: '',
+            employerAddress: {
+              street: '',
+              unit: '',
+              city: '',
+              state: '',
+              zip: '',
+              county: ''
+            },
+            employerPhone: '',
+            employmentVerificationPhone: '',
+            isShowingEmploymentVerification: false,
+            employerRemote: ''
+          }
+        },
         priorEmployerName: '',
         priorJobTitle: '',
         priorMonthlyIncome: '',
@@ -1119,6 +1144,31 @@ export default function AdminAddClient() {
           county: ''
         },
         employerPhone: '',
+        // Multiple Co-Borrower Employers (new structure for dynamic cards)
+        employers: {
+          default: {
+            employerName: '',
+            jobTitle: '',
+            monthlyIncome: '',
+            monthlyBonusIncome: '',
+            annualBonusIncome: '',
+            employmentType: 'Full-Time' as const,
+            yearsEmployedYears: '',
+            yearsEmployedMonths: '',
+            employerAddress: {
+              street: '',
+              unit: '',
+              city: '',
+              state: '',
+              zip: '',
+              county: ''
+            },
+            employerPhone: '',
+            employmentVerificationPhone: '',
+            isShowingEmploymentVerification: false,
+            employerRemote: ''
+          }
+        },
         priorEmployerName: '',
         priorJobTitle: '',
         priorMonthlyIncome: '',
@@ -2187,6 +2237,7 @@ export default function AdminAddClient() {
   const totalBorrowerIncome = useMemo(() => {
     console.log('📊 Calculating borrower income total...', { borrowerIncomeData });
     console.log('📊 Employers data:', borrowerIncomeData?.employers);
+    console.log('📊 Form values for employers:', form.getValues('income.employers'));
     
     // Calculate total main employment income from all employer cards
     const employmentIncome = borrowerIncomeData?.employers && typeof borrowerIncomeData.employers === 'object'
