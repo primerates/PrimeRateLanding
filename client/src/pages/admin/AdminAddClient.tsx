@@ -618,6 +618,7 @@ export default function AdminAddClient() {
   const [isOtherIncomeOpen, setIsOtherIncomeOpen] = useState(false);
 
   // Co-Borrower income collapsible state
+  const [isCoBorrowerEmploymentIncomeOpen, setIsCoBorrowerEmploymentIncomeOpen] = useState(false);
   const [isCoBorrowerSecondEmploymentIncomeOpen, setIsCoBorrowerSecondEmploymentIncomeOpen] = useState(false);
   const [isCoBorrowerSelfEmploymentIncomeOpen, setIsCoBorrowerSelfEmploymentIncomeOpen] = useState(false);
   const [isCoBorrowerSocialSecurityIncomeOpen, setIsCoBorrowerSocialSecurityIncomeOpen] = useState(false);
@@ -718,6 +719,15 @@ export default function AdminAddClient() {
 
   // Delete confirmation dialog state for Borrower Self-Employment
   const [deleteSelfEmploymentDialog, setDeleteSelfEmploymentDialog] = useState<{
+    isOpen: boolean;
+    cardId: string;
+  }>({ isOpen: false, cardId: '' });
+
+  // Co-Borrower Employer cards state management
+  const [coBorrowerEmployerCards, setCoBorrowerEmployerCards] = useState<string[]>(['default']);
+  
+  // Delete confirmation dialog state for Co-Borrower Employer
+  const [deleteCoBorrowerEmployerDialog, setDeleteCoBorrowerEmployerDialog] = useState<{
     isOpen: boolean;
     cardId: string;
   }>({ isOpen: false, cardId: '' });
