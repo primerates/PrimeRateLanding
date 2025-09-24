@@ -2257,17 +2257,6 @@ export default function AdminAddClient() {
     return total;
   }, [coBorrowerIncomeData]);
   
-  
-  // Calculate total household income (borrower + co-borrower) - optimized with useMemo
-  const totalHouseholdIncome = useMemo(() => {
-    const coBorrowerTotal = hasCoBorrower ? totalCoBorrowerIncome : 0;
-    return totalBorrowerIncome + coBorrowerTotal;
-  }, [totalBorrowerIncome, totalCoBorrowerIncome, hasCoBorrower]);
-  
-  const totalHouseholdIncomeFormatted = useMemo(() => 
-    `$${totalHouseholdIncome.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`,
-    [totalHouseholdIncome]
-  );
 
 
   // Current Loan auto sum now handled by isolated TotalCurrentLoanPayment component
@@ -6620,15 +6609,6 @@ export default function AdminAddClient() {
                 <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
                   <div className="space-y-2">
                     <Label htmlFor="household-income-total" className="text-2xl font-semibold">Total Household Income</Label>
-                    <div 
-                      className={`text-2xl font-bold ${(() => {
-                        const totalValue = totalHouseholdIncome;
-                        return totalValue > 0 ? 'text-orange-600' : 'text-primary';
-                      })()}`}
-                      data-testid="text-household-income-total"
-                    >
-                      {totalHouseholdIncomeFormatted}
-                    </div>
                   </div>
                   
                   <div className="space-y-2">
