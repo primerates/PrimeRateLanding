@@ -19,11 +19,11 @@ export type User = typeof users.$inferSelect;
 
 // Address schema for reusable address components
 export const addressSchema = z.object({
-  street: z.string().min(1),
+  street: z.string().optional(),
   unit: z.string().optional(),
-  city: z.string().min(1),
-  state: z.string().min(1),
-  zip: z.string().min(1),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  zip: z.string().optional(),
   county: z.string().optional(),
 });
 
@@ -37,18 +37,18 @@ export const pensionSchema = z.object({
 
 // Client Management Schema
 export const borrowerInfoSchema = z.object({
-  firstName: z.string().min(1),
+  firstName: z.string().optional(),
   middleName: z.string().optional(),
-  lastName: z.string().min(1),
-  phone: z.string().min(1),
-  email: z.string().email(),
-  maritalStatus: z.enum(["Select", "single", "married", "divorced", "widowed"]).refine(val => val !== "Select", "Please select a marital status"),
+  lastName: z.string().optional(),
+  phone: z.string().optional(),
+  email: z.string().optional(),
+  maritalStatus: z.enum(["Select", "single", "married", "divorced", "widowed"]).optional(),
   relationshipToBorrower: z.enum(["N/A", "spouse", "partner", "family", "friend", "other", "not-applicable"]).optional(),
-  dateOfBirth: z.string().min(1),
-  ssn: z.string().min(1),
+  dateOfBirth: z.string().optional(),
+  ssn: z.string().optional(),
   preferredContactTime: z.enum(["Select", "Morning", "Afternoon", "Evening"]).optional(),
-  residenceAddress: addressSchema,
-  yearsAtAddress: z.string().min(1),
+  residenceAddress: addressSchema.partial().optional(),
+  yearsAtAddress: z.string().optional(),
   monthsAtAddress: z.string().optional(),
   priorResidenceAddress: addressSchema.partial().optional(),
   priorYearsAtAddress: z.string().optional(),
@@ -56,7 +56,7 @@ export const borrowerInfoSchema = z.object({
   subjectProperty: addressSchema.partial().optional(),
   leadRef: z.string().optional(),
   dmBatch: z.string().optional(),
-  source: z.enum(["Select", "Direct Mail", "Social Media", "Client Referral", "Other"]).refine(val => !val || val !== "Select", "Please select a source").optional(),
+  source: z.enum(["Select", "Direct Mail", "Social Media", "Client Referral", "Other"]).optional(),
   callDate: z.string().optional(),
   startDate: z.string().optional(),
   loanDuration: z.string().optional(),

@@ -5121,15 +5121,12 @@ export default function AdminAddClient() {
                   {/* Row 1: First Name, Middle Name (narrower), Last Name, Date of Birth, SSN */}
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="borrower-firstName">First Name *</Label>
+                      <Label htmlFor="borrower-firstName">First Name</Label>
                       <Input
                         id="borrower-firstName"
                         {...form.register('borrower.firstName')}
                         data-testid="input-borrower-firstName"
                       />
-                      {form.formState.errors.borrower?.firstName && (
-                        <p className="text-sm text-destructive">{form.formState.errors.borrower.firstName.message}</p>
-                      )}
                     </div>
                     
                     <div className="space-y-2">
@@ -5142,48 +5139,39 @@ export default function AdminAddClient() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="borrower-lastName">Last Name *</Label>
+                      <Label htmlFor="borrower-lastName">Last Name</Label>
                       <Input
                         id="borrower-lastName"
                         {...form.register('borrower.lastName')}
                         data-testid="input-borrower-lastName"
                       />
-                      {form.formState.errors.borrower?.lastName && (
-                        <p className="text-sm text-destructive">{form.formState.errors.borrower.lastName.message}</p>
-                      )}
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="borrower-dateOfBirth">Date of Birth *</Label>
+                      <Label htmlFor="borrower-dateOfBirth">Date of Birth</Label>
                       <Input
                         id="borrower-dateOfBirth"
                         type="date"
                         {...form.register('borrower.dateOfBirth')}
                         data-testid="input-borrower-dateOfBirth"
                       />
-                      {form.formState.errors.borrower?.dateOfBirth && (
-                        <p className="text-sm text-destructive">{form.formState.errors.borrower.dateOfBirth.message}</p>
-                      )}
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="borrower-ssn">SSN *</Label>
+                      <Label htmlFor="borrower-ssn">SSN</Label>
                       <Input
                         id="borrower-ssn"
                         {...form.register('borrower.ssn')}
                         placeholder="XXX-XX-XXXX"
                         data-testid="input-borrower-ssn"
                       />
-                      {form.formState.errors.borrower?.ssn && (
-                        <p className="text-sm text-destructive">{form.formState.errors.borrower.ssn.message}</p>
-                      )}
                     </div>
                   </div>
                   
                   {/* Row 2: Marital Status, Relationship to Co-Borrower, Phone, Email, Preferred Contact Time */}
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="borrower-maritalStatus">Marital Status *</Label>
+                      <Label htmlFor="borrower-maritalStatus">Marital Status</Label>
                       <Select 
                         value={form.watch('borrower.maritalStatus') || 'Select'}
                         onValueChange={(value) => {
@@ -5229,7 +5217,7 @@ export default function AdminAddClient() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="borrower-phone">Phone *</Label>
+                      <Label htmlFor="borrower-phone">Phone</Label>
                       <Input
                         id="borrower-phone"
                         value={form.watch('borrower.phone') || ''}
@@ -5237,22 +5225,16 @@ export default function AdminAddClient() {
                         placeholder="(XXX) XXX-XXXX"
                         data-testid="input-borrower-phone"
                       />
-                      {form.formState.errors.borrower?.phone && (
-                        <p className="text-sm text-destructive">{form.formState.errors.borrower.phone.message}</p>
-                      )}
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="borrower-email">Email *</Label>
+                      <Label htmlFor="borrower-email">Email</Label>
                       <Input
                         id="borrower-email"
                         type="email"
                         {...form.register('borrower.email')}
                         data-testid="input-borrower-email"
                       />
-                      {form.formState.errors.borrower?.email && (
-                        <p className="text-sm text-destructive">{form.formState.errors.borrower.email.message}</p>
-                      )}
                     </div>
                     
                     <div className="space-y-2">
@@ -5331,7 +5313,7 @@ export default function AdminAddClient() {
                     <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                     <div className="space-y-2 md:col-span-3">
-                      <Label htmlFor="borrower-residence-street">Street Address *</Label>
+                      <Label htmlFor="borrower-residence-street">Street Address</Label>
                       <Input
                         id="borrower-residence-street"
                         {...form.register('borrower.residenceAddress.street', {
@@ -5339,9 +5321,6 @@ export default function AdminAddClient() {
                         })}
                         data-testid="input-borrower-residence-street"
                       />
-                      {form.formState.errors.borrower?.residenceAddress?.street && (
-                        <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.street.message}</p>
-                      )}
                     </div>
                     
                     <div className="space-y-2 md:col-span-1">
@@ -5356,7 +5335,7 @@ export default function AdminAddClient() {
                     </div>
                     
                     <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor="borrower-residence-city">City *</Label>
+                      <Label htmlFor="borrower-residence-city">City</Label>
                       <Input
                         id="borrower-residence-city"
                         {...form.register('borrower.residenceAddress.city', {
@@ -5364,13 +5343,10 @@ export default function AdminAddClient() {
                         })}
                         data-testid="input-borrower-residence-city"
                       />
-                      {form.formState.errors.borrower?.residenceAddress?.city && (
-                        <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.city.message}</p>
-                      )}
                     </div>
                     
                     <div className="space-y-2 md:col-span-1">
-                      <Label htmlFor="borrower-residence-state">State *</Label>
+                      <Label htmlFor="borrower-residence-state">State</Label>
                       <Select
                         value={form.watch('borrower.residenceAddress.state') || ''}
                         onValueChange={(value) => {
@@ -5389,13 +5365,10 @@ export default function AdminAddClient() {
                           ))}
                         </SelectContent>
                       </Select>
-                      {form.formState.errors.borrower?.residenceAddress?.state && (
-                        <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.state.message}</p>
-                      )}
                     </div>
                     
                     <div className="space-y-2 md:col-span-1">
-                      <Label htmlFor="borrower-residence-zip">ZIP Code *</Label>
+                      <Label htmlFor="borrower-residence-zip">ZIP Code</Label>
                       <Input
                         id="borrower-residence-zip"
                         {...form.register('borrower.residenceAddress.zip', {
@@ -5404,9 +5377,6 @@ export default function AdminAddClient() {
                         onBlur={(e) => handleBorrowerZipCodeLookup(e.target.value)}
                         data-testid="input-borrower-residence-zip"
                       />
-                      {form.formState.errors.borrower?.residenceAddress?.zip && (
-                        <p className="text-sm text-destructive">{form.formState.errors.borrower.residenceAddress.zip.message}</p>
-                      )}
                     </div>
                     
                     <div className="space-y-2 md:col-span-2">
@@ -5473,13 +5443,6 @@ export default function AdminAddClient() {
                     </div>
                   </div>
                   
-                  {/* Error handling for time at address field */}
-                  {form.formState.errors.borrower?.yearsAtAddress && !isShowingMonthsAtAddress && (
-                    <p className="text-sm text-destructive">{form.formState.errors.borrower.yearsAtAddress.message}</p>
-                  )}
-                  {form.formState.errors.borrower?.monthsAtAddress && isShowingMonthsAtAddress && (
-                    <p className="text-sm text-destructive">{form.formState.errors.borrower.monthsAtAddress.message}</p>
-                  )}
                     </CardContent>
                   </CollapsibleContent>
                 </Collapsible>
@@ -5533,15 +5496,12 @@ export default function AdminAddClient() {
                       <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                         <div className="space-y-2 md:col-span-3">
-                          <Label htmlFor="borrower-prior-street">Street Address *</Label>
+                          <Label htmlFor="borrower-prior-street">Street Address</Label>
                           <Input
                             id="borrower-prior-street"
                             {...form.register('borrower.priorResidenceAddress.street')}
                             data-testid="input-borrower-prior-street"
                           />
-                          {form.formState.errors.borrower?.priorResidenceAddress?.street && (
-                            <p className="text-sm text-destructive">{form.formState.errors.borrower.priorResidenceAddress.street.message}</p>
-                          )}
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
@@ -5554,19 +5514,16 @@ export default function AdminAddClient() {
                         </div>
                         
                         <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="borrower-prior-city">City *</Label>
+                          <Label htmlFor="borrower-prior-city">City</Label>
                           <Input
                             id="borrower-prior-city"
                             {...form.register('borrower.priorResidenceAddress.city')}
                             data-testid="input-borrower-prior-city"
                           />
-                          {form.formState.errors.borrower?.priorResidenceAddress?.city && (
-                            <p className="text-sm text-destructive">{form.formState.errors.borrower.priorResidenceAddress.city.message}</p>
-                          )}
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="borrower-prior-state">State *</Label>
+                          <Label htmlFor="borrower-prior-state">State</Label>
                           <Select
                             value={form.watch('borrower.priorResidenceAddress.state') || ''}
                             onValueChange={(value) => form.setValue('borrower.priorResidenceAddress.state', value, { shouldDirty: true })}
@@ -5582,22 +5539,16 @@ export default function AdminAddClient() {
                               ))}
                             </SelectContent>
                           </Select>
-                          {form.formState.errors.borrower?.priorResidenceAddress?.state && (
-                            <p className="text-sm text-destructive">{form.formState.errors.borrower.priorResidenceAddress.state.message}</p>
-                          )}
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="borrower-prior-zip">ZIP Code *</Label>
+                          <Label htmlFor="borrower-prior-zip">ZIP Code</Label>
                           <Input
                             id="borrower-prior-zip"
                             {...form.register('borrower.priorResidenceAddress.zip')}
                             onBlur={(e) => handleBorrowerPriorZipCodeLookup(e.target.value)}
                             data-testid="input-borrower-prior-zip"
                           />
-                          {form.formState.errors.borrower?.priorResidenceAddress?.zip && (
-                            <p className="text-sm text-destructive">{form.formState.errors.borrower.priorResidenceAddress.zip.message}</p>
-                          )}
                         </div>
                         
                         <div className="space-y-2 md:col-span-2">
@@ -5664,13 +5615,6 @@ export default function AdminAddClient() {
                         </div>
                       </div>
                       
-                      {/* Error handling for time at address field */}
-                      {form.formState.errors.borrower?.priorYearsAtAddress && !isShowingMonthsAtPriorAddress && (
-                        <p className="text-sm text-destructive">{form.formState.errors.borrower.priorYearsAtAddress.message}</p>
-                      )}
-                      {form.formState.errors.borrower?.priorMonthsAtAddress && isShowingMonthsAtPriorAddress && (
-                        <p className="text-sm text-destructive">{form.formState.errors.borrower.priorMonthsAtAddress.message}</p>
-                      )}
                     
                     {/* Add Prior Address Button - positioned at bottom right */}
                     <div className="md:col-span-2 lg:col-span-3 flex justify-end mt-4">
@@ -5712,7 +5656,7 @@ export default function AdminAddClient() {
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                       <div className="space-y-2 md:col-span-3">
-                        <Label htmlFor={`borrower-prior-street-${address.id}`}>Street Address *</Label>
+                        <Label htmlFor={`borrower-prior-street-${address.id}`}>Street Address</Label>
                         <Input
                           id={`borrower-prior-street-${address.id}`}
                           placeholder="Street Address"
@@ -5730,7 +5674,7 @@ export default function AdminAddClient() {
                       </div>
                       
                       <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor={`borrower-prior-city-${address.id}`}>City *</Label>
+                        <Label htmlFor={`borrower-prior-city-${address.id}`}>City</Label>
                         <Input
                           id={`borrower-prior-city-${address.id}`}
                           placeholder="City"
@@ -5739,7 +5683,7 @@ export default function AdminAddClient() {
                       </div>
                       
                       <div className="space-y-2 md:col-span-1">
-                        <Label htmlFor={`borrower-prior-state-${address.id}`}>State *</Label>
+                        <Label htmlFor={`borrower-prior-state-${address.id}`}>State</Label>
                         <Select defaultValue="">
                           <SelectTrigger data-testid={`select-borrower-prior-state-${address.id}`}>
                             <SelectValue placeholder="State" />
@@ -5755,7 +5699,7 @@ export default function AdminAddClient() {
                       </div>
                       
                       <div className="space-y-2 md:col-span-1">
-                        <Label htmlFor={`borrower-prior-zip-${address.id}`}>ZIP Code *</Label>
+                        <Label htmlFor={`borrower-prior-zip-${address.id}`}>ZIP Code</Label>
                         <Input
                           id={`borrower-prior-zip-${address.id}`}
                           placeholder="ZIP Code"
