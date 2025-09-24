@@ -824,6 +824,21 @@ export default function AdminAddClient() {
     cardId: string;
   }>({ isOpen: false, cardId: '' });
 
+  // Delete confirmation dialog state for Social Security Income
+  const [deleteSocialSecurityDialog, setDeleteSocialSecurityDialog] = useState<{
+    isOpen: boolean;
+  }>({ isOpen: false });
+
+  // Delete confirmation dialog state for VA Disability Income
+  const [deleteVaBenefitsDialog, setDeleteVaBenefitsDialog] = useState<{
+    isOpen: boolean;
+  }>({ isOpen: false });
+
+  // Delete confirmation dialog state for Disability Income
+  const [deleteDisabilityDialog, setDeleteDisabilityDialog] = useState<{
+    isOpen: boolean;
+  }>({ isOpen: false });
+
   // Co-Borrower Employer cards state management
   const [coBorrowerEmployerCards, setCoBorrowerEmployerCards] = useState<string[]>(['default']);
   
@@ -7339,18 +7354,32 @@ export default function AdminAddClient() {
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Borrower - Social Security</CardTitle>
-                        <CollapsibleTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="hover:bg-orange-500 hover:text-white" 
-                            data-testid="button-toggle-social-security-income"
-                            title={isSocialSecurityIncomeOpen ? 'Minimize' : 'Expand'}
-                            key={`social-security-income-${isSocialSecurityIncomeOpen}`}
+                        <div className="flex items-center gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setDeleteSocialSecurityDialog({ isOpen: true })}
+                            className="hover:bg-red-500 hover:text-white"
+                            data-testid="button-delete-social-security"
+                            title="Delete Social Security Income"
                           >
-                            {isSocialSecurityIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            <Minus className="h-4 w-4 mr-2" />
+                            Remove
                           </Button>
-                        </CollapsibleTrigger>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-social-security-income"
+                              title={isSocialSecurityIncomeOpen ? 'Minimize' : 'Expand'}
+                              key={`social-security-income-${isSocialSecurityIncomeOpen}`}
+                            >
+                              {isSocialSecurityIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
                       </div>
                     </CardHeader>
                     <CollapsibleContent>
@@ -7388,18 +7417,32 @@ export default function AdminAddClient() {
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Borrower - VA Disability</CardTitle>
-                        <CollapsibleTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="hover:bg-orange-500 hover:text-white" 
-                            data-testid="button-toggle-va-benefits-income"
-                            title={isVaBenefitsIncomeOpen ? 'Minimize' : 'Expand'}
-                            key={`va-benefits-income-${isVaBenefitsIncomeOpen}`}
+                        <div className="flex items-center gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setDeleteVaBenefitsDialog({ isOpen: true })}
+                            className="hover:bg-red-500 hover:text-white"
+                            data-testid="button-delete-va-benefits"
+                            title="Delete VA Disability Income"
                           >
-                            {isVaBenefitsIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            <Minus className="h-4 w-4 mr-2" />
+                            Remove
                           </Button>
-                        </CollapsibleTrigger>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-va-benefits-income"
+                              title={isVaBenefitsIncomeOpen ? 'Minimize' : 'Expand'}
+                              key={`va-benefits-income-${isVaBenefitsIncomeOpen}`}
+                            >
+                              {isVaBenefitsIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
                       </div>
                     </CardHeader>
                     <CollapsibleContent>
@@ -7437,18 +7480,32 @@ export default function AdminAddClient() {
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Borrower - Disability</CardTitle>
-                        <CollapsibleTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="hover:bg-orange-500 hover:text-white" 
-                            data-testid="button-toggle-disability-income"
-                            title={isDisabilityIncomeOpen ? 'Minimize' : 'Expand'}
-                            key={`disability-income-${isDisabilityIncomeOpen}`}
+                        <div className="flex items-center gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setDeleteDisabilityDialog({ isOpen: true })}
+                            className="hover:bg-red-500 hover:text-white"
+                            data-testid="button-delete-disability"
+                            title="Delete Disability Income"
                           >
-                            {isDisabilityIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            <Minus className="h-4 w-4 mr-2" />
+                            Remove
                           </Button>
-                        </CollapsibleTrigger>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-disability-income"
+                              title={isDisabilityIncomeOpen ? 'Minimize' : 'Expand'}
+                              key={`disability-income-${isDisabilityIncomeOpen}`}
+                            >
+                              {isDisabilityIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
                       </div>
                     </CardHeader>
                     <CollapsibleContent>
@@ -12056,6 +12113,106 @@ export default function AdminAddClient() {
               className="bg-red-600 hover:bg-red-700"
             >
               Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Social Security Income Confirmation Dialog */}
+      <AlertDialog open={deleteSocialSecurityDialog.isOpen} onOpenChange={(open) => !open && setDeleteSocialSecurityDialog({ isOpen: false })}>
+        <AlertDialogContent data-testid="dialog-delete-social-security">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Social Security Income</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove the Social Security income section? This will clear all entered data and hide the section. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteSocialSecurityDialog({ isOpen: false })}
+              data-testid="button-cancel-delete-social-security"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                // Clear the income type checkbox and close the section
+                form.setValue('income.incomeTypes.socialSecurity', false);
+                form.setValue('income.socialSecurityMonthlyAmount', '');
+                setIsSocialSecurityIncomeOpen(false);
+                setDeleteSocialSecurityDialog({ isOpen: false });
+              }}
+              data-testid="button-confirm-delete-social-security"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete VA Benefits Income Confirmation Dialog */}
+      <AlertDialog open={deleteVaBenefitsDialog.isOpen} onOpenChange={(open) => !open && setDeleteVaBenefitsDialog({ isOpen: false })}>
+        <AlertDialogContent data-testid="dialog-delete-va-benefits">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove VA Disability Income</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove the VA Disability income section? This will clear all entered data and hide the section. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteVaBenefitsDialog({ isOpen: false })}
+              data-testid="button-cancel-delete-va-benefits"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                // Clear the income type checkbox and close the section
+                form.setValue('income.incomeTypes.vaBenefits', false);
+                form.setValue('income.vaBenefitsMonthlyAmount', '');
+                setIsVaBenefitsIncomeOpen(false);
+                setDeleteVaBenefitsDialog({ isOpen: false });
+              }}
+              data-testid="button-confirm-delete-va-benefits"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Disability Income Confirmation Dialog */}
+      <AlertDialog open={deleteDisabilityDialog.isOpen} onOpenChange={(open) => !open && setDeleteDisabilityDialog({ isOpen: false })}>
+        <AlertDialogContent data-testid="dialog-delete-disability">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Disability Income</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove the Disability income section? This will clear all entered data and hide the section. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteDisabilityDialog({ isOpen: false })}
+              data-testid="button-cancel-delete-disability"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                // Clear the income type checkbox and close the section
+                form.setValue('income.incomeTypes.disability', false);
+                form.setValue('income.disabilityPayerName', '');
+                form.setValue('income.disabilityMonthlyAmount', '');
+                setIsDisabilityIncomeOpen(false);
+                setDeleteDisabilityDialog({ isOpen: false });
+              }}
+              data-testid="button-confirm-delete-disability"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Remove
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
