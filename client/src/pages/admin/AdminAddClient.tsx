@@ -379,13 +379,56 @@ export default function AdminAddClient() {
 
 
   // Handler for co-borrower employer ZIP code lookup
+  const handleCoBorrowerEmployerZipCodeLookup = async (zipCode: string) => {
+    if (!zipCode || zipCode.length < 5) {
+      setCoBorrowerEmployerCountyOptions([]);
+      form.setValue('coBorrowerIncome.employerAddress.county', '');
+      return;
+    }
+    
+    setCountyLookupLoading(prev => ({...prev, coBorrowerEmployer: true}));
+    const counties = await lookupCountyFromZip(zipCode);
+    
+    if (counties.length === 1) {
+      form.setValue('coBorrowerIncome.employerAddress.county', counties[0].label, { shouldDirty: true });
+      setCoBorrowerEmployerCountyOptions([]);
+    } else if (counties.length > 1) {
+      setCoBorrowerEmployerCountyOptions(counties);
+    } else {
+      setCoBorrowerEmployerCountyOptions([]);
+    }
+    
+    setCountyLookupLoading(prev => ({...prev, coBorrowerEmployer: false}));
+  };
 
   // Handler for co-borrower prior employer ZIP code lookup
+  const handleCoBorrowerPriorEmployerZipCodeLookup = async (zipCode: string) => {
+    if (!zipCode || zipCode.length < 5) {
+      setCoBorrowerPriorEmployerCountyOptions([]);
+      form.setValue('coBorrowerIncome.priorEmployerAddress.county', '');
+      return;
+    }
+    
+    setCountyLookupLoading(prev => ({...prev, coBorrowerPriorEmployer: true}));
+    const counties = await lookupCountyFromZip(zipCode);
+    
+    if (counties.length === 1) {
+      form.setValue('coBorrowerIncome.priorEmployerAddress.county', counties[0].label, { shouldDirty: true });
+      setCoBorrowerPriorEmployerCountyOptions([]);
+    } else if (counties.length > 1) {
+      setCoBorrowerPriorEmployerCountyOptions(counties);
+    } else {
+      setCoBorrowerPriorEmployerCountyOptions([]);
+    }
+    
+    setCountyLookupLoading(prev => ({...prev, coBorrowerPriorEmployer: false}));
+  };
 
   // Handler for co-borrower second employer ZIP code lookup
   const handleCoBorrowerSecondEmployerZipCodeLookup = async (zipCode: string) => {
     if (!zipCode || zipCode.length < 5) {
       setCoBorrowerSecondEmployerCountyOptions([]);
+      form.setValue('coBorrowerIncome.secondEmployerAddress.county', '');
       return;
     }
     
@@ -826,6 +869,8 @@ export default function AdminAddClient() {
   // Employment income county lookup state
   const [borrowerEmployerCountyOptions, setBorrowerEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
   const [borrowerPriorEmployerCountyOptions, setBorrowerPriorEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
+  const [coBorrowerEmployerCountyOptions, setCoBorrowerEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
+  const [coBorrowerPriorEmployerCountyOptions, setCoBorrowerPriorEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
   const [coBorrowerSecondEmployerCountyOptions, setCoBorrowerSecondEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
   
   const [countyLookupLoading, setCountyLookupLoading] = useState<{
@@ -835,8 +880,8 @@ export default function AdminAddClient() {
     coBorrowerPrior: boolean,
     borrowerEmployer: boolean,
     borrowerPriorEmployer: boolean,
-    
-    
+    coBorrowerEmployer: boolean,
+    coBorrowerPriorEmployer: boolean,
     coBorrowerSecondEmployer: boolean
   }>({
     borrower: false, 
@@ -845,8 +890,8 @@ export default function AdminAddClient() {
     coBorrowerPrior: false,
     borrowerEmployer: false,
     borrowerPriorEmployer: false,
-    
-    
+    coBorrowerEmployer: false,
+    coBorrowerPriorEmployer: false,
     coBorrowerSecondEmployer: false
   });
 
@@ -8267,6 +8312,10 @@ export default function AdminAddClient() {
                                 <Input
                                   id="coborrower-template-employer-zip"
                                   data-testid="input-coborrower-template-employer-zip"
+                                  onChange={(e) => {
+                                    const zipCode = e.target.value;
+                                    handleCoBorrowerEmployerZipCodeLookup(zipCode);
+                                  }}
                                 />
                               </div>
                               
