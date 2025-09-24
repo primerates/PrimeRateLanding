@@ -137,6 +137,8 @@ export default function HeroSection() {
           data-testid="img-hero-background"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/20"></div>
+        {/* Top shadow for menu visibility */}
+        <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/40 to-transparent"></div>
       </div>
 
       {/* Top Right Menu Options - Sleek White Menu Bar */}
