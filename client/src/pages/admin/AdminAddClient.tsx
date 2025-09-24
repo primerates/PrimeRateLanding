@@ -711,6 +711,12 @@ export default function AdminAddClient() {
     const cleanCardId = cardId === 'default' ? 'default' : cardId;
     return `coBorrowerIncome.secondEmployers.${cleanCardId}.${fieldName}` as const;
   };
+
+  // Helper function to generate dynamic field paths for co-borrower self-employment cards
+  const getCoBorrowerSelfEmploymentFieldPath = (cardId: string, fieldName: string) => {
+    const cleanCardId = cardId === 'default' ? 'default' : cardId;
+    return `coBorrowerIncome.selfEmployment.${cleanCardId}.${fieldName}` as const;
+  };
   
   // Update employment duration when dates change
   const updateEmploymentDuration = (cardId: string, startDate: string, endDate: string, isPresent: boolean) => {
@@ -753,6 +759,9 @@ export default function AdminAddClient() {
   // Borrower Self-Employment cards state management
   const [borrowerSelfEmploymentCards, setBorrowerSelfEmploymentCards] = useState<string[]>(['default']);
   
+  // Co-borrower Self-Employment cards state management
+  const [coBorrowerSelfEmploymentCards, setCoBorrowerSelfEmploymentCards] = useState<string[]>(['default']);
+  
   // Employment dates state for each card
   const [employmentDates, setEmploymentDates] = useState<Record<string, {
     startDate: string;
@@ -781,6 +790,12 @@ export default function AdminAddClient() {
 
   // Delete confirmation dialog state for Borrower Self-Employment
   const [deleteSelfEmploymentDialog, setDeleteSelfEmploymentDialog] = useState<{
+    isOpen: boolean;
+    cardId: string;
+  }>({ isOpen: false, cardId: '' });
+
+  // Delete confirmation dialog state for Co-borrower Self-Employment
+  const [deleteCoBorrowerSelfEmploymentDialog, setDeleteCoBorrowerSelfEmploymentDialog] = useState<{
     isOpen: boolean;
     cardId: string;
   }>({ isOpen: false, cardId: '' });
