@@ -2234,6 +2234,8 @@ export default function AdminAddClient() {
 
   // Calculate total monthly income - optimized with useMemo
   const borrowerIncomeData = form.watch('income');
+  const borrowerEmployersData = form.watch('income.employers');
+  const defaultEmployerIncome = form.watch('income.employers.default.monthlyIncome');
   const totalBorrowerIncome = useMemo(() => {
     console.log('📊 Calculating borrower income total...', { borrowerIncomeData });
     console.log('📊 Employers data:', borrowerIncomeData?.employers);
@@ -2275,7 +2277,7 @@ export default function AdminAddClient() {
                   disabilityIncome + otherIncome;
     
     return total;
-  }, [borrowerIncomeData]);
+  }, [borrowerIncomeData, borrowerEmployersData, defaultEmployerIncome]);
   
   const totalBorrowerIncomeFormatted = useMemo(() => 
     `$${totalBorrowerIncome.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`,
@@ -7680,12 +7682,14 @@ export default function AdminAddClient() {
                                 <Controller
                                   control={form.control}
                                   name={getEmployerFieldPath(cardId, 'monthlyIncome')}
+                                  defaultValue=""
                                   render={({ field }) => (
                                     <Input
                                       id={`${propertyId}-monthlyIncome`}
-                                      value={formatDollarDisplay(field.value)}
+                                      value={formatDollarDisplay(field.value || '')}
                                       onChange={(e) => {
                                         const rawValue = parseDollarInput(e.target.value);
+                                        console.log('📊 Monthly income onChange:', { rawValue, fieldPath: getEmployerFieldPath(cardId, 'monthlyIncome') });
                                         field.onChange(rawValue);
                                       }}
                                       placeholder="$0.00"
