@@ -863,6 +863,15 @@ export default function AdminAddClient() {
   }>({ isOpen: false, cardId: null, currentValue: '' });
   
   const [businessDescriptionInput, setBusinessDescriptionInput] = useState('');
+  
+  // Tax preparer popup state
+  const [taxPreparerDialog, setTaxPreparerDialog] = useState<{
+    isOpen: boolean;
+    cardId: string | null;
+    currentValue: string;
+  }>({ isOpen: false, cardId: null, currentValue: '' });
+  
+  const [taxPreparerInput, setTaxPreparerInput] = useState('');
 
   // Unsaved changes warning dialog state
   const [unsavedChangesDialog, setUnsavedChangesDialog] = useState<{
@@ -4201,6 +4210,29 @@ export default function AdminAddClient() {
     if (businessDescriptionDialog.cardId) {
       form.setValue('income.businessDescription', businessDescriptionInput, { shouldDirty: true });
       closeBusinessDescriptionDialog();
+    }
+  };
+
+  // Tax preparer popup handlers
+  const openTaxPreparerDialog = (cardId: string) => {
+    const currentValue = form.getValues('income.taxesPreparedBy') || '';
+    setTaxPreparerInput(currentValue);
+    setTaxPreparerDialog({
+      isOpen: true,
+      cardId,
+      currentValue
+    });
+  };
+
+  const closeTaxPreparerDialog = () => {
+    setTaxPreparerDialog({ isOpen: false, cardId: null, currentValue: '' });
+    setTaxPreparerInput('');
+  };
+
+  const saveTaxPreparer = () => {
+    if (taxPreparerDialog.cardId) {
+      form.setValue('income.taxesPreparedBy', taxPreparerInput, { shouldDirty: true });
+      closeTaxPreparerDialog();
     }
   };
 
