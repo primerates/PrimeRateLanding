@@ -6833,6 +6833,15 @@ export default function AdminAddClient() {
                                 >
                                   <Info className="h-4 w-4" />
                                 </button>
+                                <button
+                                  type="button"
+                                  onClick={() => openTaxPreparerDialog(cardId)}
+                                  className="text-blue-600 hover:text-blue-800 transition-colors ml-2 flex items-center justify-center w-4 h-4 rounded-full border border-blue-600"
+                                  data-testid="button-tax-preparer-info"
+                                  title="Tax preparer information"
+                                >
+                                  <span className="text-xs font-bold">T</span>
+                                </button>
                               </div>
                             </div>
                           </div>
