@@ -377,27 +377,6 @@ export default function AdminAddClient() {
     setCountyLookupLoading(prev => ({...prev, borrowerPriorEmployer: false}));
   };
 
-  // Handler for borrower second employer ZIP code lookup
-  const handleBorrowerSecondEmployerZipCodeLookup = async (zipCode: string) => {
-    if (!zipCode || zipCode.length < 5) {
-      setBorrowerSecondEmployerCountyOptions([]);
-      return;
-    }
-    
-    setCountyLookupLoading(prev => ({...prev, borrowerSecondEmployer: true}));
-    const counties = await lookupCountyFromZip(zipCode);
-    
-    if (counties.length === 1) {
-      form.setValue('income.secondEmployerAddress.county', counties[0].label, { shouldDirty: true });
-      setBorrowerSecondEmployerCountyOptions([]);
-    } else if (counties.length > 1) {
-      setBorrowerSecondEmployerCountyOptions(counties);
-    } else {
-      setBorrowerSecondEmployerCountyOptions([]);
-    }
-    
-    setCountyLookupLoading(prev => ({...prev, borrowerSecondEmployer: false}));
-  };
 
   // Handler for co-borrower employer ZIP code lookup
 
@@ -570,7 +549,7 @@ export default function AdminAddClient() {
       // No warning needed when checking
       form.setValue(fieldPath as any, true);
       // Auto-expand employment cards when selected
-      if (fieldPath.includes('employment') && !fieldPath.includes('secondEmployment')) {
+      if (fieldPath.includes('employment')) {
         if (!isCoBorrower) {
           // Expand the borrower employer card (using propertyCardStates)
           setPropertyCardStates(prev => ({ ...prev, 'template-card': true }));
@@ -631,7 +610,6 @@ export default function AdminAddClient() {
   
   // Borrower income section collapsible states
   const [isEmploymentIncomeOpen, setIsEmploymentIncomeOpen] = useState(false);
-  const [isSecondEmploymentIncomeOpen, setIsSecondEmploymentIncomeOpen] = useState(false);
   const [isSelfEmploymentIncomeOpen, setIsSelfEmploymentIncomeOpen] = useState(false);
   const [isSocialSecurityIncomeOpen, setIsSocialSecurityIncomeOpen] = useState(false);
   const [isVaBenefitsIncomeOpen, setIsVaBenefitsIncomeOpen] = useState(false);
@@ -810,7 +788,6 @@ export default function AdminAddClient() {
   // Employment income county lookup state
   const [borrowerEmployerCountyOptions, setBorrowerEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
   const [borrowerPriorEmployerCountyOptions, setBorrowerPriorEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
-  const [borrowerSecondEmployerCountyOptions, setBorrowerSecondEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
   const [coBorrowerSecondEmployerCountyOptions, setCoBorrowerSecondEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
   
   const [countyLookupLoading, setCountyLookupLoading] = useState<{
@@ -820,7 +797,6 @@ export default function AdminAddClient() {
     coBorrowerPrior: boolean,
     borrowerEmployer: boolean,
     borrowerPriorEmployer: boolean,
-    borrowerSecondEmployer: boolean,
     
     
     coBorrowerSecondEmployer: boolean
@@ -831,7 +807,6 @@ export default function AdminAddClient() {
     coBorrowerPrior: false,
     borrowerEmployer: false,
     borrowerPriorEmployer: false,
-    borrowerSecondEmployer: false,
     
     
     coBorrowerSecondEmployer: false
@@ -906,7 +881,6 @@ export default function AdminAddClient() {
       income: {
         incomeTypes: {
           employment: false,
-          secondEmployment: false,
           selfEmployment: false,
           pension: false,
           socialSecurity: false,
@@ -942,20 +916,6 @@ export default function AdminAddClient() {
           county: ''
         },
         priorEmployerPhone: '',
-        secondEmployerName: '',
-        secondJobTitle: '',
-        secondMonthlyIncome: '',
-        secondYearsEmployedYears: '',
-        secondYearsEmployedMonths: '',
-        secondEmployerAddress: {
-          street: '',
-          unit: '',
-          city: '',
-          state: '',
-          zip: '',
-          county: ''
-        },
-        secondEmployerPhone: '',
         businessName: '',
         businessMonthlyIncome: '',
         yearsInBusinessYears: '',
@@ -2072,7 +2032,7 @@ export default function AdminAddClient() {
   const borrowerIncomeData = form.watch('income');
   const totalBorrowerIncome = useMemo(() => {
     const employmentIncome = parseMonetaryValue(borrowerIncomeData?.monthlyIncome);
-    const secondEmploymentIncome = parseMonetaryValue(borrowerIncomeData?.secondMonthlyIncome);
+    const secondEmploymentIncome = 0;
     const businessIncome = parseMonetaryValue(borrowerIncomeData?.businessMonthlyIncome);
     const pensionIncome = borrowerIncomeData?.pensions?.reduce((total, pension) => total + parseMonetaryValue(pension.monthlyAmount), 0) || 0;
     const socialSecurityIncome = parseMonetaryValue(borrowerIncomeData?.socialSecurityMonthlyAmount);
@@ -6571,15 +6531,6 @@ export default function AdminAddClient() {
                       </div>
                       <div className="flex items-center space-x-2">
                         <Checkbox
-                          id="income-type-secondEmployment"
-                          checked={form.watch('income.incomeTypes.secondEmployment') || false}
-                          onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.secondEmployment', !!checked, 'Second Employment')}
-                          data-testid="checkbox-secondEmployment"
-                        />
-                        <Label htmlFor="income-type-secondEmployment">Second Employment</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
                           id="income-type-selfEmployment"
                           checked={form.watch('income.incomeTypes.selfEmployment') || false}
                           onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.selfEmployment', !!checked, 'Self-Employment')}
@@ -6644,218 +6595,6 @@ export default function AdminAddClient() {
                   </div>
                 </CardContent>
               </Card>
-              {/* Second Employment Income Card */}
-              {form.watch('income.incomeTypes.secondEmployment') && (
-                <Card>
-                  <Collapsible open={isSecondEmploymentIncomeOpen} onOpenChange={setIsSecondEmploymentIncomeOpen}>
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle>Borrower Second Employment Income</CardTitle>
-                        <CollapsibleTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="hover:bg-orange-500 hover:text-white" 
-                            data-testid="button-toggle-second-employment-income"
-                            title={isSecondEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
-                            key={`second-employment-income-${isSecondEmploymentIncomeOpen}`}
-                          >
-                            {isSecondEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                          </Button>
-                        </CollapsibleTrigger>
-                      </div>
-                    </CardHeader>
-                    <CollapsibleContent>
-                      <CardContent>
-                        <div className="space-y-6">
-                          {/* Second Employment Information - Single Row */}
-                          <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="income-secondEmployerName">Employer Name</Label>
-                              <Input
-                                id="income-secondEmployerName"
-                                {...form.register('income.secondEmployerName')}
-                                data-testid="input-income-secondEmployerName"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <div className="flex items-center justify-between mb-2">
-                                <Label htmlFor="income-second-employer-phone" className="text-xs">
-                                  {form.watch('income.secondIsShowingEmploymentVerification') ? 'Employment Verification' : 'Employer Phone'}
-                                </Label>
-                                <Switch
-                                  checked={form.watch('income.secondIsShowingEmploymentVerification') || false}
-                                  onCheckedChange={(checked) => form.setValue('income.secondIsShowingEmploymentVerification', checked)}
-                                  data-testid="toggle-second-employment-verification"
-                                />
-                              </div>
-                              <Input
-                                id="income-second-employer-phone"
-                                placeholder="(XXX) XXX-XXXX"
-                                value={form.watch('income.secondIsShowingEmploymentVerification') 
-                                  ? (form.watch('income.secondEmploymentVerificationPhone') || '')
-                                  : (form.watch('income.secondEmployerPhone') || '')}
-                                onChange={(e) => {
-                                  const fieldName = form.watch('income.secondIsShowingEmploymentVerification') 
-                                    ? 'income.secondEmploymentVerificationPhone'
-                                    : 'income.secondEmployerPhone';
-                                  handlePhoneChange(fieldName, e.target.value);
-                                }}
-                                data-testid="input-income-second-employer-phone"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="income-secondJobTitle">Job Title</Label>
-                              <Input
-                                id="income-secondJobTitle"
-                                {...form.register('income.secondJobTitle')}
-                                data-testid="input-income-secondJobTitle"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="income-secondMonthlyIncome">Gross Monthly Income</Label>
-                              <Input
-                                id="income-secondMonthlyIncome"
-                                {...form.register('income.secondMonthlyIncome')}
-                                placeholder="$0.00"
-                                data-testid="input-income-secondMonthlyIncome"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="income-secondEmploymentType">Full-Time / Part-Time</Label>
-                              <Select
-                                value={form.watch('income.secondEmploymentType') || ''}
-                                onValueChange={(value) => form.setValue('income.secondEmploymentType', value as any)}
-                              >
-                                <SelectTrigger data-testid="select-income-secondEmploymentType">
-                                  <SelectValue placeholder="Select type" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
-                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="income-second-years">Years Employed</Label>
-                              <Input
-                                id="income-second-years"
-                                type="number"
-                                min="0"
-                                max="99"
-                                {...form.register('income.secondYearsEmployedYears')}
-                                data-testid="input-income-second-years"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="income-second-months">Months Employed</Label>
-                              <Input
-                                id="income-second-months"
-                                type="number"
-                                min="0"
-                                max="11"
-                                placeholder="0"
-                                {...form.register('income.secondYearsEmployedMonths')}
-                                data-testid="input-income-second-months"
-                              />
-                            </div>
-                          </div>
-                          
-                          {/* Employer Address Row (standardized format) */}
-                          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                            <div className="space-y-2 md:col-span-3">
-                              <Label htmlFor="income-second-employer-street">Street Address</Label>
-                              <Input
-                                id="income-second-employer-street"
-                                {...form.register('income.secondEmployerAddress.street')}
-                                data-testid="input-income-second-employer-street"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-1">
-                              <Label htmlFor="income-second-employer-unit">Unit/Suite</Label>
-                              <Input
-                                id="income-second-employer-unit"
-                                {...form.register('income.secondEmployerAddress.unit')}
-                                data-testid="input-income-second-employer-unit"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="income-second-employer-city">City</Label>
-                              <Input
-                                id="income-second-employer-city"
-                                {...form.register('income.secondEmployerAddress.city')}
-                                data-testid="input-income-second-employer-city"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-1">
-                              <Label htmlFor="income-second-employer-state">State</Label>
-                              <Select
-                                value={form.watch('income.secondEmployerAddress.state') || ''}
-                                onValueChange={(value) => form.setValue('income.secondEmployerAddress.state', value)}
-                              >
-                                <SelectTrigger data-testid="select-income-second-employer-state">
-                                  <SelectValue placeholder="State" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {US_STATES.map((state) => (
-                                    <SelectItem key={state.value} value={state.value}>
-                                      {state.value}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-1">
-                              <Label htmlFor="income-second-employer-zip">ZIP Code</Label>
-                              <Input
-                                id="income-second-employer-zip"
-                                {...form.register('income.secondEmployerAddress.zip')}
-                                data-testid="input-income-second-employer-zip"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="income-second-employer-county">County</Label>
-                              <Input
-                                id="income-second-employer-county"
-                                {...form.register('income.secondEmployerAddress.county')}
-                                data-testid="input-income-second-employer-county"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="income-second-employer-remote">Remote Job</Label>
-                              <Select
-                                value={form.watch('income.secondEmployerRemote') || ''}
-                                onValueChange={(value) => form.setValue('income.secondEmployerRemote', value)}
-                              >
-                                <SelectTrigger data-testid="select-income-second-employer-remote">
-                                  <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="Select">Select</SelectItem>
-                                  <SelectItem value="Yes">Yes</SelectItem>
-                                  <SelectItem value="No">No</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </CollapsibleContent>
-                  </Collapsible>
-                </Card>
-              )}
 
               {/* Self-Employment Income Card */}
               {form.watch('income.incomeTypes.selfEmployment') && (
@@ -7605,7 +7344,7 @@ export default function AdminAddClient() {
                                 <Input
                                   id={`${propertyId}-employment-duration`}
                                   value={employmentDates[propertyId]?.duration || ''}
-                                  placeholder={employmentDates[propertyId]?.isPresent ? 'Enter duration' : '0'}
+                                  placeholder={employmentDates[propertyId]?.isPresent ? 'Enter' : '0'}
                                   readOnly={!employmentDates[propertyId]?.isPresent}
                                   className={!employmentDates[propertyId]?.isPresent ? 'bg-muted' : ''}
                                   onChange={(e) => {
