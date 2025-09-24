@@ -11808,11 +11808,7 @@ export default function AdminAddClient() {
             <AlertDialogAction 
               onClick={() => {
                 const cardToDelete = deleteEmployerDialog.cardId;
-                
-                // Remove card from state
-                setBorrowerEmployerCards(prev => prev.filter(id => 
-                  cardToDelete === 'template-card' ? id !== 'default' : id !== cardToDelete
-                ));
+                const currentCards = borrowerEmployerCards || ['default'];
                 
                 // Clear form data for the deleted card
                 const cleanCardId = cardToDelete === 'template-card' ? 'default' : cardToDelete;
@@ -11836,6 +11832,14 @@ export default function AdminAddClient() {
                 form.setValue(`${basePath}.employerPhone`, '');
                 form.setValue(`${basePath}.employmentVerificationPhone`, '');
                 form.setValue(`${basePath}.employerRemote`, '');
+                
+                // Only remove card from state if there are multiple cards
+                if (currentCards.length > 1) {
+                  setBorrowerEmployerCards(prev => prev.filter(id => 
+                    cardToDelete === 'template-card' ? id !== 'default' : id !== cardToDelete
+                  ));
+                }
+                // If this is the last card, we keep it but data is cleared above
                 
                 setDeleteEmployerDialog({ isOpen: false, cardId: '' });
               }}
@@ -11999,11 +12003,7 @@ export default function AdminAddClient() {
             <AlertDialogAction 
               onClick={() => {
                 const cardToDelete = deleteCoBorrowerEmployerDialog.cardId;
-                
-                // Remove card from state
-                setCoBorrowerEmployerCards(prev => prev.filter(id => 
-                  cardToDelete === 'coborrower-template-card' ? id !== 'default' : id !== cardToDelete
-                ));
+                const currentCards = coBorrowerEmployerCards || ['default'];
                 
                 // Clear form data for the deleted card
                 const cleanCardId = cardToDelete === 'coborrower-template-card' ? 'default' : cardToDelete;
@@ -12027,6 +12027,14 @@ export default function AdminAddClient() {
                 form.setValue(`${basePath}.employerPhone`, '');
                 form.setValue(`${basePath}.employmentVerificationPhone`, '');
                 form.setValue(`${basePath}.employerRemote`, '');
+                
+                // Only remove card from state if there are multiple cards
+                if (currentCards.length > 1) {
+                  setCoBorrowerEmployerCards(prev => prev.filter(id => 
+                    cardToDelete === 'coborrower-template-card' ? id !== 'default' : id !== cardToDelete
+                  ));
+                }
+                // If this is the last card, we keep it but data is cleared above
                 
                 setDeleteCoBorrowerEmployerDialog({ isOpen: false, cardId: '' });
               }}
