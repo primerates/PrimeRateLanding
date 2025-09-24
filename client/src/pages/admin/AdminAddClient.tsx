@@ -382,7 +382,7 @@ export default function AdminAddClient() {
   const handleCoBorrowerEmployerZipCodeLookup = async (zipCode: string, propertyId: string) => {
     if (!zipCode || zipCode.length < 5) {
       setCoBorrowerEmployerCountyOptions(prev => ({...prev, [propertyId]: []}));
-      form.setValue(`coBorrowerIncome.secondEmployers.${propertyId}.address.county` as any, '');
+      form.setValue(getCoBorrowerEmployerFieldPath(propertyId, 'employerAddress.county'), '');
       return;
     }
     
@@ -390,7 +390,7 @@ export default function AdminAddClient() {
     const counties = await lookupCountyFromZip(zipCode);
     
     if (counties.length === 1) {
-      form.setValue(`coBorrowerIncome.secondEmployers.${propertyId}.address.county` as any, counties[0].label, { shouldDirty: true });
+      form.setValue(getCoBorrowerEmployerFieldPath(propertyId, 'employerAddress.county'), counties[0].label, { shouldDirty: true });
       setCoBorrowerEmployerCountyOptions(prev => ({...prev, [propertyId]: []}));
     } else if (counties.length > 1) {
       setCoBorrowerEmployerCountyOptions(prev => ({...prev, [propertyId]: counties}));
@@ -710,6 +710,12 @@ export default function AdminAddClient() {
   const getSecondEmployerFieldPath = (cardId: string, fieldName: string) => {
     const cleanCardId = cardId === 'default' ? 'default' : cardId;
     return `income.secondEmployers.${cleanCardId}.${fieldName}` as const;
+  };
+
+  // Helper function to generate dynamic field paths for co-borrower employer cards
+  const getCoBorrowerEmployerFieldPath = (cardId: string, fieldName: string) => {
+    const cleanCardId = cardId === 'default' ? 'default' : cardId;
+    return `coBorrowerIncome.employers.${cleanCardId}.${fieldName}` as const;
   };
 
   // Helper function to generate dynamic field paths for co-borrower second employer cards
@@ -8389,7 +8395,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`${propertyId}-coborrower-employerName`}>Employer Name</Label>
                                 <Controller
                                   control={form.control}
-                                  name={`coBorrowerIncome.secondEmployers.${propertyId}.employerName` as any}
+                                  name={getCoBorrowerEmployerFieldPath(cardId, 'employerName')}
                                   render={({ field }) => (
                                     <Input
                                       id={`${propertyId}-coborrower-employerName`}
@@ -8404,19 +8410,19 @@ export default function AdminAddClient() {
                               <div className="space-y-2">
                                 <div className="flex items-center justify-between mb-2">
                                   <Label htmlFor={`${propertyId}-coborrower-employer-phone`} className="text-xs">
-                                    {form.watch(`coBorrowerIncome.secondEmployers.${propertyId}.isShowingEmploymentVerification` as any) ? 'Job Verification' : 'Employer Phone'}
+                                    {form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) ? 'Job Verification' : 'Employer Phone'}
                                   </Label>
                                   <Switch
-                                    checked={form.watch(`coBorrowerIncome.secondEmployers.${propertyId}.isShowingEmploymentVerification` as any) || false}
-                                    onCheckedChange={(checked) => form.setValue(`coBorrowerIncome.secondEmployers.${propertyId}.isShowingEmploymentVerification` as any, checked)}
+                                    checked={form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) || false}
+                                    onCheckedChange={(checked) => form.setValue(getCoBorrowerEmployerFieldPath(cardId, 'isShowingEmploymentVerification'), checked)}
                                     data-testid={`toggle-${propertyId}-coborrower-employment-verification`}
                                   />
                                 </div>
                                 <Controller
                                   control={form.control}
-                                  name={form.watch(`coBorrowerIncome.secondEmployers.${propertyId}.isShowingEmploymentVerification` as any) 
-                                    ? `coBorrowerIncome.secondEmployers.${propertyId}.employmentVerificationPhone` as any
-                                    : `coBorrowerIncome.secondEmployers.${propertyId}.employerPhone` as any}
+                                  name={form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) 
+                                    ? getCoBorrowerEmployerFieldPath(cardId, 'employmentVerificationPhone')
+                                    : getCoBorrowerEmployerFieldPath(cardId, 'employerPhone')}
                                   render={({ field }) => (
                                     <Input
                                       id={`${propertyId}-coborrower-employer-phone`}
@@ -8436,7 +8442,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`${propertyId}-coborrower-jobTitle`}>Job Title</Label>
                                 <Controller
                                   control={form.control}
-                                  name={`coBorrowerIncome.secondEmployers.${propertyId}.jobTitle` as any}
+                                  name={getCoBorrowerEmployerFieldPath(cardId, 'jobTitle')}
                                   render={({ field }) => (
                                     <Input
                                       id={`${propertyId}-coborrower-jobTitle`}
@@ -8452,7 +8458,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`${propertyId}-coborrower-monthlyIncome`}>Gross Monthly Income</Label>
                                 <Controller
                                   control={form.control}
-                                  name={`coBorrowerIncome.secondEmployers.${propertyId}.monthlyIncome` as any}
+                                  name={getCoBorrowerEmployerFieldPath(cardId, 'monthlyIncome')}
                                   render={({ field }) => (
                                     <Input
                                       id={`${propertyId}-coborrower-monthlyIncome`}
@@ -8547,7 +8553,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`${propertyId}-coborrower-employer-street`}>Street Address</Label>
                                 <Controller
                                   control={form.control}
-                                  name={`coBorrowerIncome.secondEmployers.${propertyId}.address.street` as any}
+                                  name={getCoBorrowerEmployerFieldPath(cardId, 'employerAddress.street')}
                                   render={({ field }) => (
                                     <Input
                                       id={`${propertyId}-coborrower-employer-street`}
@@ -8563,7 +8569,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`${propertyId}-coborrower-employer-unit`}>Unit/Suite</Label>
                                 <Controller
                                   control={form.control}
-                                  name={`coBorrowerIncome.secondEmployers.${propertyId}.address.unit` as any}
+                                  name={getCoBorrowerEmployerFieldPath(cardId, 'employerAddress.unit')}
                                   render={({ field }) => (
                                     <Input
                                       id={`${propertyId}-coborrower-employer-unit`}
@@ -8579,7 +8585,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`${propertyId}-coborrower-employer-city`}>City</Label>
                                 <Controller
                                   control={form.control}
-                                  name={`coBorrowerIncome.secondEmployers.${propertyId}.address.city` as any}
+                                  name={getCoBorrowerEmployerFieldPath(cardId, 'employerAddress.city')}
                                   render={({ field }) => (
                                     <Input
                                       id={`${propertyId}-coborrower-employer-city`}
@@ -8595,7 +8601,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`${propertyId}-coborrower-employer-state`}>State</Label>
                                 <Controller
                                   control={form.control}
-                                  name={`coBorrowerIncome.secondEmployers.${propertyId}.address.state` as any}
+                                  name={getCoBorrowerEmployerFieldPath(cardId, 'employerAddress.state')}
                                   render={({ field }) => (
                                     <Select
                                       value={field.value || ''}
@@ -8620,7 +8626,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`${propertyId}-coborrower-employer-zip`}>ZIP Code</Label>
                                 <Controller
                                   control={form.control}
-                                  name={`coBorrowerIncome.secondEmployers.${propertyId}.address.zip` as any}
+                                  name={getCoBorrowerEmployerFieldPath(cardId, 'employerAddress.zip')}
                                   render={({ field }) => (
                                     <Input
                                       id={`${propertyId}-coborrower-employer-zip`}
@@ -8639,7 +8645,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`${propertyId}-coborrower-employer-county`}>County</Label>
                                 <Controller
                                   control={form.control}
-                                  name={`coBorrowerIncome.secondEmployers.${propertyId}.address.county` as any}
+                                  name={getCoBorrowerEmployerFieldPath(cardId, 'employerAddress.county')}
                                   render={({ field }) => (
                                     <>
                                       {coBorrowerEmployerCountyOptions[propertyId]?.length > 0 ? (
@@ -8680,7 +8686,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`${propertyId}-coborrower-employer-employment-type`}>Full-Time / Part-Time</Label>
                                 <Controller
                                   control={form.control}
-                                  name={`coBorrowerIncome.secondEmployers.${propertyId}.employmentType` as any}
+                                  name={getCoBorrowerEmployerFieldPath(cardId, 'employmentType')}
                                   render={({ field }) => (
                                     <Select
                                       value={field.value || ''}
