@@ -6706,7 +6706,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2 md:col-span-1">
+                        <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="income-businessPhone">Phone</Label>
                           <Input
                             id="income-businessPhone"
