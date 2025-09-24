@@ -7300,6 +7300,7 @@ export default function AdminAddClient() {
                           <div className="flex items-center gap-2">
                             {/* Add Employer Button */}
                             <Button
+                              type="button"
                               variant="outline"
                               size="sm"
                               onClick={() => {
@@ -7622,6 +7623,7 @@ export default function AdminAddClient() {
                           <div className="flex items-center gap-2">
                             {/* Add Employer Button */}
                             <Button
+                              type="button"
                               variant="outline"
                               size="sm"
                               onClick={() => {
@@ -7717,7 +7719,7 @@ export default function AdminAddClient() {
                                 </Label>
                                 <Switch
                                   checked={form.watch(getSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) || false}
-                                  onCheckedChange={(checked) => form.setValue(getSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification'), checked)}
+                                  onCheckedChange={(checked) => form.setValue(getSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification') as any, checked)}
                                   data-testid={`toggle-second-employment-verification-${cardId}`}
                                 />
                               </div>
@@ -7872,7 +7874,7 @@ export default function AdminAddClient() {
                               <Label htmlFor="income-secondEmployerAddress-state">State</Label>
                               <Select
                                 value={form.watch(getSecondEmployerFieldPath(cardId, 'employerAddress.state')) || ''}
-                                onValueChange={(value) => form.setValue(getSecondEmployerFieldPath(cardId, 'employerAddress.state'), value)}
+                                onValueChange={(value) => form.setValue(getSecondEmployerFieldPath(cardId, 'employerAddress.state') as any, value)}
                               >
                                 <SelectTrigger data-testid="select-income-secondEmployerAddress-state">
                                   <SelectValue placeholder="State" />
@@ -7909,7 +7911,7 @@ export default function AdminAddClient() {
                               <Label htmlFor="income-secondEmploymentType">Full-Time / Part-Time</Label>
                               <Select
                                 value={form.watch(getSecondEmployerFieldPath(cardId, 'employmentType')) || ''}
-                                onValueChange={(value) => form.setValue(getSecondEmployerFieldPath(cardId, 'employmentType'), value as any)}
+                                onValueChange={(value) => form.setValue(getSecondEmployerFieldPath(cardId, 'employmentType') as any, value)}
                               >
                                 <SelectTrigger data-testid="select-income-secondEmploymentType">
                                   <SelectValue placeholder="Select type" />
@@ -8047,6 +8049,7 @@ export default function AdminAddClient() {
                           <div className="flex items-center gap-2">
                             {/* Add Employer Button */}
                             <Button
+                              type="button"
                               variant="outline"
                               size="sm"
                               onClick={() => {
