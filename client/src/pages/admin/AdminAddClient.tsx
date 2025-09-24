@@ -7410,30 +7410,32 @@ export default function AdminAddClient() {
                           <div className="flex items-center gap-2">
                             {/* Add Employer Button */}
                             <Button
-                              variant="ghost"
+                              variant="outline"
                               size="sm"
                               onClick={() => {
                                 const newId = `employer-${Date.now()}`;
                                 setBorrowerEmployerCards(prev => [...(prev || ['default']), newId]);
                               }}
-                              className="hover:bg-green-500 hover:text-white"
+                              className="hover:bg-blue-500 hover:text-white"
                               data-testid="button-add-employer"
                               title="Add New Employer"
                             >
-                              <Plus className="h-4 w-4" />
+                              <Plus className="h-4 w-4 mr-2" />
+                              Add Employer
                             </Button>
                             
                             {/* Delete Employer Button - only show if more than 1 card */}
                             {(borrowerEmployerCards || []).length > 1 && (
                               <Button
-                                variant="ghost"
+                                variant="outline"
                                 size="sm"
                                 onClick={() => setDeleteEmployerDialog({ isOpen: true, cardId: propertyId })}
                                 className="hover:bg-red-500 hover:text-white"
                                 data-testid="button-delete-employer"
-                                title="Delete"
+                                title="Delete Employer"
                               >
-                                <Minus className="h-4 w-4" />
+                                <Minus className="h-4 w-4 mr-2" />
+                                Remove
                               </Button>
                             )}
                             
@@ -7498,15 +7500,26 @@ export default function AdminAddClient() {
                               <div className="space-y-2">
                                 <div className="flex items-center justify-between mb-2">
                                   <Label htmlFor={`${propertyId}-employer-phone`} className="text-xs">
-                                    Employer Phone
+                                    {form.watch('income.isShowingEmploymentVerification') ? 'Job Verification' : 'Employer Phone'}
                                   </Label>
                                   <Switch
+                                    checked={form.watch('income.isShowingEmploymentVerification') || false}
+                                    onCheckedChange={(checked) => form.setValue('income.isShowingEmploymentVerification', checked)}
                                     data-testid={`toggle-${propertyId}-employment-verification`}
                                   />
                                 </div>
                                 <Input
                                   id={`${propertyId}-employer-phone`}
                                   placeholder="(XXX) XXX-XXXX"
+                                  value={form.watch('income.isShowingEmploymentVerification') 
+                                    ? (form.watch('income.employmentVerificationPhone') || '')
+                                    : (form.watch('income.employerPhone') || '')}
+                                  onChange={(e) => {
+                                    const fieldName = form.watch('income.isShowingEmploymentVerification') 
+                                      ? 'income.employmentVerificationPhone'
+                                      : 'income.employerPhone';
+                                    handlePhoneChange(fieldName, e.target.value);
+                                  }}
                                   data-testid={`input-${propertyId}-employer-phone`}
                                 />
                               </div>
@@ -7521,10 +7534,21 @@ export default function AdminAddClient() {
                               
                               <div className="space-y-2">
                                 <Label htmlFor={`${propertyId}-monthlyIncome`}>Gross Monthly Income</Label>
-                                <Input
-                                  id={`${propertyId}-monthlyIncome`}
-                                  placeholder="$0.00"
-                                  data-testid={`input-${propertyId}-monthlyIncome`}
+                                <Controller
+                                  control={form.control}
+                                  name="income.monthlyIncome"
+                                  render={({ field }) => (
+                                    <Input
+                                      id={`${propertyId}-monthlyIncome`}
+                                      value={formatDollarDisplay(field.value)}
+                                      onChange={(e) => {
+                                        const rawValue = parseDollarInput(e.target.value);
+                                        field.onChange(rawValue);
+                                      }}
+                                      placeholder="$0.00"
+                                      data-testid={`input-${propertyId}-monthlyIncome`}
+                                    />
+                                  )}
                                 />
                               </div>
                               
