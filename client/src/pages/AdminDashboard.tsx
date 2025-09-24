@@ -128,9 +128,7 @@ export default function AdminDashboard() {
               >
                 <CardHeader className="text-center pb-4">
                   <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-3">
-                    <Icon className={`h-6 w-6 text-primary transition-transform duration-300 ${
-                      item.id === 'add-client' || item.id === 'add-staff' ? 'group-hover:rotate-[360deg]' : 'group-hover:rotate-180'
-                    }`} />
+                    <Icon className="h-6 w-6 text-primary transition-transform duration-300 group-hover:rotate-[360deg]" />
                   </div>
                   <CardTitle className="text-lg">{item.label}</CardTitle>
                 </CardHeader>
@@ -152,9 +150,7 @@ export default function AdminDashboard() {
               >
                 <CardHeader className="text-center pb-4">
                   <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-3">
-                    <Icon className={`h-6 w-6 text-primary transition-transform duration-300 ${
-                      item.id === 'add-client' || item.id === 'add-staff' ? 'group-hover:rotate-[360deg]' : 'group-hover:rotate-180'
-                    }`} />
+                    <Icon className="h-6 w-6 text-primary transition-transform duration-300 group-hover:rotate-[360deg]" />
                   </div>
                   <CardTitle className="text-lg">{item.label}</CardTitle>
                 </CardHeader>
