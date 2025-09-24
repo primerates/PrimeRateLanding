@@ -610,6 +610,7 @@ export default function AdminAddClient() {
   
   // Borrower income section collapsible states
   const [isEmploymentIncomeOpen, setIsEmploymentIncomeOpen] = useState(false);
+  const [isSecondEmploymentIncomeOpen, setIsSecondEmploymentIncomeOpen] = useState(false);
   const [isSelfEmploymentIncomeOpen, setIsSelfEmploymentIncomeOpen] = useState(false);
   const [isSocialSecurityIncomeOpen, setIsSocialSecurityIncomeOpen] = useState(false);
   const [isVaBenefitsIncomeOpen, setIsVaBenefitsIncomeOpen] = useState(false);
@@ -881,6 +882,7 @@ export default function AdminAddClient() {
       income: {
         incomeTypes: {
           employment: false,
+          secondEmployment: false,
           selfEmployment: false,
           pension: false,
           socialSecurity: false,
@@ -916,6 +918,20 @@ export default function AdminAddClient() {
           county: ''
         },
         priorEmployerPhone: '',
+        secondEmployerName: '',
+        secondJobTitle: '',
+        secondMonthlyIncome: '',
+        secondYearsEmployedYears: '',
+        secondYearsEmployedMonths: '',
+        secondEmployerAddress: {
+          street: '',
+          unit: '',
+          city: '',
+          state: '',
+          zip: '',
+          county: ''
+        },
+        secondEmployerPhone: '',
         businessName: '',
         businessMonthlyIncome: '',
         yearsInBusinessYears: '',
@@ -2032,7 +2048,7 @@ export default function AdminAddClient() {
   const borrowerIncomeData = form.watch('income');
   const totalBorrowerIncome = useMemo(() => {
     const employmentIncome = parseMonetaryValue(borrowerIncomeData?.monthlyIncome);
-    const secondEmploymentIncome = 0;
+    const secondEmploymentIncome = parseMonetaryValue(borrowerIncomeData?.secondMonthlyIncome);
     const businessIncome = parseMonetaryValue(borrowerIncomeData?.businessMonthlyIncome);
     const pensionIncome = borrowerIncomeData?.pensions?.reduce((total, pension) => total + parseMonetaryValue(pension.monthlyAmount), 0) || 0;
     const socialSecurityIncome = parseMonetaryValue(borrowerIncomeData?.socialSecurityMonthlyAmount);
@@ -6531,6 +6547,15 @@ export default function AdminAddClient() {
                       </div>
                       <div className="flex items-center space-x-2">
                         <Checkbox
+                          id="income-type-secondEmployment"
+                          checked={form.watch('income.incomeTypes.secondEmployment') || false}
+                          onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.secondEmployment', !!checked, 'Second Employment')}
+                          data-testid="checkbox-secondEmployment"
+                        />
+                        <Label htmlFor="income-type-secondEmployment">Second Employment</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
                           id="income-type-selfEmployment"
                           checked={form.watch('income.incomeTypes.selfEmployment') || false}
                           onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.selfEmployment', !!checked, 'Self-Employment')}
@@ -7449,6 +7474,299 @@ export default function AdminAddClient() {
                   </Card>
                 );
               })}
+
+              {/* Borrower Second Employment Cards */}
+              {form.watch('income.incomeTypes.secondEmployment') && (
+                <Card className="border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
+                  <Collapsible 
+                    open={isSecondEmploymentIncomeOpen} 
+                    onOpenChange={setIsSecondEmploymentIncomeOpen}
+                  >
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-8">
+                          <CardTitle className="flex items-center gap-2">
+                            Borrower - Second Employer
+                          </CardTitle>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-second-employment-income"
+                              title={isSecondEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
+                              key={`second-employment-income-${isSecondEmploymentIncomeOpen}`}
+                            >
+                              {isSecondEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    
+                    <CollapsibleContent>
+                      <CardContent>
+                        <div className="space-y-6">
+                          {/* Employment Type Selection */}
+                          <Card className="bg-muted">
+                            <CardContent className="pt-6">
+                              <div className="space-y-3">
+                                <div className="flex gap-4">
+                                  <div className="flex items-center space-x-2">
+                                    <input
+                                      type="radio"
+                                      id="second-employment-current"
+                                      name="second-employment-type"
+                                      data-testid="radio-second-employment-current"
+                                    />
+                                    <Label htmlFor="second-employment-current">Current Employer</Label>
+                                  </div>
+                                  
+                                  <div className="flex items-center space-x-2">
+                                    <input
+                                      type="radio"
+                                      id="second-employment-prior"
+                                      name="second-employment-type"
+                                      data-testid="radio-second-employment-prior"
+                                    />
+                                    <Label htmlFor="second-employment-prior">Prior Employer</Label>
+                                  </div>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+
+                          {/* Employment Information - Single Row */}
+                          <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="income-secondEmployerName">Employer Name</Label>
+                              <Input
+                                id="income-secondEmployerName"
+                                {...form.register('income.secondEmployerName')}
+                                data-testid="input-income-secondEmployerName"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor="income-second-employer-phone" className="text-xs">
+                                  {form.watch('income.isShowingSecondEmploymentVerification') ? 'Job Verification' : 'Employer Phone'}
+                                </Label>
+                                <Switch
+                                  checked={form.watch('income.isShowingSecondEmploymentVerification') || false}
+                                  onCheckedChange={(checked) => form.setValue('income.isShowingSecondEmploymentVerification', checked)}
+                                  data-testid="toggle-second-employment-verification"
+                                />
+                              </div>
+                              <Input
+                                id="income-second-employer-phone"
+                                placeholder="(XXX) XXX-XXXX"
+                                value={form.watch('income.isShowingSecondEmploymentVerification') 
+                                  ? (form.watch('income.secondEmploymentVerificationPhone') || '')
+                                  : (form.watch('income.secondEmployerPhone') || '')}
+                                onChange={(e) => {
+                                  const fieldName = form.watch('income.isShowingSecondEmploymentVerification') 
+                                    ? 'income.secondEmploymentVerificationPhone'
+                                    : 'income.secondEmployerPhone';
+                                  handlePhoneChange(fieldName, e.target.value);
+                                }}
+                                data-testid="input-income-second-employer-phone"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-secondJobTitle">Job Title</Label>
+                              <Input
+                                id="income-secondJobTitle"
+                                {...form.register('income.secondJobTitle')}
+                                data-testid="input-income-secondJobTitle"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-secondMonthlyIncome">Gross Monthly Income</Label>
+                              <Controller
+                                control={form.control}
+                                name="income.secondMonthlyIncome"
+                                render={({ field }) => (
+                                  <Input
+                                    id="income-secondMonthlyIncome"
+                                    value={formatDollarDisplay(field.value)}
+                                    onChange={(e) => {
+                                      const rawValue = parseDollarInput(e.target.value);
+                                      field.onChange(rawValue);
+                                    }}
+                                    placeholder="$0.00"
+                                    data-testid="input-income-secondMonthlyIncome"
+                                  />
+                                )}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-second-startDate">Start Date</Label>
+                              <Input
+                                id="income-second-startDate"
+                                type="date"
+                                value={employmentDates['second-employment']?.startDate || ''}
+                                onChange={(e) => {
+                                  const startDate = e.target.value;
+                                  const currentData = employmentDates['second-employment'] || { endDate: '', isPresent: false, duration: '' };
+                                  updateEmploymentDuration('second-employment', startDate, currentData.endDate, currentData.isPresent);
+                                }}
+                                placeholder="MM/DD/YYYY"
+                                data-testid="input-income-second-startDate"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor="income-second-endDate" className="text-sm">
+                                  {employmentDates['second-employment']?.isPresent ? 'Present' : 'End Date'}
+                                </Label>
+                                <Switch
+                                  checked={employmentDates['second-employment']?.isPresent || false}
+                                  onCheckedChange={(checked) => {
+                                    const currentData = employmentDates['second-employment'] || { startDate: '', endDate: '', duration: '' };
+                                    updateEmploymentDuration('second-employment', currentData.startDate, currentData.endDate, checked);
+                                  }}
+                                  data-testid="toggle-second-employment-present"
+                                />
+                              </div>
+                              <Input
+                                id="income-second-endDate"
+                                type={employmentDates['second-employment']?.isPresent ? 'text' : 'date'}
+                                value={employmentDates['second-employment']?.isPresent ? 'present' : (employmentDates['second-employment']?.endDate || '')}
+                                onChange={(e) => {
+                                  if (!employmentDates['second-employment']?.isPresent) {
+                                    const endDate = e.target.value;
+                                    const currentData = employmentDates['second-employment'] || { startDate: '', isPresent: false, duration: '' };
+                                    updateEmploymentDuration('second-employment', currentData.startDate, endDate, currentData.isPresent);
+                                  }
+                                }}
+                                placeholder={employmentDates['second-employment']?.isPresent ? 'Enter' : 'MM/DD/YYYY'}
+                                readOnly={employmentDates['second-employment']?.isPresent}
+                                className={employmentDates['second-employment']?.isPresent ? 'bg-muted' : ''}
+                                data-testid="input-income-second-endDate"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor="income-second-employment-duration">Employment Duration</Label>
+                              <Input
+                                id="income-second-employment-duration"
+                                value={employmentDates['second-employment']?.duration || ''}
+                                placeholder={employmentDates['second-employment']?.isPresent ? 'Enter' : '0'}
+                                readOnly={!employmentDates['second-employment']?.isPresent}
+                                className={!employmentDates['second-employment']?.isPresent ? 'bg-muted' : ''}
+                                onChange={(e) => {
+                                  if (employmentDates['second-employment']?.isPresent) {
+                                    const currentData = employmentDates['second-employment'] || { startDate: '', endDate: '', isPresent: false };
+                                    setEmploymentDates(prev => ({
+                                      ...prev,
+                                      'second-employment': {
+                                        ...currentData,
+                                        duration: e.target.value
+                                      }
+                                    }));
+                                  }
+                                }}
+                                data-testid="input-income-second-employment-duration"
+                              />
+                            </div>
+                          </div>
+
+                          {/* Employer Address Row */}
+                          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                            <div className="space-y-2 md:col-span-3">
+                              <Label htmlFor="income-secondEmployerAddress-street">Street Address</Label>
+                              <Input
+                                id="income-secondEmployerAddress-street"
+                                {...form.register('income.secondEmployerAddress.street')}
+                                data-testid="input-income-secondEmployerAddress-street"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="income-secondEmployerAddress-unit">Unit/Suite</Label>
+                              <Input
+                                id="income-secondEmployerAddress-unit"
+                                {...form.register('income.secondEmployerAddress.unit')}
+                                data-testid="input-income-secondEmployerAddress-unit"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="income-secondEmployerAddress-city">City</Label>
+                              <Input
+                                id="income-secondEmployerAddress-city"
+                                {...form.register('income.secondEmployerAddress.city')}
+                                data-testid="input-income-secondEmployerAddress-city"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="income-secondEmployerAddress-state">State</Label>
+                              <Select
+                                value={form.watch('income.secondEmployerAddress.state') || ''}
+                                onValueChange={(value) => form.setValue('income.secondEmployerAddress.state', value)}
+                              >
+                                <SelectTrigger data-testid="select-income-secondEmployerAddress-state">
+                                  <SelectValue placeholder="State" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {US_STATES.map((state) => (
+                                    <SelectItem key={state.value} value={state.value}>
+                                      {state.value}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="income-secondEmployerAddress-zip">ZIP Code</Label>
+                              <Input
+                                id="income-secondEmployerAddress-zip"
+                                {...form.register('income.secondEmployerAddress.zip')}
+                                data-testid="input-income-secondEmployerAddress-zip"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="income-secondEmployerAddress-county">County</Label>
+                              <Input
+                                id="income-secondEmployerAddress-county"
+                                {...form.register('income.secondEmployerAddress.county')}
+                                data-testid="input-income-secondEmployerAddress-county"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="income-secondEmploymentType">Full-Time / Part-Time</Label>
+                              <Select
+                                value={form.watch('income.secondEmploymentType') || ''}
+                                onValueChange={(value) => form.setValue('income.secondEmploymentType', value as any)}
+                              >
+                                <SelectTrigger data-testid="select-income-secondEmploymentType">
+                                  <SelectValue placeholder="Select type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
+                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+
+                        </div>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </Card>
+              )}
 
               {/* Co-Borrower Income */}
               {hasCoBorrower && (
