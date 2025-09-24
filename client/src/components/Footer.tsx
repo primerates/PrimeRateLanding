@@ -47,7 +47,7 @@ export default function Footer() {
               </a>
             ))}
             <span className="text-sm text-primary-foreground/70" data-testid="text-footer-equal-housing">
-              Equal Housing Lender Equal Opportunity Employer
+              Equal Housing Lender
             </span>
           </div>
         </div>
