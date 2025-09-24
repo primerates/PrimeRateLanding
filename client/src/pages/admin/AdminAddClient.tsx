@@ -11776,6 +11776,39 @@ export default function AdminAddClient() {
         </AlertDialogContent>
       </AlertDialog>
 
+      {/* Delete Co-Borrower Self-Employment Confirmation Dialog */}
+      <AlertDialog open={deleteCoBorrowerSelfEmploymentDialog.isOpen} onOpenChange={(open) => !open && setDeleteCoBorrowerSelfEmploymentDialog({ isOpen: false, cardId: '' })}>
+        <AlertDialogContent data-testid="dialog-delete-co-borrower-self-employment">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Co-Borrower Self-Employment Card</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this co-borrower self-employment card? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteCoBorrowerSelfEmploymentDialog({ isOpen: false, cardId: '' })}
+              data-testid="button-cancel-delete-co-borrower-self-employment"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                const cardToDelete = deleteCoBorrowerSelfEmploymentDialog.cardId;
+                setCoBorrowerSelfEmploymentCards(prev => prev.filter(id => 
+                  cardToDelete === 'co-borrower-self-employment-template-card' ? id !== 'default' : id !== cardToDelete
+                ));
+                setDeleteCoBorrowerSelfEmploymentDialog({ isOpen: false, cardId: '' });
+              }}
+              data-testid="button-confirm-delete-co-borrower-self-employment"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* Delete Co-Borrower Employer Confirmation Dialog */}
       <AlertDialog open={deleteCoBorrowerEmployerDialog.isOpen} onOpenChange={(open) => !open && setDeleteCoBorrowerEmployerDialog({ isOpen: false, cardId: '' })}>
         <AlertDialogContent data-testid="dialog-delete-coborrower-employer">
