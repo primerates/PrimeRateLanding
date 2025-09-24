@@ -2241,7 +2241,12 @@ export default function AdminAddClient() {
   // Calculate total monthly income - optimized with useMemo
   const borrowerIncomeData = form.watch('income');
   const borrowerEmployersData = form.watch('income.employers');
-  const defaultEmployerIncome = form.watch('income.employers.default.monthlyIncome');
+  
+  // Watch all individual employer income fields dynamically
+  const allEmployerIncomes = borrowerEmployerCards.map(cardId => 
+    form.watch(getEmployerFieldPath(cardId, 'monthlyIncome'))
+  );
+  
   const totalBorrowerIncome = useMemo(() => {
     // Calculate total main employment income from all employer cards
     const employmentIncome = borrowerIncomeData?.employers && typeof borrowerIncomeData.employers === 'object'
@@ -2274,7 +2279,7 @@ export default function AdminAddClient() {
                   disabilityIncome + otherIncome;
     
     return total;
-  }, [borrowerIncomeData, borrowerEmployersData, defaultEmployerIncome]);
+  }, [borrowerIncomeData, borrowerEmployersData, allEmployerIncomes]);
   
   const totalBorrowerIncomeFormatted = useMemo(() => 
     `$${totalBorrowerIncome.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`,
