@@ -572,7 +572,8 @@ export default function AdminAddClient() {
       // Auto-expand employment cards when selected
       if (fieldPath.includes('employment') && !fieldPath.includes('secondEmployment')) {
         if (!isCoBorrower) {
-          setIsEmploymentIncomeOpen(true);
+          // Expand the borrower employer card (using propertyCardStates)
+          setPropertyCardStates(prev => ({ ...prev, 'template-card': true }));
         }
       }
     }
