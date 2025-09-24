@@ -6717,30 +6717,6 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="income-formation">Formation</Label>
-                          <Select onValueChange={(value) => form.setValue('income.formation', value)} value={form.watch('income.formation') || ''}>
-                            <SelectTrigger data-testid="select-income-formation">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="Sole Proprietorship" data-testid="select-item-sole-proprietorship">Sole Proprietorship</SelectItem>
-                              <SelectItem value="General Partnership (GP)" data-testid="select-item-general-partnership">General Partnership (GP)</SelectItem>
-                              <SelectItem value="Limited Partnership (LP)" data-testid="select-item-limited-partnership">Limited Partnership (LP)</SelectItem>
-                              <SelectItem value="Limited Liability Partnership (LLP)" data-testid="select-item-llp">Limited Liability Partnership (LLP)</SelectItem>
-                              <SelectItem value="LLC taxed as S-Corp" data-testid="select-item-llc-s-corp">LLC taxed as S-Corp</SelectItem>
-                              <SelectItem value="LLC taxed as C-Corp" data-testid="select-item-llc-c-corp">LLC taxed as C-Corp</SelectItem>
-                              <SelectItem value="C Corporation (C-Corp)" data-testid="select-item-c-corporation">C Corporation (C-Corp)</SelectItem>
-                              <SelectItem value="S Corporation (S-Corp)" data-testid="select-item-s-corporation">S Corporation (S-Corp)</SelectItem>
-                              <SelectItem value="Benefit Corporation (B-Corp)" data-testid="select-item-benefit-corporation">Benefit Corporation (B-Corp)</SelectItem>
-                              <SelectItem value="Close Corporation" data-testid="select-item-close-corporation">Close Corporation</SelectItem>
-                              <SelectItem value="Non-Profit Corporation" data-testid="select-item-non-profit-corporation">Non-Profit Corporation</SelectItem>
-                              <SelectItem value="Professional Corporation (PC)" data-testid="select-item-professional-corporation">Professional Corporation (PC)</SelectItem>
-                              <SelectItem value="Professional LLC (PLLC)" data-testid="select-item-professional-llc">Professional LLC (PLLC)</SelectItem>
-                              <SelectItem value="Joint Venture" data-testid="select-item-joint-venture">Joint Venture</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
                         
                         <div className="space-y-2 md:col-span-2">
                           <div className="flex items-center justify-between mb-2">
@@ -6913,15 +6889,26 @@ export default function AdminAddClient() {
                           </div>
                           
                           <div className="space-y-2 md:col-span-2">
-                            <Label htmlFor="income-taxesPreparedBy">Taxes Prepared By</Label>
-                            <Select onValueChange={(value) => form.setValue('income.taxesPreparedBy', value, { shouldDirty: true, shouldTouch: true })} value={form.watch('income.taxesPreparedBy') || ''}>
-                              <SelectTrigger data-testid="select-income-taxesPreparedBy">
+                            <Label htmlFor="income-formation">Formation</Label>
+                            <Select onValueChange={(value) => form.setValue('income.formation', value)} value={form.watch('income.formation') || ''}>
+                              <SelectTrigger data-testid="select-income-formation">
                                 <SelectValue placeholder="Select" />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="Select" data-testid="select-item-select">Select</SelectItem>
-                                <SelectItem value="Self-Prepared" data-testid="select-item-self-prepared">Self-Prepared</SelectItem>
-                                <SelectItem value="Tax Preparer" data-testid="select-item-tax-preparer">Tax Preparer</SelectItem>
+                                <SelectItem value="Sole Proprietorship" data-testid="select-item-sole-proprietorship">Sole Proprietorship</SelectItem>
+                                <SelectItem value="General Partnership (GP)" data-testid="select-item-general-partnership">General Partnership (GP)</SelectItem>
+                                <SelectItem value="Limited Partnership (LP)" data-testid="select-item-limited-partnership">Limited Partnership (LP)</SelectItem>
+                                <SelectItem value="Limited Liability Partnership (LLP)" data-testid="select-item-llp">Limited Liability Partnership (LLP)</SelectItem>
+                                <SelectItem value="LLC taxed as S-Corp" data-testid="select-item-llc-s-corp">LLC taxed as S-Corp</SelectItem>
+                                <SelectItem value="LLC taxed as C-Corp" data-testid="select-item-llc-c-corp">LLC taxed as C-Corp</SelectItem>
+                                <SelectItem value="C Corporation (C-Corp)" data-testid="select-item-c-corporation">C Corporation (C-Corp)</SelectItem>
+                                <SelectItem value="S Corporation (S-Corp)" data-testid="select-item-s-corporation">S Corporation (S-Corp)</SelectItem>
+                                <SelectItem value="Benefit Corporation (B-Corp)" data-testid="select-item-benefit-corporation">Benefit Corporation (B-Corp)</SelectItem>
+                                <SelectItem value="Close Corporation" data-testid="select-item-close-corporation">Close Corporation</SelectItem>
+                                <SelectItem value="Non-Profit Corporation" data-testid="select-item-non-profit-corporation">Non-Profit Corporation</SelectItem>
+                                <SelectItem value="Professional Corporation (PC)" data-testid="select-item-professional-corporation">Professional Corporation (PC)</SelectItem>
+                                <SelectItem value="Professional LLC (PLLC)" data-testid="select-item-professional-llc">Professional LLC (PLLC)</SelectItem>
+                                <SelectItem value="Joint Venture" data-testid="select-item-joint-venture">Joint Venture</SelectItem>
                                 <SelectItem value="CPA" data-testid="select-item-cpa">CPA</SelectItem>
                                 <SelectItem value="Other" data-testid="select-item-other-tax">Other</SelectItem>
                               </SelectContent>
