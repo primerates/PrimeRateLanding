@@ -4183,7 +4183,7 @@ export default function AdminAddClient() {
 
   // Business description popup handlers
   const openBusinessDescriptionDialog = (cardId: string) => {
-    const currentValue = form.watch(`income.businessDescription`) || '';
+    const currentValue = form.getValues('income.businessDescription') || '';
     setBusinessDescriptionInput(currentValue);
     setBusinessDescriptionDialog({
       isOpen: true,
@@ -4199,7 +4199,7 @@ export default function AdminAddClient() {
 
   const saveBusinessDescription = () => {
     if (businessDescriptionDialog.cardId) {
-      form.setValue('income.businessDescription', businessDescriptionInput);
+      form.setValue('income.businessDescription', businessDescriptionInput, { shouldDirty: true });
       closeBusinessDescriptionDialog();
     }
   };
