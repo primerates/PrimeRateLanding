@@ -7584,12 +7584,14 @@ export default function AdminAddClient() {
                                 </div>
                                 <Input
                                   id={`${propertyId}-endDate`}
-                                  type="date"
-                                  value={employmentDates[propertyId]?.isPresent ? '' : (employmentDates[propertyId]?.endDate || '')}
+                                  type={employmentDates[propertyId]?.isPresent ? 'text' : 'date'}
+                                  value={employmentDates[propertyId]?.isPresent ? 'present' : (employmentDates[propertyId]?.endDate || '')}
                                   onChange={(e) => {
-                                    const endDate = e.target.value;
-                                    const currentData = employmentDates[propertyId] || { startDate: '', isPresent: false, duration: '' };
-                                    updateEmploymentDuration(propertyId, currentData.startDate, endDate, currentData.isPresent);
+                                    if (!employmentDates[propertyId]?.isPresent) {
+                                      const endDate = e.target.value;
+                                      const currentData = employmentDates[propertyId] || { startDate: '', isPresent: false, duration: '' };
+                                      updateEmploymentDuration(propertyId, currentData.startDate, endDate, currentData.isPresent);
+                                    }
                                   }}
                                   placeholder={employmentDates[propertyId]?.isPresent ? 'Present' : 'MM/DD/YYYY'}
                                   readOnly={employmentDates[propertyId]?.isPresent}
@@ -7599,13 +7601,25 @@ export default function AdminAddClient() {
                               </div>
                               
                               <div className="space-y-2">
-                                <Label htmlFor={`${propertyId}-employment-duration`}>Employment Term</Label>
+                                <Label htmlFor={`${propertyId}-employment-duration`}>Employment Duration</Label>
                                 <Input
                                   id={`${propertyId}-employment-duration`}
                                   value={employmentDates[propertyId]?.duration || ''}
-                                  placeholder="0"
-                                  readOnly
-                                  className="bg-muted"
+                                  placeholder={employmentDates[propertyId]?.isPresent ? 'Enter duration' : '0'}
+                                  readOnly={!employmentDates[propertyId]?.isPresent}
+                                  className={!employmentDates[propertyId]?.isPresent ? 'bg-muted' : ''}
+                                  onChange={(e) => {
+                                    if (employmentDates[propertyId]?.isPresent) {
+                                      const currentData = employmentDates[propertyId] || { startDate: '', endDate: '', isPresent: false };
+                                      setEmploymentDates(prev => ({
+                                        ...prev,
+                                        [propertyId]: {
+                                          ...currentData,
+                                          duration: e.target.value
+                                        }
+                                      }));
+                                    }
+                                  }}
                                   data-testid={`input-${propertyId}-employment-duration`}
                                 />
                               </div>
