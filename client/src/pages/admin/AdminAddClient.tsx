@@ -6742,7 +6742,7 @@ export default function AdminAddClient() {
                           </Select>
                         </div>
                         
-                        <div className="space-y-2 md:col-span-2">
+                        <div className="space-y-2 md:col-span-1">
                           <div className="flex items-center justify-between mb-2">
                             <Label htmlFor="income-annualRevenue" className="text-sm">
                               {isShowingNetRevenue ? 'Monthly Net' : 'Monthly Gross'}
