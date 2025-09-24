@@ -63,12 +63,8 @@ export default function AdminDashboard() {
       ? 'border-l-4 border-l-blue-500 hover:border-blue-500'
       : 'border-l-4 border-l-green-500 hover:border-green-500';
     
-    // Special effects for Pipeline tile
-    if (itemId === 'pipeline') {
-      return `${baseHoverClass} hover:shadow-lg hover:shadow-primary/20`;
-    }
-    
-    return baseHoverClass;
+    // Add shadow effects to all tiles
+    return `${baseHoverClass} hover:shadow-lg hover:shadow-primary/20`;
   };
 
   return (
@@ -126,15 +122,13 @@ export default function AdminDashboard() {
             return (
               <Card 
                 key={item.id}
-                className={`cursor-pointer transition-all duration-200 ${getTileHoverClass(item.id, false)} ${item.id === 'pipeline' ? 'group' : ''}`}
+                className={`cursor-pointer transition-all duration-200 ${getTileHoverClass(item.id, false)} group`}
                 onClick={() => handleMenuClick(item.path)}
                 data-testid={`card-admin-${item.id}`}
               >
                 <CardHeader className="text-center pb-4">
                   <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-3">
-                    <Icon className={`h-6 w-6 text-primary transition-transform duration-300 ${
-                      item.id === 'pipeline' ? 'group-hover:rotate-180' : ''
-                    }`} />
+                    <Icon className="h-6 w-6 text-primary transition-transform duration-300 group-hover:rotate-180" />
                   </div>
                   <CardTitle className="text-lg">{item.label}</CardTitle>
                 </CardHeader>
@@ -150,15 +144,13 @@ export default function AdminDashboard() {
             return (
               <Card 
                 key={item.id}
-                className={`cursor-pointer transition-all duration-200 ${getTileHoverClass(item.id, true)} ${item.id === 'pipeline' ? 'group' : ''}`}
+                className={`cursor-pointer transition-all duration-200 ${getTileHoverClass(item.id, true)} group`}
                 onClick={() => handleMenuClick(item.path)}
                 data-testid={`card-admin-${item.id}`}
               >
                 <CardHeader className="text-center pb-4">
                   <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-3">
-                    <Icon className={`h-6 w-6 text-primary transition-transform duration-300 ${
-                      item.id === 'pipeline' ? 'group-hover:rotate-180' : ''
-                    }`} />
+                    <Icon className="h-6 w-6 text-primary transition-transform duration-300 group-hover:rotate-180" />
                   </div>
                   <CardTitle className="text-lg">{item.label}</CardTitle>
                 </CardHeader>
