@@ -6704,7 +6704,7 @@ export default function AdminAddClient() {
               <Card className="border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
                 <CardHeader>
                   <CardTitle>
-                    Borrower Income
+                    {totalBorrowerIncomeFormatted ? `${totalBorrowerIncomeFormatted} - Borrower Income` : 'Borrower Income'}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
