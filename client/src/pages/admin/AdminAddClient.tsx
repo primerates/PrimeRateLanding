@@ -6815,6 +6815,7 @@ export default function AdminAddClient() {
                           <div className="flex items-center gap-2">
                             {/* Add Self-Employment Button */}
                             <Button
+                              type="button"
                               variant="outline"
                               size="sm"
                               onClick={() => {
@@ -8995,6 +8996,7 @@ export default function AdminAddClient() {
                           <div className="flex items-center gap-2">
                             {/* Add Self-Employment Button */}
                             <Button
+                              type="button"
                               variant="outline"
                               size="sm"
                               onClick={() => {
