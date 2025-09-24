@@ -11,15 +11,13 @@ export default function Footer() {
               PRIME RATE HOME LOANS
             </h3>
             <div className="space-y-2">
-              <p className="text-lg font-semibold" data-testid="text-footer-phone">
-                800-223-5057
-              </p>
-              <p className="text-lg text-primary-foreground/90" data-testid="text-footer-email">
-                info@primerateloans.com
-              </p>
-              <p className="text-primary-foreground/80" data-testid="text-footer-address">
-                123 Main Street, Delray Beach, FL 33445
-              </p>
+              <div className="flex items-center justify-center space-x-3 text-primary-foreground/80">
+                <span data-testid="text-footer-phone">800-223-5057</span>
+                <span className="text-primary-foreground/40">|</span>
+                <span data-testid="text-footer-email">info@primerateloans.com</span>
+                <span className="text-primary-foreground/40">|</span>
+                <span data-testid="text-footer-address">123 Main Street, Delray Beach, FL 33445</span>
+              </div>
             </div>
           </div>
         </div>
@@ -49,7 +47,7 @@ export default function Footer() {
               </a>
             ))}
             <span className="text-sm text-primary-foreground/70" data-testid="text-footer-equal-housing">
-              Equal Housing Lender | Equal Opportunity Employer
+              Equal Housing Lender Equal Opportunity Employer
             </span>
           </div>
         </div>
