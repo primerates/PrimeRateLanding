@@ -553,6 +553,9 @@ export default function AdminAddClient() {
         if (!isCoBorrower) {
           // Expand the borrower employer card (using propertyCardStates)
           setPropertyCardStates(prev => ({ ...prev, 'template-card': true }));
+        } else {
+          // Expand the co-borrower employer card (using propertyCardStates)
+          setPropertyCardStates(prev => ({ ...prev, 'coborrower-template-card': true }));
         }
       }
     }
