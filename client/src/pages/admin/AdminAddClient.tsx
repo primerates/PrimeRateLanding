@@ -11181,13 +11181,9 @@ export default function AdminAddClient() {
         <DialogContent data-testid="dialog-business-description">
           <DialogHeader>
             <DialogTitle>Description</DialogTitle>
-            <DialogDescription>
-              Add a detailed description of the business to provide additional context about the nature of the work, services, or products offered.
-            </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="business-description-input">Business Description</Label>
               <textarea
                 id="business-description-input"
                 value={businessDescriptionInput}
