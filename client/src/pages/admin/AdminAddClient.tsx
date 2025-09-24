@@ -2188,7 +2188,12 @@ export default function AdminAddClient() {
         }, 0)
       : parseMonetaryValue(borrowerIncomeData?.secondMonthlyIncome); // fallback for backward compatibility
     
-    const businessIncome = parseMonetaryValue(borrowerIncomeData?.businessMonthlyIncome);
+    // Calculate total self-employment income from all cards
+    const businessIncome = borrowerIncomeData?.selfEmployers && typeof borrowerIncomeData.selfEmployers === 'object'
+      ? Object.values(borrowerIncomeData.selfEmployers).reduce((total, business) => {
+          return total + (business && typeof business === 'object' ? parseMonetaryValue(business.businessMonthlyIncome) : 0);
+        }, 0)
+      : parseMonetaryValue(borrowerIncomeData?.businessMonthlyIncome); // fallback for backward compatibility
     const pensionIncome = borrowerIncomeData?.pensions?.reduce((total, pension) => total + parseMonetaryValue(pension.monthlyAmount), 0) || 0;
     const socialSecurityIncome = parseMonetaryValue(borrowerIncomeData?.socialSecurityMonthlyAmount);
     const vaBenefitsIncome = parseMonetaryValue(borrowerIncomeData?.vaBenefitsMonthlyAmount);
@@ -2211,8 +2216,18 @@ export default function AdminAddClient() {
   const coBorrowerIncomeData = form.watch('coBorrowerIncome');
   const totalCoBorrowerIncome = useMemo(() => {
     const employmentIncome = parseMonetaryValue(coBorrowerIncomeData?.monthlyIncome);
-    const secondEmploymentIncome = parseMonetaryValue(coBorrowerIncomeData?.secondMonthlyIncome);
-    const businessIncome = parseMonetaryValue(coBorrowerIncomeData?.businessMonthlyIncome);
+    // Calculate total co-borrower second employment income from all cards
+    const secondEmploymentIncome = coBorrowerIncomeData?.secondEmployers && typeof coBorrowerIncomeData.secondEmployers === 'object'
+      ? Object.values(coBorrowerIncomeData.secondEmployers).reduce((total, employer) => {
+          return total + (employer && typeof employer === 'object' ? parseMonetaryValue(employer.monthlyIncome) : 0);
+        }, 0)
+      : parseMonetaryValue(coBorrowerIncomeData?.secondMonthlyIncome); // fallback for backward compatibility
+    // Calculate total co-borrower self-employment income from all cards
+    const businessIncome = coBorrowerIncomeData?.selfEmployers && typeof coBorrowerIncomeData.selfEmployers === 'object'
+      ? Object.values(coBorrowerIncomeData.selfEmployers).reduce((total, business) => {
+          return total + (business && typeof business === 'object' ? parseMonetaryValue(business.businessMonthlyIncome) : 0);
+        }, 0)
+      : parseMonetaryValue(coBorrowerIncomeData?.businessMonthlyIncome); // fallback for backward compatibility
     const pensionIncome = coBorrowerIncomeData?.pensions?.reduce((total, pension) => total + parseMonetaryValue(pension.monthlyAmount), 0) || 0;
     const socialSecurityIncome = parseMonetaryValue(coBorrowerIncomeData?.socialSecurityMonthlyAmount);
     const vaBenefitsIncome = parseMonetaryValue(coBorrowerIncomeData?.vaBenefitsMonthlyAmount);
@@ -7209,7 +7224,7 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               <div className="space-y-2">
-                                <Label htmlFor={`income-pension-${index}-monthlyAmount`}>Monthly Amount</Label>
+                                <Label htmlFor={`income-pension-${index}-monthlyAmount`}>Gross Monthly Income</Label>
                                 <Input
                                   id={`income-pension-${index}-monthlyAmount`}
                                   {...form.register(`income.pensions.${index}.monthlyAmount`)}
@@ -7260,7 +7275,7 @@ export default function AdminAddClient() {
                       <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="income-socialSecurityMonthlyAmount">Monthly Amount</Label>
+                          <Label htmlFor="income-socialSecurityMonthlyAmount">Gross Monthly Income</Label>
                           <Input
                             id="income-socialSecurityMonthlyAmount"
                             {...form.register('income.socialSecurityMonthlyAmount')}
@@ -7309,7 +7324,7 @@ export default function AdminAddClient() {
                       <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="income-vaBenefitsMonthlyAmount">Monthly Amount</Label>
+                          <Label htmlFor="income-vaBenefitsMonthlyAmount">Gross Monthly Income</Label>
                           <Input
                             id="income-vaBenefitsMonthlyAmount"
                             {...form.register('income.vaBenefitsMonthlyAmount')}
@@ -7366,7 +7381,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="income-disabilityMonthlyAmount">Monthly Amount</Label>
+                          <Label htmlFor="income-disabilityMonthlyAmount">Gross Monthly Income</Label>
                           <Input
                             id="income-disabilityMonthlyAmount"
                             {...form.register('income.disabilityMonthlyAmount')}
@@ -9388,7 +9403,7 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               <div className="space-y-2">
-                                <Label htmlFor={`coBorrowerIncome-pension-${index}-monthlyAmount`}>Monthly Amount</Label>
+                                <Label htmlFor={`coBorrowerIncome-pension-${index}-monthlyAmount`}>Gross Monthly Income</Label>
                                 <Input
                                   id={`coBorrowerIncome-pension-${index}-monthlyAmount`}
                                   {...form.register(`coBorrowerIncome.pensions.${index}.monthlyAmount`)}
@@ -9439,7 +9454,7 @@ export default function AdminAddClient() {
                       <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="coBorrowerIncome-socialSecurityMonthlyAmount">Monthly Amount</Label>
+                          <Label htmlFor="coBorrowerIncome-socialSecurityMonthlyAmount">Gross Monthly Income</Label>
                           <Input
                             id="coBorrowerIncome-socialSecurityMonthlyAmount"
                             {...form.register('coBorrowerIncome.socialSecurityMonthlyAmount')}
@@ -9488,7 +9503,7 @@ export default function AdminAddClient() {
                       <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="coBorrowerIncome-vaBenefitsMonthlyAmount">Monthly Amount</Label>
+                          <Label htmlFor="coBorrowerIncome-vaBenefitsMonthlyAmount">Gross Monthly Income</Label>
                           <Input
                             id="coBorrowerIncome-vaBenefitsMonthlyAmount"
                             {...form.register('coBorrowerIncome.vaBenefitsMonthlyAmount')}
@@ -9546,7 +9561,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="coBorrowerIncome-disabilityMonthlyAmount">Monthly Amount</Label>
+                          <Label htmlFor="coBorrowerIncome-disabilityMonthlyAmount">Gross Monthly Income</Label>
                           <Input
                             id="coBorrowerIncome-disabilityMonthlyAmount"
                             {...form.register('coBorrowerIncome.disabilityMonthlyAmount')}

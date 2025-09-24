@@ -167,6 +167,23 @@ export const incomeSchema = z.object({
   grossAnnualRevenue: z.string().optional(),
   netAnnualRevenue: z.string().optional(),
   
+  // Multiple Self-Employment (new structure for dynamic cards)
+  selfEmployers: z.record(z.string(), z.object({
+    businessName: z.string().optional(),
+    businessMonthlyIncome: z.string().optional(),
+    yearsInBusinessYears: z.string().optional(),
+    yearsInBusinessMonths: z.string().optional(),
+    businessAddress: addressSchema.partial().optional(),
+    businessPhone: z.string().optional(),
+    formationDate: z.string().optional(),
+    formation: z.string().optional(),
+    ownershipPercentage: z.string().optional(),
+    taxesPreparedBy: z.string().optional(),
+    businessDescription: z.string().optional(),
+    grossAnnualRevenue: z.string().optional(),
+    netAnnualRevenue: z.string().optional(),
+  })).default({}),
+  
   // Pension fields (multiple pensions)
   pensions: z.array(pensionSchema).optional(),
   
