@@ -855,6 +855,14 @@ export default function AdminAddClient() {
   
   const [valuationInput, setValuationInput] = useState('');
   
+  // Business description popup state
+  const [businessDescriptionDialog, setBusinessDescriptionDialog] = useState<{
+    isOpen: boolean;
+    cardId: string | null;
+    currentValue: string;
+  }>({ isOpen: false, cardId: null, currentValue: '' });
+  
+  const [businessDescriptionInput, setBusinessDescriptionInput] = useState('');
 
   // Unsaved changes warning dialog state
   const [unsavedChangesDialog, setUnsavedChangesDialog] = useState<{
@@ -4170,6 +4178,29 @@ export default function AdminAddClient() {
       form.setValue(`property.properties.${valuationDialog.propertyIndex}.valuations.${valuationDialog.service}`, valuationInput);
       form.setValue(`property.properties.${valuationDialog.propertyIndex}.estimatedValue`, valuationInput);
       closeValuationDialog();
+    }
+  };
+
+  // Business description popup handlers
+  const openBusinessDescriptionDialog = (cardId: string) => {
+    const currentValue = form.watch(`income.businessDescription`) || '';
+    setBusinessDescriptionInput(currentValue);
+    setBusinessDescriptionDialog({
+      isOpen: true,
+      cardId,
+      currentValue
+    });
+  };
+
+  const closeBusinessDescriptionDialog = () => {
+    setBusinessDescriptionDialog({ isOpen: false, cardId: null, currentValue: '' });
+    setBusinessDescriptionInput('');
+  };
+
+  const saveBusinessDescription = () => {
+    if (businessDescriptionDialog.cardId) {
+      form.setValue('income.businessDescription', businessDescriptionInput);
+      closeBusinessDescriptionDialog();
     }
   };
 
