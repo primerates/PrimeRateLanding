@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Lock, Handshake, Ban, TrendingDown } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 const services = [
   {
@@ -30,11 +31,45 @@ const services = [
 ];
 
 export default function ServicesSection() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      {
+        threshold: 0.3, // Trigger when 30% of the section is visible
+        rootMargin: '-100px 0px' // Start animation 100px before the section comes into view
+      }
+    );
+
+    const section = document.getElementById('services-section');
+    if (section) {
+      observer.observe(section);
+    }
+
+    return () => {
+      if (section) {
+        observer.unobserve(section);
+      }
+    };
+  }, []);
+
   return (
-    <section className="py-16 bg-muted/30">
+    <section id="services-section" className="py-16 bg-muted/30">
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold font-serif mb-4" data-testid="text-services-title">
+          <h2 
+            className={`text-3xl lg:text-4xl font-bold font-serif mb-4 transition-all duration-1000 ease-out ${
+              isVisible 
+                ? 'translate-y-0 opacity-100' 
+                : '-translate-y-12 opacity-0'
+            }`}
+            data-testid="text-services-title"
+          >
             Prime Rates on VA, FHA, Conventional & Jumbo Loans
           </h2>
         </div>
