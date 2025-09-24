@@ -2261,7 +2261,7 @@ export default function AdminAddClient() {
     `$${totalCoBorrowerIncome.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`,
     [totalCoBorrowerIncome]
   );
-
+  
   // Calculate total household income (borrower + co-borrower) - optimized with useMemo
   const totalHouseholdIncome = useMemo(() => {
     const coBorrowerTotal = hasCoBorrower ? totalCoBorrowerIncome : 0;
@@ -2272,6 +2272,7 @@ export default function AdminAddClient() {
     `$${totalHouseholdIncome.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`,
     [totalHouseholdIncome]
   );
+
 
   // Current Loan auto sum now handled by isolated TotalCurrentLoanPayment component
 
