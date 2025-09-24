@@ -700,6 +700,12 @@ export default function AdminAddClient() {
   // Template card toggle state - End Date / Present
   const [isShowingPresent, setIsShowingPresent] = useState(false);
 
+  // Helper function to generate dynamic field paths for main employer cards
+  const getEmployerFieldPath = (cardId: string, fieldName: string) => {
+    const cleanCardId = cardId === 'default' ? 'default' : cardId;
+    return `income.employers.${cleanCardId}.${fieldName}` as const;
+  };
+
   // Helper function to generate dynamic field paths for second employer cards
   const getSecondEmployerFieldPath = (cardId: string, fieldName: string) => {
     const cleanCardId = cardId === 'default' ? 'default' : cardId;
@@ -2179,7 +2185,12 @@ export default function AdminAddClient() {
   // Calculate total monthly income - optimized with useMemo
   const borrowerIncomeData = form.watch('income');
   const totalBorrowerIncome = useMemo(() => {
-    const employmentIncome = parseMonetaryValue(borrowerIncomeData?.monthlyIncome);
+    // Calculate total main employment income from all employer cards
+    const employmentIncome = borrowerIncomeData?.employers && typeof borrowerIncomeData.employers === 'object'
+      ? Object.values(borrowerIncomeData.employers).reduce((total, employer) => {
+          return total + (employer && typeof employer === 'object' ? parseMonetaryValue(employer.monthlyIncome) : 0);
+        }, 0)
+      : parseMonetaryValue(borrowerIncomeData?.monthlyIncome); // fallback for backward compatibility
     
     // Calculate total second employment income from all cards
     const secondEmploymentIncome = borrowerIncomeData?.secondEmployers && typeof borrowerIncomeData.secondEmployers === 'object'
@@ -2215,7 +2226,12 @@ export default function AdminAddClient() {
   // Calculate co-borrower income - optimized with useMemo
   const coBorrowerIncomeData = form.watch('coBorrowerIncome');
   const totalCoBorrowerIncome = useMemo(() => {
-    const employmentIncome = parseMonetaryValue(coBorrowerIncomeData?.monthlyIncome);
+    // Calculate total co-borrower main employment income from all employer cards
+    const employmentIncome = coBorrowerIncomeData?.employers && typeof coBorrowerIncomeData.employers === 'object'
+      ? Object.values(coBorrowerIncomeData.employers).reduce((total, employer) => {
+          return total + (employer && typeof employer === 'object' ? parseMonetaryValue(employer.monthlyIncome) : 0);
+        }, 0)
+      : parseMonetaryValue(coBorrowerIncomeData?.monthlyIncome); // fallback for backward compatibility
     // Calculate total co-borrower second employment income from all cards
     const secondEmploymentIncome = coBorrowerIncomeData?.secondEmployers && typeof coBorrowerIncomeData.secondEmployers === 'object'
       ? Object.values(coBorrowerIncomeData.secondEmployers).reduce((total, employer) => {
@@ -7611,7 +7627,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`${propertyId}-monthlyIncome`}>Gross Monthly Income</Label>
                                 <Controller
                                   control={form.control}
-                                  name="income.monthlyIncome"
+                                  name={getEmployerFieldPath(cardId, 'monthlyIncome')}
                                   render={({ field }) => (
                                     <Input
                                       id={`${propertyId}-monthlyIncome`}
