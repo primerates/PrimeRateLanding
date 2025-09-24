@@ -2257,10 +2257,6 @@ export default function AdminAddClient() {
     return total;
   }, [coBorrowerIncomeData]);
   
-  const totalCoBorrowerIncomeFormatted = useMemo(() => 
-    `$${totalCoBorrowerIncome.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`,
-    [totalCoBorrowerIncome]
-  );
   
   // Calculate total household income (borrower + co-borrower) - optimized with useMemo
   const totalHouseholdIncome = useMemo(() => {
@@ -8133,13 +8129,7 @@ export default function AdminAddClient() {
                 <Card className="border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
                   <CardHeader>
                     <CardTitle>
-                      Co-Borrower Income{' '}
-                      <span className={(() => {
-                        const totalValue = totalCoBorrowerIncome;
-                        return totalValue > 0 ? 'text-green-600' : '';
-                      })()}>
-                        {totalCoBorrowerIncomeFormatted}
-                      </span>
+                      Co-Borrower Income
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
