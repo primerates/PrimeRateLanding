@@ -7152,7 +7152,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isPensionIncomeOpen} onOpenChange={setIsPensionIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Borrower Pension Income</CardTitle>
+                        <CardTitle>Borrower - Pension Income</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button 
                             variant="ghost" 
@@ -7241,7 +7241,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isSocialSecurityIncomeOpen} onOpenChange={setIsSocialSecurityIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Borrower Social Security Income</CardTitle>
+                        <CardTitle>Borrower - Social Security</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button 
                             variant="ghost" 
@@ -7290,7 +7290,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isVaBenefitsIncomeOpen} onOpenChange={setIsVaBenefitsIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Borrower VA Disability Income</CardTitle>
+                        <CardTitle>Borrower - VA Disability</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button 
                             variant="ghost" 
@@ -7339,7 +7339,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isDisabilityIncomeOpen} onOpenChange={setIsDisabilityIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Borrower Disability Income</CardTitle>
+                        <CardTitle>Borrower - Disability</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button 
                             variant="ghost" 
@@ -9325,13 +9325,13 @@ export default function AdminAddClient() {
                 );
               })}
 
-              {/* Co-Borrower Pension Income Card */}
+              {/* Co-Borrower Pension Card */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.pension') && (
                 <Card>
                   <Collapsible open={isCoBorrowerPensionIncomeOpen} onOpenChange={setIsCoBorrowerPensionIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Co-Borrower Pension Income</CardTitle>
+                        <CardTitle>Co-Borrower Pension</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button 
                             variant="ghost" 
@@ -9414,13 +9414,13 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
-              {/* Co-Borrower Social Security Income Card */}
+              {/* Co-Borrower Social Security Card */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.socialSecurity') && (
                 <Card>
                   <Collapsible open={isCoBorrowerSocialSecurityIncomeOpen} onOpenChange={setIsCoBorrowerSocialSecurityIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Co-Borrower Social Security Income</CardTitle>
+                        <CardTitle>Co-Borrower - Social Security</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button 
                             variant="ghost" 
@@ -9469,7 +9469,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isCoBorrowerVaBenefitsIncomeOpen} onOpenChange={setIsCoBorrowerVaBenefitsIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Co-Borrower VA Disability Income</CardTitle>
+                        <CardTitle>Co-Borrower - VA Disability</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button 
                             variant="ghost" 
@@ -9512,13 +9512,13 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
-              {/* Co-Borrower Disability Income Card */}
+              {/* Co-Borrower Disability Card */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.disability') && (
                 <Card>
                   <Collapsible open={isCoBorrowerDisabilityIncomeOpen} onOpenChange={setIsCoBorrowerDisabilityIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Co-Borrower Disability Income</CardTitle>
+                        <CardTitle>Co-Borrower - Disability</CardTitle>
                         <CollapsibleTrigger asChild>
                           <Button 
                             variant="ghost" 
