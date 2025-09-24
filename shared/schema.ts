@@ -120,6 +120,23 @@ export const incomeSchema = z.object({
   secondIsShowingEmploymentVerification: z.boolean().optional(),
   secondEmployerRemote: z.string().optional(),
   
+  // Multiple Second Employers (new structure for dynamic cards)
+  secondEmployers: z.record(z.string(), z.object({
+    employerName: z.string().optional(),
+    jobTitle: z.string().optional(),
+    monthlyIncome: z.string().optional(),
+    monthlyBonusIncome: z.string().optional(),
+    annualBonusIncome: z.string().optional(),
+    employmentType: z.enum(["Full-Time", "Part-Time"]).optional(),
+    yearsEmployedYears: z.string().optional(),
+    yearsEmployedMonths: z.string().optional(),
+    employerAddress: addressSchema.partial().optional(),
+    employerPhone: z.string().optional(),
+    employmentVerificationPhone: z.string().optional(),
+    isShowingEmploymentVerification: z.boolean().optional(),
+    employerRemote: z.string().optional(),
+  })).default({}),
+  
   // Second Prior Employment fields (for cascading employment history)
   secondPriorEmployerName: z.string().optional(),
   secondPriorJobTitle: z.string().optional(),
