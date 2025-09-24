@@ -693,6 +693,9 @@ export default function AdminAddClient() {
   // Borrower Second Employer cards state management
   const [borrowerSecondEmployerCards, setBorrowerSecondEmployerCards] = useState<string[]>(['default']);
   
+  // Borrower Self-Employment cards state management
+  const [borrowerSelfEmploymentCards, setBorrowerSelfEmploymentCards] = useState<string[]>(['default']);
+  
   // Employment dates state for each card
   const [employmentDates, setEmploymentDates] = useState<Record<string, {
     startDate: string;
@@ -709,6 +712,12 @@ export default function AdminAddClient() {
 
   // Delete confirmation dialog state for Borrower Second Employer
   const [deleteSecondEmployerDialog, setDeleteSecondEmployerDialog] = useState<{
+    isOpen: boolean;
+    cardId: string;
+  }>({ isOpen: false, cardId: '' });
+
+  // Delete confirmation dialog state for Borrower Self-Employment
+  const [deleteSelfEmploymentDialog, setDeleteSelfEmploymentDialog] = useState<{
     isOpen: boolean;
     cardId: string;
   }>({ isOpen: false, cardId: '' });
@@ -6643,27 +6652,71 @@ export default function AdminAddClient() {
                 </CardContent>
               </Card>
 
-              {/* Self-Employment Income Card */}
-              {form.watch('income.incomeTypes.selfEmployment') && (
-                <Card>
-                  <Collapsible open={isSelfEmploymentIncomeOpen} onOpenChange={setIsSelfEmploymentIncomeOpen}>
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle>Borrower Self-Employment</CardTitle>
-                        <CollapsibleTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="hover:bg-orange-500 hover:text-white" 
-                            data-testid="button-toggle-self-employment-income"
-                            title={isSelfEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
-                            key={`self-employment-income-${isSelfEmploymentIncomeOpen}`}
-                          >
-                            {isSelfEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                          </Button>
-                        </CollapsibleTrigger>
-                      </div>
-                    </CardHeader>
+              {/* Borrower Self-Employment Cards */}
+              {form.watch('income.incomeTypes.selfEmployment') && (borrowerSelfEmploymentCards || ['default']).map((cardId, index) => {
+                const propertyId = cardId === 'default' ? 'self-employment-template-card' : cardId;
+                const isOpen = propertyCardStates[propertyId] ?? false;
+                
+                return (
+                  <Card key={cardId} className="border-l-4 border-l-purple-500 hover:border-purple-500 focus-within:border-purple-500 transition-colors duration-200">
+                    <Collapsible 
+                      open={isOpen} 
+                      onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
+                    >
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-8">
+                            <CardTitle className="flex items-center gap-2">
+                              Borrower Self-Employment
+                            </CardTitle>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {/* Add Self-Employment Button */}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                const newId = `self-employment-${Date.now()}`;
+                                setBorrowerSelfEmploymentCards(prev => [...(prev || ['default']), newId]);
+                              }}
+                              className="hover:bg-blue-500 hover:text-white"
+                              data-testid="button-add-self-employment"
+                              title="Add New Self-Employment"
+                            >
+                              <Plus className="h-4 w-4 mr-2" />
+                              Add Self-Employment
+                            </Button>
+                            
+                            {/* Delete Self-Employment Button - only show if more than 1 card */}
+                            {(borrowerSelfEmploymentCards || []).length > 1 && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setDeleteSelfEmploymentDialog({ isOpen: true, cardId: propertyId })}
+                                className="hover:bg-red-500 hover:text-white"
+                                data-testid="button-delete-self-employment"
+                                title="Delete Self-Employment"
+                              >
+                                <Minus className="h-4 w-4 mr-2" />
+                                Remove
+                              </Button>
+                            )}
+                            
+                            <CollapsibleTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="hover:bg-orange-500 hover:text-white" 
+                                data-testid={`button-toggle-self-employment-${propertyId}`}
+                                title={isOpen ? 'Minimize' : 'Expand'}
+                                key={`self-employment-${propertyId}-${isOpen}`}
+                              >
+                                {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </div>
+                        </div>
+                      </CardHeader>
                     <CollapsibleContent>
                       <CardContent className="space-y-4">
                       {/* Employment Type Selection */}
@@ -6920,7 +6973,8 @@ export default function AdminAddClient() {
                     </CollapsibleContent>
                   </Collapsible>
                 </Card>
-              )}
+                );
+              })}
 
               {/* Pension Income Card */}
               {form.watch('income.incomeTypes.pension') && (
@@ -10761,6 +10815,39 @@ export default function AdminAddClient() {
                 setDeleteSecondEmployerDialog({ isOpen: false, cardId: '' });
               }}
               data-testid="button-confirm-delete-second-employer"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Borrower Self-Employment Confirmation Dialog */}
+      <AlertDialog open={deleteSelfEmploymentDialog.isOpen} onOpenChange={(open) => !open && setDeleteSelfEmploymentDialog({ isOpen: false, cardId: '' })}>
+        <AlertDialogContent data-testid="dialog-delete-self-employment">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Self-Employment Card</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this self-employment card? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteSelfEmploymentDialog({ isOpen: false, cardId: '' })}
+              data-testid="button-cancel-delete-self-employment"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                const cardToDelete = deleteSelfEmploymentDialog.cardId;
+                setBorrowerSelfEmploymentCards(prev => prev.filter(id => 
+                  cardToDelete === 'self-employment-template-card' ? id !== 'default' : id !== cardToDelete
+                ));
+                setDeleteSelfEmploymentDialog({ isOpen: false, cardId: '' });
+              }}
+              data-testid="button-confirm-delete-self-employment"
               className="bg-red-600 hover:bg-red-700"
             >
               Delete
