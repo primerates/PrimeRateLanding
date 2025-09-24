@@ -144,28 +144,40 @@ export default function HeroSection() {
         <nav className="group">
           <div className="flex items-center">
             <button 
-              className="relative px-4 py-2 text-sm text-white hover:text-white hover:font-semibold font-medium transition-all duration-200 drop-shadow-lg hover:drop-shadow-xl after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px after:bg-green-600 after:transition-all after:duration-300 hover:after:w-full"
+              className="relative px-4 py-2 text-sm text-white hover:text-white hover:font-semibold font-medium transition-all duration-200 drop-shadow-lg hover:drop-shadow-xl after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px after:bg-blue-600 after:transition-all after:duration-300 hover:after:w-full"
               data-testid="button-menu-loan-status"
               onClick={() => setLocation('/admin/login')}
             >
               Loan Status
             </button>
             <button 
-              className="relative px-4 py-2 text-sm text-white hover:text-white hover:font-semibold font-medium transition-all duration-200 drop-shadow-lg hover:drop-shadow-xl after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px after:bg-green-600 after:transition-all after:duration-300 hover:after:w-full"
+              className={`relative px-4 py-2 text-sm font-medium transition-all duration-200 drop-shadow-lg hover:drop-shadow-xl after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-px after:bg-blue-600 after:transition-all after:duration-300 ${
+                showRateTracker 
+                  ? 'text-blue-400 hover:text-blue-400 hover:font-semibold after:w-full' 
+                  : 'text-white hover:text-white hover:font-semibold after:w-0 hover:after:w-full'
+              }`}
               data-testid="button-menu-rate-tracker"
               onClick={() => setShowRateTracker(true)}
             >
               Rate Tracker
             </button>
             <button 
-              className="relative px-4 py-2 text-sm text-white hover:text-white hover:font-semibold font-medium transition-all duration-200 drop-shadow-lg hover:drop-shadow-xl after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px after:bg-green-600 after:transition-all after:duration-300 hover:after:w-full"
+              className={`relative px-4 py-2 text-sm font-medium transition-all duration-200 drop-shadow-lg hover:drop-shadow-xl after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-px after:bg-blue-600 after:transition-all after:duration-300 ${
+                showCalculator 
+                  ? 'text-blue-400 hover:text-blue-400 hover:font-semibold after:w-full' 
+                  : 'text-white hover:text-white hover:font-semibold after:w-0 hover:after:w-full'
+              }`}
               data-testid="button-menu-mortgage-calculator"
               onClick={() => setShowCalculator(true)}
             >
               Mortgage Calculator
             </button>
             <button 
-              className="relative px-4 py-2 text-sm text-white hover:text-white hover:font-semibold font-medium transition-all duration-200 drop-shadow-lg hover:drop-shadow-xl after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px after:bg-green-600 after:transition-all after:duration-300 hover:after:w-full"
+              className={`relative px-4 py-2 text-sm font-medium transition-all duration-200 drop-shadow-lg hover:drop-shadow-xl after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-px after:bg-blue-600 after:transition-all after:duration-300 ${
+                showPreApproval 
+                  ? 'text-blue-400 hover:text-blue-400 hover:font-semibold after:w-full' 
+                  : 'text-white hover:text-white hover:font-semibold after:w-0 hover:after:w-full'
+              }`}
               data-testid="button-menu-get-preapproved"
               onClick={() => setShowPreApproval(true)}
             >
