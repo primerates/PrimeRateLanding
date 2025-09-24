@@ -6721,7 +6721,7 @@ export default function AdminAddClient() {
                         <div className="space-y-2 md:col-span-2">
                           <div className="flex items-center justify-between mb-2">
                             <Label htmlFor="income-annualRevenue" className="text-sm">
-                              {isShowingNetRevenue ? 'Monthly Net' : 'Monthly Gross'}
+                              {isShowingNetRevenue ? 'Net Monthly Income' : 'Gross Monthly Income'}
                             </Label>
                             <Switch
                               checked={isShowingNetRevenue}
@@ -6797,7 +6797,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2">
+                        <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="income-self-employment-duration">Duration</Label>
                           <Input
                             id="income-self-employment-duration"
