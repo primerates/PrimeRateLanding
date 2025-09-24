@@ -6794,7 +6794,7 @@ export default function AdminAddClient() {
                 </CardContent>
               </Card>
 
-              {/* Borrower Self-Employment Cards */}
+              {/* Borrower - Self-Employment Cards */}
               {form.watch('income.incomeTypes.selfEmployment') && (borrowerSelfEmploymentCards || ['default']).map((cardId, index) => {
                 const propertyId = cardId === 'default' ? 'self-employment-template-card' : cardId;
                 const isOpen = propertyCardStates[propertyId] ?? false;
@@ -6809,7 +6809,7 @@ export default function AdminAddClient() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-8">
                             <CardTitle className="flex items-center gap-2">
-                              Borrower Self-Employment
+                              Borrower - Self-Employment
                             </CardTitle>
                           </div>
                           <div className="flex items-center gap-2">
@@ -8975,7 +8975,7 @@ export default function AdminAddClient() {
                 );
               })}
 
-              {/* Co-Borrower Self-Employment Cards */}
+              {/* Co-Borrower - Self-Employment Cards */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.selfEmployment') && (coBorrowerSelfEmploymentCards || ['default']).map((cardId, index) => {
                 const propertyId = cardId === 'default' ? 'co-borrower-self-employment-template-card' : cardId;
                 const isOpen = propertyCardStates[propertyId] ?? false;
@@ -8990,7 +8990,7 @@ export default function AdminAddClient() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-8">
                             <CardTitle className="flex items-center gap-2">
-                              Co-Borrower Self-Employment
+                              Co-Borrower - Self-Employment
                             </CardTitle>
                           </div>
                           <div className="flex items-center gap-2">
@@ -11792,11 +11792,11 @@ export default function AdminAddClient() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Delete Borrower Self-Employment Confirmation Dialog */}
+      {/* Delete Borrower - Self-Employment Confirmation Dialog */}
       <AlertDialog open={deleteSelfEmploymentDialog.isOpen} onOpenChange={(open) => !open && setDeleteSelfEmploymentDialog({ isOpen: false, cardId: '' })}>
         <AlertDialogContent data-testid="dialog-delete-self-employment">
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Self-Employment Card</AlertDialogTitle>
+            <AlertDialogTitle>Delete Borrower - Self-Employment Card</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete this self-employment card? This action cannot be undone.
             </AlertDialogDescription>
@@ -11825,11 +11825,11 @@ export default function AdminAddClient() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Delete Co-Borrower Self-Employment Confirmation Dialog */}
+      {/* Delete Co-Borrower - Self-Employment Confirmation Dialog */}
       <AlertDialog open={deleteCoBorrowerSelfEmploymentDialog.isOpen} onOpenChange={(open) => !open && setDeleteCoBorrowerSelfEmploymentDialog({ isOpen: false, cardId: '' })}>
         <AlertDialogContent data-testid="dialog-delete-co-borrower-self-employment">
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Co-Borrower Self-Employment Card</AlertDialogTitle>
+            <AlertDialogTitle>Delete Co-Borrower - Self-Employment Card</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete this co-borrower self-employment card? This action cannot be undone.
             </AlertDialogDescription>
