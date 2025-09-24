@@ -6795,7 +6795,7 @@ export default function AdminAddClient() {
                                 <button
                                   type="button"
                                   onClick={() => openBusinessDescriptionDialog(cardId)}
-                                  className="text-blue-600 hover:text-blue-800 transition-colors ml-5"
+                                  className="text-blue-600 hover:text-blue-800 transition-colors ml-6"
                                   data-testid="button-business-description-info"
                                   title="Add business description"
                                 >
