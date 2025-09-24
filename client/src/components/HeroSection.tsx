@@ -139,40 +139,40 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/20"></div>
       </div>
 
-      {/* Top Right Menu Options */}
-      <div className="absolute top-6 right-6 z-20 hidden lg:flex gap-3">
-        <Button 
-          size="sm" 
-          className="bg-primary text-white hover:bg-green-600 transition-colors duration-200 no-default-hover-elevate"
-          data-testid="button-menu-loan-status"
-          onClick={() => setLocation('/admin/login')}
-        >
-          Loan Status
-        </Button>
-        <Button 
-          size="sm" 
-          className="bg-primary text-white hover:bg-green-600 transition-colors duration-200 no-default-hover-elevate"
-          data-testid="button-menu-rate-tracker"
-          onClick={() => setShowRateTracker(true)}
-        >
-          Rate Tracker
-        </Button>
-        <Button 
-          size="sm" 
-          className="bg-primary text-white hover:bg-green-600 transition-colors duration-200 no-default-hover-elevate"
-          data-testid="button-menu-mortgage-calculator"
-          onClick={() => setShowCalculator(true)}
-        >
-          Mortgage Calculator
-        </Button>
-        <Button 
-          size="sm" 
-          className="bg-primary text-white hover:bg-green-600 transition-colors duration-200 no-default-hover-elevate"
-          data-testid="button-menu-get-preapproved"
-          onClick={() => setShowPreApproval(true)}
-        >
-          Get Pre-Approved
-        </Button>
+      {/* Top Right Menu Options - Sleek White Menu Bar */}
+      <div className="absolute top-6 right-6 z-20 hidden lg:block">
+        <nav className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg px-1 py-1 group">
+          <div className="flex items-center">
+            <button 
+              className="relative px-4 py-2 text-gray-600 hover:text-black font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px after:bg-green-500 after:transition-all after:duration-300 hover:after:w-full"
+              data-testid="button-menu-loan-status"
+              onClick={() => setLocation('/admin/login')}
+            >
+              Loan Status
+            </button>
+            <button 
+              className="relative px-4 py-2 text-gray-600 hover:text-black font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px after:bg-green-500 after:transition-all after:duration-300 hover:after:w-full"
+              data-testid="button-menu-rate-tracker"
+              onClick={() => setShowRateTracker(true)}
+            >
+              Rate Tracker
+            </button>
+            <button 
+              className="relative px-4 py-2 text-gray-600 hover:text-black font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px after:bg-green-500 after:transition-all after:duration-300 hover:after:w-full"
+              data-testid="button-menu-mortgage-calculator"
+              onClick={() => setShowCalculator(true)}
+            >
+              Mortgage Calculator
+            </button>
+            <button 
+              className="relative px-4 py-2 text-gray-600 hover:text-black font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px after:bg-green-500 after:transition-all after:duration-300 hover:after:w-full"
+              data-testid="button-menu-get-preapproved"
+              onClick={() => setShowPreApproval(true)}
+            >
+              Get Pre-Approved
+            </button>
+          </div>
+        </nav>
       </div>
 
       <div className="relative z-10 container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
