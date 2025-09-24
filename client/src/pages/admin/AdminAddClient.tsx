@@ -8358,7 +8358,13 @@ export default function AdminAddClient() {
                           <Checkbox
                             id="coBorrowerIncome-type-socialSecurity"
                             checked={form.watch('coBorrowerIncome.incomeTypes.socialSecurity') || false}
-                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.socialSecurity', !!checked, 'Social Security', true)}
+                            onCheckedChange={(checked) => {
+                              // Prevent unchecking - once checked, can only be removed via Remove button
+                              if (!checked && form.watch('coBorrowerIncome.incomeTypes.socialSecurity')) {
+                                return; // Do nothing - prevent unchecking
+                              }
+                              handleIncomeTypeChange('coBorrowerIncome.incomeTypes.socialSecurity', !!checked, 'Social Security', true);
+                            }}
                             data-testid="checkbox-coborrower-socialSecurity"
                             className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           />
@@ -8368,7 +8374,13 @@ export default function AdminAddClient() {
                           <Checkbox
                             id="coBorrowerIncome-type-vaBenefits"
                             checked={form.watch('coBorrowerIncome.incomeTypes.vaBenefits') || false}
-                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.vaBenefits', !!checked, 'VA Disability', true)}
+                            onCheckedChange={(checked) => {
+                              // Prevent unchecking - once checked, can only be removed via Remove button
+                              if (!checked && form.watch('coBorrowerIncome.incomeTypes.vaBenefits')) {
+                                return; // Do nothing - prevent unchecking
+                              }
+                              handleIncomeTypeChange('coBorrowerIncome.incomeTypes.vaBenefits', !!checked, 'VA Disability', true);
+                            }}
                             data-testid="checkbox-coborrower-vaBenefits"
                             className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           />
@@ -8378,7 +8390,13 @@ export default function AdminAddClient() {
                           <Checkbox
                             id="coBorrowerIncome-type-disability"
                             checked={form.watch('coBorrowerIncome.incomeTypes.disability') || false}
-                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.disability', !!checked, 'Disability', true)}
+                            onCheckedChange={(checked) => {
+                              // Prevent unchecking - once checked, can only be removed via Remove button
+                              if (!checked && form.watch('coBorrowerIncome.incomeTypes.disability')) {
+                                return; // Do nothing - prevent unchecking
+                              }
+                              handleIncomeTypeChange('coBorrowerIncome.incomeTypes.disability', !!checked, 'Disability', true);
+                            }}
                             data-testid="checkbox-coborrower-disability"
                             className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           />
