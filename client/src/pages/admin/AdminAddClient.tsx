@@ -2289,7 +2289,12 @@ export default function AdminAddClient() {
   // Calculate co-borrower income - optimized with useMemo
   const coBorrowerIncomeData = form.watch('coBorrowerIncome');
   const coBorrowerEmployersData = form.watch('coBorrowerIncome.employers');
-  const defaultCoBorrowerEmployerIncome = form.watch('coBorrowerIncome.employers.default.monthlyIncome');
+  
+  // Watch all individual co-borrower employer income fields dynamically
+  const allCoBorrowerEmployerIncomes = coBorrowerEmployerCards.map(cardId => 
+    form.watch(getCoBorrowerEmployerFieldPath(cardId, 'monthlyIncome'))
+  );
+  
   const totalCoBorrowerIncome = useMemo(() => {
     // Calculate total co-borrower main employment income from all employer cards
     const employmentIncome = coBorrowerIncomeData?.employers && typeof coBorrowerIncomeData.employers === 'object'
@@ -2320,7 +2325,7 @@ export default function AdminAddClient() {
                   disabilityIncome + otherIncome;
     
     return total;
-  }, [coBorrowerIncomeData, coBorrowerEmployersData, defaultCoBorrowerEmployerIncome]);
+  }, [coBorrowerIncomeData, coBorrowerEmployersData, allCoBorrowerEmployerIncomes]);
   
   const totalCoBorrowerIncomeFormatted = useMemo(() => 
     `$${totalCoBorrowerIncome.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`,
