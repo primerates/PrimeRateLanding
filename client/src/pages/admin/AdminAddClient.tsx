@@ -11255,6 +11255,50 @@ export default function AdminAddClient() {
         </DialogContent>
       </Dialog>
 
+      {/* Tax Preparer Dialog */}
+      <Dialog open={taxPreparerDialog.isOpen} onOpenChange={(open) => !open && closeTaxPreparerDialog()}>
+        <DialogContent data-testid="dialog-tax-preparer">
+          <DialogHeader>
+            <DialogTitle>Tax Preparer Information</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="tax-preparer-select">Business tax returns are prepared and filed by</Label>
+              <Select
+                value={taxPreparerInput}
+                onValueChange={(value) => setTaxPreparerInput(value)}
+              >
+                <SelectTrigger data-testid="select-tax-preparer">
+                  <SelectValue placeholder="Select who prepares tax returns" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Borrower(s)">Borrower(s)</SelectItem>
+                  <SelectItem value="Tax Preparer">Tax Preparer</SelectItem>
+                  <SelectItem value="CPA">CPA</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={closeTaxPreparerDialog}
+              data-testid="button-tax-preparer-cancel"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={saveTaxPreparer}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+              data-testid="button-tax-preparer-save"
+            >
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Property Valuation Hover Tooltip */}
       {valuationHover.isVisible && (
         <div
