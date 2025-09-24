@@ -839,6 +839,21 @@ export default function AdminAddClient() {
     isOpen: boolean;
   }>({ isOpen: false });
 
+  // Delete confirmation dialog state for Co-Borrower Social Security Income
+  const [deleteCoBorrowerSocialSecurityDialog, setDeleteCoBorrowerSocialSecurityDialog] = useState<{
+    isOpen: boolean;
+  }>({ isOpen: false });
+
+  // Delete confirmation dialog state for Co-Borrower VA Disability Income
+  const [deleteCoBorrowerVaBenefitsDialog, setDeleteCoBorrowerVaBenefitsDialog] = useState<{
+    isOpen: boolean;
+  }>({ isOpen: false });
+
+  // Delete confirmation dialog state for Co-Borrower Disability Income
+  const [deleteCoBorrowerDisabilityDialog, setDeleteCoBorrowerDisabilityDialog] = useState<{
+    isOpen: boolean;
+  }>({ isOpen: false });
+
   // Co-Borrower Employer cards state management
   const [coBorrowerEmployerCards, setCoBorrowerEmployerCards] = useState<string[]>(['default']);
   
@@ -9588,18 +9603,32 @@ export default function AdminAddClient() {
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower - Social Security</CardTitle>
-                        <CollapsibleTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="hover:bg-orange-500 hover:text-white" 
-                            data-testid="button-toggle-coborrower-social-security-income"
-                            title={isCoBorrowerSocialSecurityIncomeOpen ? 'Minimize' : 'Expand'}
-                            key={`coborrower-social-security-income-${isCoBorrowerSocialSecurityIncomeOpen}`}
+                        <div className="flex items-center gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setDeleteCoBorrowerSocialSecurityDialog({ isOpen: true })}
+                            className="hover:bg-red-500 hover:text-white"
+                            data-testid="button-delete-coborrower-social-security"
+                            title="Delete Co-Borrower Social Security Income"
                           >
-                            {isCoBorrowerSocialSecurityIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            <Minus className="h-4 w-4 mr-2" />
+                            Remove
                           </Button>
-                        </CollapsibleTrigger>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-coborrower-social-security-income"
+                              title={isCoBorrowerSocialSecurityIncomeOpen ? 'Minimize' : 'Expand'}
+                              key={`coborrower-social-security-income-${isCoBorrowerSocialSecurityIncomeOpen}`}
+                            >
+                              {isCoBorrowerSocialSecurityIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
                       </div>
                     </CardHeader>
                     <CollapsibleContent>
@@ -9637,18 +9666,32 @@ export default function AdminAddClient() {
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower - VA Disability</CardTitle>
-                        <CollapsibleTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="hover:bg-orange-500 hover:text-white" 
-                            data-testid="button-toggle-coborrower-va-benefits-income"
-                            title={isCoBorrowerVaBenefitsIncomeOpen ? 'Minimize' : 'Expand'}
-                            key={`coborrower-va-benefits-income-${isCoBorrowerVaBenefitsIncomeOpen}`}
+                        <div className="flex items-center gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setDeleteCoBorrowerVaBenefitsDialog({ isOpen: true })}
+                            className="hover:bg-red-500 hover:text-white"
+                            data-testid="button-delete-coborrower-va-benefits"
+                            title="Delete Co-Borrower VA Disability Income"
                           >
-                            {isCoBorrowerVaBenefitsIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            <Minus className="h-4 w-4 mr-2" />
+                            Remove
                           </Button>
-                        </CollapsibleTrigger>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-coborrower-va-benefits-income"
+                              title={isCoBorrowerVaBenefitsIncomeOpen ? 'Minimize' : 'Expand'}
+                              key={`coborrower-va-benefits-income-${isCoBorrowerVaBenefitsIncomeOpen}`}
+                            >
+                              {isCoBorrowerVaBenefitsIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
                       </div>
                     </CardHeader>
                     <CollapsibleContent>
@@ -9686,18 +9729,32 @@ export default function AdminAddClient() {
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower - Disability</CardTitle>
-                        <CollapsibleTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="hover:bg-orange-500 hover:text-white" 
-                            data-testid="button-toggle-coborrower-disability-income"
-                            title={isCoBorrowerDisabilityIncomeOpen ? 'Minimize' : 'Expand'}
-                            key={`coborrower-disability-income-${isCoBorrowerDisabilityIncomeOpen}`}
+                        <div className="flex items-center gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setDeleteCoBorrowerDisabilityDialog({ isOpen: true })}
+                            className="hover:bg-red-500 hover:text-white"
+                            data-testid="button-delete-coborrower-disability"
+                            title="Delete Co-Borrower Disability Income"
                           >
-                            {isCoBorrowerDisabilityIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            <Minus className="h-4 w-4 mr-2" />
+                            Remove
                           </Button>
-                        </CollapsibleTrigger>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-coborrower-disability-income"
+                              title={isCoBorrowerDisabilityIncomeOpen ? 'Minimize' : 'Expand'}
+                              key={`coborrower-disability-income-${isCoBorrowerDisabilityIncomeOpen}`}
+                            >
+                              {isCoBorrowerDisabilityIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
                       </div>
                     </CardHeader>
                     <CollapsibleContent>
@@ -12210,6 +12267,106 @@ export default function AdminAddClient() {
                 setDeleteDisabilityDialog({ isOpen: false });
               }}
               data-testid="button-confirm-delete-disability"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Co-Borrower Social Security Income Confirmation Dialog */}
+      <AlertDialog open={deleteCoBorrowerSocialSecurityDialog.isOpen} onOpenChange={(open) => !open && setDeleteCoBorrowerSocialSecurityDialog({ isOpen: false })}>
+        <AlertDialogContent data-testid="dialog-delete-coborrower-social-security">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Co-Borrower Social Security Income</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove the Co-Borrower Social Security income section? This will clear all entered data and hide the section. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteCoBorrowerSocialSecurityDialog({ isOpen: false })}
+              data-testid="button-cancel-delete-coborrower-social-security"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                // Clear the income type checkbox and close the section
+                form.setValue('coBorrowerIncome.incomeTypes.socialSecurity', false);
+                form.setValue('coBorrowerIncome.socialSecurityMonthlyAmount', '');
+                setIsCoBorrowerSocialSecurityIncomeOpen(false);
+                setDeleteCoBorrowerSocialSecurityDialog({ isOpen: false });
+              }}
+              data-testid="button-confirm-delete-coborrower-social-security"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Co-Borrower VA Benefits Income Confirmation Dialog */}
+      <AlertDialog open={deleteCoBorrowerVaBenefitsDialog.isOpen} onOpenChange={(open) => !open && setDeleteCoBorrowerVaBenefitsDialog({ isOpen: false })}>
+        <AlertDialogContent data-testid="dialog-delete-coborrower-va-benefits">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Co-Borrower VA Disability Income</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove the Co-Borrower VA Disability income section? This will clear all entered data and hide the section. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteCoBorrowerVaBenefitsDialog({ isOpen: false })}
+              data-testid="button-cancel-delete-coborrower-va-benefits"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                // Clear the income type checkbox and close the section
+                form.setValue('coBorrowerIncome.incomeTypes.vaBenefits', false);
+                form.setValue('coBorrowerIncome.vaBenefitsMonthlyAmount', '');
+                setIsCoBorrowerVaBenefitsIncomeOpen(false);
+                setDeleteCoBorrowerVaBenefitsDialog({ isOpen: false });
+              }}
+              data-testid="button-confirm-delete-coborrower-va-benefits"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Co-Borrower Disability Income Confirmation Dialog */}
+      <AlertDialog open={deleteCoBorrowerDisabilityDialog.isOpen} onOpenChange={(open) => !open && setDeleteCoBorrowerDisabilityDialog({ isOpen: false })}>
+        <AlertDialogContent data-testid="dialog-delete-coborrower-disability">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Co-Borrower Disability Income</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove the Co-Borrower Disability income section? This will clear all entered data and hide the section. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteCoBorrowerDisabilityDialog({ isOpen: false })}
+              data-testid="button-cancel-delete-coborrower-disability"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                // Clear the income type checkbox and close the section
+                form.setValue('coBorrowerIncome.incomeTypes.disability', false);
+                form.setValue('coBorrowerIncome.disabilityPayerName', '');
+                form.setValue('coBorrowerIncome.disabilityMonthlyAmount', '');
+                setIsCoBorrowerDisabilityIncomeOpen(false);
+                setDeleteCoBorrowerDisabilityDialog({ isOpen: false });
+              }}
+              data-testid="button-confirm-delete-coborrower-disability"
               className="bg-red-600 hover:bg-red-700"
             >
               Remove
