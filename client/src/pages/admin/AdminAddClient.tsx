@@ -6692,6 +6692,7 @@ export default function AdminAddClient() {
                             {/* Delete Self-Employment Button - only show if more than 1 card */}
                             {(borrowerSelfEmploymentCards || []).length > 1 && (
                               <Button
+                                type="button"
                                 variant="outline"
                                 size="sm"
                                 onClick={() => setDeleteSelfEmploymentDialog({ isOpen: true, cardId: propertyId })}
@@ -7318,6 +7319,7 @@ export default function AdminAddClient() {
                             {/* Delete Employer Button - only show if more than 1 card */}
                             {(borrowerEmployerCards || []).length > 1 && (
                               <Button
+                                type="button"
                                 variant="outline"
                                 size="sm"
                                 onClick={() => setDeleteEmployerDialog({ isOpen: true, cardId: propertyId })}
@@ -7641,6 +7643,7 @@ export default function AdminAddClient() {
                             {/* Delete Employer Button - only show if more than 1 card */}
                             {(borrowerSecondEmployerCards || []).length > 1 && (
                               <Button
+                                type="button"
                                 variant="outline"
                                 size="sm"
                                 onClick={() => setDeleteSecondEmployerDialog({ isOpen: true, cardId: propertyId })}
@@ -8068,6 +8071,7 @@ export default function AdminAddClient() {
                             {/* Delete Employer Button - only show if more than 1 card */}
                             {(coBorrowerEmployerCards || []).length > 1 && (
                               <Button
+                                type="button"
                                 variant="outline"
                                 size="sm"
                                 onClick={() => setDeleteCoBorrowerEmployerDialog({ isOpen: true, cardId: propertyId })}
