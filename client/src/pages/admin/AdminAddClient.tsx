@@ -8423,7 +8423,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isCoBorrowerSecondPriorEmploymentIncomeOpen} onOpenChange={setIsCoBorrowerSecondPriorEmploymentIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Co-Borrower - Prior Employer</CardTitle>
+                        <CardTitle>Past</CardTitle>
                         <div className="flex items-center gap-2">
                           <Tooltip>
                             <TooltipTrigger asChild>
