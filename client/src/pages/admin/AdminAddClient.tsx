@@ -2222,27 +2222,6 @@ export default function AdminAddClient() {
     `$${totalBorrowerIncome.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`,
     [totalBorrowerIncome]
   );
-  
-  // Calculate main employer gross monthly income for Borrower Income card title
-  const mainEmployerIncome = useMemo(() => {
-    const employers = borrowerIncomeData?.employers;
-    if (!employers || typeof employers !== 'object') {
-      // Fallback to legacy monthlyIncome field for backward compatibility
-      return parseMonetaryValue(borrowerIncomeData?.monthlyIncome);
-    }
-    
-    // Get the first employer's monthly income (default card or first added card)
-    const employerIds = Object.keys(employers);
-    if (employerIds.length === 0) return 0;
-    
-    const firstEmployer = employers[employerIds[0]];
-    return firstEmployer && typeof firstEmployer === 'object' ? parseMonetaryValue(firstEmployer.monthlyIncome) : 0;
-  }, [borrowerIncomeData]);
-  
-  const mainEmployerIncomeFormatted = useMemo(() => 
-    `$${mainEmployerIncome.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`,
-    [mainEmployerIncome]
-  );
 
   // Calculate co-borrower income - optimized with useMemo
   const coBorrowerIncomeData = form.watch('coBorrowerIncome');
@@ -6748,13 +6727,7 @@ export default function AdminAddClient() {
               <Card className="border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
                 <CardHeader>
                   <CardTitle>
-                    Borrower Income{' '}
-                    <span className={(() => {
-                      const totalValue = mainEmployerIncome;
-                      return totalValue > 0 ? 'text-green-600' : '';
-                    })()}>
-                      {mainEmployerIncomeFormatted}
-                    </span>
+                    Borrower Income
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
