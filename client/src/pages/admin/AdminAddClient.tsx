@@ -6801,7 +6801,18 @@ export default function AdminAddClient() {
                       {/* First row with business details */}
                       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                         <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="income-businessName">Business / DBA Name</Label>
+                          <div className="flex items-center gap-2">
+                            <Label htmlFor="income-businessName">Business / DBA Name</Label>
+                            <button
+                              type="button"
+                              onClick={() => openBusinessDescriptionDialog(cardId)}
+                              className="text-blue-600 hover:text-blue-800 transition-colors"
+                              data-testid="button-business-description-info"
+                              title="Add business description"
+                            >
+                              <Info className="h-4 w-4" />
+                            </button>
+                          </div>
                           <Input
                             id="income-businessName"
                             {...form.register('income.businessName')}
