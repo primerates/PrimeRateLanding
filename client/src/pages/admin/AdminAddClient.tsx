@@ -6717,6 +6717,7 @@ export default function AdminAddClient() {
                           checked={form.watch('income.incomeTypes.employment') || false}
                           onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.employment', !!checked, 'Employment')}
                           data-testid="checkbox-employment"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         />
                         <Label htmlFor="income-type-employment">Employment</Label>
                       </div>
@@ -6726,6 +6727,7 @@ export default function AdminAddClient() {
                           checked={form.watch('income.incomeTypes.secondEmployment') || false}
                           onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.secondEmployment', !!checked, 'Second Employment')}
                           data-testid="checkbox-secondEmployment"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         />
                         <Label htmlFor="income-type-secondEmployment">Second Employment</Label>
                       </div>
@@ -6735,6 +6737,7 @@ export default function AdminAddClient() {
                           checked={form.watch('income.incomeTypes.selfEmployment') || false}
                           onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.selfEmployment', !!checked, 'Self-Employment')}
                           data-testid="checkbox-selfEmployment"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         />
                         <Label htmlFor="income-type-selfEmployment">Self-Employment</Label>
                       </div>
@@ -6744,6 +6747,7 @@ export default function AdminAddClient() {
                           checked={form.watch('income.incomeTypes.pension') || false}
                           onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.pension', !!checked, 'Pension')}
                           data-testid="checkbox-pension"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         />
                         <Label htmlFor="income-type-pension">Pension</Label>
                       </div>
@@ -6753,6 +6757,7 @@ export default function AdminAddClient() {
                           checked={form.watch('income.incomeTypes.socialSecurity') || false}
                           onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.socialSecurity', !!checked, 'Social Security')}
                           data-testid="checkbox-socialSecurity"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         />
                         <Label htmlFor="income-type-socialSecurity">Social Security</Label>
                       </div>
@@ -6762,6 +6767,7 @@ export default function AdminAddClient() {
                           checked={form.watch('income.incomeTypes.vaBenefits') || false}
                           onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.vaBenefits', !!checked, 'VA Disability')}
                           data-testid="checkbox-vaBenefits"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         />
                         <Label htmlFor="income-type-vaBenefits">VA Disability</Label>
                       </div>
@@ -6771,6 +6777,7 @@ export default function AdminAddClient() {
                           checked={form.watch('income.incomeTypes.disability') || false}
                           onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.disability', !!checked, 'Disability')}
                           data-testid="checkbox-disability"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         />
                         <Label htmlFor="income-type-disability">Disability</Label>
                       </div>
@@ -6788,6 +6795,7 @@ export default function AdminAddClient() {
                             }
                           }}
                           data-testid="checkbox-property-rental"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         />
                         <Label htmlFor="income-type-property-rental">Rental Property</Label>
                       </div>
