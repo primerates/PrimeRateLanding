@@ -6773,7 +6773,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2 md:col-span-2">
+                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="income-self-employment-startDate">Start Date</Label>
                           <Input
                             id="income-self-employment-startDate"
@@ -6789,7 +6789,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2 md:col-span-2">
+                        <div className="space-y-2 md:col-span-1">
                           <div className="flex items-center justify-between mb-2">
                             <Label htmlFor="income-self-employment-endDate" className="text-sm">
                               {employmentDates['self-employment']?.isPresent ? 'Present' : 'End Date'}
