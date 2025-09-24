@@ -6772,6 +6772,78 @@ export default function AdminAddClient() {
                             data-testid="input-income-annualRevenue"
                           />
                         </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="income-self-employment-startDate">Start Date</Label>
+                          <Input
+                            id="income-self-employment-startDate"
+                            type="date"
+                            value={employmentDates['self-employment']?.startDate || ''}
+                            onChange={(e) => {
+                              const startDate = e.target.value;
+                              const currentData = employmentDates['self-employment'] || { endDate: '', isPresent: false, duration: '' };
+                              updateEmploymentDuration('self-employment', startDate, currentData.endDate, currentData.isPresent);
+                            }}
+                            placeholder="MM/DD/YYYY"
+                            data-testid="input-income-self-employment-startDate"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="income-self-employment-endDate" className="text-sm">
+                              {employmentDates['self-employment']?.isPresent ? 'Present' : 'End Date'}
+                            </Label>
+                            <Switch
+                              checked={employmentDates['self-employment']?.isPresent || false}
+                              onCheckedChange={(checked) => {
+                                const currentData = employmentDates['self-employment'] || { startDate: '', endDate: '', duration: '' };
+                                updateEmploymentDuration('self-employment', currentData.startDate, currentData.endDate, checked);
+                              }}
+                              data-testid="toggle-self-employment-present"
+                            />
+                          </div>
+                          <Input
+                            id="income-self-employment-endDate"
+                            type={employmentDates['self-employment']?.isPresent ? 'text' : 'date'}
+                            value={employmentDates['self-employment']?.isPresent ? 'present' : (employmentDates['self-employment']?.endDate || '')}
+                            onChange={(e) => {
+                              if (!employmentDates['self-employment']?.isPresent) {
+                                const endDate = e.target.value;
+                                const currentData = employmentDates['self-employment'] || { startDate: '', isPresent: false, duration: '' };
+                                updateEmploymentDuration('self-employment', currentData.startDate, endDate, currentData.isPresent);
+                              }
+                            }}
+                            placeholder={employmentDates['self-employment']?.isPresent ? 'Present' : 'MM/DD/YYYY'}
+                            readOnly={employmentDates['self-employment']?.isPresent}
+                            className={employmentDates['self-employment']?.isPresent ? 'bg-muted' : ''}
+                            data-testid="input-income-self-employment-endDate"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="income-self-employment-duration">Employment Duration</Label>
+                          <Input
+                            id="income-self-employment-duration"
+                            value={employmentDates['self-employment']?.duration || ''}
+                            placeholder={employmentDates['self-employment']?.isPresent ? 'Enter' : '0'}
+                            readOnly={!employmentDates['self-employment']?.isPresent}
+                            className={!employmentDates['self-employment']?.isPresent ? 'bg-muted' : ''}
+                            onChange={(e) => {
+                              if (employmentDates['self-employment']?.isPresent) {
+                                const currentData = employmentDates['self-employment'] || { startDate: '', endDate: '', isPresent: false };
+                                setEmploymentDates(prev => ({
+                                  ...prev,
+                                  'self-employment': {
+                                    ...currentData,
+                                    duration: e.target.value
+                                  }
+                                }));
+                              }
+                            }}
+                            data-testid="input-income-self-employment-duration"
+                          />
+                        </div>
                       </div>
                         
                         {/* Business Address Row (copied from borrower residence address) */}
