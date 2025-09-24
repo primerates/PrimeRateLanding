@@ -141,7 +141,7 @@ export default function HeroSection() {
 
       {/* Top Right Menu Options - Sleek White Menu Bar */}
       <div className="absolute top-6 right-6 z-20 hidden lg:block">
-        <nav className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg px-1 py-1 group">
+        <nav className="group">
           <div className="flex items-center">
             <button 
               className="relative px-4 py-2 text-gray-600 hover:text-black font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px after:bg-green-500 after:transition-all after:duration-300 hover:after:w-full"
