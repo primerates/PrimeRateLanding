@@ -6872,7 +6872,13 @@ export default function AdminAddClient() {
                         <Checkbox
                           id="income-type-socialSecurity"
                           checked={form.watch('income.incomeTypes.socialSecurity') || false}
-                          onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.socialSecurity', !!checked, 'Social Security')}
+                          onCheckedChange={(checked) => {
+                            // Prevent unchecking - once checked, can only be removed via Remove button
+                            if (!checked && form.watch('income.incomeTypes.socialSecurity')) {
+                              return; // Do nothing - prevent unchecking
+                            }
+                            handleIncomeTypeChange('income.incomeTypes.socialSecurity', !!checked, 'Social Security');
+                          }}
                           data-testid="checkbox-socialSecurity"
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         />
@@ -6882,7 +6888,13 @@ export default function AdminAddClient() {
                         <Checkbox
                           id="income-type-vaBenefits"
                           checked={form.watch('income.incomeTypes.vaBenefits') || false}
-                          onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.vaBenefits', !!checked, 'VA Disability')}
+                          onCheckedChange={(checked) => {
+                            // Prevent unchecking - once checked, can only be removed via Remove button
+                            if (!checked && form.watch('income.incomeTypes.vaBenefits')) {
+                              return; // Do nothing - prevent unchecking
+                            }
+                            handleIncomeTypeChange('income.incomeTypes.vaBenefits', !!checked, 'VA Disability');
+                          }}
                           data-testid="checkbox-vaBenefits"
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         />
@@ -6892,7 +6904,13 @@ export default function AdminAddClient() {
                         <Checkbox
                           id="income-type-disability"
                           checked={form.watch('income.incomeTypes.disability') || false}
-                          onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.disability', !!checked, 'Disability')}
+                          onCheckedChange={(checked) => {
+                            // Prevent unchecking - once checked, can only be removed via Remove button
+                            if (!checked && form.watch('income.incomeTypes.disability')) {
+                              return; // Do nothing - prevent unchecking
+                            }
+                            handleIncomeTypeChange('income.incomeTypes.disability', !!checked, 'Disability');
+                          }}
                           data-testid="checkbox-disability"
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         />
