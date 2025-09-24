@@ -580,7 +580,19 @@ export default function AdminAddClient() {
   // Helper function to handle income type changes with warning
   const handleIncomeTypeChange = (fieldPath: string, checked: boolean, incomeTypeName: string, isCoBorrower = false) => {
     if (!checked) {
-      // Show warning when trying to uncheck/remove income type
+      // Special handling for employment - don't allow unchecking if cards already exist
+      if (incomeTypeName === 'Employment') {
+        const hasCards = isCoBorrower 
+          ? (coBorrowerEmployerCards || []).length > 0
+          : (borrowerEmployerCards || []).length > 0;
+        
+        if (hasCards) {
+          // Cards already exist, prevent unchecking - all removal must be done through card buttons
+          return;
+        }
+      }
+      
+      // Show warning when trying to uncheck/remove income type (for non-employment or when no cards exist)
       setConfirmRemovalDialog({
         isOpen: true,
         type: 'income',
