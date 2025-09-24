@@ -2185,12 +2185,20 @@ export default function AdminAddClient() {
   // Calculate total monthly income - optimized with useMemo
   const borrowerIncomeData = form.watch('income');
   const totalBorrowerIncome = useMemo(() => {
+    console.log('📊 Calculating borrower income total...', { borrowerIncomeData });
+    console.log('📊 Employers data:', borrowerIncomeData?.employers);
+    
     // Calculate total main employment income from all employer cards
     const employmentIncome = borrowerIncomeData?.employers && typeof borrowerIncomeData.employers === 'object'
       ? Object.values(borrowerIncomeData.employers).reduce((total, employer) => {
-          return total + (employer && typeof employer === 'object' ? parseMonetaryValue(employer.monthlyIncome) : 0);
+          console.log('📊 Processing employer:', employer);
+          const incomeValue = employer && typeof employer === 'object' ? parseMonetaryValue(employer.monthlyIncome) : 0;
+          console.log('📊 Income value:', incomeValue);
+          return total + incomeValue;
         }, 0)
       : parseMonetaryValue(borrowerIncomeData?.monthlyIncome); // fallback for backward compatibility
+    
+    console.log('📊 Employment income total:', employmentIncome);
     
     // Calculate total second employment income from all cards
     const secondEmploymentIncome = borrowerIncomeData?.secondEmployers && typeof borrowerIncomeData.secondEmployers === 'object'
@@ -7561,9 +7569,16 @@ export default function AdminAddClient() {
                             <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
                               <div className="space-y-2">
                                 <Label htmlFor={`${propertyId}-employerName`}>Employer Name</Label>
-                                <Input
-                                  id={`${propertyId}-employerName`}
-                                  data-testid={`input-${propertyId}-employerName`}
+                                <Controller
+                                  control={form.control}
+                                  name={getEmployerFieldPath(cardId, 'employerName')}
+                                  render={({ field }) => (
+                                    <Input
+                                      id={`${propertyId}-employerName`}
+                                      {...field}
+                                      data-testid={`input-${propertyId}-employerName`}
+                                    />
+                                  )}
                                 />
                               </div>
                               
@@ -7596,9 +7611,16 @@ export default function AdminAddClient() {
                               
                               <div className="space-y-2">
                                 <Label htmlFor={`${propertyId}-jobTitle`}>Job Title</Label>
-                                <Input
-                                  id={`${propertyId}-jobTitle`}
-                                  data-testid={`input-${propertyId}-jobTitle`}
+                                <Controller
+                                  control={form.control}
+                                  name={getEmployerFieldPath(cardId, 'jobTitle')}
+                                  render={({ field }) => (
+                                    <Input
+                                      id={`${propertyId}-jobTitle`}
+                                      {...field}
+                                      data-testid={`input-${propertyId}-jobTitle`}
+                                    />
+                                  )}
                                 />
                               </div>
                               
