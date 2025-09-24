@@ -6827,11 +6827,15 @@ export default function AdminAddClient() {
                                 <button
                                   type="button"
                                   onClick={() => openBusinessDescriptionDialog(cardId)}
-                                  className="text-blue-600 hover:text-blue-800 transition-colors ml-6"
+                                  className={`transition-colors ml-6 flex items-center justify-center w-4 h-4 rounded-full border ${
+                                    form.watch('income.businessDescription') 
+                                      ? 'bg-purple-500 border-purple-500 text-white hover:bg-purple-600' 
+                                      : 'text-blue-600 hover:text-blue-800 border-blue-600 hover:border-blue-800'
+                                  }`}
                                   data-testid="button-business-description-info"
                                   title="Add business description"
                                 >
-                                  <Info className="h-4 w-4" />
+                                  <span className="text-[10px] font-bold">D</span>
                                 </button>
                                 <button
                                   type="button"
