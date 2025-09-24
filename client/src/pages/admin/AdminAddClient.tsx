@@ -884,7 +884,8 @@ export default function AdminAddClient() {
     isOpen: boolean;
     cardId: string | null;
     currentValue: string;
-  }>({ isOpen: false, cardId: null, currentValue: '' });
+    type: 'borrower' | 'co-borrower';
+  }>({ isOpen: false, cardId: null, currentValue: '', type: 'borrower' });
   
   const [taxPreparerInput, setTaxPreparerInput] = useState('');
 
@@ -4235,18 +4236,42 @@ export default function AdminAddClient() {
     setTaxPreparerDialog({
       isOpen: true,
       cardId,
-      currentValue
+      currentValue,
+      type: 'borrower'
     });
   };
 
   const closeTaxPreparerDialog = () => {
-    setTaxPreparerDialog({ isOpen: false, cardId: null, currentValue: '' });
+    setTaxPreparerDialog({ isOpen: false, cardId: null, currentValue: '', type: 'borrower' });
     setTaxPreparerInput('');
   };
 
   const saveTaxPreparer = () => {
     if (taxPreparerDialog.cardId) {
-      form.setValue('income.taxesPreparedBy', taxPreparerInput, { shouldDirty: true });
+      // Clear the value if "Select" is chosen, otherwise save the value
+      const valueToSave = taxPreparerInput === 'Select' ? '' : taxPreparerInput;
+      form.setValue('income.taxesPreparedBy', valueToSave, { shouldDirty: true });
+      closeTaxPreparerDialog();
+    }
+  };
+
+  // Co-borrower Tax preparer popup handlers
+  const openCoBorrowerTaxPreparerDialog = (cardId: string) => {
+    const currentValue = form.getValues('coBorrowerIncome.taxesPreparedBy') || '';
+    setTaxPreparerInput(currentValue);
+    setTaxPreparerDialog({
+      isOpen: true,
+      cardId,
+      currentValue,
+      type: 'co-borrower'
+    });
+  };
+
+  const saveCoBorrowerTaxPreparer = () => {
+    if (taxPreparerDialog.cardId) {
+      // Clear the value if "Select" is chosen, otherwise save the value
+      const valueToSave = taxPreparerInput === 'Select' ? '' : taxPreparerInput;
+      form.setValue('coBorrowerIncome.taxesPreparedBy', valueToSave, { shouldDirty: true });
       closeTaxPreparerDialog();
     }
   };
@@ -9034,7 +9059,7 @@ export default function AdminAddClient() {
                                 </button>
                                 <button
                                   type="button"
-                                  onClick={() => openTaxPreparerDialog(cardId)}
+                                  onClick={() => openCoBorrowerTaxPreparerDialog(cardId)}
                                   className={`transition-colors ml-2 flex items-center justify-center w-4 h-4 rounded-full border ${
                                     form.watch('coBorrowerIncome.taxesPreparedBy') 
                                       ? 'bg-purple-500 border-purple-500 text-white hover:bg-purple-600' 
@@ -11413,6 +11438,7 @@ export default function AdminAddClient() {
                   <SelectValue placeholder="Select who prepares tax returns" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="Select">Select</SelectItem>
                   <SelectItem value="Borrower(s)">Borrower(s)</SelectItem>
                   <SelectItem value="Tax Preparer">Tax Preparer</SelectItem>
                   <SelectItem value="CPA">CPA</SelectItem>
@@ -11430,7 +11456,7 @@ export default function AdminAddClient() {
               Cancel
             </Button>
             <Button
-              onClick={saveTaxPreparer}
+              onClick={taxPreparerDialog.type === 'co-borrower' ? saveCoBorrowerTaxPreparer : saveTaxPreparer}
               className="bg-blue-600 hover:bg-blue-700 text-white"
               data-testid="button-tax-preparer-save"
             >
