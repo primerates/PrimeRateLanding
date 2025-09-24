@@ -8130,6 +8130,7 @@ export default function AdminAddClient() {
                             checked={form.watch('coBorrowerIncome.incomeTypes.employment') || false}
                             onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.employment', !!checked, 'Employment', true)}
                             data-testid="checkbox-coborrower-employment"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           />
                           <Label htmlFor="coBorrowerIncome-type-employment">Employment</Label>
                         </div>
@@ -8139,6 +8140,7 @@ export default function AdminAddClient() {
                             checked={form.watch('coBorrowerIncome.incomeTypes.secondEmployment') || false}
                             onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.secondEmployment', !!checked, 'Second Employment', true)}
                             data-testid="checkbox-coborrower-secondEmployment"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           />
                           <Label htmlFor="coBorrowerIncome-type-secondEmployment">Second Employment</Label>
                         </div>
@@ -8148,6 +8150,7 @@ export default function AdminAddClient() {
                             checked={form.watch('coBorrowerIncome.incomeTypes.selfEmployment') || false}
                             onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.selfEmployment', !!checked, 'Self-Employment', true)}
                             data-testid="checkbox-coborrower-selfEmployment"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           />
                           <Label htmlFor="coBorrowerIncome-type-selfEmployment">Self-Employment</Label>
                         </div>
@@ -8157,6 +8160,7 @@ export default function AdminAddClient() {
                             checked={form.watch('coBorrowerIncome.incomeTypes.pension') || false}
                             onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.pension', !!checked, 'Pension', true)}
                             data-testid="checkbox-coborrower-pension"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           />
                           <Label htmlFor="coBorrowerIncome-type-pension">Pension</Label>
                         </div>
@@ -8166,6 +8170,7 @@ export default function AdminAddClient() {
                             checked={form.watch('coBorrowerIncome.incomeTypes.socialSecurity') || false}
                             onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.socialSecurity', !!checked, 'Social Security', true)}
                             data-testid="checkbox-coborrower-socialSecurity"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           />
                           <Label htmlFor="coBorrowerIncome-type-socialSecurity">Social Security</Label>
                         </div>
@@ -8175,6 +8180,7 @@ export default function AdminAddClient() {
                             checked={form.watch('coBorrowerIncome.incomeTypes.vaBenefits') || false}
                             onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.vaBenefits', !!checked, 'VA Disability', true)}
                             data-testid="checkbox-coborrower-vaBenefits"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           />
                           <Label htmlFor="coBorrowerIncome-type-vaBenefits">VA Disability</Label>
                         </div>
@@ -8184,6 +8190,7 @@ export default function AdminAddClient() {
                             checked={form.watch('coBorrowerIncome.incomeTypes.disability') || false}
                             onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.disability', !!checked, 'Disability', true)}
                             data-testid="checkbox-coborrower-disability"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           />
                           <Label htmlFor="coBorrowerIncome-type-disability">Disability</Label>
                         </div>
@@ -8193,6 +8200,7 @@ export default function AdminAddClient() {
                             checked={form.watch('coBorrowerIncome.incomeTypes.other') || false}
                             onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.other', !!checked, 'Other', true)}
                             data-testid="checkbox-coborrower-other"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           />
                           <Label htmlFor="coBorrowerIncome-type-other">Other</Label>
                         </div>
