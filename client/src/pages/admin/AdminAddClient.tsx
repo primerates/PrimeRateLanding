@@ -5301,19 +5301,21 @@ export default function AdminAddClient() {
               <Button
                 onClick={handleScreenshare}
                 disabled={screenshareLoading}
+                size="sm"
                 className="bg-primary-foreground text-primary hover:bg-green-600 hover:text-white"
                 data-testid="button-screenshare"
               >
-                <Monitor className="h-4 w-4 mr-2" />
+                <Monitor className={`h-3 w-3 mr-2 transition-transform duration-500 ${screenshareLoading ? 'animate-spin' : ''}`} />
                 {screenshareLoading ? 'Starting...' : 'Screenshare'}
               </Button>
               <Button
                 onClick={form.handleSubmit(onSubmit)}
                 disabled={addClientMutation.isPending}
+                size="sm"
                 className="bg-white text-primary border hover:bg-green-600 hover:text-white"
                 data-testid="button-save-client"
               >
-                <Save className="h-4 w-4 mr-2" />
+                <Save className={`h-3 w-3 mr-2 transition-transform duration-500 ${addClientMutation.isPending ? 'rotate-180' : ''}`} />
                 {addClientMutation.isPending ? 'Saving...' : 'Save'}
               </Button>
             </div>
