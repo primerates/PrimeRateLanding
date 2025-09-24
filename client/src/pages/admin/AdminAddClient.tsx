@@ -422,26 +422,6 @@ export default function AdminAddClient() {
   };
 
   // Handler for co-borrower prior employer ZIP code lookup
-  const handleCoBorrowerPriorEmployerZipCodeLookup = async (zipCode: string) => {
-    if (!zipCode || zipCode.length < 5) {
-      setCoBorrowerPriorEmployerCountyOptions([]);
-      return;
-    }
-    
-    setCountyLookupLoading(prev => ({...prev, coBorrowerPriorEmployer: true}));
-    const counties = await lookupCountyFromZip(zipCode);
-    
-    if (counties.length === 1) {
-      form.setValue('coBorrowerIncome.priorEmployerAddress.county', counties[0].label, { shouldDirty: true });
-      setCoBorrowerPriorEmployerCountyOptions([]);
-    } else if (counties.length > 1) {
-      setCoBorrowerPriorEmployerCountyOptions(counties);
-    } else {
-      setCoBorrowerPriorEmployerCountyOptions([]);
-    }
-    
-    setCountyLookupLoading(prev => ({...prev, coBorrowerPriorEmployer: false}));
-  };
 
   // Handler for co-borrower second employer ZIP code lookup
   const handleCoBorrowerSecondEmployerZipCodeLookup = async (zipCode: string) => {
@@ -645,35 +625,6 @@ export default function AdminAddClient() {
   // Function to remove borrower first prior employer
 
   // Function to remove co-borrower first prior employer
-  const removeCoBorrowerPriorEmployer = () => {
-    setConfirmRemovalDialog({
-      isOpen: true,
-      type: 'prior-employer',
-      itemType: 'coborrower-first-prior',
-      onConfirm: () => {
-        // Clear all co-borrower first prior employer fields
-        form.setValue('coBorrowerIncome.priorEmployerName', '');
-        form.setValue('coBorrowerIncome.priorEmployerPhone', '');
-        form.setValue('coBorrowerIncome.priorEmploymentVerificationPhone', '');
-        form.setValue('coBorrowerIncome.priorIsShowingEmploymentVerification', false);
-        form.setValue('coBorrowerIncome.priorJobTitle', '');
-        form.setValue('coBorrowerIncome.priorMonthlyIncome', '');
-        form.setValue('coBorrowerIncome.priorMonthlyBonusIncome', '');
-        form.setValue('coBorrowerIncome.priorAnnualBonusIncome', '');
-        form.setValue('coBorrowerIncome.priorEmploymentType', '');
-        form.setValue('coBorrowerIncome.priorYearsEmployedYears', '');
-        form.setValue('coBorrowerIncome.priorYearsEmployedMonths', '');
-        form.setValue('coBorrowerIncome.priorEmployerAddress.street', '');
-        form.setValue('coBorrowerIncome.priorEmployerAddress.unit', '');
-        form.setValue('coBorrowerIncome.priorEmployerAddress.city', '');
-        form.setValue('coBorrowerIncome.priorEmployerAddress.state', '');
-        form.setValue('coBorrowerIncome.priorEmployerAddress.zip', '');
-        form.setValue('coBorrowerIncome.priorEmployerAddress.county', '');
-        form.setValue('coBorrowerIncome.priorEmployerRemote', '');
-        setConfirmRemovalDialog({ isOpen: false, type: null });
-      }
-    });
-  };
 
   // Function to remove co-borrower second prior employer
 
@@ -710,7 +661,6 @@ export default function AdminAddClient() {
 
   // Co-Borrower income collapsible state
   const [isCoBorrowerEmploymentIncomeOpen, setIsCoBorrowerEmploymentIncomeOpen] = useState(false);
-  const [isCoBorrowerPriorEmploymentIncomeOpen, setIsCoBorrowerPriorEmploymentIncomeOpen] = useState(false);
   const [isCoBorrowerSecondEmploymentIncomeOpen, setIsCoBorrowerSecondEmploymentIncomeOpen] = useState(false);
   const [isCoBorrowerSelfEmploymentIncomeOpen, setIsCoBorrowerSelfEmploymentIncomeOpen] = useState(false);
   const [isCoBorrowerSocialSecurityIncomeOpen, setIsCoBorrowerSocialSecurityIncomeOpen] = useState(false);
@@ -884,7 +834,6 @@ export default function AdminAddClient() {
   const [borrowerPriorEmployerCountyOptions, setBorrowerPriorEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
   const [borrowerSecondEmployerCountyOptions, setBorrowerSecondEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
   const [coBorrowerEmployerCountyOptions, setCoBorrowerEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
-  const [coBorrowerPriorEmployerCountyOptions, setCoBorrowerPriorEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
   const [coBorrowerSecondEmployerCountyOptions, setCoBorrowerSecondEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
   
   const [countyLookupLoading, setCountyLookupLoading] = useState<{
@@ -896,7 +845,7 @@ export default function AdminAddClient() {
     borrowerPriorEmployer: boolean,
     borrowerSecondEmployer: boolean,
     coBorrowerEmployer: boolean,
-    coBorrowerPriorEmployer: boolean,
+    
     coBorrowerSecondEmployer: boolean
   }>({
     borrower: false, 
@@ -907,7 +856,7 @@ export default function AdminAddClient() {
     borrowerPriorEmployer: false,
     borrowerSecondEmployer: false,
     coBorrowerEmployer: false,
-    coBorrowerPriorEmployer: false,
+    
     coBorrowerSecondEmployer: false
   });
 
@@ -8092,284 +8041,6 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
-              {/* Co-Borrower Prior Employment - Show if less than 2 years at current employment */}
-              {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.employment') && (() => {
-                // Check if showing months or years based on toggle state
-                if (isCoBorrowerShowingMonthsEmployed) {
-                  const monthsValue = form.watch('coBorrowerIncome.yearsEmployedMonths') || '';
-                  const months = parseInt(monthsValue);
-                  return monthsValue !== '' && !isNaN(months) && months < 24;
-                } else {
-                  const yearsValue = form.watch('coBorrowerIncome.yearsEmployedYears') || '';
-                  const years = parseInt(yearsValue);
-                  return yearsValue !== '' && !isNaN(years) && years < 2;
-                }
-              })() && (
-                <Card>
-                  <Collapsible open={isCoBorrowerPriorEmploymentIncomeOpen} onOpenChange={setIsCoBorrowerPriorEmploymentIncomeOpen}>
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle>Co-Borrower - Prior Employer</CardTitle>
-                        <div className="flex items-center gap-2">
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8 text-black hover:bg-orange-500 hover:text-white border border-gray-300"
-                                onClick={removeCoBorrowerPriorEmployer}
-                                data-testid="button-delete-coborrower-prior-employer"
-                                title="Delete Prior Employer"
-                              >
-                                X
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Delete Prior Employer</p>
-                            </TooltipContent>
-                          </Tooltip>
-                          <CollapsibleTrigger asChild>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="hover:bg-orange-500 hover:text-white" 
-                              data-testid="button-toggle-coborrower-prior-employment-income"
-                              title={isCoBorrowerPriorEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
-                              key={`coborrower-prior-employment-income-${isCoBorrowerPriorEmploymentIncomeOpen}`}
-                            >
-                              {isCoBorrowerPriorEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                            </Button>
-                          </CollapsibleTrigger>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CollapsibleContent>
-                      <CardContent>
-                        <div className="space-y-6">
-                          {/* Co-Borrower Prior Employment Information - Single Row */}
-                          <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-priorEmployerName">Employer Name</Label>
-                              <Input
-                                id="coBorrowerIncome-priorEmployerName"
-                                {...form.register('coBorrowerIncome.priorEmployerName')}
-                                data-testid="input-coborrowerIncome-priorEmployerName"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <div className="flex items-center justify-between mb-2">
-                                <Label htmlFor="coBorrowerIncome-prior-employer-phone" className="text-xs">
-                                  {form.watch('coBorrowerIncome.priorIsShowingEmploymentVerification') ? 'Employment Verification' : 'Employer Phone'}
-                                </Label>
-                                <Switch
-                                  checked={form.watch('coBorrowerIncome.priorIsShowingEmploymentVerification') || false}
-                                  onCheckedChange={(checked) => form.setValue('coBorrowerIncome.priorIsShowingEmploymentVerification', checked)}
-                                  data-testid="toggle-coborrower-prior-employment-verification"
-                                />
-                              </div>
-                              <Input
-                                id="coBorrowerIncome-prior-employer-phone"
-                                placeholder="(XXX) XXX-XXXX"
-                                value={form.watch('coBorrowerIncome.priorIsShowingEmploymentVerification') 
-                                  ? (form.watch('coBorrowerIncome.priorEmploymentVerificationPhone') || '')
-                                  : (form.watch('coBorrowerIncome.priorEmployerPhone') || '')}
-                                onChange={(e) => {
-                                  const fieldName = form.watch('coBorrowerIncome.priorIsShowingEmploymentVerification') 
-                                    ? 'coBorrowerIncome.priorEmploymentVerificationPhone'
-                                    : 'coBorrowerIncome.priorEmployerPhone';
-                                  handlePhoneChange(fieldName, e.target.value);
-                                }}
-                                data-testid="input-coBorrowerIncome-prior-employer-phone"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-priorJobTitle">Job Title</Label>
-                              <Input
-                                id="coBorrowerIncome-priorJobTitle"
-                                {...form.register('coBorrowerIncome.priorJobTitle')}
-                                data-testid="input-coborrowerIncome-priorJobTitle"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-priorMonthlyIncome">Gross Monthly Income</Label>
-                              <Controller
-                                control={form.control}
-                                name="coBorrowerIncome.priorMonthlyIncome"
-                                render={({ field }) => (
-                                  <Input
-                                    id="coBorrowerIncome-priorMonthlyIncome"
-                                    value={formatDollarDisplay(field.value)}
-                                    onChange={(e) => {
-                                      const rawValue = parseDollarInput(e.target.value);
-                                      field.onChange(rawValue);
-                                    }}
-                                    placeholder="$0.00"
-                                    data-testid="input-coborrowerIncome-priorMonthlyIncome"
-                                  />
-                                )}
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <div className="flex items-center justify-between mb-2">
-                                <Label htmlFor="coBorrowerIncome-prior-bonusIncome" className="text-sm">
-                                  {isCoBorrowerShowingAnnualBonus ? 'Annual Bonus' : 'Monthly Bonus'}
-                                </Label>
-                                <Switch
-                                  checked={isCoBorrowerShowingAnnualBonus}
-                                  onCheckedChange={setIsCoBorrowerShowingAnnualBonus}
-                                  data-testid="toggle-coBorrowerIncome-prior-bonus"
-                                />
-                              </div>
-                              <Controller
-                                control={form.control}
-                                name={isCoBorrowerShowingAnnualBonus ? 'coBorrowerIncome.priorAnnualBonusIncome' : 'coBorrowerIncome.priorMonthlyBonusIncome'}
-                                render={({ field }) => (
-                                  <Input
-                                    id="coBorrowerIncome-prior-bonusIncome"
-                                    value={formatDollarDisplay(field.value)}
-                                    onChange={(e) => {
-                                      const rawValue = parseDollarInput(e.target.value);
-                                      field.onChange(rawValue);
-                                    }}
-                                    placeholder="$0.00"
-                                    data-testid="input-coBorrowerIncome-prior-bonusIncome"
-                                  />
-                                )}
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-priorEmploymentType">Full-Time / Part-Time</Label>
-                              <Select
-                                value={form.watch('coBorrowerIncome.priorEmploymentType') || ''}
-                                onValueChange={(value) => form.setValue('coBorrowerIncome.priorEmploymentType', value as any)}
-                              >
-                                <SelectTrigger data-testid="select-coBorrowerIncome-priorEmploymentType">
-                                  <SelectValue placeholder="Select type" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
-                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <div className="flex items-center justify-between mb-2">
-                                <Label htmlFor="coBorrowerIncome-prior-employment-duration" className="text-sm">
-                                  {isCoBorrowerShowingMonthsEmployed ? 'Months Employed' : 'Years Employed'}
-                                </Label>
-                                <Switch
-                                  checked={isCoBorrowerShowingMonthsEmployed}
-                                  onCheckedChange={setIsCoBorrowerShowingMonthsEmployed}
-                                  data-testid="toggle-coBorrowerIncome-prior-employment-duration"
-                                />
-                              </div>
-                              <Input
-                                id="coBorrowerIncome-prior-employment-duration"
-                                type="number"
-                                min="0"
-                                max={isCoBorrowerShowingMonthsEmployed ? "999" : "99"}
-                                {...form.register(isCoBorrowerShowingMonthsEmployed ? 'coBorrowerIncome.priorYearsEmployedMonths' : 'coBorrowerIncome.priorYearsEmployedYears')}
-                                placeholder={isCoBorrowerShowingMonthsEmployed ? "Enter Months" : "Enter Years"}
-                                data-testid="input-coBorrowerIncome-prior-employment-duration"
-                              />
-                            </div>
-                          </div>
-                          
-                          {/* Employer Address Row (standardized format) */}
-                          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                            <div className="space-y-2 md:col-span-3">
-                              <Label htmlFor="coBorrowerIncome-prior-employer-street">Street Address</Label>
-                              <Input
-                                id="coBorrowerIncome-prior-employer-street"
-                                {...form.register('coBorrowerIncome.priorEmployerAddress.street')}
-                                data-testid="input-coBorrowerIncome-prior-employer-street"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-1">
-                              <Label htmlFor="coBorrowerIncome-prior-employer-unit">Unit/Suite</Label>
-                              <Input
-                                id="coBorrowerIncome-prior-employer-unit"
-                                {...form.register('coBorrowerIncome.priorEmployerAddress.unit')}
-                                data-testid="input-coBorrowerIncome-prior-employer-unit"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="coBorrowerIncome-prior-employer-city">City</Label>
-                              <Input
-                                id="coBorrowerIncome-prior-employer-city"
-                                {...form.register('coBorrowerIncome.priorEmployerAddress.city')}
-                                data-testid="input-coBorrowerIncome-prior-employer-city"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-1">
-                              <Label htmlFor="coBorrowerIncome-prior-employer-state">State</Label>
-                              <Select
-                                value={form.watch('coBorrowerIncome.priorEmployerAddress.state') || ''}
-                                onValueChange={(value) => form.setValue('coBorrowerIncome.priorEmployerAddress.state', value)}
-                              >
-                                <SelectTrigger data-testid="select-coBorrowerIncome-prior-employer-state">
-                                  <SelectValue placeholder="State" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {US_STATES.map((state) => (
-                                    <SelectItem key={state.value} value={state.value}>
-                                      {state.value}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-1">
-                              <Label htmlFor="coBorrowerIncome-prior-employer-zip">ZIP Code</Label>
-                              <Input
-                                id="coBorrowerIncome-prior-employer-zip"
-                                {...form.register('coBorrowerIncome.priorEmployerAddress.zip')}
-                                data-testid="input-coBorrowerIncome-prior-employer-zip"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="coBorrowerIncome-prior-employer-county">County</Label>
-                              <Input
-                                id="coBorrowerIncome-prior-employer-county"
-                                {...form.register('coBorrowerIncome.priorEmployerAddress.county')}
-                                data-testid="input-coBorrowerIncome-prior-employer-county"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="coBorrowerIncome-prior-employer-remote">Remote Job</Label>
-                              <Select
-                                value={form.watch('coBorrowerIncome.priorEmployerRemote') || ''}
-                                onValueChange={(value) => form.setValue('coBorrowerIncome.priorEmployerRemote', value)}
-                              >
-                                <SelectTrigger data-testid="select-coBorrowerIncome-prior-employer-remote">
-                                  <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="Select">Select</SelectItem>
-                                  <SelectItem value="Yes">Yes</SelectItem>
-                                  <SelectItem value="No">No</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </CollapsibleContent>
-                  </Collapsible>
-                </Card>
-              )}
 
 
               {/* Co-Borrower Second Employment Income Card */}
