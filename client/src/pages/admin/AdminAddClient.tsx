@@ -11130,6 +11130,39 @@ export default function AdminAddClient() {
         </AlertDialogContent>
       </AlertDialog>
 
+      {/* Delete Co-Borrower Employer Confirmation Dialog */}
+      <AlertDialog open={deleteCoBorrowerEmployerDialog.isOpen} onOpenChange={(open) => !open && setDeleteCoBorrowerEmployerDialog({ isOpen: false, cardId: '' })}>
+        <AlertDialogContent data-testid="dialog-delete-coborrower-employer">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Co-Borrower Employer Card</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this co-borrower employer card? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteCoBorrowerEmployerDialog({ isOpen: false, cardId: '' })}
+              data-testid="button-cancel-delete-coborrower-employer"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                const cardToDelete = deleteCoBorrowerEmployerDialog.cardId;
+                setCoBorrowerEmployerCards(prev => prev.filter(id => 
+                  cardToDelete === 'coborrower-template-card' ? id !== 'default' : id !== cardToDelete
+                ));
+                setDeleteCoBorrowerEmployerDialog({ isOpen: false, cardId: '' });
+              }}
+              data-testid="button-confirm-delete-coborrower-employer"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* Current Loan 1 Preview Modal */}
       <Dialog open={isCurrentLoanPreviewOpen} onOpenChange={setIsCurrentLoanPreviewOpen}>
         <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto" data-testid="dialog-current-loan-preview">
