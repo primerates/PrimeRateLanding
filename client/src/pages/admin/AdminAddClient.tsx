@@ -6838,7 +6838,7 @@ export default function AdminAddClient() {
                                   onClick={() => openTaxPreparerDialog(cardId)}
                                   className={`transition-colors ml-2 flex items-center justify-center w-4 h-4 rounded-full border ${
                                     form.watch('income.taxesPreparedBy') 
-                                      ? 'bg-blue-600 border-blue-600 text-white hover:bg-blue-700' 
+                                      ? 'bg-purple-500 border-purple-500 text-white hover:bg-purple-600' 
                                       : 'text-blue-600 hover:text-blue-800 border-blue-600 hover:border-blue-800'
                                   }`}
                                   data-testid="button-tax-preparer-info"
