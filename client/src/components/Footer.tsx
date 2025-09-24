@@ -20,9 +20,6 @@ export default function Footer() {
               <p className="text-primary-foreground/80" data-testid="text-footer-address">
                 123 Main Street, Delray Beach, FL 33445
               </p>
-              <p className="text-sm text-primary-foreground/70" data-testid="text-footer-equal-housing">
-                Equal Housing Lender | Equal Opportunity Employer
-              </p>
             </div>
           </div>
         </div>
@@ -33,7 +30,7 @@ export default function Footer() {
           <p className="text-sm text-primary-foreground/70" data-testid="text-footer-copyright">
             © 2025 Prime Rate Home Loans. All rights reserved. NMLS #123456
           </p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
+          <div className="flex flex-wrap gap-x-6 gap-y-2 mt-4 md:mt-0">
             {[
               'Privacy Policy',
               'Terms of Service'
@@ -51,6 +48,9 @@ export default function Footer() {
                 {link}
               </a>
             ))}
+            <span className="text-sm text-primary-foreground/70" data-testid="text-footer-equal-housing">
+              Equal Housing Lender | Equal Opportunity Employer
+            </span>
           </div>
         </div>
       </div>

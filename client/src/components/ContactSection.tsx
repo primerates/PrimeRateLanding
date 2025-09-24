@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,32 @@ import { Phone, Mail, MapPin, Clock, X, Send } from 'lucide-react';
 import PreApprovalForm from '@/components/PreApprovalForm';
 
 export default function ContactSection() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Animate both ways - slide down when entering, slide up when leaving
+        setIsVisible(entry.isIntersecting);
+      },
+      {
+        threshold: 0.3, // Trigger when 30% of the section is visible
+        rootMargin: '-100px 0px' // Start animation 100px before the section comes into view
+      }
+    );
+
+    const section = document.getElementById('contact-section');
+    if (section) {
+      observer.observe(section);
+    }
+
+    return () => {
+      if (section) {
+        observer.unobserve(section);
+      }
+    };
+  }, []);
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -185,10 +211,17 @@ export default function ContactSection() {
   };
 
   return (
-    <section className="py-16 bg-primary/5">
+    <section id="contact-section" className="py-16 bg-primary/5">
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold font-serif mb-4" data-testid="text-contact-title">
+          <h2 
+            className={`text-3xl lg:text-4xl font-bold font-serif mb-4 transition-all duration-1000 ease-out ${
+              isVisible 
+                ? 'translate-y-0 opacity-100' 
+                : '-translate-y-12 opacity-0'
+            }`}
+            data-testid="text-contact-title"
+          >
             Say Hello & Save More
           </h2>
           <p className="text-lg text-muted-foreground" data-testid="text-contact-description">
