@@ -2237,21 +2237,12 @@ export default function AdminAddClient() {
   const borrowerEmployersData = form.watch('income.employers');
   const defaultEmployerIncome = form.watch('income.employers.default.monthlyIncome');
   const totalBorrowerIncome = useMemo(() => {
-    console.log('📊 Calculating borrower income total...', { borrowerIncomeData });
-    console.log('📊 Employers data:', borrowerIncomeData?.employers);
-    console.log('📊 Form values for employers:', form.getValues('income.employers'));
-    
     // Calculate total main employment income from all employer cards
     const employmentIncome = borrowerIncomeData?.employers && typeof borrowerIncomeData.employers === 'object'
       ? Object.values(borrowerIncomeData.employers).reduce((total, employer) => {
-          console.log('📊 Processing employer:', employer);
-          const incomeValue = employer && typeof employer === 'object' ? parseMonetaryValue(employer.monthlyIncome) : 0;
-          console.log('📊 Income value:', incomeValue);
-          return total + incomeValue;
+          return total + (employer && typeof employer === 'object' ? parseMonetaryValue(employer.monthlyIncome) : 0);
         }, 0)
       : parseMonetaryValue(borrowerIncomeData?.monthlyIncome); // fallback for backward compatibility
-    
-    console.log('📊 Employment income total:', employmentIncome);
     
     // Calculate total second employment income from all cards
     const secondEmploymentIncome = borrowerIncomeData?.secondEmployers && typeof borrowerIncomeData.secondEmployers === 'object'
@@ -2286,6 +2277,8 @@ export default function AdminAddClient() {
 
   // Calculate co-borrower income - optimized with useMemo
   const coBorrowerIncomeData = form.watch('coBorrowerIncome');
+  const coBorrowerEmployersData = form.watch('coBorrowerIncome.employers');
+  const defaultCoBorrowerEmployerIncome = form.watch('coBorrowerIncome.employers.default.monthlyIncome');
   const totalCoBorrowerIncome = useMemo(() => {
     // Calculate total co-borrower main employment income from all employer cards
     const employmentIncome = coBorrowerIncomeData?.employers && typeof coBorrowerIncomeData.employers === 'object'
@@ -2316,9 +2309,12 @@ export default function AdminAddClient() {
                   disabilityIncome + otherIncome;
     
     return total;
-  }, [coBorrowerIncomeData]);
+  }, [coBorrowerIncomeData, coBorrowerEmployersData, defaultCoBorrowerEmployerIncome]);
   
-
+  const totalCoBorrowerIncomeFormatted = useMemo(() => 
+    `$${totalCoBorrowerIncome.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`,
+    [totalCoBorrowerIncome]
+  );
 
   // Current Loan auto sum now handled by isolated TotalCurrentLoanPayment component
 
@@ -7689,7 +7685,6 @@ export default function AdminAddClient() {
                                       value={formatDollarDisplay(field.value || '')}
                                       onChange={(e) => {
                                         const rawValue = parseDollarInput(e.target.value);
-                                        console.log('📊 Monthly income onChange:', { rawValue, fieldPath: getEmployerFieldPath(cardId, 'monthlyIncome') });
                                         field.onChange(rawValue);
                                       }}
                                       placeholder="$0.00"
@@ -8194,7 +8189,7 @@ export default function AdminAddClient() {
                 <Card className="border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
                   <CardHeader>
                     <CardTitle>
-                      Co-Borrower Income
+                      {totalCoBorrowerIncomeFormatted} - Co-Borrower Income
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
