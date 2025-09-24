@@ -7982,8 +7982,325 @@ export default function AdminAddClient() {
               )}
 
               {/* Co-Borrower Employment Income Card */}
+              {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.employment') && (coBorrowerEmployerCards || ['default']).map((cardId, index) => {
+                const propertyId = cardId === 'default' ? 'coborrower-template-card' : cardId;
+                const isOpen = propertyCardStates[propertyId] ?? false;
+                
+                return (
+                  <Card key={cardId} className="border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
+                    <Collapsible 
+                      open={isOpen} 
+                      onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
+                    >
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-8">
+                            <CardTitle className="flex items-center gap-2">
+                              Co-Borrower Employer
+                            </CardTitle>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {/* Add Employer Button */}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                const newId = `coborrower-employer-${Date.now()}`;
+                                setCoBorrowerEmployerCards(prev => [...(prev || ['default']), newId]);
+                              }}
+                              className="hover:bg-blue-500 hover:text-white"
+                              data-testid="button-add-coborrower-employer"
+                              title="Add New Employer"
+                            >
+                              <Plus className="h-4 w-4 mr-2" />
+                              Add Employer
+                            </Button>
+                            
+                            {/* Delete Employer Button - only show if more than 1 card */}
+                            {(coBorrowerEmployerCards || []).length > 1 && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setDeleteCoBorrowerEmployerDialog({ isOpen: true, cardId: propertyId })}
+                                className="hover:bg-red-500 hover:text-white"
+                                data-testid="button-delete-coborrower-employer"
+                                title="Delete Employer"
+                              >
+                                <Minus className="h-4 w-4 mr-2" />
+                                Remove
+                              </Button>
+                            )}
+                            
+                            <CollapsibleTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="hover:bg-orange-500 hover:text-white" 
+                                data-testid={`button-toggle-coborrower-income-property-${propertyId}`}
+                                title={isOpen ? 'Minimize' : 'Expand'}
+                                key={`coborrower-income-property-toggle-${propertyId}-${isOpen}`}
+                              >
+                                {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      
+                      <CollapsibleContent>
+                        <CardContent>
+                          <div className="space-y-6">
+                            {/* Employment Type Selection */}
+                            <Card className="bg-muted">
+                              <CardContent className="pt-6">
+                                <div className="space-y-3">
+                                  <div className="flex gap-4">
+                                    <div className="flex items-center space-x-2">
+                                      <input
+                                        type="radio"
+                                        id={`coborrower-employment-current-${propertyId}`}
+                                        name={`coborrower-employment-type-${propertyId}`}
+                                        data-testid={`radio-coborrower-employment-current-${propertyId}`}
+                                      />
+                                      <Label htmlFor={`coborrower-employment-current-${propertyId}`}>Current Employer</Label>
+                                    </div>
+                                    
+                                    <div className="flex items-center space-x-2">
+                                      <input
+                                        type="radio"
+                                        id={`coborrower-employment-prior-${propertyId}`}
+                                        name={`coborrower-employment-type-${propertyId}`}
+                                        data-testid={`radio-coborrower-employment-prior-${propertyId}`}
+                                      />
+                                      <Label htmlFor={`coborrower-employment-prior-${propertyId}`}>Prior Employer</Label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
 
+                            {/* Employment Information - Single Row */}
+                            <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
+                              <div className="space-y-2">
+                                <Label htmlFor={`${propertyId}-coborrower-employerName`}>Employer Name</Label>
+                                <Input
+                                  id={`${propertyId}-coborrower-employerName`}
+                                  data-testid={`input-${propertyId}-coborrower-employerName`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between mb-2">
+                                  <Label htmlFor={`${propertyId}-coborrower-employer-phone`} className="text-xs">
+                                    {form.watch('coBorrowerIncome.isShowingEmploymentVerification') ? 'Job Verification' : 'Employer Phone'}
+                                  </Label>
+                                  <Switch
+                                    checked={form.watch('coBorrowerIncome.isShowingEmploymentVerification') || false}
+                                    onCheckedChange={(checked) => form.setValue('coBorrowerIncome.isShowingEmploymentVerification', checked)}
+                                    data-testid={`toggle-${propertyId}-coborrower-employment-verification`}
+                                  />
+                                </div>
+                                <Input
+                                  id={`${propertyId}-coborrower-employer-phone`}
+                                  placeholder="(XXX) XXX-XXXX"
+                                  value={form.watch('coBorrowerIncome.isShowingEmploymentVerification') 
+                                    ? (form.watch('coBorrowerIncome.employmentVerificationPhone') || '')
+                                    : (form.watch('coBorrowerIncome.employerPhone') || '')}
+                                  onChange={(e) => {
+                                    const fieldName = form.watch('coBorrowerIncome.isShowingEmploymentVerification') 
+                                      ? 'coBorrowerIncome.employmentVerificationPhone'
+                                      : 'coBorrowerIncome.employerPhone';
+                                    handlePhoneChange(fieldName, e.target.value);
+                                  }}
+                                  data-testid={`input-${propertyId}-coborrower-employer-phone`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`${propertyId}-coborrower-jobTitle`}>Job Title</Label>
+                                <Input
+                                  id={`${propertyId}-coborrower-jobTitle`}
+                                  data-testid={`input-${propertyId}-coborrower-jobTitle`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`${propertyId}-coborrower-monthlyIncome`}>Gross Monthly Income</Label>
+                                <Controller
+                                  control={form.control}
+                                  name="coBorrowerIncome.monthlyIncome"
+                                  render={({ field }) => (
+                                    <Input
+                                      id={`${propertyId}-coborrower-monthlyIncome`}
+                                      value={formatDollarDisplay(field.value)}
+                                      onChange={(e) => {
+                                        const rawValue = parseDollarInput(e.target.value);
+                                        field.onChange(rawValue);
+                                      }}
+                                      placeholder="$0.00"
+                                      data-testid={`input-${propertyId}-coborrower-monthlyIncome`}
+                                    />
+                                  )}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`${propertyId}-coborrower-startDate`}>Start Date</Label>
+                                <Input
+                                  id={`${propertyId}-coborrower-startDate`}
+                                  type="date"
+                                  value={employmentDates[propertyId]?.startDate || ''}
+                                  onChange={(e) => {
+                                    const startDate = e.target.value;
+                                    const currentData = employmentDates[propertyId] || { endDate: '', isPresent: false, duration: '' };
+                                    updateEmploymentDuration(propertyId, startDate, currentData.endDate, currentData.isPresent);
+                                  }}
+                                  placeholder="MM/DD/YYYY"
+                                  data-testid={`input-${propertyId}-coborrower-startDate`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between mb-2">
+                                  <Label htmlFor={`${propertyId}-coborrower-endDate`} className="text-sm">
+                                    {employmentDates[propertyId]?.isPresent ? 'Present' : 'End Date'}
+                                  </Label>
+                                  <Switch
+                                    checked={employmentDates[propertyId]?.isPresent || false}
+                                    onCheckedChange={(checked) => {
+                                      const currentData = employmentDates[propertyId] || { startDate: '', endDate: '', duration: '' };
+                                      updateEmploymentDuration(propertyId, currentData.startDate, currentData.endDate, checked);
+                                    }}
+                                    data-testid={`toggle-${propertyId}-coborrower-present`}
+                                  />
+                                </div>
+                                <Input
+                                  id={`${propertyId}-coborrower-endDate`}
+                                  type={employmentDates[propertyId]?.isPresent ? 'text' : 'date'}
+                                  value={employmentDates[propertyId]?.isPresent ? 'present' : (employmentDates[propertyId]?.endDate || '')}
+                                  onChange={(e) => {
+                                    if (!employmentDates[propertyId]?.isPresent) {
+                                      const endDate = e.target.value;
+                                      const currentData = employmentDates[propertyId] || { startDate: '', isPresent: false, duration: '' };
+                                      updateEmploymentDuration(propertyId, currentData.startDate, endDate, currentData.isPresent);
+                                    }
+                                  }}
+                                  placeholder={employmentDates[propertyId]?.isPresent ? 'Present' : 'MM/DD/YYYY'}
+                                  readOnly={employmentDates[propertyId]?.isPresent}
+                                  className={employmentDates[propertyId]?.isPresent ? 'bg-muted' : ''}
+                                  data-testid={`input-${propertyId}-coborrower-endDate`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`${propertyId}-coborrower-employment-duration`}>Employment Duration</Label>
+                                <Input
+                                  id={`${propertyId}-coborrower-employment-duration`}
+                                  value={employmentDates[propertyId]?.duration || ''}
+                                  placeholder={employmentDates[propertyId]?.isPresent ? 'Enter' : '0'}
+                                  readOnly={!employmentDates[propertyId]?.isPresent}
+                                  className={!employmentDates[propertyId]?.isPresent ? 'bg-muted' : ''}
+                                  onChange={(e) => {
+                                    if (employmentDates[propertyId]?.isPresent) {
+                                      const currentData = employmentDates[propertyId] || { startDate: '', endDate: '', isPresent: false };
+                                      setEmploymentDates(prev => ({
+                                        ...prev,
+                                        [propertyId]: {
+                                          ...currentData,
+                                          duration: e.target.value
+                                        }
+                                      }));
+                                    }
+                                  }}
+                                  data-testid={`input-${propertyId}-coborrower-employment-duration`}
+                                />
+                              </div>
+                            </div>
 
+                            {/* Employer Address Row */}
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                              <div className="space-y-2 md:col-span-3">
+                                <Label htmlFor="coborrower-template-employer-street">Street Address</Label>
+                                <Input
+                                  id="coborrower-template-employer-street"
+                                  data-testid="input-coborrower-template-employer-street"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor="coborrower-template-employer-unit">Unit/Suite</Label>
+                                <Input
+                                  id="coborrower-template-employer-unit"
+                                  data-testid="input-coborrower-template-employer-unit"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor="coborrower-template-employer-city">City</Label>
+                                <Input
+                                  id="coborrower-template-employer-city"
+                                  data-testid="input-coborrower-template-employer-city"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor="coborrower-template-employer-state">State</Label>
+                                <Select
+                                  value=""
+                                  onValueChange={() => {}}
+                                >
+                                  <SelectTrigger data-testid="select-coborrower-template-employer-state">
+                                    <SelectValue placeholder="State" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {US_STATES.map((state) => (
+                                      <SelectItem key={state.value} value={state.value}>
+                                        {state.value}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor="coborrower-template-employer-zip">ZIP Code</Label>
+                                <Input
+                                  id="coborrower-template-employer-zip"
+                                  data-testid="input-coborrower-template-employer-zip"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor="coborrower-template-employer-county">County</Label>
+                                <Input
+                                  id="coborrower-template-employer-county"
+                                  data-testid="input-coborrower-template-employer-county"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor="coborrower-template-employer-employment-type">Full-Time / Part-Time</Label>
+                                <Select
+                                  value=""
+                                  onValueChange={() => {}}
+                                >
+                                  <SelectTrigger data-testid="select-coborrower-template-employer-employment-type">
+                                    <SelectValue placeholder="Select type" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="Full-Time">Full-Time</SelectItem>
+                                    <SelectItem value="Part-Time">Part-Time</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  </Card>
+                );
+              })}
 
               {/* Co-Borrower Second Employment Income Card */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.secondEmployment') && (
