@@ -875,7 +875,8 @@ export default function AdminAddClient() {
     isOpen: boolean;
     cardId: string | null;
     currentValue: string;
-  }>({ isOpen: false, cardId: null, currentValue: '' });
+    type: 'borrower' | 'co-borrower';
+  }>({ isOpen: false, cardId: null, currentValue: '', type: 'borrower' });
   
   const [businessDescriptionInput, setBusinessDescriptionInput] = useState('');
   
@@ -4213,18 +4214,38 @@ export default function AdminAddClient() {
     setBusinessDescriptionDialog({
       isOpen: true,
       cardId,
-      currentValue
+      currentValue,
+      type: 'borrower'
     });
   };
 
   const closeBusinessDescriptionDialog = () => {
-    setBusinessDescriptionDialog({ isOpen: false, cardId: null, currentValue: '' });
+    setBusinessDescriptionDialog({ isOpen: false, cardId: null, currentValue: '', type: 'borrower' });
     setBusinessDescriptionInput('');
   };
 
   const saveBusinessDescription = () => {
     if (businessDescriptionDialog.cardId) {
       form.setValue('income.businessDescription', businessDescriptionInput, { shouldDirty: true });
+      closeBusinessDescriptionDialog();
+    }
+  };
+
+  // Co-borrower Business description popup handlers
+  const openCoBorrowerBusinessDescriptionDialog = (cardId: string) => {
+    const currentValue = form.getValues('coBorrowerIncome.businessDescription') || '';
+    setBusinessDescriptionInput(currentValue);
+    setBusinessDescriptionDialog({
+      isOpen: true,
+      cardId,
+      currentValue,
+      type: 'co-borrower'
+    });
+  };
+
+  const saveCoBorrowerBusinessDescription = () => {
+    if (businessDescriptionDialog.cardId) {
+      form.setValue('coBorrowerIncome.businessDescription', businessDescriptionInput, { shouldDirty: true });
       closeBusinessDescriptionDialog();
     }
   };
@@ -9046,7 +9067,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`co-borrower-self-employment-prior-${cardId}`}>Prior</Label>
                                 <button
                                   type="button"
-                                  onClick={() => openBusinessDescriptionDialog(cardId)}
+                                  onClick={() => openCoBorrowerBusinessDescriptionDialog(cardId)}
                                   className={`transition-colors ml-6 flex items-center justify-center w-4 h-4 rounded-full border ${
                                     form.watch('coBorrowerIncome.businessDescription') 
                                       ? 'bg-purple-500 border-purple-500 text-white hover:bg-purple-600' 
@@ -11411,7 +11432,7 @@ export default function AdminAddClient() {
               Cancel
             </Button>
             <Button
-              onClick={saveBusinessDescription}
+              onClick={businessDescriptionDialog.type === 'co-borrower' ? saveCoBorrowerBusinessDescription : saveBusinessDescription}
               className="bg-blue-600 hover:bg-blue-700 text-white"
               data-testid="button-business-description-save"
             >
