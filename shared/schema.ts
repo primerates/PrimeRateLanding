@@ -19,11 +19,11 @@ export type User = typeof users.$inferSelect;
 
 // Address schema for reusable address components
 export const addressSchema = z.object({
-  street: z.string().min(1, "Street address is required"),
+  street: z.string().min(1),
   unit: z.string().optional(),
-  city: z.string().min(1, "City is required"),
-  state: z.string().min(1, "State is required"),
-  zip: z.string().min(1, "ZIP code is required"),
+  city: z.string().min(1),
+  state: z.string().min(1),
+  zip: z.string().min(1),
   county: z.string().optional(),
 });
 
@@ -37,18 +37,18 @@ export const pensionSchema = z.object({
 
 // Client Management Schema
 export const borrowerInfoSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
+  firstName: z.string().min(1),
   middleName: z.string().optional(),
-  lastName: z.string().min(1, "Last name is required"),
-  phone: z.string().min(1, "Phone is required"),
-  email: z.string().email("Valid email is required"),
+  lastName: z.string().min(1),
+  phone: z.string().min(1),
+  email: z.string().email(),
   maritalStatus: z.enum(["Select", "single", "married", "divorced", "widowed"]).refine(val => val !== "Select", "Please select a marital status"),
   relationshipToBorrower: z.enum(["N/A", "spouse", "partner", "family", "friend", "other", "not-applicable"]).optional(),
-  dateOfBirth: z.string().min(1, "Date of birth is required"),
-  ssn: z.string().min(1, "SSN is required"),
+  dateOfBirth: z.string().min(1),
+  ssn: z.string().min(1),
   preferredContactTime: z.enum(["Select", "Morning", "Afternoon", "Evening"]).optional(),
   residenceAddress: addressSchema,
-  yearsAtAddress: z.string().min(1, "Years at address is required"),
+  yearsAtAddress: z.string().min(1),
   monthsAtAddress: z.string().optional(),
   priorResidenceAddress: addressSchema.partial().optional(),
   priorYearsAtAddress: z.string().optional(),
