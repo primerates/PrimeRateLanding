@@ -6678,7 +6678,7 @@ export default function AdminAddClient() {
                                   name="self-employment-type"
                                   data-testid="radio-self-employment-current"
                                 />
-                                <Label htmlFor="self-employment-current">Current Employer</Label>
+                                <Label htmlFor="self-employment-current">Current</Label>
                               </div>
                               
                               <div className="flex items-center space-x-2">
@@ -6688,7 +6688,7 @@ export default function AdminAddClient() {
                                   name="self-employment-type"
                                   data-testid="radio-self-employment-prior"
                                 />
-                                <Label htmlFor="self-employment-prior">Prior Employer</Label>
+                                <Label htmlFor="self-employment-prior">Prior</Label>
                               </div>
                             </div>
                           </div>
@@ -6742,37 +6742,6 @@ export default function AdminAddClient() {
                           </Select>
                         </div>
                         
-                        <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="income-formationDate">Start Date</Label>
-                          <Input
-                            id="income-formationDate"
-                            type="date"
-                            {...form.register('income.formationDate')}
-                            data-testid="input-income-formationDate"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="income-ownershipPercentage">Ownhership</Label>
-                          <Input
-                            id="income-ownershipPercentage"
-                            type="text"
-                            placeholder="0%"
-                            value={(() => {
-                              const val = form.watch('income.ownershipPercentage');
-                              if (!val) return '';
-                              return val.includes('%') ? val : `${val}%`;
-                            })()}
-                            onChange={(e) => {
-                              const value = e.target.value.replace('%', '').replace(/[^\d]/g, '');
-                              if (value === '' || (parseInt(value) >= 0 && parseInt(value) <= 100)) {
-                                form.setValue('income.ownershipPercentage', value, { shouldDirty: true, shouldTouch: true });
-                              }
-                            }}
-                            data-testid="input-income-ownershipPercentage"
-                          />
-                        </div>
-                        
                         <div className="space-y-2 md:col-span-2">
                           <div className="flex items-center justify-between mb-2">
                             <Label htmlFor="income-annualRevenue" className="text-sm">
@@ -6801,15 +6770,6 @@ export default function AdminAddClient() {
                               form.setValue(fieldName as any, value, { shouldDirty: true, shouldTouch: true });
                             }}
                             data-testid="input-income-annualRevenue"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="income-businessDescription">Description</Label>
-                          <Input
-                            id="income-businessDescription"
-                            {...form.register('income.businessDescription')}
-                            data-testid="input-income-businessDescription"
                           />
                         </div>
                       </div>
