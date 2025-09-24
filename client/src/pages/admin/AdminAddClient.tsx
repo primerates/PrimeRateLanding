@@ -400,26 +400,6 @@ export default function AdminAddClient() {
   };
 
   // Handler for co-borrower employer ZIP code lookup
-  const handleCoBorrowerEmployerZipCodeLookup = async (zipCode: string) => {
-    if (!zipCode || zipCode.length < 5) {
-      setCoBorrowerEmployerCountyOptions([]);
-      return;
-    }
-    
-    setCountyLookupLoading(prev => ({...prev, coBorrowerEmployer: true}));
-    const counties = await lookupCountyFromZip(zipCode);
-    
-    if (counties.length === 1) {
-      form.setValue('coBorrowerIncome.employerAddress.county', counties[0].label, { shouldDirty: true });
-      setCoBorrowerEmployerCountyOptions([]);
-    } else if (counties.length > 1) {
-      setCoBorrowerEmployerCountyOptions(counties);
-    } else {
-      setCoBorrowerEmployerCountyOptions([]);
-    }
-    
-    setCountyLookupLoading(prev => ({...prev, coBorrowerEmployer: false}));
-  };
 
   // Handler for co-borrower prior employer ZIP code lookup
 
@@ -591,9 +571,7 @@ export default function AdminAddClient() {
       form.setValue(fieldPath as any, true);
       // Auto-expand employment cards when selected
       if (fieldPath.includes('employment') && !fieldPath.includes('secondEmployment')) {
-        if (isCoBorrower) {
-          setIsCoBorrowerEmploymentIncomeOpen(true);
-        } else {
+        if (!isCoBorrower) {
           setIsEmploymentIncomeOpen(true);
         }
       }
@@ -660,7 +638,6 @@ export default function AdminAddClient() {
   const [isOtherIncomeOpen, setIsOtherIncomeOpen] = useState(false);
 
   // Co-Borrower income collapsible state
-  const [isCoBorrowerEmploymentIncomeOpen, setIsCoBorrowerEmploymentIncomeOpen] = useState(false);
   const [isCoBorrowerSecondEmploymentIncomeOpen, setIsCoBorrowerSecondEmploymentIncomeOpen] = useState(false);
   const [isCoBorrowerSelfEmploymentIncomeOpen, setIsCoBorrowerSelfEmploymentIncomeOpen] = useState(false);
   const [isCoBorrowerSocialSecurityIncomeOpen, setIsCoBorrowerSocialSecurityIncomeOpen] = useState(false);
@@ -833,7 +810,6 @@ export default function AdminAddClient() {
   const [borrowerEmployerCountyOptions, setBorrowerEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
   const [borrowerPriorEmployerCountyOptions, setBorrowerPriorEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
   const [borrowerSecondEmployerCountyOptions, setBorrowerSecondEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
-  const [coBorrowerEmployerCountyOptions, setCoBorrowerEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
   const [coBorrowerSecondEmployerCountyOptions, setCoBorrowerSecondEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
   
   const [countyLookupLoading, setCountyLookupLoading] = useState<{
@@ -844,7 +820,7 @@ export default function AdminAddClient() {
     borrowerEmployer: boolean,
     borrowerPriorEmployer: boolean,
     borrowerSecondEmployer: boolean,
-    coBorrowerEmployer: boolean,
+    
     
     coBorrowerSecondEmployer: boolean
   }>({
@@ -855,7 +831,7 @@ export default function AdminAddClient() {
     borrowerEmployer: false,
     borrowerPriorEmployer: false,
     borrowerSecondEmployer: false,
-    coBorrowerEmployer: false,
+    
     
     coBorrowerSecondEmployer: false
   });
@@ -7793,253 +7769,6 @@ export default function AdminAddClient() {
               )}
 
               {/* Co-Borrower Employment Income Card */}
-              {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.employment') && (
-                <Card>
-                  <Collapsible open={isCoBorrowerEmploymentIncomeOpen} onOpenChange={setIsCoBorrowerEmploymentIncomeOpen}>
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle>Co-Borrower Employer</CardTitle>
-                        <CollapsibleTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="hover:bg-orange-500 hover:text-white" 
-                            data-testid="button-toggle-coborrower-employment-income"
-                            title={isCoBorrowerEmploymentIncomeOpen ? 'Minimize' : 'Expand'}
-                            key={`coborrower-employment-income-${isCoBorrowerEmploymentIncomeOpen}`}
-                          >
-                            {isCoBorrowerEmploymentIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                          </Button>
-                        </CollapsibleTrigger>
-                      </div>
-                    </CardHeader>
-                    <CollapsibleContent>
-                      <CardContent>
-                        <div className="space-y-6">
-                          {/* Co-Borrower Employment Information - Single Row */}
-                          <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-employerName">Employer Name</Label>
-                              <Input
-                                id="coBorrowerIncome-employerName"
-                                {...form.register('coBorrowerIncome.employerName')}
-                                data-testid="input-coborrowerIncome-employerName"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <div className="flex items-center justify-between mb-2">
-                                <Label htmlFor="coBorrowerIncome-employer-phone" className="text-xs">
-                                  {form.watch('coBorrowerIncome.isShowingEmploymentVerification') ? 'Employment Verification' : 'Employer Phone'}
-                                </Label>
-                                <Switch
-                                  checked={form.watch('coBorrowerIncome.isShowingEmploymentVerification') || false}
-                                  onCheckedChange={(checked) => form.setValue('coBorrowerIncome.isShowingEmploymentVerification', checked)}
-                                  data-testid="toggle-coborrower-employment-verification"
-                                />
-                              </div>
-                              <Input
-                                id="coBorrowerIncome-employer-phone"
-                                placeholder="(XXX) XXX-XXXX"
-                                value={form.watch('coBorrowerIncome.isShowingEmploymentVerification') 
-                                  ? (form.watch('coBorrowerIncome.employmentVerificationPhone') || '')
-                                  : (form.watch('coBorrowerIncome.employerPhone') || '')}
-                                onChange={(e) => {
-                                  const fieldName = form.watch('coBorrowerIncome.isShowingEmploymentVerification') 
-                                    ? 'coBorrowerIncome.employmentVerificationPhone'
-                                    : 'coBorrowerIncome.employerPhone';
-                                  handlePhoneChange(fieldName, e.target.value);
-                                }}
-                                data-testid="input-coborrowerIncome-employer-phone"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-jobTitle">Job Title</Label>
-                              <Input
-                                id="coBorrowerIncome-jobTitle"
-                                {...form.register('coBorrowerIncome.jobTitle')}
-                                data-testid="input-coborrowerIncome-jobTitle"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-monthlyIncome">Gross Monthly Income</Label>
-                              <Controller
-                                control={form.control}
-                                name="coBorrowerIncome.monthlyIncome"
-                                render={({ field }) => (
-                                  <Input
-                                    id="coBorrowerIncome-monthlyIncome"
-                                    value={formatDollarDisplay(field.value)}
-                                    onChange={(e) => {
-                                      const rawValue = parseDollarInput(e.target.value);
-                                      field.onChange(rawValue);
-                                    }}
-                                    placeholder="$0.00"
-                                    data-testid="input-coborrowerIncome-monthlyIncome"
-                                  />
-                                )}
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <div className="flex items-center justify-between mb-2">
-                                <Label htmlFor="coBorrowerIncome-bonusIncome" className="text-sm">
-                                  {isCoBorrowerShowingAnnualBonus ? 'Annual Bonus' : 'Monthly Bonus'}
-                                </Label>
-                                <Switch
-                                  checked={isCoBorrowerShowingAnnualBonus}
-                                  onCheckedChange={setIsCoBorrowerShowingAnnualBonus}
-                                  data-testid="toggle-coBorrowerIncome-bonus"
-                                />
-                              </div>
-                              <Controller
-                                control={form.control}
-                                name={isCoBorrowerShowingAnnualBonus ? 'coBorrowerIncome.annualBonusIncome' : 'coBorrowerIncome.monthlyBonusIncome'}
-                                render={({ field }) => (
-                                  <Input
-                                    id="coBorrowerIncome-bonusIncome"
-                                    value={formatDollarDisplay(field.value)}
-                                    onChange={(e) => {
-                                      const rawValue = parseDollarInput(e.target.value);
-                                      field.onChange(rawValue);
-                                    }}
-                                    placeholder="$0.00"
-                                    data-testid="input-coBorrowerIncome-bonusIncome"
-                                  />
-                                )}
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-employmentType">Full-Time / Part-Time</Label>
-                              <Select
-                                value={form.watch('coBorrowerIncome.employmentType') || ''}
-                                onValueChange={(value) => form.setValue('coBorrowerIncome.employmentType', value as any)}
-                              >
-                                <SelectTrigger data-testid="select-coborrowerIncome-employmentType">
-                                  <SelectValue placeholder="Select type" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
-                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <div className="flex items-center justify-between mb-2">
-                                <Label htmlFor="coBorrowerIncome-employment-duration" className="text-sm">
-                                  {isCoBorrowerShowingMonthsEmployed ? 'Months Employed' : 'Years Employed'}
-                                </Label>
-                                <Switch
-                                  checked={isCoBorrowerShowingMonthsEmployed}
-                                  onCheckedChange={setIsCoBorrowerShowingMonthsEmployed}
-                                  data-testid="toggle-coBorrowerIncome-employment-duration"
-                                />
-                              </div>
-                              <Input
-                                id="coBorrowerIncome-employment-duration"
-                                type="number"
-                                min="0"
-                                max={isCoBorrowerShowingMonthsEmployed ? "999" : "99"}
-                                {...form.register(isCoBorrowerShowingMonthsEmployed ? 'coBorrowerIncome.yearsEmployedMonths' : 'coBorrowerIncome.yearsEmployedYears')}
-                                placeholder={isCoBorrowerShowingMonthsEmployed ? "Enter Months" : "Enter Years"}
-                                data-testid="input-coBorrowerIncome-employment-duration"
-                              />
-                            </div>
-                          </div>
-                          
-                          {/* Employer Address Row (standardized format) */}
-                          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                            <div className="space-y-2 md:col-span-3">
-                              <Label htmlFor="coBorrowerIncome-employer-street">Street Address</Label>
-                              <Input
-                                id="coBorrowerIncome-employer-street"
-                                {...form.register('coBorrowerIncome.employerAddress.street')}
-                                data-testid="input-coborrowerIncome-employer-street"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-1">
-                              <Label htmlFor="coBorrowerIncome-employer-unit">Unit/Suite</Label>
-                              <Input
-                                id="coBorrowerIncome-employer-unit"
-                                {...form.register('coBorrowerIncome.employerAddress.unit')}
-                                data-testid="input-coborrowerIncome-employer-unit"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="coBorrowerIncome-employer-city">City</Label>
-                              <Input
-                                id="coBorrowerIncome-employer-city"
-                                {...form.register('coBorrowerIncome.employerAddress.city')}
-                                data-testid="input-coborrowerIncome-employer-city"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-1">
-                              <Label htmlFor="coBorrowerIncome-employer-state">State</Label>
-                              <Select
-                                value={form.watch('coBorrowerIncome.employerAddress.state') || ''}
-                                onValueChange={(value) => form.setValue('coBorrowerIncome.employerAddress.state', value)}
-                              >
-                                <SelectTrigger data-testid="select-coborrowerIncome-employer-state">
-                                  <SelectValue placeholder="State" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {US_STATES.map((state) => (
-                                    <SelectItem key={state.value} value={state.value}>
-                                      {state.value}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-1">
-                              <Label htmlFor="coBorrowerIncome-employer-zip">ZIP Code</Label>
-                              <Input
-                                id="coBorrowerIncome-employer-zip"
-                                {...form.register('coBorrowerIncome.employerAddress.zip')}
-                                data-testid="input-coborrowerIncome-employer-zip"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="coBorrowerIncome-employer-county">County</Label>
-                              <Input
-                                id="coBorrowerIncome-employer-county"
-                                {...form.register('coBorrowerIncome.employerAddress.county')}
-                                data-testid="input-coborrowerIncome-employer-county"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="coBorrowerIncome-employer-remote">Remote Job</Label>
-                              <Select
-                                value={form.watch('coBorrowerIncome.employerRemote') || ''}
-                                onValueChange={(value) => form.setValue('coBorrowerIncome.employerRemote', value)}
-                              >
-                                <SelectTrigger data-testid="select-coBorrowerIncome-employer-remote">
-                                  <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="Select">Select</SelectItem>
-                                  <SelectItem value="Yes">Yes</SelectItem>
-                                  <SelectItem value="No">No</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                  </CollapsibleContent>
-                </Collapsible>
-                </Card>
-              )}
 
 
 
