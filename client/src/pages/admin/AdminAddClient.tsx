@@ -379,26 +379,26 @@ export default function AdminAddClient() {
 
 
   // Handler for co-borrower employer ZIP code lookup
-  const handleCoBorrowerEmployerZipCodeLookup = async (zipCode: string) => {
+  const handleCoBorrowerEmployerZipCodeLookup = async (zipCode: string, propertyId: string) => {
     if (!zipCode || zipCode.length < 5) {
-      setCoBorrowerEmployerCountyOptions([]);
-      form.setValue('coBorrowerIncome.employerAddress.county', '');
+      setCoBorrowerEmployerCountyOptions(prev => ({...prev, [propertyId]: []}));
+      form.setValue(`coBorrowerIncome.secondEmployers.${propertyId}.address.county` as any, '');
       return;
     }
     
-    setCountyLookupLoading(prev => ({...prev, coBorrowerEmployer: true}));
+    setCountyLookupLoading(prev => ({...prev, coBorrowerEmployer: {...prev.coBorrowerEmployer, [propertyId]: true}}));
     const counties = await lookupCountyFromZip(zipCode);
     
     if (counties.length === 1) {
-      form.setValue('coBorrowerIncome.employerAddress.county', counties[0].label, { shouldDirty: true });
-      setCoBorrowerEmployerCountyOptions([]);
+      form.setValue(`coBorrowerIncome.secondEmployers.${propertyId}.address.county` as any, counties[0].label, { shouldDirty: true });
+      setCoBorrowerEmployerCountyOptions(prev => ({...prev, [propertyId]: []}));
     } else if (counties.length > 1) {
-      setCoBorrowerEmployerCountyOptions(counties);
+      setCoBorrowerEmployerCountyOptions(prev => ({...prev, [propertyId]: counties}));
     } else {
-      setCoBorrowerEmployerCountyOptions([]);
+      setCoBorrowerEmployerCountyOptions(prev => ({...prev, [propertyId]: []}));
     }
     
-    setCountyLookupLoading(prev => ({...prev, coBorrowerEmployer: false}));
+    setCountyLookupLoading(prev => ({...prev, coBorrowerEmployer: {...prev.coBorrowerEmployer, [propertyId]: false}}));
   };
 
   // Handler for co-borrower prior employer ZIP code lookup
@@ -869,7 +869,7 @@ export default function AdminAddClient() {
   // Employment income county lookup state
   const [borrowerEmployerCountyOptions, setBorrowerEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
   const [borrowerPriorEmployerCountyOptions, setBorrowerPriorEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
-  const [coBorrowerEmployerCountyOptions, setCoBorrowerEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
+  const [coBorrowerEmployerCountyOptions, setCoBorrowerEmployerCountyOptions] = useState<Record<string, Array<{value: string, label: string}>>>({});
   const [coBorrowerPriorEmployerCountyOptions, setCoBorrowerPriorEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
   const [coBorrowerSecondEmployerCountyOptions, setCoBorrowerSecondEmployerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
   
@@ -880,7 +880,7 @@ export default function AdminAddClient() {
     coBorrowerPrior: boolean,
     borrowerEmployer: boolean,
     borrowerPriorEmployer: boolean,
-    coBorrowerEmployer: boolean,
+    coBorrowerEmployer: Record<string, boolean>,
     coBorrowerPriorEmployer: boolean,
     coBorrowerSecondEmployer: boolean
   }>({
@@ -890,7 +890,7 @@ export default function AdminAddClient() {
     coBorrowerPrior: false,
     borrowerEmployer: false,
     borrowerPriorEmployer: false,
-    coBorrowerEmployer: false,
+    coBorrowerEmployer: {},
     coBorrowerPriorEmployer: false,
     coBorrowerSecondEmployer: false
   });
@@ -8052,6 +8052,7 @@ export default function AdminAddClient() {
                               onClick={() => {
                                 const newId = `coborrower-employer-${Date.now()}`;
                                 setCoBorrowerEmployerCards(prev => [...(prev || ['default']), newId]);
+                                setPropertyCardStates(prev => ({ ...prev, [newId]: true }));
                               }}
                               className="hover:bg-blue-500 hover:text-white"
                               data-testid="button-add-coborrower-employer"
@@ -8128,44 +8129,64 @@ export default function AdminAddClient() {
                             <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
                               <div className="space-y-2">
                                 <Label htmlFor={`${propertyId}-coborrower-employerName`}>Employer Name</Label>
-                                <Input
-                                  id={`${propertyId}-coborrower-employerName`}
-                                  data-testid={`input-${propertyId}-coborrower-employerName`}
+                                <Controller
+                                  control={form.control}
+                                  name={`coBorrowerIncome.secondEmployers.${propertyId}.employerName` as any}
+                                  render={({ field }) => (
+                                    <Input
+                                      id={`${propertyId}-coborrower-employerName`}
+                                      value={field.value || ''}
+                                      onChange={field.onChange}
+                                      data-testid={`input-${propertyId}-coborrower-employerName`}
+                                    />
+                                  )}
                                 />
                               </div>
                               
                               <div className="space-y-2">
                                 <div className="flex items-center justify-between mb-2">
                                   <Label htmlFor={`${propertyId}-coborrower-employer-phone`} className="text-xs">
-                                    {form.watch('coBorrowerIncome.isShowingEmploymentVerification') ? 'Job Verification' : 'Employer Phone'}
+                                    {form.watch(`coBorrowerIncome.secondEmployers.${propertyId}.isShowingEmploymentVerification` as any) ? 'Job Verification' : 'Employer Phone'}
                                   </Label>
                                   <Switch
-                                    checked={form.watch('coBorrowerIncome.isShowingEmploymentVerification') || false}
-                                    onCheckedChange={(checked) => form.setValue('coBorrowerIncome.isShowingEmploymentVerification', checked)}
+                                    checked={form.watch(`coBorrowerIncome.secondEmployers.${propertyId}.isShowingEmploymentVerification` as any) || false}
+                                    onCheckedChange={(checked) => form.setValue(`coBorrowerIncome.secondEmployers.${propertyId}.isShowingEmploymentVerification` as any, checked)}
                                     data-testid={`toggle-${propertyId}-coborrower-employment-verification`}
                                   />
                                 </div>
-                                <Input
-                                  id={`${propertyId}-coborrower-employer-phone`}
-                                  placeholder="(XXX) XXX-XXXX"
-                                  value={form.watch('coBorrowerIncome.isShowingEmploymentVerification') 
-                                    ? (form.watch('coBorrowerIncome.employmentVerificationPhone') || '')
-                                    : (form.watch('coBorrowerIncome.employerPhone') || '')}
-                                  onChange={(e) => {
-                                    const fieldName = form.watch('coBorrowerIncome.isShowingEmploymentVerification') 
-                                      ? 'coBorrowerIncome.employmentVerificationPhone'
-                                      : 'coBorrowerIncome.employerPhone';
-                                    handlePhoneChange(fieldName, e.target.value);
-                                  }}
-                                  data-testid={`input-${propertyId}-coborrower-employer-phone`}
+                                <Controller
+                                  control={form.control}
+                                  name={form.watch(`coBorrowerIncome.secondEmployers.${propertyId}.isShowingEmploymentVerification` as any) 
+                                    ? `coBorrowerIncome.secondEmployers.${propertyId}.employmentVerificationPhone` as any
+                                    : `coBorrowerIncome.secondEmployers.${propertyId}.employerPhone` as any}
+                                  render={({ field }) => (
+                                    <Input
+                                      id={`${propertyId}-coborrower-employer-phone`}
+                                      placeholder="(XXX) XXX-XXXX"
+                                      value={field.value || ''}
+                                      onChange={(e) => {
+                                        const formattedValue = formatPhoneNumber(e.target.value);
+                                        field.onChange(formattedValue);
+                                      }}
+                                      data-testid={`input-${propertyId}-coborrower-employer-phone`}
+                                    />
+                                  )}
                                 />
                               </div>
                               
                               <div className="space-y-2">
                                 <Label htmlFor={`${propertyId}-coborrower-jobTitle`}>Job Title</Label>
-                                <Input
-                                  id={`${propertyId}-coborrower-jobTitle`}
-                                  data-testid={`input-${propertyId}-coborrower-jobTitle`}
+                                <Controller
+                                  control={form.control}
+                                  name={`coBorrowerIncome.secondEmployers.${propertyId}.jobTitle` as any}
+                                  render={({ field }) => (
+                                    <Input
+                                      id={`${propertyId}-coborrower-jobTitle`}
+                                      value={field.value || ''}
+                                      onChange={field.onChange}
+                                      data-testid={`input-${propertyId}-coborrower-jobTitle`}
+                                    />
+                                  )}
                                 />
                               </div>
                               
@@ -8173,7 +8194,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`${propertyId}-coborrower-monthlyIncome`}>Gross Monthly Income</Label>
                                 <Controller
                                   control={form.control}
-                                  name="coBorrowerIncome.monthlyIncome"
+                                  name={`coBorrowerIncome.secondEmployers.${propertyId}.monthlyIncome` as any}
                                   render={({ field }) => (
                                     <Input
                                       id={`${propertyId}-coborrower-monthlyIncome`}
@@ -8265,82 +8286,158 @@ export default function AdminAddClient() {
                             {/* Employer Address Row */}
                             <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                               <div className="space-y-2 md:col-span-3">
-                                <Label htmlFor="coborrower-template-employer-street">Street Address</Label>
-                                <Input
-                                  id="coborrower-template-employer-street"
-                                  data-testid="input-coborrower-template-employer-street"
+                                <Label htmlFor={`${propertyId}-coborrower-employer-street`}>Street Address</Label>
+                                <Controller
+                                  control={form.control}
+                                  name={`coBorrowerIncome.secondEmployers.${propertyId}.address.street` as any}
+                                  render={({ field }) => (
+                                    <Input
+                                      id={`${propertyId}-coborrower-employer-street`}
+                                      value={field.value || ''}
+                                      onChange={field.onChange}
+                                      data-testid={`input-${propertyId}-coborrower-employer-street`}
+                                    />
+                                  )}
                                 />
                               </div>
                               
                               <div className="space-y-2 md:col-span-1">
-                                <Label htmlFor="coborrower-template-employer-unit">Unit/Suite</Label>
-                                <Input
-                                  id="coborrower-template-employer-unit"
-                                  data-testid="input-coborrower-template-employer-unit"
+                                <Label htmlFor={`${propertyId}-coborrower-employer-unit`}>Unit/Suite</Label>
+                                <Controller
+                                  control={form.control}
+                                  name={`coBorrowerIncome.secondEmployers.${propertyId}.address.unit` as any}
+                                  render={({ field }) => (
+                                    <Input
+                                      id={`${propertyId}-coborrower-employer-unit`}
+                                      value={field.value || ''}
+                                      onChange={field.onChange}
+                                      data-testid={`input-${propertyId}-coborrower-employer-unit`}
+                                    />
+                                  )}
                                 />
                               </div>
                               
                               <div className="space-y-2 md:col-span-2">
-                                <Label htmlFor="coborrower-template-employer-city">City</Label>
-                                <Input
-                                  id="coborrower-template-employer-city"
-                                  data-testid="input-coborrower-template-employer-city"
+                                <Label htmlFor={`${propertyId}-coborrower-employer-city`}>City</Label>
+                                <Controller
+                                  control={form.control}
+                                  name={`coBorrowerIncome.secondEmployers.${propertyId}.address.city` as any}
+                                  render={({ field }) => (
+                                    <Input
+                                      id={`${propertyId}-coborrower-employer-city`}
+                                      value={field.value || ''}
+                                      onChange={field.onChange}
+                                      data-testid={`input-${propertyId}-coborrower-employer-city`}
+                                    />
+                                  )}
                                 />
                               </div>
                               
                               <div className="space-y-2 md:col-span-1">
-                                <Label htmlFor="coborrower-template-employer-state">State</Label>
-                                <Select
-                                  value=""
-                                  onValueChange={() => {}}
-                                >
-                                  <SelectTrigger data-testid="select-coborrower-template-employer-state">
-                                    <SelectValue placeholder="State" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {US_STATES.map((state) => (
-                                      <SelectItem key={state.value} value={state.value}>
-                                        {state.value}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
+                                <Label htmlFor={`${propertyId}-coborrower-employer-state`}>State</Label>
+                                <Controller
+                                  control={form.control}
+                                  name={`coBorrowerIncome.secondEmployers.${propertyId}.address.state` as any}
+                                  render={({ field }) => (
+                                    <Select
+                                      value={field.value || ''}
+                                      onValueChange={field.onChange}
+                                    >
+                                      <SelectTrigger data-testid={`select-${propertyId}-coborrower-employer-state`}>
+                                        <SelectValue placeholder="State" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {US_STATES.map((state) => (
+                                          <SelectItem key={state.value} value={state.value}>
+                                            {state.value}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                  )}
+                                />
                               </div>
                               
                               <div className="space-y-2 md:col-span-1">
-                                <Label htmlFor="coborrower-template-employer-zip">ZIP Code</Label>
-                                <Input
-                                  id="coborrower-template-employer-zip"
-                                  data-testid="input-coborrower-template-employer-zip"
-                                  onChange={(e) => {
-                                    const zipCode = e.target.value;
-                                    handleCoBorrowerEmployerZipCodeLookup(zipCode);
-                                  }}
+                                <Label htmlFor={`${propertyId}-coborrower-employer-zip`}>ZIP Code</Label>
+                                <Controller
+                                  control={form.control}
+                                  name={`coBorrowerIncome.secondEmployers.${propertyId}.address.zip` as any}
+                                  render={({ field }) => (
+                                    <Input
+                                      id={`${propertyId}-coborrower-employer-zip`}
+                                      value={field.value || ''}
+                                      onChange={(e) => {
+                                        field.onChange(e.target.value);
+                                        handleCoBorrowerEmployerZipCodeLookup(e.target.value, propertyId);
+                                      }}
+                                      data-testid={`input-${propertyId}-coborrower-employer-zip`}
+                                    />
+                                  )}
                                 />
                               </div>
                               
                               <div className="space-y-2 md:col-span-2">
-                                <Label htmlFor="coborrower-template-employer-county">County</Label>
-                                <Input
-                                  id="coborrower-template-employer-county"
-                                  data-testid="input-coborrower-template-employer-county"
+                                <Label htmlFor={`${propertyId}-coborrower-employer-county`}>County</Label>
+                                <Controller
+                                  control={form.control}
+                                  name={`coBorrowerIncome.secondEmployers.${propertyId}.address.county` as any}
+                                  render={({ field }) => (
+                                    <>
+                                      {coBorrowerEmployerCountyOptions[propertyId]?.length > 0 ? (
+                                        <Select
+                                          value={field.value || ''}
+                                          onValueChange={(value) => {
+                                            field.onChange(value);
+                                            setCoBorrowerEmployerCountyOptions(prev => ({...prev, [propertyId]: []}));
+                                          }}
+                                        >
+                                          <SelectTrigger data-testid={`select-${propertyId}-coborrower-employer-county`}>
+                                            <SelectValue placeholder={countyLookupLoading.coBorrowerEmployer[propertyId] ? "Looking up counties..." : "Select county"} />
+                                          </SelectTrigger>
+                                          <SelectContent>
+                                            {coBorrowerEmployerCountyOptions[propertyId]?.map((option) => (
+                                              <SelectItem key={option.value} value={option.label}>
+                                                {option.label}
+                                              </SelectItem>
+                                            ))}
+                                          </SelectContent>
+                                        </Select>
+                                      ) : (
+                                        <Input
+                                          id={`${propertyId}-coborrower-employer-county`}
+                                          value={field.value || ''}
+                                          onChange={field.onChange}
+                                          placeholder={countyLookupLoading.coBorrowerEmployer[propertyId] ? "Looking up counties..." : ""}
+                                          disabled={countyLookupLoading.coBorrowerEmployer[propertyId]}
+                                          data-testid={`input-${propertyId}-coborrower-employer-county`}
+                                        />
+                                      )}
+                                    </>
+                                  )}
                                 />
                               </div>
                               
                               <div className="space-y-2 md:col-span-2">
-                                <Label htmlFor="coborrower-template-employer-employment-type">Full-Time / Part-Time</Label>
-                                <Select
-                                  value=""
-                                  onValueChange={() => {}}
-                                >
-                                  <SelectTrigger data-testid="select-coborrower-template-employer-employment-type">
-                                    <SelectValue placeholder="Select type" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="Full-Time">Full-Time</SelectItem>
-                                    <SelectItem value="Part-Time">Part-Time</SelectItem>
-                                  </SelectContent>
-                                </Select>
+                                <Label htmlFor={`${propertyId}-coborrower-employer-employment-type`}>Full-Time / Part-Time</Label>
+                                <Controller
+                                  control={form.control}
+                                  name={`coBorrowerIncome.secondEmployers.${propertyId}.employmentType` as any}
+                                  render={({ field }) => (
+                                    <Select
+                                      value={field.value || ''}
+                                      onValueChange={field.onChange}
+                                    >
+                                      <SelectTrigger data-testid={`select-${propertyId}-coborrower-employer-employment-type`}>
+                                        <SelectValue placeholder="Select type" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="Full-Time">Full-Time</SelectItem>
+                                        <SelectItem value="Part-Time">Part-Time</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  )}
+                                />
                               </div>
                             </div>
                           </div>
