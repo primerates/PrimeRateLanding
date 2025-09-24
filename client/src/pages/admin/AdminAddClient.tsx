@@ -6800,7 +6800,7 @@ export default function AdminAddClient() {
                 const isOpen = propertyCardStates[propertyId] ?? false;
                 
                 return (
-                  <Card key={cardId} className="border-l-4 border-l-purple-500 hover:border-purple-500 focus-within:border-purple-500 transition-colors duration-200">
+                  <Card key={cardId} className="border-l-4 border-l-purple-500 transition-colors duration-200">
                     <Collapsible 
                       open={isOpen} 
                       onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
@@ -7452,7 +7452,7 @@ export default function AdminAddClient() {
                 const isOpen = propertyCardStates[propertyId] ?? false;
                 
                 return (
-                  <Card key={cardId} className="border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
+                  <Card key={cardId} className="border-l-4 border-l-green-500 transition-colors duration-200">
                     <Collapsible 
                       open={isOpen} 
                       onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
@@ -7776,7 +7776,7 @@ export default function AdminAddClient() {
                 const isOpen = propertyCardStates[propertyId] ?? false;
                 
                 return (
-                  <Card key={cardId} className="border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
+                  <Card key={cardId} className="border-l-4 border-l-green-500 transition-colors duration-200">
                     <Collapsible 
                       open={isOpen} 
                       onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
@@ -8203,7 +8203,7 @@ export default function AdminAddClient() {
                 const isOpen = propertyCardStates[propertyId] ?? false;
                 
                 return (
-                  <Card key={cardId} className="border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
+                  <Card key={cardId} className="border-l-4 border-l-green-500 transition-colors duration-200">
                     <Collapsible 
                       open={isOpen} 
                       onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
@@ -8627,7 +8627,7 @@ export default function AdminAddClient() {
                 const isOpen = propertyCardStates[propertyId] ?? false;
                 
                 return (
-                  <Card key={cardId} className="border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
+                  <Card key={cardId} className="border-l-4 border-l-green-500 transition-colors duration-200">
                     <Collapsible 
                       open={isOpen} 
                       onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
@@ -8980,7 +8980,7 @@ export default function AdminAddClient() {
                 const isOpen = propertyCardStates[propertyId] ?? false;
                 
                 return (
-                  <Card key={cardId} className="border-l-4 border-l-purple-500 hover:border-purple-500 focus-within:border-purple-500 transition-colors duration-200">
+                  <Card key={cardId} className="border-l-4 border-l-purple-500 transition-colors duration-200">
                     <Collapsible 
                       open={isOpen} 
                       onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
