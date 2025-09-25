@@ -967,6 +967,9 @@ export default function AdminAddClient() {
   // Co-borrower Self-Employment cards state management
   const [coBorrowerSelfEmploymentCards, setCoBorrowerSelfEmploymentCards] = useState<string[]>(['default']);
   
+  // Primary Residence cards state management (similar to employer cards)
+  const [primaryResidenceCards, setPrimaryResidenceCards] = useState<string[]>([]);
+  
   // Employment dates state for each card
   const [employmentDates, setEmploymentDates] = useState<Record<string, {
     startDate: string;
@@ -989,6 +992,12 @@ export default function AdminAddClient() {
 
   // Delete confirmation dialog state for Co-borrower Second Employer
   const [deleteCoBorrowerSecondEmployerDialog, setDeleteCoBorrowerSecondEmployerDialog] = useState<{
+    isOpen: boolean;
+    cardId: string;
+  }>({ isOpen: false, cardId: '' });
+
+  // Delete confirmation dialog state for Primary Residence cards
+  const [deletePrimaryResidenceDialog, setDeletePrimaryResidenceDialog] = useState<{
     isOpen: boolean;
     cardId: string;
   }>({ isOpen: false, cardId: '' });
