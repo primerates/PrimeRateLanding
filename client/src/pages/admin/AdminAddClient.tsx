@@ -532,6 +532,8 @@ export default function AdminAddClient() {
   const [showEntryAnimation, setShowEntryAnimation] = useState(true);
   // Animation state for Income tab animations
   const [showIncomeAnimation, setShowIncomeAnimation] = useState(false);
+  // Animation state for Property tab animations
+  const [showPropertyAnimation, setShowPropertyAnimation] = useState(false);
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
@@ -5494,6 +5496,11 @@ export default function AdminAddClient() {
               // Reset animation after it completes so it can trigger again if needed
               setTimeout(() => setShowIncomeAnimation(false), 1000);
             }
+            if (value === 'property') {
+              setShowPropertyAnimation(true);
+              // Reset animation after it completes so it can trigger again if needed
+              setTimeout(() => setShowPropertyAnimation(false), 1000);
+            }
           }}>
             <TabsList className="grid w-full grid-cols-9 bg-transparent h-auto p-0 relative border-b border-gray-200 group">
               <TabsTrigger value="client" data-testid="tab-client" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Borrower</TabsTrigger>
@@ -10071,7 +10078,9 @@ export default function AdminAddClient() {
             {/* Property Tab */}
             <TabsContent value="property" className="space-y-6">
               {/* Property Summary Card */}
-              <Card className="bg-muted">
+              <Card className={`bg-muted transition-all duration-700 ${
+                showPropertyAnimation ? 'animate-roll-down' : ''
+              }`}>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     Total Properties
@@ -10153,7 +10162,9 @@ export default function AdminAddClient() {
                     
                     <div className="space-y-2 flex flex-col justify-center h-full">
                       <div className="space-y-1 text-sm">
-                        <div className="flex justify-between items-center w-48">
+                        <div className={`flex justify-between items-center w-48 ${
+                          showPropertyAnimation ? 'animate-roll-down-property-1' : ''
+                        }`}>
                           <span className={`font-medium ${
                             (form.watch('property.properties') || []).filter(p => p.use === 'primary').length > 0 
                               ? 'text-green-800' 
@@ -10167,7 +10178,9 @@ export default function AdminAddClient() {
                             {(form.watch('property.properties') || []).filter(p => p.use === 'primary').length}
                           </span>
                         </div>
-                        <div className="flex justify-between items-center w-48">
+                        <div className={`flex justify-between items-center w-48 ${
+                          showPropertyAnimation ? 'animate-roll-down-property-2' : ''
+                        }`}>
                           <span className={`font-medium ${
                             (form.watch('property.properties') || []).filter(p => p.use === 'second-home').length > 0 
                               ? 'text-blue-500' 
@@ -10181,7 +10194,9 @@ export default function AdminAddClient() {
                             {(form.watch('property.properties') || []).filter(p => p.use === 'second-home').length}
                           </span>
                         </div>
-                        <div className="flex justify-between items-center w-48">
+                        <div className={`flex justify-between items-center w-48 ${
+                          showPropertyAnimation ? 'animate-roll-down-property-3' : ''
+                        }`}>
                           <span className={`font-medium ${
                             (form.watch('property.properties') || []).filter(p => p.use === 'investment').length > 0 
                               ? 'text-purple-500' 
