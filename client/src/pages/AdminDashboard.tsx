@@ -24,6 +24,16 @@ import cubesBackground from '@assets/stock_images/abstract_geometric_c_b9135c5b.
 export default function AdminDashboard() {
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    // Trigger animations after component mounts
+    const timer = setTimeout(() => {
+      setIsLoaded(true);
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   const menuItems = [
     // Line 1
@@ -119,7 +129,16 @@ export default function AdminDashboard() {
       </header>
 
       {/* Main Content */}
-      <div className="container mx-auto px-6 py-8 relative z-10">
+      <div 
+        className={`container mx-auto px-6 py-8 relative z-10 transition-all duration-1000 ease-out ${
+          isLoaded 
+            ? 'transform translate-y-0 opacity-100' 
+            : 'transform -translate-y-full opacity-0'
+        }`}
+        style={{
+          transformOrigin: 'top'
+        }}
+      >
         <div className="mb-16">
           <h2 className="text-2xl font-bold mb-2" data-testid="text-dashboard-welcome">
             Dashboard
@@ -128,12 +147,20 @@ export default function AdminDashboard() {
 
         {/* Menu Grid - First Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          {menuItems.slice(0, 5).map((item) => {
+          {menuItems.slice(0, 5).map((item, index) => {
             const Icon = item.icon;
             return (
               <Card 
                 key={item.id}
-                className={`cursor-pointer transition-all duration-200 ${getTileHoverClass(item.id, false)} group`}
+                className={`cursor-pointer transition-all duration-500 ${getTileHoverClass(item.id, false)} group ${
+                  isLoaded 
+                    ? 'transform scale-x-100 opacity-100' 
+                    : 'transform scale-x-0 opacity-0'
+                }`}
+                style={{
+                  transformOrigin: 'left',
+                  transitionDelay: `${500 + (index * 150)}ms`
+                }}
                 onClick={() => handleMenuClick(item.path)}
                 data-testid={`card-admin-${item.id}`}
               >
@@ -150,12 +177,20 @@ export default function AdminDashboard() {
 
         {/* Menu Grid - Second Row with extra spacing */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-16">
-          {menuItems.slice(5).map((item) => {
+          {menuItems.slice(5).map((item, index) => {
             const Icon = item.icon;
             return (
               <Card 
                 key={item.id}
-                className={`cursor-pointer transition-all duration-200 ${getTileHoverClass(item.id, true)} group`}
+                className={`cursor-pointer transition-all duration-500 ${getTileHoverClass(item.id, true)} group ${
+                  isLoaded 
+                    ? 'transform scale-x-100 opacity-100' 
+                    : 'transform scale-x-0 opacity-0'
+                }`}
+                style={{
+                  transformOrigin: 'left',
+                  transitionDelay: `${1250 + (index * 150)}ms`
+                }}
                 onClick={() => handleMenuClick(item.path)}
                 data-testid={`card-admin-${item.id}`}
               >
