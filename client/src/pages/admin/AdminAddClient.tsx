@@ -7009,7 +7009,10 @@ export default function AdminAddClient() {
                                 }}
                                 data-testid="display-income-frontDTI"
                               >
-                                {displayValue}
+                                <span>
+                                  {displayValue.replace('%', '')}
+                                  <span style={{ fontSize: '32px' }}>%</span>
+                                </span>
                               </div>
                             ) : (
                               <Input
