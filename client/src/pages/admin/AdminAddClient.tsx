@@ -538,6 +538,8 @@ export default function AdminAddClient() {
   const [showBorrowerAnimation, setShowBorrowerAnimation] = useState(false);
   // Animation state for subject property box roll-down
   const [showSubjectPropertyAnimation, setShowSubjectPropertyAnimation] = useState<{[key: string]: boolean}>({});
+  // Animation state for income card grey background roll-down
+  const [showIncomeCardAnimation, setShowIncomeCardAnimation] = useState<{[key: string]: boolean}>({});
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
