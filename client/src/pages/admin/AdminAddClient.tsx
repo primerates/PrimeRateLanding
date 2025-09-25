@@ -4889,6 +4889,49 @@ export default function AdminAddClient() {
     setPropertyUsageChangeDialog({ isOpen: false, propertyId: undefined, newUsage: undefined });
   };
 
+  // Helper function to handle property type changes with card management (similar to handleIncomeTypeChange)
+  const handlePropertyTypeChange = (checked: boolean, type: 'primary' | 'second-home' | 'investment' | 'home-purchase') => {
+    if (!checked) {
+      // Special handling for primary residence - don't allow unchecking if cards already exist
+      if (type === 'primary') {
+        const hasCards = (primaryResidenceCards || []).length > 0;
+        
+        if (hasCards) {
+          // Cards already exist, prevent unchecking - all removal must be done through card buttons
+          return;
+        }
+      }
+      
+      // For now, still allow unchecking other property types through the old system
+      removePropertyType(type);
+    } else {
+      // When checking, auto-create default property card
+      if (type === 'primary') {
+        const hasCards = (primaryResidenceCards || []).length > 0;
+        
+        // Only create default property card if none exist yet
+        if (!hasCards) {
+          setPrimaryResidenceCards(['default']);
+          
+          // Auto-expand the property card
+          const cardId = 'primary-template-card';
+          setPropertyCardStates(prev => ({ ...prev, [cardId]: true }));
+          
+          // Trigger animation for newly created property card
+          setTimeout(() => {
+            setShowSubjectPropertyAnimation(prev => ({ ...prev, 'primary-default': true }));
+            setTimeout(() => {
+              setShowSubjectPropertyAnimation(prev => ({ ...prev, 'primary-default': false }));
+            }, 800);
+          }, 200);
+        }
+      } else {
+        // For other property types, use the old system for now
+        addPropertyType(type);
+      }
+    }
+  };
+
   // Property type management functions
   const addPropertyType = (type: 'primary' | 'second-home' | 'investment' | 'home-purchase') => {
     const currentProperties = form.watch('property.properties') || [];
@@ -10499,14 +10542,8 @@ export default function AdminAddClient() {
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="property-type-primary"
-                          checked={hasPropertyType('primary')}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              addPropertyType('primary');
-                            } else {
-                              removePropertyType('primary');
-                            }
-                          }}
+                          checked={hasPropertyType('primary') || (primaryResidenceCards || []).length > 0}
+                          onCheckedChange={(checked) => handlePropertyTypeChange(checked, 'primary')}
                           data-testid="checkbox-property-primary"
                         />
                         <Label htmlFor="property-type-primary" className="font-medium">
