@@ -7097,25 +7097,14 @@ export default function AdminAddClient() {
                   </div>
                   
                   <div className="space-y-2">
-                    <div className="flex items-center justify-between mb-2">
-                      <Label 
-                        htmlFor="income-guidelineDTI" 
-                        className={`text-lg font-semibold ${(() => {
-                          const backDTI = form.watch('income.backDTI') || '';
-                          const guidelineDTI = form.watch('income.guidelineDTI') || '';
-                          return getDTIComparisonColor(backDTI, guidelineDTI).labelClass;
-                        })()} ${
-                          showIncomeAnimation ? 'animate-roll-down-dti-3' : ''
-                        }`}
-                      >
-                        {isShowingGuidelineFrontDTI ? 'Guideline - Front DTI' : 'Guideline DTI'}
-                      </Label>
-                      <Switch
-                        checked={isShowingGuidelineFrontDTI}
-                        onCheckedChange={setIsShowingGuidelineFrontDTI}
-                        data-testid="toggle-guideline-dti"
-                      />
-                    </div>
+                    <Label 
+                      htmlFor="income-guidelineDTI" 
+                      className={`text-lg font-semibold ${
+                        showIncomeAnimation ? 'animate-roll-down-dti-3' : ''
+                      }`}
+                    >
+                      Guideline DTI
+                    </Label>
                     <Controller
                       control={form.control}
                       name="income.guidelineDTI"
