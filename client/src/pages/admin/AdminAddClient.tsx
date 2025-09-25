@@ -528,6 +528,8 @@ export default function AdminAddClient() {
     });
   };
 
+  // Animation state for first-time page entry
+  const [showEntryAnimation, setShowEntryAnimation] = useState(true);
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
@@ -2409,6 +2411,16 @@ export default function AdminAddClient() {
       form.setValue('income.otherIncomeMonthlyAmount', '');
     }
   }, [form.watch('property.properties')]);
+
+  // Animation effect for first-time page entry
+  useEffect(() => {
+    // Trigger animation on initial component mount
+    const timer = setTimeout(() => {
+      setShowEntryAnimation(false); // Turn off animation after first load
+    }, 1000); // Animation lasts 1 second
+
+    return () => clearTimeout(timer);
+  }, []); // Empty dependency array means this runs only once on mount
 
   // Bidirectional sync between Property Tab (Primary Residence) and Loan Tab (Current Loan 1)
   const syncInProgress = useRef(false);
@@ -5342,7 +5354,9 @@ export default function AdminAddClient() {
                 onClick={form.handleSubmit(onSubmit)}
                 disabled={addClientMutation.isPending}
                 size="sm"
-                className="bg-white text-primary border hover:bg-green-600 hover:text-white"
+                className={`bg-white text-primary border hover:bg-green-600 hover:text-white transition-all duration-500 ${
+                  showEntryAnimation ? 'animate-roll-down' : ''
+                }`}
                 data-testid="button-save-client"
               >
                 <Save className={`h-3 w-3 mr-2 transition-transform duration-500 ${addClientMutation.isPending ? 'rotate-180' : ''}`} />
@@ -5372,7 +5386,9 @@ export default function AdminAddClient() {
             {/* Client Tab */}
             <TabsContent value="client" className="space-y-6">
               {/* Lead Information Fields */}
-              <Card>
+              <Card className={`transition-all duration-700 ${
+                showEntryAnimation ? 'animate-roll-down-delayed' : ''
+              }`}>
                 <CardContent className="grid grid-cols-1 md:grid-cols-5 gap-4 pt-6">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between mb-2">

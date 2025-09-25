@@ -2,6 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Entry animations for Add Client page */
+@keyframes roll-down {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes roll-down-delayed {
+  0%, 20% {
+    transform: translateY(-50%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-roll-down {
+  animation: roll-down 0.6s ease-out forwards;
+}
+
+.animate-roll-down-delayed {
+  animation: roll-down-delayed 0.8s ease-out 0.2s forwards;
+  opacity: 0; /* Start hidden until animation begins */
+}
+
 /* LIGHT MODE */
 :root {
   --button-outline: rgba(0,0,0, .10);
