@@ -7077,12 +7077,12 @@ export default function AdminAddClient() {
               {/* Income Type Selection */}
               <Card className="border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
                 <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle>Borrower Income</CardTitle>
+                  <CardTitle className="flex items-center gap-3">
+                    Borrower Income
                     <span className="text-lg font-semibold" data-testid="text-total-borrower-income">
                       {totalBorrowerIncomeFormatted}
                     </span>
-                  </div>
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -8583,12 +8583,12 @@ export default function AdminAddClient() {
               {hasCoBorrower && (
                 <Card className="border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
                   <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle>Co-Borrower Income</CardTitle>
+                    <CardTitle className="flex items-center gap-3">
+                      Co-Borrower Income
                       <span className="text-lg font-semibold" data-testid="text-total-coborrower-income">
                         {totalCoBorrowerIncomeFormatted}
                       </span>
-                    </div>
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
