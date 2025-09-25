@@ -7000,7 +7000,7 @@ export default function AdminAddClient() {
                             {!isFrontDTIEditing && hasValue ? (
                               <div
                                 onClick={() => setIsFrontDTIEditing(true)}
-                                className="cursor-pointer bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                                className="cursor-pointer bg-navy-900 hover:bg-navy-800 text-white rounded-full w-25 h-25 flex items-center justify-center transition-colors duration-200 shadow-xl"
                                 style={{
                                   fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                                   fontSize: '36px',
@@ -7009,7 +7009,10 @@ export default function AdminAddClient() {
                                 }}
                                 data-testid="display-income-frontDTI"
                               >
-                                {displayValue}
+                                <span>
+                                  {displayValue.replace('%', '')}
+                                  <span style={{ fontSize: '18px' }}>%</span>
+                                </span>
                               </div>
                             ) : (
                               <Input
