@@ -600,8 +600,17 @@ export default function AdminAddClient() {
         }
       }
       
-      // Special handling for second employment - don't show warning, just uncheck
+      // Special handling for second employment - don't allow unchecking if cards already exist
       if (incomeTypeName === 'Second Employment') {
+        const hasCards = isCoBorrower 
+          ? (coBorrowerSecondEmployerCards || []).length > 0
+          : (borrowerSecondEmployerCards || []).length > 0;
+        
+        if (hasCards) {
+          // Cards already exist, prevent unchecking - all removal must be done through card buttons
+          return;
+        }
+        // If no cards exist, allow unchecking without warning
         form.setValue(fieldPath as any, false);
         return;
       }
@@ -7016,6 +7025,7 @@ export default function AdminAddClient() {
                           id="income-type-secondEmployment"
                           checked={form.watch('income.incomeTypes.secondEmployment') || false}
                           onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.secondEmployment', !!checked, 'Second Employment')}
+                          disabled={(borrowerSecondEmployerCards || []).length > 0}
                           data-testid="checkbox-secondEmployment"
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         />
@@ -8520,6 +8530,7 @@ export default function AdminAddClient() {
                             id="coBorrowerIncome-type-secondEmployment"
                             checked={form.watch('coBorrowerIncome.incomeTypes.secondEmployment') || false}
                             onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.secondEmployment', !!checked, 'Second Employment', true)}
+                            disabled={(coBorrowerSecondEmployerCards || []).length > 0}
                             data-testid="checkbox-coborrower-secondEmployment"
                             className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           />
