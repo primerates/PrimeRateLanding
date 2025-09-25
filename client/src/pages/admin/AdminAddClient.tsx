@@ -10162,9 +10162,7 @@ export default function AdminAddClient() {
                     
                     <div className="space-y-2 flex flex-col justify-center h-full">
                       <div className="space-y-1 text-sm">
-                        <div className={`flex justify-between items-center w-48 ${
-                          showPropertyAnimation ? 'animate-roll-down-property-1' : ''
-                        }`}>
+                        <div className="flex justify-between items-center w-48">
                           <span className={`font-medium ${
                             (form.watch('property.properties') || []).filter(p => p.use === 'primary').length > 0 
                               ? 'text-green-800' 
@@ -10178,9 +10176,7 @@ export default function AdminAddClient() {
                             {(form.watch('property.properties') || []).filter(p => p.use === 'primary').length}
                           </span>
                         </div>
-                        <div className={`flex justify-between items-center w-48 ${
-                          showPropertyAnimation ? 'animate-roll-down-property-2' : ''
-                        }`}>
+                        <div className="flex justify-between items-center w-48">
                           <span className={`font-medium ${
                             (form.watch('property.properties') || []).filter(p => p.use === 'second-home').length > 0 
                               ? 'text-blue-500' 
@@ -10194,9 +10190,7 @@ export default function AdminAddClient() {
                             {(form.watch('property.properties') || []).filter(p => p.use === 'second-home').length}
                           </span>
                         </div>
-                        <div className={`flex justify-between items-center w-48 ${
-                          showPropertyAnimation ? 'animate-roll-down-property-3' : ''
-                        }`}>
+                        <div className="flex justify-between items-center w-48">
                           <span className={`font-medium ${
                             (form.watch('property.properties') || []).filter(p => p.use === 'investment').length > 0 
                               ? 'text-purple-500' 
