@@ -47,7 +47,7 @@ export class MemStorage implements IStorage {
   // Client management methods
   async createClient(client: Client): Promise<Client> {
     if (!client.id) {
-      client.id = Date.now().toString();
+      client.id = randomUUID();
     }
     this.clients.set(client.id, client);
     return client;
