@@ -4845,21 +4845,21 @@ export default function AdminAddClient() {
     
     addProperty(type);
     
+    // Trigger subject property box animation for all property types
+    setTimeout(() => {
+      const currentProperties = form.watch('property.properties') || [];
+      const newProperty = currentProperties.find(p => p.use === type);
+      if (newProperty?.id) {
+        setShowSubjectPropertyAnimation(prev => ({ ...prev, [newProperty.id!]: true }));
+        // Reset animation after it completes
+        setTimeout(() => {
+          setShowSubjectPropertyAnimation(prev => ({ ...prev, [newProperty.id!]: false }));
+        }, 800);
+      }
+    }, 200); // Small delay to ensure card is expanded first
+    
     // Auto-copy address data when primary residence is selected
     if (type === 'primary') {
-      // Trigger subject property box animation for new primary residence
-      setTimeout(() => {
-        const currentProperties = form.watch('property.properties') || [];
-        const newPrimaryProperty = currentProperties.find(p => p.use === 'primary');
-        if (newPrimaryProperty?.id) {
-          setShowSubjectPropertyAnimation(prev => ({ ...prev, [newPrimaryProperty.id!]: true }));
-          // Reset animation after it completes
-          setTimeout(() => {
-            setShowSubjectPropertyAnimation(prev => ({ ...prev, [newPrimaryProperty.id!]: false }));
-          }, 800);
-        }
-      }, 200); // Small delay to ensure card is expanded first
-      
       setTimeout(() => {
         const borrowerAddress = form.getValues('borrower.residenceAddress');
         if (borrowerAddress && (borrowerAddress.street || borrowerAddress.city || borrowerAddress.state)) {
