@@ -7387,7 +7387,9 @@ export default function AdminAddClient() {
                     <CollapsibleContent>
                       <CardContent className="space-y-4">
                       {/* Employment Type Selection */}
-                      <Card className="bg-muted">
+                      <Card className={`bg-muted ${
+                        showIncomeCardAnimation['borrower-self-employment'] ? 'animate-roll-down-subject-property' : ''
+                      }`}>
                         <CardContent className="pt-6">
                           <div className="space-y-3">
                             <div className="flex gap-4">
@@ -7672,7 +7674,17 @@ export default function AdminAddClient() {
               {/* Pension Income Card */}
               {form.watch('income.incomeTypes.pension') && (
                 <Card>
-                  <Collapsible open={isPensionIncomeOpen} onOpenChange={setIsPensionIncomeOpen}>
+                  <Collapsible open={isPensionIncomeOpen} onOpenChange={(open) => {
+                    setIsPensionIncomeOpen(open);
+                    if (open && !showIncomeCardAnimation['pension']) {
+                      setTimeout(() => {
+                        setShowIncomeCardAnimation(prev => ({ ...prev, 'pension': true }));
+                        setTimeout(() => {
+                          setShowIncomeCardAnimation(prev => ({ ...prev, 'pension': false }));
+                        }, 800);
+                      }, 200);
+                    }
+                  }}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Borrower - Pension Income</CardTitle>
@@ -7775,7 +7787,17 @@ export default function AdminAddClient() {
               {/* Social Security Income Card */}
               {form.watch('income.incomeTypes.socialSecurity') && (
                 <Card>
-                  <Collapsible open={isSocialSecurityIncomeOpen} onOpenChange={setIsSocialSecurityIncomeOpen}>
+                  <Collapsible open={isSocialSecurityIncomeOpen} onOpenChange={(open) => {
+                    setIsSocialSecurityIncomeOpen(open);
+                    if (open && !showIncomeCardAnimation['social-security']) {
+                      setTimeout(() => {
+                        setShowIncomeCardAnimation(prev => ({ ...prev, 'social-security': true }));
+                        setTimeout(() => {
+                          setShowIncomeCardAnimation(prev => ({ ...prev, 'social-security': false }));
+                        }, 800);
+                      }, 200);
+                    }
+                  }}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Borrower - Social Security</CardTitle>
@@ -7838,7 +7860,17 @@ export default function AdminAddClient() {
               {/* VA Benefits Income Card */}
               {form.watch('income.incomeTypes.vaBenefits') && (
                 <Card>
-                  <Collapsible open={isVaBenefitsIncomeOpen} onOpenChange={setIsVaBenefitsIncomeOpen}>
+                  <Collapsible open={isVaBenefitsIncomeOpen} onOpenChange={(open) => {
+                    setIsVaBenefitsIncomeOpen(open);
+                    if (open && !showIncomeCardAnimation['va-benefits']) {
+                      setTimeout(() => {
+                        setShowIncomeCardAnimation(prev => ({ ...prev, 'va-benefits': true }));
+                        setTimeout(() => {
+                          setShowIncomeCardAnimation(prev => ({ ...prev, 'va-benefits': false }));
+                        }, 800);
+                      }, 200);
+                    }
+                  }}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Borrower - VA Disability</CardTitle>
@@ -7901,7 +7933,17 @@ export default function AdminAddClient() {
               {/* Disability Income Card */}
               {form.watch('income.incomeTypes.disability') && (
                 <Card>
-                  <Collapsible open={isDisabilityIncomeOpen} onOpenChange={setIsDisabilityIncomeOpen}>
+                  <Collapsible open={isDisabilityIncomeOpen} onOpenChange={(open) => {
+                    setIsDisabilityIncomeOpen(open);
+                    if (open && !showIncomeCardAnimation['disability']) {
+                      setTimeout(() => {
+                        setShowIncomeCardAnimation(prev => ({ ...prev, 'disability': true }));
+                        setTimeout(() => {
+                          setShowIncomeCardAnimation(prev => ({ ...prev, 'disability': false }));
+                        }, 800);
+                      }, 200);
+                    }
+                  }}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Borrower - Disability</CardTitle>
@@ -7972,7 +8014,17 @@ export default function AdminAddClient() {
               {/* Rental Income Card */}
               {form.watch('income.incomeTypes.other') && (
                 <Card>
-                  <Collapsible open={isOtherIncomeOpen} onOpenChange={setIsOtherIncomeOpen}>
+                  <Collapsible open={isOtherIncomeOpen} onOpenChange={(open) => {
+                    setIsOtherIncomeOpen(open);
+                    if (open && !showIncomeCardAnimation['other-income']) {
+                      setTimeout(() => {
+                        setShowIncomeCardAnimation(prev => ({ ...prev, 'other-income': true }));
+                        setTimeout(() => {
+                          setShowIncomeCardAnimation(prev => ({ ...prev, 'other-income': false }));
+                        }, 800);
+                      }, 200);
+                    }
+                  }}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Rental Income</CardTitle>
@@ -8096,7 +8148,9 @@ export default function AdminAddClient() {
                         <CardContent>
                           <div className="space-y-6">
                             {/* Employment Type Selection */}
-                            <Card className="bg-muted">
+                            <Card className={`bg-muted ${
+                              showIncomeCardAnimation[`borrower-employment-${propertyId}`] ? 'animate-roll-down-subject-property' : ''
+                            }`}>
                               <CardContent className="pt-6">
                                 <div className="space-y-3">
                                   <div className="flex gap-4">
@@ -8433,7 +8487,9 @@ export default function AdminAddClient() {
                       <CardContent>
                         <div className="space-y-6">
                           {/* Employment Type Selection */}
-                          <Card className="bg-muted">
+                          <Card className={`bg-muted ${
+                            showIncomeCardAnimation['borrower-second-employment'] ? 'animate-roll-down-subject-property' : ''
+                          }`}>
                             <CardContent className="pt-6">
                               <div className="space-y-3">
                                 <div className="flex gap-4">
@@ -8887,7 +8943,9 @@ export default function AdminAddClient() {
                         <CardContent>
                           <div className="space-y-6">
                             {/* Employment Type Selection */}
-                            <Card className="bg-muted">
+                            <Card className={`bg-muted ${
+                              showIncomeCardAnimation[`co-borrower-employment-${propertyId}`] ? 'animate-roll-down-subject-property' : ''
+                            }`}>
                               <CardContent className="pt-6">
                                 <div className="space-y-3">
                                   <div className="flex gap-4">
@@ -9308,7 +9366,9 @@ export default function AdminAddClient() {
                       <CardContent>
                         <div className="space-y-6">
                           {/* Employment Type Selection */}
-                          <Card className="bg-muted">
+                          <Card className={`bg-muted ${
+                            showIncomeCardAnimation['co-borrower-second-employment'] ? 'animate-roll-down-subject-property' : ''
+                          }`}>
                             <CardContent className="pt-6">
                               <div className="space-y-3">
                                 <div className="flex gap-4">
@@ -9659,7 +9719,9 @@ export default function AdminAddClient() {
                     <CollapsibleContent>
                       <CardContent className="space-y-4">
                       {/* Employment Type Selection */}
-                      <Card className="bg-muted">
+                      <Card className={`bg-muted ${
+                        showIncomeCardAnimation['co-borrower-self-employment'] ? 'animate-roll-down-subject-property' : ''
+                      }`}>
                         <CardContent className="pt-6">
                           <div className="space-y-3">
                             <div className="flex gap-4">
@@ -9942,7 +10004,17 @@ export default function AdminAddClient() {
               {/* Co-Borrower Pension Card */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.pension') && (
                 <Card>
-                  <Collapsible open={isCoBorrowerPensionIncomeOpen} onOpenChange={setIsCoBorrowerPensionIncomeOpen}>
+                  <Collapsible open={isCoBorrowerPensionIncomeOpen} onOpenChange={(open) => {
+                    setIsCoBorrowerPensionIncomeOpen(open);
+                    if (open && !showIncomeCardAnimation['co-borrower-pension']) {
+                      setTimeout(() => {
+                        setShowIncomeCardAnimation(prev => ({ ...prev, 'co-borrower-pension': true }));
+                        setTimeout(() => {
+                          setShowIncomeCardAnimation(prev => ({ ...prev, 'co-borrower-pension': false }));
+                        }, 800);
+                      }, 200);
+                    }
+                  }}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower Pension</CardTitle>
