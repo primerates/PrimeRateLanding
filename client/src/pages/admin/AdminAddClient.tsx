@@ -10309,7 +10309,7 @@ export default function AdminAddClient() {
                 showPropertyAnimation ? 'animate-roll-down' : ''
               }`}>
                 <CardHeader>
-                  <CardTitle>
+                  <CardTitle className="text-lg font-semibold">
                     Est. LTV
                   </CardTitle>
                 </CardHeader>
@@ -10421,7 +10421,7 @@ export default function AdminAddClient() {
                           }}
                           data-testid="checkbox-property-primary"
                         />
-                        <Label htmlFor="property-type-primary" className="font-medium">
+                        <Label htmlFor="property-type-primary" className="text-lg font-semibold">
                           Primary Residence
                         </Label>
                       </div>
@@ -10439,7 +10439,7 @@ export default function AdminAddClient() {
                           }}
                           data-testid="checkbox-property-second-home"
                         />
-                        <Label htmlFor="property-type-second-home" className="font-medium">
+                        <Label htmlFor="property-type-second-home" className="text-lg font-semibold">
                           Second Home
                         </Label>
                       </div>
@@ -10457,7 +10457,7 @@ export default function AdminAddClient() {
                           }}
                           data-testid="checkbox-property-investment"
                         />
-                        <Label htmlFor="property-type-investment" className="font-medium">
+                        <Label htmlFor="property-type-investment" className="text-lg font-semibold">
                           Investment Property
                         </Label>
                       </div>
