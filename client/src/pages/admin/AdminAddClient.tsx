@@ -10314,11 +10314,7 @@ export default function AdminAddClient() {
                       Est. LTV
                     </CardTitle>
                     
-                    <span className={`text-lg font-semibold ${
-                      (form.watch('property.properties') || []).filter(p => p.use === 'primary').length > 0 
-                        ? 'text-green-800' 
-                        : 'text-foreground'
-                    }`}>Primary Residence</span>
+                    <span className="text-lg font-semibold text-foreground">Primary Residence</span>
                     
                     <span className={`text-lg font-semibold ${
                       (form.watch('property.properties') || []).filter(p => p.use === 'second-home').length > 0 
