@@ -9900,7 +9900,7 @@ export default function AdminAddClient() {
                           <Label htmlFor={`coBorrowerIncome-businessName-${cardId}`}>Business / DBA Name</Label>
                           <Input
                             id={`coBorrowerIncome-businessName-${cardId}`}
-                            {...form.register(getCoBorrowerSelfEmploymentFieldPath(cardId, 'businessName'))}
+                            {...form.register(getCoBorrowerSelfEmploymentFieldPath(cardId, 'businessName') as any)}
                             data-testid={`input-coBorrowerIncome-businessName-${cardId}`}
                           />
                         </div>
@@ -10027,7 +10027,7 @@ export default function AdminAddClient() {
                             <Label htmlFor={`coBorrowerIncome-business-street-${cardId}`}>Street Address</Label>
                             <Input
                               id={`coBorrowerIncome-business-street-${cardId}`}
-                              {...form.register(getCoBorrowerSelfEmploymentFieldPath(cardId, 'businessAddress.street'))}
+                              {...form.register(getCoBorrowerSelfEmploymentFieldPath(cardId, 'businessAddress.street') as any)}
                               data-testid={`input-coBorrowerIncome-business-street-${cardId}`}
                             />
                           </div>
@@ -10036,7 +10036,7 @@ export default function AdminAddClient() {
                             <Label htmlFor={`coBorrowerIncome-business-unit-${cardId}`}>Unit/Suite</Label>
                             <Input
                               id={`coBorrowerIncome-business-unit-${cardId}`}
-                              {...form.register(getCoBorrowerSelfEmploymentFieldPath(cardId, 'businessAddress.unit'))}
+                              {...form.register(getCoBorrowerSelfEmploymentFieldPath(cardId, 'businessAddress.unit') as any)}
                               data-testid={`input-coBorrowerIncome-business-unit-${cardId}`}
                             />
                           </div>
@@ -10045,7 +10045,7 @@ export default function AdminAddClient() {
                             <Label htmlFor={`coBorrowerIncome-business-city-${cardId}`}>City</Label>
                             <Input
                               id={`coBorrowerIncome-business-city-${cardId}`}
-                              {...form.register(getCoBorrowerSelfEmploymentFieldPath(cardId, 'businessAddress.city'))}
+                              {...form.register(getCoBorrowerSelfEmploymentFieldPath(cardId, 'businessAddress.city') as any)}
                               data-testid={`input-coBorrowerIncome-business-city-${cardId}`}
                             />
                           </div>
@@ -10073,7 +10073,7 @@ export default function AdminAddClient() {
                             <Label htmlFor={`coBorrowerIncome-business-zip-${cardId}`}>ZIP Code</Label>
                             <Input
                               id={`coBorrowerIncome-business-zip-${cardId}`}
-                              {...form.register(getCoBorrowerSelfEmploymentFieldPath(cardId, 'businessAddress.zip'))}
+                              {...form.register(getCoBorrowerSelfEmploymentFieldPath(cardId, 'businessAddress.zip') as any)}
                               data-testid={`input-coBorrowerIncome-business-zip-${cardId}`}
                             />
                           </div>
@@ -10082,7 +10082,7 @@ export default function AdminAddClient() {
                             <Label htmlFor={`coBorrowerIncome-business-county-${cardId}`}>County</Label>
                             <Input
                               id={`coBorrowerIncome-business-county-${cardId}`}
-                              {...form.register(getCoBorrowerSelfEmploymentFieldPath(cardId, 'businessAddress.county'))}
+                              {...form.register(getCoBorrowerSelfEmploymentFieldPath(cardId, 'businessAddress.county') as any)}
                               data-testid={`input-coBorrowerIncome-business-county-${cardId}`}
                             />
                           </div>
@@ -13254,25 +13254,25 @@ export default function AdminAddClient() {
                   currentCards.forEach(cardId => {
                     const cleanCardId = cardId === 'default' ? 'default' : cardId;
                     // Clear employer info
-                    form.setValue(`income.secondEmployment.${cleanCardId}.employerName`, '');
-                    form.setValue(`income.secondEmployment.${cleanCardId}.address`, '');
-                    form.setValue(`income.secondEmployment.${cleanCardId}.phone`, '');
-                    form.setValue(`income.secondEmployment.${cleanCardId}.position`, '');
-                    form.setValue(`income.secondEmployment.${cleanCardId}.monthlySalary`, '');
+                    form.setValue(`income.secondEmployment.${cleanCardId}.employerName` as any, '');
+                    form.setValue(`income.secondEmployment.${cleanCardId}.address` as any, '');
+                    form.setValue(`income.secondEmployment.${cleanCardId}.phone` as any, '');
+                    form.setValue(`income.secondEmployment.${cleanCardId}.position` as any, '');
+                    form.setValue(`income.secondEmployment.${cleanCardId}.monthlySalary` as any, '');
                     // Clear duration info
-                    form.setValue(`income.secondEmployment.${cleanCardId}.duration`, '');
+                    form.setValue(`income.secondEmployment.${cleanCardId}.duration` as any, '');
                   });
                 } else {
                   // Remove the specific card
                   setBorrowerSecondEmployerCards(prev => prev.filter(id => id !== cardToDelete));
                   // Clear form fields for this specific card
                   const cleanCardId = cardToDelete;
-                  form.setValue(`income.secondEmployment.${cleanCardId}.employerName`, '');
-                  form.setValue(`income.secondEmployment.${cleanCardId}.address`, '');
-                  form.setValue(`income.secondEmployment.${cleanCardId}.phone`, '');
-                  form.setValue(`income.secondEmployment.${cleanCardId}.position`, '');
-                  form.setValue(`income.secondEmployment.${cleanCardId}.monthlySalary`, '');
-                  form.setValue(`income.secondEmployment.${cleanCardId}.duration`, '');
+                  form.setValue(`income.secondEmployment.${cleanCardId}.employerName` as any, '');
+                  form.setValue(`income.secondEmployment.${cleanCardId}.address` as any, '');
+                  form.setValue(`income.secondEmployment.${cleanCardId}.phone` as any, '');
+                  form.setValue(`income.secondEmployment.${cleanCardId}.position` as any, '');
+                  form.setValue(`income.secondEmployment.${cleanCardId}.monthlySalary` as any, '');
+                  form.setValue(`income.secondEmployment.${cleanCardId}.duration` as any, '');
                 }
                 
                 setDeleteSecondEmployerDialog({ isOpen: false, cardId: '' });
@@ -13316,25 +13316,25 @@ export default function AdminAddClient() {
                   currentCards.forEach(cardId => {
                     const cleanCardId = cardId === 'default' ? 'default' : cardId;
                     // Clear employer info
-                    form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.employerName`, '');
-                    form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.address`, '');
-                    form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.phone`, '');
-                    form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.position`, '');
-                    form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.monthlySalary`, '');
+                    form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.employerName` as any, '');
+                    form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.address` as any, '');
+                    form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.phone` as any, '');
+                    form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.position` as any, '');
+                    form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.monthlySalary` as any, '');
                     // Clear duration info
-                    form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.duration`, '');
+                    form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.duration` as any, '');
                   });
                 } else {
                   // Remove the specific card
                   setCoBorrowerSecondEmployerCards(prev => prev.filter(id => id !== cardToDelete));
                   // Clear form fields for this specific card
                   const cleanCardId = cardToDelete;
-                  form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.employerName`, '');
-                  form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.address`, '');
-                  form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.phone`, '');
-                  form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.position`, '');
-                  form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.monthlySalary`, '');
-                  form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.duration`, '');
+                  form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.employerName` as any, '');
+                  form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.address` as any, '');
+                  form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.phone` as any, '');
+                  form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.position` as any, '');
+                  form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.monthlySalary` as any, '');
+                  form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.duration` as any, '');
                 }
                 
                 setDeleteCoBorrowerSecondEmployerDialog({ isOpen: false, cardId: '' });
@@ -13378,25 +13378,25 @@ export default function AdminAddClient() {
                   currentCards.forEach(cardId => {
                     const cleanCardId = cardId === 'default' ? 'default' : cardId;
                     // Clear business info
-                    form.setValue(`income.selfEmployment.${cleanCardId}.businessName`, '');
-                    form.setValue(`income.selfEmployment.${cleanCardId}.businessType`, '');
-                    form.setValue(`income.selfEmployment.${cleanCardId}.businessAddress`, '');
-                    form.setValue(`income.selfEmployment.${cleanCardId}.yearEstablished`, '');
-                    form.setValue(`income.selfEmployment.${cleanCardId}.netIncome`, '');
+                    form.setValue(`income.selfEmployment.${cleanCardId}.businessName` as any, '');
+                    form.setValue(`income.selfEmployment.${cleanCardId}.businessType` as any, '');
+                    form.setValue(`income.selfEmployment.${cleanCardId}.businessAddress` as any, '');
+                    form.setValue(`income.selfEmployment.${cleanCardId}.yearEstablished` as any, '');
+                    form.setValue(`income.selfEmployment.${cleanCardId}.netIncome` as any, '');
                     // Clear duration info
-                    form.setValue(`income.selfEmployment.${cleanCardId}.duration`, '');
+                    form.setValue(`income.selfEmployment.${cleanCardId}.duration` as any, '');
                   });
                 } else {
                   // Remove the specific card
                   setBorrowerSelfEmploymentCards(prev => prev.filter(id => id !== cardToDelete));
                   // Clear form fields for this specific card
                   const cleanCardId = cardToDelete;
-                  form.setValue(`income.selfEmployment.${cleanCardId}.businessName`, '');
-                  form.setValue(`income.selfEmployment.${cleanCardId}.businessType`, '');
-                  form.setValue(`income.selfEmployment.${cleanCardId}.businessAddress`, '');
-                  form.setValue(`income.selfEmployment.${cleanCardId}.yearEstablished`, '');
-                  form.setValue(`income.selfEmployment.${cleanCardId}.netIncome`, '');
-                  form.setValue(`income.selfEmployment.${cleanCardId}.duration`, '');
+                  form.setValue(`income.selfEmployment.${cleanCardId}.businessName` as any, '');
+                  form.setValue(`income.selfEmployment.${cleanCardId}.businessType` as any, '');
+                  form.setValue(`income.selfEmployment.${cleanCardId}.businessAddress` as any, '');
+                  form.setValue(`income.selfEmployment.${cleanCardId}.yearEstablished` as any, '');
+                  form.setValue(`income.selfEmployment.${cleanCardId}.netIncome` as any, '');
+                  form.setValue(`income.selfEmployment.${cleanCardId}.duration` as any, '');
                 }
                 
                 setDeleteSelfEmploymentDialog({ isOpen: false, cardId: '' });
@@ -13440,25 +13440,25 @@ export default function AdminAddClient() {
                   currentCards.forEach(cardId => {
                     const cleanCardId = cardId === 'default' ? 'default' : cardId;
                     // Clear business info
-                    form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.businessName`, '');
-                    form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.businessType`, '');
-                    form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.businessAddress`, '');
-                    form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.yearEstablished`, '');
-                    form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.netIncome`, '');
+                    form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.businessName` as any, '');
+                    form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.businessType` as any, '');
+                    form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.businessAddress` as any, '');
+                    form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.yearEstablished` as any, '');
+                    form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.netIncome` as any, '');
                     // Clear duration info
-                    form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.duration`, '');
+                    form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.duration` as any, '');
                   });
                 } else {
                   // Remove the specific card
                   setCoBorrowerSelfEmploymentCards(prev => prev.filter(id => id !== cardToDelete));
                   // Clear form fields for this specific card
                   const cleanCardId = cardToDelete;
-                  form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.businessName`, '');
-                  form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.businessType`, '');
-                  form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.businessAddress`, '');
-                  form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.yearEstablished`, '');
-                  form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.netIncome`, '');
-                  form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.duration`, '');
+                  form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.businessName` as any, '');
+                  form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.businessType` as any, '');
+                  form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.businessAddress` as any, '');
+                  form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.yearEstablished` as any, '');
+                  form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.netIncome` as any, '');
+                  form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.duration` as any, '');
                 }
                 
                 setDeleteCoBorrowerSelfEmploymentDialog({ isOpen: false, cardId: '' });
