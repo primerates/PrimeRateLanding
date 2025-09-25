@@ -660,15 +660,24 @@ export default function AdminAddClient() {
       // No warning needed when checking
       form.setValue(fieldPath as any, true);
       
-      // Auto-expand employment cards when selected
-      if (fieldPath.includes('employment')) {
-        if (!isCoBorrower) {
-          // Expand the borrower employer card (using propertyCardStates)
-          setPropertyCardStates(prev => ({ ...prev, 'template-card': true }));
-        } else {
-          // Expand the co-borrower employer card (using propertyCardStates)
-          setPropertyCardStates(prev => ({ ...prev, 'coborrower-template-card': true }));
+      // Auto-create default employment card when employment is first selected
+      if (incomeTypeName === 'Employment') {
+        const hasCards = isCoBorrower 
+          ? (coBorrowerEmployerCards || []).length > 0
+          : (borrowerEmployerCards || []).length > 0;
+        
+        // Only create default employment card if none exist yet
+        if (!hasCards) {
+          if (isCoBorrower) {
+            setCoBorrowerEmployerCards(['default']);
+          } else {
+            setBorrowerEmployerCards(['default']);
+          }
         }
+        
+        // Auto-expand the employment card
+        const cardId = isCoBorrower ? 'coborrower-template-card' : 'template-card';
+        setPropertyCardStates(prev => ({ ...prev, [cardId]: true }));
       }
       
       // Auto-create default second employment card when second employment is first selected
@@ -890,7 +899,7 @@ export default function AdminAddClient() {
   const [propertyCardStates, setPropertyCardStates] = useState<Record<string, boolean>>({});
   
   // Borrower Employer cards state management
-  const [borrowerEmployerCards, setBorrowerEmployerCards] = useState<string[]>(['default']);
+  const [borrowerEmployerCards, setBorrowerEmployerCards] = useState<string[]>([]);
   
   // Borrower Second Employer cards state management
   const [borrowerSecondEmployerCards, setBorrowerSecondEmployerCards] = useState<string[]>(['default']);
@@ -973,7 +982,7 @@ export default function AdminAddClient() {
   }>({ isOpen: false });
 
   // Co-Borrower Employer cards state management
-  const [coBorrowerEmployerCards, setCoBorrowerEmployerCards] = useState<string[]>(['default']);
+  const [coBorrowerEmployerCards, setCoBorrowerEmployerCards] = useState<string[]>([]);
   
   // Delete confirmation dialog state for Co-Borrower Employer
   const [deleteCoBorrowerEmployerDialog, setDeleteCoBorrowerEmployerDialog] = useState<{
