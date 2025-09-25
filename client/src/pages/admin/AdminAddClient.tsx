@@ -7067,7 +7067,8 @@ export default function AdminAddClient() {
                                   fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                                   fontSize: '36px',
                                   fontWeight: 600,
-                                  backgroundColor: '#1a3373'
+                                  backgroundColor: '#1a3373',
+                                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
                                 }}
                                 data-testid="display-income-frontDTI"
                               >
@@ -7123,7 +7124,8 @@ export default function AdminAddClient() {
                                   fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                                   fontSize: '36px',
                                   fontWeight: 600,
-                                  backgroundColor: '#1a3373'
+                                  backgroundColor: '#1a3373',
+                                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
                                 }}
                                 data-testid="display-income-backDTI"
                               >
@@ -7184,7 +7186,8 @@ export default function AdminAddClient() {
                                   fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                                   fontSize: '36px',
                                   fontWeight: 600,
-                                  backgroundColor: '#1a3373'
+                                  backgroundColor: '#1a3373',
+                                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
                                 }}
                                 data-testid="display-income-guidelineDTI"
                               >
