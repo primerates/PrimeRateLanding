@@ -10410,7 +10410,8 @@ export default function AdminAddClient() {
                           fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                           fontSize: '36px',
                           fontWeight: 600,
-                          backgroundColor: '#1a3373'
+                          backgroundColor: '#1a3373',
+                          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
                         }}
                         data-testid="text-primary-count"
                       >
@@ -10427,7 +10428,8 @@ export default function AdminAddClient() {
                           fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                           fontSize: '36px',
                           fontWeight: 600,
-                          backgroundColor: '#1a3373'
+                          backgroundColor: '#1a3373',
+                          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
                         }}
                         data-testid="text-second-home-count"
                       >
@@ -10444,7 +10446,8 @@ export default function AdminAddClient() {
                           fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                           fontSize: '36px',
                           fontWeight: 600,
-                          backgroundColor: '#1a3373'
+                          backgroundColor: '#1a3373',
+                          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
                         }}
                         data-testid="text-investment-count"
                       >
@@ -10461,7 +10464,8 @@ export default function AdminAddClient() {
                           fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                           fontSize: '36px',
                           fontWeight: 600,
-                          backgroundColor: '#1a3373'
+                          backgroundColor: '#1a3373',
+                          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
                         }}
                         data-testid="text-home-purchase-count"
                       >
