@@ -10973,6 +10973,9 @@ export default function AdminAddClient() {
                                         variant="ghost"
                                         size="sm"
                                         className="p-1 h-auto text-blue-600 hover:text-blue-800 no-default-hover-elevate no-default-active-elevate"
+                                        onClick={() => openValuationDialog('zillow', 0)}
+                                        onMouseEnter={(e) => handleValuationHover('zillow', 0, e)}
+                                        onMouseLeave={handleValuationHoverLeave}
                                         data-testid={`button-zillow-valuation-${propertyId}`}
                                         title="Enter Zillow valuation manually"
                                       >
@@ -10985,16 +10988,48 @@ export default function AdminAddClient() {
                                         type="button"
                                         variant="ghost"
                                         size="sm"
-                                        className="p-1 h-auto text-red-600 hover:text-red-800 no-default-hover-elevate no-default-active-elevate"
+                                        className="p-1 h-auto text-purple-600 hover:text-purple-800 no-default-hover-elevate no-default-active-elevate"
+                                        onClick={() => openValuationDialog('realtor', 0)}
+                                        onMouseEnter={(e) => handleValuationHover('realtor', 0, e)}
+                                        onMouseLeave={handleValuationHoverLeave}
                                         data-testid={`button-realtor-valuation-${propertyId}`}
-                                        title="Enter Realtor valuation manually"
+                                        title="Enter Realtor.com valuation manually"
                                       >
                                         <MdRealEstateAgent className="h-4 w-4" />
                                       </Button>
                                     </div>
+                                    {/* Redfin */}
+                                    <div className="flex items-center gap-1">
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-red-600 hover:text-red-800 no-default-hover-elevate no-default-active-elevate"
+                                        onClick={() => openValuationDialog('redfin', 0)}
+                                        onMouseEnter={(e) => handleValuationHover('redfin', 0, e)}
+                                        onMouseLeave={handleValuationHoverLeave}
+                                        data-testid={`button-redfin-valuation-${propertyId}`}
+                                        title="Enter Redfin valuation manually"
+                                      >
+                                        <FaHome className="h-4 w-4" />
+                                      </Button>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                        onClick={() => openValuationSummary(0)}
+                                        data-testid={`button-valuation-info-${propertyId}`}
+                                        title="View all valuation estimates"
+                                      >
+                                        <Info className="h-3 w-3" />
+                                      </Button>
+                                    </div>
                                   </div>
                                 </div>
-                                <Input
+                                <CurrencyInput
+                                  form={form}
+                                  name={`property.properties.0.estimatedValue` as const}
                                   id={`property-estimated-value-${propertyId}`}
                                   placeholder="$0.00"
                                   data-testid={`input-property-estimated-value-${propertyId}`}
@@ -11002,31 +11037,164 @@ export default function AdminAddClient() {
                               </div>
                               
                               <div className="space-y-2 md:col-span-2">
-                                <Label htmlFor={`property-appraised-value-${propertyId}`}>Appraised Value</Label>
-                                <Input
+                                <div className="flex items-center gap-2 min-h-8">
+                                  <Label htmlFor={`property-appraised-value-${propertyId}`}>Appraised Value</Label>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="p-1 h-auto"
+                                    title="Appraised Property Value"
+                                    data-testid={`button-appraised-value-info-${propertyId}`}
+                                  >
+                                    <AppraisalIcon index={0} control={form.control} />
+                                  </Button>
+                                </div>
+                                <CurrencyInput
+                                  form={form}
+                                  name={`property.properties.0.appraisedValue` as const}
                                   id={`property-appraised-value-${propertyId}`}
                                   placeholder="$0.00"
                                   data-testid={`input-property-appraised-value-${propertyId}`}
+                                  shadowColor={(() => {
+                                    const estimatedValue = form.watch(`property.properties.0.estimatedValue` as const) || '';
+                                    const appraisedValue = form.watch(`property.properties.0.appraisedValue` as const) || '';
+                                    return getValueComparisonColor(estimatedValue, appraisedValue).shadowColor;
+                                  })()}
                                 />
                               </div>
                               
-                              <div className="space-y-2 md:col-span-1">
-                                <Label htmlFor={`property-secured-first-${propertyId}`}>1st Lien</Label>
+                              <div className="space-y-2 md:col-span-2">
+                                <div className="flex items-center gap-2 min-h-8">
+                                  <div className="flex items-center gap-2">
+                                    <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured Loan</Label>
+                                    {(() => {
+                                      // Check ALL loans for attachment to this property
+                                      const currentProperty = form.watch('property.properties.0');
+                                      
+                                      // Check current loan
+                                      const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                      const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                      
+                                      // Check second loan
+                                      const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                      const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                      
+                                      // Check third loan (first additional loan - Current Loan 3)
+                                      const additionalLoansData = additionalLoans || [];
+                                      const firstAdditionalLoan = additionalLoansData[0]; // This is "Current Loan 3"
+                                      const isThirdLoanAttached = firstAdditionalLoan ? (() => {
+                                        const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
+                                        return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                      })() : false;
+                                      
+                                      // Check other additional loans (loan4, loan5, etc.)
+                                      const isOtherAdditionalLoanAttached = additionalLoansData.slice(1).some(loan => {
+                                        const attachedPropertyId = getDyn(`${loan.id}.attachedToProperty`);
+                                        return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                      });
+                                      
+                                      const hasAnyLoanAttached = isCurrentLoanAttached || isSecondLoanAttached || isThirdLoanAttached || isOtherAdditionalLoanAttached;
+                                      
+                                      return (
+                                        <div className="flex items-center gap-1">
+                                          <div 
+                                            className={`w-3 h-3 rounded-full border-2 cursor-pointer ${
+                                              isCurrentLoanAttached
+                                                ? 'bg-blue-500 border-blue-500 hover:bg-blue-600'
+                                                : hasAnyLoanAttached 
+                                                  ? 'bg-green-500 border-green-500' 
+                                                  : 'bg-gray-200 border-gray-300'
+                                            }`}
+                                            style={{
+                                              backgroundColor: isCurrentLoanAttached ? '#3b82f6' : hasAnyLoanAttached ? '#10b981' : '#e5e7eb',
+                                              borderColor: isCurrentLoanAttached ? '#3b82f6' : hasAnyLoanAttached ? '#10b981' : '#d1d5db'
+                                            }}
+                                            onClick={() => {
+                                              if (isCurrentLoanAttached) {
+                                                setIsCurrentLoanPreviewOpen(true);
+                                              }
+                                            }}
+                                            title={isCurrentLoanAttached ? "View Current Loan Details" : ""}
+                                            data-testid={`indicator-secured-loan-1-${propertyId}`}
+                                          />
+                                          <div 
+                                            className={`w-3 h-3 rounded-full border-2 cursor-pointer ${
+                                              isSecondLoanAttached
+                                                ? 'bg-purple-500 border-purple-500 hover:bg-purple-600'
+                                                : 'bg-gray-200 border-gray-300'
+                                            }`}
+                                            style={{
+                                              backgroundColor: isSecondLoanAttached ? '#8b5cf6' : '#e5e7eb',
+                                              borderColor: isSecondLoanAttached ? '#8b5cf6' : '#d1d5db'
+                                            }}
+                                            onClick={() => {
+                                              if (isSecondLoanAttached) {
+                                                setIsCurrentSecondLoanPreviewOpen(true);
+                                              }
+                                            }}
+                                            title={isSecondLoanAttached ? "View Current Loan 2 Details" : ""}
+                                            data-testid={`indicator-secured-loan-2-${propertyId}`}
+                                          />
+                                          <div 
+                                            className={`w-3 h-3 rounded-full border-2 cursor-pointer ${
+                                              isThirdLoanAttached
+                                                ? 'bg-orange-500 border-orange-500 hover:bg-orange-600'
+                                                : 'bg-gray-200 border-gray-300'
+                                            }`}
+                                            style={{
+                                              backgroundColor: isThirdLoanAttached ? '#f97316' : '#e5e7eb',
+                                              borderColor: isThirdLoanAttached ? '#f97316' : '#d1d5db'
+                                            }}
+                                            onClick={() => {
+                                              if (isThirdLoanAttached) {
+                                                setIsCurrentThirdLoanPreviewOpen(true);
+                                              }
+                                            }}
+                                            title={isThirdLoanAttached ? "View Current Loan 3 Details" : ""}
+                                            data-testid={`indicator-secured-loan-3-${propertyId}`}
+                                          />
+                                        </div>
+                                      );
+                                    })()}
+                                  </div>
+                                  {(() => {
+                                    const currentProperty = form.watch('property.properties.0');
+                                    
+                                    // Check which loans are attached to this property for counter
+                                    const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                    const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                    
+                                    const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                    const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                    
+                                    // Check third loan (first additional loan - Current Loan 3)
+                                    const additionalLoansData = additionalLoans || [];
+                                    const firstAdditionalLoan = additionalLoansData[0];
+                                    const isThirdLoanAttached = firstAdditionalLoan ? (() => {
+                                      const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
+                                      return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                    })() : false;
+                                    
+                                    // Count active loans
+                                    let activeLoansCount = 0;
+                                    if (isCurrentLoanAttached) activeLoansCount++;
+                                    if (isSecondLoanAttached) activeLoansCount++;
+                                    if (isThirdLoanAttached) activeLoansCount++;
+                                    
+                                    return (
+                                      <div 
+                                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 border border-gray-300 text-xs font-semibold text-gray-600"
+                                        data-testid={`loan-counter-${propertyId}`}
+                                        title={`${activeLoansCount} loan(s) connected`}
+                                      >
+                                        {activeLoansCount}
+                                      </div>
+                                    );
+                                  })()}
+                                </div>
                                 <Select>
-                                  <SelectTrigger data-testid={`select-property-secured-first-${propertyId}`}>
-                                    <SelectValue placeholder="Yes/No" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="yes">Yes</SelectItem>
-                                    <SelectItem value="no">No</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                              
-                              <div className="space-y-2 md:col-span-1">
-                                <Label htmlFor={`property-secured-second-${propertyId}`}>2nd Lien</Label>
-                                <Select>
-                                  <SelectTrigger data-testid={`select-property-secured-second-${propertyId}`}>
+                                  <SelectTrigger data-testid={`select-property-secured-loan-${propertyId}`}>
                                     <SelectValue placeholder="Yes/No" />
                                   </SelectTrigger>
                                   <SelectContent>
