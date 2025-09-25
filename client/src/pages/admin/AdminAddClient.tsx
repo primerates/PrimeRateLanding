@@ -10314,7 +10314,7 @@ export default function AdminAddClient() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <div 
@@ -10349,50 +10349,48 @@ export default function AdminAddClient() {
                       </div>
                     </div>
                     
-                    <div className="space-y-2 flex flex-col justify-center h-full">
-                      <div className="space-y-1 text-sm">
-                        <div className="flex justify-between items-center w-48">
-                          <span className={`text-lg font-semibold ${
-                            (form.watch('property.properties') || []).filter(p => p.use === 'primary').length > 0 
-                              ? 'text-green-800' 
-                              : 'text-foreground'
-                          }`}>Primary Residence:</span>
-                          <span className={`font-medium text-right ${
-                            (form.watch('property.properties') || []).filter(p => p.use === 'primary').length > 0 
-                              ? 'text-green-800' 
-                              : 'text-foreground'
-                          }`} data-testid="text-primary-count">
-                            {(form.watch('property.properties') || []).filter(p => p.use === 'primary').length}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center w-48">
-                          <span className={`text-lg font-semibold ${
-                            (form.watch('property.properties') || []).filter(p => p.use === 'second-home').length > 0 
-                              ? 'text-blue-500' 
-                              : 'text-foreground'
-                          }`}>Second Home:</span>
-                          <span className={`font-medium text-right ${
-                            (form.watch('property.properties') || []).filter(p => p.use === 'second-home').length > 0 
-                              ? 'text-blue-500' 
-                              : 'text-foreground'
-                          }`} data-testid="text-second-home-count">
-                            {(form.watch('property.properties') || []).filter(p => p.use === 'second-home').length}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center w-48">
-                          <span className={`text-lg font-semibold ${
-                            (form.watch('property.properties') || []).filter(p => p.use === 'investment').length > 0 
-                              ? 'text-purple-500' 
-                              : 'text-foreground'
-                          }`}>Investment Property:</span>
-                          <span className={`font-medium text-right ${
-                            (form.watch('property.properties') || []).filter(p => p.use === 'investment').length > 0 
-                              ? 'text-purple-500' 
-                              : 'text-foreground'
-                          }`} data-testid="text-investment-count">
-                            {(form.watch('property.properties') || []).filter(p => p.use === 'investment').length}
-                          </span>
-                        </div>
+                    <div className="space-y-2">
+                      <span className={`text-lg font-semibold ${
+                        (form.watch('property.properties') || []).filter(p => p.use === 'primary').length > 0 
+                          ? 'text-green-800' 
+                          : 'text-foreground'
+                      }`}>Primary Residence</span>
+                      <div className={`text-lg font-medium ${
+                        (form.watch('property.properties') || []).filter(p => p.use === 'primary').length > 0 
+                          ? 'text-green-800' 
+                          : 'text-foreground'
+                      }`} data-testid="text-primary-count">
+                        {(form.watch('property.properties') || []).filter(p => p.use === 'primary').length}
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <span className={`text-lg font-semibold ${
+                        (form.watch('property.properties') || []).filter(p => p.use === 'second-home').length > 0 
+                          ? 'text-blue-500' 
+                          : 'text-foreground'
+                      }`}>Second Home</span>
+                      <div className={`text-lg font-medium ${
+                        (form.watch('property.properties') || []).filter(p => p.use === 'second-home').length > 0 
+                          ? 'text-blue-500' 
+                          : 'text-foreground'
+                      }`} data-testid="text-second-home-count">
+                        {(form.watch('property.properties') || []).filter(p => p.use === 'second-home').length}
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <span className={`text-lg font-semibold ${
+                        (form.watch('property.properties') || []).filter(p => p.use === 'investment').length > 0 
+                          ? 'text-purple-500' 
+                          : 'text-foreground'
+                      }`}>Investment Property</span>
+                      <div className={`text-lg font-medium ${
+                        (form.watch('property.properties') || []).filter(p => p.use === 'investment').length > 0 
+                          ? 'text-purple-500' 
+                          : 'text-foreground'
+                      }`} data-testid="text-investment-count">
+                        {(form.watch('property.properties') || []).filter(p => p.use === 'investment').length}
                       </div>
                     </div>
                   </div>
