@@ -6852,7 +6852,13 @@ export default function AdminAddClient() {
                         <Checkbox
                           id="income-type-selfEmployment"
                           checked={form.watch('income.incomeTypes.selfEmployment') || false}
-                          onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.selfEmployment', !!checked, 'Self-Employment')}
+                          onCheckedChange={(checked) => {
+                            // Prevent unchecking - once checked, can only be removed via Remove button
+                            if (!checked && form.watch('income.incomeTypes.selfEmployment')) {
+                              return; // Do nothing - prevent unchecking
+                            }
+                            handleIncomeTypeChange('income.incomeTypes.selfEmployment', !!checked, 'Self-Employment');
+                          }}
                           data-testid="checkbox-selfEmployment"
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         />
@@ -6975,15 +6981,15 @@ export default function AdminAddClient() {
                               Add Self-Employment
                             </Button>
                             
-                            {/* Delete Self-Employment Button - only show if more than 1 card */}
-                            {(borrowerSelfEmploymentCards || []).length > 1 && (
+                            {/* Delete Self-Employment Button - always show for default card, conditionally for additional cards */}
+                            {(cardId === 'default' || (borrowerSelfEmploymentCards || []).length > 1) && (
                               <Button
                                 type="button"
                                 variant="outline"
                                 size="sm"
                                 onClick={() => setDeleteSelfEmploymentDialog({ isOpen: true, cardId: propertyId })}
                                 className="hover:bg-red-500 hover:text-white"
-                                data-testid="button-delete-self-employment"
+                                data-testid={`button-delete-self-employment-${cardId}`}
                                 title="Delete Self-Employment"
                               >
                                 <Minus className="h-4 w-4 mr-2" />
@@ -12101,9 +12107,38 @@ export default function AdminAddClient() {
             <AlertDialogAction 
               onClick={() => {
                 const cardToDelete = deleteSelfEmploymentDialog.cardId;
-                setBorrowerSelfEmploymentCards(prev => prev.filter(id => 
-                  cardToDelete === 'self-employment-template-card' ? id !== 'default' : id !== cardToDelete
-                ));
+                
+                // If removing the default card, clear the checkbox and related fields
+                if (cardToDelete === 'self-employment-template-card') {
+                  form.setValue('income.incomeTypes.selfEmployment', false);
+                  // Clear the self-employment card list (empty array removes all cards)
+                  setBorrowerSelfEmploymentCards([]);
+                  // Clear all self-employment form fields
+                  const currentCards = borrowerSelfEmploymentCards || ['default'];
+                  currentCards.forEach(cardId => {
+                    const cleanCardId = cardId === 'default' ? 'default' : cardId;
+                    // Clear business info
+                    form.setValue(`income.selfEmployment.${cleanCardId}.businessName`, '');
+                    form.setValue(`income.selfEmployment.${cleanCardId}.businessType`, '');
+                    form.setValue(`income.selfEmployment.${cleanCardId}.businessAddress`, '');
+                    form.setValue(`income.selfEmployment.${cleanCardId}.yearEstablished`, '');
+                    form.setValue(`income.selfEmployment.${cleanCardId}.netIncome`, '');
+                    // Clear duration info
+                    form.setValue(`income.selfEmployment.${cleanCardId}.duration`, '');
+                  });
+                } else {
+                  // Remove the specific card
+                  setBorrowerSelfEmploymentCards(prev => prev.filter(id => id !== cardToDelete));
+                  // Clear form fields for this specific card
+                  const cleanCardId = cardToDelete;
+                  form.setValue(`income.selfEmployment.${cleanCardId}.businessName`, '');
+                  form.setValue(`income.selfEmployment.${cleanCardId}.businessType`, '');
+                  form.setValue(`income.selfEmployment.${cleanCardId}.businessAddress`, '');
+                  form.setValue(`income.selfEmployment.${cleanCardId}.yearEstablished`, '');
+                  form.setValue(`income.selfEmployment.${cleanCardId}.netIncome`, '');
+                  form.setValue(`income.selfEmployment.${cleanCardId}.duration`, '');
+                }
+                
                 setDeleteSelfEmploymentDialog({ isOpen: false, cardId: '' });
               }}
               data-testid="button-confirm-delete-self-employment"
