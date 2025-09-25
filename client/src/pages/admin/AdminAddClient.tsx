@@ -12253,39 +12253,59 @@ export default function AdminAddClient() {
             <AlertDialogAction 
               onClick={() => {
                 const cardToDelete = deleteEmployerDialog.cardId;
-                const currentCards = borrowerEmployerCards || ['default'];
                 
-                // Clear form data for the deleted card
-                const cleanCardId = cardToDelete === 'template-card' ? 'default' : cardToDelete;
-                const basePath = `income.employers.${cleanCardId}` as const;
-                
-                form.setValue(`${basePath}.employerName`, '');
-                form.setValue(`${basePath}.jobTitle`, '');
-                form.setValue(`${basePath}.monthlyIncome`, '');
-                form.setValue(`${basePath}.monthlyBonusIncome`, '');
-                form.setValue(`${basePath}.annualBonusIncome`, '');
-                form.setValue(`${basePath}.employmentType`, 'Full-Time');
-                form.setValue(`${basePath}.yearsEmployedYears`, '');
-                form.setValue(`${basePath}.yearsEmployedMonths`, '');
-                form.setValue(`${basePath}.employerAddress.street`, '');
-                form.setValue(`${basePath}.employerAddress.unit`, '');
-                form.setValue(`${basePath}.employerAddress.city`, '');
-                form.setValue(`${basePath}.employerAddress.state`, '');
-                form.setValue(`${basePath}.employerAddress.zip`, '');
-                form.setValue(`${basePath}.employerAddress.county`, '');
-                form.setValue(`${basePath}.employerPhone`, '');
-                form.setValue(`${basePath}.employmentVerificationPhone`, '');
-                form.setValue(`${basePath}.employerRemote`, '');
-                
-                // Remove the specific card from state
-                const updatedCards = currentCards.filter(id => 
-                  cardToDelete === 'template-card' ? id !== 'default' : id !== cardToDelete
-                );
-                setBorrowerEmployerCards(updatedCards);
-                
-                // If no cards remain, uncheck the employment checkbox
-                if (updatedCards.length === 0) {
+                // If removing the default card, clear the checkbox and related fields
+                if (cardToDelete === 'template-card') {
                   form.setValue('income.incomeTypes.employment', false);
+                  // Clear the employer card list (empty array removes all cards)
+                  setBorrowerEmployerCards([]);
+                  // Clear all employer form fields
+                  const currentCards = borrowerEmployerCards || ['default'];
+                  currentCards.forEach(cardId => {
+                    const cleanCardId = cardId === 'default' ? 'default' : cardId;
+                    const basePath = `income.employers.${cleanCardId}` as const;
+                    // Clear employer info
+                    form.setValue(`${basePath}.employerName`, '');
+                    form.setValue(`${basePath}.jobTitle`, '');
+                    form.setValue(`${basePath}.monthlyIncome`, '');
+                    form.setValue(`${basePath}.monthlyBonusIncome`, '');
+                    form.setValue(`${basePath}.annualBonusIncome`, '');
+                    form.setValue(`${basePath}.employmentType`, 'Full-Time');
+                    form.setValue(`${basePath}.yearsEmployedYears`, '');
+                    form.setValue(`${basePath}.yearsEmployedMonths`, '');
+                    form.setValue(`${basePath}.employerAddress.street`, '');
+                    form.setValue(`${basePath}.employerAddress.unit`, '');
+                    form.setValue(`${basePath}.employerAddress.city`, '');
+                    form.setValue(`${basePath}.employerAddress.state`, '');
+                    form.setValue(`${basePath}.employerAddress.zip`, '');
+                    form.setValue(`${basePath}.employerAddress.county`, '');
+                    form.setValue(`${basePath}.employerPhone`, '');
+                    form.setValue(`${basePath}.employmentVerificationPhone`, '');
+                    form.setValue(`${basePath}.employerRemote`, '');
+                  });
+                } else {
+                  // Remove the specific card
+                  setBorrowerEmployerCards(prev => prev.filter(id => id !== cardToDelete));
+                  // Clear form fields for this specific card
+                  const cleanCardId = cardToDelete;
+                  const basePath = `income.employers.${cleanCardId}` as const;
+                  form.setValue(`${basePath}.employerName`, '');
+                  form.setValue(`${basePath}.jobTitle`, '');
+                  form.setValue(`${basePath}.monthlyIncome`, '');
+                  form.setValue(`${basePath}.monthlyBonusIncome`, '');
+                  form.setValue(`${basePath}.annualBonusIncome`, '');
+                  form.setValue(`${basePath}.employmentType`, 'Full-Time');
+                  form.setValue(`${basePath}.yearsEmployedYears`, '');
+                  form.setValue(`${basePath}.yearsEmployedMonths`, '');
+                  form.setValue(`${basePath}.employerAddress.street`, '');
+                  form.setValue(`${basePath}.employerAddress.unit`, '');
+                  form.setValue(`${basePath}.employerAddress.city`, '');
+                  form.setValue(`${basePath}.employerAddress.state`, '');
+                  form.setValue(`${basePath}.employerAddress.zip`, '');
+                  form.setValue(`${basePath}.employerAddress.county`, '');
+                  form.setValue(`${basePath}.employerPhone`, '');
+                  form.setValue(`${basePath}.employmentVerificationPhone`, '');
+                  form.setValue(`${basePath}.employerRemote`, '');
                 }
                 
                 setDeleteEmployerDialog({ isOpen: false, cardId: '' });
