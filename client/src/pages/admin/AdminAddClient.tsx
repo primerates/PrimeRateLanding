@@ -1524,23 +1524,46 @@ export default function AdminAddClient() {
   });
 
   
-  // DISABLED: Auto-sum calculation for Total Monthly Payment
-  // This expensive useEffect was causing typing lag by watching fields on every keystroke
-  // useEffect(() => {
-  //   const piPayment = form.watch('currentLoan.principalAndInterestPayment') || '0';
-  //   const escrowAmount = form.watch('currentLoan.escrowPayment') || '0';
-  //   
-  //   const parseCurrency = (value: string) => {
-  //     return parseFloat(value.replace(/[^0-9.-]+/g, '')) || 0;
-  //   };
-  //   
-  //   const piAmount = parseCurrency(piPayment);
-  //   const escrowAmountNum = parseCurrency(escrowAmount);
-  //   const total = piAmount + escrowAmountNum;
-  //   
-  //   const formattedTotal = total > 0 ? `$${total.toFixed(2)}` : '';
-  //   form.setValue('currentLoan.totalMonthlyPayment', formattedTotal);
-  // }, [form.watch('currentLoan.principalAndInterestPayment'), form.watch('currentLoan.escrowPayment')]);
+  // Auto-sum calculation for Total Monthly Payment using optimized approach
+  const [debouncedPIPayment, setDebouncedPIPayment] = useState('');
+  const [debouncedEscrowPayment, setDebouncedEscrowPayment] = useState('');
+
+  // Debounce the input fields to avoid excessive calculations during typing
+  useEffect(() => {
+    const piPayment = form.watch('currentLoan.principalAndInterestPayment') || '0';
+    const timer = setTimeout(() => {
+      setDebouncedPIPayment(piPayment);
+    }, 300); // 300ms debounce delay
+    return () => clearTimeout(timer);
+  }, [form.watch('currentLoan.principalAndInterestPayment')]);
+
+  useEffect(() => {
+    const escrowPayment = form.watch('currentLoan.escrowPayment') || '0';
+    const timer = setTimeout(() => {
+      setDebouncedEscrowPayment(escrowPayment);
+    }, 300); // 300ms debounce delay
+    return () => clearTimeout(timer);
+  }, [form.watch('currentLoan.escrowPayment')]);
+
+  // Calculate total using memoized values
+  const calculatedTotal = useMemo(() => {
+    const parseCurrency = (value: string) => {
+      return parseFloat(value.replace(/[^0-9.-]+/g, '')) || 0;
+    };
+    
+    const piAmount = parseCurrency(debouncedPIPayment);
+    const escrowAmountNum = parseCurrency(debouncedEscrowPayment);
+    const total = piAmount + escrowAmountNum;
+    
+    return total > 0 ? `$${total.toFixed(2)}` : '';
+  }, [debouncedPIPayment, debouncedEscrowPayment]);
+
+  // Update form value when calculated total changes
+  useEffect(() => {
+    if (calculatedTotal !== form.getValues('currentLoan.totalMonthlyPayment')) {
+      form.setValue('currentLoan.totalMonthlyPayment', calculatedTotal);
+    }
+  }, [calculatedTotal, form]);
   
 
   const addClientMutation = useMutation({
