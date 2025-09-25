@@ -7041,25 +7041,58 @@ export default function AdminAddClient() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="income-backDTI" className={`${
+                    <Label htmlFor="income-backDTI" className={`text-lg font-semibold ${
                       showIncomeAnimation ? 'animate-roll-down-dti-2' : ''
                     }`}>Back DTI</Label>
                     <Controller
                       control={form.control}
                       name="income.backDTI"
-                      render={({ field }) => (
-                        <Input
-                          id="income-backDTI"
-                          value={formatPercentageDisplay(field.value)}
-                          onChange={(e) => {
-                            const rawValue = parsePercentageInput(e.target.value);
-                            field.onChange(rawValue);
-                          }}
-                          placeholder="%"
-                          className="w-1/2"
-                          data-testid="input-income-backDTI"
-                        />
-                      )}
+                      render={({ field }) => {
+                        const displayValue = formatPercentageDisplay(field.value);
+                        const hasValue = field.value && field.value.trim() !== '';
+                        
+                        return (
+                          <div className="min-h-[40px] flex items-center">
+                            {!isBackDTIEditing && hasValue ? (
+                              <div
+                                onClick={() => setIsBackDTIEditing(true)}
+                                className="cursor-pointer bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                                style={{
+                                  fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                                  fontSize: '36px',
+                                  fontWeight: 600,
+                                  backgroundColor: '#1e3a8a'
+                                }}
+                                data-testid="display-income-backDTI"
+                              >
+                                <span>
+                                  {displayValue.replace('%', '')}
+                                  <span style={{ fontSize: '28px' }}>%</span>
+                                </span>
+                              </div>
+                            ) : (
+                              <Input
+                                id="income-backDTI"
+                                value={displayValue}
+                                onChange={(e) => {
+                                  const rawValue = parsePercentageInput(e.target.value);
+                                  field.onChange(rawValue);
+                                }}
+                                onBlur={() => {
+                                  if (hasValue) {
+                                    setIsBackDTIEditing(false);
+                                  }
+                                }}
+                                onFocus={() => setIsBackDTIEditing(true)}
+                                placeholder="%"
+                                autoFocus={isBackDTIEditing && hasValue}
+                                className="w-1/2"
+                                data-testid="input-income-backDTI"
+                              />
+                            )}
+                          </div>
+                        );
+                      }}
                     />
                   </div>
                   
