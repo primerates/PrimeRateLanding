@@ -610,9 +610,6 @@ export default function AdminAddClient() {
           // Cards already exist, prevent unchecking - all removal must be done through card buttons
           return;
         }
-        // If no cards exist, allow unchecking without warning
-        form.setValue(fieldPath as any, false);
-        return;
       }
       
       // Special handling for pension - don't allow unchecking if default card already exists
@@ -7025,7 +7022,6 @@ export default function AdminAddClient() {
                           id="income-type-secondEmployment"
                           checked={form.watch('income.incomeTypes.secondEmployment') || false}
                           onCheckedChange={(checked) => handleIncomeTypeChange('income.incomeTypes.secondEmployment', !!checked, 'Second Employment')}
-                          disabled={(borrowerSecondEmployerCards || []).length > 0}
                           data-testid="checkbox-secondEmployment"
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         />
@@ -8530,7 +8526,6 @@ export default function AdminAddClient() {
                             id="coBorrowerIncome-type-secondEmployment"
                             checked={form.watch('coBorrowerIncome.incomeTypes.secondEmployment') || false}
                             onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.secondEmployment', !!checked, 'Second Employment', true)}
-                            disabled={(coBorrowerSecondEmployerCards || []).length > 0}
                             data-testid="checkbox-coborrower-secondEmployment"
                             className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           />
