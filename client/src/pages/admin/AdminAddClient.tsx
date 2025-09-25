@@ -12207,7 +12207,6 @@ export default function AdminAddClient() {
                 const cleanCardId = cardToDelete === 'template-card' ? 'default' : cardToDelete;
                 const basePath = `income.employers.${cleanCardId}` as const;
                 
-                // Clear all employer fields for this card
                 form.setValue(`${basePath}.employerName`, '');
                 form.setValue(`${basePath}.jobTitle`, '');
                 form.setValue(`${basePath}.monthlyIncome`, '');
@@ -12226,13 +12225,16 @@ export default function AdminAddClient() {
                 form.setValue(`${basePath}.employmentVerificationPhone`, '');
                 form.setValue(`${basePath}.employerRemote`, '');
                 
-                // Only remove card from state if there are multiple cards
-                if (currentCards.length > 1) {
-                  setBorrowerEmployerCards(prev => prev.filter(id => 
-                    cardToDelete === 'template-card' ? id !== 'default' : id !== cardToDelete
-                  ));
+                // Remove the specific card from state
+                const updatedCards = currentCards.filter(id => 
+                  cardToDelete === 'template-card' ? id !== 'default' : id !== cardToDelete
+                );
+                setBorrowerEmployerCards(updatedCards);
+                
+                // If no cards remain, uncheck the employment checkbox
+                if (updatedCards.length === 0) {
+                  form.setValue('income.incomeTypes.employment', false);
                 }
-                // If this is the last card, we keep it but data is cleared above
                 
                 setDeleteEmployerDialog({ isOpen: false, cardId: '' });
               }}
@@ -12460,7 +12462,6 @@ export default function AdminAddClient() {
                 const cleanCardId = cardToDelete === 'coborrower-template-card' ? 'default' : cardToDelete;
                 const basePath = `coBorrowerIncome.employers.${cleanCardId}` as const;
                 
-                // Clear all co-borrower employer fields for this card
                 form.setValue(`${basePath}.employerName`, '');
                 form.setValue(`${basePath}.jobTitle`, '');
                 form.setValue(`${basePath}.monthlyIncome`, '');
@@ -12479,13 +12480,16 @@ export default function AdminAddClient() {
                 form.setValue(`${basePath}.employmentVerificationPhone`, '');
                 form.setValue(`${basePath}.employerRemote`, '');
                 
-                // Only remove card from state if there are multiple cards
-                if (currentCards.length > 1) {
-                  setCoBorrowerEmployerCards(prev => prev.filter(id => 
-                    cardToDelete === 'coborrower-template-card' ? id !== 'default' : id !== cardToDelete
-                  ));
+                // Remove the specific card from state
+                const updatedCards = currentCards.filter(id => 
+                  cardToDelete === 'coborrower-template-card' ? id !== 'default' : id !== cardToDelete
+                );
+                setCoBorrowerEmployerCards(updatedCards);
+                
+                // If no cards remain, uncheck the employment checkbox
+                if (updatedCards.length === 0) {
+                  form.setValue('coBorrowerIncome.incomeTypes.employment', false);
                 }
-                // If this is the last card, we keep it but data is cleared above
                 
                 setDeleteCoBorrowerEmployerDialog({ isOpen: false, cardId: '' });
               }}
