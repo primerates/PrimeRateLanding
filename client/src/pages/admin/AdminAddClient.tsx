@@ -12380,9 +12380,38 @@ export default function AdminAddClient() {
             <AlertDialogAction 
               onClick={() => {
                 const cardToDelete = deleteCoBorrowerSecondEmployerDialog.cardId;
-                setCoBorrowerSecondEmployerCards(prev => prev.filter(id => 
-                  cardToDelete === 'coborrower-second-template-card' ? id !== 'default' : id !== cardToDelete
-                ));
+                
+                // If removing the default card, clear the checkbox and related fields
+                if (cardToDelete === 'coborrower-second-template-card') {
+                  form.setValue('coBorrowerIncome.incomeTypes.secondEmployment', false);
+                  // Clear the co-borrower second employment card list (empty array removes all cards)
+                  setCoBorrowerSecondEmployerCards([]);
+                  // Clear all co-borrower second employment form fields
+                  const currentCards = coBorrowerSecondEmployerCards || ['default'];
+                  currentCards.forEach(cardId => {
+                    const cleanCardId = cardId === 'default' ? 'default' : cardId;
+                    // Clear employer info
+                    form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.employerName`, '');
+                    form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.address`, '');
+                    form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.phone`, '');
+                    form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.position`, '');
+                    form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.monthlySalary`, '');
+                    // Clear duration info
+                    form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.duration`, '');
+                  });
+                } else {
+                  // Remove the specific card
+                  setCoBorrowerSecondEmployerCards(prev => prev.filter(id => id !== cardToDelete));
+                  // Clear form fields for this specific card
+                  const cleanCardId = cardToDelete;
+                  form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.employerName`, '');
+                  form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.address`, '');
+                  form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.phone`, '');
+                  form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.position`, '');
+                  form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.monthlySalary`, '');
+                  form.setValue(`coBorrowerIncome.secondEmployment.${cleanCardId}.duration`, '');
+                }
+                
                 setDeleteCoBorrowerSecondEmployerDialog({ isOpen: false, cardId: '' });
               }}
               data-testid="button-confirm-delete-coborrower-second-employer"
