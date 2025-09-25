@@ -7083,7 +7083,6 @@ export default function AdminAddClient() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <Label className="text-base font-semibold">Income Types</Label>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                       <div className="flex items-center space-x-2">
                         <Checkbox
@@ -8587,7 +8586,6 @@ export default function AdminAddClient() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      <Label className="text-base font-semibold">Income Types</Label>
                       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         <div className="flex items-center space-x-2">
                           <Checkbox
