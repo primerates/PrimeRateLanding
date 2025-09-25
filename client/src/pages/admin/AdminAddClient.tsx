@@ -10331,37 +10331,7 @@ export default function AdminAddClient() {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="flex items-center gap-2">
-                      <div 
-                        className="h-9 w-1/4 px-3 py-2 border border-input bg-background rounded-md text-sm font-medium"
-                        data-testid="display-property-estimatedLTV"
-                      >
-                        {(() => {
-                          const properties = form.watch('property.properties') || [];
-                          const subjectProperty = properties.find(p => p.isSubject === true);
-                          
-                          if (!subjectProperty || !subjectProperty.loan?.mortgageBalance) {
-                            return '-';
-                          }
-                          
-                          const mortgageBalance = parseMonetaryValue(subjectProperty.loan.mortgageBalance);
-                          
-                          // Use appraised value if available, otherwise use estimated value
-                          let propertyValue = 0;
-                          if (subjectProperty.appraisedValue && parseMonetaryValue(subjectProperty.appraisedValue) > 0) {
-                            propertyValue = parseMonetaryValue(subjectProperty.appraisedValue);
-                          } else if (subjectProperty.estimatedValue && parseMonetaryValue(subjectProperty.estimatedValue) > 0) {
-                            propertyValue = parseMonetaryValue(subjectProperty.estimatedValue);
-                          }
-                          
-                          if (propertyValue <= 0) return '-';
-                          
-                          const ltv = (mortgageBalance / propertyValue * 100);
-                          return Math.round(ltv).toString();
-                        })()}
-                      </div>
-                      <span className="text-lg font-medium">%</span>
-                    </div>
+                    <div></div>
                     
                     <div className="flex items-center">
                       <div
