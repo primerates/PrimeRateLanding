@@ -5,10 +5,33 @@ import { sendEmail, formatPreApprovalEmail, formatRateTrackerEmail, formatSchedu
 import { insertClientSchema, clientSchema, preApprovalSubmissionSchema } from "@shared/schema";
 import { ZodError } from "zod";
 import fetch from "node-fetch";
+import jwt from 'jsonwebtoken';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const TARGET_EMAIL = "polo.perry@yahoo.com";
   const FROM_EMAIL = "noreply@example.com"; // Using a generic domain that should work with SendGrid
+
+  // JWT authentication helper function
+  const verifyAdminJWT = (req: any): { isValid: boolean; email?: string } => {
+    try {
+      const adminToken = req.cookies?.admin_token;
+      const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key-change-in-production";
+      
+      if (!adminToken) {
+        return { isValid: false };
+      }
+      
+      const decoded = jwt.verify(adminToken, JWT_SECRET) as any;
+      
+      if (decoded.role === 'admin' && decoded.email) {
+        return { isValid: true, email: decoded.email };
+      }
+      
+      return { isValid: false };
+    } catch (error) {
+      return { isValid: false };
+    }
+  };
 
   // Pre-Approval Form Submission
   app.post("/api/pre-approval", async (req, res) => {
@@ -251,16 +274,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { email, password } = req.body;
       
-      // Simple hardcoded authentication
-      if (email === "polo.perry@yahoo.com" && password === "password") {
-        // Set session/cookie for authentication
-        // For development, use simpler cookie settings
-        res.cookie('admin_session', 'authenticated', { 
+      // Use environment variables with fallback to development values
+      const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "polo.perry@yahoo.com";
+      const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "password";
+      const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key-change-in-production";
+      
+      // Validate credentials
+      if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+        // Generate JWT token
+        const token = jwt.sign(
+          { 
+            email: email,
+            role: 'admin',
+            iat: Math.floor(Date.now() / 1000)
+          },
+          JWT_SECRET,
+          { 
+            expiresIn: '2h',
+            issuer: 'prime-rate-home-loans'
+          }
+        );
+        
+        // Set secure HTTP-only cookie with JWT token
+        res.cookie('admin_token', token, { 
           httpOnly: true,
-          secure: false, // Allow over HTTP in development
+          secure: process.env.NODE_ENV === 'production', // HTTPS in production only
           sameSite: 'lax',
           path: '/',
-          maxAge: 2 * 60 * 60 * 1000 // 2 hours for better security
+          maxAge: 2 * 60 * 60 * 1000 // 2 hours
         });
         
         console.log("Admin login successful");
@@ -276,13 +317,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/admin/verify", async (req, res) => {
     try {
-      const adminSession = req.cookies?.admin_session;
+      const adminToken = req.cookies?.admin_token;
+      const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key-change-in-production";
       
-      // Verify admin session without logging sensitive data
+      if (!adminToken) {
+        return res.status(401).json({ success: false, authenticated: false });
+      }
       
-      if (adminSession === 'authenticated') {
-        res.json({ success: true, authenticated: true });
-      } else {
+      // Verify JWT token
+      try {
+        const decoded = jwt.verify(adminToken, JWT_SECRET) as any;
+        
+        // Check token structure and validity
+        if (decoded.role === 'admin' && decoded.email) {
+          res.json({ 
+            success: true, 
+            authenticated: true,
+            email: decoded.email 
+          });
+        } else {
+          res.status(401).json({ success: false, authenticated: false });
+        }
+      } catch (tokenError) {
+        // Token verification failed (expired, invalid, etc.)
         res.status(401).json({ success: false, authenticated: false });
       }
     } catch (error) {
@@ -293,7 +350,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/admin/logout", async (req, res) => {
     try {
-      res.clearCookie('admin_session');
+      res.clearCookie('admin_token');
       res.json({ success: true, message: "Logged out successfully" });
     } catch (error) {
       console.error("Admin logout error:", error);
@@ -304,9 +361,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Client Management Routes
   app.post("/api/admin/clients", async (req, res) => {
     try {
-      // Check authentication
-      const adminSession = req.cookies?.admin_session;
-      if (adminSession !== 'authenticated') {
+      // Check JWT authentication
+      const auth = verifyAdminJWT(req);
+      if (!auth.isValid) {
         return res.status(401).json({ success: false, message: "Unauthorized" });
       }
 
@@ -342,9 +399,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/admin/clients", async (req, res) => {
     try {
-      // Check authentication
-      const adminSession = req.cookies?.admin_session;
-      if (adminSession !== 'authenticated') {
+      // Check JWT authentication
+      const auth = verifyAdminJWT(req);
+      if (!auth.isValid) {
         return res.status(401).json({ success: false, message: "Unauthorized" });
       }
 
@@ -358,9 +415,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/admin/clients/:id", async (req, res) => {
     try {
-      // Check authentication
-      const adminSession = req.cookies?.admin_session;
-      if (adminSession !== 'authenticated') {
+      // Check JWT authentication
+      const auth = verifyAdminJWT(req);
+      if (!auth.isValid) {
         return res.status(401).json({ success: false, message: "Unauthorized" });
       }
 
@@ -380,9 +437,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/admin/clients/:id", async (req, res) => {
     try {
-      // Check authentication
-      const adminSession = req.cookies?.admin_session;
-      if (adminSession !== 'authenticated') {
+      // Check JWT authentication
+      const auth = verifyAdminJWT(req);
+      if (!auth.isValid) {
         return res.status(401).json({ success: false, message: "Unauthorized" });
       }
 
@@ -417,9 +474,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/admin/clients/:id", async (req, res) => {
     try {
-      // Check authentication
-      const adminSession = req.cookies?.admin_session;
-      if (adminSession !== 'authenticated') {
+      // Check JWT authentication
+      const auth = verifyAdminJWT(req);
+      if (!auth.isValid) {
         return res.status(401).json({ success: false, message: "Unauthorized" });
       }
 
@@ -440,9 +497,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Search clients
   app.get("/api/admin/clients/search/:query", async (req, res) => {
     try {
-      // Check authentication
-      const adminSession = req.cookies?.admin_session;
-      if (adminSession !== 'authenticated') {
+      // Check JWT authentication
+      const auth = verifyAdminJWT(req);
+      if (!auth.isValid) {
         return res.status(401).json({ success: false, message: "Unauthorized" });
       }
 
