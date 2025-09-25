@@ -6985,7 +6985,7 @@ export default function AdminAddClient() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="income-frontDTI" className={`${
+                    <Label htmlFor="income-frontDTI" className={`text-2xl font-semibold ${
                       showIncomeAnimation ? 'animate-roll-down-dti-1' : ''
                     }`}>Front DTI</Label>
                     <Controller
