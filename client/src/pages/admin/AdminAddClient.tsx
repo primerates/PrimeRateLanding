@@ -7000,11 +7000,12 @@ export default function AdminAddClient() {
                             {!isFrontDTIEditing && hasValue ? (
                               <div
                                 onClick={() => setIsFrontDTIEditing(true)}
-                                className="cursor-pointer text-black hover:bg-gray-50 px-2 py-1 rounded"
+                                className="cursor-pointer bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
                                 style={{
                                   fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                                   fontSize: '36px',
-                                  fontWeight: 600
+                                  fontWeight: 600,
+                                  backgroundColor: '#1e3a8a'
                                 }}
                                 data-testid="display-income-frontDTI"
                               >
