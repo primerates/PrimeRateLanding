@@ -600,6 +600,12 @@ export default function AdminAddClient() {
         }
       }
       
+      // Special handling for second employment - don't show warning, just uncheck
+      if (incomeTypeName === 'Second Employment') {
+        form.setValue(fieldPath as any, false);
+        return;
+      }
+      
       // Special handling for pension - don't allow unchecking if default card already exists
       if (incomeTypeName === 'Pension') {
         const currentPensions = isCoBorrower 
