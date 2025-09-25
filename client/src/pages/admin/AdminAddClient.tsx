@@ -10309,11 +10309,8 @@ export default function AdminAddClient() {
                 showPropertyAnimation ? 'animate-roll-down' : ''
               }`}>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    Total Properties
-                    <span className="text-lg font-semibold">
-                      - <span data-testid="text-property-count">{(form.watch('property.properties') || []).length}</span>
-                    </span>
+                  <CardTitle>
+                    Est. LTV
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
