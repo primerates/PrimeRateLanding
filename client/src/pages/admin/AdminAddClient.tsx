@@ -10383,33 +10383,10 @@ export default function AdminAddClient() {
                           fontWeight: 600,
                           backgroundColor: '#1a3373'
                         }}
-                        data-testid="display-property-estimatedLTV"
+                        data-testid="text-home-purchase-count"
                       >
                         <span>
-                          {(() => {
-                            const properties = form.watch('property.properties') || [];
-                            const subjectProperty = properties.find(p => p.isSubject === true);
-                            
-                            if (!subjectProperty || !subjectProperty.loan?.mortgageBalance) {
-                              return '-';
-                            }
-                            
-                            const mortgageBalance = parseMonetaryValue(subjectProperty.loan.mortgageBalance);
-                            
-                            // Use appraised value if available, otherwise use estimated value
-                            let propertyValue = 0;
-                            if (subjectProperty.appraisedValue && parseMonetaryValue(subjectProperty.appraisedValue) > 0) {
-                              propertyValue = parseMonetaryValue(subjectProperty.appraisedValue);
-                            } else if (subjectProperty.estimatedValue && parseMonetaryValue(subjectProperty.estimatedValue) > 0) {
-                              propertyValue = parseMonetaryValue(subjectProperty.estimatedValue);
-                            }
-                            
-                            if (propertyValue <= 0) return '-';
-                            
-                            const ltv = (mortgageBalance / propertyValue * 100);
-                            return Math.round(ltv).toString();
-                          })()}
-                          <span style={{ fontSize: '28px' }}>%</span>
+                          {(form.watch('property.properties') || []).filter(p => p.use === 'home-purchase').length}
                         </span>
                       </div>
                     </div>
