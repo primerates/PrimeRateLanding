@@ -7011,7 +7011,7 @@ export default function AdminAddClient() {
                               >
                                 <span>
                                   {displayValue.replace('%', '')}
-                                  <span style={{ fontSize: '32px' }}>%</span>
+                                  <span style={{ fontSize: '28px' }}>%</span>
                                 </span>
                               </div>
                             ) : (
