@@ -10316,24 +10316,6 @@ export default function AdminAddClient() {
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
-                      <Label>
-                        {(() => {
-                          const properties = form.watch('property.properties') || [];
-                          const subjectProperty = properties.find(p => p.isSubject === true);
-                          
-                          if (!subjectProperty) return 'Estimated LTV';
-                          
-                          const hasAppraisedValue = subjectProperty.appraisedValue && parseMonetaryValue(subjectProperty.appraisedValue) > 0;
-                          const fieldType = mortgageBalanceFieldType[subjectProperty.id || ''] || 'statement';
-                          const hasPayOffBalance = fieldType === 'payoff' && subjectProperty.loan?.mortgageBalance && parseMonetaryValue(subjectProperty.loan.mortgageBalance) > 0;
-                          
-                          if (hasAppraisedValue && hasPayOffBalance) {
-                            return 'Final LTV';
-                          }
-                          
-                          return 'Estimated LTV';
-                        })()}
-                      </Label>
                       <div className="flex items-center gap-2">
                         <div 
                           className="h-9 w-1/4 px-3 py-2 border border-input bg-background rounded-md text-sm font-medium"
