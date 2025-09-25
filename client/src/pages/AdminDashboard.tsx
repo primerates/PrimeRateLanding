@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
+import pyramidsBackground from '@assets/stock_images/egyptian_pyramids_de_debf6a77.jpg';
 
 export default function AdminDashboard() {
   const [location, setLocation] = useLocation();
@@ -68,9 +69,19 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div 
+      className="min-h-screen bg-background relative"
+      style={{
+        backgroundImage: `url(${pyramidsBackground})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      {/* Faded overlay to make background subtle */}
+      <div className="absolute inset-0 bg-background/85" />
       {/* Header */}
-      <header className="bg-primary text-primary-foreground shadow-lg border-b transition-shadow duration-300 hover:shadow-2xl hover:shadow-primary/20">
+      <header className="bg-primary text-primary-foreground shadow-lg border-b transition-shadow duration-300 hover:shadow-2xl hover:shadow-primary/20 relative z-10">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -108,7 +119,7 @@ export default function AdminDashboard() {
       </header>
 
       {/* Main Content */}
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-6 py-8 relative z-10">
         <div className="mb-16">
           <h2 className="text-2xl font-bold mb-2" data-testid="text-dashboard-welcome">
             Dashboard
