@@ -95,7 +95,7 @@ export default function AdminDashboard() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <h1 className="text-xl font-black italic" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="text-admin-header">
+              <h1 className="text-xl font-black italic" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif', textShadow: '1px 1px 2px rgba(255,255,255,0.3), -1px -1px 2px rgba(0,0,0,0.5)' }} data-testid="text-admin-header">
                 PRIME RATE HOME LOANS
               </h1>
               <Separator orientation="vertical" className="h-6 bg-primary-foreground/20" />
@@ -140,7 +140,7 @@ export default function AdminDashboard() {
         }}
       >
         <div className="mb-16">
-          <h2 className="text-2xl font-bold mb-2" data-testid="text-dashboard-welcome">
+          <h2 className="text-2xl font-bold mb-2" style={{ textShadow: '2px 2px 4px rgba(255,255,255,0.2), -2px -2px 4px rgba(0,0,0,0.4)' }} data-testid="text-dashboard-welcome">
             Dashboard
           </h2>
         </div>
@@ -168,7 +168,7 @@ export default function AdminDashboard() {
                   <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-3">
                     <Icon className="h-6 w-6 text-primary transition-transform duration-300 group-hover:rotate-[360deg]" />
                   </div>
-                  <CardTitle className="text-lg">{item.label}</CardTitle>
+                  <CardTitle className="text-lg" style={{ textShadow: '1px 1px 3px rgba(255,255,255,0.3), -1px -1px 3px rgba(0,0,0,0.4)' }}>{item.label}</CardTitle>
                 </CardHeader>
               </Card>
             );
@@ -198,7 +198,7 @@ export default function AdminDashboard() {
                   <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-3">
                     <Icon className="h-6 w-6 text-primary transition-transform duration-300 group-hover:rotate-[360deg]" />
                   </div>
-                  <CardTitle className="text-lg">{item.label}</CardTitle>
+                  <CardTitle className="text-lg" style={{ textShadow: '1px 1px 3px rgba(255,255,255,0.3), -1px -1px 3px rgba(0,0,0,0.4)' }}>{item.label}</CardTitle>
                 </CardHeader>
               </Card>
             );
