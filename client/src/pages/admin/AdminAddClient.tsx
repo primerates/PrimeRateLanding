@@ -6981,11 +6981,11 @@ export default function AdminAddClient() {
               }`}>
                 <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
                   <div className="space-y-2">
-                    <Label htmlFor="household-income-total" className="text-2xl font-semibold">Total Household Income</Label>
+                    <Label htmlFor="household-income-total" className="text-lg font-semibold">Total Household Income</Label>
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="income-frontDTI" className={`text-2xl font-semibold ${
+                    <Label htmlFor="income-frontDTI" className={`text-lg font-semibold ${
                       showIncomeAnimation ? 'animate-roll-down-dti-1' : ''
                     }`}>Front DTI</Label>
                     <Controller
@@ -7003,7 +7003,7 @@ export default function AdminAddClient() {
                                 className="cursor-pointer text-black hover:bg-gray-50 px-2 py-1 rounded"
                                 style={{
                                   fontFamily: 'ui-sans-serif, system-ui, sans-serif',
-                                  fontSize: '24px',
+                                  fontSize: '36px',
                                   fontWeight: 600
                                 }}
                                 data-testid="display-income-frontDTI"
