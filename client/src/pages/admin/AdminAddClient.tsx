@@ -981,6 +981,11 @@ export default function AdminAddClient() {
     isOpen: boolean;
   }>({ isOpen: false });
 
+  // Delete confirmation dialog state for Co-Borrower Other Income
+  const [deleteCoBorrowerOtherDialog, setDeleteCoBorrowerOtherDialog] = useState<{
+    isOpen: boolean;
+  }>({ isOpen: false });
+
   // Co-Borrower Employer cards state management
   const [coBorrowerEmployerCards, setCoBorrowerEmployerCards] = useState<string[]>([]);
   
@@ -10124,35 +10129,49 @@ export default function AdminAddClient() {
                   <Collapsible open={isCoBorrowerOtherIncomeOpen} onOpenChange={setIsCoBorrowerOtherIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Co-Borrower Rental Income</CardTitle>
-                        <CollapsibleTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="hover:bg-orange-500 hover:text-white" 
-                            data-testid="button-toggle-coborrower-other-income"
-                            title={isCoBorrowerOtherIncomeOpen ? 'Minimize' : 'Expand'}
-                            key={`coborrower-other-income-${isCoBorrowerOtherIncomeOpen}`}
+                        <CardTitle>Co-Borrower - Other Income</CardTitle>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setDeleteCoBorrowerOtherDialog({ isOpen: true })}
+                            className="hover:bg-red-500 hover:text-white"
+                            data-testid="button-delete-coborrower-other"
+                            title="Delete Co-Borrower Other Income"
                           >
-                            {isCoBorrowerOtherIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            <Minus className="h-4 w-4 mr-2" />
+                            Remove
                           </Button>
-                        </CollapsibleTrigger>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-coborrower-other-income"
+                              title={isCoBorrowerOtherIncomeOpen ? 'Minimize' : 'Expand'}
+                              key={`coborrower-other-income-${isCoBorrowerOtherIncomeOpen}`}
+                            >
+                              {isCoBorrowerOtherIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
                       </div>
                     </CardHeader>
                     <CollapsibleContent>
                       <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="coBorrowerIncome-otherIncomeDescription">Investment Property</Label>
+                          <Label htmlFor="coBorrowerIncome-otherIncomeDescription">Income Description</Label>
                           <Input
                             id="coBorrowerIncome-otherIncomeDescription"
                             {...form.register('coBorrowerIncome.otherIncomeDescription')}
-                            placeholder="e.g., Investment income, rental income"
+                            placeholder=""
                             data-testid="input-coborrowerIncome-otherIncomeDescription"
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="coBorrowerIncome-otherIncomeMonthlyAmount">Monthly Amount</Label>
+                          <Label htmlFor="coBorrowerIncome-otherIncomeMonthlyAmount">Gross Monthly Income</Label>
                           <Input
                             id="coBorrowerIncome-otherIncomeMonthlyAmount"
                             {...form.register('coBorrowerIncome.otherIncomeMonthlyAmount')}
@@ -12833,6 +12852,40 @@ export default function AdminAddClient() {
                 setDeleteCoBorrowerDisabilityDialog({ isOpen: false });
               }}
               data-testid="button-confirm-delete-coborrower-disability"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Co-Borrower Other Income Confirmation Dialog */}
+      <AlertDialog open={deleteCoBorrowerOtherDialog.isOpen} onOpenChange={(open) => !open && setDeleteCoBorrowerOtherDialog({ isOpen: false })}>
+        <AlertDialogContent data-testid="dialog-delete-coborrower-other">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Co-Borrower Other Income</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove the Co-Borrower Other income section? This will clear all entered data and hide the section. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteCoBorrowerOtherDialog({ isOpen: false })}
+              data-testid="button-cancel-delete-coborrower-other"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                // Clear the income type checkbox and close the section
+                form.setValue('coBorrowerIncome.incomeTypes.other', false);
+                form.setValue('coBorrowerIncome.otherIncomeDescription', '');
+                form.setValue('coBorrowerIncome.otherIncomeMonthlyAmount', '');
+                setIsCoBorrowerOtherIncomeOpen(false);
+                setDeleteCoBorrowerOtherDialog({ isOpen: false });
+              }}
+              data-testid="button-confirm-delete-coborrower-other"
               className="bg-red-600 hover:bg-red-700"
             >
               Remove
