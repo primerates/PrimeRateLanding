@@ -970,6 +970,12 @@ export default function AdminAddClient() {
   // Primary Residence cards state management (similar to employer cards)
   const [primaryResidenceCards, setPrimaryResidenceCards] = useState<string[]>([]);
   
+  // Primary Residence card data state
+  const [primaryResidenceData, setPrimaryResidenceData] = useState<Record<string, {
+    purpose: 'primary' | 'second-home' | 'investment';
+    isSubjectProperty: boolean | null; // null = not selected, true = yes, false = no
+  }>>({});
+  
   // Employment dates state for each card
   const [employmentDates, setEmploymentDates] = useState<Record<string, {
     startDate: string;
@@ -4912,6 +4918,12 @@ export default function AdminAddClient() {
         // Only create default property card if none exist yet
         if (!hasCards) {
           setPrimaryResidenceCards(['default']);
+          
+          // Initialize data state for default card
+          setPrimaryResidenceData(prev => ({ 
+            ...prev, 
+            'primary-template-card': { purpose: 'primary', isSubjectProperty: null } 
+          }));
           
           // Auto-expand the property card
           const cardId = 'primary-template-card';
@@ -10626,6 +10638,31 @@ export default function AdminAddClient() {
                             <CardTitle className="flex items-center gap-2">
                               Primary Residence
                             </CardTitle>
+                            <div className="flex items-center gap-2">
+                              <Label className="text-sm text-muted-foreground">Purpose:</Label>
+                              <Select 
+                                value={primaryResidenceData[propertyId]?.purpose || 'primary'}
+                                onValueChange={(value: 'primary' | 'second-home' | 'investment') => {
+                                  setPrimaryResidenceData(prev => ({
+                                    ...prev,
+                                    [propertyId]: { 
+                                      ...prev[propertyId],
+                                      purpose: value,
+                                      isSubjectProperty: prev[propertyId]?.isSubjectProperty ?? null
+                                    }
+                                  }));
+                                }}
+                              >
+                                <SelectTrigger className="w-40" data-testid={`select-property-usage-${propertyId}`}>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="primary">Primary Residence</SelectItem>
+                                  <SelectItem value="second-home">Second Home</SelectItem>
+                                  <SelectItem value="investment">Investment Property</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
                           </div>
                           <div className="flex items-center gap-2">
                             {/* Add Property Button */}
@@ -10636,6 +10673,11 @@ export default function AdminAddClient() {
                               onClick={() => {
                                 const newId = `primary-${Date.now()}`;
                                 setPrimaryResidenceCards(prev => [...(prev || ['default']), newId]);
+                                // Initialize data state for new card
+                                setPrimaryResidenceData(prev => ({ 
+                                  ...prev, 
+                                  [newId]: { purpose: 'primary', isSubjectProperty: null } 
+                                }));
                               }}
                               className="hover:bg-blue-500 hover:text-white"
                               data-testid="button-add-primary-property"
@@ -10678,40 +10720,297 @@ export default function AdminAddClient() {
                       <CollapsibleContent>
                         <CardContent>
                           <div className="space-y-6">
-                            {/* Subject Property Selection */}
+                            {/* Subject Property Question - Moved to top */}
                             <Card className={`bg-muted ${
                               showSubjectPropertyAnimation['primary-default'] ? 'animate-roll-down-subject-property' : ''
                             }`}>
                               <CardContent className="pt-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                  <div className="flex items-center space-x-4">
-                                    <span className="text-sm font-medium">Is this also subject property?</span>
+                                <div className="space-y-3">
+                                  <Label className="text-base font-semibold">Is this also the subject property?</Label>
+                                  <div className="flex gap-4">
                                     <div className="flex items-center space-x-2">
-                                      <span className="text-sm">No</span>
-                                      <span className="text-sm">Yes</span>
+                                      <input
+                                        type="radio"
+                                        id={`subject-yes-${propertyId}`}
+                                        name={`subject-${propertyId}`}
+                                        checked={primaryResidenceData[propertyId]?.isSubjectProperty === true}
+                                        onChange={() => {
+                                          setPrimaryResidenceData(prev => ({
+                                            ...prev,
+                                            [propertyId]: { 
+                                              ...prev[propertyId],
+                                              purpose: prev[propertyId]?.purpose ?? 'primary',
+                                              isSubjectProperty: true
+                                            }
+                                          }));
+                                        }}
+                                        data-testid={`radio-subject-yes-${propertyId}`}
+                                      />
+                                      <Label htmlFor={`subject-yes-${propertyId}`}>Yes</Label>
+                                    </div>
+                                    
+                                    <div className="flex items-center space-x-2">
+                                      <input
+                                        type="radio"
+                                        id={`subject-no-${propertyId}`}
+                                        name={`subject-${propertyId}`}
+                                        checked={primaryResidenceData[propertyId]?.isSubjectProperty === false}
+                                        onChange={() => {
+                                          setPrimaryResidenceData(prev => ({
+                                            ...prev,
+                                            [propertyId]: { 
+                                              ...prev[propertyId],
+                                              purpose: prev[propertyId]?.purpose ?? 'primary',
+                                              isSubjectProperty: false
+                                            }
+                                          }));
+                                        }}
+                                        data-testid={`radio-subject-no-${propertyId}`}
+                                      />
+                                      <Label htmlFor={`subject-no-${propertyId}`}>No</Label>
                                     </div>
                                   </div>
                                 </div>
                               </CardContent>
                             </Card>
-                            
-                            {/* Basic Property Information */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div className="space-y-2">
-                                <Label htmlFor={`primary-property-address-${propertyId}`}>Property Address</Label>
+
+                            {/* Property Address - Row 1: Street Address, Unit/Apt, City, State, ZIP Code, County, Property Type */}
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                              <div className="space-y-2 md:col-span-3">
+                                <Label htmlFor={`property-address-street-${propertyId}`}>Street Address *</Label>
                                 <Input
-                                  id={`primary-property-address-${propertyId}`}
+                                  id={`property-address-street-${propertyId}`}
                                   placeholder="123 Main St"
-                                  data-testid={`input-primary-property-address-${propertyId}`}
+                                  data-testid={`input-property-street-${propertyId}`}
                                 />
                               </div>
-                              <div className="space-y-2">
-                                <Label htmlFor={`primary-property-value-${propertyId}`}>Estimated Value</Label>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`property-address-unit-${propertyId}`}>Unit/Apt</Label>
                                 <Input
-                                  id={`primary-property-value-${propertyId}`}
-                                  placeholder="$0.00"
-                                  data-testid={`input-primary-property-value-${propertyId}`}
+                                  id={`property-address-unit-${propertyId}`}
+                                  data-testid={`input-property-unit-${propertyId}`}
                                 />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`property-address-city-${propertyId}`}>City *</Label>
+                                <Input
+                                  id={`property-address-city-${propertyId}`}
+                                  data-testid={`input-property-city-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`property-address-state-${propertyId}`}>State *</Label>
+                                <Select>
+                                  <SelectTrigger data-testid={`select-property-state-${propertyId}`}>
+                                    <SelectValue placeholder="State" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {US_STATES.map((state) => (
+                                      <SelectItem key={state.value} value={state.value}>
+                                        {state.value}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`property-address-zip-${propertyId}`}>ZIP Code *</Label>
+                                <Input
+                                  id={`property-address-zip-${propertyId}`}
+                                  data-testid={`input-property-zip-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`property-address-county-${propertyId}`}>County</Label>
+                                <Input
+                                  id={`property-address-county-${propertyId}`}
+                                  data-testid={`input-property-county-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`property-type-${propertyId}`}>Property Type</Label>
+                                <Select>
+                                  <SelectTrigger data-testid={`select-property-type-${propertyId}`}>
+                                    <SelectValue placeholder="Select type" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="single-family">Single Family</SelectItem>
+                                    <SelectItem value="condo">Condo</SelectItem>
+                                    <SelectItem value="townhouse">Townhouse</SelectItem>
+                                    <SelectItem value="duplex">Duplex</SelectItem>
+                                    <SelectItem value="multi-family">Multi-Family</SelectItem>
+                                    <SelectItem value="mobile-home-sw">Mobile Home SW</SelectItem>
+                                    <SelectItem value="mobile-home-dw">Mobile Home DW</SelectItem>
+                                    <SelectItem value="other">Other</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+
+                            {/* Property Details - Row 2: Purchase Price, Owned Since, Title Held By, Estimated Property Value */}
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
+                              <div className="space-y-2 md:col-span-2">
+                                <div className="flex items-center gap-2">
+                                  <Label htmlFor={`property-purchase-price-${propertyId}`}>Purchase Price</Label>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="p-1 h-auto text-black hover:text-gray-600"
+                                    title="Purchase Property Value"
+                                    data-testid={`button-purchase-price-info-${propertyId}`}
+                                  >
+                                    <DollarSign className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                                <Input
+                                  id={`property-purchase-price-${propertyId}`}
+                                  placeholder="$0.00"
+                                  data-testid={`input-property-purchase-price-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <div className="min-h-5 flex items-center gap-2">
+                                  <Label htmlFor={`property-owned-since-${propertyId}`}>Purchased</Label>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                    onClick={() => {
+                                      toast({
+                                        title: "Purchase Information",
+                                        description: "Please see purchase and record dates in title report located in vendor page.",
+                                        duration: 5000,
+                                      });
+                                    }}
+                                    data-testid={`button-purchased-info-${propertyId}`}
+                                    title="Purchase Information"
+                                  >
+                                    <Info className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                                <Input
+                                  id={`property-owned-since-${propertyId}`}
+                                  placeholder="MM/YYYY"
+                                  data-testid={`input-property-owned-since-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <div className="min-h-5 flex items-center gap-2">
+                                  <Label htmlFor={`property-title-held-by-${propertyId}`}>Title Held By</Label>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                    onClick={() => {
+                                      toast({
+                                        title: "Title Information",
+                                        description: "Please see title report in vendor page.",
+                                        duration: 5000,
+                                      });
+                                    }}
+                                    data-testid={`button-title-held-info-${propertyId}`}
+                                    title="Title Information"
+                                  >
+                                    <Info className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                                <Select>
+                                  <SelectTrigger data-testid={`select-property-title-held-by-${propertyId}`}>
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="select">Select</SelectItem>
+                                    <SelectItem value="borrower">Borrower</SelectItem>
+                                    <SelectItem value="borrowers">Borrowers</SelectItem>
+                                    <SelectItem value="co-borrower">Co-Borrower</SelectItem>
+                                    <SelectItem value="other">Other</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-3">
+                                <div className="flex items-center gap-2">
+                                  <Label htmlFor={`property-estimated-value-${propertyId}`}>Estimated Value</Label>
+                                  <div className="flex items-center gap-1">
+                                    {/* Zillow */}
+                                    <div className="flex items-center gap-1">
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800 no-default-hover-elevate no-default-active-elevate"
+                                        data-testid={`button-zillow-valuation-${propertyId}`}
+                                        title="Enter Zillow valuation manually"
+                                      >
+                                        <SiZillow className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                    {/* Realtor */}
+                                    <div className="flex items-center gap-1">
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-red-600 hover:text-red-800 no-default-hover-elevate no-default-active-elevate"
+                                        data-testid={`button-realtor-valuation-${propertyId}`}
+                                        title="Enter Realtor valuation manually"
+                                      >
+                                        <MdRealEstateAgent className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </div>
+                                <Input
+                                  id={`property-estimated-value-${propertyId}`}
+                                  placeholder="$0.00"
+                                  data-testid={`input-property-estimated-value-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`property-appraised-value-${propertyId}`}>Appraised Value</Label>
+                                <Input
+                                  id={`property-appraised-value-${propertyId}`}
+                                  placeholder="$0.00"
+                                  data-testid={`input-property-appraised-value-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`property-secured-first-${propertyId}`}>1st Lien</Label>
+                                <Select>
+                                  <SelectTrigger data-testid={`select-property-secured-first-${propertyId}`}>
+                                    <SelectValue placeholder="Yes/No" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="yes">Yes</SelectItem>
+                                    <SelectItem value="no">No</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`property-secured-second-${propertyId}`}>2nd Lien</Label>
+                                <Select>
+                                  <SelectTrigger data-testid={`select-property-secured-second-${propertyId}`}>
+                                    <SelectValue placeholder="Yes/No" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="yes">Yes</SelectItem>
+                                    <SelectItem value="no">No</SelectItem>
+                                  </SelectContent>
+                                </Select>
                               </div>
                             </div>
                           </div>
@@ -13001,9 +13300,17 @@ export default function AdminAddClient() {
                 if (cardToDelete === 'primary-template-card') {
                   // Clear the primary residence card list (empty array removes all cards)
                   setPrimaryResidenceCards([]);
+                  // Clear all data state
+                  setPrimaryResidenceData({});
                 } else {
                   // Remove the specific card
                   setPrimaryResidenceCards(prev => prev.filter(id => id !== cardToDelete));
+                  // Remove data state for this card
+                  setPrimaryResidenceData(prev => {
+                    const newData = { ...prev };
+                    delete newData[cardToDelete];
+                    return newData;
+                  });
                 }
                 
                 // If no cards remain, the checkbox logic will handle unchecking automatically
