@@ -10367,28 +10367,55 @@ export default function AdminAddClient() {
                       <span className="text-lg font-medium">%</span>
                     </div>
                     
-                    <div className={`text-lg font-medium ${
-                      (form.watch('property.properties') || []).filter(p => p.use === 'primary').length > 0 
-                        ? 'text-green-800' 
-                        : 'text-foreground'
-                    }`} data-testid="text-primary-count">
-                      {(form.watch('property.properties') || []).filter(p => p.use === 'primary').length}
+                    <div className="flex items-center">
+                      <div
+                        className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                        style={{
+                          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                          fontSize: '36px',
+                          fontWeight: 600,
+                          backgroundColor: '#1a3373'
+                        }}
+                        data-testid="text-primary-count"
+                      >
+                        <span>
+                          {(form.watch('property.properties') || []).filter(p => p.use === 'primary').length}
+                        </span>
+                      </div>
                     </div>
                     
-                    <div className={`text-lg font-medium ${
-                      (form.watch('property.properties') || []).filter(p => p.use === 'second-home').length > 0 
-                        ? 'text-blue-500' 
-                        : 'text-foreground'
-                    }`} data-testid="text-second-home-count">
-                      {(form.watch('property.properties') || []).filter(p => p.use === 'second-home').length}
+                    <div className="flex items-center">
+                      <div
+                        className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                        style={{
+                          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                          fontSize: '36px',
+                          fontWeight: 600,
+                          backgroundColor: '#1a3373'
+                        }}
+                        data-testid="text-second-home-count"
+                      >
+                        <span>
+                          {(form.watch('property.properties') || []).filter(p => p.use === 'second-home').length}
+                        </span>
+                      </div>
                     </div>
                     
-                    <div className={`text-lg font-medium ${
-                      (form.watch('property.properties') || []).filter(p => p.use === 'investment').length > 0 
-                        ? 'text-purple-500' 
-                        : 'text-foreground'
-                    }`} data-testid="text-investment-count">
-                      {(form.watch('property.properties') || []).filter(p => p.use === 'investment').length}
+                    <div className="flex items-center">
+                      <div
+                        className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                        style={{
+                          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                          fontSize: '36px',
+                          fontWeight: 600,
+                          backgroundColor: '#1a3373'
+                        }}
+                        data-testid="text-investment-count"
+                      >
+                        <span>
+                          {(form.watch('property.properties') || []).filter(p => p.use === 'investment').length}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
