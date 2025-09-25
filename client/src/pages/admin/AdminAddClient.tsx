@@ -7393,22 +7393,24 @@ export default function AdminAddClient() {
                             variant="outline" 
                             size="sm" 
                             onClick={addBorrowerPension}
-                            className="hover:bg-orange-500 hover:text-white hover:border-orange-500"
+                            className="hover:bg-blue-500 hover:text-white"
                             data-testid="button-add-borrower-pension-header"
+                            title="Add New Pension"
                           >
                             <Plus className="h-4 w-4 mr-2" />
                             Add Pension
                           </Button>
                           <Button
                             type="button"
-                            variant="ghost"
+                            variant="outline"
                             size="sm"
                             onClick={removeDefaultBorrowerPension}
                             className="hover:bg-red-500 hover:text-white"
                             data-testid="button-remove-default-pension"
-                            title="Remove Default Pension"
+                            title="Delete Pension"
                           >
-                            <Minus className="h-4 w-4" />
+                            <Minus className="h-4 w-4 mr-2" />
+                            Remove
                           </Button>
                           <CollapsibleTrigger asChild>
                             <Button 
