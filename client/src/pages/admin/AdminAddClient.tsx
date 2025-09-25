@@ -7200,7 +7200,7 @@ export default function AdminAddClient() {
               {/* Borrower - Self-Employment Cards */}
               {form.watch('income.incomeTypes.selfEmployment') && (borrowerSelfEmploymentCards || ['default']).map((cardId, index) => {
                 const propertyId = cardId === 'default' ? 'self-employment-template-card' : cardId;
-                const isOpen = propertyCardStates[propertyId] ?? false;
+                const isOpen = propertyCardStates[propertyId] ?? true;
                 
                 return (
                   <Card key={cardId} className="transition-colors duration-200">
@@ -7909,7 +7909,7 @@ export default function AdminAddClient() {
               {/* Borrower Employer Cards */}
               {form.watch('income.incomeTypes.employment') && (borrowerEmployerCards || ['default']).map((cardId, index) => {
                 const propertyId = cardId === 'default' ? 'template-card' : cardId;
-                const isOpen = propertyCardStates[propertyId] ?? false;
+                const isOpen = propertyCardStates[propertyId] ?? true;
                 
                 return (
                   <Card key={cardId} className="transition-colors duration-200">
@@ -8246,7 +8246,7 @@ export default function AdminAddClient() {
               {/* Borrower Second Employment Cards */}
               {form.watch('income.incomeTypes.secondEmployment') && (borrowerSecondEmployerCards || ['default']).map((cardId, index) => {
                 const propertyId = cardId === 'default' ? 'second-template-card' : cardId;
-                const isOpen = propertyCardStates[propertyId] ?? false;
+                const isOpen = propertyCardStates[propertyId] ?? true;
                 
                 return (
                   <Card key={cardId} className="transition-colors duration-200">
@@ -8697,7 +8697,7 @@ export default function AdminAddClient() {
               {/* Co-Borrower Employment Income Card */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.employment') && (coBorrowerEmployerCards || ['default']).map((cardId, index) => {
                 const propertyId = cardId === 'default' ? 'coborrower-template-card' : cardId;
-                const isOpen = propertyCardStates[propertyId] ?? false;
+                const isOpen = propertyCardStates[propertyId] ?? true;
                 
                 return (
                   <Card key={cardId} className="transition-colors duration-200">
@@ -9119,7 +9119,7 @@ export default function AdminAddClient() {
               {/* Co-borrower Second Employment Cards */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.secondEmployment') && (coBorrowerSecondEmployerCards || ['default']).map((cardId, index) => {
                 const propertyId = cardId === 'default' ? 'coborrower-second-template-card' : cardId;
-                const isOpen = propertyCardStates[propertyId] ?? false;
+                const isOpen = propertyCardStates[propertyId] ?? true;
                 
                 return (
                   <Card key={cardId} className="transition-colors duration-200">
@@ -9470,7 +9470,7 @@ export default function AdminAddClient() {
               {/* Co-Borrower - Self-Employment Cards */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.selfEmployment') && (coBorrowerSelfEmploymentCards || ['default']).map((cardId, index) => {
                 const propertyId = cardId === 'default' ? 'co-borrower-self-employment-template-card' : cardId;
-                const isOpen = propertyCardStates[propertyId] ?? false;
+                const isOpen = propertyCardStates[propertyId] ?? true;
                 
                 return (
                   <Card key={cardId} className="transition-colors duration-200">
@@ -10391,7 +10391,7 @@ export default function AdminAddClient() {
               {/* Dynamic Property Cards */}
               {sortPropertiesByHierarchy(form.watch('property.properties') || []).map((property, index) => {
                 const propertyId = property.id || `property-${index}`;
-                const isOpen = propertyCardStates[propertyId] ?? false;
+                const isOpen = propertyCardStates[propertyId] ?? true;
                 
                 const getPropertyTitle = () => {
                   const typeLabels = {
