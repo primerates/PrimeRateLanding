@@ -530,8 +530,6 @@ export default function AdminAddClient() {
 
   // Animation state for first-time page entry
   const [showEntryAnimation, setShowEntryAnimation] = useState(true);
-  // Animation state for tile-style effects
-  const [showTileAnimation, setShowTileAnimation] = useState(false);
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
@@ -2462,20 +2460,12 @@ export default function AdminAddClient() {
 
   // Animation effect for first-time page entry
   useEffect(() => {
-    // Trigger roll-down animation on initial component mount
+    // Trigger animation on initial component mount
     const timer = setTimeout(() => {
-      setShowEntryAnimation(false); // Turn off roll-down animation
+      setShowEntryAnimation(false); // Turn off animation after first load
     }, 1000); // Animation lasts 1 second
 
-    // Trigger tile animation after roll-down completes
-    const tileTimer = setTimeout(() => {
-      setShowTileAnimation(true); // Start tile unfold animation
-    }, 1200); // Start 200ms after roll-down completes
-
-    return () => {
-      clearTimeout(timer);
-      clearTimeout(tileTimer);
-    };
+    return () => clearTimeout(timer);
   }, []); // Empty dependency array means this runs only once on mount
 
   // Bidirectional sync between Property Tab (Primary Residence) and Loan Tab (Current Loan 1)
@@ -5512,10 +5502,8 @@ export default function AdminAddClient() {
             {/* Client Tab */}
             <TabsContent value="client" className="space-y-6">
               {/* Lead Information Fields */}
-              <Card className={`border-l-4 border-l-green-500 hover:border-green-500 hover:shadow-lg hover:shadow-primary/20 transition-all duration-700 ${
+              <Card className={`transition-all duration-700 ${
                 showEntryAnimation ? 'animate-roll-down-delayed' : ''
-              } ${
-                showTileAnimation ? 'animate-tile-unfold' : 'tile-unfold-ready'
               }`}>
                 <CardContent className="grid grid-cols-1 md:grid-cols-5 gap-4 pt-6">
                   <div className="space-y-2">
@@ -5919,8 +5907,8 @@ export default function AdminAddClient() {
                     </div>
                   </div>
                   
-                </CardContent>
-                </CollapsibleContent>
+                    </CardContent>
+                  </CollapsibleContent>
                 </Collapsible>
               </Card>
 

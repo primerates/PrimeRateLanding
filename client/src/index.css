@@ -34,37 +34,6 @@
   opacity: 0; /* Start hidden until animation begins */
 }
 
-/* Tile-style unfold animations similar to dashboard */
-@keyframes tile-unfold {
-  0% {
-    transform: translateY(-50%) scaleX(0);
-    opacity: 0;
-  }
-  60% {
-    transform: translateY(0) scaleX(0);
-    opacity: 0.5;
-  }
-  100% {
-    transform: translateY(0) scaleX(1);
-    opacity: 1;
-  }
-}
-
-.animate-tile-unfold {
-  animation: tile-unfold 0.8s ease-out forwards;
-  transform-origin: left;
-}
-
-/* Combined animation states */
-.tile-unfold-ready {
-  opacity: 0;
-  transform-origin: left;
-}
-
-.tile-unfolded {
-  opacity: 1;
-}
-
 /* LIGHT MODE */
 :root {
   --button-outline: rgba(0,0,0, .10);
