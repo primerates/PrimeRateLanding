@@ -1826,32 +1826,34 @@ export default function AdminAddClient() {
           </div>
 
           {/* Row 3: Payment Fields with Total */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            <div className="space-y-2">
-              <Label className="text-sm font-medium text-muted-foreground">Principal & Interest Payment</Label>
-              <div className="p-2 bg-gray-50 rounded-md border">
-                <span className="text-sm">{formatCurrency(principalPayment) || 'Not specified'}</span>
+          <div className="bg-gray-100 p-4 rounded-lg">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-muted-foreground">Principal & Interest Payment</Label>
+                <div className="p-2 bg-gray-50 rounded-md border">
+                  <span className="text-sm">{formatCurrency(principalPayment) || 'Not specified'}</span>
+                </div>
               </div>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-sm font-medium text-muted-foreground">Escrow Payment</Label>
-              <div className="p-2 bg-gray-50 rounded-md border">
-                <span className="text-sm">{formatCurrency(escrowPayment) || 'Not specified'}</span>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-muted-foreground">Escrow Payment</Label>
+                <div className="p-2 bg-gray-50 rounded-md border">
+                  <span className="text-sm">{formatCurrency(escrowPayment) || 'Not specified'}</span>
+                </div>
               </div>
-            </div>
-            <div className="col-span-1">
-              <TotalCurrentLoanPayment control={control} />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-sm font-medium text-muted-foreground">Pre-Payment Penalty</Label>
-              <div className="p-2 bg-gray-50 rounded-md border">
-                <span className="text-sm">{prepaymentPenalty || 'Not specified'}</span>
+              <div className="col-span-1">
+                <TotalCurrentLoanPayment control={control} />
               </div>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-sm font-medium text-muted-foreground">Attached to Property</Label>
-              <div className="p-2 bg-gray-50 rounded-md border">
-                <span className="text-sm">{getPropertyAddressDisplay(attachedToProperty)}</span>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-muted-foreground">Pre-Payment Penalty</Label>
+                <div className="p-2 bg-gray-50 rounded-md border">
+                  <span className="text-sm">{prepaymentPenalty || 'Not specified'}</span>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-muted-foreground">Attached to Property</Label>
+                <div className="p-2 bg-gray-50 rounded-md border">
+                  <span className="text-sm">{getPropertyAddressDisplay(attachedToProperty)}</span>
+                </div>
               </div>
             </div>
           </div>
