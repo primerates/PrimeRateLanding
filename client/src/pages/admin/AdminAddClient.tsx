@@ -7026,6 +7026,7 @@ export default function AdminAddClient() {
                                 onFocus={() => setIsFrontDTIEditing(true)}
                                 placeholder="%"
                                 autoFocus={isFrontDTIEditing && hasValue}
+                                className="w-1/2"
                                 data-testid="input-income-frontDTI"
                               />
                             )}
@@ -7051,6 +7052,7 @@ export default function AdminAddClient() {
                             field.onChange(rawValue);
                           }}
                           placeholder="%"
+                          className="w-1/2"
                           data-testid="input-income-backDTI"
                         />
                       )}
@@ -7094,12 +7096,13 @@ export default function AdminAddClient() {
                             const backDTI = form.watch('income.backDTI') || '';
                             const guidelineDTI = form.watch('income.guidelineDTI') || '';
                             const shadowColor = getDTIComparisonColor(backDTI, guidelineDTI).shadowColor;
+                            let classes = 'w-1/2';
                             if (shadowColor === 'green') {
-                              return 'shadow-lg shadow-green-200';
+                              classes += ' shadow-lg shadow-green-200';
                             } else if (shadowColor === 'red') {
-                              return 'shadow-lg shadow-red-200';
+                              classes += ' shadow-lg shadow-red-200';
                             }
-                            return '';
+                            return classes;
                           })()}
                         />
                       )}
