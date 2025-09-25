@@ -4732,8 +4732,8 @@ export default function AdminAddClient() {
       },
     };
     form.setValue('property.properties', [...currentProperties, newProperty]);
-    // Set initial collapsible state for new property - expand Primary Residence by default
-    setPropertyCardStates(prev => ({ ...prev, [newProperty.id!]: use === 'primary' ? true : false }));
+    // Set initial collapsible state for new property - expand all property types by default
+    setPropertyCardStates(prev => ({ ...prev, [newProperty.id!]: true }));
   };
 
   const removeProperty = (propertyId: string) => {
