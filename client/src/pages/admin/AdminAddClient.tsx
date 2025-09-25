@@ -3062,25 +3062,32 @@ export default function AdminAddClient() {
                       {(() => {
                         const properties = targetForm.watch('property.properties') || [];
                         return properties
-                          .filter((property: any) => property.address?.street) // Only show properties with street addresses
+                          .filter((property: any) => property.address?.street || property.use === 'primary') // Show properties with street addresses OR primary residence properties
                           .map((property: any, index: number) => {
                             const address = property.address;
-                            const streetAddress = address.street;
-                            const city = address.city;
-                            const state = address.state;
-                            const zipCode = address.zip;
+                            const streetAddress = address?.street;
+                            const city = address?.city;
+                            const state = address?.state;
+                            const zipCode = address?.zip;
                             
                             // Build display text using address components for uniqueness
-                            let displayText = streetAddress;
-                            if (city && state) {
-                              displayText += `, ${city}, ${state}`;
-                            } else if (city) {
-                              displayText += `, ${city}`;
-                            } else if (state) {
-                              displayText += `, ${state}`;
-                            }
-                            if (zipCode) {
-                              displayText += ` ${zipCode}`;
+                            let displayText;
+                            
+                            // Special handling for Primary Residence without address
+                            if (property.use === 'primary' && !streetAddress) {
+                              displayText = 'Primary Residence';
+                            } else {
+                              displayText = streetAddress || 'Property';
+                              if (city && state) {
+                                displayText += `, ${city}, ${state}`;
+                              } else if (city) {
+                                displayText += `, ${city}`;
+                              } else if (state) {
+                                displayText += `, ${state}`;
+                              }
+                              if (zipCode) {
+                                displayText += ` ${zipCode}`;
+                              }
                             }
                             
                             return (
@@ -3542,25 +3549,32 @@ export default function AdminAddClient() {
                       {(() => {
                         const properties = targetForm.watch('property.properties') || [];
                         return properties
-                          .filter((property: any) => property.address?.street) // Only show properties with street addresses
+                          .filter((property: any) => property.address?.street || property.use === 'primary') // Show properties with street addresses OR primary residence properties
                           .map((property: any, index: number) => {
                             const address = property.address;
-                            const streetAddress = address.street;
-                            const city = address.city;
-                            const state = address.state;
-                            const zipCode = address.zip;
+                            const streetAddress = address?.street;
+                            const city = address?.city;
+                            const state = address?.state;
+                            const zipCode = address?.zip;
                             
                             // Build display text using address components for uniqueness
-                            let displayText = streetAddress;
-                            if (city && state) {
-                              displayText += `, ${city}, ${state}`;
-                            } else if (city) {
-                              displayText += `, ${city}`;
-                            } else if (state) {
-                              displayText += `, ${state}`;
-                            }
-                            if (zipCode) {
-                              displayText += ` ${zipCode}`;
+                            let displayText;
+                            
+                            // Special handling for Primary Residence without address
+                            if (property.use === 'primary' && !streetAddress) {
+                              displayText = 'Primary Residence';
+                            } else {
+                              displayText = streetAddress || 'Property';
+                              if (city && state) {
+                                displayText += `, ${city}, ${state}`;
+                              } else if (city) {
+                                displayText += `, ${city}`;
+                              } else if (state) {
+                                displayText += `, ${state}`;
+                              }
+                              if (zipCode) {
+                                displayText += ` ${zipCode}`;
+                              }
                             }
                             
                             return (
@@ -4030,25 +4044,32 @@ export default function AdminAddClient() {
                       {(() => {
                         const properties = targetForm.watch('property.properties') || [];
                         return properties
-                          .filter((property: any) => property.address?.street) // Only show properties with street addresses
+                          .filter((property: any) => property.address?.street || property.use === 'primary') // Show properties with street addresses OR primary residence properties
                           .map((property: any, index: number) => {
                             const address = property.address;
-                            const streetAddress = address.street;
-                            const city = address.city;
-                            const state = address.state;
-                            const zipCode = address.zip;
+                            const streetAddress = address?.street;
+                            const city = address?.city;
+                            const state = address?.state;
+                            const zipCode = address?.zip;
                             
                             // Build display text using address components for uniqueness
-                            let displayText = streetAddress;
-                            if (city && state) {
-                              displayText += `, ${city}, ${state}`;
-                            } else if (city) {
-                              displayText += `, ${city}`;
-                            } else if (state) {
-                              displayText += `, ${state}`;
-                            }
-                            if (zipCode) {
-                              displayText += ` ${zipCode}`;
+                            let displayText;
+                            
+                            // Special handling for Primary Residence without address
+                            if (property.use === 'primary' && !streetAddress) {
+                              displayText = 'Primary Residence';
+                            } else {
+                              displayText = streetAddress || 'Property';
+                              if (city && state) {
+                                displayText += `, ${city}, ${state}`;
+                              } else if (city) {
+                                displayText += `, ${city}`;
+                              } else if (state) {
+                                displayText += `, ${state}`;
+                              }
+                              if (zipCode) {
+                                displayText += ` ${zipCode}`;
+                              }
                             }
                             
                             return (
@@ -4940,6 +4961,9 @@ export default function AdminAddClient() {
         
         // Only create default property card if none exist yet
         if (!hasCards) {
+          // Create entry in main form's property array
+          addProperty('primary');
+          
           setPrimaryResidenceCards(['default']);
           
           // Initialize data state for default card
@@ -10973,8 +10997,16 @@ export default function AdminAddClient() {
                                         variant="ghost"
                                         size="sm"
                                         className="p-1 h-auto text-blue-600 hover:text-blue-800 no-default-hover-elevate no-default-active-elevate"
-                                        onClick={() => openValuationDialog('zillow', 0)}
-                                        onMouseEnter={(e) => handleValuationHover('zillow', 0, e)}
+                                        onClick={() => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const primaryIndex = properties.findIndex(p => p.use === 'primary');
+                                          openValuationDialog('zillow', primaryIndex >= 0 ? primaryIndex : 0);
+                                        }}
+                                        onMouseEnter={(e) => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const primaryIndex = properties.findIndex(p => p.use === 'primary');
+                                          handleValuationHover('zillow', primaryIndex >= 0 ? primaryIndex : 0, e);
+                                        }}
                                         onMouseLeave={handleValuationHoverLeave}
                                         data-testid={`button-zillow-valuation-${propertyId}`}
                                         title="Enter Zillow valuation manually"
@@ -10989,8 +11021,16 @@ export default function AdminAddClient() {
                                         variant="ghost"
                                         size="sm"
                                         className="p-1 h-auto text-purple-600 hover:text-purple-800 no-default-hover-elevate no-default-active-elevate"
-                                        onClick={() => openValuationDialog('realtor', 0)}
-                                        onMouseEnter={(e) => handleValuationHover('realtor', 0, e)}
+                                        onClick={() => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const primaryIndex = properties.findIndex(p => p.use === 'primary');
+                                          openValuationDialog('realtor', primaryIndex >= 0 ? primaryIndex : 0);
+                                        }}
+                                        onMouseEnter={(e) => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const primaryIndex = properties.findIndex(p => p.use === 'primary');
+                                          handleValuationHover('realtor', primaryIndex >= 0 ? primaryIndex : 0, e);
+                                        }}
                                         onMouseLeave={handleValuationHoverLeave}
                                         data-testid={`button-realtor-valuation-${propertyId}`}
                                         title="Enter Realtor.com valuation manually"
@@ -11005,8 +11045,16 @@ export default function AdminAddClient() {
                                         variant="ghost"
                                         size="sm"
                                         className="p-1 h-auto text-red-600 hover:text-red-800 no-default-hover-elevate no-default-active-elevate"
-                                        onClick={() => openValuationDialog('redfin', 0)}
-                                        onMouseEnter={(e) => handleValuationHover('redfin', 0, e)}
+                                        onClick={() => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const primaryIndex = properties.findIndex(p => p.use === 'primary');
+                                          openValuationDialog('redfin', primaryIndex >= 0 ? primaryIndex : 0);
+                                        }}
+                                        onMouseEnter={(e) => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const primaryIndex = properties.findIndex(p => p.use === 'primary');
+                                          handleValuationHover('redfin', primaryIndex >= 0 ? primaryIndex : 0, e);
+                                        }}
                                         onMouseLeave={handleValuationHoverLeave}
                                         data-testid={`button-redfin-valuation-${propertyId}`}
                                         title="Enter Redfin valuation manually"
@@ -11018,7 +11066,11 @@ export default function AdminAddClient() {
                                         variant="ghost"
                                         size="sm"
                                         className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                                        onClick={() => openValuationSummary(0)}
+                                        onClick={() => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const primaryIndex = properties.findIndex(p => p.use === 'primary');
+                                          openValuationSummary(primaryIndex >= 0 ? primaryIndex : 0);
+                                        }}
                                         data-testid={`button-valuation-info-${propertyId}`}
                                         title="View all valuation estimates"
                                       >
@@ -11029,7 +11081,11 @@ export default function AdminAddClient() {
                                 </div>
                                 <CurrencyInput
                                   form={form}
-                                  name={`property.properties.0.estimatedValue` as const}
+                                  name={(() => {
+                                    const properties = form.watch('property.properties') || [];
+                                    const primaryIndex = properties.findIndex(p => p.use === 'primary');
+                                    return `property.properties.${primaryIndex >= 0 ? primaryIndex : 0}.estimatedValue` as const;
+                                  })()}
                                   id={`property-estimated-value-${propertyId}`}
                                   placeholder="$0.00"
                                   data-testid={`input-property-estimated-value-${propertyId}`}
@@ -11047,18 +11103,28 @@ export default function AdminAddClient() {
                                     title="Appraised Property Value"
                                     data-testid={`button-appraised-value-info-${propertyId}`}
                                   >
-                                    <AppraisalIcon index={0} control={form.control} />
+                                    {(() => {
+                                      const properties = form.watch('property.properties') || [];
+                                      const primaryIndex = properties.findIndex(p => p.use === 'primary');
+                                      return <AppraisalIcon index={primaryIndex >= 0 ? primaryIndex : 0} control={form.control} />;
+                                    })()}
                                   </Button>
                                 </div>
                                 <CurrencyInput
                                   form={form}
-                                  name={`property.properties.0.appraisedValue` as const}
+                                  name={(() => {
+                                    const properties = form.watch('property.properties') || [];
+                                    const primaryIndex = properties.findIndex(p => p.use === 'primary');
+                                    return `property.properties.${primaryIndex >= 0 ? primaryIndex : 0}.appraisedValue` as const;
+                                  })()}
                                   id={`property-appraised-value-${propertyId}`}
                                   placeholder="$0.00"
                                   data-testid={`input-property-appraised-value-${propertyId}`}
                                   shadowColor={(() => {
-                                    const estimatedValue = form.watch(`property.properties.0.estimatedValue` as const) || '';
-                                    const appraisedValue = form.watch(`property.properties.0.appraisedValue` as const) || '';
+                                    const properties = form.watch('property.properties') || [];
+                                    const primaryIndex = properties.findIndex(p => p.use === 'primary');
+                                    const estimatedValue = form.watch(`property.properties.${primaryIndex >= 0 ? primaryIndex : 0}.estimatedValue` as const) || '';
+                                    const appraisedValue = form.watch(`property.properties.${primaryIndex >= 0 ? primaryIndex : 0}.appraisedValue` as const) || '';
                                     return getValueComparisonColor(estimatedValue, appraisedValue).shadowColor;
                                   })()}
                                 />
@@ -11070,7 +11136,9 @@ export default function AdminAddClient() {
                                     <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured Loan</Label>
                                     {(() => {
                                       // Check ALL loans for attachment to this property
-                                      const currentProperty = form.watch('property.properties.0');
+                                      const properties = form.watch('property.properties') || [];
+                                      const primaryIndex = properties.findIndex(p => p.use === 'primary');
+                                      const currentProperty = primaryIndex >= 0 ? properties[primaryIndex] : null;
                                       
                                       // Check current loan
                                       const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
@@ -11159,7 +11227,9 @@ export default function AdminAddClient() {
                                     })()}
                                   </div>
                                   {(() => {
-                                    const currentProperty = form.watch('property.properties.0');
+                                    const properties = form.watch('property.properties') || [];
+                                    const primaryIndex = properties.findIndex(p => p.use === 'primary');
+                                    const currentProperty = primaryIndex >= 0 ? properties[primaryIndex] : null;
                                     
                                     // Check which loans are attached to this property for counter
                                     const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
