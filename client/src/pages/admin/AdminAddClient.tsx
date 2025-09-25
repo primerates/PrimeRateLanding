@@ -7100,7 +7100,7 @@ export default function AdminAddClient() {
                     <div className="flex items-center justify-between mb-2">
                       <Label 
                         htmlFor="income-guidelineDTI" 
-                        className={`text-sm ${(() => {
+                        className={`text-lg font-semibold ${(() => {
                           const backDTI = form.watch('income.backDTI') || '';
                           const guidelineDTI = form.watch('income.guidelineDTI') || '';
                           return getDTIComparisonColor(backDTI, guidelineDTI).labelClass;
@@ -7119,30 +7119,63 @@ export default function AdminAddClient() {
                     <Controller
                       control={form.control}
                       name="income.guidelineDTI"
-                      render={({ field }) => (
-                        <Input
-                          id="income-guidelineDTI"
-                          value={formatPercentageDisplay(field.value)}
-                          onChange={(e) => {
-                            const rawValue = parsePercentageInput(e.target.value);
-                            field.onChange(rawValue);
-                          }}
-                          placeholder="%"
-                          data-testid="input-income-guidelineDTI"
-                          className={(() => {
-                            const backDTI = form.watch('income.backDTI') || '';
-                            const guidelineDTI = form.watch('income.guidelineDTI') || '';
-                            const shadowColor = getDTIComparisonColor(backDTI, guidelineDTI).shadowColor;
-                            let classes = 'w-1/2';
-                            if (shadowColor === 'green') {
-                              classes += ' shadow-lg shadow-green-200';
-                            } else if (shadowColor === 'red') {
-                              classes += ' shadow-lg shadow-red-200';
-                            }
-                            return classes;
-                          })()}
-                        />
-                      )}
+                      render={({ field }) => {
+                        const displayValue = formatPercentageDisplay(field.value);
+                        const hasValue = field.value && field.value.trim() !== '';
+                        
+                        return (
+                          <div className="min-h-[40px] flex items-center">
+                            {!isGuidelineDTIEditing && hasValue ? (
+                              <div
+                                onClick={() => setIsGuidelineDTIEditing(true)}
+                                className="cursor-pointer bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                                style={{
+                                  fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                                  fontSize: '36px',
+                                  fontWeight: 600,
+                                  backgroundColor: '#1e3a8a'
+                                }}
+                                data-testid="display-income-guidelineDTI"
+                              >
+                                <span>
+                                  {displayValue.replace('%', '')}
+                                  <span style={{ fontSize: '28px' }}>%</span>
+                                </span>
+                              </div>
+                            ) : (
+                              <Input
+                                id="income-guidelineDTI"
+                                value={displayValue}
+                                onChange={(e) => {
+                                  const rawValue = parsePercentageInput(e.target.value);
+                                  field.onChange(rawValue);
+                                }}
+                                onBlur={() => {
+                                  if (hasValue) {
+                                    setIsGuidelineDTIEditing(false);
+                                  }
+                                }}
+                                onFocus={() => setIsGuidelineDTIEditing(true)}
+                                placeholder="%"
+                                autoFocus={isGuidelineDTIEditing && hasValue}
+                                data-testid="input-income-guidelineDTI"
+                                className={(() => {
+                                  const backDTI = form.watch('income.backDTI') || '';
+                                  const guidelineDTI = form.watch('income.guidelineDTI') || '';
+                                  const shadowColor = getDTIComparisonColor(backDTI, guidelineDTI).shadowColor;
+                                  let classes = 'w-1/2';
+                                  if (shadowColor === 'green') {
+                                    classes += ' shadow-lg shadow-green-200';
+                                  } else if (shadowColor === 'red') {
+                                    classes += ' shadow-lg shadow-red-200';
+                                  }
+                                  return classes;
+                                })()}
+                              />
+                            )}
+                          </div>
+                        );
+                      }}
                     />
                   </div>
                 </CardContent>
