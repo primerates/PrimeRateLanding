@@ -686,7 +686,7 @@ export default function AdminAddClient() {
           }
           
           // Auto-expand the second employment card
-          const cardId = isCoBorrower ? 'coborrower-second-employment-template-card' : 'second-employment-template-card';
+          const cardId = isCoBorrower ? 'coborrower-second-template-card' : 'second-template-card';
           setPropertyCardStates(prev => ({ ...prev, [cardId]: true }));
         }
       }
@@ -12320,7 +12320,7 @@ export default function AdminAddClient() {
                 const cardToDelete = deleteSecondEmployerDialog.cardId;
                 
                 // If removing the default card, clear the checkbox and related fields
-                if (cardToDelete === 'second-employment-template-card') {
+                if (cardToDelete === 'second-template-card') {
                   form.setValue('income.incomeTypes.secondEmployment', false);
                   // Clear the second employment card list (empty array removes all cards)
                   setBorrowerSecondEmployerCards([]);
