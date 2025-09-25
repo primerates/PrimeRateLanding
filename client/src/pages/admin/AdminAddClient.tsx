@@ -10310,29 +10310,19 @@ export default function AdminAddClient() {
               }`}>
                 <CardHeader>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+                    <span className="text-lg font-semibold text-foreground">Primary Residence</span>
+                    
+                    <span className="text-lg font-semibold text-foreground">Second Home</span>
+                    
+                    <span className="text-lg font-semibold text-foreground">Investment Property</span>
+                    
                     <CardTitle className="text-lg font-semibold">
                       Estimated LTV
                     </CardTitle>
-                    
-                    <span className="text-lg font-semibold text-foreground">Primary Residence</span>
-                    
-                    <span className={`text-lg font-semibold ${
-                      (form.watch('property.properties') || []).filter(p => p.use === 'second-home').length > 0 
-                        ? 'text-blue-500' 
-                        : 'text-foreground'
-                    }`}>Second Home</span>
-                    
-                    <span className={`text-lg font-semibold ${
-                      (form.watch('property.properties') || []).filter(p => p.use === 'investment').length > 0 
-                        ? 'text-purple-500' 
-                        : 'text-foreground'
-                    }`}>Investment Property</span>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div></div>
-                    
                     <div className="flex items-center">
                       <div
                         className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
@@ -10380,6 +10370,46 @@ export default function AdminAddClient() {
                       >
                         <span>
                           {(form.watch('property.properties') || []).filter(p => p.use === 'investment').length}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center">
+                      <div
+                        className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                        style={{
+                          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                          fontSize: '36px',
+                          fontWeight: 600,
+                          backgroundColor: '#1a3373'
+                        }}
+                        data-testid="display-property-estimatedLTV"
+                      >
+                        <span>
+                          {(() => {
+                            const properties = form.watch('property.properties') || [];
+                            const subjectProperty = properties.find(p => p.isSubject === true);
+                            
+                            if (!subjectProperty || !subjectProperty.loan?.mortgageBalance) {
+                              return '-';
+                            }
+                            
+                            const mortgageBalance = parseMonetaryValue(subjectProperty.loan.mortgageBalance);
+                            
+                            // Use appraised value if available, otherwise use estimated value
+                            let propertyValue = 0;
+                            if (subjectProperty.appraisedValue && parseMonetaryValue(subjectProperty.appraisedValue) > 0) {
+                              propertyValue = parseMonetaryValue(subjectProperty.appraisedValue);
+                            } else if (subjectProperty.estimatedValue && parseMonetaryValue(subjectProperty.estimatedValue) > 0) {
+                              propertyValue = parseMonetaryValue(subjectProperty.estimatedValue);
+                            }
+                            
+                            if (propertyValue <= 0) return '-';
+                            
+                            const ltv = (mortgageBalance / propertyValue * 100);
+                            return Math.round(ltv).toString();
+                          })()}
+                          <span style={{ fontSize: '28px' }}>%</span>
                         </span>
                       </div>
                     </div>
