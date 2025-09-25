@@ -530,6 +530,8 @@ export default function AdminAddClient() {
 
   // Animation state for first-time page entry
   const [showEntryAnimation, setShowEntryAnimation] = useState(true);
+  // Animation state for Income tab animations
+  const [showIncomeAnimation, setShowIncomeAnimation] = useState(false);
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
@@ -5486,7 +5488,13 @@ export default function AdminAddClient() {
       {/* Main Content */}
       <div className="container mx-auto px-6 py-8">
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <Tabs defaultValue="client" className="space-y-6">
+          <Tabs defaultValue="client" className="space-y-6" onValueChange={(value) => {
+            if (value === 'income') {
+              setShowIncomeAnimation(true);
+              // Reset animation after it completes so it can trigger again if needed
+              setTimeout(() => setShowIncomeAnimation(false), 1000);
+            }
+          }}>
             <TabsList className="grid w-full grid-cols-9 bg-transparent h-auto p-0 relative border-b border-gray-200 group">
               <TabsTrigger value="client" data-testid="tab-client" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Borrower</TabsTrigger>
               <TabsTrigger value="income" data-testid="tab-income" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Income</TabsTrigger>
@@ -6854,14 +6862,18 @@ export default function AdminAddClient() {
             {/* Income Tab */}
             <TabsContent value="income" className="space-y-6">
               {/* Household Income Summary */}
-              <Card>
+              <Card className={`transition-all duration-700 ${
+                showIncomeAnimation ? 'animate-roll-down' : ''
+              }`}>
                 <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
                   <div className="space-y-2">
                     <Label htmlFor="household-income-total" className="text-2xl font-semibold">Total Household Income</Label>
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="income-frontDTI">Front DTI</Label>
+                    <Label htmlFor="income-frontDTI" className={`${
+                      showIncomeAnimation ? 'animate-roll-down-dti-1' : ''
+                    }`}>Front DTI</Label>
                     <Controller
                       control={form.control}
                       name="income.frontDTI"
@@ -6881,7 +6893,9 @@ export default function AdminAddClient() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="income-backDTI">Back DTI</Label>
+                    <Label htmlFor="income-backDTI" className={`${
+                      showIncomeAnimation ? 'animate-roll-down-dti-2' : ''
+                    }`}>Back DTI</Label>
                     <Controller
                       control={form.control}
                       name="income.backDTI"
@@ -6908,7 +6922,9 @@ export default function AdminAddClient() {
                           const backDTI = form.watch('income.backDTI') || '';
                           const guidelineDTI = form.watch('income.guidelineDTI') || '';
                           return getDTIComparisonColor(backDTI, guidelineDTI).labelClass;
-                        })()}`}
+                        })()} ${
+                          showIncomeAnimation ? 'animate-roll-down-dti-3' : ''
+                        }`}
                       >
                         {isShowingGuidelineFrontDTI ? 'Guideline - Front DTI' : 'Guideline DTI'}
                       </Label>
