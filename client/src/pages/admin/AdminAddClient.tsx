@@ -7003,7 +7003,7 @@ export default function AdminAddClient() {
                                 className="cursor-pointer text-black hover:bg-gray-50 px-2 py-1 rounded"
                                 style={{
                                   fontFamily: 'Segoe UI Black, ui-sans-serif, system-ui, sans-serif',
-                                  fontSize: '16px',
+                                  fontSize: '32px',
                                   fontWeight: 900
                                 }}
                                 data-testid="display-income-frontDTI"
