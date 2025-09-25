@@ -10305,9 +10305,7 @@ export default function AdminAddClient() {
             {/* Property Tab */}
             <TabsContent value="property" className="space-y-6">
               {/* Property Summary Card */}
-              <Card className={`bg-muted transition-all duration-700 ${
-                showPropertyAnimation ? 'animate-roll-down' : ''
-              }`}>
+              <Card className="bg-muted">
                 <CardHeader>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
                     <span className="text-lg font-semibold text-foreground">Primary Residence</span>
@@ -10325,12 +10323,15 @@ export default function AdminAddClient() {
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="flex items-center">
                       <div
-                        className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                        className={`bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-all duration-200 ${
+                          showPropertyAnimation ? 'animate-roll-down' : ''
+                        }`}
                         style={{
                           fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                           fontSize: '36px',
                           fontWeight: 600,
-                          backgroundColor: '#1a3373'
+                          backgroundColor: '#1a3373',
+                          animationDelay: '200ms'
                         }}
                         data-testid="text-primary-count"
                       >
@@ -10342,12 +10343,15 @@ export default function AdminAddClient() {
                     
                     <div className="flex items-center">
                       <div
-                        className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                        className={`bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-all duration-200 ${
+                          showPropertyAnimation ? 'animate-roll-down' : ''
+                        }`}
                         style={{
                           fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                           fontSize: '36px',
                           fontWeight: 600,
-                          backgroundColor: '#1a3373'
+                          backgroundColor: '#1a3373',
+                          animationDelay: '400ms'
                         }}
                         data-testid="text-second-home-count"
                       >
@@ -10359,12 +10363,15 @@ export default function AdminAddClient() {
                     
                     <div className="flex items-center">
                       <div
-                        className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                        className={`bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-all duration-200 ${
+                          showPropertyAnimation ? 'animate-roll-down' : ''
+                        }`}
                         style={{
                           fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                           fontSize: '36px',
                           fontWeight: 600,
-                          backgroundColor: '#1a3373'
+                          backgroundColor: '#1a3373',
+                          animationDelay: '600ms'
                         }}
                         data-testid="text-investment-count"
                       >
@@ -10376,12 +10383,15 @@ export default function AdminAddClient() {
                     
                     <div className="flex items-center">
                       <div
-                        className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                        className={`bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-all duration-200 ${
+                          showPropertyAnimation ? 'animate-roll-down' : ''
+                        }`}
                         style={{
                           fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                           fontSize: '36px',
                           fontWeight: 600,
-                          backgroundColor: '#1a3373'
+                          backgroundColor: '#1a3373',
+                          animationDelay: '800ms'
                         }}
                         data-testid="text-home-purchase-count"
                       >
