@@ -601,12 +601,21 @@ export default function AdminAddClient() {
         itemType: incomeTypeName,
         onConfirm: () => {
           form.setValue(fieldPath as any, false);
+          // Clear pension cards when unchecking pension
+          if (incomeTypeName === 'Pension') {
+            if (isCoBorrower) {
+              form.setValue('coBorrowerIncome.pensions', []);
+            } else {
+              form.setValue('income.pensions', []);
+            }
+          }
           setConfirmRemovalDialog({ isOpen: false, type: null });
         }
       });
     } else {
       // No warning needed when checking
       form.setValue(fieldPath as any, true);
+      
       // Auto-expand employment cards when selected
       if (fieldPath.includes('employment')) {
         if (!isCoBorrower) {
@@ -615,6 +624,29 @@ export default function AdminAddClient() {
         } else {
           // Expand the co-borrower employer card (using propertyCardStates)
           setPropertyCardStates(prev => ({ ...prev, 'coborrower-template-card': true }));
+        }
+      }
+      
+      // Auto-create default pension card when pension is first selected
+      if (incomeTypeName === 'Pension') {
+        const currentPensions = isCoBorrower 
+          ? (form.watch('coBorrowerIncome.pensions') || [])
+          : (form.watch('income.pensions') || []);
+        
+        // Only create default pension if none exist yet
+        if (currentPensions.length === 0) {
+          const defaultPension = {
+            id: `pension-default-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            payerName: '',
+            monthlyAmount: '',
+            isDefault: true // Mark as default card
+          };
+          
+          if (isCoBorrower) {
+            form.setValue('coBorrowerIncome.pensions', [defaultPension]);
+          } else {
+            form.setValue('income.pensions', [defaultPension]);
+          }
         }
       }
     }
@@ -4280,18 +4312,53 @@ export default function AdminAddClient() {
   };
 
   const removeBorrowerPension = (pensionId: string) => {
-    setConfirmRemovalDialog({
-      isOpen: true,
-      type: 'income',
-      itemId: pensionId,
-      itemType: 'pension',
-      onConfirm: () => {
-        const currentPensions = form.watch('income.pensions') || [];
-        const updatedPensions = currentPensions.filter(pension => pension.id !== pensionId);
-        form.setValue('income.pensions', updatedPensions);
-        setConfirmRemovalDialog({ isOpen: false, type: null });
-      }
-    });
+    const currentPensions = form.watch('income.pensions') || [];
+    const pension = currentPensions.find(p => p.id === pensionId);
+    
+    // Special handling for default pension card
+    if (pension?.isDefault) {
+      setConfirmRemovalDialog({
+        isOpen: true,
+        type: 'income',
+        itemId: pensionId,
+        itemType: 'default pension',
+        onConfirm: () => {
+          // Don't actually remove default card, just close dialog
+          setConfirmRemovalDialog({ isOpen: false, type: null });
+        }
+      });
+    } else {
+      // Normal removal for additional pension cards
+      setConfirmRemovalDialog({
+        isOpen: true,
+        type: 'income',
+        itemId: pensionId,
+        itemType: 'pension',
+        onConfirm: () => {
+          const updatedPensions = currentPensions.filter(pension => pension.id !== pensionId);
+          form.setValue('income.pensions', updatedPensions);
+          setConfirmRemovalDialog({ isOpen: false, type: null });
+        }
+      });
+    }
+  };
+
+  // Function to handle removal of default pension card from header
+  const removeDefaultBorrowerPension = () => {
+    const currentPensions = form.watch('income.pensions') || [];
+    const hasDefaultCard = currentPensions.some(p => p.isDefault);
+    
+    if (hasDefaultCard) {
+      setConfirmRemovalDialog({
+        isOpen: true,
+        type: 'income',
+        itemType: 'default pension',
+        onConfirm: () => {
+          // Don't actually remove default card, just close dialog
+          setConfirmRemovalDialog({ isOpen: false, type: null });
+        }
+      });
+    }
   };
 
   const addCoBorrowerPension = () => {
@@ -7320,35 +7387,48 @@ export default function AdminAddClient() {
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Borrower - Pension Income</CardTitle>
-                        <CollapsibleTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="hover:bg-orange-500 hover:text-white" 
-                            data-testid="button-toggle-pension-income"
-                            title={isPensionIncomeOpen ? 'Minimize' : 'Expand'}
-                            key={`pension-income-${isPensionIncomeOpen}`}
-                          >
-                            {isPensionIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                          </Button>
-                        </CollapsibleTrigger>
-                      </div>
-                    </CardHeader>
-                    <CollapsibleContent>
-                      <CardContent className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <Label className="text-base font-semibold">Pension Entries</Label>
+                        <div className="flex items-center gap-2">
                           <Button 
                             type="button" 
                             variant="outline" 
                             size="sm" 
                             onClick={addBorrowerPension}
                             className="hover:bg-orange-500 hover:text-white hover:border-orange-500"
-                            data-testid="button-add-borrower-pension"
+                            data-testid="button-add-borrower-pension-header"
                           >
                             <Plus className="h-4 w-4 mr-2" />
                             Add Pension
                           </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={removeDefaultBorrowerPension}
+                            className="hover:bg-red-500 hover:text-white"
+                            data-testid="button-remove-default-pension"
+                            title="Remove Default Pension"
+                          >
+                            <Minus className="h-4 w-4" />
+                          </Button>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-pension-income"
+                              title={isPensionIncomeOpen ? 'Minimize' : 'Expand'}
+                              key={`pension-income-${isPensionIncomeOpen}`}
+                            >
+                              {isPensionIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CollapsibleContent>
+                      <CardContent className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-base font-semibold">Pension Entries</Label>
                         </div>
                         
                         {(form.watch('income.pensions') || []).map((pension, index) => (
