@@ -4386,18 +4386,53 @@ export default function AdminAddClient() {
   };
 
   const removeCoBorrowerPension = (pensionId: string) => {
-    setConfirmRemovalDialog({
-      isOpen: true,
-      type: 'income',
-      itemId: pensionId,
-      itemType: 'co-borrower pension',
-      onConfirm: () => {
-        const currentPensions = form.watch('coBorrowerIncome.pensions') || [];
-        const updatedPensions = currentPensions.filter(pension => pension.id !== pensionId);
-        form.setValue('coBorrowerIncome.pensions', updatedPensions);
-        setConfirmRemovalDialog({ isOpen: false, type: null });
-      }
-    });
+    const currentPensions = form.watch('coBorrowerIncome.pensions') || [];
+    const pension = currentPensions.find(p => p.id === pensionId);
+    
+    // Special handling for default pension card
+    if (pension?.isDefault) {
+      setConfirmRemovalDialog({
+        isOpen: true,
+        type: 'income',
+        itemId: pensionId,
+        itemType: 'default co-borrower pension',
+        onConfirm: () => {
+          // Don't actually remove default card, just close dialog
+          setConfirmRemovalDialog({ isOpen: false, type: null });
+        }
+      });
+    } else {
+      // Normal removal for additional pension cards
+      setConfirmRemovalDialog({
+        isOpen: true,
+        type: 'income',
+        itemId: pensionId,
+        itemType: 'co-borrower pension',
+        onConfirm: () => {
+          const updatedPensions = currentPensions.filter(pension => pension.id !== pensionId);
+          form.setValue('coBorrowerIncome.pensions', updatedPensions);
+          setConfirmRemovalDialog({ isOpen: false, type: null });
+        }
+      });
+    }
+  };
+
+  // Function to handle removal of default co-borrower pension card from header
+  const removeDefaultCoBorrowerPension = () => {
+    const currentPensions = form.watch('coBorrowerIncome.pensions') || [];
+    const hasDefaultCard = currentPensions.some(p => p.isDefault);
+    
+    if (hasDefaultCard) {
+      setConfirmRemovalDialog({
+        isOpen: true,
+        type: 'income',
+        itemType: 'default co-borrower pension',
+        onConfirm: () => {
+          // Don't actually remove default card, just close dialog
+          setConfirmRemovalDialog({ isOpen: false, type: null });
+        }
+      });
+    }
   };
 
   // Property valuation handlers
@@ -9673,36 +9708,48 @@ export default function AdminAddClient() {
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower Pension</CardTitle>
-                        <CollapsibleTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="hover:bg-orange-500 hover:text-white" 
-                            data-testid="button-toggle-coborrower-pension-income"
-                            title={isCoBorrowerPensionIncomeOpen ? 'Minimize' : 'Expand'}
-                            key={`coborrower-pension-income-${isCoBorrowerPensionIncomeOpen}`}
-                          >
-                            {isCoBorrowerPensionIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                          </Button>
-                        </CollapsibleTrigger>
-                      </div>
-                    </CardHeader>
-                    <CollapsibleContent>
-                      <CardContent className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <Label className="text-base font-semibold">Pension Entries</Label>
+                        <div className="flex items-center gap-2">
                           <Button 
                             type="button" 
                             variant="outline" 
                             size="sm" 
                             onClick={addCoBorrowerPension}
-                            className="hover:bg-orange-500 hover:text-white hover:border-orange-500"
-                            data-testid="button-add-coborrower-pension"
+                            className="hover:bg-blue-500 hover:text-white"
+                            data-testid="button-add-coborrower-pension-header"
+                            title="Add New Pension"
                           >
                             <Plus className="h-4 w-4 mr-2" />
                             Add Pension
                           </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={removeDefaultCoBorrowerPension}
+                            className="hover:bg-red-500 hover:text-white"
+                            data-testid="button-remove-default-coborrower-pension"
+                            title="Delete Pension"
+                          >
+                            <Minus className="h-4 w-4 mr-2" />
+                            Remove
+                          </Button>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-coborrower-pension-income"
+                              title={isCoBorrowerPensionIncomeOpen ? 'Minimize' : 'Expand'}
+                              key={`coborrower-pension-income-${isCoBorrowerPensionIncomeOpen}`}
+                            >
+                              {isCoBorrowerPensionIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
                         </div>
+                      </div>
+                    </CardHeader>
+                    <CollapsibleContent>
+                      <CardContent className="space-y-4">
                         
                         {(form.watch('coBorrowerIncome.pensions') || []).map((pension, index) => (
                           <Card key={pension.id || index} className="p-4">
@@ -9713,7 +9760,9 @@ export default function AdminAddClient() {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => removeCoBorrowerPension(pension.id!)}
+                                className="hover:bg-orange-500 hover:text-white"
                                 data-testid={`button-remove-coborrower-pension-${index}`}
+                                title="Delete Pension"
                               >
                                 <Minus className="h-4 w-4" />
                               </Button>
