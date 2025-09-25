@@ -7077,9 +7077,12 @@ export default function AdminAddClient() {
               {/* Income Type Selection */}
               <Card className="border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
                 <CardHeader>
-                  <CardTitle>
-                    {totalBorrowerIncomeFormatted ? `${totalBorrowerIncomeFormatted} - Borrower Income` : 'Borrower Income'}
-                  </CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>Borrower Income</CardTitle>
+                    <span className="text-lg font-semibold" data-testid="text-total-borrower-income">
+                      {totalBorrowerIncomeFormatted}
+                    </span>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -8580,9 +8583,12 @@ export default function AdminAddClient() {
               {hasCoBorrower && (
                 <Card className="border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
                   <CardHeader>
-                    <CardTitle>
-                      {totalCoBorrowerIncomeFormatted} - Co-Borrower Income
-                    </CardTitle>
+                    <div className="flex items-center justify-between">
+                      <CardTitle>Co-Borrower Income</CardTitle>
+                      <span className="text-lg font-semibold" data-testid="text-total-coborrower-income">
+                        {totalCoBorrowerIncomeFormatted}
+                      </span>
+                    </div>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
