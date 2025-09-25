@@ -10309,7 +10309,7 @@ export default function AdminAddClient() {
                 showPropertyAnimation ? 'animate-roll-down' : ''
               }`}>
                 <CardHeader>
-                  <CardTitle className="text-lg font-semibold">
+                  <CardTitle>
                     Est. LTV
                   </CardTitle>
                 </CardHeader>
@@ -10352,7 +10352,7 @@ export default function AdminAddClient() {
                     <div className="space-y-2 flex flex-col justify-center h-full">
                       <div className="space-y-1 text-sm">
                         <div className="flex justify-between items-center w-48">
-                          <span className={`font-medium ${
+                          <span className={`text-lg font-semibold ${
                             (form.watch('property.properties') || []).filter(p => p.use === 'primary').length > 0 
                               ? 'text-green-800' 
                               : 'text-foreground'
@@ -10366,7 +10366,7 @@ export default function AdminAddClient() {
                           </span>
                         </div>
                         <div className="flex justify-between items-center w-48">
-                          <span className={`font-medium ${
+                          <span className={`text-lg font-semibold ${
                             (form.watch('property.properties') || []).filter(p => p.use === 'second-home').length > 0 
                               ? 'text-blue-500' 
                               : 'text-foreground'
@@ -10380,7 +10380,7 @@ export default function AdminAddClient() {
                           </span>
                         </div>
                         <div className="flex justify-between items-center w-48">
-                          <span className={`font-medium ${
+                          <span className={`text-lg font-semibold ${
                             (form.watch('property.properties') || []).filter(p => p.use === 'investment').length > 0 
                               ? 'text-purple-500' 
                               : 'text-foreground'
@@ -10421,7 +10421,7 @@ export default function AdminAddClient() {
                           }}
                           data-testid="checkbox-property-primary"
                         />
-                        <Label htmlFor="property-type-primary" className="text-lg font-semibold">
+                        <Label htmlFor="property-type-primary" className="font-medium">
                           Primary Residence
                         </Label>
                       </div>
@@ -10439,7 +10439,7 @@ export default function AdminAddClient() {
                           }}
                           data-testid="checkbox-property-second-home"
                         />
-                        <Label htmlFor="property-type-second-home" className="text-lg font-semibold">
+                        <Label htmlFor="property-type-second-home" className="font-medium">
                           Second Home
                         </Label>
                       </div>
@@ -10457,7 +10457,7 @@ export default function AdminAddClient() {
                           }}
                           data-testid="checkbox-property-investment"
                         />
-                        <Label htmlFor="property-type-investment" className="text-lg font-semibold">
+                        <Label htmlFor="property-type-investment" className="font-medium">
                           Investment Property
                         </Label>
                       </div>
