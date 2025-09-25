@@ -10311,7 +10311,7 @@ export default function AdminAddClient() {
                 <CardHeader>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
                     <CardTitle className="text-lg font-semibold">
-                      Est. LTV
+                      Estimated LTV
                     </CardTitle>
                     
                     <span className="text-lg font-semibold text-foreground">Primary Residence</span>
