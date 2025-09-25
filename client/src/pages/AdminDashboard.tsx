@@ -120,10 +120,69 @@ export default function AdminDashboard() {
 
       {/* Main Content */}
       <div className="container mx-auto px-6 py-8 relative z-10">
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold mb-2" data-testid="text-dashboard-welcome">
-            Dashboard
-          </h2>
+        <div className="mb-16 flex justify-center">
+          {/* Wooden Plank Dashboard Sign */}
+          <div 
+            className="relative inline-block"
+            style={{
+              background: 'linear-gradient(135deg, #8B4513 0%, #A0522D 25%, #CD853F 50%, #DEB887 75%, #F5DEB3 100%)',
+              backgroundImage: `repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px)`,
+              padding: '24px 48px',
+              borderRadius: '8px',
+              boxShadow: `
+                inset -15px -10px 25px rgba(0,0,0,0.3),
+                inset 20px 8px 25px rgba(255,255,255,0.1),
+                6px 4px 12px rgba(0,0,0,0.4),
+                0 0 0 2px rgba(139, 69, 19, 0.8)
+              `,
+              border: '1px solid #654321'
+            }}
+            data-testid="text-dashboard-welcome"
+          >
+            {/* Screw in top-left */}
+            <div 
+              className="absolute -top-2 -left-2 w-4 h-4 rounded-full"
+              style={{
+                background: 'radial-gradient(circle, #C0C0C0 20%, #808080 50%, #404040 100%)',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.3)'
+              }}
+            >
+              <div className="absolute inset-1 flex items-center justify-center">
+                <div className="w-1 h-3 bg-gray-600 rounded-full"></div>
+                <div className="w-3 h-1 bg-gray-600 rounded-full absolute"></div>
+              </div>
+            </div>
+            
+            {/* Screw in top-right */}
+            <div 
+              className="absolute -top-2 -right-2 w-4 h-4 rounded-full"
+              style={{
+                background: 'radial-gradient(circle, #C0C0C0 20%, #808080 50%, #404040 100%)',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.3)'
+              }}
+            >
+              <div className="absolute inset-1 flex items-center justify-center">
+                <div className="w-1 h-3 bg-gray-600 rounded-full"></div>
+                <div className="w-3 h-1 bg-gray-600 rounded-full absolute"></div>
+              </div>
+            </div>
+            
+            {/* Engraved Dashboard Text */}
+            <h2 
+              className="text-4xl font-bold tracking-wider"
+              style={{
+                background: '#654321',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                color: 'transparent',
+                textShadow: '2px 4px 3px rgba(245, 245, 245, 0.4)',
+                fontFamily: '"Georgia", serif',
+                letterSpacing: '3px'
+              }}
+            >
+              DASHBOARD
+            </h2>
+          </div>
         </div>
 
         {/* Menu Grid - First Row */}
