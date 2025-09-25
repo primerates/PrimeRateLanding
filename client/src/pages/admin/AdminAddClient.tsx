@@ -594,7 +594,21 @@ export default function AdminAddClient() {
         }
       }
       
-      // Show warning when trying to uncheck/remove income type (for non-employment or when no cards exist)
+      // Special handling for pension - don't allow unchecking if default card already exists
+      if (incomeTypeName === 'Pension') {
+        const currentPensions = isCoBorrower 
+          ? (form.watch('coBorrowerIncome.pensions') || [])
+          : (form.watch('income.pensions') || []);
+        const hasDefaultCard = currentPensions.some(p => p.isDefault);
+        
+        if (hasDefaultCard) {
+          // Default pension card already exists, prevent unchecking - keep checkbox checked
+          form.setValue(fieldPath as any, true);
+          return;
+        }
+      }
+      
+      // Show warning when trying to uncheck/remove income type (for non-employment, non-pension with default, or when no cards exist)
       setConfirmRemovalDialog({
         isOpen: true,
         type: 'income',
@@ -7429,9 +7443,6 @@ export default function AdminAddClient() {
                     </CardHeader>
                     <CollapsibleContent>
                       <CardContent className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <Label className="text-base font-semibold">Pension Entries</Label>
-                        </div>
                         
                         {(form.watch('income.pensions') || []).map((pension, index) => (
                           <Card key={pension.id || index} className="p-4">
@@ -7442,7 +7453,9 @@ export default function AdminAddClient() {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => removeBorrowerPension(pension.id!)}
+                                className="hover:bg-orange-500 hover:text-white"
                                 data-testid={`button-remove-borrower-pension-${index}`}
+                                title="Delete Pension"
                               >
                                 <Minus className="h-4 w-4" />
                               </Button>
