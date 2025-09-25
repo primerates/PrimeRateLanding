@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import moonLandingBackground from '@assets/stock_images/moon_landing_apollo__46fa586b.jpg';
+import cubesBackground from '@assets/stock_images/abstract_geometric_c_b9135c5b.jpg';
 
 export default function AdminDashboard() {
   const [location, setLocation] = useLocation();
@@ -72,7 +72,7 @@ export default function AdminDashboard() {
     <div 
       className="min-h-screen bg-background relative"
       style={{
-        backgroundImage: `url(${moonLandingBackground})`,
+        backgroundImage: `url(${cubesBackground})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
