@@ -7073,7 +7073,7 @@ export default function AdminAddClient() {
                               >
                                 <span>
                                   {displayValue.replace('%', '')}
-                                  <span style={{ fontSize: '28px' }}>%</span>
+                                  <span style={{ fontSize: '24px' }}>%</span>
                                 </span>
                               </div>
                             ) : (
@@ -7129,7 +7129,7 @@ export default function AdminAddClient() {
                               >
                                 <span>
                                   {displayValue.replace('%', '')}
-                                  <span style={{ fontSize: '28px' }}>%</span>
+                                  <span style={{ fontSize: '24px' }}>%</span>
                                 </span>
                               </div>
                             ) : (
@@ -7190,7 +7190,7 @@ export default function AdminAddClient() {
                               >
                                 <span>
                                   {displayValue.replace('%', '')}
-                                  <span style={{ fontSize: '28px' }}>%</span>
+                                  <span style={{ fontSize: '24px' }}>%</span>
                                 </span>
                               </div>
                             ) : (
