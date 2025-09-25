@@ -25,6 +25,21 @@
   }
 }
 
+@keyframes roll-down-subject-property {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(10px);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 .animate-roll-down {
   animation: roll-down 0.6s ease-out forwards;
 }
@@ -47,6 +62,11 @@
 
 .animate-roll-down-dti-3 {
   animation: roll-down-delayed 0.6s ease-out 0.7s forwards;
+  opacity: 0;
+}
+
+.animate-roll-down-subject-property {
+  animation: roll-down-subject-property 0.8s ease-out forwards;
   opacity: 0;
 }
 

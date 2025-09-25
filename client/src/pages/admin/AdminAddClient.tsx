@@ -536,6 +536,8 @@ export default function AdminAddClient() {
   const [showPropertyAnimation, setShowPropertyAnimation] = useState(false);
   // Animation state for Borrower tab animations
   const [showBorrowerAnimation, setShowBorrowerAnimation] = useState(false);
+  // Animation state for subject property box roll-down
+  const [showSubjectPropertyAnimation, setShowSubjectPropertyAnimation] = useState<{[key: string]: boolean}>({});
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
@@ -4845,6 +4847,19 @@ export default function AdminAddClient() {
     
     // Auto-copy address data when primary residence is selected
     if (type === 'primary') {
+      // Trigger subject property box animation for new primary residence
+      setTimeout(() => {
+        const currentProperties = form.watch('property.properties') || [];
+        const newPrimaryProperty = currentProperties.find(p => p.use === 'primary');
+        if (newPrimaryProperty?.id) {
+          setShowSubjectPropertyAnimation(prev => ({ ...prev, [newPrimaryProperty.id!]: true }));
+          // Reset animation after it completes
+          setTimeout(() => {
+            setShowSubjectPropertyAnimation(prev => ({ ...prev, [newPrimaryProperty.id!]: false }));
+          }, 800);
+        }
+      }, 200); // Small delay to ensure card is expanded first
+      
       setTimeout(() => {
         const borrowerAddress = form.getValues('borrower.residenceAddress');
         if (borrowerAddress && (borrowerAddress.street || borrowerAddress.city || borrowerAddress.state)) {
@@ -10611,7 +10626,9 @@ export default function AdminAddClient() {
                         <CardContent>
                           <div className="space-y-6">
                             {/* Subject Property Question - Moved to top */}
-                            <Card className="bg-muted">
+                            <Card className={`bg-muted ${
+                              showSubjectPropertyAnimation[propertyId] ? 'animate-roll-down-subject-property' : ''
+                            }`}>
                               <CardContent className="pt-6">
                                 <div className="space-y-3">
                                   <Label className="text-base font-semibold">Is this also the subject property?</Label>
