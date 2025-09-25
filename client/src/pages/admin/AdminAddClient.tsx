@@ -612,6 +612,18 @@ export default function AdminAddClient() {
         }
       }
       
+      // Special handling for self-employment - don't allow unchecking if cards already exist
+      if (incomeTypeName === 'Self-Employment') {
+        const hasCards = isCoBorrower 
+          ? (coBorrowerSelfEmploymentCards || []).length > 0
+          : (borrowerSelfEmploymentCards || []).length > 0;
+        
+        if (hasCards) {
+          // Cards already exist, prevent unchecking - all removal must be done through card buttons
+          return;
+        }
+      }
+      
       // Special handling for pension - don't allow unchecking if default card already exists
       if (incomeTypeName === 'Pension') {
         const currentPensions = isCoBorrower 
@@ -656,6 +668,26 @@ export default function AdminAddClient() {
         } else {
           // Expand the co-borrower employer card (using propertyCardStates)
           setPropertyCardStates(prev => ({ ...prev, 'coborrower-template-card': true }));
+        }
+      }
+      
+      // Auto-create default self-employment card when self-employment is first selected
+      if (incomeTypeName === 'Self-Employment') {
+        const hasCards = isCoBorrower 
+          ? (coBorrowerSelfEmploymentCards || []).length > 0
+          : (borrowerSelfEmploymentCards || []).length > 0;
+        
+        // Only create default self-employment card if none exist yet
+        if (!hasCards) {
+          if (isCoBorrower) {
+            setCoBorrowerSelfEmploymentCards(['default']);
+          } else {
+            setBorrowerSelfEmploymentCards(['default']);
+          }
+          
+          // Auto-expand the self-employment card
+          const cardId = isCoBorrower ? 'coborrower-self-employment-template-card' : 'self-employment-template-card';
+          setPropertyCardStates(prev => ({ ...prev, [cardId]: true }));
         }
       }
       
