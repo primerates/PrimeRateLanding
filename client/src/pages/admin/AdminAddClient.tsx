@@ -9067,21 +9067,19 @@ export default function AdminAddClient() {
                               Add Employer
                             </Button>
                             
-                            {/* Delete Employer Button - only show if more than 1 card */}
-                            {(coBorrowerSecondEmployerCards || []).length > 1 && (
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setDeleteCoBorrowerSecondEmployerDialog({ isOpen: true, cardId: propertyId })}
-                                className="hover:bg-red-500 hover:text-white"
-                                data-testid="button-delete-coborrower-second-employer"
-                                title="Delete Employer"
-                              >
-                                <Minus className="h-4 w-4 mr-2" />
-                                Remove
-                              </Button>
-                            )}
+                            {/* Delete Employer Button */}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setDeleteCoBorrowerSecondEmployerDialog({ isOpen: true, cardId: propertyId })}
+                              className="hover:bg-red-500 hover:text-white"
+                              data-testid="button-delete-coborrower-second-employer"
+                              title="Delete Employer"
+                            >
+                              <Minus className="h-4 w-4 mr-2" />
+                              Remove
+                            </Button>
                             
                             <CollapsibleTrigger asChild>
                               <Button 
