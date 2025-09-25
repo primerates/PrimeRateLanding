@@ -10538,7 +10538,7 @@ export default function AdminAddClient() {
                               {getPropertyTitle()}
                               {property.isSubject && (
                                 <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
-                                  - Subject Property
+                                  Subject Property
                                 </span>
                               )}
                             </CardTitle>
