@@ -4964,25 +4964,33 @@ export default function AdminAddClient() {
           // Create entry in main form's property array
           addProperty('primary');
           
-          setPrimaryResidenceCards(['default']);
-          
-          // Initialize data state for default card
-          setPrimaryResidenceData(prev => ({ 
-            ...prev, 
-            'primary-template-card': { purpose: 'primary', isSubjectProperty: null } 
-          }));
-          
-          // Auto-expand the property card
-          const cardId = 'primary-template-card';
-          setPropertyCardStates(prev => ({ ...prev, [cardId]: true }));
-          
-          // Trigger animation for newly created property card
+          // Get the ID of the newly created property
           setTimeout(() => {
-            setShowSubjectPropertyAnimation(prev => ({ ...prev, 'primary-default': true }));
-            setTimeout(() => {
-              setShowSubjectPropertyAnimation(prev => ({ ...prev, 'primary-default': false }));
-            }, 800);
-          }, 200);
+            const currentProperties = form.watch('property.properties') || [];
+            const newProperty = currentProperties.find(p => p.use === 'primary');
+            const newPropertyId = newProperty?.id;
+            
+            if (newPropertyId) {
+              setPrimaryResidenceCards([newPropertyId]);
+              
+              // Initialize data state for default card
+              setPrimaryResidenceData(prev => ({ 
+                ...prev, 
+                [newPropertyId]: { purpose: 'primary', isSubjectProperty: null } 
+              }));
+              
+              // Auto-expand the property card
+              setPropertyCardStates(prev => ({ ...prev, [newPropertyId]: true }));
+              
+              // Trigger animation for newly created property card
+              setTimeout(() => {
+                setShowSubjectPropertyAnimation(prev => ({ ...prev, [newPropertyId]: true }));
+                setTimeout(() => {
+                  setShowSubjectPropertyAnimation(prev => ({ ...prev, [newPropertyId]: false }));
+                }, 800);
+              }, 200);
+            }
+          }, 50); // Small delay to ensure form state is updated
         }
       } else {
         // For other property types, use the old system for now
@@ -10670,7 +10678,11 @@ export default function AdminAddClient() {
 
               {/* Primary Residence Cards */}
               {(primaryResidenceCards || []).length > 0 && (primaryResidenceCards || ['default']).map((cardId, index) => {
-                const propertyId = cardId === 'default' ? 'primary-template-card' : cardId;
+                // Get the actual property from the properties array
+                const properties = form.watch('property.properties') || [];
+                const property = properties.find(p => p.id === cardId);
+                const propertyId = property?.id || cardId;
+                const propertyIndex = properties.findIndex(p => p.id === cardId);
                 const isOpen = propertyCardStates[propertyId] ?? true;
                 
                 return (
@@ -10718,13 +10730,25 @@ export default function AdminAddClient() {
                               variant="outline"
                               size="sm"
                               onClick={() => {
-                                const newId = `primary-${Date.now()}`;
-                                setPrimaryResidenceCards(prev => [...(prev || ['default']), newId]);
-                                // Initialize data state for new card
-                                setPrimaryResidenceData(prev => ({ 
-                                  ...prev, 
-                                  [newId]: { purpose: 'primary', isSubjectProperty: null } 
-                                }));
+                                // Create entry in main form's property array first
+                                addProperty('primary');
+                                
+                                // Get the ID of the newly created property
+                                const currentProperties = form.watch('property.properties') || [];
+                                const newProperty = currentProperties[currentProperties.length - 1];
+                                const newPropertyId = newProperty?.id;
+                                
+                                if (newPropertyId) {
+                                  setPrimaryResidenceCards(prev => [...(prev || ['default']), newPropertyId]);
+                                  // Initialize data state for new card
+                                  setPrimaryResidenceData(prev => ({ 
+                                    ...prev, 
+                                    [newPropertyId]: { purpose: 'primary', isSubjectProperty: null } 
+                                  }));
+                                  
+                                  // Auto-expand the new property card
+                                  setPropertyCardStates(prev => ({ ...prev, [newPropertyId]: true }));
+                                }
                               }}
                               className="hover:bg-blue-500 hover:text-white"
                               data-testid="button-add-primary-property"
@@ -10828,6 +10852,7 @@ export default function AdminAddClient() {
                                 <Input
                                   id={`property-address-street-${propertyId}`}
                                   placeholder="123 Main St"
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.street` as any) : {})}
                                   data-testid={`input-property-street-${propertyId}`}
                                 />
                               </div>
@@ -10836,6 +10861,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-unit-${propertyId}`}>Unit/Apt</Label>
                                 <Input
                                   id={`property-address-unit-${propertyId}`}
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.unit` as any) : {})}
                                   data-testid={`input-property-unit-${propertyId}`}
                                 />
                               </div>
@@ -10844,13 +10870,17 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-city-${propertyId}`}>City *</Label>
                                 <Input
                                   id={`property-address-city-${propertyId}`}
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.city` as any) : {})}
                                   data-testid={`input-property-city-${propertyId}`}
                                 />
                               </div>
                               
                               <div className="space-y-2 md:col-span-1">
                                 <Label htmlFor={`property-address-state-${propertyId}`}>State *</Label>
-                                <Select>
+                                <Select 
+                                  value={propertyIndex >= 0 ? form.watch(`property.properties.${propertyIndex}.address.state`) : ''}
+                                  onValueChange={(value) => propertyIndex >= 0 && form.setValue(`property.properties.${propertyIndex}.address.state` as any, value)}
+                                >
                                   <SelectTrigger data-testid={`select-property-state-${propertyId}`}>
                                     <SelectValue placeholder="State" />
                                   </SelectTrigger>
@@ -10868,6 +10898,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-zip-${propertyId}`}>ZIP Code *</Label>
                                 <Input
                                   id={`property-address-zip-${propertyId}`}
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.zip` as any) : {})}
                                   data-testid={`input-property-zip-${propertyId}`}
                                 />
                               </div>
@@ -10876,13 +10907,17 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-county-${propertyId}`}>County</Label>
                                 <Input
                                   id={`property-address-county-${propertyId}`}
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.county` as any) : {})}
                                   data-testid={`input-property-county-${propertyId}`}
                                 />
                               </div>
                               
                               <div className="space-y-2 md:col-span-2">
                                 <Label htmlFor={`property-type-${propertyId}`}>Property Type</Label>
-                                <Select>
+                                <Select 
+                                  value={propertyIndex >= 0 ? form.watch(`property.properties.${propertyIndex}.propertyType`) : ''}
+                                  onValueChange={(value) => propertyIndex >= 0 && form.setValue(`property.properties.${propertyIndex}.propertyType` as any, value)}
+                                >
                                   <SelectTrigger data-testid={`select-property-type-${propertyId}`}>
                                     <SelectValue placeholder="Select type" />
                                   </SelectTrigger>
