@@ -836,6 +836,11 @@ export default function AdminAddClient() {
   // Guideline DTI toggle state - Guideline DTI / Guideline - Front DTI
   const [isShowingGuidelineFrontDTI, setIsShowingGuidelineFrontDTI] = useState(false);
   
+  // DTI inline editing states
+  const [isFrontDTIEditing, setIsFrontDTIEditing] = useState(false);
+  const [isBackDTIEditing, setIsBackDTIEditing] = useState(false);
+  const [isGuidelineDTIEditing, setIsGuidelineDTIEditing] = useState(false);
+  
   // Template card toggle state - End Date / Present
   const [isShowingPresent, setIsShowingPresent] = useState(false);
 
@@ -6986,18 +6991,47 @@ export default function AdminAddClient() {
                     <Controller
                       control={form.control}
                       name="income.frontDTI"
-                      render={({ field }) => (
-                        <Input
-                          id="income-frontDTI"
-                          value={formatPercentageDisplay(field.value)}
-                          onChange={(e) => {
-                            const rawValue = parsePercentageInput(e.target.value);
-                            field.onChange(rawValue);
-                          }}
-                          placeholder="%"
-                          data-testid="input-income-frontDTI"
-                        />
-                      )}
+                      render={({ field }) => {
+                        const displayValue = formatPercentageDisplay(field.value);
+                        const hasValue = field.value && field.value.trim() !== '';
+                        
+                        return (
+                          <div className="min-h-[40px] flex items-center">
+                            {!isFrontDTIEditing && hasValue ? (
+                              <div
+                                onClick={() => setIsFrontDTIEditing(true)}
+                                className="cursor-pointer text-black hover:bg-gray-50 px-2 py-1 rounded"
+                                style={{
+                                  fontFamily: 'Segoe UI Black, ui-sans-serif, system-ui, sans-serif',
+                                  fontSize: '16px',
+                                  fontWeight: 900
+                                }}
+                                data-testid="display-income-frontDTI"
+                              >
+                                {displayValue}
+                              </div>
+                            ) : (
+                              <Input
+                                id="income-frontDTI"
+                                value={displayValue}
+                                onChange={(e) => {
+                                  const rawValue = parsePercentageInput(e.target.value);
+                                  field.onChange(rawValue);
+                                }}
+                                onBlur={() => {
+                                  if (hasValue) {
+                                    setIsFrontDTIEditing(false);
+                                  }
+                                }}
+                                onFocus={() => setIsFrontDTIEditing(true)}
+                                placeholder="%"
+                                autoFocus={isFrontDTIEditing && hasValue}
+                                data-testid="input-income-frontDTI"
+                              />
+                            )}
+                          </div>
+                        );
+                      }}
                     />
                   </div>
                   
