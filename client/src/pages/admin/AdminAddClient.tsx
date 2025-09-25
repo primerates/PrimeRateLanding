@@ -682,6 +682,21 @@ export default function AdminAddClient() {
         // Auto-expand the employment card
         const cardId = isCoBorrower ? 'coborrower-template-card' : 'template-card';
         setPropertyCardStates(prev => ({ ...prev, [cardId]: true }));
+        
+        // Trigger animation for newly created employment card
+        setTimeout(() => {
+          if (isCoBorrower) {
+            setShowIncomeCardAnimation(prev => ({ ...prev, [`co-borrower-employment-${cardId}`]: true }));
+            setTimeout(() => {
+              setShowIncomeCardAnimation(prev => ({ ...prev, [`co-borrower-employment-${cardId}`]: false }));
+            }, 800);
+          } else {
+            setShowIncomeCardAnimation(prev => ({ ...prev, [`borrower-employment-${cardId}`]: true }));
+            setTimeout(() => {
+              setShowIncomeCardAnimation(prev => ({ ...prev, [`borrower-employment-${cardId}`]: false }));
+            }, 800);
+          }
+        }, 200);
       }
       
       // Auto-create default second employment card when second employment is first selected
@@ -701,6 +716,21 @@ export default function AdminAddClient() {
           // Auto-expand the second employment card
           const cardId = isCoBorrower ? 'coborrower-second-template-card' : 'second-template-card';
           setPropertyCardStates(prev => ({ ...prev, [cardId]: true }));
+          
+          // Trigger animation for newly created second employment card
+          setTimeout(() => {
+            if (isCoBorrower) {
+              setShowIncomeCardAnimation(prev => ({ ...prev, 'co-borrower-second-employment': true }));
+              setTimeout(() => {
+                setShowIncomeCardAnimation(prev => ({ ...prev, 'co-borrower-second-employment': false }));
+              }, 800);
+            } else {
+              setShowIncomeCardAnimation(prev => ({ ...prev, 'borrower-second-employment': true }));
+              setTimeout(() => {
+                setShowIncomeCardAnimation(prev => ({ ...prev, 'borrower-second-employment': false }));
+              }, 800);
+            }
+          }, 200);
         }
       }
       
@@ -721,6 +751,21 @@ export default function AdminAddClient() {
           // Auto-expand the self-employment card
           const cardId = isCoBorrower ? 'coborrower-self-employment-template-card' : 'self-employment-template-card';
           setPropertyCardStates(prev => ({ ...prev, [cardId]: true }));
+          
+          // Trigger animation for newly created self-employment card
+          setTimeout(() => {
+            if (isCoBorrower) {
+              setShowIncomeCardAnimation(prev => ({ ...prev, 'co-borrower-self-employment': true }));
+              setTimeout(() => {
+                setShowIncomeCardAnimation(prev => ({ ...prev, 'co-borrower-self-employment': false }));
+              }, 800);
+            } else {
+              setShowIncomeCardAnimation(prev => ({ ...prev, 'borrower-self-employment': true }));
+              setTimeout(() => {
+                setShowIncomeCardAnimation(prev => ({ ...prev, 'borrower-self-employment': false }));
+              }, 800);
+            }
+          }, 200);
         }
       }
       
@@ -7326,17 +7371,7 @@ export default function AdminAddClient() {
                   <Card key={cardId} className="transition-colors duration-200">
                     <Collapsible 
                       open={isOpen} 
-                      onOpenChange={(open) => {
-                        setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }));
-                        if (open && !showIncomeCardAnimation['borrower-self-employment']) {
-                          setTimeout(() => {
-                            setShowIncomeCardAnimation(prev => ({ ...prev, 'borrower-self-employment': true }));
-                            setTimeout(() => {
-                              setShowIncomeCardAnimation(prev => ({ ...prev, 'borrower-self-employment': false }));
-                            }, 800);
-                          }, 200);
-                        }
-                      }}
+                      onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
                     >
                       <CardHeader>
                         <div className="flex items-center justify-between">
@@ -7797,17 +7832,7 @@ export default function AdminAddClient() {
               {/* Social Security Income Card */}
               {form.watch('income.incomeTypes.socialSecurity') && (
                 <Card>
-                  <Collapsible open={isSocialSecurityIncomeOpen} onOpenChange={(open) => {
-                    setIsSocialSecurityIncomeOpen(open);
-                    if (open && !showIncomeCardAnimation['social-security']) {
-                      setTimeout(() => {
-                        setShowIncomeCardAnimation(prev => ({ ...prev, 'social-security': true }));
-                        setTimeout(() => {
-                          setShowIncomeCardAnimation(prev => ({ ...prev, 'social-security': false }));
-                        }, 800);
-                      }, 200);
-                    }
-                  }}>
+                  <Collapsible open={isSocialSecurityIncomeOpen} onOpenChange={setIsSocialSecurityIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Borrower - Social Security</CardTitle>
@@ -7870,17 +7895,7 @@ export default function AdminAddClient() {
               {/* VA Benefits Income Card */}
               {form.watch('income.incomeTypes.vaBenefits') && (
                 <Card>
-                  <Collapsible open={isVaBenefitsIncomeOpen} onOpenChange={(open) => {
-                    setIsVaBenefitsIncomeOpen(open);
-                    if (open && !showIncomeCardAnimation['va-benefits']) {
-                      setTimeout(() => {
-                        setShowIncomeCardAnimation(prev => ({ ...prev, 'va-benefits': true }));
-                        setTimeout(() => {
-                          setShowIncomeCardAnimation(prev => ({ ...prev, 'va-benefits': false }));
-                        }, 800);
-                      }, 200);
-                    }
-                  }}>
+                  <Collapsible open={isVaBenefitsIncomeOpen} onOpenChange={setIsVaBenefitsIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Borrower - VA Disability</CardTitle>
@@ -7943,17 +7958,7 @@ export default function AdminAddClient() {
               {/* Disability Income Card */}
               {form.watch('income.incomeTypes.disability') && (
                 <Card>
-                  <Collapsible open={isDisabilityIncomeOpen} onOpenChange={(open) => {
-                    setIsDisabilityIncomeOpen(open);
-                    if (open && !showIncomeCardAnimation['disability']) {
-                      setTimeout(() => {
-                        setShowIncomeCardAnimation(prev => ({ ...prev, 'disability': true }));
-                        setTimeout(() => {
-                          setShowIncomeCardAnimation(prev => ({ ...prev, 'disability': false }));
-                        }, 800);
-                      }, 200);
-                    }
-                  }}>
+                  <Collapsible open={isDisabilityIncomeOpen} onOpenChange={setIsDisabilityIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Borrower - Disability</CardTitle>
@@ -8024,17 +8029,7 @@ export default function AdminAddClient() {
               {/* Rental Income Card */}
               {form.watch('income.incomeTypes.other') && (
                 <Card>
-                  <Collapsible open={isOtherIncomeOpen} onOpenChange={(open) => {
-                    setIsOtherIncomeOpen(open);
-                    if (open && !showIncomeCardAnimation['other-income']) {
-                      setTimeout(() => {
-                        setShowIncomeCardAnimation(prev => ({ ...prev, 'other-income': true }));
-                        setTimeout(() => {
-                          setShowIncomeCardAnimation(prev => ({ ...prev, 'other-income': false }));
-                        }, 800);
-                      }, 200);
-                    }
-                  }}>
+                  <Collapsible open={isOtherIncomeOpen} onOpenChange={setIsOtherIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Rental Income</CardTitle>
@@ -8097,17 +8092,7 @@ export default function AdminAddClient() {
                   <Card key={cardId} className="transition-colors duration-200">
                     <Collapsible 
                       open={isOpen} 
-                      onOpenChange={(open) => {
-                        setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }));
-                        if (open && !showIncomeCardAnimation[`borrower-employment-${propertyId}`]) {
-                          setTimeout(() => {
-                            setShowIncomeCardAnimation(prev => ({ ...prev, [`borrower-employment-${propertyId}`]: true }));
-                            setTimeout(() => {
-                              setShowIncomeCardAnimation(prev => ({ ...prev, [`borrower-employment-${propertyId}`]: false }));
-                            }, 800);
-                          }, 200);
-                        }
-                      }}
+                      onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
                     >
                       <CardHeader>
                         <div className="flex items-center justify-between">
@@ -8446,17 +8431,7 @@ export default function AdminAddClient() {
                   <Card key={cardId} className="transition-colors duration-200">
                     <Collapsible 
                       open={isOpen} 
-                      onOpenChange={(open) => {
-                        setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }));
-                        if (open && !showIncomeCardAnimation['borrower-second-employment']) {
-                          setTimeout(() => {
-                            setShowIncomeCardAnimation(prev => ({ ...prev, 'borrower-second-employment': true }));
-                            setTimeout(() => {
-                              setShowIncomeCardAnimation(prev => ({ ...prev, 'borrower-second-employment': false }));
-                            }, 800);
-                          }, 200);
-                        }
-                      }}
+                      onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
                     >
                       <CardHeader>
                         <div className="flex items-center justify-between">
