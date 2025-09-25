@@ -10349,23 +10349,6 @@ export default function AdminAddClient() {
                       </div>
                     </div>
                     
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium text-muted-foreground">Subject Property Is</Label>
-                      <div className="text-lg font-medium" data-testid="text-subject-property">
-                        {(() => {
-                          const properties = form.watch('property.properties') || [];
-                          const subjectProperty = properties.find(p => p.isSubject);
-                          if (!subjectProperty) return 'Not selected';
-                          const typeLabels = {
-                            'primary': 'Primary Residence',
-                            'second-home': 'Second Home', 
-                            'investment': 'Investment Property'
-                          };
-                          return typeLabels[subjectProperty.use as keyof typeof typeLabels] || 'Unknown';
-                        })()}
-                      </div>
-                    </div>
-                    
                     <div className="space-y-2 flex flex-col justify-center h-full">
                       <div className="space-y-1 text-sm">
                         <div className="flex justify-between items-center w-48">
