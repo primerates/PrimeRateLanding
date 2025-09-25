@@ -4355,7 +4355,10 @@ export default function AdminAddClient() {
         itemId: pensionId,
         itemType: 'default pension',
         onConfirm: () => {
-          // Don't actually remove default card, just close dialog
+          // Remove ALL pension cards and uncheck the pension checkbox
+          form.setValue('income.pensions', []);
+          // Uncheck pension checkbox when default card is removed
+          form.setValue('income.incomeTypes.pension', false);
           setConfirmRemovalDialog({ isOpen: false, type: null });
         }
       });
@@ -4386,7 +4389,10 @@ export default function AdminAddClient() {
         type: 'income',
         itemType: 'default pension',
         onConfirm: () => {
-          // Don't actually remove default card, just close dialog
+          // Remove ALL pension cards and uncheck the pension checkbox
+          form.setValue('income.pensions', []);
+          // Uncheck pension checkbox when default card is removed
+          form.setValue('income.incomeTypes.pension', false);
           setConfirmRemovalDialog({ isOpen: false, type: null });
         }
       });
@@ -4415,7 +4421,10 @@ export default function AdminAddClient() {
         itemId: pensionId,
         itemType: 'default co-borrower pension',
         onConfirm: () => {
-          // Don't actually remove default card, just close dialog
+          // Remove ALL co-borrower pension cards and uncheck the pension checkbox
+          form.setValue('coBorrowerIncome.pensions', []);
+          // Uncheck pension checkbox when default card is removed
+          form.setValue('coBorrowerIncome.incomeTypes.pension', false);
           setConfirmRemovalDialog({ isOpen: false, type: null });
         }
       });
@@ -4446,7 +4455,10 @@ export default function AdminAddClient() {
         type: 'income',
         itemType: 'default co-borrower pension',
         onConfirm: () => {
-          // Don't actually remove default card, just close dialog
+          // Remove ALL co-borrower pension cards and uncheck the pension checkbox
+          form.setValue('coBorrowerIncome.pensions', []);
+          // Uncheck pension checkbox when default card is removed
+          form.setValue('coBorrowerIncome.incomeTypes.pension', false);
           setConfirmRemovalDialog({ isOpen: false, type: null });
         }
       });
