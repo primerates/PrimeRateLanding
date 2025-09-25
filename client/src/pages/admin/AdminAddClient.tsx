@@ -534,6 +534,8 @@ export default function AdminAddClient() {
   const [showIncomeAnimation, setShowIncomeAnimation] = useState(false);
   // Animation state for Property tab animations
   const [showPropertyAnimation, setShowPropertyAnimation] = useState(false);
+  // Animation state for Borrower tab animations
+  const [showBorrowerAnimation, setShowBorrowerAnimation] = useState(false);
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
@@ -5491,6 +5493,16 @@ export default function AdminAddClient() {
       <div className="container mx-auto px-6 py-8">
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <Tabs defaultValue="client" className="space-y-6" onValueChange={(value) => {
+            if (value === 'client' && !showEntryAnimation) {
+              // Only trigger borrower animation if not on initial page load
+              // Reset to false first to ensure animation can retrigger
+              setShowBorrowerAnimation(false);
+              requestAnimationFrame(() => {
+                setShowBorrowerAnimation(true);
+                // Reset animation after it completes so it can trigger again if needed
+                setTimeout(() => setShowBorrowerAnimation(false), 1000);
+              });
+            }
             if (value === 'income') {
               setShowIncomeAnimation(true);
               // Reset animation after it completes so it can trigger again if needed
@@ -5518,7 +5530,7 @@ export default function AdminAddClient() {
             <TabsContent value="client" className="space-y-6">
               {/* Lead Information Fields */}
               <Card className={`transition-all duration-700 ${
-                showEntryAnimation ? 'animate-roll-down-delayed' : ''
+                showEntryAnimation ? 'animate-roll-down-delayed' : (showBorrowerAnimation ? 'animate-roll-down' : '')
               }`}>
                 <CardContent className="grid grid-cols-1 md:grid-cols-5 gap-4 pt-6">
                   <div className="space-y-2">
