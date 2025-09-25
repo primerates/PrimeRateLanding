@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import pyramidsBackground from '@assets/stock_images/egyptian_pyramids_de_debf6a77.jpg';
+import spaceXBackground from '@assets/stock_images/spacex_rocket_launch_e241bee8.jpg';
 
 export default function AdminDashboard() {
   const [location, setLocation] = useLocation();
@@ -72,7 +72,7 @@ export default function AdminDashboard() {
     <div 
       className="min-h-screen bg-background relative"
       style={{
-        backgroundImage: `url(${pyramidsBackground})`,
+        backgroundImage: `url(${spaceXBackground})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
