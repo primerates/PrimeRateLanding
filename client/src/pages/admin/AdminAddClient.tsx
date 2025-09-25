@@ -10317,7 +10317,7 @@ export default function AdminAddClient() {
                     <span className="text-lg font-semibold text-foreground">Investment Property</span>
                     
                     <CardTitle className="text-lg font-semibold">
-                      Estimated LTV
+                      Home purchase
                     </CardTitle>
                   </div>
                 </CardHeader>
