@@ -10609,6 +10609,119 @@ export default function AdminAddClient() {
                 </CardContent>
               </Card>
 
+              {/* Primary Residence Cards */}
+              {(primaryResidenceCards || []).length > 0 && (primaryResidenceCards || ['default']).map((cardId, index) => {
+                const propertyId = cardId === 'default' ? 'primary-template-card' : cardId;
+                const isOpen = propertyCardStates[propertyId] ?? true;
+                
+                return (
+                  <Card key={cardId} className="border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
+                    <Collapsible 
+                      open={isOpen} 
+                      onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
+                    >
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-8">
+                            <CardTitle className="flex items-center gap-2">
+                              Primary Residence
+                            </CardTitle>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {/* Add Property Button */}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                const newId = `primary-${Date.now()}`;
+                                setPrimaryResidenceCards(prev => [...(prev || ['default']), newId]);
+                              }}
+                              className="hover:bg-blue-500 hover:text-white"
+                              data-testid="button-add-primary-property"
+                              title="Add New Primary Residence"
+                            >
+                              <Plus className="h-4 w-4 mr-2" />
+                              Add Property
+                            </Button>
+                            
+                            {/* Delete Property Button */}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setDeletePrimaryResidenceDialog({ isOpen: true, cardId: propertyId })}
+                              className="hover:bg-red-500 hover:text-white"
+                              data-testid="button-delete-primary-property"
+                              title="Delete Primary Residence"
+                            >
+                              <Minus className="h-4 w-4 mr-2" />
+                              Remove
+                            </Button>
+                            
+                            <CollapsibleTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="hover:bg-orange-500 hover:text-white" 
+                                data-testid={`button-toggle-primary-property-${propertyId}`}
+                                title={isOpen ? 'Minimize' : 'Expand'}
+                                key={`primary-property-toggle-${propertyId}-${isOpen}`}
+                              >
+                                {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      
+                      <CollapsibleContent>
+                        <CardContent>
+                          <div className="space-y-6">
+                            {/* Subject Property Selection */}
+                            <Card className={`bg-muted ${
+                              showSubjectPropertyAnimation['primary-default'] ? 'animate-roll-down-subject-property' : ''
+                            }`}>
+                              <CardContent className="pt-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  <div className="flex items-center space-x-4">
+                                    <span className="text-sm font-medium">Is this also subject property?</span>
+                                    <div className="flex items-center space-x-2">
+                                      <span className="text-sm">No</span>
+                                      <span className="text-sm">Yes</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                            
+                            {/* Basic Property Information */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label htmlFor={`primary-property-address-${propertyId}`}>Property Address</Label>
+                                <Input
+                                  id={`primary-property-address-${propertyId}`}
+                                  placeholder="123 Main St"
+                                  data-testid={`input-primary-property-address-${propertyId}`}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label htmlFor={`primary-property-value-${propertyId}`}>Estimated Value</Label>
+                                <Input
+                                  id={`primary-property-value-${propertyId}`}
+                                  placeholder="$0.00"
+                                  data-testid={`input-primary-property-value-${propertyId}`}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  </Card>
+                );
+              })}
+
               {/* Dynamic Property Cards */}
               {sortPropertiesByHierarchy(form.watch('property.properties') || []).map((property, index) => {
                 const propertyId = property.id || `property-${index}`;
@@ -12856,6 +12969,52 @@ export default function AdminAddClient() {
                 setDeleteCoBorrowerEmployerDialog({ isOpen: false, cardId: '' });
               }}
               data-testid="button-confirm-delete-coborrower-employer"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Primary Residence Confirmation Dialog */}
+      <AlertDialog open={deletePrimaryResidenceDialog.isOpen} onOpenChange={(open) => !open && setDeletePrimaryResidenceDialog({ isOpen: false, cardId: '' })}>
+        <AlertDialogContent data-testid="dialog-delete-primary-residence">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Primary Residence Card</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this primary residence card? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeletePrimaryResidenceDialog({ isOpen: false, cardId: '' })}
+              data-testid="button-cancel-delete-primary-residence"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                const cardToDelete = deletePrimaryResidenceDialog.cardId;
+                
+                // If removing the default card, clear the checkbox and related fields
+                if (cardToDelete === 'primary-template-card') {
+                  // Clear the primary residence card list (empty array removes all cards)
+                  setPrimaryResidenceCards([]);
+                } else {
+                  // Remove the specific card
+                  setPrimaryResidenceCards(prev => prev.filter(id => id !== cardToDelete));
+                }
+                
+                // If no cards remain, the checkbox logic will handle unchecking automatically
+                const remainingCards = primaryResidenceCards.filter(id => id !== cardToDelete);
+                if (remainingCards.length === 0) {
+                  // No cards left, the checkbox will automatically uncheck due to our logic
+                }
+                
+                setDeletePrimaryResidenceDialog({ isOpen: false, cardId: '' });
+              }}
+              data-testid="button-confirm-delete-primary-residence"
               className="bg-red-600 hover:bg-red-700"
             >
               Delete
