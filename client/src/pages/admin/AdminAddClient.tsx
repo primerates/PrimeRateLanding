@@ -7000,7 +7000,7 @@ export default function AdminAddClient() {
                             {!isFrontDTIEditing && hasValue ? (
                               <div
                                 onClick={() => setIsFrontDTIEditing(true)}
-                                className="cursor-pointer bg-navy-900 hover:bg-navy-800 text-white rounded-full w-22 h-22 flex items-center justify-center transition-colors duration-200"
+                                className="cursor-pointer bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
                                 style={{
                                   fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                                   fontSize: '36px',
