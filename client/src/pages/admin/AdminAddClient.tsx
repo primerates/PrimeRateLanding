@@ -11283,7 +11283,9 @@ export default function AdminAddClient() {
               })}
 
               {/* Dynamic Property Cards */}
-              {sortPropertiesByHierarchy(form.watch('property.properties') || []).map((property, index) => {
+              {sortPropertiesByHierarchy(form.watch('property.properties') || [])
+                .filter(property => property.use !== 'primary') // Exclude Primary Residence - now handled by new system above
+                .map((property, index) => {
                 const propertyId = property.id || `property-${index}`;
                 const isOpen = propertyCardStates[propertyId] ?? true;
                 
