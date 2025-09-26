@@ -193,7 +193,7 @@ export default function AdminDashboard() {
               >
                 <User className="h-4 w-4 z-10" />
                 <span 
-                  className={`text-sm absolute top-6 -left-6 whitespace-nowrap transition-all duration-300 ease-out z-20 ${
+                  className={`text-sm text-primary-foreground absolute top-6 -left-6 whitespace-nowrap transition-all duration-300 ease-out z-20 ${
                     showUsername 
                       ? 'transform translate-y-4 opacity-100' 
                       : 'transform translate-y-0 opacity-0'
