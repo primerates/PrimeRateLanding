@@ -8547,7 +8547,7 @@ export default function AdminAddClient() {
                                   onValueChange={() => {}}
                                 >
                                   <SelectTrigger data-testid="select-template-employer-state">
-                                    <SelectValue placeholder="State" />
+                                    <SelectValue placeholder="Select" />
                                   </SelectTrigger>
                                   <SelectContent>
                                     {US_STATES.map((state) => (
@@ -9375,7 +9375,7 @@ export default function AdminAddClient() {
                                       onValueChange={field.onChange}
                                     >
                                       <SelectTrigger data-testid={`select-${propertyId}-coborrower-employer-state`}>
-                                        <SelectValue placeholder="State" />
+                                        <SelectValue placeholder="Select" />
                                       </SelectTrigger>
                                       <SelectContent>
                                         {US_STATES.map((state) => (
@@ -10921,7 +10921,7 @@ export default function AdminAddClient() {
                                   onValueChange={(value) => propertyIndex >= 0 && form.setValue(`property.properties.${propertyIndex}.address.state` as any, value)}
                                 >
                                   <SelectTrigger data-testid={`select-property-state-${propertyId}`}>
-                                    <SelectValue placeholder="State" />
+                                    <SelectValue placeholder="Select" />
                                   </SelectTrigger>
                                   <SelectContent>
                                     {US_STATES.map((state) => (
@@ -11554,7 +11554,7 @@ export default function AdminAddClient() {
                                         value={form.watch(`property.properties.${propertyIndex}` as any)?.address?.state || ''} 
                                         onValueChange={(value) => form.setValue(`property.properties.${propertyIndex}.address.state` as any, value)}>
                                   <SelectTrigger data-testid={`select-second-home-property-state-${propertyId}`}>
-                                    <SelectValue placeholder="State" />
+                                    <SelectValue placeholder="Select" />
                                   </SelectTrigger>
                                   <SelectContent>
                                     {US_STATES.map((state) => (
@@ -12187,7 +12187,7 @@ export default function AdminAddClient() {
                                   onValueChange={(value) => form.setValue(`property.properties.${index}.address.state` as const, value)}
                                 >
                                   <SelectTrigger data-testid={`select-property-state-${propertyId}`}>
-                                    <SelectValue placeholder="State" />
+                                    <SelectValue placeholder="Select" />
                                   </SelectTrigger>
                                   <SelectContent>
                                     {US_STATES.map((state) => (
@@ -13194,7 +13194,7 @@ export default function AdminAddClient() {
                                           data-testid="select-thirdLoan-property-state"
                                           className={form.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
                                         >
-                                          <SelectValue placeholder="State" />
+                                          <SelectValue placeholder="Select" />
                                         </SelectTrigger>
                                         <SelectContent>
                                           {US_STATES.map(state => (
