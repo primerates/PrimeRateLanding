@@ -1874,6 +1874,11 @@ export default function AdminAddClient() {
     
     // Calculate total directly from current form values
     const calculateAndUpdateTotal = useCallback(() => {
+      if (!control || typeof control.getValues !== 'function') {
+        setDisplayTotal('');
+        return;
+      }
+      
       const values = control.getValues();
       const principal = parseMonetaryValue(values.currentLoan?.principalAndInterestPayment || '');
       const escrow = parseMonetaryValue(values.currentLoan?.escrowPayment || '');
