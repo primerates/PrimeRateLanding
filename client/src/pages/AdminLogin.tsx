@@ -81,7 +81,7 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center p-6">
-      <Card className="w-full max-w-md hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.4)] transition-shadow duration-300">
+      <Card className="w-full max-w-md hover:shadow-[0_25px_75px_-18px_rgba(0,0,0,0.6)] transition-shadow duration-300">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-black italic text-center" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }}>
             PRIME RATE HOME LOANS
