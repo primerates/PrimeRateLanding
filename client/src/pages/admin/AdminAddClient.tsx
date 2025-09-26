@@ -10786,27 +10786,16 @@ export default function AdminAddClient() {
 
             {/* Property Tab */}
             <TabsContent value="property" className="space-y-6">
-              {/* Property Summary Card */}
+              {/* Property Summary Card - Matching Income Tab Structure */}
               <Card className="transition-all duration-700">
-                <CardHeader>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
-                    <div></div>
-                    
-                    <span className="text-lg font-semibold text-foreground">Property Count</span>
-                    
-                    <span className="text-lg font-semibold text-foreground">Estimated LTV</span>
-                    
-                    <CardTitle className="text-lg font-semibold">
-                      Final LTV
-                    </CardTitle>
+                <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
+                  <div className="space-y-2">
+                    <Label className="text-lg font-semibold">Property Summary</Label>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="flex items-center">
-                    </div>
-                    
-                    <div className="flex items-center">
+                  
+                  <div className="space-y-2">
+                    <Label className="text-lg font-semibold">Property Count</Label>
+                    <div className="min-h-[40px] flex items-center">
                       <div
                         className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
                         style={{
@@ -10832,8 +10821,11 @@ export default function AdminAddClient() {
                         </span>
                       </div>
                     </div>
-                    
-                    <div className="flex items-center">
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-lg font-semibold">Estimated LTV</Label>
+                    <div className="min-h-[40px] flex items-center">
                       <div
                         className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
                         style={{
@@ -10891,8 +10883,11 @@ export default function AdminAddClient() {
                         </span>
                       </div>
                     </div>
-                    
-                    <div className="flex items-center">
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-lg font-semibold">Final LTV</Label>
+                    <div className="min-h-[40px] flex items-center">
                       <div
                         className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
                         style={{
