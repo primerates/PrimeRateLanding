@@ -49,10 +49,6 @@ export default function AdminLogin() {
       const response = await apiRequest('POST', '/api/admin/login', { email, password });
 
       if (response.ok) {
-        toast({
-          title: "Login Successful",
-          description: "Welcome to the admin dashboard.",
-        });
         setLocation('/admin/dashboard');
       } else {
         toast({
