@@ -5876,6 +5876,7 @@ export default function AdminAddClient() {
                         checked={isShowingDMBatch}
                         onCheckedChange={setIsShowingDMBatch}
                         data-testid="toggle-borrower-leadref"
+                        className="scale-[0.8]"
                       />
                     </div>
                     <Input
@@ -6254,6 +6255,7 @@ export default function AdminAddClient() {
                           checked={isShowingMonthsAtAddress}
                           onCheckedChange={setIsShowingMonthsAtAddress}
                           data-testid="toggle-borrower-time-address"
+                          className="scale-[0.8]"
                         />
                       </div>
                       <Input
@@ -6426,6 +6428,7 @@ export default function AdminAddClient() {
                               checked={isShowingMonthsAtPriorAddress}
                               onCheckedChange={setIsShowingMonthsAtPriorAddress}
                               data-testid="toggle-borrower-prior-time-address"
+                              className="scale-[0.8]"
                             />
                           </div>
                           <Input
@@ -6869,6 +6872,7 @@ export default function AdminAddClient() {
                             checked={isShowingCoBorrowerMonthsAtAddress}
                             onCheckedChange={setIsShowingCoBorrowerMonthsAtAddress}
                             data-testid="toggle-coborrower-time-address"
+                            className="scale-[0.8]"
                           />
                         </div>
                         <Input
@@ -7700,6 +7704,7 @@ export default function AdminAddClient() {
                               checked={isShowingNetRevenue}
                               onCheckedChange={setIsShowingNetRevenue}
                               data-testid="toggle-income-annual-revenue"
+                              className="scale-[0.8]"
                             />
                           </div>
                           <Input
@@ -7750,6 +7755,7 @@ export default function AdminAddClient() {
                                 updateEmploymentDuration('self-employment', currentData.startDate, currentData.endDate, checked);
                               }}
                               data-testid="toggle-self-employment-present"
+                              className="scale-[0.8]"
                             />
                           </div>
                           <Input
@@ -8798,6 +8804,7 @@ export default function AdminAddClient() {
                                     updateEmploymentDuration(`second-employment-${cardId}`, currentData.startDate, currentData.endDate, checked);
                                   }}
                                   data-testid="toggle-second-employment-present"
+                                  className="scale-[0.8]"
                                 />
                               </div>
                               <Input
@@ -9272,6 +9279,7 @@ export default function AdminAddClient() {
                                       updateEmploymentDuration(propertyId, currentData.startDate, currentData.endDate, checked);
                                     }}
                                     data-testid={`toggle-${propertyId}-coborrower-present`}
+                                    className="scale-[0.8]"
                                   />
                                 </div>
                                 <Input
@@ -9677,6 +9685,7 @@ export default function AdminAddClient() {
                                     updateEmploymentDuration(`coborrower-second-employment-${cardId}`, currentData.startDate, currentData.endDate, checked);
                                   }}
                                   data-testid="toggle-coborrower-second-employment-present"
+                                  className="scale-[0.8]"
                                 />
                               </div>
                               <Input
@@ -9993,6 +10002,7 @@ export default function AdminAddClient() {
                               checked={isCoBorrowerShowingNetRevenue}
                               onCheckedChange={setIsCoBorrowerShowingNetRevenue}
                               data-testid={`toggle-coBorrowerIncome-annual-revenue-${cardId}`}
+                              className="scale-[0.8]"
                             />
                           </div>
                           <Input
@@ -10043,6 +10053,7 @@ export default function AdminAddClient() {
                                 updateEmploymentDuration(`co-borrower-self-employment-${cardId}`, currentData.startDate, currentData.endDate, checked);
                               }}
                               data-testid={`toggle-co-borrower-self-employment-present-${cardId}`}
+                              className="scale-[0.8]"
                             />
                           </div>
                           <Input
