@@ -13887,6 +13887,9 @@ export default function AdminAddClient() {
               
               {/* Three Blue Circles - Copied from Property Tab */}
               <Card className="transition-all duration-700">
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold">Transaction</CardTitle>
+                </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6">
                     <div className="space-y-2">
