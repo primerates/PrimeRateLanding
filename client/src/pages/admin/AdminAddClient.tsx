@@ -7736,7 +7736,7 @@ export default function AdminAddClient() {
                             value={employmentDates['self-employment']?.startDate || ''}
                             onChange={(e) => {
                               const startDate = e.target.value;
-                              const currentData = employmentDates['self-employment'] || { endDate: '', isPresent: false, duration: '' };
+                              const currentData = employmentDates['self-employment'] || { endDate: '', isPresent: true, duration: '' };
                               updateEmploymentDuration('self-employment', startDate, currentData.endDate, currentData.isPresent);
                             }}
                             placeholder="MM/DD/YYYY"
@@ -7766,7 +7766,7 @@ export default function AdminAddClient() {
                             onChange={(e) => {
                               if (!employmentDates['self-employment']?.isPresent) {
                                 const endDate = e.target.value;
-                                const currentData = employmentDates['self-employment'] || { startDate: '', isPresent: false, duration: '' };
+                                const currentData = employmentDates['self-employment'] || { startDate: '', isPresent: true, duration: '' };
                                 updateEmploymentDuration('self-employment', currentData.startDate, endDate, currentData.isPresent);
                               }
                             }}
@@ -7787,7 +7787,7 @@ export default function AdminAddClient() {
                             className={!employmentDates['self-employment']?.isPresent ? 'bg-muted' : ''}
                             onChange={(e) => {
                               if (employmentDates['self-employment']?.isPresent) {
-                                const currentData = employmentDates['self-employment'] || { startDate: '', endDate: '', isPresent: false };
+                                const currentData = employmentDates['self-employment'] || { startDate: '', endDate: '', isPresent: true };
                                 setEmploymentDates(prev => ({
                                   ...prev,
                                   'self-employment': {
@@ -8459,7 +8459,7 @@ export default function AdminAddClient() {
                                   value={employmentDates[propertyId]?.startDate || ''}
                                   onChange={(e) => {
                                     const startDate = e.target.value;
-                                    const currentData = employmentDates[propertyId] || { endDate: '', isPresent: false, duration: '' };
+                                    const currentData = employmentDates[propertyId] || { endDate: '', isPresent: true, duration: '' };
                                     updateEmploymentDuration(propertyId, startDate, currentData.endDate, currentData.isPresent);
                                   }}
                                   placeholder="MM/DD/YYYY"
@@ -8489,7 +8489,7 @@ export default function AdminAddClient() {
                                   onChange={(e) => {
                                     if (!employmentDates[propertyId]?.isPresent) {
                                       const endDate = e.target.value;
-                                      const currentData = employmentDates[propertyId] || { startDate: '', isPresent: false, duration: '' };
+                                      const currentData = employmentDates[propertyId] || { startDate: '', isPresent: true, duration: '' };
                                       updateEmploymentDuration(propertyId, currentData.startDate, endDate, currentData.isPresent);
                                     }
                                   }}
@@ -8510,7 +8510,7 @@ export default function AdminAddClient() {
                                   className={!employmentDates[propertyId]?.isPresent ? 'bg-muted' : ''}
                                   onChange={(e) => {
                                     if (employmentDates[propertyId]?.isPresent) {
-                                      const currentData = employmentDates[propertyId] || { startDate: '', endDate: '', isPresent: false };
+                                      const currentData = employmentDates[propertyId] || { startDate: '', endDate: '', isPresent: true };
                                       setEmploymentDates(prev => ({
                                         ...prev,
                                         [propertyId]: {
@@ -8787,7 +8787,7 @@ export default function AdminAddClient() {
                                 value={employmentDates[`second-employment-${cardId}`]?.startDate || ''}
                                 onChange={(e) => {
                                   const startDate = e.target.value;
-                                  const currentData = employmentDates[`second-employment-${cardId}`] || { endDate: '', isPresent: false, duration: '' };
+                                  const currentData = employmentDates[`second-employment-${cardId}`] || { endDate: '', isPresent: true, duration: '' };
                                   updateEmploymentDuration(`second-employment-${cardId}`, startDate, currentData.endDate, currentData.isPresent);
                                 }}
                                 placeholder="MM/DD/YYYY"
@@ -8817,7 +8817,7 @@ export default function AdminAddClient() {
                                 onChange={(e) => {
                                   if (!employmentDates[`second-employment-${cardId}`]?.isPresent) {
                                     const endDate = e.target.value;
-                                    const currentData = employmentDates[`second-employment-${cardId}`] || { startDate: '', isPresent: false, duration: '' };
+                                    const currentData = employmentDates[`second-employment-${cardId}`] || { startDate: '', isPresent: true, duration: '' };
                                     updateEmploymentDuration(`second-employment-${cardId}`, currentData.startDate, endDate, currentData.isPresent);
                                   }
                                 }}
@@ -8838,7 +8838,7 @@ export default function AdminAddClient() {
                                 className={!employmentDates['second-employment']?.isPresent ? 'bg-muted' : ''}
                                 onChange={(e) => {
                                   if (employmentDates['second-employment']?.isPresent) {
-                                    const currentData = employmentDates['second-employment'] || { startDate: '', endDate: '', isPresent: false };
+                                    const currentData = employmentDates['second-employment'] || { startDate: '', endDate: '', isPresent: true };
                                     setEmploymentDates(prev => ({
                                       ...prev,
                                       'second-employment': {
@@ -9263,7 +9263,7 @@ export default function AdminAddClient() {
                                   value={employmentDates[propertyId]?.startDate || ''}
                                   onChange={(e) => {
                                     const startDate = e.target.value;
-                                    const currentData = employmentDates[propertyId] || { endDate: '', isPresent: false, duration: '' };
+                                    const currentData = employmentDates[propertyId] || { endDate: '', isPresent: true, duration: '' };
                                     updateEmploymentDuration(propertyId, startDate, currentData.endDate, currentData.isPresent);
                                   }}
                                   placeholder="MM/DD/YYYY"
@@ -9293,7 +9293,7 @@ export default function AdminAddClient() {
                                   onChange={(e) => {
                                     if (!employmentDates[propertyId]?.isPresent) {
                                       const endDate = e.target.value;
-                                      const currentData = employmentDates[propertyId] || { startDate: '', isPresent: false, duration: '' };
+                                      const currentData = employmentDates[propertyId] || { startDate: '', isPresent: true, duration: '' };
                                       updateEmploymentDuration(propertyId, currentData.startDate, endDate, currentData.isPresent);
                                     }
                                   }}
@@ -9314,7 +9314,7 @@ export default function AdminAddClient() {
                                   className={!employmentDates[propertyId]?.isPresent ? 'bg-muted' : ''}
                                   onChange={(e) => {
                                     if (employmentDates[propertyId]?.isPresent) {
-                                      const currentData = employmentDates[propertyId] || { startDate: '', endDate: '', isPresent: false };
+                                      const currentData = employmentDates[propertyId] || { startDate: '', endDate: '', isPresent: true };
                                       setEmploymentDates(prev => ({
                                         ...prev,
                                         [propertyId]: {
@@ -9670,7 +9670,7 @@ export default function AdminAddClient() {
                                 value={employmentDates[`coborrower-second-employment-${cardId}`]?.startDate || ''}
                                 onChange={(e) => {
                                   const startDate = e.target.value;
-                                  const currentData = employmentDates[`coborrower-second-employment-${cardId}`] || { endDate: '', isPresent: false, duration: '' };
+                                  const currentData = employmentDates[`coborrower-second-employment-${cardId}`] || { endDate: '', isPresent: true, duration: '' };
                                   updateEmploymentDuration(`coborrower-second-employment-${cardId}`, startDate, currentData.endDate, currentData.isPresent);
                                 }}
                                 placeholder="MM/DD/YYYY"
@@ -9700,7 +9700,7 @@ export default function AdminAddClient() {
                                 onChange={(e) => {
                                   if (!employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent) {
                                     const endDate = e.target.value;
-                                    const currentData = employmentDates[`coborrower-second-employment-${cardId}`] || { startDate: '', isPresent: false, duration: '' };
+                                    const currentData = employmentDates[`coborrower-second-employment-${cardId}`] || { startDate: '', isPresent: true, duration: '' };
                                     updateEmploymentDuration(`coborrower-second-employment-${cardId}`, currentData.startDate, endDate, currentData.isPresent);
                                   }
                                 }}
@@ -9721,7 +9721,7 @@ export default function AdminAddClient() {
                                 className={!employmentDates['coborrower-second-employment']?.isPresent ? 'bg-muted' : ''}
                                 onChange={(e) => {
                                   if (employmentDates['coborrower-second-employment']?.isPresent) {
-                                    const currentData = employmentDates['coborrower-second-employment'] || { startDate: '', endDate: '', isPresent: false };
+                                    const currentData = employmentDates['coborrower-second-employment'] || { startDate: '', endDate: '', isPresent: true };
                                     setEmploymentDates(prev => ({
                                       ...prev,
                                       'coborrower-second-employment': {
@@ -10038,7 +10038,7 @@ export default function AdminAddClient() {
                             value={employmentDates[`co-borrower-self-employment-${cardId}`]?.startDate || ''}
                             onChange={(e) => {
                               const startDate = e.target.value;
-                              const currentData = employmentDates[`co-borrower-self-employment-${cardId}`] || { endDate: '', isPresent: false, duration: '' };
+                              const currentData = employmentDates[`co-borrower-self-employment-${cardId}`] || { endDate: '', isPresent: true, duration: '' };
                               updateEmploymentDuration(`co-borrower-self-employment-${cardId}`, startDate, currentData.endDate, currentData.isPresent);
                             }}
                             placeholder="MM/DD/YYYY"
@@ -10068,7 +10068,7 @@ export default function AdminAddClient() {
                             onChange={(e) => {
                               if (!employmentDates[`co-borrower-self-employment-${cardId}`]?.isPresent) {
                                 const endDate = e.target.value;
-                                const currentData = employmentDates[`co-borrower-self-employment-${cardId}`] || { startDate: '', isPresent: false, duration: '' };
+                                const currentData = employmentDates[`co-borrower-self-employment-${cardId}`] || { startDate: '', isPresent: true, duration: '' };
                                 updateEmploymentDuration(`co-borrower-self-employment-${cardId}`, currentData.startDate, endDate, currentData.isPresent);
                               }
                             }}
@@ -10089,7 +10089,7 @@ export default function AdminAddClient() {
                             className={!employmentDates[`co-borrower-self-employment-${cardId}`]?.isPresent ? 'bg-muted' : ''}
                             onChange={(e) => {
                               if (employmentDates[`co-borrower-self-employment-${cardId}`]?.isPresent) {
-                                const currentData = employmentDates[`co-borrower-self-employment-${cardId}`] || { startDate: '', endDate: '', isPresent: false };
+                                const currentData = employmentDates[`co-borrower-self-employment-${cardId}`] || { startDate: '', endDate: '', isPresent: true };
                                 setEmploymentDates(prev => ({
                                   ...prev,
                                   [`co-borrower-self-employment-${cardId}`]: {
