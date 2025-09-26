@@ -10672,10 +10672,46 @@ export default function AdminAddClient() {
                           backgroundColor: '#1a3373',
                           boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
                         }}
-                        data-testid="text-home-purchase-count"
+                        data-testid="text-final-ltv"
                       >
                         <span className={`${showPropertyAnimation ? 'animate-roll-down' : ''}`}>
-                          {(form.watch('property.properties') || []).filter(p => p.use === 'home-purchase').length}
+                          {(() => {
+                            // Find the subject property
+                            const properties = form.watch('property.properties') || [];
+                            const subjectProperty = properties.find(p => p.isSubject === true);
+                            
+                            // Get the New Loan amount
+                            const loanAmount = form.watch('newLoan.loanAmount') || '';
+                            
+                            // If no subject property or loan amount, return default %
+                            if (!subjectProperty || !loanAmount || loanAmount.trim() === '') {
+                              return '%';
+                            }
+                            
+                            // Get appraised value from subject property
+                            const appraisedValue = subjectProperty.appraisedValue || '';
+                            
+                            if (!appraisedValue || appraisedValue.trim() === '') {
+                              return '%';
+                            }
+                            
+                            // Parse values (handle currency formatting)
+                            const parseValue = (value: string) => {
+                              const cleaned = value.replace(/[$,]/g, '');
+                              return cleaned ? parseFloat(cleaned) : 0;
+                            };
+                            
+                            const loanNum = parseValue(loanAmount);
+                            const valueNum = parseValue(appraisedValue);
+                            
+                            if (loanNum === 0 || valueNum === 0) {
+                              return '%';
+                            }
+                            
+                            // Calculate LTV percentage
+                            const ltv = (loanNum / valueNum) * 100;
+                            return `${Math.round(ltv)}%`;
+                          })()}
                         </span>
                       </div>
                     </div>
