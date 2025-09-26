@@ -1869,32 +1869,15 @@ export default function AdminAddClient() {
   }
 
   const TotalCurrentLoanPayment: React.FC<TotalCurrentLoanPaymentProps> = ({ control }) => {
-    // Use useWatch to subscribe only here (isolates re-renders to this component)
     const principalPayment = useWatch({ control, name: 'currentLoan.principalAndInterestPayment' }) || '';
     const escrowPayment = useWatch({ control, name: 'currentLoan.escrowPayment' }) || '';
 
-    // Optional: Light debouncing for smooth total updates (300ms delay)
-    const [debouncedPrincipal, setDebouncedPrincipal] = useState(principalPayment);
-    const [debouncedEscrow, setDebouncedEscrow] = useState(escrowPayment);
-
-    useEffect(() => {
-      const timer = setTimeout(() => setDebouncedPrincipal(principalPayment), 300);
-      return () => clearTimeout(timer);
-    }, [principalPayment]);
-
-    useEffect(() => {
-      const timer = setTimeout(() => setDebouncedEscrow(escrowPayment), 300);
-      return () => clearTimeout(timer);
-    }, [escrowPayment]);
-
-    // Calculate total using debounced values
     const total = useMemo(() => {
-      const principal = parseMonetaryValue(debouncedPrincipal);
-      const escrow = parseMonetaryValue(debouncedEscrow);
+      const principal = parseMonetaryValue(principalPayment);
+      const escrow = parseMonetaryValue(escrowPayment);
       return principal + escrow;
-    }, [debouncedPrincipal, debouncedEscrow]);
+    }, [principalPayment, escrowPayment]);
 
-    // Format for display
     const formattedTotal = useMemo(() => 
       total > 0 ? total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '',
       [total]

@@ -58,6 +58,38 @@ Preferred communication style: Simple, everyday language.
 - **Contact forms** for general inquiries
 - **Real-time validation** and user feedback
 
+#### Auto-Sum/Calculation Pattern (Performance Optimized)
+For auto-calculating fields that sum multiple form inputs, use this pattern to avoid typing lag:
+
+```typescript
+// RECOMMENDED: Direct useMemo calculation (no debouncing)
+const AutoSumComponent: React.FC<{control: any}> = ({ control }) => {
+  const field1 = useWatch({ control, name: 'path.field1' }) || '';
+  const field2 = useWatch({ control, name: 'path.field2' }) || '';
+
+  const total = useMemo(() => {
+    const value1 = parseMonetaryValue(field1);
+    const value2 = parseMonetaryValue(field2);
+    return value1 + value2;
+  }, [field1, field2]);
+
+  const formattedTotal = useMemo(() => 
+    total > 0 ? total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '',
+    [total]
+  );
+
+  return (
+    <Input value={formattedTotal} readOnly />
+  );
+};
+```
+
+**Key Points:**
+- Use `useWatch` for field isolation (prevents unnecessary re-renders)
+- Calculate directly in `useMemo` without debouncing
+- Avoid `useState` + `useEffect` timers as they cause typing lag
+- Isolate auto-sum logic in separate components for performance
+
 ### Development Infrastructure
 - **TypeScript** configuration with path aliases for clean imports
 - **Replit integration** with development banner and error overlay
