@@ -163,6 +163,9 @@ export default function AdminDashboard() {
               <h1 className="text-xl font-black italic" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="text-admin-header">
                 PRIME RATE HOME LOANS
               </h1>
+            </div>
+            
+            <div className="flex items-center space-x-4">
               <Button
                 variant="ghost"
                 size="sm"
@@ -173,25 +176,6 @@ export default function AdminDashboard() {
                 <LogOut className="h-4 w-4 mr-2" />
                 Back to Website
               </Button>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <div 
-                className="relative flex items-center cursor-pointer"
-                onMouseEnter={() => setShowUsername(true)}
-                onMouseLeave={() => setShowUsername(false)}
-              >
-                <User className="h-4 w-4 z-10" />
-                <span 
-                  className={`text-sm absolute left-6 whitespace-nowrap transition-all duration-300 ease-out ${
-                    showUsername 
-                      ? 'transform translate-x-0 opacity-100' 
-                      : 'transform translate-x-full opacity-0'
-                  }`}
-                >
-                  polo.perry@yahoo.com
-                </span>
-              </div>
               <Button
                 variant="ghost"
                 size="sm"
@@ -202,6 +186,22 @@ export default function AdminDashboard() {
                 <LogOut className="h-4 w-4 mr-2" />
                 Logout
               </Button>
+              <div 
+                className="relative flex items-center cursor-pointer"
+                onMouseEnter={() => setShowUsername(true)}
+                onMouseLeave={() => setShowUsername(false)}
+              >
+                <User className="h-4 w-4 z-10" />
+                <span 
+                  className={`text-sm absolute -top-6 -left-6 whitespace-nowrap transition-all duration-300 ease-out ${
+                    showUsername 
+                      ? 'transform translate-y-6 translate-x-0 opacity-100' 
+                      : 'transform translate-y-0 translate-x-0 opacity-0'
+                  }`}
+                >
+                  polo.perry@yahoo.com
+                </span>
+              </div>
             </div>
           </div>
         </div>
