@@ -10629,16 +10629,16 @@ export default function AdminAddClient() {
                             // Get the New Loan amount
                             const loanAmount = form.watch('newLoan.loanAmount') || '';
                             
-                            // If no subject property or loan amount, return empty
+                            // If no subject property or loan amount, return default %
                             if (!subjectProperty || !loanAmount || loanAmount.trim() === '') {
-                              return '';
+                              return '%';
                             }
                             
                             // Get estimated value from subject property
                             const estimatedValue = subjectProperty.estimatedValue || '';
                             
                             if (!estimatedValue || estimatedValue.trim() === '') {
-                              return '';
+                              return '%';
                             }
                             
                             // Parse values (handle currency formatting)
@@ -10651,7 +10651,7 @@ export default function AdminAddClient() {
                             const valueNum = parseValue(estimatedValue);
                             
                             if (loanNum === 0 || valueNum === 0) {
-                              return '';
+                              return '%';
                             }
                             
                             // Calculate LTV percentage
