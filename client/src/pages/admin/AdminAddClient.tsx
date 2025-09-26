@@ -10990,7 +10990,13 @@ export default function AdminAddClient() {
                                     <DollarSign className="h-4 w-4" />
                                   </Button>
                                 </div>
-                                <Input
+                                <CurrencyInput
+                                  form={form}
+                                  name={(() => {
+                                    const properties = form.watch('property.properties') || [];
+                                    const primaryIndex = properties.findIndex(p => p.use === 'primary');
+                                    return `property.properties.${primaryIndex >= 0 ? primaryIndex : 0}.purchasePrice` as const;
+                                  })()}
                                   id={`property-purchase-price-${propertyId}`}
                                   placeholder="$0.00"
                                   data-testid={`input-property-purchase-price-${propertyId}`}
@@ -11616,7 +11622,13 @@ export default function AdminAddClient() {
                                     <DollarSign className="h-4 w-4" />
                                   </Button>
                                 </div>
-                                <Input
+                                <CurrencyInput
+                                  form={form}
+                                  name={(() => {
+                                    const properties = form.watch('property.properties') || [];
+                                    const secondHomeIndex = properties.findIndex(p => p.use === 'second-home' && p.id === propertyId);
+                                    return `property.properties.${secondHomeIndex >= 0 ? secondHomeIndex : 0}.purchasePrice` as const;
+                                  })()}
                                   id={`second-home-purchase-price-${propertyId}`}
                                   placeholder="$0.00"
                                   data-testid={`input-second-home-purchase-price-${propertyId}`}
