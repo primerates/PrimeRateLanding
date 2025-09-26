@@ -10756,40 +10756,6 @@ export default function AdminAddClient() {
                             </CardTitle>
                           </div>
                           <div className="flex items-center gap-2">
-                            {/* Add Property Button */}
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                // Create entry in main form's property array first
-                                addProperty('primary');
-                                
-                                // Get the ID of the newly created property
-                                const currentProperties = form.watch('property.properties') || [];
-                                const newProperty = currentProperties[currentProperties.length - 1];
-                                const newPropertyId = newProperty?.id;
-                                
-                                if (newPropertyId) {
-                                  setPrimaryResidenceCards(prev => [...(prev || ['default']), newPropertyId]);
-                                  // Initialize data state for new card
-                                  setPrimaryResidenceData(prev => ({ 
-                                    ...prev, 
-                                    [newPropertyId]: { isSubjectProperty: null } 
-                                  }));
-                                  
-                                  // Auto-expand the new property card
-                                  setPropertyCardStates(prev => ({ ...prev, [newPropertyId]: true }));
-                                }
-                              }}
-                              className="hover:bg-blue-500 hover:text-white"
-                              data-testid="button-add-primary-property"
-                              title="Add New Primary Residence"
-                            >
-                              <Plus className="h-4 w-4 mr-2" />
-                              Add Property
-                            </Button>
-                            
                             {/* Delete Property Button */}
                             <Button
                               type="button"
