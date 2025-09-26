@@ -5798,7 +5798,7 @@ export default function AdminAddClient() {
                     <RotateCcw className="h-6 w-6" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent side="left" className="text-sm">
+                <TooltipContent side="left" sideOffset={10} className="text-sm">
                   <p>Back to Dashboard</p>
                 </TooltipContent>
               </Tooltip>
