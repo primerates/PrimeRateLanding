@@ -65,7 +65,7 @@ const backgroundStyles = {
 };
 
 // Currently active style - change this to switch backgrounds
-const activeBackgroundStyle = backgroundStyles.lightGeometric;
+const activeBackgroundStyle = backgroundStyles.darkProfessional;
 
 export default function AdminDashboard() {
   const [location, setLocation] = useLocation();
