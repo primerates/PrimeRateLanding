@@ -2875,6 +2875,59 @@ export default function AdminAddClient() {
             <div className="flex items-center justify-between">
               <CardTitle>Current Primary Loan</CardTitle>
               <div className="flex items-center gap-2">
+                {/* Add Current Loan Button */}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    // Generate a unique ID for the new loan card
+                    const newLoanId = `current-primary-loan-${Date.now()}`;
+                    
+                    // Add to cards array
+                    setCurrentPrimaryLoanCards(prev => [...(prev || []), newLoanId]);
+                    
+                    // Initialize data state for new card
+                    setCurrentPrimaryLoanData(prev => ({ 
+                      ...prev, 
+                      [newLoanId]: { isDefaultCard: false } 
+                    }));
+                    
+                    // Auto-expand the loan card
+                    setShowCurrentLoan(true);
+                    
+                    // Trigger animation for newly created loan card
+                    setTimeout(() => {
+                      setShowSubjectPropertyAnimation(prev => ({ ...prev, [newLoanId]: true }));
+                      setTimeout(() => {
+                        setShowSubjectPropertyAnimation(prev => ({ ...prev, [newLoanId]: false }));
+                      }, 800);
+                    }, 200);
+                  }}
+                  className="hover:bg-blue-500 hover:text-white"
+                  data-testid="button-add-current-loan"
+                  title="Add Current Loan"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Current Loan
+                </Button>
+                
+                {/* Remove Button */}
+                {onRemove && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={onRemove}
+                    className="hover:bg-red-500 hover:text-white"
+                    data-testid="button-remove-current-loan"
+                    title="Remove Current Loan"
+                  >
+                    <Minus className="h-4 w-4 mr-2" />
+                    Remove
+                  </Button>
+                )}
+                
                 <CollapsibleTrigger asChild>
                   <Button 
                     variant="ghost" 
