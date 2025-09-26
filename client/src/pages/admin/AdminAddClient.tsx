@@ -2844,7 +2844,7 @@ export default function AdminAddClient() {
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Current Loan</CardTitle>
+              <CardTitle>Current Primary Loan</CardTitle>
               <div className="flex items-center gap-2">
                 {onRemove && (
                   <Button
@@ -3379,7 +3379,7 @@ export default function AdminAddClient() {
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Current Loan 2</CardTitle>
+              <CardTitle>Current Second Loan</CardTitle>
               <div className="flex items-center gap-2">
                 {onRemove && (
                   <Button
@@ -3874,7 +3874,7 @@ export default function AdminAddClient() {
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Current Loan {loanNumber}</CardTitle>
+              <CardTitle>{loanNumber === 3 ? 'Current Third Loan' : `Current Loan ${loanNumber}`}</CardTitle>
               <div className="flex items-center gap-2">
                 {onRemove && (
                   <Button
@@ -14600,7 +14600,7 @@ export default function AdminAddClient() {
       <Dialog open={isCurrentLoanPreviewOpen} onOpenChange={setIsCurrentLoanPreviewOpen}>
         <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto" data-testid="dialog-current-loan-preview">
           <DialogHeader>
-            <DialogTitle>Current Loan</DialogTitle>
+            <DialogTitle>Current Primary Loan</DialogTitle>
           </DialogHeader>
           <CurrentLoanPreview control={form.control} />
           <DialogFooter>
@@ -14618,7 +14618,7 @@ export default function AdminAddClient() {
       <Dialog open={isCurrentSecondLoanPreviewOpen} onOpenChange={setIsCurrentSecondLoanPreviewOpen}>
         <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto" data-testid="dialog-current-second-loan-preview">
           <DialogHeader>
-            <DialogTitle>Current Loan 2</DialogTitle>
+            <DialogTitle>Current Second Loan</DialogTitle>
           </DialogHeader>
           <CurrentSecondLoanPreview control={form.control} />
           <DialogFooter>
@@ -14636,7 +14636,7 @@ export default function AdminAddClient() {
       <Dialog open={isCurrentThirdLoanPreviewOpen} onOpenChange={setIsCurrentThirdLoanPreviewOpen}>
         <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto" data-testid="dialog-current-third-loan-preview">
           <DialogHeader>
-            <DialogTitle>Current Loan 3</DialogTitle>
+            <DialogTitle>Current Third Loan</DialogTitle>
           </DialogHeader>
           <CurrentThirdLoanPreview control={form.control} />
           <DialogFooter>
