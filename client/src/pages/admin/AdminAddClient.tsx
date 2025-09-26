@@ -10579,21 +10579,6 @@ export default function AdminAddClient() {
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="flex items-center">
-                      <div
-                        className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
-                        style={{
-                          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
-                          fontSize: '36px',
-                          fontWeight: 600,
-                          backgroundColor: '#1a3373',
-                          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
-                        }}
-                        data-testid="text-primary-count"
-                      >
-                        <span className={`${showPropertyAnimation ? 'animate-roll-down' : ''}`}>
-                          {(form.watch('property.properties') || []).filter(p => p.use === 'primary').length}
-                        </span>
-                      </div>
                     </div>
                     
                     <div className="flex items-center">
