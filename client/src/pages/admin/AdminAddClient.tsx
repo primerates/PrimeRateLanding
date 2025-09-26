@@ -13907,7 +13907,7 @@ export default function AdminAddClient() {
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-property-primary-loan-tab"
                         />
-                        <Label htmlFor="property-type-primary-loan-tab" className="font-medium text-black">
+                        <Label htmlFor="property-type-primary-loan-tab" className="font-medium">
                           New Primary Loan
                         </Label>
                       </div>
@@ -13919,7 +13919,7 @@ export default function AdminAddClient() {
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-property-second-home-loan-tab"
                         />
-                        <Label htmlFor="property-type-second-home-loan-tab" className="font-medium text-black">
+                        <Label htmlFor="property-type-second-home-loan-tab" className="font-medium">
                           New Second Loan (HELOC)
                         </Label>
                       </div>
@@ -13931,7 +13931,7 @@ export default function AdminAddClient() {
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-property-investment-loan-tab"
                         />
-                        <Label htmlFor="property-type-investment-loan-tab" className="font-medium text-black">
+                        <Label htmlFor="property-type-investment-loan-tab" className="font-medium">
                           New Second Loan (Fixed)
                         </Label>
                       </div>
@@ -13943,7 +13943,7 @@ export default function AdminAddClient() {
                           className="border-black"
                           data-testid="checkbox-property-home-purchase-loan-tab"
                         />
-                        <Label htmlFor="property-type-home-purchase-loan-tab" className="font-medium text-black">
+                        <Label htmlFor="property-type-home-purchase-loan-tab" className="font-medium">
                           New Loan (Other)
                         </Label>
                       </div>
@@ -13958,7 +13958,7 @@ export default function AdminAddClient() {
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-current-primary-loan-tab"
                         />
-                        <Label htmlFor="current-primary-loan-tab" className="font-medium text-black">
+                        <Label htmlFor="current-primary-loan-tab" className="font-medium">
                           Current Primary Loan
                         </Label>
                       </div>
@@ -13970,7 +13970,7 @@ export default function AdminAddClient() {
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-current-second-loan-tab"
                         />
-                        <Label htmlFor="current-second-loan-tab" className="font-medium text-black">
+                        <Label htmlFor="current-second-loan-tab" className="font-medium">
                           Current Second Loan
                         </Label>
                       </div>
@@ -13982,7 +13982,7 @@ export default function AdminAddClient() {
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-current-third-loan-tab"
                         />
-                        <Label htmlFor="current-third-loan-tab" className="font-medium text-black">
+                        <Label htmlFor="current-third-loan-tab" className="font-medium">
                           Current Third Loan
                         </Label>
                       </div>
@@ -13994,7 +13994,7 @@ export default function AdminAddClient() {
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-other-loan-tab"
                         />
-                        <Label htmlFor="other-loan-tab" className="font-medium text-black">
+                        <Label htmlFor="other-loan-tab" className="font-medium">
                           Other
                         </Label>
                       </div>
