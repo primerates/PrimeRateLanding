@@ -4976,7 +4976,7 @@ export default function AdminAddClient() {
               // Initialize data state for default card
               setPrimaryResidenceData(prev => ({ 
                 ...prev, 
-                [newPropertyId]: { purpose: 'primary', isSubjectProperty: null } 
+                [newPropertyId]: { purpose: 'select', isSubjectProperty: null } 
               }));
               
               // Auto-expand the property card
@@ -10706,8 +10706,8 @@ export default function AdminAddClient() {
                             <div className="flex items-center gap-2">
                               <Label className="text-sm text-muted-foreground">Purpose:</Label>
                               <Select 
-                                value={primaryResidenceData[propertyId]?.purpose || 'primary'}
-                                onValueChange={(value: 'primary' | 'second-home' | 'investment') => {
+                                value={primaryResidenceData[propertyId]?.purpose || 'select'}
+                                onValueChange={(value: 'select' | 'primary' | 'second-home' | 'investment') => {
                                   setPrimaryResidenceData(prev => ({
                                     ...prev,
                                     [propertyId]: { 
@@ -10718,10 +10718,11 @@ export default function AdminAddClient() {
                                   }));
                                 }}
                               >
-                                <SelectTrigger className="w-40" data-testid={`select-property-usage-${propertyId}`}>
-                                  <SelectValue />
+                                <SelectTrigger className="w-40 border-0 shadow-none bg-transparent hover:bg-muted focus:ring-0 focus:ring-offset-0 pl-0 [&>svg]:ml-2" data-testid={`select-property-usage-${propertyId}`}>
+                                  <SelectValue placeholder="Select" />
                                 </SelectTrigger>
                                 <SelectContent>
+                                  <SelectItem value="select" disabled>Select</SelectItem>
                                   <SelectItem value="primary">Primary Residence</SelectItem>
                                   <SelectItem value="second-home">Second Home</SelectItem>
                                   <SelectItem value="investment">Investment Property</SelectItem>
@@ -10749,7 +10750,7 @@ export default function AdminAddClient() {
                                   // Initialize data state for new card
                                   setPrimaryResidenceData(prev => ({ 
                                     ...prev, 
-                                    [newPropertyId]: { purpose: 'primary', isSubjectProperty: null } 
+                                    [newPropertyId]: { purpose: 'select', isSubjectProperty: null } 
                                   }));
                                   
                                   // Auto-expand the new property card
