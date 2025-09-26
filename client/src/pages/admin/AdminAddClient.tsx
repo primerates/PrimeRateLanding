@@ -10815,6 +10815,8 @@ export default function AdminAddClient() {
                                               isSubjectProperty: true
                                             }
                                           }));
+                                          // Trigger same green animation as Second Home
+                                          setSubjectProperty(propertyId);
                                         }}
                                         data-testid={`radio-subject-yes-${propertyId}`}
                                       />
