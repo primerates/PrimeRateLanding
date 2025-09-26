@@ -2974,9 +2974,10 @@ export default function AdminAddClient() {
                   <Label htmlFor={`${idPrefix}currentLoan-loanPurpose`}>Loan Purpose</Label>
                   <Select {...loanPurposeBinding}>
                     <SelectTrigger data-testid={loanPurposeBinding['data-testid']}>
-                      <SelectValue placeholder="Select purpose" />
+                      <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
                       <SelectItem value="purchase">Purchase</SelectItem>
                       <SelectItem value="refinance-rate-term">Refinance Rate & Term</SelectItem>
                       <SelectItem value="refinance-cash-out">Refinance Cash Out</SelectItem>
@@ -3013,9 +3014,10 @@ export default function AdminAddClient() {
                   <Label htmlFor={`${idPrefix}currentLoan-loanCategory`}>Loan Category</Label>
                   <Select {...loanCategoryBinding}>
                     <SelectTrigger data-testid={loanCategoryBinding['data-testid']}>
-                      <SelectValue placeholder="Select category" />
+                      <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
                       <SelectItem value="conventional">Conventional</SelectItem>
                       <SelectItem value="conventional-jumbo">Conventional Jumbo</SelectItem>
                       <SelectItem value="fha">FHA</SelectItem>
@@ -3030,9 +3032,10 @@ export default function AdminAddClient() {
                   <Label htmlFor={`${idPrefix}currentLoan-loanProgram`}>Loan Term</Label>
                   <Select {...loanProgramBinding}>
                     <SelectTrigger data-testid={loanProgramBinding['data-testid']}>
-                      <SelectValue placeholder="Select program" />
+                      <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
                       <SelectItem value="fixed-rate">Fixed Rate</SelectItem>
                       <SelectItem value="adjustable">Adjustable</SelectItem>
                       <SelectItem value="other">Other</SelectItem>
@@ -3044,9 +3047,10 @@ export default function AdminAddClient() {
                   <Label htmlFor={`${idPrefix}currentLoan-loanTerm`}>Loan Duration</Label>
                   <Select {...loanTermBinding}>
                     <SelectTrigger data-testid={loanTermBinding['data-testid']}>
-                      <SelectValue placeholder="Select term" />
+                      <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
                       <SelectItem value="30-years">30 years</SelectItem>
                       <SelectItem value="25-years">25 years</SelectItem>
                       <SelectItem value="20-years">20 years</SelectItem>
@@ -3064,6 +3068,7 @@ export default function AdminAddClient() {
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
                       <SelectItem value="Yes - see notes">Yes - see notes</SelectItem>
                       <SelectItem value="No">No</SelectItem>
                     </SelectContent>
@@ -3117,7 +3122,7 @@ export default function AdminAddClient() {
                   </div>
                 </div>
                 
-                <div className="space-y-2 md:col-span-2">
+                <div className="space-y-2 md:col-span-1">
                   <Label htmlFor="currentLoan-escrowPayment">Escrow Payment</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
@@ -3135,7 +3140,7 @@ export default function AdminAddClient() {
                   <TotalCurrentLoanPayment control={form.control} />
                 </div>
                 
-                <div className="space-y-2 md:col-span-3">
+                <div className="space-y-2 md:col-span-4">
                   <Label htmlFor={`${idPrefix}currentLoan-attachedToProperty`}>Attached to Property</Label>
                   <Select 
                     {...attachedToPropertyBinding}
@@ -14198,48 +14203,6 @@ export default function AdminAddClient() {
                       </div>
                     </div>
                     
-                    {/* Add/Remove buttons for Current Primary Loan */}
-                    <div className="flex items-center gap-2 pt-4 border-t">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          const hasCards = (currentPrimaryLoanCards || []).length > 0;
-                          if (!hasCards) {
-                            handleCurrentPrimaryLoanTypeChange(true);
-                          }
-                        }}
-                        className="hover:bg-blue-500 hover:text-white"
-                        data-testid="button-add-current-loan-tab"
-                        title="Add Current Loan"
-                        disabled={(currentPrimaryLoanCards || []).length > 0}
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Current Loan
-                      </Button>
-                      
-                      {(currentPrimaryLoanCards || []).length > 0 && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            const cardId = currentPrimaryLoanCards[0];
-                            setDeleteCurrentPrimaryLoanDialog({
-                              isOpen: true,
-                              cardId: cardId
-                            });
-                          }}
-                          className="hover:bg-red-500 hover:text-white"
-                          data-testid="button-remove-current-loan-tab"
-                          title="Remove Current Loan"
-                        >
-                          <Minus className="h-4 w-4 mr-2" />
-                          Remove
-                        </Button>
-                      )}
-                    </div>
                   </div>
                 </CardContent>
               </Card>
