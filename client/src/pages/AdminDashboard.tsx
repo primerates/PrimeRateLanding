@@ -21,52 +21,6 @@ import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import cubesBackground from '@assets/stock_images/abstract_geometric_c_b9135c5b.jpg';
 
-// Background style options - comment/uncomment to switch
-const backgroundStyles = {
-  // Option 1: Clean Light Gradient (CURRENTLY ACTIVE)
-  lightGradient: {
-    backgroundImage: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%)',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat'
-  },
-  
-  // Option 2: Soft Geometric Pattern (Light)  
-  lightGeometric: {
-    backgroundImage: `
-      radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 25%),
-      radial-gradient(circle at 75% 75%, rgba(16, 185, 129, 0.1) 0%, transparent 25%),
-      linear-gradient(45deg, #ffffff 0%, #f8fafc 100%)
-    `,
-    backgroundSize: '100px 100px, 100px 100px, cover',
-    backgroundPosition: '0 0, 50px 50px, center',
-    backgroundRepeat: 'repeat, repeat, no-repeat'
-  },
-  
-  // Option 3: Dark Professional
-  darkProfessional: {
-    backgroundImage: `
-      radial-gradient(circle at 30% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
-      radial-gradient(circle at 70% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
-      linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%)
-    `,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat'
-  },
-  
-  // Current busy background (for comparison)
-  currentBusy: {
-    backgroundImage: `url(${cubesBackground})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat'
-  }
-};
-
-// Currently active style - change this to switch backgrounds
-const activeBackgroundStyle = backgroundStyles.darkProfessional;
-
 export default function AdminDashboard() {
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
@@ -176,10 +130,31 @@ export default function AdminDashboard() {
   return (
     <div 
       className="min-h-screen bg-background relative"
-      style={activeBackgroundStyle}
+      style={{
+        backgroundImage: `url(${cubesBackground})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
     >
-      {/* Simple subtle overlay for better content readability */}
-      <div className="absolute inset-0 bg-background/5" />
+      {/* Faded overlay to make background subtle */}
+      <div className="absolute inset-0 bg-background/85" />
+      
+      {/* Progressive focus overlay - starts blurred at top, gradually reveals sharp background */}
+      <div 
+        className="absolute inset-0 transition-all duration-75 ease-out"
+        style={{
+          background: `linear-gradient(to bottom, 
+            rgba(255, 255, 255, 0.8) 0%, 
+            rgba(255, 255, 255, 0.3) ${Math.max(0, 60 - (backgroundFocusProgress * 60))}%, 
+            transparent ${Math.max(0, 80 - (backgroundFocusProgress * 80))}%
+          )`,
+          backdropFilter: `blur(${Math.max(0, 8 - (backgroundFocusProgress * 8))}px)`,
+          WebkitBackdropFilter: `blur(${Math.max(0, 8 - (backgroundFocusProgress * 8))}px)`,
+          opacity: Math.max(0, 1 - backgroundFocusProgress),
+          willChange: 'backdrop-filter, opacity'
+        }}
+      />
       {/* Header */}
       <header className="bg-primary text-primary-foreground shadow-lg border-b transition-shadow duration-300 hover:shadow-2xl hover:shadow-primary/20 relative z-10">
         <div className="container mx-auto px-6 py-4">
