@@ -10591,10 +10591,19 @@ export default function AdminAddClient() {
                           backgroundColor: '#1a3373',
                           boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
                         }}
-                        data-testid="text-second-home-count"
+                        data-testid="text-property-count"
                       >
                         <span className={`${showPropertyAnimation ? 'animate-roll-down' : ''}`}>
-                          {(form.watch('property.properties') || []).filter(p => p.use === 'second-home').length}
+                          {(() => {
+                            // Count all active property cards
+                            const primaryCards = (primaryResidenceCards || []).length;
+                            const secondHomeCardsCount = (secondHomeCards || []).length;
+                            const formProperties = (form.watch('property.properties') || []);
+                            const investmentCards = formProperties.filter(p => p.use === 'investment').length;
+                            const homePurchaseCards = formProperties.filter(p => p.use === 'home-purchase').length;
+                            
+                            return primaryCards + secondHomeCardsCount + investmentCards + homePurchaseCards;
+                          })()}
                         </span>
                       </div>
                     </div>
