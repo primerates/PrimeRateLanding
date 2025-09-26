@@ -5795,10 +5795,10 @@ export default function AdminAddClient() {
                     className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/10 p-2"
                     data-testid="button-back-to-dashboard"
                   >
-                    <RotateCcw className="h-4 w-4" />
+                    <RotateCcw className="h-5 w-5" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent side="left">
+                <TooltipContent side="left" className="text-sm">
                   <p>Back to Dashboard</p>
                 </TooltipContent>
               </Tooltip>
