@@ -12479,13 +12479,11 @@ export default function AdminAddClient() {
                                             className={`w-3 h-3 rounded-full border-2 cursor-pointer ${
                                               isCurrentLoanAttached
                                                 ? 'bg-blue-500 border-blue-500 hover:bg-blue-600'
-                                                : hasAnyLoanAttached 
-                                                  ? 'bg-green-500 border-green-500' 
-                                                  : 'bg-gray-200 border-gray-300'
+                                                : 'bg-gray-200 border-gray-300'
                                             }`}
                                             style={{
-                                              backgroundColor: isCurrentLoanAttached ? '#3b82f6' : hasAnyLoanAttached ? '#10b981' : '#e5e7eb',
-                                              borderColor: isCurrentLoanAttached ? '#3b82f6' : hasAnyLoanAttached ? '#10b981' : '#d1d5db'
+                                              backgroundColor: isCurrentLoanAttached ? '#3b82f6' : '#e5e7eb',
+                                              borderColor: isCurrentLoanAttached ? '#3b82f6' : '#d1d5db'
                                             }}
                                             onClick={() => {
                                               if (isCurrentLoanAttached) {
