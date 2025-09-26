@@ -11339,7 +11339,7 @@ export default function AdminAddClient() {
                                 </div>
                                 <Select>
                                   <SelectTrigger data-testid={`select-property-secured-loan-${propertyId}`}>
-                                    <SelectValue placeholder="Yes/No" />
+                                    <SelectValue placeholder="Select" />
                                   </SelectTrigger>
                                   <SelectContent>
                                     <SelectItem value="yes">Yes</SelectItem>
@@ -11965,7 +11965,7 @@ export default function AdminAddClient() {
                                 </div>
                                 <Select>
                                   <SelectTrigger data-testid={`select-second-home-secured-loan-${propertyId}`}>
-                                    <SelectValue placeholder="Yes/No" />
+                                    <SelectValue placeholder="Select" />
                                   </SelectTrigger>
                                   <SelectContent>
                                     <SelectItem value="yes">Yes</SelectItem>
