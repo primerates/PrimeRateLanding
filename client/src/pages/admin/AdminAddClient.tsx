@@ -952,6 +952,9 @@ export default function AdminAddClient() {
   // Property collapsible state (using object to manage multiple property cards)
   const [propertyCardStates, setPropertyCardStates] = useState<Record<string, boolean>>({});
   
+  // Current Primary Loan card collapsible state (per-card state management)
+  const [currentLoanCardStates, setCurrentLoanCardStates] = useState<Record<string, boolean>>({});
+  
   // Borrower Employer cards state management
   const [borrowerEmployerCards, setBorrowerEmployerCards] = useState<string[]>([]);
   
@@ -2892,6 +2895,9 @@ export default function AdminAddClient() {
                       ...prev, 
                       [newLoanId]: { isDefaultCard: false } 
                     }));
+                    
+                    // Initialize per-card collapsible state (auto-expand like Property cards)
+                    setCurrentLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
                     
                     // Auto-expand the loan card
                     setShowCurrentLoan(true);
@@ -5196,6 +5202,9 @@ export default function AdminAddClient() {
           [newLoanId]: { isDefaultCard: true } 
         }));
         
+        // Initialize per-card collapsible state (auto-expand like Property cards)
+        setCurrentLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
+        
         // Auto-expand the loan card
         setShowCurrentLoan(true);
         
@@ -5212,14 +5221,26 @@ export default function AdminAddClient() {
 
   // Handle removing current primary loan cards (new system)
   const removeCurrentPrimaryLoanCard = (cardId: string) => {
-    // Clear all Current Primary Loan cards (this is a single loan system)
-    setCurrentPrimaryLoanCards([]);
+    // Remove the specific card from cards array
+    setCurrentPrimaryLoanCards(prev => prev.filter(id => id !== cardId));
     
-    // Clear all data state
-    setCurrentPrimaryLoanData({});
+    // Remove data state for this card
+    setCurrentPrimaryLoanData(prev => {
+      const { [cardId]: _, ...rest } = prev;
+      return rest;
+    });
     
-    // Hide the current loan card
-    setShowCurrentLoan(false);
+    // Remove per-card collapsible state
+    setCurrentLoanCardStates(prev => {
+      const { [cardId]: _, ...rest } = prev;
+      return rest;
+    });
+    
+    // If no cards remain, hide the current loan section
+    const remainingCards = currentPrimaryLoanCards.filter(id => id !== cardId);
+    if (remainingCards.length === 0) {
+      setShowCurrentLoan(false);
+    }
     
     // Close the dialog
     setDeleteCurrentPrimaryLoanDialog({ isOpen: false, cardId: '' });
@@ -14308,16 +14329,18 @@ export default function AdminAddClient() {
                 </Collapsible>
               </Card>
 
-              {/* Current Loan Sections - Show/Hide based on new Loan List selection */}
-              {(currentPrimaryLoanCards || []).length > 0 && (
-                <>
+              {/* Current Primary Loan Cards - Render multiple cards like Property cards */}
+              {(currentPrimaryLoanCards || []).map((cardId, index) => {
+                const isOpen = currentLoanCardStates[cardId] ?? true; // Per-card state like Property cards
+                
+                return (
                   <CurrentLoanCard
-                    idPrefix=""
+                    key={cardId}
+                    idPrefix={`card-${index}-`}
                     borderVariant="blue"
-                    isOpen={isCurrentLoanOpen}
-                    setIsOpen={setIsCurrentLoanOpen}
+                    isOpen={isOpen}
+                    setIsOpen={(open) => setCurrentLoanCardStates(prev => ({ ...prev, [cardId]: open }))}
                     onRemove={() => {
-                      const cardId = currentPrimaryLoanCards[0];
                       setDeleteCurrentPrimaryLoanDialog({
                         isOpen: true,
                         cardId: cardId
@@ -14326,8 +14349,8 @@ export default function AdminAddClient() {
                     onAutoCopyAddress={autoCopyPropertyAddressToCurrentLoan}
                     formInstance={form}
                   />
-                </>
-              )}
+                );
+              })}
 
               {/* Second Loan Sections - Only show when added */}
               {showSecondLoan && (
