@@ -13888,61 +13888,58 @@ export default function AdminAddClient() {
               {/* Three Blue Circles - Copied from Property Tab */}
               <Card className="transition-all duration-700">
                 <CardHeader>
-                  <CardTitle className="text-lg font-semibold">Transaction</CardTitle>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+                    <CardTitle className="text-lg font-semibold">Transaction</CardTitle>
+                    <Label className="text-lg font-semibold flex justify-center">New Loans</Label>
+                    <Label className="text-lg font-semibold flex justify-center">New Loan Type</Label>
+                    <Label className="text-lg font-semibold flex justify-center">Current Loans</Label>
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6">
-                    <div className="space-y-2">
-                      <Label className="text-lg font-semibold flex justify-center">New Loans</Label>
-                      <div className="flex items-center justify-center">
-                        <div
-                          className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
-                          style={{
-                            fontFamily: 'ui-sans-serif, system-ui, sans-serif',
-                            fontSize: '36px',
-                            fontWeight: 600,
-                            backgroundColor: '#1a3373',
-                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
-                          }}
-                          data-testid="circle-1"
-                        >
-                        </div>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
+                    <div></div>
+                    <div className="flex items-center justify-center">
+                      <div
+                        className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                        style={{
+                          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                          fontSize: '36px',
+                          fontWeight: 600,
+                          backgroundColor: '#1a3373',
+                          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+                        }}
+                        data-testid="circle-1"
+                      >
                       </div>
                     </div>
                     
-                    <div className="space-y-2">
-                      <Label className="text-lg font-semibold flex justify-center">New Loan Type</Label>
-                      <div className="flex items-center justify-center">
-                        <div
-                          className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
-                          style={{
-                            fontFamily: 'ui-sans-serif, system-ui, sans-serif',
-                            fontSize: '36px',
-                            fontWeight: 600,
-                            backgroundColor: '#1a3373',
-                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
-                          }}
-                          data-testid="circle-2"
-                        >
-                        </div>
+                    <div className="flex items-center justify-center">
+                      <div
+                        className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                        style={{
+                          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                          fontSize: '36px',
+                          fontWeight: 600,
+                          backgroundColor: '#1a3373',
+                          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+                        }}
+                        data-testid="circle-2"
+                      >
                       </div>
                     </div>
                     
-                    <div className="space-y-2">
-                      <Label className="text-lg font-semibold flex justify-center">Current Loans</Label>
-                      <div className="flex items-center justify-center">
-                        <div
-                          className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
-                          style={{
-                            fontFamily: 'ui-sans-serif, system-ui, sans-serif',
-                            fontSize: '36px',
-                            fontWeight: 600,
-                            backgroundColor: '#1a3373',
-                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
-                          }}
-                          data-testid="circle-3"
-                        >
-                        </div>
+                    <div className="flex items-center justify-center">
+                      <div
+                        className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                        style={{
+                          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                          fontSize: '36px',
+                          fontWeight: 600,
+                          backgroundColor: '#1a3373',
+                          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+                        }}
+                        data-testid="circle-3"
+                      >
                       </div>
                     </div>
                   </div>
