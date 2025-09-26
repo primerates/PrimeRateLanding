@@ -3087,7 +3087,9 @@ export default function AdminAddClient() {
               </div>
               
               {/* Row 3: Principal & Interest Payment, Escrow Payment, Total Monthly Payment, Pre-Payment Penalty, Attached to Property */}
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              <Card className="bg-muted">
+                <CardContent className="pt-6">
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="currentLoan-principalInterestPayment">Principal & Interest Payment</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
@@ -3189,7 +3191,9 @@ export default function AdminAddClient() {
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
+                  </div>
+                </CardContent>
+              </Card>
               
               {/* Conditional Address Fields - Show when Attached to Property is selected */}
               {targetForm.watch('currentLoan.attachedToProperty') && targetForm.watch('currentLoan.attachedToProperty') !== 'select' && (
