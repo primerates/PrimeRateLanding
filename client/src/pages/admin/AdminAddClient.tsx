@@ -10793,7 +10793,7 @@ export default function AdminAddClient() {
                           <div className="space-y-6">
                             {/* Subject Property Question - Moved to top */}
                             <Card className={`bg-muted ${
-                              showSubjectPropertyAnimation['primary-default'] ? 'animate-roll-down-subject-property' : ''
+                              showSubjectPropertyAnimation[propertyId] ? 'animate-roll-down-subject-property' : ''
                             }`}>
                               <CardContent className="pt-6">
                                 <div className="space-y-3">
