@@ -11736,8 +11736,8 @@ export default function AdminAddClient() {
                                   </SelectTrigger>
                                   <SelectContent>
                                     {US_STATES.map((state) => (
-                                      <SelectItem key={state.code} value={state.code}>
-                                        {state.name}
+                                      <SelectItem key={state.value} value={state.value}>
+                                        {state.label}
                                       </SelectItem>
                                     ))}
                                   </SelectContent>
@@ -12426,8 +12426,8 @@ export default function AdminAddClient() {
                                   </SelectTrigger>
                                   <SelectContent>
                                     {US_STATES.map((state) => (
-                                      <SelectItem key={state.code} value={state.code}>
-                                        {state.name}
+                                      <SelectItem key={state.value} value={state.value}>
+                                        {state.label}
                                       </SelectItem>
                                     ))}
                                   </SelectContent>
