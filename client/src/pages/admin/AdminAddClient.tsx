@@ -13892,6 +13892,65 @@ export default function AdminAddClient() {
                 </CardContent>
               </Card>
 
+              {/* Property List Card - Visual Copy (No Functionality) */}
+              <Card className="bg-muted">
+                <CardHeader>
+                  <CardTitle>Property List</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="property-type-primary-loan-tab"
+                          disabled
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          data-testid="checkbox-property-primary-loan-tab"
+                        />
+                        <Label htmlFor="property-type-primary-loan-tab" className="font-medium">
+                          Primary Residence
+                        </Label>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="property-type-second-home-loan-tab"
+                          disabled
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          data-testid="checkbox-property-second-home-loan-tab"
+                        />
+                        <Label htmlFor="property-type-second-home-loan-tab" className="font-medium">
+                          Second Home
+                        </Label>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="property-type-investment-loan-tab"
+                          disabled
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          data-testid="checkbox-property-investment-loan-tab"
+                        />
+                        <Label htmlFor="property-type-investment-loan-tab" className="font-medium">
+                          Investment Property
+                        </Label>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="property-type-home-purchase-loan-tab"
+                          disabled
+                          data-testid="checkbox-property-home-purchase-loan-tab"
+                        />
+                        <Label htmlFor="property-type-home-purchase-loan-tab" className="font-medium">
+                          Home Purchase
+                        </Label>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* New Loan Information */}
               <Card className="border-l-4 border-l-green-500">
                 <Collapsible open={isNewLoanOpen} onOpenChange={setIsNewLoanOpen}>
