@@ -7071,6 +7071,7 @@ export default function AdminAddClient() {
                                   checked={isShowingCoBorrowerMonthsAtPriorAddress}
                                   onCheckedChange={setIsShowingCoBorrowerMonthsAtPriorAddress}
                                   data-testid="toggle-coborrower-prior-time-address"
+                                  className="scale-[0.8]"
                                 />
                               </div>
                               <Input
