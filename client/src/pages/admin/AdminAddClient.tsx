@@ -11601,76 +11601,378 @@ export default function AdminAddClient() {
                               </div>
                             </div>
 
-                            {/* Property Valuation - Row 2 */}
-                            <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
-                              <div className="space-y-2 md:col-span-1">
-                                <Label htmlFor={`second-home-estimated-value-${propertyId}`}>Estimated Value</Label>
+                            {/* Property Details - Row 2: Purchase Price, Owned Since, Title Held By, Estimated Property Value */}
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
+                              <div className="space-y-2 md:col-span-2">
+                                <div className="flex items-center gap-2">
+                                  <Label htmlFor={`second-home-purchase-price-${propertyId}`}>Purchase Price</Label>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="p-1 h-auto text-black hover:text-gray-600"
+                                    title="Purchase Property Value"
+                                    data-testid={`button-second-home-purchase-price-info-${propertyId}`}
+                                  >
+                                    <DollarSign className="h-4 w-4" />
+                                  </Button>
+                                </div>
                                 <Input
-                                  id={`second-home-estimated-value-${propertyId}`}
-                                  placeholder="$750,000"
-                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.estimatedValue` as any) : {})}
-                                  data-testid={`input-second-home-estimated-value-${propertyId}`}
+                                  id={`second-home-purchase-price-${propertyId}`}
+                                  placeholder="$0.00"
+                                  data-testid={`input-second-home-purchase-price-${propertyId}`}
                                 />
                               </div>
                               
                               <div className="space-y-2 md:col-span-1">
-                                <Label htmlFor={`second-home-zillow-estimate-${propertyId}`}>Zillow</Label>
-                                <Input
-                                  id={`second-home-zillow-estimate-${propertyId}`}
-                                  placeholder="$740,000"
-                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.valuations.zillow` as any) : {})}
-                                  data-testid={`input-second-home-zillow-${propertyId}`}
-                                />
-                              </div>
-                              
-                              <div className="space-y-2 md:col-span-1">
-                                <Label htmlFor={`second-home-redfin-estimate-${propertyId}`}>Redfin</Label>
-                                <Input
-                                  id={`second-home-redfin-estimate-${propertyId}`}
-                                  placeholder="$745,000"
-                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.valuations.redfin` as any) : {})}
-                                  data-testid={`input-second-home-redfin-${propertyId}`}
-                                />
-                              </div>
-                              
-                              <div className="space-y-2 md:col-span-1">
-                                <Label htmlFor={`second-home-realtor-estimate-${propertyId}`}>Realtor.com</Label>
-                                <Input
-                                  id={`second-home-realtor-estimate-${propertyId}`}
-                                  placeholder="$750,000"
-                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.valuations.realtor` as any) : {})}
-                                  data-testid={`input-second-home-realtor-${propertyId}`}
-                                />
-                              </div>
-                              
-                              <div className="space-y-2 md:col-span-1">
-                                <Label htmlFor={`second-home-appraised-value-${propertyId}`}>Appraised Value</Label>
-                                <Input
-                                  id={`second-home-appraised-value-${propertyId}`}
-                                  placeholder="$755,000"
-                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.appraisedValue` as any) : {})}
-                                  data-testid={`input-second-home-appraised-value-${propertyId}`}
-                                />
-                              </div>
-                              
-                              <div className="space-y-2 md:col-span-1">
-                                <Label htmlFor={`second-home-owned-since-${propertyId}`}>Owned Since</Label>
+                                <div className="min-h-5 flex items-center gap-2">
+                                  <Label htmlFor={`second-home-owned-since-${propertyId}`}>Purchased</Label>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                    onClick={() => {
+                                      toast({
+                                        title: "Purchase Information",
+                                        description: "Please see purchase and record dates in title report located in vendor page.",
+                                        duration: 5000,
+                                      });
+                                    }}
+                                    data-testid={`button-second-home-purchased-info-${propertyId}`}
+                                    title="Purchase Information"
+                                  >
+                                    <Info className="h-4 w-4" />
+                                  </Button>
+                                </div>
                                 <Input
                                   id={`second-home-owned-since-${propertyId}`}
-                                  type="date"
-                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.ownedSince` as any) : {})}
+                                  placeholder="MM/YYYY"
                                   data-testid={`input-second-home-owned-since-${propertyId}`}
                                 />
                               </div>
                               
-                              <div className="space-y-2 md:col-span-1">
-                                <Label htmlFor={`second-home-purchase-price-${propertyId}`}>Purchase Price</Label>
-                                <Input
-                                  id={`second-home-purchase-price-${propertyId}`}
-                                  placeholder="$650,000"
-                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.purchasePrice` as any) : {})}
-                                  data-testid={`input-second-home-purchase-price-${propertyId}`}
+                              <div className="space-y-2 md:col-span-2">
+                                <div className="min-h-5 flex items-center gap-2">
+                                  <Label htmlFor={`second-home-title-held-by-${propertyId}`}>Title Held By</Label>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                    onClick={() => {
+                                      toast({
+                                        title: "Title Information",
+                                        description: "Please see title report in vendor page.",
+                                        duration: 5000,
+                                      });
+                                    }}
+                                    data-testid={`button-second-home-title-held-info-${propertyId}`}
+                                    title="Title Information"
+                                  >
+                                    <Info className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                                <Select>
+                                  <SelectTrigger data-testid={`select-second-home-title-held-by-${propertyId}`}>
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="select">Select</SelectItem>
+                                    <SelectItem value="borrower">Borrower</SelectItem>
+                                    <SelectItem value="borrowers">Borrowers</SelectItem>
+                                    <SelectItem value="co-borrower">Co-Borrower</SelectItem>
+                                    <SelectItem value="other">Other</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-3">
+                                <div className="flex items-center gap-2">
+                                  <Label htmlFor={`second-home-estimated-value-${propertyId}`}>Estimated Value</Label>
+                                  <div className="flex items-center gap-1">
+                                    {/* Zillow */}
+                                    <div className="flex items-center gap-1">
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800 no-default-hover-elevate no-default-active-elevate"
+                                        onClick={() => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const secondHomeIndex = properties.findIndex(p => p.use === 'second-home' && p.id === propertyId);
+                                          openValuationDialog('zillow', secondHomeIndex >= 0 ? secondHomeIndex : 0);
+                                        }}
+                                        onMouseEnter={(e) => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const secondHomeIndex = properties.findIndex(p => p.use === 'second-home' && p.id === propertyId);
+                                          handleValuationHover('zillow', secondHomeIndex >= 0 ? secondHomeIndex : 0, e);
+                                        }}
+                                        onMouseLeave={handleValuationHoverLeave}
+                                        data-testid={`button-second-home-zillow-valuation-${propertyId}`}
+                                        title="Enter Zillow valuation manually"
+                                      >
+                                        <SiZillow className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                    {/* Realtor */}
+                                    <div className="flex items-center gap-1">
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-purple-600 hover:text-purple-800 no-default-hover-elevate no-default-active-elevate"
+                                        onClick={() => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const secondHomeIndex = properties.findIndex(p => p.use === 'second-home' && p.id === propertyId);
+                                          openValuationDialog('realtor', secondHomeIndex >= 0 ? secondHomeIndex : 0);
+                                        }}
+                                        onMouseEnter={(e) => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const secondHomeIndex = properties.findIndex(p => p.use === 'second-home' && p.id === propertyId);
+                                          handleValuationHover('realtor', secondHomeIndex >= 0 ? secondHomeIndex : 0, e);
+                                        }}
+                                        onMouseLeave={handleValuationHoverLeave}
+                                        data-testid={`button-second-home-realtor-valuation-${propertyId}`}
+                                        title="Enter Realtor.com valuation manually"
+                                      >
+                                        <MdRealEstateAgent className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                    {/* Redfin */}
+                                    <div className="flex items-center gap-1">
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-red-600 hover:text-red-800 no-default-hover-elevate no-default-active-elevate"
+                                        onClick={() => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const secondHomeIndex = properties.findIndex(p => p.use === 'second-home' && p.id === propertyId);
+                                          openValuationDialog('redfin', secondHomeIndex >= 0 ? secondHomeIndex : 0);
+                                        }}
+                                        onMouseEnter={(e) => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const secondHomeIndex = properties.findIndex(p => p.use === 'second-home' && p.id === propertyId);
+                                          handleValuationHover('redfin', secondHomeIndex >= 0 ? secondHomeIndex : 0, e);
+                                        }}
+                                        onMouseLeave={handleValuationHoverLeave}
+                                        data-testid={`button-second-home-redfin-valuation-${propertyId}`}
+                                        title="Enter Redfin valuation manually"
+                                      >
+                                        <FaHome className="h-4 w-4" />
+                                      </Button>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                        onClick={() => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const secondHomeIndex = properties.findIndex(p => p.use === 'second-home' && p.id === propertyId);
+                                          openValuationSummary(secondHomeIndex >= 0 ? secondHomeIndex : 0);
+                                        }}
+                                        data-testid={`button-second-home-valuation-info-${propertyId}`}
+                                        title="View all valuation estimates"
+                                      >
+                                        <Info className="h-3 w-3" />
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </div>
+                                <CurrencyInput
+                                  form={form}
+                                  name={(() => {
+                                    const properties = form.watch('property.properties') || [];
+                                    const secondHomeIndex = properties.findIndex(p => p.use === 'second-home' && p.id === propertyId);
+                                    return `property.properties.${secondHomeIndex >= 0 ? secondHomeIndex : 0}.estimatedValue` as const;
+                                  })()}
+                                  id={`second-home-estimated-value-${propertyId}`}
+                                  placeholder="$0.00"
+                                  data-testid={`input-second-home-estimated-value-${propertyId}`}
                                 />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <div className="flex items-center gap-2 min-h-8">
+                                  <Label htmlFor={`second-home-appraised-value-${propertyId}`}>Appraised Value</Label>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="p-1 h-auto"
+                                    title="Appraised Property Value"
+                                    data-testid={`button-second-home-appraised-value-info-${propertyId}`}
+                                  >
+                                    {(() => {
+                                      const properties = form.watch('property.properties') || [];
+                                      const secondHomeIndex = properties.findIndex(p => p.use === 'second-home' && p.id === propertyId);
+                                      return <AppraisalIcon index={secondHomeIndex >= 0 ? secondHomeIndex : 0} control={form.control} />;
+                                    })()}
+                                  </Button>
+                                </div>
+                                <CurrencyInput
+                                  form={form}
+                                  name={(() => {
+                                    const properties = form.watch('property.properties') || [];
+                                    const secondHomeIndex = properties.findIndex(p => p.use === 'second-home' && p.id === propertyId);
+                                    return `property.properties.${secondHomeIndex >= 0 ? secondHomeIndex : 0}.appraisedValue` as const;
+                                  })()}
+                                  id={`second-home-appraised-value-${propertyId}`}
+                                  placeholder="$0.00"
+                                  data-testid={`input-second-home-appraised-value-${propertyId}`}
+                                  shadowColor={(() => {
+                                    const properties = form.watch('property.properties') || [];
+                                    const secondHomeIndex = properties.findIndex(p => p.use === 'second-home' && p.id === propertyId);
+                                    const estimatedValue = form.watch(`property.properties.${secondHomeIndex >= 0 ? secondHomeIndex : 0}.estimatedValue` as const) || '';
+                                    const appraisedValue = form.watch(`property.properties.${secondHomeIndex >= 0 ? secondHomeIndex : 0}.appraisedValue` as const) || '';
+                                    return getValueComparisonColor(estimatedValue, appraisedValue).shadowColor;
+                                  })()}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <div className="flex items-center gap-2 min-h-8">
+                                  <div className="flex items-center gap-2">
+                                    <Label htmlFor={`second-home-active-secured-loan-${propertyId}`}>Secured Loan</Label>
+                                    {(() => {
+                                      // Check ALL loans for attachment to this property
+                                      const properties = form.watch('property.properties') || [];
+                                      const secondHomeIndex = properties.findIndex(p => p.use === 'second-home' && p.id === propertyId);
+                                      const currentProperty = secondHomeIndex >= 0 ? properties[secondHomeIndex] : null;
+                                      
+                                      // Check current loan
+                                      const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                      const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                      
+                                      // Check second loan
+                                      const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                      const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                      
+                                      // Check third loan (first additional loan - Current Loan 3)
+                                      const additionalLoansData = additionalLoans || [];
+                                      const firstAdditionalLoan = additionalLoansData[0]; // This is "Current Loan 3"
+                                      const isThirdLoanAttached = firstAdditionalLoan ? (() => {
+                                        const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
+                                        return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                      })() : false;
+                                      
+                                      // Check other additional loans (loan4, loan5, etc.)
+                                      const isOtherAdditionalLoanAttached = additionalLoansData.slice(1).some(loan => {
+                                        const attachedPropertyId = getDyn(`${loan.id}.attachedToProperty`);
+                                        return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                      });
+                                      
+                                      const hasAnyLoanAttached = isCurrentLoanAttached || isSecondLoanAttached || isThirdLoanAttached || isOtherAdditionalLoanAttached;
+                                      
+                                      return (
+                                        <div className="flex items-center gap-1">
+                                          <div 
+                                            className={`w-3 h-3 rounded-full border-2 cursor-pointer ${
+                                              isCurrentLoanAttached
+                                                ? 'bg-blue-500 border-blue-500 hover:bg-blue-600'
+                                                : hasAnyLoanAttached 
+                                                  ? 'bg-green-500 border-green-500' 
+                                                  : 'bg-gray-200 border-gray-300'
+                                            }`}
+                                            style={{
+                                              backgroundColor: isCurrentLoanAttached ? '#3b82f6' : hasAnyLoanAttached ? '#10b981' : '#e5e7eb',
+                                              borderColor: isCurrentLoanAttached ? '#3b82f6' : hasAnyLoanAttached ? '#10b981' : '#d1d5db'
+                                            }}
+                                            onClick={() => {
+                                              if (isCurrentLoanAttached) {
+                                                setIsCurrentLoanPreviewOpen(true);
+                                              }
+                                            }}
+                                            title={isCurrentLoanAttached ? "View Current Loan Details" : ""}
+                                            data-testid={`indicator-second-home-secured-loan-1-${propertyId}`}
+                                          />
+                                          <div 
+                                            className={`w-3 h-3 rounded-full border-2 cursor-pointer ${
+                                              isSecondLoanAttached
+                                                ? 'bg-purple-500 border-purple-500 hover:bg-purple-600'
+                                                : 'bg-gray-200 border-gray-300'
+                                            }`}
+                                            style={{
+                                              backgroundColor: isSecondLoanAttached ? '#8b5cf6' : '#e5e7eb',
+                                              borderColor: isSecondLoanAttached ? '#8b5cf6' : '#d1d5db'
+                                            }}
+                                            onClick={() => {
+                                              if (isSecondLoanAttached) {
+                                                setIsCurrentSecondLoanPreviewOpen(true);
+                                              }
+                                            }}
+                                            title={isSecondLoanAttached ? "View Current Loan 2 Details" : ""}
+                                            data-testid={`indicator-second-home-secured-loan-2-${propertyId}`}
+                                          />
+                                          <div 
+                                            className={`w-3 h-3 rounded-full border-2 cursor-pointer ${
+                                              isThirdLoanAttached
+                                                ? 'bg-orange-500 border-orange-500 hover:bg-orange-600'
+                                                : 'bg-gray-200 border-gray-300'
+                                            }`}
+                                            style={{
+                                              backgroundColor: isThirdLoanAttached ? '#f97316' : '#e5e7eb',
+                                              borderColor: isThirdLoanAttached ? '#f97316' : '#d1d5db'
+                                            }}
+                                            onClick={() => {
+                                              if (isThirdLoanAttached) {
+                                                setIsCurrentThirdLoanPreviewOpen(true);
+                                              }
+                                            }}
+                                            title={isThirdLoanAttached ? "View Current Loan 3 Details" : ""}
+                                            data-testid={`indicator-second-home-secured-loan-3-${propertyId}`}
+                                          />
+                                        </div>
+                                      );
+                                    })()}
+                                  </div>
+                                  {(() => {
+                                    const properties = form.watch('property.properties') || [];
+                                    const secondHomeIndex = properties.findIndex(p => p.use === 'second-home' && p.id === propertyId);
+                                    const currentProperty = secondHomeIndex >= 0 ? properties[secondHomeIndex] : null;
+                                    
+                                    // Check which loans are attached to this property for counter
+                                    const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                    const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                    
+                                    const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                    const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                    
+                                    // Check third loan (first additional loan - Current Loan 3)
+                                    const additionalLoansData = additionalLoans || [];
+                                    const firstAdditionalLoan = additionalLoansData[0];
+                                    const isThirdLoanAttached = firstAdditionalLoan ? (() => {
+                                      const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
+                                      return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                    })() : false;
+                                    
+                                    // Count active loans
+                                    let activeLoansCount = 0;
+                                    if (isCurrentLoanAttached) activeLoansCount++;
+                                    if (isSecondLoanAttached) activeLoansCount++;
+                                    if (isThirdLoanAttached) activeLoansCount++;
+                                    
+                                    return (
+                                      <div 
+                                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 border border-gray-300 text-xs font-semibold text-gray-600"
+                                        data-testid={`second-home-loan-counter-${propertyId}`}
+                                        title={`${activeLoansCount} loan(s) connected`}
+                                      >
+                                        {activeLoansCount}
+                                      </div>
+                                    );
+                                  })()}
+                                </div>
+                                <Select>
+                                  <SelectTrigger data-testid={`select-second-home-secured-loan-${propertyId}`}>
+                                    <SelectValue placeholder="Yes/No" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="yes">Yes</SelectItem>
+                                    <SelectItem value="no">No</SelectItem>
+                                  </SelectContent>
+                                </Select>
                               </div>
                             </div>
 
