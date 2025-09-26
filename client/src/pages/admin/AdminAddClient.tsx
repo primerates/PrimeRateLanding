@@ -10644,7 +10644,7 @@ export default function AdminAddClient() {
             {/* Property Tab */}
             <TabsContent value="property" className="space-y-6">
               {/* Property Summary Card */}
-              <Card className="bg-muted">
+              <Card className="transition-all duration-700">
                 <CardHeader>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
                     <div></div>
@@ -10813,7 +10813,7 @@ export default function AdminAddClient() {
 
 
               {/* Property List Card */}
-              <Card className="bg-muted">
+              <Card className="transition-all duration-700">
                 <CardHeader>
                   <CardTitle>Property List</CardTitle>
                 </CardHeader>
@@ -13893,7 +13893,7 @@ export default function AdminAddClient() {
               </Card>
 
               {/* Loan List Card - Visual Copy (No Functionality) */}
-              <Card className="bg-muted">
+              <Card className="transition-all duration-700">
                 <CardHeader>
                   <CardTitle>Loan List</CardTitle>
                 </CardHeader>
