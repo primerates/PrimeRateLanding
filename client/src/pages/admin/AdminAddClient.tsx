@@ -13700,13 +13700,13 @@ export default function AdminAddClient() {
               }`}>
                 <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
                   <div className="space-y-2">
-                    <Label htmlFor="household-income-total-loan-tab" className="text-lg font-semibold">Total Household Income</Label>
+                    {/* Removed Total Household Income title */}
                   </div>
                   
                   <div className="space-y-2">
                     <Label htmlFor="income-frontDTI-loan-tab" className={`text-lg font-semibold ${
                       showIncomeAnimation ? 'animate-roll-down-dti-1' : ''
-                    }`}>Front DTI</Label>
+                    }`}>New Loans</Label>
                     <Controller
                       control={form.control}
                       name="income.frontDTI"
@@ -13763,7 +13763,7 @@ export default function AdminAddClient() {
                   <div className="space-y-2">
                     <Label htmlFor="income-backDTI-loan-tab" className={`text-lg font-semibold ${
                       showIncomeAnimation ? 'animate-roll-down-dti-2' : ''
-                    }`}>Back DTI</Label>
+                    }`}>New Loan Type</Label>
                     <Controller
                       control={form.control}
                       name="income.backDTI"
@@ -13824,7 +13824,7 @@ export default function AdminAddClient() {
                         showIncomeAnimation ? 'animate-roll-down-dti-3' : ''
                       }`}
                     >
-                      Guideline DTI
+                      Current Loans
                     </Label>
                     <Controller
                       control={form.control}
