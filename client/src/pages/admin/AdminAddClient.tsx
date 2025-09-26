@@ -3088,8 +3088,8 @@ export default function AdminAddClient() {
               {/* Row 3: Principal & Interest Payment, Escrow Payment, Total Monthly Payment, Pre-Payment Penalty, Attached to Property */}
               <Card className="bg-muted">
                 <CardContent className="pt-6">
-                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                <div className="space-y-2">
+                  <div className="grid grid-cols-1 md:grid-cols-10 gap-4">
+                <div className="space-y-2 md:col-span-1">
                   <Label htmlFor="currentLoan-currentRate">Loan Rate</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <Input
@@ -3103,7 +3103,7 @@ export default function AdminAddClient() {
                   </div>
                 </div>
                 
-                <div className="space-y-2">
+                <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="currentLoan-principalInterestPayment">Principal & Interest Payment</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
@@ -3117,7 +3117,7 @@ export default function AdminAddClient() {
                   </div>
                 </div>
                 
-                <div className="space-y-2">
+                <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="currentLoan-escrowPayment">Escrow Payment</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
@@ -3131,9 +3131,11 @@ export default function AdminAddClient() {
                   </div>
                 </div>
                 
-                <TotalCurrentLoanPayment control={form.control} />
+                <div className="md:col-span-2">
+                  <TotalCurrentLoanPayment control={form.control} />
+                </div>
                 
-                <div className="space-y-2">
+                <div className="space-y-2 md:col-span-3">
                   <Label htmlFor={`${idPrefix}currentLoan-attachedToProperty`}>Attached to Property</Label>
                   <Select 
                     {...attachedToPropertyBinding}
