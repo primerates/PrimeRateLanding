@@ -18,7 +18,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw } from 'lucide-react';
 import { SiZillow } from 'react-icons/si';
 import { MdRealEstateAgent } from 'react-icons/md';
 import { FaHome } from 'react-icons/fa';
@@ -5778,24 +5778,30 @@ export default function AdminAddClient() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  // Always show unsaved changes dialog when navigating away from Add Client page
-                  setUnsavedChangesDialog({ isOpen: true });
-                }}
-                className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/10"
-                data-testid="button-back-to-dashboard"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Dashboard
-              </Button>
               <h1 className="text-xl font-black italic" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }}>
                 Add New Client
               </h1>
             </div>
             <div className="flex items-center space-x-3">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      // Always show unsaved changes dialog when navigating away from Add Client page
+                      setUnsavedChangesDialog({ isOpen: true });
+                    }}
+                    className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/10 p-2"
+                    data-testid="button-back-to-dashboard"
+                  >
+                    <RotateCcw className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Back to Dashboard</p>
+                </TooltipContent>
+              </Tooltip>
               <Button
                 onClick={handleScreenshare}
                 disabled={screenshareLoading}
