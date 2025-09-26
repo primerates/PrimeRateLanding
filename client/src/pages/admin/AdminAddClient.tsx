@@ -1178,15 +1178,6 @@ export default function AdminAddClient() {
     propertyIndex: number | null;
   }>({ isOpen: false, propertyIndex: null });
 
-  // Animated valuation panel state
-  const [animatedValuationPanel, setAnimatedValuationPanel] = useState<{
-    isVisible: boolean;
-    propertyIndex: number | null;
-    isAnimating: boolean;
-  }>({ isVisible: false, propertyIndex: null, isAnimating: false });
-
-  // Ref to store close timeout for cleanup
-  const animatedPanelCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // County lookup state
   const [borrowerCountyOptions, setBorrowerCountyOptions] = useState<Array<{value: string, label: string}>>([]);
@@ -4821,29 +4812,6 @@ export default function AdminAddClient() {
     setValuationSummaryDialog({ isOpen: false, propertyIndex: null });
   };
 
-  // Animated valuation panel handlers
-  const openAnimatedValuationPanel = (propertyIndex: number) => {
-    // Clear any pending close timeout
-    if (animatedPanelCloseTimeoutRef.current) {
-      clearTimeout(animatedPanelCloseTimeoutRef.current);
-      animatedPanelCloseTimeoutRef.current = null;
-    }
-    
-    // Set visible immediately but start in animated-out state
-    setAnimatedValuationPanel({ isVisible: true, propertyIndex, isAnimating: true });
-    // Trigger animation on next frame for smooth transition
-    requestAnimationFrame(() => {
-      setAnimatedValuationPanel(prev => ({ ...prev, isAnimating: false }));
-    });
-  };
-
-  const closeAnimatedValuationPanel = () => {
-    setAnimatedValuationPanel(prev => ({ ...prev, isAnimating: true }));
-    animatedPanelCloseTimeoutRef.current = setTimeout(() => {
-      setAnimatedValuationPanel({ isVisible: false, propertyIndex: null, isAnimating: false });
-      animatedPanelCloseTimeoutRef.current = null;
-    }, 300);
-  };
   
   
   
@@ -12593,7 +12561,7 @@ export default function AdminAddClient() {
                                         variant="ghost"
                                         size="sm"
                                         className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                                        onClick={() => openAnimatedValuationPanel(index)}
+                                        onClick={() => openValuationSummary(index)}
                                         data-testid={`button-valuation-info-${propertyId}`}
                                         title="View all valuation estimates"
                                       >
@@ -14014,155 +13982,6 @@ export default function AdminAddClient() {
         </DialogContent>
       </Dialog>
 
-      {/* Animated Valuation Panel */}
-      {animatedValuationPanel.isVisible && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center"
-          onClick={closeAnimatedValuationPanel}
-        >
-          {/* Backdrop */}
-          <div 
-            className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${
-              animatedValuationPanel.isAnimating ? 'opacity-0' : 'opacity-100'
-            }`}
-          />
-          
-          {/* Animated Panel */}
-          <div 
-            className={`relative bg-background border rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-[80vh] overflow-auto transform transition-all duration-300 ease-out ${
-              animatedValuationPanel.isAnimating 
-                ? 'scale-95 opacity-0 translate-y-4' 
-                : 'scale-100 opacity-100 translate-y-0'
-            }`}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header */}
-            <div className="border-b p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-lg font-semibold">Property Valuation Summary</h2>
-                  <p className="text-sm text-muted-foreground">All valuation estimates for this property</p>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={closeAnimatedValuationPanel}
-                  className="h-6 w-6 p-0"
-                >
-                  ×
-                </Button>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="p-6">
-              {animatedValuationPanel.propertyIndex !== null && (
-                <div className="space-y-4">
-                  {(() => {
-                    const propertyIndex = animatedValuationPanel.propertyIndex!;
-                    const property = (form.watch('property.properties') || [])[propertyIndex];
-                    const clientEstimate = property?.estimatedValue || '';
-                    const zillowEstimate = property?.valuations?.zillow || '';
-                    const realtorEstimate = property?.valuations?.realtor || '';
-                    const redfinEstimate = property?.valuations?.redfin || '';
-                    const appraisedValue = property?.appraisedValue || '';
-
-                    return (
-                      <>
-                        <div className="grid gap-4">
-                          <Card className="border-l-4 border-l-green-500 hover-elevate">
-                            <CardContent className="pt-4">
-                              <div className="flex justify-between items-center">
-                                <div>
-                                  <p className="font-semibold text-sm text-muted-foreground">CLIENT ESTIMATE</p>
-                                </div>
-                                <div className="text-right">
-                                  <p className="text-2xl font-bold text-green-600 dark:text-green-400">
-                                    {formatCurrency(clientEstimate)}
-                                  </p>
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-
-                          <Card className="border-l-4 border-l-blue-500 hover-elevate">
-                            <CardContent className="pt-4">
-                              <div className="flex justify-between items-center">
-                                <div>
-                                  <p className="font-semibold text-sm text-muted-foreground">ZILLOW</p>
-                                </div>
-                                <div className="text-right">
-                                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                                    {zillowEstimate ? formatCurrency(zillowEstimate) : 'Not available'}
-                                  </p>
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-
-                          <Card className="border-l-4 border-l-purple-500 hover-elevate">
-                            <CardContent className="pt-4">
-                              <div className="flex justify-between items-center">
-                                <div>
-                                  <p className="font-semibold text-sm text-muted-foreground">REALTOR.COM</p>
-                                </div>
-                                <div className="text-right">
-                                  <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                                    {realtorEstimate ? formatCurrency(realtorEstimate) : 'Not available'}
-                                  </p>
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-
-                          <Card className="border-l-4 border-l-red-500 hover-elevate">
-                            <CardContent className="pt-4">
-                              <div className="flex justify-between items-center">
-                                <div>
-                                  <p className="font-semibold text-sm text-muted-foreground">REDFIN</p>
-                                </div>
-                                <div className="text-right">
-                                  <p className="text-2xl font-bold text-red-600 dark:text-red-400">
-                                    {formatCurrency(redfinEstimate)}
-                                  </p>
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-
-                          <Card className="border-l-4 border-l-orange-500 hover-elevate">
-                            <CardContent className="pt-4">
-                              <div className="flex justify-between items-center">
-                                <div>
-                                  <p className="font-semibold text-sm text-muted-foreground">APPRAISAL</p>
-                                </div>
-                                <div className="text-right">
-                                  <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
-                                    {formatCurrency(appraisedValue)}
-                                  </p>
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        </div>
-                      </>
-                    );
-                  })()}
-                </div>
-              )}
-            </div>
-
-            {/* Footer */}
-            <div className="border-t p-6">
-              <div className="flex justify-end">
-                <Button onClick={closeAnimatedValuationPanel}>
-                  Close
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Add Property Confirmation Dialog */}
       <AlertDialog open={addPropertyDialog.isOpen} onOpenChange={(open) => setAddPropertyDialog(prev => ({ ...prev, isOpen: open }))}>
