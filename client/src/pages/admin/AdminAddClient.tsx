@@ -990,6 +990,14 @@ export default function AdminAddClient() {
   const [investmentData, setInvestmentData] = useState<Record<string, {
     isSubjectProperty: boolean | null; // null = not selected, true = yes, false = no
   }>>({});
+
+  // Current Primary Loan cards state management (similar to property cards)
+  const [currentPrimaryLoanCards, setCurrentPrimaryLoanCards] = useState<string[]>([]);
+  
+  // Current Primary Loan card data state
+  const [currentPrimaryLoanData, setCurrentPrimaryLoanData] = useState<Record<string, {
+    isDefaultCard: boolean | null; // null = not selected, true = default card created
+  }>>({});
   
   // Employment dates state for each card
   const [employmentDates, setEmploymentDates] = useState<Record<string, {
@@ -1031,6 +1039,12 @@ export default function AdminAddClient() {
 
   // Delete confirmation dialog state for Investment Property cards
   const [deleteInvestmentDialog, setDeleteInvestmentDialog] = useState<{
+    isOpen: boolean;
+    cardId: string;
+  }>({ isOpen: false, cardId: '' });
+
+  // Delete confirmation dialog state for Current Primary Loan cards
+  const [deleteCurrentPrimaryLoanDialog, setDeleteCurrentPrimaryLoanDialog] = useState<{
     isOpen: boolean;
     cardId: string;
   }>({ isOpen: false, cardId: '' });
@@ -5110,6 +5124,48 @@ export default function AdminAddClient() {
       } else {
         // For other property types, use the old system for now
         addPropertyType(type);
+      }
+    }
+  };
+
+  // Helper function to handle Current Primary Loan type changes with card management (similar to handlePropertyTypeChange)
+  const handleCurrentPrimaryLoanTypeChange = (checked: boolean) => {
+    if (!checked) {
+      // Special handling for Current Primary Loan - don't allow unchecking if cards already exist
+      const hasCards = (currentPrimaryLoanCards || []).length > 0;
+      
+      if (hasCards) {
+        // Cards already exist, prevent unchecking - all removal must be done through card buttons
+        return;
+      }
+    } else {
+      // When checking, auto-create default loan card
+      const hasCards = (currentPrimaryLoanCards || []).length > 0;
+      
+      // Only create default loan card if none exist yet
+      if (!hasCards) {
+        // Generate a unique ID for the new loan card
+        const newLoanId = `current-primary-loan-${Date.now()}`;
+        
+        // Set the loan cards state
+        setCurrentPrimaryLoanCards([newLoanId]);
+        
+        // Initialize data state for default card
+        setCurrentPrimaryLoanData(prev => ({ 
+          ...prev, 
+          [newLoanId]: { isDefaultCard: true } 
+        }));
+        
+        // Auto-expand the loan card
+        setShowCurrentLoan(true);
+        
+        // Trigger animation for newly created loan card
+        setTimeout(() => {
+          setShowSubjectPropertyAnimation(prev => ({ ...prev, [newLoanId]: true }));
+          setTimeout(() => {
+            setShowSubjectPropertyAnimation(prev => ({ ...prev, [newLoanId]: false }));
+          }, 800);
+        }, 200);
       }
     }
   };
@@ -14002,11 +14058,23 @@ export default function AdminAddClient() {
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="current-primary-loan-tab"
-                          disabled
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
+                          checked={(currentPrimaryLoanCards || []).length > 0}
+                          onCheckedChange={(checked) => {
+                            if (typeof checked === 'boolean') {
+                              handleCurrentPrimaryLoanTypeChange(checked);
+                            }
+                          }}
+                          className={`transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black ${
+                            (currentPrimaryLoanCards || []).length > 0 ? 'pointer-events-none opacity-75' : ''
+                          }`}
                           data-testid="checkbox-current-primary-loan-tab"
                         />
-                        <Label htmlFor="current-primary-loan-tab" className="font-medium text-black">
+                        <Label 
+                          htmlFor="current-primary-loan-tab" 
+                          className={`font-medium text-black ${
+                            (currentPrimaryLoanCards || []).length > 0 ? 'pointer-events-none opacity-75' : 'cursor-pointer'
+                          }`}
+                        >
                           Current Primary Loan
                         </Label>
                       </div>
@@ -14046,6 +14114,49 @@ export default function AdminAddClient() {
                           Other
                         </Label>
                       </div>
+                    </div>
+                    
+                    {/* Add/Remove buttons for Current Primary Loan */}
+                    <div className="flex items-center gap-2 pt-4 border-t">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const hasCards = (currentPrimaryLoanCards || []).length > 0;
+                          if (!hasCards) {
+                            handleCurrentPrimaryLoanTypeChange(true);
+                          }
+                        }}
+                        className="hover:bg-blue-500 hover:text-white"
+                        data-testid="button-add-current-loan-tab"
+                        title="Add Current Loan"
+                        disabled={(currentPrimaryLoanCards || []).length > 0}
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Current Loan
+                      </Button>
+                      
+                      {(currentPrimaryLoanCards || []).length > 0 && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const cardId = currentPrimaryLoanCards[0];
+                            setDeleteCurrentPrimaryLoanDialog({
+                              isOpen: true,
+                              cardId: cardId
+                            });
+                          }}
+                          className="hover:bg-red-500 hover:text-white"
+                          data-testid="button-remove-current-loan-tab"
+                          title="Remove Current Loan"
+                        >
+                          <Minus className="h-4 w-4 mr-2" />
+                          Remove
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </CardContent>
