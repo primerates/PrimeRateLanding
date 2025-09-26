@@ -1900,6 +1900,11 @@ export default function AdminAddClient() {
       // Set initial value
       calculateAndUpdateTotal();
       
+      // Safety check for control and formState
+      if (!control || !control.formState) {
+        return;
+      }
+      
       // Subscribe to form changes 
       const subscription = control.formState.subscription || {};
       const originalCallback = subscription.values;
@@ -1913,7 +1918,9 @@ export default function AdminAddClient() {
         if (lastUpdateRef.current) {
           clearTimeout(lastUpdateRef.current);
         }
-        subscription.values = originalCallback;
+        if (subscription) {
+          subscription.values = originalCallback;
+        }
       };
     }, [calculateAndUpdateTotal, scheduleUpdate, control]);
 
