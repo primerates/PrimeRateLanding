@@ -972,7 +972,6 @@ export default function AdminAddClient() {
   
   // Primary Residence card data state
   const [primaryResidenceData, setPrimaryResidenceData] = useState<Record<string, {
-    purpose: 'primary' | 'second-home' | 'investment';
     isSubjectProperty: boolean | null; // null = not selected, true = yes, false = no
   }>>({});
   
@@ -4976,7 +4975,7 @@ export default function AdminAddClient() {
               // Initialize data state for default card
               setPrimaryResidenceData(prev => ({ 
                 ...prev, 
-                [newPropertyId]: { purpose: 'select', isSubjectProperty: null } 
+                [newPropertyId]: { isSubjectProperty: null } 
               }));
               
               // Auto-expand the property card
@@ -10703,32 +10702,6 @@ export default function AdminAddClient() {
                                 </span>
                               )}
                             </CardTitle>
-                            <div className="flex items-center gap-2">
-                              <Label className="text-sm text-muted-foreground">Purpose:</Label>
-                              <Select 
-                                value={primaryResidenceData[propertyId]?.purpose || 'select'}
-                                onValueChange={(value: 'select' | 'primary' | 'second-home' | 'investment') => {
-                                  setPrimaryResidenceData(prev => ({
-                                    ...prev,
-                                    [propertyId]: { 
-                                      ...prev[propertyId],
-                                      purpose: value,
-                                      isSubjectProperty: prev[propertyId]?.isSubjectProperty ?? null
-                                    }
-                                  }));
-                                }}
-                              >
-                                <SelectTrigger className="w-40 border-0 shadow-none bg-transparent hover:bg-muted focus:ring-0 focus:ring-offset-0 pl-0 [&>svg]:ml-2" data-testid={`select-property-usage-${propertyId}`}>
-                                  <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="select" disabled>Select</SelectItem>
-                                  <SelectItem value="primary">Primary Residence</SelectItem>
-                                  <SelectItem value="second-home">Second Home</SelectItem>
-                                  <SelectItem value="investment">Investment Property</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
                           </div>
                           <div className="flex items-center gap-2">
                             {/* Add Property Button */}
@@ -10750,7 +10723,7 @@ export default function AdminAddClient() {
                                   // Initialize data state for new card
                                   setPrimaryResidenceData(prev => ({ 
                                     ...prev, 
-                                    [newPropertyId]: { purpose: 'select', isSubjectProperty: null } 
+                                    [newPropertyId]: { isSubjectProperty: null } 
                                   }));
                                   
                                   // Auto-expand the new property card
