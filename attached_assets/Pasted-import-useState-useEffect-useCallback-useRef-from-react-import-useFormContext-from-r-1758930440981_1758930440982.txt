@@ -1,0 +1,66 @@
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { useFormContext } from 'react-hook-form';
+
+const TotalCurrentLoanPayment: React.FC = () => {
+  const { subscribe, getValues } = useFormContext();
+  const [displayTotal, setDisplayTotal] = useState('');
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  const calculateTotal = useCallback((values: any) => {
+    const principal = parseMonetaryValue(values.currentLoan?.principalAndInterestPayment || '');
+    const escrow = parseMonetaryValue(values.currentLoan?.escrowPayment || '');
+    const total = principal + escrow;
+    return total > 0 ? total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '';
+  }, []);
+
+  const updateTotal = useCallback((values: any) => {
+    setDisplayTotal(calculateTotal(values));
+  }, [calculateTotal]);
+
+  const debouncedUpdate = useCallback((values: any) => {
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+    debounceTimeout.current = setTimeout(() => updateTotal(values), 300);
+  }, [updateTotal]);
+
+  useEffect(() => {
+    // Set initial total
+    const initialValues = getValues();
+    setDisplayTotal(calculateTotal(initialValues));
+
+    // Subscribe to specific fields
+    const subscription = subscribe({
+      name: ['currentLoan.principalAndInterestPayment', 'currentLoan.escrowPayment'],
+      formState: { values: true },
+      callback: ({ values }) => {
+        debouncedUpdate(values);
+      },
+    });
+
+    // Cleanup
+    return () => {
+      subscription();
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+    };
+  }, [subscribe, getValues, debouncedUpdate, calculateTotal]);
+
+  return (
+    <div className="space-y-2">
+      <Label htmlFor="currentLoan-totalMonthlyPayment">Total Monthly Payment</Label>
+      <div className="flex items-center border border-input bg-gray-50 px-3 rounded-md">
+        <span className="text-muted-foreground text-sm">$</span>
+        <Input
+          id="currentLoan-totalMonthlyPayment"
+          value={displayTotal}
+          placeholder="0.00"
+          className="border-0 bg-transparent px-2 focus-visible:ring-0 cursor-default"
+          readOnly
+          data-testid="input-currentLoan-totalMonthlyPayment"
+        />
+      </div>
+    </div>
+  );
+};

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useLocation } from 'wouter';
-import { useForm, useWatch, useFormContext, UseFormReturn, Controller } from 'react-hook-form';
+import { useForm, useWatch, useFormContext, UseFormReturn, Controller, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -1869,52 +1869,48 @@ export default function AdminAddClient() {
   }
 
   const TotalCurrentLoanPayment: React.FC<TotalCurrentLoanPaymentProps> = ({ control }) => {
-    // Use refs to store the latest values without causing re-renders
-    const principalRef = useRef('');
-    const escrowRef = useRef('');
     const [displayTotal, setDisplayTotal] = useState('');
-
-    // Simple debounce function
-    const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+    const lastUpdateRef = useRef<NodeJS.Timeout | null>(null);
     
-    const updateTotal = useCallback(() => {
-      const principal = parseMonetaryValue(principalRef.current);
-      const escrow = parseMonetaryValue(escrowRef.current);
+    // Calculate total directly from current form values
+    const calculateAndUpdateTotal = useCallback(() => {
+      const values = control.getValues();
+      const principal = parseMonetaryValue(values.currentLoan?.principalAndInterestPayment || '');
+      const escrow = parseMonetaryValue(values.currentLoan?.escrowPayment || '');
       const total = principal + escrow;
       const formatted = total > 0 ? total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '';
       setDisplayTotal(formatted);
-    }, []);
+    }, [control]);
 
-    const debouncedUpdate = useCallback(() => {
-      if (debounceTimeout.current) {
-        clearTimeout(debounceTimeout.current);
+    // Debounced update function
+    const scheduleUpdate = useCallback(() => {
+      if (lastUpdateRef.current) {
+        clearTimeout(lastUpdateRef.current);
       }
-      debounceTimeout.current = setTimeout(updateTotal, 300);
-    }, [updateTotal]);
+      lastUpdateRef.current = setTimeout(calculateAndUpdateTotal, 300);
+    }, [calculateAndUpdateTotal]);
 
-    // Watch values but store in refs to avoid re-renders
-    const principalPayment = useWatch({ control, name: 'currentLoan.principalAndInterestPayment' }) || '';
-    const escrowPayment = useWatch({ control, name: 'currentLoan.escrowPayment' }) || '';
-
-    // Update refs and trigger debounced calculation
+    // Subscribe to form value changes using control's internal subscription
     useEffect(() => {
-      principalRef.current = principalPayment;
-      debouncedUpdate();
-    }, [principalPayment, debouncedUpdate]);
-
-    useEffect(() => {
-      escrowRef.current = escrowPayment;
-      debouncedUpdate();
-    }, [escrowPayment, debouncedUpdate]);
-
-    // Cleanup on unmount
-    useEffect(() => {
-      return () => {
-        if (debounceTimeout.current) {
-          clearTimeout(debounceTimeout.current);
-        }
+      // Set initial value
+      calculateAndUpdateTotal();
+      
+      // Subscribe to form changes 
+      const subscription = control.formState.subscription || {};
+      const originalCallback = subscription.values;
+      
+      subscription.values = () => {
+        scheduleUpdate();
+        if (originalCallback) originalCallback();
       };
-    }, []);
+      
+      return () => {
+        if (lastUpdateRef.current) {
+          clearTimeout(lastUpdateRef.current);
+        }
+        subscription.values = originalCallback;
+      };
+    }, [calculateAndUpdateTotal, scheduleUpdate, control]);
 
     return (
       <div className="space-y-2">
