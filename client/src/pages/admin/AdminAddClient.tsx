@@ -1863,84 +1863,6 @@ export default function AdminAddClient() {
     return numericValue;
   };
 
-  // Sub-component for isolated auto sum calculation - prevents main form re-renders
-  interface TotalCurrentLoanPaymentProps {
-    control: any; // Control from parent useForm
-  }
-
-  const TotalCurrentLoanPayment: React.FC<TotalCurrentLoanPaymentProps> = ({ control }) => {
-    const [displayTotal, setDisplayTotal] = useState('');
-    const lastUpdateRef = useRef<NodeJS.Timeout | null>(null);
-    
-    // Calculate total directly from current form values
-    const calculateAndUpdateTotal = useCallback(() => {
-      if (!control || typeof control.getValues !== 'function') {
-        setDisplayTotal('');
-        return;
-      }
-      
-      const values = control.getValues();
-      const principal = parseMonetaryValue(values.currentLoan?.principalAndInterestPayment || '');
-      const escrow = parseMonetaryValue(values.currentLoan?.escrowPayment || '');
-      const total = principal + escrow;
-      const formatted = total > 0 ? total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '';
-      setDisplayTotal(formatted);
-    }, [control]);
-
-    // Debounced update function
-    const scheduleUpdate = useCallback(() => {
-      if (lastUpdateRef.current) {
-        clearTimeout(lastUpdateRef.current);
-      }
-      lastUpdateRef.current = setTimeout(calculateAndUpdateTotal, 300);
-    }, [calculateAndUpdateTotal]);
-
-    // Subscribe to form value changes using control's internal subscription
-    useEffect(() => {
-      // Set initial value
-      calculateAndUpdateTotal();
-      
-      // Safety check for control and formState
-      if (!control || !control.formState) {
-        return;
-      }
-      
-      // Subscribe to form changes 
-      const subscription = control.formState.subscription || {};
-      const originalCallback = subscription.values;
-      
-      subscription.values = () => {
-        scheduleUpdate();
-        if (originalCallback) originalCallback();
-      };
-      
-      return () => {
-        if (lastUpdateRef.current) {
-          clearTimeout(lastUpdateRef.current);
-        }
-        if (subscription) {
-          subscription.values = originalCallback;
-        }
-      };
-    }, [calculateAndUpdateTotal, scheduleUpdate, control]);
-
-    return (
-      <div className="space-y-2">
-        <Label htmlFor="currentLoan-totalMonthlyPayment">Total Monthly Payment</Label>
-        <div className="flex items-center border border-input bg-gray-50 px-3 rounded-md">
-          <span className="text-muted-foreground text-sm">$</span>
-          <Input
-            id="currentLoan-totalMonthlyPayment"
-            value={displayTotal}
-            placeholder="0.00"
-            className="border-0 bg-transparent px-2 focus-visible:ring-0 cursor-default"
-            readOnly
-            data-testid="input-currentLoan-totalMonthlyPayment"
-          />
-        </div>
-      </div>
-    );
-  };
 
   // Sub-component for Current Loan 1 preview modal - read-only display with live updates
   interface CurrentLoanPreviewProps {
@@ -2066,8 +1988,11 @@ export default function AdminAddClient() {
                 <span className="text-sm">{formatCurrency(escrowPayment) || 'Not specified'}</span>
               </div>
             </div>
-            <div className="col-span-1">
-              <TotalCurrentLoanPayment control={control} />
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Total Monthly Payment</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{formatCurrency(useWatch({ control, name: 'currentLoan.totalMonthlyPayment' }) || '') || 'Not specified'}</span>
+              </div>
             </div>
             <div className="space-y-2">
               <Label className="text-sm font-medium text-muted-foreground">Pre-Payment Penalty</Label>
@@ -3160,8 +3085,18 @@ export default function AdminAddClient() {
                   </div>
                 </div>
                 
-                <div className="md:col-span-2">
-                  <TotalCurrentLoanPayment control={form.control} />
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="currentLoan-totalMonthlyPayment">Total Monthly Payment</Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="currentLoan-totalMonthlyPayment"
+                      {...form.register('currentLoan.totalMonthlyPayment')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-currentLoan-totalMonthlyPayment"
+                    />
+                  </div>
                 </div>
                 
                 <div className="space-y-2 md:col-span-4">
