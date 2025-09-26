@@ -11561,7 +11561,7 @@ export default function AdminAddClient() {
                                 </Select>
                               </div>
                               
-                              <div className="space-y-2 md:col-span-2">
+                              <div className="space-y-2 md:col-span-1">
                                 <Label htmlFor={`second-home-property-address-zip-${propertyId}`}>ZIP Code *</Label>
                                 <Input
                                   id={`second-home-property-address-zip-${propertyId}`}
@@ -11581,7 +11581,7 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
-                              <div className="space-y-2 md:col-span-1">
+                              <div className="space-y-2 md:col-span-2">
                                 <Label htmlFor={`second-home-property-type-${propertyId}`}>Property Type</Label>
                                 <Select {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.propertyType` as any) : {})} 
                                         value={form.watch(`property.properties.${propertyIndex}` as any)?.propertyType || ''} 
