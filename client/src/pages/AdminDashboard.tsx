@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -26,11 +26,16 @@ export default function AdminDashboard() {
   const { toast } = useToast();
   const [isLoaded, setIsLoaded] = useState(false);
   const [backgroundFocusProgress, setBackgroundFocusProgress] = useState(0);
+  const animationRef = useRef<number | null>(null);
+  const timerRefs = useRef<{ start?: NodeJS.Timeout }>({});
+  const isMountedRef = useRef(true);
 
   useEffect(() => {
     // Trigger animations after component mounts
     const timer = setTimeout(() => {
-      setIsLoaded(true);
+      if (isMountedRef.current) {
+        setIsLoaded(true);
+      }
     }, 100);
     
     return () => clearTimeout(timer);
@@ -42,28 +47,41 @@ export default function AdminDashboard() {
     // Start background focus animation slightly before tiles finish
     const startTime = 400; // Start just before first tiles
     const duration = 1800; // Complete as last tiles finish (around 2000ms total)
+    const startAnimationTime = Date.now();
     
-    const startTimer = setTimeout(() => {
-      const interval = setInterval(() => {
-        setBackgroundFocusProgress(prev => {
-          const next = prev + (16 / duration); // 60fps updates
-          return next >= 1 ? 1 : next;
-        });
-      }, 16);
+    timerRefs.current.start = setTimeout(() => {
+      if (!isMountedRef.current) return;
 
-      const cleanupTimer = setTimeout(() => {
-        clearInterval(interval);
-        setBackgroundFocusProgress(1);
-      }, duration);
+      const animate = () => {
+        if (!isMountedRef.current) return;
 
-      return () => {
-        clearInterval(interval);
-        clearTimeout(cleanupTimer);
+        const elapsed = Date.now() - startAnimationTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        setBackgroundFocusProgress(progress);
+
+        if (progress < 1) {
+          animationRef.current = requestAnimationFrame(animate);
+        } else {
+          setBackgroundFocusProgress(1);
+        }
       };
+
+      animationRef.current = requestAnimationFrame(animate);
     }, startTime);
 
-    return () => clearTimeout(startTimer);
+    return () => {
+      // Cleanup all timers and animations
+      if (timerRefs.current.start) clearTimeout(timerRefs.current.start);
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
   }, [isLoaded]);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const menuItems = [
     // Line 1
