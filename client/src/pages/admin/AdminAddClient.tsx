@@ -11159,23 +11159,29 @@ export default function AdminAddClient() {
                               <div className="space-y-2 md:col-span-2">
                                 <div className="min-h-5 flex items-center gap-2">
                                   <Label htmlFor={`property-title-held-by-${propertyId}`}>Title Held By</Label>
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                                    onClick={() => {
-                                      toast({
-                                        title: "Title Information",
-                                        description: "Please see title report in vendor page.",
-                                        duration: 5000,
-                                      });
-                                    }}
-                                    data-testid={`button-title-held-info-${propertyId}`}
-                                    title="Title Information"
-                                  >
-                                    <Info className="h-4 w-4" />
-                                  </Button>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                        onClick={() => {
+                                          toast({
+                                            title: "Title Information",
+                                            description: "Please see title report in vendor page.",
+                                            duration: 5000,
+                                          });
+                                        }}
+                                        data-testid={`button-title-held-info-${propertyId}`}
+                                      >
+                                        <Info className="h-4 w-4" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top" sideOffset={15} className="text-sm">
+                                      Title Information
+                                    </TooltipContent>
+                                  </Tooltip>
                                 </div>
                                 <Select>
                                   <SelectTrigger data-testid={`select-property-title-held-by-${propertyId}`}>
@@ -11856,23 +11862,29 @@ export default function AdminAddClient() {
                               <div className="space-y-2 md:col-span-2">
                                 <div className="min-h-5 flex items-center gap-2">
                                   <Label htmlFor={`second-home-title-held-by-${propertyId}`}>Title Held By</Label>
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                                    onClick={() => {
-                                      toast({
-                                        title: "Title Information",
-                                        description: "Please see title report in vendor page.",
-                                        duration: 5000,
-                                      });
-                                    }}
-                                    data-testid={`button-second-home-title-held-info-${propertyId}`}
-                                    title="Title Information"
-                                  >
-                                    <Info className="h-4 w-4" />
-                                  </Button>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                        onClick={() => {
+                                          toast({
+                                            title: "Title Information",
+                                            description: "Please see title report in vendor page.",
+                                            duration: 5000,
+                                          });
+                                        }}
+                                        data-testid={`button-second-home-title-held-info-${propertyId}`}
+                                      >
+                                        <Info className="h-4 w-4" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top" sideOffset={15} className="text-sm">
+                                      Title Information
+                                    </TooltipContent>
+                                  </Tooltip>
                                 </div>
                                 <Select>
                                   <SelectTrigger data-testid={`select-second-home-title-held-by-${propertyId}`}>
@@ -12551,23 +12563,29 @@ export default function AdminAddClient() {
                               <div className="space-y-2 md:col-span-2">
                                 <div className="min-h-5 flex items-center gap-2">
                                   <Label htmlFor={`investment-property-title-held-by-${propertyId}`}>Title Held By</Label>
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                                    onClick={() => {
-                                      toast({
-                                        title: "Title Information",
-                                        description: "Please see title report in vendor page.",
-                                        duration: 5000,
-                                      });
-                                    }}
-                                    data-testid={`button-investment-property-title-held-info-${propertyId}`}
-                                    title="Title Information"
-                                  >
-                                    <Info className="h-4 w-4" />
-                                  </Button>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                        onClick={() => {
+                                          toast({
+                                            title: "Title Information",
+                                            description: "Please see title report in vendor page.",
+                                            duration: 5000,
+                                          });
+                                        }}
+                                        data-testid={`button-investment-property-title-held-info-${propertyId}`}
+                                      >
+                                        <Info className="h-4 w-4" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top" sideOffset={15} className="text-sm">
+                                      Title Information
+                                    </TooltipContent>
+                                  </Tooltip>
                                 </div>
                                 <Select>
                                   <SelectTrigger data-testid={`select-investment-property-title-held-by-${propertyId}`}>
@@ -13256,23 +13274,29 @@ export default function AdminAddClient() {
                               <div className="space-y-2 md:col-span-2">
                                 <div className="min-h-5 flex items-center gap-2">
                                   <Label htmlFor={`property-title-held-by-${propertyId}`}>Title Held By</Label>
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                                    onClick={() => {
-                                      toast({
-                                        title: "Title Information",
-                                        description: "Please see title report in vendor page.",
-                                        duration: 5000,
-                                      });
-                                    }}
-                                    data-testid={`button-title-held-info-${propertyId}`}
-                                    title="Title Information"
-                                  >
-                                    <Info className="h-4 w-4" />
-                                  </Button>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                        onClick={() => {
+                                          toast({
+                                            title: "Title Information",
+                                            description: "Please see title report in vendor page.",
+                                            duration: 5000,
+                                          });
+                                        }}
+                                        data-testid={`button-title-held-info-${propertyId}`}
+                                      >
+                                        <Info className="h-4 w-4" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top" sideOffset={15} className="text-sm">
+                                      Title Information
+                                    </TooltipContent>
+                                  </Tooltip>
                                 </div>
                                 <Select
                                   value={form.watch(`property.properties.${index}.ownedHeldBy` as const) || ''}
