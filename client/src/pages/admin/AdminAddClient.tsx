@@ -7249,7 +7249,7 @@ export default function AdminAddClient() {
                               >
                                 <span>
                                   {displayValue.replace('%', '')}
-                                  <span style={{ fontSize: '24px' }}>%</span>
+                                  <span style={{ fontSize: '28px' }}>%</span>
                                 </span>
                               </div>
                             ) : (
@@ -7306,7 +7306,7 @@ export default function AdminAddClient() {
                               >
                                 <span>
                                   {displayValue.replace('%', '')}
-                                  <span style={{ fontSize: '24px' }}>%</span>
+                                  <span style={{ fontSize: '28px' }}>%</span>
                                 </span>
                               </div>
                             ) : (
@@ -7368,7 +7368,7 @@ export default function AdminAddClient() {
                               >
                                 <span>
                                   {displayValue.replace('%', '')}
-                                  <span style={{ fontSize: '24px' }}>%</span>
+                                  <span style={{ fontSize: '28px' }}>%</span>
                                 </span>
                               </div>
                             ) : (
@@ -10631,14 +10631,14 @@ export default function AdminAddClient() {
                             
                             // If no subject property or loan amount, return default %
                             if (!subjectProperty || !loanAmount || loanAmount.trim() === '') {
-                              return '%';
+                              return <span style={{ fontSize: '28px' }}>%</span>;
                             }
                             
                             // Get estimated value from subject property
                             const estimatedValue = subjectProperty.estimatedValue || '';
                             
                             if (!estimatedValue || estimatedValue.trim() === '') {
-                              return '%';
+                              return <span style={{ fontSize: '28px' }}>%</span>;
                             }
                             
                             // Parse values (handle currency formatting)
@@ -10651,12 +10651,17 @@ export default function AdminAddClient() {
                             const valueNum = parseValue(estimatedValue);
                             
                             if (loanNum === 0 || valueNum === 0) {
-                              return '%';
+                              return <span style={{ fontSize: '28px' }}>%</span>;
                             }
                             
                             // Calculate LTV percentage
                             const ltv = (loanNum / valueNum) * 100;
-                            return `${Math.round(ltv)}%`;
+                            return (
+                              <span>
+                                {Math.round(ltv)}
+                                <span style={{ fontSize: '28px' }}>%</span>
+                              </span>
+                            );
                           })()}
                         </span>
                       </div>
@@ -10685,14 +10690,14 @@ export default function AdminAddClient() {
                             
                             // If no subject property or loan amount, return default %
                             if (!subjectProperty || !loanAmount || loanAmount.trim() === '') {
-                              return '%';
+                              return <span style={{ fontSize: '28px' }}>%</span>;
                             }
                             
                             // Get appraised value from subject property
                             const appraisedValue = subjectProperty.appraisedValue || '';
                             
                             if (!appraisedValue || appraisedValue.trim() === '') {
-                              return '%';
+                              return <span style={{ fontSize: '28px' }}>%</span>;
                             }
                             
                             // Parse values (handle currency formatting)
@@ -10705,12 +10710,17 @@ export default function AdminAddClient() {
                             const valueNum = parseValue(appraisedValue);
                             
                             if (loanNum === 0 || valueNum === 0) {
-                              return '%';
+                              return <span style={{ fontSize: '28px' }}>%</span>;
                             }
                             
                             // Calculate LTV percentage
                             const ltv = (loanNum / valueNum) * 100;
-                            return `${Math.round(ltv)}%`;
+                            return (
+                              <span>
+                                {Math.round(ltv)}
+                                <span style={{ fontSize: '28px' }}>%</span>
+                              </span>
+                            );
                           })()}
                         </span>
                       </div>
