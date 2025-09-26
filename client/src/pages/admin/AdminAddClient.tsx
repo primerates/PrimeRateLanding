@@ -10565,14 +10565,14 @@ export default function AdminAddClient() {
               <Card className="bg-muted">
                 <CardHeader>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
-                    <span className="text-lg font-semibold text-foreground">Primary Residence</span>
+                    <div></div>
                     
-                    <span className="text-lg font-semibold text-foreground">Second Home</span>
+                    <span className="text-lg font-semibold text-foreground">Property Count</span>
                     
-                    <span className="text-lg font-semibold text-foreground">Investment Property</span>
+                    <span className="text-lg font-semibold text-foreground">Estimated LTV</span>
                     
                     <CardTitle className="text-lg font-semibold">
-                      Home purchase
+                      Final LTV
                     </CardTitle>
                   </div>
                 </CardHeader>
