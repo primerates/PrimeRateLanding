@@ -13892,10 +13892,10 @@ export default function AdminAddClient() {
                 </CardContent>
               </Card>
 
-              {/* Property List Card - Visual Copy (No Functionality) */}
+              {/* Loan List Card - Visual Copy (No Functionality) */}
               <Card className="bg-muted">
                 <CardHeader>
-                  <CardTitle>Property List</CardTitle>
+                  <CardTitle>Loan List</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -13908,7 +13908,7 @@ export default function AdminAddClient() {
                           data-testid="checkbox-property-primary-loan-tab"
                         />
                         <Label htmlFor="property-type-primary-loan-tab" className="font-medium">
-                          Primary Residence
+                          New Primary Loan
                         </Label>
                       </div>
 
@@ -13920,7 +13920,7 @@ export default function AdminAddClient() {
                           data-testid="checkbox-property-second-home-loan-tab"
                         />
                         <Label htmlFor="property-type-second-home-loan-tab" className="font-medium">
-                          Second Home
+                          New Second Loan (HELOC)
                         </Label>
                       </div>
 
@@ -13932,7 +13932,7 @@ export default function AdminAddClient() {
                           data-testid="checkbox-property-investment-loan-tab"
                         />
                         <Label htmlFor="property-type-investment-loan-tab" className="font-medium">
-                          Investment Property
+                          New Second Loan (Fixed)
                         </Label>
                       </div>
 
@@ -13943,7 +13943,58 @@ export default function AdminAddClient() {
                           data-testid="checkbox-property-home-purchase-loan-tab"
                         />
                         <Label htmlFor="property-type-home-purchase-loan-tab" className="font-medium">
-                          Home Purchase
+                          New Loan (Other)
+                        </Label>
+                      </div>
+                    </div>
+
+                    {/* Second Row */}
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="current-primary-loan-tab"
+                          disabled
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          data-testid="checkbox-current-primary-loan-tab"
+                        />
+                        <Label htmlFor="current-primary-loan-tab" className="font-medium">
+                          Current Primary Loan
+                        </Label>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="current-second-loan-tab"
+                          disabled
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          data-testid="checkbox-current-second-loan-tab"
+                        />
+                        <Label htmlFor="current-second-loan-tab" className="font-medium">
+                          Current Second Loan
+                        </Label>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="current-third-loan-tab"
+                          disabled
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          data-testid="checkbox-current-third-loan-tab"
+                        />
+                        <Label htmlFor="current-third-loan-tab" className="font-medium">
+                          Current Third Loan
+                        </Label>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="other-loan-tab"
+                          disabled
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          data-testid="checkbox-other-loan-tab"
+                        />
+                        <Label htmlFor="other-loan-tab" className="font-medium">
+                          Other
                         </Label>
                       </div>
                     </div>
