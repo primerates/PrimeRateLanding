@@ -13,7 +13,7 @@ const services = [
   {
     icon: Lock,
     title: 'Lock Assurance',
-    description: 'Rates can be unpredictable. If they drop below your locked rate, we\'ve got you covered - we\'ll roll down your rate lock so you don\'t miss out on extra savings.',
+    description: 'Rates can be unpredictable. If they drop below your locked rate, our relock option ensures you don\'t miss out on extra savings, keeping the process simple and stress-free while giving you added peace of mind.',
     features: ['Conventional loans', 'Jumbo loans', 'First-time buyer programs', 'Down payment assistance']
   },
   {
