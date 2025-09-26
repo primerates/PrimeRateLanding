@@ -26,6 +26,7 @@ export default function AdminDashboard() {
   const { toast } = useToast();
   const [isLoaded, setIsLoaded] = useState(false);
   const [backgroundFocusProgress, setBackgroundFocusProgress] = useState(0);
+  const [showUsername, setShowUsername] = useState(false);
   const animationRef = useRef<number | null>(null);
   const timerRefs = useRef<{ start?: NodeJS.Timeout }>({});
   const isMountedRef = useRef(true);
@@ -162,20 +163,34 @@ export default function AdminDashboard() {
               <h1 className="text-xl font-black italic" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="text-admin-header">
                 PRIME RATE HOME LOANS
               </h1>
-              <Separator orientation="vertical" className="h-6 bg-primary-foreground/20" />
-              <button 
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => setLocation('/')}
-                className="text-primary-foreground/80 hover:bg-orange-500 hover:text-white hover:border-orange-500 px-3 py-1 rounded cursor-pointer transition-colors"
+                className="text-primary-foreground hover:bg-orange-500 hover:text-white hover:border-orange-500"
                 data-testid="button-back-to-website"
               >
+                <LogOut className="h-4 w-4 mr-2" />
                 Back to Website
-              </button>
+              </Button>
             </div>
             
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <User className="h-4 w-4" />
-                <span className="text-sm">polo.perry@yahoo.com</span>
+              <div 
+                className="relative flex items-center cursor-pointer"
+                onMouseEnter={() => setShowUsername(true)}
+                onMouseLeave={() => setShowUsername(false)}
+              >
+                <User className="h-4 w-4 z-10" />
+                <span 
+                  className={`text-sm absolute left-6 whitespace-nowrap transition-all duration-300 ease-out ${
+                    showUsername 
+                      ? 'transform translate-x-0 opacity-100' 
+                      : 'transform translate-x-full opacity-0'
+                  }`}
+                >
+                  polo.perry@yahoo.com
+                </span>
               </div>
               <Button
                 variant="ghost"
