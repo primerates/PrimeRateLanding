@@ -13904,7 +13904,7 @@ export default function AdminAddClient() {
                         <Checkbox
                           id="property-type-primary-loan-tab"
                           disabled
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-property-primary-loan-tab"
                         />
                         <Label htmlFor="property-type-primary-loan-tab" className="font-medium text-black">
@@ -13916,7 +13916,7 @@ export default function AdminAddClient() {
                         <Checkbox
                           id="property-type-second-home-loan-tab"
                           disabled
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-property-second-home-loan-tab"
                         />
                         <Label htmlFor="property-type-second-home-loan-tab" className="font-medium text-black">
@@ -13928,7 +13928,7 @@ export default function AdminAddClient() {
                         <Checkbox
                           id="property-type-investment-loan-tab"
                           disabled
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-property-investment-loan-tab"
                         />
                         <Label htmlFor="property-type-investment-loan-tab" className="font-medium text-black">
@@ -13940,6 +13940,7 @@ export default function AdminAddClient() {
                         <Checkbox
                           id="property-type-home-purchase-loan-tab"
                           disabled
+                          className="border-black"
                           data-testid="checkbox-property-home-purchase-loan-tab"
                         />
                         <Label htmlFor="property-type-home-purchase-loan-tab" className="font-medium text-black">
@@ -13954,7 +13955,7 @@ export default function AdminAddClient() {
                         <Checkbox
                           id="current-primary-loan-tab"
                           disabled
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-current-primary-loan-tab"
                         />
                         <Label htmlFor="current-primary-loan-tab" className="font-medium text-black">
@@ -13966,7 +13967,7 @@ export default function AdminAddClient() {
                         <Checkbox
                           id="current-second-loan-tab"
                           disabled
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-current-second-loan-tab"
                         />
                         <Label htmlFor="current-second-loan-tab" className="font-medium text-black">
@@ -13978,7 +13979,7 @@ export default function AdminAddClient() {
                         <Checkbox
                           id="current-third-loan-tab"
                           disabled
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-current-third-loan-tab"
                         />
                         <Label htmlFor="current-third-loan-tab" className="font-medium text-black">
@@ -13990,7 +13991,7 @@ export default function AdminAddClient() {
                         <Checkbox
                           id="other-loan-tab"
                           disabled
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-other-loan-tab"
                         />
                         <Label htmlFor="other-loan-tab" className="font-medium text-black">
