@@ -8396,6 +8396,7 @@ export default function AdminAddClient() {
                                     checked={form.watch('income.isShowingEmploymentVerification') || false}
                                     onCheckedChange={(checked) => form.setValue('income.isShowingEmploymentVerification', checked)}
                                     data-testid={`toggle-${propertyId}-employment-verification`}
+                                    className="scale-[0.8]"
                                   />
                                 </div>
                                 <Input
@@ -8730,6 +8731,7 @@ export default function AdminAddClient() {
                                   checked={form.watch(getSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) || false}
                                   onCheckedChange={(checked) => form.setValue(getSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification') as any, checked)}
                                   data-testid={`toggle-second-employment-verification-${cardId}`}
+                                  className="scale-[0.8]"
                                 />
                               </div>
                               <Input
@@ -9194,6 +9196,7 @@ export default function AdminAddClient() {
                                     checked={form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) || false}
                                     onCheckedChange={(checked) => form.setValue(getCoBorrowerEmployerFieldPath(cardId, 'isShowingEmploymentVerification'), checked)}
                                     data-testid={`toggle-${propertyId}-coborrower-employment-verification`}
+                                    className="scale-[0.8]"
                                   />
                                 </div>
                                 <Controller
@@ -9611,6 +9614,7 @@ export default function AdminAddClient() {
                                   checked={form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) || false}
                                   onCheckedChange={(checked) => form.setValue(getCoBorrowerSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification') as any, checked)}
                                   data-testid={`toggle-coborrower-second-employment-verification-${cardId}`}
+                                  className="scale-[0.8]"
                                 />
                               </div>
                               <Input
