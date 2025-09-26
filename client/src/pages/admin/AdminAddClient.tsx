@@ -3058,6 +3058,19 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}currentLoan-prepaymentPenalty`}>Pre-Payment Penalty</Label>
+                  <Select {...prepaymentPenaltyBinding}>
+                    <SelectTrigger data-testid={prepaymentPenaltyBinding['data-testid']}>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Yes - see notes">Yes - see notes</SelectItem>
+                      <SelectItem value="No">No</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
                   <Label htmlFor="currentLoan-currentBalance">Loan Balance</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
@@ -3070,7 +3083,12 @@ export default function AdminAddClient() {
                     />
                   </div>
                 </div>
-                
+              </div>
+              
+              {/* Row 3: Principal & Interest Payment, Escrow Payment, Total Monthly Payment, Pre-Payment Penalty, Attached to Property */}
+              <Card className="bg-muted">
+                <CardContent className="pt-6">
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="currentLoan-currentRate">Loan Rate</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
@@ -3084,12 +3102,7 @@ export default function AdminAddClient() {
                     <span className="text-muted-foreground text-sm">%</span>
                   </div>
                 </div>
-              </div>
-              
-              {/* Row 3: Principal & Interest Payment, Escrow Payment, Total Monthly Payment, Pre-Payment Penalty, Attached to Property */}
-              <Card className="bg-muted">
-                <CardContent className="pt-6">
-                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                
                 <div className="space-y-2">
                   <Label htmlFor="currentLoan-principalInterestPayment">Principal & Interest Payment</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
@@ -3119,19 +3132,6 @@ export default function AdminAddClient() {
                 </div>
                 
                 <TotalCurrentLoanPayment control={form.control} />
-                
-                <div className="space-y-2">
-                  <Label htmlFor={`${idPrefix}currentLoan-prepaymentPenalty`}>Pre-Payment Penalty</Label>
-                  <Select {...prepaymentPenaltyBinding}>
-                    <SelectTrigger data-testid={prepaymentPenaltyBinding['data-testid']}>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Yes - see notes">Yes - see notes</SelectItem>
-                      <SelectItem value="No">No</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
                 
                 <div className="space-y-2">
                   <Label htmlFor={`${idPrefix}currentLoan-attachedToProperty`}>Attached to Property</Label>
