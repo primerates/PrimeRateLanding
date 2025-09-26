@@ -11341,15 +11341,76 @@ export default function AdminAddClient() {
                                     );
                                   })()}
                                 </div>
-                                <Select>
-                                  <SelectTrigger data-testid={`select-property-secured-loan-${propertyId}`}>
-                                    <SelectValue placeholder="Select" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="yes">Yes</SelectItem>
-                                    <SelectItem value="no">No</SelectItem>
-                                  </SelectContent>
-                                </Select>
+                                {(() => {
+                                  // Automatic loan detection logic
+                                  const properties = form.watch('property.properties') || [];
+                                  const primaryIndex = properties.findIndex(p => p.use === 'primary');
+                                  const currentProperty = primaryIndex >= 0 ? properties[primaryIndex] : null;
+                                  
+                                  if (!currentProperty?.id) return (
+                                    <div className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background cursor-default">
+                                      <span className="text-muted-foreground">Attach</span>
+                                    </div>
+                                  );
+                                  
+                                  // Check all loans for attachment to this property
+                                  const attachedLoans = [];
+                                  
+                                  // Check current loan
+                                  const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                  if (currentLoanAttached && currentLoanAttached === currentProperty.id) {
+                                    attachedLoans.push('Current Primary Loan');
+                                  }
+                                  
+                                  // Check second loan
+                                  const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                  if (secondLoanAttached && secondLoanAttached === currentProperty.id) {
+                                    attachedLoans.push('Current Second Loan');
+                                  }
+                                  
+                                  // Check third loan (first additional loan)
+                                  const additionalLoansData = additionalLoans || [];
+                                  const firstAdditionalLoan = additionalLoansData[0];
+                                  if (firstAdditionalLoan) {
+                                    const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
+                                    if (attachedPropertyId && attachedPropertyId === currentProperty.id) {
+                                      attachedLoans.push('Current Third Loan');
+                                    }
+                                  }
+                                  
+                                  // Check other additional loans
+                                  additionalLoansData.slice(1).forEach((loan, index) => {
+                                    const attachedPropertyId = getDyn(`${loan.id}.attachedToProperty`);
+                                    if (attachedPropertyId && attachedPropertyId === currentProperty.id) {
+                                      attachedLoans.push(`Current Loan ${index + 4}`);
+                                    }
+                                  });
+                                  
+                                  // Determine display text
+                                  let displayText = 'Attach';
+                                  if (attachedLoans.length === 1) {
+                                    displayText = attachedLoans[0];
+                                  } else if (attachedLoans.length === 2) {
+                                    displayText = '1st & 2nd Loan';
+                                  } else if (attachedLoans.length === 3) {
+                                    displayText = 'Three Loans';
+                                  } else if (attachedLoans.length > 3) {
+                                    displayText = `${attachedLoans.length} Loans`;
+                                  }
+                                  
+                                  const hasLoansAttached = attachedLoans.length > 0;
+                                  
+                                  return (
+                                    <Select>
+                                      <SelectTrigger data-testid={`select-property-secured-loan-${propertyId}`}>
+                                        <SelectValue placeholder={displayText} />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="paid-off">Paid Off</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  );
+                                })()}
                               </div>
                             </div>
                           </div>
@@ -11971,15 +12032,76 @@ export default function AdminAddClient() {
                                     );
                                   })()}
                                 </div>
-                                <Select>
-                                  <SelectTrigger data-testid={`select-second-home-secured-loan-${propertyId}`}>
-                                    <SelectValue placeholder="Select" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="yes">Yes</SelectItem>
-                                    <SelectItem value="no">No</SelectItem>
-                                  </SelectContent>
-                                </Select>
+                                {(() => {
+                                  // Automatic loan detection logic for Second Home
+                                  const properties = form.watch('property.properties') || [];
+                                  const secondHomeIndex = properties.findIndex(p => p.use === 'second-home' && p.id === propertyId);
+                                  const currentProperty = secondHomeIndex >= 0 ? properties[secondHomeIndex] : null;
+                                  
+                                  if (!currentProperty?.id) return (
+                                    <div className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background cursor-default">
+                                      <span className="text-muted-foreground">Attach</span>
+                                    </div>
+                                  );
+                                  
+                                  // Check all loans for attachment to this property
+                                  const attachedLoans = [];
+                                  
+                                  // Check current loan
+                                  const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                  if (currentLoanAttached && currentLoanAttached === currentProperty.id) {
+                                    attachedLoans.push('Current Primary Loan');
+                                  }
+                                  
+                                  // Check second loan
+                                  const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                  if (secondLoanAttached && secondLoanAttached === currentProperty.id) {
+                                    attachedLoans.push('Current Second Loan');
+                                  }
+                                  
+                                  // Check third loan (first additional loan)
+                                  const additionalLoansData = additionalLoans || [];
+                                  const firstAdditionalLoan = additionalLoansData[0];
+                                  if (firstAdditionalLoan) {
+                                    const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
+                                    if (attachedPropertyId && attachedPropertyId === currentProperty.id) {
+                                      attachedLoans.push('Current Third Loan');
+                                    }
+                                  }
+                                  
+                                  // Check other additional loans
+                                  additionalLoansData.slice(1).forEach((loan, index) => {
+                                    const attachedPropertyId = getDyn(`${loan.id}.attachedToProperty`);
+                                    if (attachedPropertyId && attachedPropertyId === currentProperty.id) {
+                                      attachedLoans.push(`Current Loan ${index + 4}`);
+                                    }
+                                  });
+                                  
+                                  // Determine display text
+                                  let displayText = 'Attach';
+                                  if (attachedLoans.length === 1) {
+                                    displayText = attachedLoans[0];
+                                  } else if (attachedLoans.length === 2) {
+                                    displayText = '1st & 2nd Loan';
+                                  } else if (attachedLoans.length === 3) {
+                                    displayText = 'Three Loans';
+                                  } else if (attachedLoans.length > 3) {
+                                    displayText = `${attachedLoans.length} Loans`;
+                                  }
+                                  
+                                  const hasLoansAttached = attachedLoans.length > 0;
+                                  
+                                  return (
+                                    <Select>
+                                      <SelectTrigger data-testid={`select-second-home-secured-loan-${propertyId}`}>
+                                        <SelectValue placeholder={displayText} />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="paid-off">Paid Off</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  );
+                                })()}
                               </div>
                             </div>
 
