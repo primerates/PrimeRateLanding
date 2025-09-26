@@ -558,7 +558,7 @@ export default function AdminAddClient() {
   // State for Current Loan 2 info popup in Property tab
   const [isCurrentSecondLoanPreviewOpen, setIsCurrentSecondLoanPreviewOpen] = useState(false);
   
-  // State for Current Loan 3 info popup in Property tab
+  // State for Current Third Loan info popup in Property tab
   const [isCurrentThirdLoanPreviewOpen, setIsCurrentThirdLoanPreviewOpen] = useState(false);
   
   // State for Additional Loan preview modal - generic for any additional loan
@@ -2197,7 +2197,7 @@ export default function AdminAddClient() {
     );
   };
 
-  // Sub-component for Current Loan 3 preview modal - read-only display with live updates
+  // Sub-component for Current Third Loan preview modal - read-only display with live updates
   interface CurrentThirdLoanPreviewProps {
     control: any; // Control from parent useForm
   }
@@ -11228,9 +11228,9 @@ export default function AdminAddClient() {
                                       const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
                                       const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
                                       
-                                      // Check third loan (first additional loan - Current Loan 3)
+                                      // Check third loan (first additional loan - Current Third Loan)
                                       const additionalLoansData = additionalLoans || [];
-                                      const firstAdditionalLoan = additionalLoansData[0]; // This is "Current Loan 3"
+                                      const firstAdditionalLoan = additionalLoansData[0]; // This is "Current Third Loan"
                                       const isThirdLoanAttached = firstAdditionalLoan ? (() => {
                                         const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
                                         return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
@@ -11297,7 +11297,7 @@ export default function AdminAddClient() {
                                                 setIsCurrentThirdLoanPreviewOpen(true);
                                               }
                                             }}
-                                            title={isThirdLoanAttached ? "View Current Loan 3 Details" : ""}
+                                            title={isThirdLoanAttached ? "View Current Third Loan Details" : ""}
                                             data-testid={`indicator-secured-loan-3-${propertyId}`}
                                           />
                                         </div>
@@ -11858,9 +11858,9 @@ export default function AdminAddClient() {
                                       const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
                                       const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
                                       
-                                      // Check third loan (first additional loan - Current Loan 3)
+                                      // Check third loan (first additional loan - Current Third Loan)
                                       const additionalLoansData = additionalLoans || [];
-                                      const firstAdditionalLoan = additionalLoansData[0]; // This is "Current Loan 3"
+                                      const firstAdditionalLoan = additionalLoansData[0]; // This is "Current Third Loan"
                                       const isThirdLoanAttached = firstAdditionalLoan ? (() => {
                                         const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
                                         return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
@@ -11927,7 +11927,7 @@ export default function AdminAddClient() {
                                                 setIsCurrentThirdLoanPreviewOpen(true);
                                               }
                                             }}
-                                            title={isThirdLoanAttached ? "View Current Loan 3 Details" : ""}
+                                            title={isThirdLoanAttached ? "View Current Third Loan Details" : ""}
                                             data-testid={`indicator-second-home-secured-loan-3-${propertyId}`}
                                           />
                                         </div>
@@ -12457,9 +12457,9 @@ export default function AdminAddClient() {
                                       const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
                                       const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
                                       
-                                      // Check third loan (first additional loan - Current Loan 3)
+                                      // Check third loan (first additional loan - Current Third Loan)
                                       const additionalLoansData = additionalLoans || [];
-                                      const firstAdditionalLoan = additionalLoansData[0]; // This is "Current Loan 3"
+                                      const firstAdditionalLoan = additionalLoansData[0]; // This is "Current Third Loan"
                                       const isThirdLoanAttached = firstAdditionalLoan ? (() => {
                                         const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
                                         return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
@@ -12526,7 +12526,7 @@ export default function AdminAddClient() {
                                                 setIsCurrentThirdLoanPreviewOpen(true);
                                               }
                                             }}
-                                            title={isThirdLoanAttached ? "View Current Loan 3 Details" : ""}
+                                            title={isThirdLoanAttached ? "View Current Third Loan Details" : ""}
                                             data-testid={`indicator-secured-loan-3-${property.id}`}
                                           />
                                         </div>
@@ -14632,7 +14632,7 @@ export default function AdminAddClient() {
         </DialogContent>
       </Dialog>
 
-      {/* Current Loan 3 Preview Modal */}
+      {/* Current Third Loan Preview Modal */}
       <Dialog open={isCurrentThirdLoanPreviewOpen} onOpenChange={setIsCurrentThirdLoanPreviewOpen}>
         <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto" data-testid="dialog-current-third-loan-preview">
           <DialogHeader>
