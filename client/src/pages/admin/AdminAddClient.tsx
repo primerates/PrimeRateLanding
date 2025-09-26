@@ -10804,7 +10804,7 @@ export default function AdminAddClient() {
                             }`}>
                               <CardContent className="pt-6">
                                 <div className="space-y-3">
-                                  <Label className="text-base font-semibold">Is this also the subject property?</Label>
+                                  <Label className="text-base font-semibold">Is the loan transaction for this property?</Label>
                                   <div className="flex gap-4">
                                     <div className="flex items-center space-x-2">
                                       <input
@@ -11443,7 +11443,7 @@ export default function AdminAddClient() {
                             }`}>
                               <CardContent className="pt-6">
                                 <div className="space-y-3">
-                                  <Label className="text-base font-semibold">Is this also the subject property?</Label>
+                                  <Label className="text-base font-semibold">Is the loan transaction for this property?</Label>
                                   <div className="flex gap-4">
                                     <div className="flex items-center space-x-2">
                                       <input
