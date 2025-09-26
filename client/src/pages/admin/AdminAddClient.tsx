@@ -13612,10 +13612,13 @@ export default function AdminAddClient() {
                   });
                 }
                 
-                // If no cards remain, the checkbox logic will handle unchecking automatically
+                // If no cards remain, uncheck the checkbox to allow new card creation
                 const remainingCards = primaryResidenceCards.filter(id => id !== cardToDelete);
                 if (remainingCards.length === 0) {
-                  // No cards left, the checkbox will automatically uncheck due to our logic
+                  // Clear the property form fields and remove from property array
+                  const currentProperties = form.watch('property.properties') || [];
+                  const updatedProperties = currentProperties.filter(p => p.use !== 'primary');
+                  form.setValue('property.properties', updatedProperties);
                 }
                 
                 setDeletePrimaryResidenceDialog({ isOpen: false, cardId: '' });
