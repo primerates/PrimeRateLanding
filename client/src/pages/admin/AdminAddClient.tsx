@@ -13693,6 +13693,205 @@ export default function AdminAddClient() {
 
             {/* New Loan Tab */}
             <TabsContent value="loan" className="space-y-6">
+              
+              {/* Household Income Summary - Duplicated from Income Tab */}
+              <Card className={`transition-all duration-700 ${
+                showIncomeAnimation ? 'animate-roll-down' : ''
+              }`}>
+                <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="household-income-total-loan-tab" className="text-lg font-semibold">Total Household Income</Label>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="income-frontDTI-loan-tab" className={`text-lg font-semibold ${
+                      showIncomeAnimation ? 'animate-roll-down-dti-1' : ''
+                    }`}>Front DTI</Label>
+                    <Controller
+                      control={form.control}
+                      name="income.frontDTI"
+                      render={({ field }) => {
+                        const displayValue = formatPercentageDisplay(field.value);
+                        const hasValue = field.value && field.value.trim() !== '';
+                        
+                        return (
+                          <div className="min-h-[40px] flex items-center">
+                            {!isFrontDTIEditing && hasValue ? (
+                              <div
+                                onClick={() => setIsFrontDTIEditing(true)}
+                                className="cursor-pointer bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                                style={{
+                                  fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                                  fontSize: '36px',
+                                  fontWeight: 600,
+                                  backgroundColor: '#1a3373',
+                                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+                                }}
+                                data-testid="display-income-frontDTI-loan-tab"
+                              >
+                                <span>
+                                  {displayValue.replace('%', '')}
+                                  <span style={{ fontSize: '28px' }}>%</span>
+                                </span>
+                              </div>
+                            ) : (
+                              <Input
+                                id="income-frontDTI-loan-tab"
+                                value={displayValue}
+                                onChange={(e) => {
+                                  const rawValue = parsePercentageInput(e.target.value);
+                                  field.onChange(rawValue);
+                                }}
+                                onBlur={() => {
+                                  if (hasValue) {
+                                    setIsFrontDTIEditing(false);
+                                  }
+                                }}
+                                onFocus={() => setIsFrontDTIEditing(true)}
+                                placeholder="%"
+                                autoFocus={isFrontDTIEditing && hasValue}
+                                className="w-1/2"
+                                data-testid="input-income-frontDTI-loan-tab"
+                              />
+                            )}
+                          </div>
+                        );
+                      }}
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="income-backDTI-loan-tab" className={`text-lg font-semibold ${
+                      showIncomeAnimation ? 'animate-roll-down-dti-2' : ''
+                    }`}>Back DTI</Label>
+                    <Controller
+                      control={form.control}
+                      name="income.backDTI"
+                      render={({ field }) => {
+                        const displayValue = formatPercentageDisplay(field.value);
+                        const hasValue = field.value && field.value.trim() !== '';
+                        
+                        return (
+                          <div className="min-h-[40px] flex items-center">
+                            {!isBackDTIEditing && hasValue ? (
+                              <div
+                                onClick={() => setIsBackDTIEditing(true)}
+                                className="cursor-pointer bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                                style={{
+                                  fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                                  fontSize: '36px',
+                                  fontWeight: 600,
+                                  backgroundColor: '#1a3373',
+                                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+                                }}
+                                data-testid="display-income-backDTI-loan-tab"
+                              >
+                                <span>
+                                  {displayValue.replace('%', '')}
+                                  <span style={{ fontSize: '28px' }}>%</span>
+                                </span>
+                              </div>
+                            ) : (
+                              <Input
+                                id="income-backDTI-loan-tab"
+                                value={displayValue}
+                                onChange={(e) => {
+                                  const rawValue = parsePercentageInput(e.target.value);
+                                  field.onChange(rawValue);
+                                }}
+                                onBlur={() => {
+                                  if (hasValue) {
+                                    setIsBackDTIEditing(false);
+                                  }
+                                }}
+                                onFocus={() => setIsBackDTIEditing(true)}
+                                placeholder="%"
+                                autoFocus={isBackDTIEditing && hasValue}
+                                className="w-1/2"
+                                data-testid="input-income-backDTI-loan-tab"
+                              />
+                            )}
+                          </div>
+                        );
+                      }}
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label 
+                      htmlFor="income-guidelineDTI-loan-tab" 
+                      className={`text-lg font-semibold ${
+                        showIncomeAnimation ? 'animate-roll-down-dti-3' : ''
+                      }`}
+                    >
+                      Guideline DTI
+                    </Label>
+                    <Controller
+                      control={form.control}
+                      name="income.guidelineDTI"
+                      render={({ field }) => {
+                        const displayValue = formatPercentageDisplay(field.value);
+                        const hasValue = field.value && field.value.trim() !== '';
+                        
+                        return (
+                          <div className="min-h-[40px] flex items-center">
+                            {!isGuidelineDTIEditing && hasValue ? (
+                              <div
+                                onClick={() => setIsGuidelineDTIEditing(true)}
+                                className="cursor-pointer bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                                style={{
+                                  fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                                  fontSize: '36px',
+                                  fontWeight: 600,
+                                  backgroundColor: '#1a3373',
+                                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+                                }}
+                                data-testid="display-income-guidelineDTI-loan-tab"
+                              >
+                                <span>
+                                  {displayValue.replace('%', '')}
+                                  <span style={{ fontSize: '28px' }}>%</span>
+                                </span>
+                              </div>
+                            ) : (
+                              <Input
+                                id="income-guidelineDTI-loan-tab"
+                                value={displayValue}
+                                onChange={(e) => {
+                                  const rawValue = parsePercentageInput(e.target.value);
+                                  field.onChange(rawValue);
+                                }}
+                                onBlur={() => {
+                                  if (hasValue) {
+                                    setIsGuidelineDTIEditing(false);
+                                  }
+                                }}
+                                onFocus={() => setIsGuidelineDTIEditing(true)}
+                                placeholder="%"
+                                autoFocus={isGuidelineDTIEditing && hasValue}
+                                data-testid="input-income-guidelineDTI-loan-tab"
+                                className={(() => {
+                                  const backDTI = form.watch('income.backDTI') || '';
+                                  const guidelineDTI = form.watch('income.guidelineDTI') || '';
+                                  const shadowColor = getDTIComparisonColor(backDTI, guidelineDTI).shadowColor;
+                                  let classes = 'w-1/2';
+                                  if (shadowColor === 'green') {
+                                    classes += ' shadow-lg shadow-green-200';
+                                  } else if (shadowColor === 'red') {
+                                    classes += ' shadow-lg shadow-red-200';
+                                  }
+                                  return classes;
+                                })()}
+                              />
+                            )}
+                          </div>
+                        );
+                      }}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* New Loan Information */}
               <Card className="border-l-4 border-l-green-500">
                 <Collapsible open={isNewLoanOpen} onOpenChange={setIsNewLoanOpen}>
