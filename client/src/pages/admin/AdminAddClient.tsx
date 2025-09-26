@@ -10843,6 +10843,12 @@ export default function AdminAddClient() {
                                               isSubjectProperty: false
                                             }
                                           }));
+                                          // Update global form state to reverse green animation (same as Second Home)
+                                          const properties = form.watch('property.properties') || [];
+                                          const updatedProperties = properties.map(p => 
+                                            p.id === propertyId ? { ...p, isSubject: false } : p
+                                          );
+                                          form.setValue('property.properties', updatedProperties);
                                         }}
                                         data-testid={`radio-subject-no-${propertyId}`}
                                       />
