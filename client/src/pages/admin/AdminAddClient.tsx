@@ -5159,14 +5159,11 @@ export default function AdminAddClient() {
 
   // Handle removing current primary loan cards (new system)
   const removeCurrentPrimaryLoanCard = (cardId: string) => {
-    // Remove from cards array
-    setCurrentPrimaryLoanCards(prev => prev.filter(id => id !== cardId));
+    // Clear all Current Primary Loan cards (this is a single loan system)
+    setCurrentPrimaryLoanCards([]);
     
-    // Remove from data state
-    setCurrentPrimaryLoanData(prev => {
-      const { [cardId]: _, ...rest } = prev;
-      return rest;
-    });
+    // Clear all data state
+    setCurrentPrimaryLoanData({});
     
     // Hide the current loan card
     setShowCurrentLoan(false);
