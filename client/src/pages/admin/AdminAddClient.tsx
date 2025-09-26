@@ -14655,6 +14655,21 @@ export default function AdminAddClient() {
                 return (
                   <>
                     <div className="grid gap-4">
+                      <Card className="border-l-4 border-l-orange-500">
+                        <CardContent className="pt-4">
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <p className="font-semibold text-sm text-muted-foreground">APPRAISAL</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-xl font-bold text-orange-600 dark:text-orange-400">
+                                {formatCurrency(appraisedValue)}
+                              </p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
                       <Card className="border-l-4 border-l-green-500">
                         <CardContent className="pt-4">
                           <div className="flex justify-between items-center">
@@ -14662,7 +14677,7 @@ export default function AdminAddClient() {
                               <p className="font-semibold text-sm text-muted-foreground">CLIENT ESTIMATE</p>
                             </div>
                             <div className="text-right">
-                              <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+                              <p className="text-xl font-bold text-green-600 dark:text-green-400">
                                 {formatCurrency(clientEstimate)}
                               </p>
                             </div>
@@ -14674,10 +14689,10 @@ export default function AdminAddClient() {
                         <CardContent className="pt-4">
                           <div className="flex justify-between items-center">
                             <div>
-                              <p className="font-semibold text-sm text-muted-foreground">ZILLOW</p>
+                              <p className="font-semibold text-sm text-muted-foreground">ZILLOW.COM</p>
                             </div>
                             <div className="text-right">
-                              <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                              <p className="text-xl font-bold text-blue-600 dark:text-blue-400">
                                 {zillowEstimate ? formatCurrency(zillowEstimate) : 'Not available'}
                               </p>
                             </div>
@@ -14692,7 +14707,7 @@ export default function AdminAddClient() {
                               <p className="font-semibold text-sm text-muted-foreground">REALTOR.COM</p>
                             </div>
                             <div className="text-right">
-                              <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                              <p className="text-xl font-bold text-purple-600 dark:text-purple-400">
                                 {realtorEstimate ? formatCurrency(realtorEstimate) : 'Not available'}
                               </p>
                             </div>
@@ -14704,26 +14719,11 @@ export default function AdminAddClient() {
                         <CardContent className="pt-4">
                           <div className="flex justify-between items-center">
                             <div>
-                              <p className="font-semibold text-sm text-muted-foreground">REDFIN</p>
+                              <p className="font-semibold text-sm text-muted-foreground">REDFIN.COM</p>
                             </div>
                             <div className="text-right">
-                              <p className="text-2xl font-bold text-red-600 dark:text-red-400">
+                              <p className="text-xl font-bold text-red-600 dark:text-red-400">
                                 {formatCurrency(redfinEstimate)}
-                              </p>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      <Card className="border-l-4 border-l-orange-500">
-                        <CardContent className="pt-4">
-                          <div className="flex justify-between items-center">
-                            <div>
-                              <p className="font-semibold text-sm text-muted-foreground">APPRAISAL</p>
-                            </div>
-                            <div className="text-right">
-                              <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
-                                {formatCurrency(appraisedValue)}
                               </p>
                             </div>
                           </div>
