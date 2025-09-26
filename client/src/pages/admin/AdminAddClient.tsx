@@ -982,6 +982,14 @@ export default function AdminAddClient() {
   const [secondHomeData, setSecondHomeData] = useState<Record<string, {
     isSubjectProperty: boolean | null; // null = not selected, true = yes, false = no
   }>>({});
+
+  // Investment Property cards state management (identical to second home cards)
+  const [investmentCards, setInvestmentCards] = useState<string[]>([]);
+  
+  // Investment Property card data state
+  const [investmentData, setInvestmentData] = useState<Record<string, {
+    isSubjectProperty: boolean | null; // null = not selected, true = yes, false = no
+  }>>({});
   
   // Employment dates state for each card
   const [employmentDates, setEmploymentDates] = useState<Record<string, {
@@ -1017,6 +1025,12 @@ export default function AdminAddClient() {
 
   // Delete confirmation dialog state for Second Home cards
   const [deleteSecondHomeDialog, setDeleteSecondHomeDialog] = useState<{
+    isOpen: boolean;
+    cardId: string;
+  }>({ isOpen: false, cardId: '' });
+
+  // Delete confirmation dialog state for Investment Property cards
+  const [deleteInvestmentDialog, setDeleteInvestmentDialog] = useState<{
     isOpen: boolean;
     cardId: string;
   }>({ isOpen: false, cardId: '' });
@@ -4972,6 +4986,13 @@ export default function AdminAddClient() {
           // Cards already exist, prevent unchecking - all removal must be done through card buttons
           return;
         }
+      } else if (type === 'investment') {
+        const hasCards = (investmentCards || []).length > 0;
+        
+        if (hasCards) {
+          // Cards already exist, prevent unchecking - all removal must be done through card buttons
+          return;
+        }
       }
       
       // For now, still allow unchecking other property types through the old system
@@ -5033,6 +5054,42 @@ export default function AdminAddClient() {
               
               // Initialize data state for default card
               setSecondHomeData(prev => ({ 
+                ...prev, 
+                [newPropertyId]: { isSubjectProperty: null } 
+              }));
+              
+              // Auto-expand the property card
+              setPropertyCardStates(prev => ({ ...prev, [newPropertyId]: true }));
+              
+              // Trigger animation for newly created property card
+              setTimeout(() => {
+                setShowSubjectPropertyAnimation(prev => ({ ...prev, [newPropertyId]: true }));
+                setTimeout(() => {
+                  setShowSubjectPropertyAnimation(prev => ({ ...prev, [newPropertyId]: false }));
+                }, 800);
+              }, 200);
+            }
+          }, 50); // Small delay to ensure form state is updated
+        }
+      } else if (type === 'investment') {
+        const hasCards = (investmentCards || []).length > 0;
+        
+        // Only create default property card if none exist yet
+        if (!hasCards) {
+          // Create entry in main form's property array
+          addProperty('investment');
+          
+          // Get the ID of the newly created property
+          setTimeout(() => {
+            const currentProperties = form.watch('property.properties') || [];
+            const newProperty = currentProperties.find(p => p.use === 'investment');
+            const newPropertyId = newProperty?.id;
+            
+            if (newPropertyId) {
+              setInvestmentCards([newPropertyId]);
+              
+              // Initialize data state for default card
+              setInvestmentData(prev => ({ 
                 ...prev, 
                 [newPropertyId]: { isSubjectProperty: null } 
               }));
@@ -10792,14 +10849,9 @@ export default function AdminAddClient() {
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="property-type-investment"
-                          checked={hasPropertyType('investment')}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              addPropertyType('investment');
-                            } else {
-                              removePropertyType('investment');
-                            }
-                          }}
+                          checked={hasPropertyType('investment') || (investmentCards || []).length > 0}
+                          onCheckedChange={(checked) => handlePropertyTypeChange(checked, 'investment')}
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           data-testid="checkbox-property-investment"
                         />
                         <Label htmlFor="property-type-investment" className="font-medium">
@@ -12180,9 +12232,698 @@ export default function AdminAddClient() {
                 );
               })}
 
+              {/* Investment Property Cards */}
+              {(investmentCards || []).length > 0 && (investmentCards || ['default']).map((cardId, index) => {
+                // Get the actual property from the properties array
+                const properties = form.watch('property.properties') || [];
+                const property = properties.find(p => p.id === cardId);
+                const propertyId = property?.id || cardId;
+                const propertyIndex = properties.findIndex(p => p.id === cardId);
+                const isOpen = propertyCardStates[propertyId] ?? true;
+                
+                return (
+                  <Card key={cardId} className="border-l-4 border-l-purple-500 hover:border-purple-500 focus-within:border-purple-500 transition-colors duration-200">
+                    <Collapsible 
+                      open={isOpen} 
+                      onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
+                    >
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-8">
+                            <CardTitle className={`flex items-center gap-2 ${property?.isSubject ? 'text-green-600' : ''}`}>
+                              Investment Property
+                              {property?.isSubject && (
+                                <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
+                                  Subject Property
+                                </span>
+                              )}
+                            </CardTitle>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {/* Add Property Button */}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                // Create entry in main form's property array first
+                                addProperty('investment');
+                                
+                                // Get the ID of the newly created property
+                                const currentProperties = form.watch('property.properties') || [];
+                                const newProperty = currentProperties[currentProperties.length - 1];
+                                const newPropertyId = newProperty?.id;
+                                
+                                if (newPropertyId) {
+                                  setInvestmentCards(prev => [...(prev || ['default']), newPropertyId]);
+                                  // Initialize data state for new card
+                                  setInvestmentData(prev => ({ 
+                                    ...prev, 
+                                    [newPropertyId]: { isSubjectProperty: null } 
+                                  }));
+                                  
+                                  // Auto-expand the new property card
+                                  setPropertyCardStates(prev => ({ ...prev, [newPropertyId]: true }));
+                                }
+                              }}
+                              className="hover:bg-blue-500 hover:text-white"
+                              data-testid="button-add-investment-property"
+                              title="Add New Investment Property"
+                            >
+                              <Plus className="h-4 w-4 mr-2" />
+                              Add Property
+                            </Button>
+                            
+                            {/* Delete Property Button */}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setDeleteInvestmentDialog({ isOpen: true, cardId: propertyId })}
+                              className="hover:bg-red-500 hover:text-white"
+                              data-testid="button-delete-investment-property"
+                              title="Delete Investment Property"
+                            >
+                              <Minus className="h-4 w-4 mr-2" />
+                              Remove
+                            </Button>
+                            
+                            <CollapsibleTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="hover:bg-orange-500 hover:text-white" 
+                                data-testid={`button-toggle-investment-property-${propertyId}`}
+                                title={isOpen ? 'Minimize' : 'Expand'}
+                                key={`investment-property-toggle-${propertyId}-${isOpen}`}
+                              >
+                                {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      
+                      <CollapsibleContent>
+                        <CardContent>
+                          <div className="space-y-6">
+                            {/* Subject Property Question - Moved to top */}
+                            <Card className={`bg-muted ${
+                              showSubjectPropertyAnimation[propertyId] ? 'animate-roll-down-subject-property' : ''
+                            }`}>
+                              <CardContent className="pt-6">
+                                <div className="space-y-3">
+                                  <Label className="text-base font-semibold">Is the loan transaction for this property?</Label>
+                                  <div className="flex gap-4">
+                                    <div className="flex items-center space-x-2">
+                                      <input
+                                        type="radio"
+                                        id={`investment-property-subject-yes-${propertyId}`}
+                                        name={`investment-property-subject-${propertyId}`}
+                                        checked={investmentData[propertyId]?.isSubjectProperty === true}
+                                        onChange={() => {
+                                          setInvestmentData(prev => ({
+                                            ...prev,
+                                            [propertyId]: { 
+                                              ...prev[propertyId],
+                                              isSubjectProperty: true
+                                            }
+                                          }));
+                                          // Trigger same green animation as Primary Residence
+                                          setSubjectProperty(propertyId);
+                                        }}
+                                        data-testid={`radio-investment-property-subject-yes-${propertyId}`}
+                                      />
+                                      <Label htmlFor={`investment-property-subject-yes-${propertyId}`}>Yes</Label>
+                                    </div>
+                                    
+                                    <div className="flex items-center space-x-2">
+                                      <input
+                                        type="radio"
+                                        id={`investment-property-subject-no-${propertyId}`}
+                                        name={`investment-property-subject-${propertyId}`}
+                                        checked={investmentData[propertyId]?.isSubjectProperty === false}
+                                        onChange={() => {
+                                          setInvestmentData(prev => ({
+                                            ...prev,
+                                            [propertyId]: { 
+                                              ...prev[propertyId],
+                                              isSubjectProperty: false
+                                            }
+                                          }));
+                                          // Update global form state to reverse green animation (same as Primary Residence)
+                                          const properties = form.watch('property.properties') || [];
+                                          const updatedProperties = properties.map(p => 
+                                            p.id === propertyId ? { ...p, isSubject: false } : p
+                                          );
+                                          form.setValue('property.properties', updatedProperties);
+                                        }}
+                                        data-testid={`radio-investment-property-subject-no-${propertyId}`}
+                                      />
+                                      <Label htmlFor={`investment-property-subject-no-${propertyId}`}>No</Label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+
+                            {/* Property Address - Row 1: Street Address, Unit/Apt, City, State, ZIP Code, County, Property Type */}
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                              <div className="space-y-2 md:col-span-3">
+                                <Label htmlFor={`investment-property-address-street-${propertyId}`}>Street Address *</Label>
+                                <Input
+                                  id={`investment-property-address-street-${propertyId}`}
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.street` as any) : {})}
+                                  data-testid={`input-investment-property-street-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`investment-property-address-unit-${propertyId}`}>Unit/Apt</Label>
+                                <Input
+                                  id={`investment-property-address-unit-${propertyId}`}
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.unit` as any) : {})}
+                                  data-testid={`input-investment-property-unit-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`investment-property-address-city-${propertyId}`}>City *</Label>
+                                <Input
+                                  id={`investment-property-address-city-${propertyId}`}
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.city` as any) : {})}
+                                  data-testid={`input-investment-property-city-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`investment-property-address-state-${propertyId}`}>State *</Label>
+                                <Select {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.state` as any) : {})} 
+                                        value={form.watch(`property.properties.${propertyIndex}` as any)?.address?.state || ''} 
+                                        onValueChange={(value) => form.setValue(`property.properties.${propertyIndex}.address.state` as any, value)}>
+                                  <SelectTrigger data-testid={`select-investment-property-state-${propertyId}`}>
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {US_STATES.map((state) => (
+                                      <SelectItem key={state.code} value={state.code}>
+                                        {state.name}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`investment-property-address-zip-${propertyId}`}>ZIP Code *</Label>
+                                <Input
+                                  id={`investment-property-address-zip-${propertyId}`}
+                                  placeholder="94103"
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.zip` as any) : {})}
+                                  data-testid={`input-investment-property-zip-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`investment-property-address-county-${propertyId}`}>County</Label>
+                                <Input
+                                  id={`investment-property-address-county-${propertyId}`}
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.county` as any) : {})}
+                                  data-testid={`input-investment-property-county-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`investment-property-type-${propertyId}`}>Property Type</Label>
+                                <Select {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.propertyType` as any) : {})} 
+                                        value={form.watch(`property.properties.${propertyIndex}` as any)?.propertyType || ''} 
+                                        onValueChange={(value) => form.setValue(`property.properties.${propertyIndex}.propertyType` as any, value)}>
+                                  <SelectTrigger data-testid={`select-investment-property-type-${propertyId}`}>
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="single-family">Single Family Home</SelectItem>
+                                    <SelectItem value="condo">Condominium</SelectItem>
+                                    <SelectItem value="townhouse">Townhouse</SelectItem>
+                                    <SelectItem value="duplex">Duplex</SelectItem>
+                                    <SelectItem value="multi-family">Multi-Family</SelectItem>
+                                    <SelectItem value="manufactured">Manufactured Home</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+
+                            {/* Property Details - Row 2: Purchase Price, Owned Since, Title Held By, Estimated Property Value */}
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
+                              <div className="space-y-2 md:col-span-2">
+                                <div className="flex items-center gap-2">
+                                  <Label htmlFor={`investment-property-purchase-price-${propertyId}`}>Purchase Price</Label>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="p-1 h-auto text-black hover:text-gray-600"
+                                    title="Purchase Property Value"
+                                    data-testid={`button-investment-property-purchase-price-info-${propertyId}`}
+                                  >
+                                    <DollarSign className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                                <CurrencyInput
+                                  form={form}
+                                  name={(() => {
+                                    const properties = form.watch('property.properties') || [];
+                                    const investmentIndex = properties.findIndex(p => p.use === 'investment' && p.id === propertyId);
+                                    return `property.properties.${investmentIndex >= 0 ? investmentIndex : 0}.purchasePrice` as const;
+                                  })()}
+                                  id={`investment-property-purchase-price-${propertyId}`}
+                                  placeholder="$0.00"
+                                  data-testid={`input-investment-property-purchase-price-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <div className="min-h-5 flex items-center gap-2">
+                                  <Label htmlFor={`investment-property-owned-since-${propertyId}`}>Purchased</Label>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                    onClick={() => {
+                                      toast({
+                                        title: "Purchase Information",
+                                        description: "Please see purchase and record dates in title report located in vendor page.",
+                                        duration: 5000,
+                                      });
+                                    }}
+                                    data-testid={`button-investment-property-purchased-info-${propertyId}`}
+                                    title="Purchase Information"
+                                  >
+                                    <Info className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                                <Input
+                                  id={`investment-property-owned-since-${propertyId}`}
+                                  placeholder="MM/YYYY"
+                                  data-testid={`input-investment-property-owned-since-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <div className="min-h-5 flex items-center gap-2">
+                                  <Label htmlFor={`investment-property-title-held-by-${propertyId}`}>Title Held By</Label>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                    onClick={() => {
+                                      toast({
+                                        title: "Title Information",
+                                        description: "Please see title report in vendor page.",
+                                        duration: 5000,
+                                      });
+                                    }}
+                                    data-testid={`button-investment-property-title-held-info-${propertyId}`}
+                                    title="Title Information"
+                                  >
+                                    <Info className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                                <Select>
+                                  <SelectTrigger data-testid={`select-investment-property-title-held-by-${propertyId}`}>
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="select">Select</SelectItem>
+                                    <SelectItem value="borrower">Borrower</SelectItem>
+                                    <SelectItem value="borrowers">Borrowers</SelectItem>
+                                    <SelectItem value="co-borrower">Co-Borrower</SelectItem>
+                                    <SelectItem value="other">Other</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-3">
+                                <div className="flex items-center gap-2">
+                                  <Label htmlFor={`investment-property-estimated-value-${propertyId}`}>Estimated Value</Label>
+                                  <div className="flex items-center gap-1">
+                                    {/* Zillow */}
+                                    <div className="flex items-center gap-1">
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800 no-default-hover-elevate no-default-active-elevate"
+                                        onClick={() => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const investmentIndex = properties.findIndex(p => p.use === 'investment' && p.id === propertyId);
+                                          openValuationDialog('zillow', investmentIndex >= 0 ? investmentIndex : 0);
+                                        }}
+                                        onMouseEnter={(e) => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const investmentIndex = properties.findIndex(p => p.use === 'investment' && p.id === propertyId);
+                                          handleValuationHover('zillow', investmentIndex >= 0 ? investmentIndex : 0, e);
+                                        }}
+                                        onMouseLeave={handleValuationHoverLeave}
+                                        data-testid={`button-investment-property-zillow-valuation-${propertyId}`}
+                                        title="Enter Zillow valuation manually"
+                                      >
+                                        <SiZillow className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                    {/* Realtor */}
+                                    <div className="flex items-center gap-1">
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-purple-600 hover:text-purple-800 no-default-hover-elevate no-default-active-elevate"
+                                        onClick={() => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const investmentIndex = properties.findIndex(p => p.use === 'investment' && p.id === propertyId);
+                                          openValuationDialog('realtor', investmentIndex >= 0 ? investmentIndex : 0);
+                                        }}
+                                        onMouseEnter={(e) => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const investmentIndex = properties.findIndex(p => p.use === 'investment' && p.id === propertyId);
+                                          handleValuationHover('realtor', investmentIndex >= 0 ? investmentIndex : 0, e);
+                                        }}
+                                        onMouseLeave={handleValuationHoverLeave}
+                                        data-testid={`button-investment-property-realtor-valuation-${propertyId}`}
+                                        title="Enter Realtor.com valuation manually"
+                                      >
+                                        <MdRealEstateAgent className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                    {/* Redfin */}
+                                    <div className="flex items-center gap-1">
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-red-600 hover:text-red-800 no-default-hover-elevate no-default-active-elevate"
+                                        onClick={() => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const investmentIndex = properties.findIndex(p => p.use === 'investment' && p.id === propertyId);
+                                          openValuationDialog('redfin', investmentIndex >= 0 ? investmentIndex : 0);
+                                        }}
+                                        onMouseEnter={(e) => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const investmentIndex = properties.findIndex(p => p.use === 'investment' && p.id === propertyId);
+                                          handleValuationHover('redfin', investmentIndex >= 0 ? investmentIndex : 0, e);
+                                        }}
+                                        onMouseLeave={handleValuationHoverLeave}
+                                        data-testid={`button-investment-property-redfin-valuation-${propertyId}`}
+                                        title="Enter Redfin valuation manually"
+                                      >
+                                        <FaHome className="h-4 w-4" />
+                                      </Button>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                        onClick={() => {
+                                          const properties = form.watch('property.properties') || [];
+                                          const investmentIndex = properties.findIndex(p => p.use === 'investment' && p.id === propertyId);
+                                          openValuationSummary(investmentIndex >= 0 ? investmentIndex : 0);
+                                        }}
+                                        data-testid={`button-investment-property-valuation-info-${propertyId}`}
+                                        title="View all valuation estimates"
+                                      >
+                                        <Info className="h-3 w-3" />
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </div>
+                                <CurrencyInput
+                                  form={form}
+                                  name={(() => {
+                                    const properties = form.watch('property.properties') || [];
+                                    const investmentIndex = properties.findIndex(p => p.use === 'investment' && p.id === propertyId);
+                                    return `property.properties.${investmentIndex >= 0 ? investmentIndex : 0}.estimatedValue` as const;
+                                  })()}
+                                  id={`investment-property-estimated-value-${propertyId}`}
+                                  placeholder="$0.00"
+                                  data-testid={`input-investment-property-estimated-value-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <div className="flex items-center gap-2 min-h-8">
+                                  <Label htmlFor={`investment-property-appraised-value-${propertyId}`}>Appraised Value</Label>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="p-1 h-auto"
+                                    title="Appraised Property Value"
+                                    data-testid={`button-investment-property-appraised-value-info-${propertyId}`}
+                                  >
+                                    {(() => {
+                                      const properties = form.watch('property.properties') || [];
+                                      const investmentIndex = properties.findIndex(p => p.use === 'investment' && p.id === propertyId);
+                                      return <AppraisalIcon index={investmentIndex >= 0 ? investmentIndex : 0} control={form.control} />;
+                                    })()}
+                                  </Button>
+                                </div>
+                                <CurrencyInput
+                                  form={form}
+                                  name={(() => {
+                                    const properties = form.watch('property.properties') || [];
+                                    const investmentIndex = properties.findIndex(p => p.use === 'investment' && p.id === propertyId);
+                                    return `property.properties.${investmentIndex >= 0 ? investmentIndex : 0}.appraisedValue` as const;
+                                  })()}
+                                  id={`investment-property-appraised-value-${propertyId}`}
+                                  placeholder="$0.00"
+                                  data-testid={`input-investment-property-appraised-value-${propertyId}`}
+                                  shadowColor={(() => {
+                                    const properties = form.watch('property.properties') || [];
+                                    const investmentIndex = properties.findIndex(p => p.use === 'investment' && p.id === propertyId);
+                                    const estimatedValue = form.watch(`property.properties.${investmentIndex >= 0 ? investmentIndex : 0}.estimatedValue` as const) || '';
+                                    const appraisedValue = form.watch(`property.properties.${investmentIndex >= 0 ? investmentIndex : 0}.appraisedValue` as const) || '';
+                                    return getValueComparisonColor(estimatedValue, appraisedValue).shadowColor;
+                                  })()}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <div className="flex items-center gap-2 min-h-8">
+                                  <div className="flex items-center gap-2">
+                                    <Label htmlFor={`investment-property-active-secured-loan-${propertyId}`}>Secured Loan</Label>
+                                    {(() => {
+                                      // Check ALL loans for attachment to this property
+                                      const properties = form.watch('property.properties') || [];
+                                      const investmentIndex = properties.findIndex(p => p.use === 'investment' && p.id === propertyId);
+                                      const currentProperty = investmentIndex >= 0 ? properties[investmentIndex] : null;
+                                      
+                                      // Check current loan
+                                      const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                      const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                      
+                                      // Check second loan
+                                      const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                      const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                      
+                                      // Check third loan (first additional loan - Current Third Loan)
+                                      const additionalLoansData = additionalLoans || [];
+                                      const firstAdditionalLoan = additionalLoansData[0]; // This is "Current Third Loan"
+                                      const isThirdLoanAttached = firstAdditionalLoan ? (() => {
+                                        const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
+                                        return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                      })() : false;
+                                      
+                                      // Check other additional loans (loan4, loan5, etc.)
+                                      const isOtherAdditionalLoanAttached = additionalLoansData.slice(1).some(loan => {
+                                        const attachedPropertyId = getDyn(`${loan.id}.attachedToProperty`);
+                                        return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                      });
+                                      
+                                      const hasAnyLoanAttached = isCurrentLoanAttached || isSecondLoanAttached || isThirdLoanAttached || isOtherAdditionalLoanAttached;
+                                      
+                                      return (
+                                        <div className="flex items-center gap-1">
+                                          <div 
+                                            className={`w-3 h-3 rounded-full border-2 cursor-pointer ${
+                                              isCurrentLoanAttached
+                                                ? 'bg-blue-500 border-blue-500 hover:bg-blue-600'
+                                                : 'bg-gray-200 border-gray-300'
+                                            }`}
+                                            style={{
+                                              backgroundColor: isCurrentLoanAttached ? '#3b82f6' : '#e5e7eb',
+                                              borderColor: isCurrentLoanAttached ? '#3b82f6' : '#d1d5db'
+                                            }}
+                                            onClick={() => {
+                                              if (isCurrentLoanAttached) {
+                                                setIsCurrentLoanPreviewOpen(true);
+                                              }
+                                            }}
+                                            title={isCurrentLoanAttached ? "View Current Loan Details" : ""}
+                                            data-testid={`indicator-investment-property-secured-loan-1-${propertyId}`}
+                                          />
+                                          <div 
+                                            className={`w-3 h-3 rounded-full border-2 cursor-pointer ${
+                                              isSecondLoanAttached
+                                                ? 'bg-purple-500 border-purple-500 hover:bg-purple-600'
+                                                : 'bg-gray-200 border-gray-300'
+                                            }`}
+                                            style={{
+                                              backgroundColor: isSecondLoanAttached ? '#8b5cf6' : '#e5e7eb',
+                                              borderColor: isSecondLoanAttached ? '#8b5cf6' : '#d1d5db'
+                                            }}
+                                            onClick={() => {
+                                              if (isSecondLoanAttached) {
+                                                setIsCurrentSecondLoanPreviewOpen(true);
+                                              }
+                                            }}
+                                            title={isSecondLoanAttached ? "View Current Loan 2 Details" : ""}
+                                            data-testid={`indicator-investment-property-secured-loan-2-${propertyId}`}
+                                          />
+                                          <div 
+                                            className={`w-3 h-3 rounded-full border-2 cursor-pointer ${
+                                              isThirdLoanAttached
+                                                ? 'bg-orange-500 border-orange-500 hover:bg-orange-600'
+                                                : 'bg-gray-200 border-gray-300'
+                                            }`}
+                                            style={{
+                                              backgroundColor: isThirdLoanAttached ? '#f97316' : '#e5e7eb',
+                                              borderColor: isThirdLoanAttached ? '#f97316' : '#d1d5db'
+                                            }}
+                                            onClick={() => {
+                                              if (isThirdLoanAttached) {
+                                                setIsCurrentThirdLoanPreviewOpen(true);
+                                              }
+                                            }}
+                                            title={isThirdLoanAttached ? "View Current Third Loan Details" : ""}
+                                            data-testid={`indicator-investment-property-secured-loan-3-${propertyId}`}
+                                          />
+                                        </div>
+                                      );
+                                    })()}
+                                  </div>
+                                  {(() => {
+                                    const properties = form.watch('property.properties') || [];
+                                    const investmentIndex = properties.findIndex(p => p.use === 'investment' && p.id === propertyId);
+                                    const currentProperty = investmentIndex >= 0 ? properties[investmentIndex] : null;
+                                    
+                                    // Check which loans are attached to this property for counter
+                                    const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                    const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                    
+                                    const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                    const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                    
+                                    // Check third loan (first additional loan - Current Loan 3)
+                                    const additionalLoansData = additionalLoans || [];
+                                    const firstAdditionalLoan = additionalLoansData[0];
+                                    const isThirdLoanAttached = firstAdditionalLoan ? (() => {
+                                      const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
+                                      return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                    })() : false;
+                                    
+                                    // Count active loans
+                                    let activeLoansCount = 0;
+                                    if (isCurrentLoanAttached) activeLoansCount++;
+                                    if (isSecondLoanAttached) activeLoansCount++;
+                                    if (isThirdLoanAttached) activeLoansCount++;
+                                    
+                                    return (
+                                      <div 
+                                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 border border-gray-300 text-xs font-semibold text-gray-600"
+                                        data-testid={`investment-property-loan-counter-${propertyId}`}
+                                        title={`${activeLoansCount} loan(s) connected`}
+                                      >
+                                        {activeLoansCount}
+                                      </div>
+                                    );
+                                  })()}
+                                </div>
+                                {(() => {
+                                  // Automatic loan detection logic for Investment Property
+                                  const properties = form.watch('property.properties') || [];
+                                  const investmentIndex = properties.findIndex(p => p.use === 'investment' && p.id === propertyId);
+                                  const currentProperty = investmentIndex >= 0 ? properties[investmentIndex] : null;
+                                  
+                                  if (!currentProperty?.id) return (
+                                    <div className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background cursor-default">
+                                      <span className="text-muted-foreground">Attach</span>
+                                    </div>
+                                  );
+                                  
+                                  // Check all loans for attachment to this property
+                                  const attachedLoans = [];
+                                  
+                                  // Check current loan
+                                  const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                  if (currentLoanAttached && currentLoanAttached === currentProperty.id) {
+                                    attachedLoans.push('Current Primary Loan');
+                                  }
+                                  
+                                  // Check second loan
+                                  const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                  if (secondLoanAttached && secondLoanAttached === currentProperty.id) {
+                                    attachedLoans.push('Current Second Loan');
+                                  }
+                                  
+                                  // Check third loan (first additional loan)
+                                  const additionalLoansData = additionalLoans || [];
+                                  const firstAdditionalLoan = additionalLoansData[0];
+                                  if (firstAdditionalLoan) {
+                                    const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
+                                    if (attachedPropertyId && attachedPropertyId === currentProperty.id) {
+                                      attachedLoans.push('Current Third Loan');
+                                    }
+                                  }
+                                  
+                                  // Check other additional loans
+                                  additionalLoansData.slice(1).forEach((loan, index) => {
+                                    const attachedPropertyId = getDyn(`${loan.id}.attachedToProperty`);
+                                    if (attachedPropertyId && attachedPropertyId === currentProperty.id) {
+                                      attachedLoans.push(`Current Loan ${index + 4}`);
+                                    }
+                                  });
+                                  
+                                  // Determine display text
+                                  let displayText = 'Attach';
+                                  if (attachedLoans.length === 1) {
+                                    displayText = attachedLoans[0];
+                                  } else if (attachedLoans.length === 2) {
+                                    displayText = '1st & 2nd Loan';
+                                  } else if (attachedLoans.length === 3) {
+                                    displayText = 'Three Loans';
+                                  } else if (attachedLoans.length > 3) {
+                                    displayText = `${attachedLoans.length} Loans`;
+                                  }
+                                  
+                                  const hasLoansAttached = attachedLoans.length > 0;
+                                  
+                                  return (
+                                    <Select>
+                                      <SelectTrigger data-testid={`select-investment-property-secured-loan-${propertyId}`}>
+                                        <SelectValue placeholder={displayText} />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="paid-off">Paid Off</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  );
+                                })()}
+                              </div>
+                            </div>
+
+                          </div>
+                        </CardContent>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  </Card>
+                );
+              })}
+
               {/* Dynamic Property Cards */}
               {sortPropertiesByHierarchy(form.watch('property.properties') || [])
-                .filter(property => property.use !== 'primary' && property.use !== 'second-home') // Exclude Primary Residence and Second Home - now handled by new systems above
+                .filter(property => property.use !== 'primary' && property.use !== 'second-home' && property.use !== 'investment') // Exclude Primary Residence, Second Home, and Investment Property - now handled by new systems above
                 .map((property, index) => {
                 const propertyId = property.id || `property-${index}`;
                 const isOpen = propertyCardStates[propertyId] ?? true;
@@ -14544,6 +15285,65 @@ export default function AdminAddClient() {
                 setDeleteSecondHomeDialog({ isOpen: false, cardId: '' });
               }}
               data-testid="button-confirm-delete-second-home"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Investment Property Confirmation Dialog */}
+      <AlertDialog open={deleteInvestmentDialog.isOpen} onOpenChange={(open) => !open && setDeleteInvestmentDialog({ isOpen: false, cardId: '' })}>
+        <AlertDialogContent data-testid="dialog-delete-investment-property">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Investment Property Card</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this investment property card? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteInvestmentDialog({ isOpen: false, cardId: '' })}
+              data-testid="button-cancel-delete-investment-property"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                const cardToDelete = deleteInvestmentDialog.cardId;
+                
+                // If removing the default card, clear the checkbox and related fields
+                if (cardToDelete === 'investment-property-template-card') {
+                  // Clear the investment property card list (empty array removes all cards)
+                  setInvestmentCards([]);
+                  // Clear all data state
+                  setInvestmentData({});
+                } else {
+                  // Remove the specific card
+                  setInvestmentCards(prev => prev.filter(id => id !== cardToDelete));
+                  
+                  // Clean up data state for this card
+                  setInvestmentData(prev => {
+                    const { [cardToDelete]: _, ...rest } = prev;
+                    return rest;
+                  });
+
+                  // Remove from form data
+                  const currentProperties = form.watch('property.properties') || [];
+                  const updatedProperties = currentProperties.filter(property => property.id !== cardToDelete);
+                  form.setValue('property.properties', updatedProperties);
+
+                  // Remove collapsible state for removed property
+                  setPropertyCardStates(prev => {
+                    const { [cardToDelete]: _, ...rest } = prev;
+                    return rest;
+                  });
+                }
+                
+                setDeleteInvestmentDialog({ isOpen: false, cardId: '' });
+              }}
+              data-testid="button-confirm-delete-investment-property"
               className="bg-red-600 hover:bg-red-700"
             >
               Delete
