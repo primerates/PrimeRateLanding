@@ -2875,19 +2875,6 @@ export default function AdminAddClient() {
             <div className="flex items-center justify-between">
               <CardTitle>Current Primary Loan</CardTitle>
               <div className="flex items-center gap-2">
-                {onRemove && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={onRemove}
-                    className="hover:bg-red-500 hover:text-white"
-                    data-testid={`button-remove-current-loan-${idPrefix}`}
-                    title="Delete"
-                  >
-                    <Minus className="h-4 w-4" />
-                  </Button>
-                )}
                 <CollapsibleTrigger asChild>
                   <Button 
                     variant="ghost" 
@@ -5168,6 +5155,24 @@ export default function AdminAddClient() {
         }, 200);
       }
     }
+  };
+
+  // Handle removing current primary loan cards (new system)
+  const removeCurrentPrimaryLoanCard = (cardId: string) => {
+    // Remove from cards array
+    setCurrentPrimaryLoanCards(prev => prev.filter(id => id !== cardId));
+    
+    // Remove from data state
+    setCurrentPrimaryLoanData(prev => {
+      const { [cardId]: _, ...rest } = prev;
+      return rest;
+    });
+    
+    // Hide the current loan card
+    setShowCurrentLoan(false);
+    
+    // Close the dialog
+    setDeleteCurrentPrimaryLoanDialog({ isOpen: false, cardId: '' });
   };
 
   // Property type management functions
@@ -14253,34 +14258,25 @@ export default function AdminAddClient() {
                 </Collapsible>
               </Card>
 
-              {/* Current Loan Sections - Show/Hide based on state */}
-              {showCurrentLoan ? (
+              {/* Current Loan Sections - Show/Hide based on new Loan List selection */}
+              {(currentPrimaryLoanCards || []).length > 0 && (
                 <>
                   <CurrentLoanCard
                     idPrefix=""
                     borderVariant="blue"
                     isOpen={isCurrentLoanOpen}
                     setIsOpen={setIsCurrentLoanOpen}
-                    onRemove={removeCurrentLoan}
+                    onRemove={() => {
+                      const cardId = currentPrimaryLoanCards[0];
+                      setDeleteCurrentPrimaryLoanDialog({
+                        isOpen: true,
+                        cardId: cardId
+                      });
+                    }}
                     onAutoCopyAddress={autoCopyPropertyAddressToCurrentLoan}
                     formInstance={form}
                   />
                 </>
-              ) : (
-                <Card className="border-2 border-dashed border-gray-300">
-                  <CardContent className="flex flex-col items-center justify-center py-12">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={handleAddCurrentLoan}
-                      className="hover:bg-blue-500 hover:text-white"
-                      data-testid="button-add-current-loan"
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Current Loan Info
-                    </Button>
-                  </CardContent>
-                </Card>
               )}
 
               {/* Second Loan Sections - Only show when added */}
@@ -15754,6 +15750,36 @@ export default function AdminAddClient() {
                 setDeleteSecondHomeDialog({ isOpen: false, cardId: '' });
               }}
               data-testid="button-confirm-delete-second-home"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Current Primary Loan Confirmation Dialog */}
+      <AlertDialog open={deleteCurrentPrimaryLoanDialog.isOpen} onOpenChange={(open) => !open && setDeleteCurrentPrimaryLoanDialog({ isOpen: false, cardId: '' })}>
+        <AlertDialogContent data-testid="dialog-delete-current-primary-loan">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Current Primary Loan Card</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this current primary loan card? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteCurrentPrimaryLoanDialog({ isOpen: false, cardId: '' })}
+              data-testid="button-cancel-delete-current-primary-loan"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                const cardToDelete = deleteCurrentPrimaryLoanDialog.cardId;
+                removeCurrentPrimaryLoanCard(cardToDelete);
+              }}
+              data-testid="button-confirm-delete-current-primary-loan"
               className="bg-red-600 hover:bg-red-700"
             >
               Delete
