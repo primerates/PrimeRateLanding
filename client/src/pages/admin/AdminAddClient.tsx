@@ -974,6 +974,14 @@ export default function AdminAddClient() {
   const [primaryResidenceData, setPrimaryResidenceData] = useState<Record<string, {
     isSubjectProperty: boolean | null; // null = not selected, true = yes, false = no
   }>>({});
+
+  // Second Home cards state management (identical to primary residence cards)
+  const [secondHomeCards, setSecondHomeCards] = useState<string[]>([]);
+  
+  // Second Home card data state
+  const [secondHomeData, setSecondHomeData] = useState<Record<string, {
+    isSubjectProperty: boolean | null; // null = not selected, true = yes, false = no
+  }>>({});
   
   // Employment dates state for each card
   const [employmentDates, setEmploymentDates] = useState<Record<string, {
@@ -1003,6 +1011,12 @@ export default function AdminAddClient() {
 
   // Delete confirmation dialog state for Primary Residence cards
   const [deletePrimaryResidenceDialog, setDeletePrimaryResidenceDialog] = useState<{
+    isOpen: boolean;
+    cardId: string;
+  }>({ isOpen: false, cardId: '' });
+
+  // Delete confirmation dialog state for Second Home cards
+  const [deleteSecondHomeDialog, setDeleteSecondHomeDialog] = useState<{
     isOpen: boolean;
     cardId: string;
   }>({ isOpen: false, cardId: '' });
@@ -4941,9 +4955,16 @@ export default function AdminAddClient() {
   // Helper function to handle property type changes with card management (similar to handleIncomeTypeChange)
   const handlePropertyTypeChange = (checked: boolean, type: 'primary' | 'second-home' | 'investment' | 'home-purchase') => {
     if (!checked) {
-      // Special handling for primary residence - don't allow unchecking if cards already exist
+      // Special handling for primary residence and second home - don't allow unchecking if cards already exist
       if (type === 'primary') {
         const hasCards = (primaryResidenceCards || []).length > 0;
+        
+        if (hasCards) {
+          // Cards already exist, prevent unchecking - all removal must be done through card buttons
+          return;
+        }
+      } else if (type === 'second-home') {
+        const hasCards = (secondHomeCards || []).length > 0;
         
         if (hasCards) {
           // Cards already exist, prevent unchecking - all removal must be done through card buttons
@@ -4974,6 +4995,42 @@ export default function AdminAddClient() {
               
               // Initialize data state for default card
               setPrimaryResidenceData(prev => ({ 
+                ...prev, 
+                [newPropertyId]: { isSubjectProperty: null } 
+              }));
+              
+              // Auto-expand the property card
+              setPropertyCardStates(prev => ({ ...prev, [newPropertyId]: true }));
+              
+              // Trigger animation for newly created property card
+              setTimeout(() => {
+                setShowSubjectPropertyAnimation(prev => ({ ...prev, [newPropertyId]: true }));
+                setTimeout(() => {
+                  setShowSubjectPropertyAnimation(prev => ({ ...prev, [newPropertyId]: false }));
+                }, 800);
+              }, 200);
+            }
+          }, 50); // Small delay to ensure form state is updated
+        }
+      } else if (type === 'second-home') {
+        const hasCards = (secondHomeCards || []).length > 0;
+        
+        // Only create default property card if none exist yet
+        if (!hasCards) {
+          // Create entry in main form's property array
+          addProperty('second-home');
+          
+          // Get the ID of the newly created property
+          setTimeout(() => {
+            const currentProperties = form.watch('property.properties') || [];
+            const newProperty = currentProperties.find(p => p.use === 'second-home');
+            const newPropertyId = newProperty?.id;
+            
+            if (newPropertyId) {
+              setSecondHomeCards([newPropertyId]);
+              
+              // Initialize data state for default card
+              setSecondHomeData(prev => ({ 
                 ...prev, 
                 [newPropertyId]: { isSubjectProperty: null } 
               }));
@@ -10621,14 +10678,9 @@ export default function AdminAddClient() {
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="property-type-second-home"
-                          checked={hasPropertyType('second-home')}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              addPropertyType('second-home');
-                            } else {
-                              removePropertyType('second-home');
-                            }
-                          }}
+                          checked={hasPropertyType('second-home') || (secondHomeCards || []).length > 0}
+                          onCheckedChange={(checked) => handlePropertyTypeChange(checked, 'second-home')}
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           data-testid="checkbox-property-second-home"
                         />
                         <Label htmlFor="property-type-second-home" className="font-medium">
@@ -11305,9 +11357,527 @@ export default function AdminAddClient() {
                 );
               })}
 
+              {/* Second Home Cards */}
+              {(secondHomeCards || []).length > 0 && (secondHomeCards || ['default']).map((cardId, index) => {
+                // Get the actual property from the properties array
+                const properties = form.watch('property.properties') || [];
+                const property = properties.find(p => p.id === cardId);
+                const propertyId = property?.id || cardId;
+                const propertyIndex = properties.findIndex(p => p.id === cardId);
+                const isOpen = propertyCardStates[propertyId] ?? true;
+                
+                return (
+                  <Card key={cardId} className="border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
+                    <Collapsible 
+                      open={isOpen} 
+                      onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
+                    >
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-8">
+                            <CardTitle className={`flex items-center gap-2 ${property?.isSubject ? 'text-green-600' : ''}`}>
+                              Second Home
+                              {property?.isSubject && (
+                                <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
+                                  Subject Property
+                                </span>
+                              )}
+                            </CardTitle>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {/* Add Property Button */}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                // Create entry in main form's property array first
+                                addProperty('second-home');
+                                
+                                // Get the ID of the newly created property
+                                const currentProperties = form.watch('property.properties') || [];
+                                const newProperty = currentProperties[currentProperties.length - 1];
+                                const newPropertyId = newProperty?.id;
+                                
+                                if (newPropertyId) {
+                                  setSecondHomeCards(prev => [...(prev || ['default']), newPropertyId]);
+                                  // Initialize data state for new card
+                                  setSecondHomeData(prev => ({ 
+                                    ...prev, 
+                                    [newPropertyId]: { isSubjectProperty: null } 
+                                  }));
+                                  
+                                  // Auto-expand the new property card
+                                  setPropertyCardStates(prev => ({ ...prev, [newPropertyId]: true }));
+                                }
+                              }}
+                              className="hover:bg-blue-500 hover:text-white"
+                              data-testid="button-add-second-home-property"
+                              title="Add New Second Home"
+                            >
+                              <Plus className="h-4 w-4 mr-2" />
+                              Add Property
+                            </Button>
+                            
+                            {/* Delete Property Button */}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setDeleteSecondHomeDialog({ isOpen: true, cardId: propertyId })}
+                              className="hover:bg-red-500 hover:text-white"
+                              data-testid="button-delete-second-home-property"
+                              title="Delete Second Home"
+                            >
+                              <Minus className="h-4 w-4 mr-2" />
+                              Remove
+                            </Button>
+                            
+                            <CollapsibleTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="hover:bg-orange-500 hover:text-white" 
+                                data-testid={`button-toggle-second-home-property-${propertyId}`}
+                                title={isOpen ? 'Minimize' : 'Expand'}
+                                key={`second-home-property-toggle-${propertyId}-${isOpen}`}
+                              >
+                                {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      
+                      <CollapsibleContent>
+                        <CardContent>
+                          <div className="space-y-6">
+                            {/* Subject Property Question - Moved to top */}
+                            <Card className={`bg-muted ${
+                              showSubjectPropertyAnimation[propertyId] ? 'animate-roll-down-subject-property' : ''
+                            }`}>
+                              <CardContent className="pt-6">
+                                <div className="space-y-3">
+                                  <Label className="text-base font-semibold">Is the loan transaction for this property?</Label>
+                                  <div className="flex gap-4">
+                                    <div className="flex items-center space-x-2">
+                                      <input
+                                        type="radio"
+                                        id={`second-home-subject-yes-${propertyId}`}
+                                        name={`second-home-subject-${propertyId}`}
+                                        checked={secondHomeData[propertyId]?.isSubjectProperty === true}
+                                        onChange={() => {
+                                          setSecondHomeData(prev => ({
+                                            ...prev,
+                                            [propertyId]: { 
+                                              ...prev[propertyId],
+                                              isSubjectProperty: true
+                                            }
+                                          }));
+                                          // Trigger same green animation as Primary Residence
+                                          setSubjectProperty(propertyId);
+                                        }}
+                                        data-testid={`radio-second-home-subject-yes-${propertyId}`}
+                                      />
+                                      <Label htmlFor={`second-home-subject-yes-${propertyId}`}>Yes</Label>
+                                    </div>
+                                    
+                                    <div className="flex items-center space-x-2">
+                                      <input
+                                        type="radio"
+                                        id={`second-home-subject-no-${propertyId}`}
+                                        name={`second-home-subject-${propertyId}`}
+                                        checked={secondHomeData[propertyId]?.isSubjectProperty === false}
+                                        onChange={() => {
+                                          setSecondHomeData(prev => ({
+                                            ...prev,
+                                            [propertyId]: { 
+                                              ...prev[propertyId],
+                                              isSubjectProperty: false
+                                            }
+                                          }));
+                                          // Update global form state to reverse green animation (same as Primary Residence)
+                                          const properties = form.watch('property.properties') || [];
+                                          const updatedProperties = properties.map(p => 
+                                            p.id === propertyId ? { ...p, isSubject: false } : p
+                                          );
+                                          form.setValue('property.properties', updatedProperties);
+                                        }}
+                                        data-testid={`radio-second-home-subject-no-${propertyId}`}
+                                      />
+                                      <Label htmlFor={`second-home-subject-no-${propertyId}`}>No</Label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+
+                            {/* Property Address - Row 1: Street Address, Unit/Apt, City, State, ZIP Code, County, Property Type */}
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                              <div className="space-y-2 md:col-span-3">
+                                <Label htmlFor={`second-home-property-address-street-${propertyId}`}>Street Address *</Label>
+                                <Input
+                                  id={`second-home-property-address-street-${propertyId}`}
+                                  placeholder="123 Main St"
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.street` as any) : {})}
+                                  data-testid={`input-second-home-property-street-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`second-home-property-address-unit-${propertyId}`}>Unit/Apt</Label>
+                                <Input
+                                  id={`second-home-property-address-unit-${propertyId}`}
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.unit` as any) : {})}
+                                  data-testid={`input-second-home-property-unit-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`second-home-property-address-city-${propertyId}`}>City *</Label>
+                                <Input
+                                  id={`second-home-property-address-city-${propertyId}`}
+                                  placeholder="San Francisco"
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.city` as any) : {})}
+                                  data-testid={`input-second-home-property-city-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`second-home-property-address-state-${propertyId}`}>State *</Label>
+                                <Select {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.state` as any) : {})} 
+                                        value={form.watch(`property.properties.${propertyIndex}` as any)?.address?.state || ''} 
+                                        onValueChange={(value) => form.setValue(`property.properties.${propertyIndex}.address.state` as any, value)}>
+                                  <SelectTrigger data-testid={`select-second-home-property-state-${propertyId}`}>
+                                    <SelectValue placeholder="State" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {US_STATES.map((state) => (
+                                      <SelectItem key={state.code} value={state.code}>
+                                        {state.name}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`second-home-property-address-zip-${propertyId}`}>ZIP Code *</Label>
+                                <Input
+                                  id={`second-home-property-address-zip-${propertyId}`}
+                                  placeholder="94103"
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.zip` as any) : {})}
+                                  data-testid={`input-second-home-property-zip-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`second-home-property-address-county-${propertyId}`}>County</Label>
+                                <Input
+                                  id={`second-home-property-address-county-${propertyId}`}
+                                  placeholder="San Francisco"
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.county` as any) : {})}
+                                  data-testid={`input-second-home-property-county-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`second-home-property-type-${propertyId}`}>Property Type</Label>
+                                <Select {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.propertyType` as any) : {})} 
+                                        value={form.watch(`property.properties.${propertyIndex}` as any)?.propertyType || ''} 
+                                        onValueChange={(value) => form.setValue(`property.properties.${propertyIndex}.propertyType` as any, value)}>
+                                  <SelectTrigger data-testid={`select-second-home-property-type-${propertyId}`}>
+                                    <SelectValue placeholder="Select type" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="single-family">Single Family Home</SelectItem>
+                                    <SelectItem value="condo">Condominium</SelectItem>
+                                    <SelectItem value="townhouse">Townhouse</SelectItem>
+                                    <SelectItem value="duplex">Duplex</SelectItem>
+                                    <SelectItem value="multi-family">Multi-Family</SelectItem>
+                                    <SelectItem value="manufactured">Manufactured Home</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+
+                            {/* Property Valuation - Row 2 */}
+                            <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`second-home-estimated-value-${propertyId}`}>Estimated Value</Label>
+                                <Input
+                                  id={`second-home-estimated-value-${propertyId}`}
+                                  placeholder="$750,000"
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.estimatedValue` as any) : {})}
+                                  data-testid={`input-second-home-estimated-value-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`second-home-zillow-estimate-${propertyId}`}>Zillow</Label>
+                                <Input
+                                  id={`second-home-zillow-estimate-${propertyId}`}
+                                  placeholder="$740,000"
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.valuations.zillow` as any) : {})}
+                                  data-testid={`input-second-home-zillow-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`second-home-redfin-estimate-${propertyId}`}>Redfin</Label>
+                                <Input
+                                  id={`second-home-redfin-estimate-${propertyId}`}
+                                  placeholder="$745,000"
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.valuations.redfin` as any) : {})}
+                                  data-testid={`input-second-home-redfin-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`second-home-realtor-estimate-${propertyId}`}>Realtor.com</Label>
+                                <Input
+                                  id={`second-home-realtor-estimate-${propertyId}`}
+                                  placeholder="$750,000"
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.valuations.realtor` as any) : {})}
+                                  data-testid={`input-second-home-realtor-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`second-home-appraised-value-${propertyId}`}>Appraised Value</Label>
+                                <Input
+                                  id={`second-home-appraised-value-${propertyId}`}
+                                  placeholder="$755,000"
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.appraisedValue` as any) : {})}
+                                  data-testid={`input-second-home-appraised-value-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`second-home-owned-since-${propertyId}`}>Owned Since</Label>
+                                <Input
+                                  id={`second-home-owned-since-${propertyId}`}
+                                  type="date"
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.ownedSince` as any) : {})}
+                                  data-testid={`input-second-home-owned-since-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`second-home-purchase-price-${propertyId}`}>Purchase Price</Label>
+                                <Input
+                                  id={`second-home-purchase-price-${propertyId}`}
+                                  placeholder="$650,000"
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.purchasePrice` as any) : {})}
+                                  data-testid={`input-second-home-purchase-price-${propertyId}`}
+                                />
+                              </div>
+                            </div>
+
+                            {/* Current Loan Details */}
+                            <Card className="bg-gray-50">
+                              <CardHeader>
+                                <div className="flex items-center justify-between">
+                                  <CardTitle className="text-lg">Current Loan Details</CardTitle>
+                                  <div className="flex gap-2">
+                                    <CollapsibleTrigger asChild>
+                                      <Button 
+                                        variant="ghost" 
+                                        size="sm" 
+                                        onClick={() => setIsLoanDetailsOpen(prev => ({ ...prev, [propertyId]: !prev[propertyId] }))}
+                                        className="hover:bg-orange-500 hover:text-white"
+                                        data-testid={`button-toggle-second-home-loan-${propertyId}`}
+                                        title={isLoanDetailsOpen[propertyId] ? 'Minimize' : 'Expand'}
+                                      >
+                                        {isLoanDetailsOpen[propertyId] ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                                      </Button>
+                                    </CollapsibleTrigger>
+                                  </div>
+                                </div>
+                              </CardHeader>
+                              
+                              <Collapsible open={isLoanDetailsOpen[propertyId]} onOpenChange={(open) => setIsLoanDetailsOpen(prev => ({ ...prev, [propertyId]: open }))}>
+                                <CollapsibleContent>
+                                  <CardContent>
+                                    <div className="space-y-4">
+                                      {/* Loan Details Row 1 */}
+                                      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                                        <div className="space-y-2 md:col-span-2">
+                                          <Label htmlFor={`second-home-lender-name-${propertyId}`}>Lender Name</Label>
+                                          <Input
+                                            id={`second-home-lender-name-${propertyId}`}
+                                            placeholder="Wells Fargo"
+                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.loan.lenderName` as any) : {})}
+                                            data-testid={`input-second-home-lender-name-${propertyId}`}
+                                          />
+                                        </div>
+                                        
+                                        <div className="space-y-2 md:col-span-2">
+                                          <Label htmlFor={`second-home-loan-number-${propertyId}`}>Loan Number</Label>
+                                          <Input
+                                            id={`second-home-loan-number-${propertyId}`}
+                                            placeholder="1234567890"
+                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.loan.loanNumber` as any) : {})}
+                                            data-testid={`input-second-home-loan-number-${propertyId}`}
+                                          />
+                                        </div>
+                                        
+                                        <div className="space-y-2 md:col-span-2">
+                                          <Label htmlFor={`second-home-mortgage-balance-${propertyId}`}>Mortgage Balance</Label>
+                                          <Input
+                                            id={`second-home-mortgage-balance-${propertyId}`}
+                                            placeholder="$450,000"
+                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.loan.mortgageBalance` as any) : {})}
+                                            data-testid={`input-second-home-mortgage-balance-${propertyId}`}
+                                          />
+                                        </div>
+                                      </div>
+
+                                      {/* Loan Details Row 2 */}
+                                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div className="space-y-2">
+                                          <Label htmlFor={`second-home-pi-payment-${propertyId}`}>P&I Payment</Label>
+                                          <Input
+                                            id={`second-home-pi-payment-${propertyId}`}
+                                            placeholder="$2,400"
+                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.loan.piPayment` as any) : {})}
+                                            data-testid={`input-second-home-pi-payment-${propertyId}`}
+                                          />
+                                        </div>
+                                        
+                                        <div className="space-y-2">
+                                          <Label htmlFor={`second-home-escrow-payment-${propertyId}`}>Escrow Payment</Label>
+                                          <Input
+                                            id={`second-home-escrow-payment-${propertyId}`}
+                                            placeholder="$800"
+                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.loan.escrowPayment` as any) : {})}
+                                            data-testid={`input-second-home-escrow-payment-${propertyId}`}
+                                          />
+                                        </div>
+                                        
+                                        <div className="space-y-2">
+                                          <Label htmlFor={`second-home-total-payment-${propertyId}`}>Total Monthly Payment</Label>
+                                          <Input
+                                            id={`second-home-total-payment-${propertyId}`}
+                                            placeholder="$3,200"
+                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.loan.totalMonthlyPayment` as any) : {})}
+                                            data-testid={`input-second-home-total-payment-${propertyId}`}
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </CardContent>
+                                </CollapsibleContent>
+                              </Collapsible>
+                            </Card>
+
+                            {/* Second Loan Section */}
+                            <Card className="bg-gray-50">
+                              <CardHeader>
+                                <div className="flex items-center justify-between">
+                                  <CardTitle className="text-lg">Second Loan Details</CardTitle>
+                                  <div className="flex gap-2">
+                                    <CollapsibleTrigger asChild>
+                                      <Button 
+                                        variant="ghost" 
+                                        size="sm" 
+                                        onClick={() => setIsSecondLoanDetailsOpen(prev => ({ ...prev, [propertyId]: !prev[propertyId] }))}
+                                        className="hover:bg-orange-500 hover:text-white"
+                                        data-testid={`button-toggle-second-home-second-loan-${propertyId}`}
+                                        title={isSecondLoanDetailsOpen[propertyId] ? 'Minimize' : 'Expand'}
+                                      >
+                                        {isSecondLoanDetailsOpen[propertyId] ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                                      </Button>
+                                    </CollapsibleTrigger>
+                                  </div>
+                                </div>
+                              </CardHeader>
+                              
+                              <Collapsible open={isSecondLoanDetailsOpen[propertyId]} onOpenChange={(open) => setIsSecondLoanDetailsOpen(prev => ({ ...prev, [propertyId]: open }))}>
+                                <CollapsibleContent>
+                                  <CardContent>
+                                    <div className="space-y-4">
+                                      {/* Second Loan Details Row 1 */}
+                                      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                                        <div className="space-y-2 md:col-span-2">
+                                          <Label htmlFor={`second-home-second-lender-name-${propertyId}`}>Lender Name</Label>
+                                          <Input
+                                            id={`second-home-second-lender-name-${propertyId}`}
+                                            placeholder="Bank of America"
+                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.secondLoan.lenderName` as any) : {})}
+                                            data-testid={`input-second-home-second-lender-name-${propertyId}`}
+                                          />
+                                        </div>
+                                        
+                                        <div className="space-y-2 md:col-span-2">
+                                          <Label htmlFor={`second-home-second-loan-number-${propertyId}`}>Loan Number</Label>
+                                          <Input
+                                            id={`second-home-second-loan-number-${propertyId}`}
+                                            placeholder="9876543210"
+                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.secondLoan.loanNumber` as any) : {})}
+                                            data-testid={`input-second-home-second-loan-number-${propertyId}`}
+                                          />
+                                        </div>
+                                        
+                                        <div className="space-y-2 md:col-span-2">
+                                          <Label htmlFor={`second-home-second-mortgage-balance-${propertyId}`}>Mortgage Balance</Label>
+                                          <Input
+                                            id={`second-home-second-mortgage-balance-${propertyId}`}
+                                            placeholder="$75,000"
+                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.secondLoan.mortgageBalance` as any) : {})}
+                                            data-testid={`input-second-home-second-mortgage-balance-${propertyId}`}
+                                          />
+                                        </div>
+                                      </div>
+
+                                      {/* Second Loan Details Row 2 */}
+                                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div className="space-y-2">
+                                          <Label htmlFor={`second-home-second-pi-payment-${propertyId}`}>P&I Payment</Label>
+                                          <Input
+                                            id={`second-home-second-pi-payment-${propertyId}`}
+                                            placeholder="$500"
+                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.secondLoan.piPayment` as any) : {})}
+                                            data-testid={`input-second-home-second-pi-payment-${propertyId}`}
+                                          />
+                                        </div>
+                                        
+                                        <div className="space-y-2">
+                                          <Label htmlFor={`second-home-second-escrow-payment-${propertyId}`}>Escrow Payment</Label>
+                                          <Input
+                                            id={`second-home-second-escrow-payment-${propertyId}`}
+                                            placeholder="$100"
+                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.secondLoan.escrowPayment` as any) : {})}
+                                            data-testid={`input-second-home-second-escrow-payment-${propertyId}`}
+                                          />
+                                        </div>
+                                        
+                                        <div className="space-y-2">
+                                          <Label htmlFor={`second-home-second-total-payment-${propertyId}`}>Total Monthly Payment</Label>
+                                          <Input
+                                            id={`second-home-second-total-payment-${propertyId}`}
+                                            placeholder="$600"
+                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.secondLoan.totalMonthlyPayment` as any) : {})}
+                                            data-testid={`input-second-home-second-total-payment-${propertyId}`}
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </CardContent>
+                                </CollapsibleContent>
+                              </Collapsible>
+                            </Card>
+                          </div>
+                        </CardContent>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  </Card>
+                );
+              })}
+
               {/* Dynamic Property Cards */}
               {sortPropertiesByHierarchy(form.watch('property.properties') || [])
-                .filter(property => property.use !== 'primary') // Exclude Primary Residence - now handled by new system above
+                .filter(property => property.use !== 'primary' && property.use !== 'second-home') // Exclude Primary Residence and Second Home - now handled by new systems above
                 .map((property, index) => {
                 const propertyId = property.id || `property-${index}`;
                 const isOpen = propertyCardStates[propertyId] ?? true;
@@ -13611,6 +14181,65 @@ export default function AdminAddClient() {
                 setDeletePrimaryResidenceDialog({ isOpen: false, cardId: '' });
               }}
               data-testid="button-confirm-delete-primary-residence"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Second Home Confirmation Dialog */}
+      <AlertDialog open={deleteSecondHomeDialog.isOpen} onOpenChange={(open) => !open && setDeleteSecondHomeDialog({ isOpen: false, cardId: '' })}>
+        <AlertDialogContent data-testid="dialog-delete-second-home">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Second Home Card</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this second home card? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteSecondHomeDialog({ isOpen: false, cardId: '' })}
+              data-testid="button-cancel-delete-second-home"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                const cardToDelete = deleteSecondHomeDialog.cardId;
+                
+                // If removing the default card, clear the checkbox and related fields
+                if (cardToDelete === 'second-home-template-card') {
+                  // Clear the second home card list (empty array removes all cards)
+                  setSecondHomeCards([]);
+                  // Clear all data state
+                  setSecondHomeData({});
+                } else {
+                  // Remove the specific card
+                  setSecondHomeCards(prev => prev.filter(id => id !== cardToDelete));
+                  
+                  // Clean up data state for this card
+                  setSecondHomeData(prev => {
+                    const { [cardToDelete]: _, ...rest } = prev;
+                    return rest;
+                  });
+
+                  // Remove from form data
+                  const currentProperties = form.watch('property.properties') || [];
+                  const updatedProperties = currentProperties.filter(property => property.id !== cardToDelete);
+                  form.setValue('property.properties', updatedProperties);
+
+                  // Remove collapsible state for removed property
+                  setPropertyCardStates(prev => {
+                    const { [cardToDelete]: _, ...rest } = prev;
+                    return rest;
+                  });
+                }
+                
+                setDeleteSecondHomeDialog({ isOpen: false, cardId: '' });
+              }}
+              data-testid="button-confirm-delete-second-home"
               className="bg-red-600 hover:bg-red-700"
             >
               Delete
