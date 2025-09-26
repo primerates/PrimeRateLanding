@@ -8471,6 +8471,7 @@ export default function AdminAddClient() {
                                       updateEmploymentDuration(propertyId, currentData.startDate, currentData.endDate, checked);
                                     }}
                                     data-testid={`toggle-${propertyId}-present`}
+                                    className="scale-[0.8]"
                                   />
                                 </div>
                                 <Input
