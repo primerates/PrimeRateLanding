@@ -8582,7 +8582,7 @@ export default function AdminAddClient() {
                                   onValueChange={() => {}}
                                 >
                                   <SelectTrigger data-testid="select-template-employer-employment-type">
-                                    <SelectValue placeholder="Select type" />
+                                    <SelectValue placeholder="Select" />
                                   </SelectTrigger>
                                   <SelectContent>
                                     <SelectItem value="Full-Time">Full-Time</SelectItem>
@@ -9460,7 +9460,7 @@ export default function AdminAddClient() {
                                       onValueChange={field.onChange}
                                     >
                                       <SelectTrigger data-testid={`select-${propertyId}-coborrower-employer-employment-type`}>
-                                        <SelectValue placeholder="Select type" />
+                                        <SelectValue placeholder="Select" />
                                       </SelectTrigger>
                                       <SelectContent>
                                         <SelectItem value="Full-Time">Full-Time</SelectItem>
@@ -10891,7 +10891,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-street-${propertyId}`}>Street Address *</Label>
                                 <Input
                                   id={`property-address-street-${propertyId}`}
-                                  placeholder="123 Main St"
+
                                   {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.street` as any) : {})}
                                   data-testid={`input-property-street-${propertyId}`}
                                 />
@@ -10959,7 +10959,7 @@ export default function AdminAddClient() {
                                   onValueChange={(value) => propertyIndex >= 0 && form.setValue(`property.properties.${propertyIndex}.propertyType` as any, value)}
                                 >
                                   <SelectTrigger data-testid={`select-property-type-${propertyId}`}>
-                                    <SelectValue placeholder="Select type" />
+                                    <SelectValue placeholder="Select" />
                                   </SelectTrigger>
                                   <SelectContent>
                                     <SelectItem value="single-family">Single Family</SelectItem>
@@ -11518,7 +11518,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`second-home-property-address-street-${propertyId}`}>Street Address *</Label>
                                 <Input
                                   id={`second-home-property-address-street-${propertyId}`}
-                                  placeholder="123 Main St"
+
                                   {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.street` as any) : {})}
                                   data-testid={`input-second-home-property-street-${propertyId}`}
                                 />
@@ -11537,7 +11537,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`second-home-property-address-city-${propertyId}`}>City *</Label>
                                 <Input
                                   id={`second-home-property-address-city-${propertyId}`}
-                                  placeholder="San Francisco"
+
                                   {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.city` as any) : {})}
                                   data-testid={`input-second-home-property-city-${propertyId}`}
                                 />
@@ -11575,7 +11575,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`second-home-property-address-county-${propertyId}`}>County</Label>
                                 <Input
                                   id={`second-home-property-address-county-${propertyId}`}
-                                  placeholder="San Francisco"
+
                                   {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.county` as any) : {})}
                                   data-testid={`input-second-home-property-county-${propertyId}`}
                                 />
@@ -11587,7 +11587,7 @@ export default function AdminAddClient() {
                                         value={form.watch(`property.properties.${propertyIndex}` as any)?.propertyType || ''} 
                                         onValueChange={(value) => form.setValue(`property.properties.${propertyIndex}.propertyType` as any, value)}>
                                   <SelectTrigger data-testid={`select-second-home-property-type-${propertyId}`}>
-                                    <SelectValue placeholder="Select type" />
+                                    <SelectValue placeholder="Select" />
                                   </SelectTrigger>
                                   <SelectContent>
                                     <SelectItem value="single-family">Single Family Home</SelectItem>
@@ -11674,199 +11674,6 @@ export default function AdminAddClient() {
                               </div>
                             </div>
 
-                            {/* Current Loan Details */}
-                            <Card className="bg-gray-50">
-                              <CardHeader>
-                                <div className="flex items-center justify-between">
-                                  <CardTitle className="text-lg">Current Loan Details</CardTitle>
-                                  <div className="flex gap-2">
-                                    <CollapsibleTrigger asChild>
-                                      <Button 
-                                        variant="ghost" 
-                                        size="sm" 
-                                        onClick={() => setIsLoanDetailsOpen(prev => ({ ...prev, [propertyId]: !prev[propertyId] }))}
-                                        className="hover:bg-orange-500 hover:text-white"
-                                        data-testid={`button-toggle-second-home-loan-${propertyId}`}
-                                        title={isLoanDetailsOpen[propertyId] ? 'Minimize' : 'Expand'}
-                                      >
-                                        {isLoanDetailsOpen[propertyId] ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                                      </Button>
-                                    </CollapsibleTrigger>
-                                  </div>
-                                </div>
-                              </CardHeader>
-                              
-                              <Collapsible open={isLoanDetailsOpen[propertyId]} onOpenChange={(open) => setIsLoanDetailsOpen(prev => ({ ...prev, [propertyId]: open }))}>
-                                <CollapsibleContent>
-                                  <CardContent>
-                                    <div className="space-y-4">
-                                      {/* Loan Details Row 1 */}
-                                      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                                        <div className="space-y-2 md:col-span-2">
-                                          <Label htmlFor={`second-home-lender-name-${propertyId}`}>Lender Name</Label>
-                                          <Input
-                                            id={`second-home-lender-name-${propertyId}`}
-                                            placeholder="Wells Fargo"
-                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.loan.lenderName` as any) : {})}
-                                            data-testid={`input-second-home-lender-name-${propertyId}`}
-                                          />
-                                        </div>
-                                        
-                                        <div className="space-y-2 md:col-span-2">
-                                          <Label htmlFor={`second-home-loan-number-${propertyId}`}>Loan Number</Label>
-                                          <Input
-                                            id={`second-home-loan-number-${propertyId}`}
-                                            placeholder="1234567890"
-                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.loan.loanNumber` as any) : {})}
-                                            data-testid={`input-second-home-loan-number-${propertyId}`}
-                                          />
-                                        </div>
-                                        
-                                        <div className="space-y-2 md:col-span-2">
-                                          <Label htmlFor={`second-home-mortgage-balance-${propertyId}`}>Mortgage Balance</Label>
-                                          <Input
-                                            id={`second-home-mortgage-balance-${propertyId}`}
-                                            placeholder="$450,000"
-                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.loan.mortgageBalance` as any) : {})}
-                                            data-testid={`input-second-home-mortgage-balance-${propertyId}`}
-                                          />
-                                        </div>
-                                      </div>
-
-                                      {/* Loan Details Row 2 */}
-                                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                        <div className="space-y-2">
-                                          <Label htmlFor={`second-home-pi-payment-${propertyId}`}>P&I Payment</Label>
-                                          <Input
-                                            id={`second-home-pi-payment-${propertyId}`}
-                                            placeholder="$2,400"
-                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.loan.piPayment` as any) : {})}
-                                            data-testid={`input-second-home-pi-payment-${propertyId}`}
-                                          />
-                                        </div>
-                                        
-                                        <div className="space-y-2">
-                                          <Label htmlFor={`second-home-escrow-payment-${propertyId}`}>Escrow Payment</Label>
-                                          <Input
-                                            id={`second-home-escrow-payment-${propertyId}`}
-                                            placeholder="$800"
-                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.loan.escrowPayment` as any) : {})}
-                                            data-testid={`input-second-home-escrow-payment-${propertyId}`}
-                                          />
-                                        </div>
-                                        
-                                        <div className="space-y-2">
-                                          <Label htmlFor={`second-home-total-payment-${propertyId}`}>Total Monthly Payment</Label>
-                                          <Input
-                                            id={`second-home-total-payment-${propertyId}`}
-                                            placeholder="$3,200"
-                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.loan.totalMonthlyPayment` as any) : {})}
-                                            data-testid={`input-second-home-total-payment-${propertyId}`}
-                                          />
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </CardContent>
-                                </CollapsibleContent>
-                              </Collapsible>
-                            </Card>
-
-                            {/* Second Loan Section */}
-                            <Card className="bg-gray-50">
-                              <CardHeader>
-                                <div className="flex items-center justify-between">
-                                  <CardTitle className="text-lg">Second Loan Details</CardTitle>
-                                  <div className="flex gap-2">
-                                    <CollapsibleTrigger asChild>
-                                      <Button 
-                                        variant="ghost" 
-                                        size="sm" 
-                                        onClick={() => setIsSecondLoanDetailsOpen(prev => ({ ...prev, [propertyId]: !prev[propertyId] }))}
-                                        className="hover:bg-orange-500 hover:text-white"
-                                        data-testid={`button-toggle-second-home-second-loan-${propertyId}`}
-                                        title={isSecondLoanDetailsOpen[propertyId] ? 'Minimize' : 'Expand'}
-                                      >
-                                        {isSecondLoanDetailsOpen[propertyId] ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                                      </Button>
-                                    </CollapsibleTrigger>
-                                  </div>
-                                </div>
-                              </CardHeader>
-                              
-                              <Collapsible open={isSecondLoanDetailsOpen[propertyId]} onOpenChange={(open) => setIsSecondLoanDetailsOpen(prev => ({ ...prev, [propertyId]: open }))}>
-                                <CollapsibleContent>
-                                  <CardContent>
-                                    <div className="space-y-4">
-                                      {/* Second Loan Details Row 1 */}
-                                      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                                        <div className="space-y-2 md:col-span-2">
-                                          <Label htmlFor={`second-home-second-lender-name-${propertyId}`}>Lender Name</Label>
-                                          <Input
-                                            id={`second-home-second-lender-name-${propertyId}`}
-                                            placeholder="Bank of America"
-                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.secondLoan.lenderName` as any) : {})}
-                                            data-testid={`input-second-home-second-lender-name-${propertyId}`}
-                                          />
-                                        </div>
-                                        
-                                        <div className="space-y-2 md:col-span-2">
-                                          <Label htmlFor={`second-home-second-loan-number-${propertyId}`}>Loan Number</Label>
-                                          <Input
-                                            id={`second-home-second-loan-number-${propertyId}`}
-                                            placeholder="9876543210"
-                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.secondLoan.loanNumber` as any) : {})}
-                                            data-testid={`input-second-home-second-loan-number-${propertyId}`}
-                                          />
-                                        </div>
-                                        
-                                        <div className="space-y-2 md:col-span-2">
-                                          <Label htmlFor={`second-home-second-mortgage-balance-${propertyId}`}>Mortgage Balance</Label>
-                                          <Input
-                                            id={`second-home-second-mortgage-balance-${propertyId}`}
-                                            placeholder="$75,000"
-                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.secondLoan.mortgageBalance` as any) : {})}
-                                            data-testid={`input-second-home-second-mortgage-balance-${propertyId}`}
-                                          />
-                                        </div>
-                                      </div>
-
-                                      {/* Second Loan Details Row 2 */}
-                                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                        <div className="space-y-2">
-                                          <Label htmlFor={`second-home-second-pi-payment-${propertyId}`}>P&I Payment</Label>
-                                          <Input
-                                            id={`second-home-second-pi-payment-${propertyId}`}
-                                            placeholder="$500"
-                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.secondLoan.piPayment` as any) : {})}
-                                            data-testid={`input-second-home-second-pi-payment-${propertyId}`}
-                                          />
-                                        </div>
-                                        
-                                        <div className="space-y-2">
-                                          <Label htmlFor={`second-home-second-escrow-payment-${propertyId}`}>Escrow Payment</Label>
-                                          <Input
-                                            id={`second-home-second-escrow-payment-${propertyId}`}
-                                            placeholder="$100"
-                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.secondLoan.escrowPayment` as any) : {})}
-                                            data-testid={`input-second-home-second-escrow-payment-${propertyId}`}
-                                          />
-                                        </div>
-                                        
-                                        <div className="space-y-2">
-                                          <Label htmlFor={`second-home-second-total-payment-${propertyId}`}>Total Monthly Payment</Label>
-                                          <Input
-                                            id={`second-home-second-total-payment-${propertyId}`}
-                                            placeholder="$600"
-                                            {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.secondLoan.totalMonthlyPayment` as any) : {})}
-                                            data-testid={`input-second-home-second-total-payment-${propertyId}`}
-                                          />
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </CardContent>
-                                </CollapsibleContent>
-                              </Collapsible>
-                            </Card>
                           </div>
                         </CardContent>
                       </CollapsibleContent>
@@ -12029,7 +11836,7 @@ export default function AdminAddClient() {
                                 <Input
                                   id={`property-address-street-${propertyId}`}
                                   {...form.register(`property.properties.${index}.address.street` as const)}
-                                  placeholder="123 Main St"
+
                                   data-testid={`input-property-street-${propertyId}`}
                                   onBlur={() => {
                                     // Trigger auto-fetch after a delay to allow other fields to be filled
@@ -12104,7 +11911,7 @@ export default function AdminAddClient() {
                                   onValueChange={(value) => form.setValue(`property.properties.${index}.propertyType` as const, value)}
                                 >
                                   <SelectTrigger data-testid={`select-property-type-${propertyId}`}>
-                                    <SelectValue placeholder="Select type" />
+                                    <SelectValue placeholder="Select" />
                                   </SelectTrigger>
                                   <SelectContent>
                                     <SelectItem value="single-family">Single Family</SelectItem>
