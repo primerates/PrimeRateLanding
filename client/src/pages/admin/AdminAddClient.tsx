@@ -10611,6 +10611,7 @@ export default function AdminAddClient() {
                           id="property-type-primary"
                           checked={hasPropertyType('primary') || (primaryResidenceCards || []).length > 0}
                           onCheckedChange={(checked) => handlePropertyTypeChange(checked, 'primary')}
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           data-testid="checkbox-property-primary"
                         />
                         <Label htmlFor="property-type-primary" className="font-medium">
