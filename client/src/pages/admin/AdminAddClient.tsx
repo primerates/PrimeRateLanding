@@ -11125,23 +11125,29 @@ export default function AdminAddClient() {
                               <div className="space-y-2 md:col-span-1">
                                 <div className="min-h-5 flex items-center gap-2">
                                   <Label htmlFor={`property-owned-since-${propertyId}`}>Purchased</Label>
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                                    onClick={() => {
-                                      toast({
-                                        title: "Purchase Information",
-                                        description: "Please see purchase and record dates in title report located in vendor page.",
-                                        duration: 5000,
-                                      });
-                                    }}
-                                    data-testid={`button-purchased-info-${propertyId}`}
-                                    title="Purchase Information"
-                                  >
-                                    <Info className="h-4 w-4" />
-                                  </Button>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                        onClick={() => {
+                                          toast({
+                                            title: "Purchase Information",
+                                            description: "Please see purchase and record dates in title report located in vendor page.",
+                                            duration: 5000,
+                                          });
+                                        }}
+                                        data-testid={`button-purchased-info-${propertyId}`}
+                                      >
+                                        <Info className="h-4 w-4" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top" sideOffset={15} className="text-sm">
+                                      Purchase Information
+                                    </TooltipContent>
+                                  </Tooltip>
                                 </div>
                                 <Input
                                   id={`property-owned-since-${propertyId}`}
@@ -11816,23 +11822,29 @@ export default function AdminAddClient() {
                               <div className="space-y-2 md:col-span-1">
                                 <div className="min-h-5 flex items-center gap-2">
                                   <Label htmlFor={`second-home-owned-since-${propertyId}`}>Purchased</Label>
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                                    onClick={() => {
-                                      toast({
-                                        title: "Purchase Information",
-                                        description: "Please see purchase and record dates in title report located in vendor page.",
-                                        duration: 5000,
-                                      });
-                                    }}
-                                    data-testid={`button-second-home-purchased-info-${propertyId}`}
-                                    title="Purchase Information"
-                                  >
-                                    <Info className="h-4 w-4" />
-                                  </Button>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                        onClick={() => {
+                                          toast({
+                                            title: "Purchase Information",
+                                            description: "Please see purchase and record dates in title report located in vendor page.",
+                                            duration: 5000,
+                                          });
+                                        }}
+                                        data-testid={`button-second-home-purchased-info-${propertyId}`}
+                                      >
+                                        <Info className="h-4 w-4" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top" sideOffset={15} className="text-sm">
+                                      Purchase Information
+                                    </TooltipContent>
+                                  </Tooltip>
                                 </div>
                                 <Input
                                   id={`second-home-owned-since-${propertyId}`}
@@ -12505,23 +12517,29 @@ export default function AdminAddClient() {
                               <div className="space-y-2 md:col-span-1">
                                 <div className="min-h-5 flex items-center gap-2">
                                   <Label htmlFor={`investment-property-owned-since-${propertyId}`}>Purchased</Label>
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                                    onClick={() => {
-                                      toast({
-                                        title: "Purchase Information",
-                                        description: "Please see purchase and record dates in title report located in vendor page.",
-                                        duration: 5000,
-                                      });
-                                    }}
-                                    data-testid={`button-investment-property-purchased-info-${propertyId}`}
-                                    title="Purchase Information"
-                                  >
-                                    <Info className="h-4 w-4" />
-                                  </Button>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                        onClick={() => {
+                                          toast({
+                                            title: "Purchase Information",
+                                            description: "Please see purchase and record dates in title report located in vendor page.",
+                                            duration: 5000,
+                                          });
+                                        }}
+                                        data-testid={`button-investment-property-purchased-info-${propertyId}`}
+                                      >
+                                        <Info className="h-4 w-4" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top" sideOffset={15} className="text-sm">
+                                      Purchase Information
+                                    </TooltipContent>
+                                  </Tooltip>
                                 </div>
                                 <Input
                                   id={`investment-property-owned-since-${propertyId}`}
@@ -13203,23 +13221,29 @@ export default function AdminAddClient() {
                               <div className="space-y-2 md:col-span-1">
                                 <div className="min-h-5 flex items-center gap-2">
                                   <Label htmlFor={`property-owned-since-${propertyId}`}>Purchased</Label>
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                                    onClick={() => {
-                                      toast({
-                                        title: "Purchase Information",
-                                        description: "Please see purchase and record dates in title report located in vendor page.",
-                                        duration: 5000,
-                                      });
-                                    }}
-                                    data-testid={`button-purchased-info-${propertyId}`}
-                                    title="Purchase Information"
-                                  >
-                                    <Info className="h-4 w-4" />
-                                  </Button>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                        onClick={() => {
+                                          toast({
+                                            title: "Purchase Information",
+                                            description: "Please see purchase and record dates in title report located in vendor page.",
+                                            duration: 5000,
+                                          });
+                                        }}
+                                        data-testid={`button-purchased-info-${propertyId}`}
+                                      >
+                                        <Info className="h-4 w-4" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top" sideOffset={15} className="text-sm">
+                                      Purchase Information
+                                    </TooltipContent>
+                                  </Tooltip>
                                 </div>
                                 <Input
                                   id={`property-owned-since-${propertyId}`}
