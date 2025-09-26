@@ -1,0 +1,64 @@
+import { useState, useEffect, useCallback } from 'react';
+import { useFormContext } from 'react-hook-form';
+// Assume debounce is imported or defined (e.g., from lodash)
+import debounce from 'lodash/debounce';
+
+const TotalCurrentLoanPayment: React.FC = () => {
+  const { subscribe, getValues } = useFormContext();
+  const [total, setTotal] = useState(0);
+
+  const calculateTotal = useCallback((values: any) => {
+    const principal = parseMonetaryValue(values.currentLoan?.principalAndInterestPayment || '');
+    const escrow = parseMonetaryValue(values.currentLoan?.escrowPayment || '');
+    return principal + escrow;
+  }, []);
+
+  const debouncedUpdate = useCallback(
+    debounce((values: any) => {
+      setTotal(calculateTotal(values));
+    }, 300),
+    [calculateTotal]
+  );
+
+  useEffect(() => {
+    // Set initial total
+    const initialValues = getValues();
+    setTotal(calculateTotal(initialValues));
+
+    // Subscribe to changes on specific fields only
+    const subscription = subscribe({
+      name: ['currentLoan.principalAndInterestPayment', 'currentLoan.escrowPayment'],
+      formState: { values: true },
+      callback: ({ values }) => {
+        debouncedUpdate(values);
+      },
+    });
+
+    return () => {
+      subscription(); // Unsubscribe
+      debouncedUpdate.cancel(); // Cancel any pending debounce
+    };
+  }, [subscribe, getValues, debouncedUpdate, calculateTotal]);
+
+  const formattedTotal = useMemo(() =>
+    total > 0 ? total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '',
+    [total]
+  );
+
+  return (
+    <div className="space-y-2">
+      <Label htmlFor="currentLoan-totalMonthlyPayment">Total Monthly Payment</Label>
+      <div className="flex items-center border border-input bg-gray-50 px-3 rounded-md">
+        <span className="text-muted-foreground text-sm">$</span>
+        <Input
+          id="currentLoan-totalMonthlyPayment"
+          value={formattedTotal}
+          placeholder="0.00"
+          className="border-0 bg-transparent px-2 focus-visible:ring-0 cursor-default"
+          readOnly
+          data-testid="input-currentLoan-totalMonthlyPayment"
+        />
+      </div>
+    </div>
+  );
+};

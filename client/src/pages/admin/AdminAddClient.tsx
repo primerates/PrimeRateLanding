@@ -1869,19 +1869,52 @@ export default function AdminAddClient() {
   }
 
   const TotalCurrentLoanPayment: React.FC<TotalCurrentLoanPaymentProps> = ({ control }) => {
+    // Use refs to store the latest values without causing re-renders
+    const principalRef = useRef('');
+    const escrowRef = useRef('');
+    const [displayTotal, setDisplayTotal] = useState('');
+
+    // Simple debounce function
+    const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+    
+    const updateTotal = useCallback(() => {
+      const principal = parseMonetaryValue(principalRef.current);
+      const escrow = parseMonetaryValue(escrowRef.current);
+      const total = principal + escrow;
+      const formatted = total > 0 ? total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '';
+      setDisplayTotal(formatted);
+    }, []);
+
+    const debouncedUpdate = useCallback(() => {
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+      debounceTimeout.current = setTimeout(updateTotal, 300);
+    }, [updateTotal]);
+
+    // Watch values but store in refs to avoid re-renders
     const principalPayment = useWatch({ control, name: 'currentLoan.principalAndInterestPayment' }) || '';
     const escrowPayment = useWatch({ control, name: 'currentLoan.escrowPayment' }) || '';
 
-    const total = useMemo(() => {
-      const principal = parseMonetaryValue(principalPayment);
-      const escrow = parseMonetaryValue(escrowPayment);
-      return principal + escrow;
-    }, [principalPayment, escrowPayment]);
+    // Update refs and trigger debounced calculation
+    useEffect(() => {
+      principalRef.current = principalPayment;
+      debouncedUpdate();
+    }, [principalPayment, debouncedUpdate]);
 
-    const formattedTotal = useMemo(() => 
-      total > 0 ? total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '',
-      [total]
-    );
+    useEffect(() => {
+      escrowRef.current = escrowPayment;
+      debouncedUpdate();
+    }, [escrowPayment, debouncedUpdate]);
+
+    // Cleanup on unmount
+    useEffect(() => {
+      return () => {
+        if (debounceTimeout.current) {
+          clearTimeout(debounceTimeout.current);
+        }
+      };
+    }, []);
 
     return (
       <div className="space-y-2">
@@ -1890,7 +1923,7 @@ export default function AdminAddClient() {
           <span className="text-muted-foreground text-sm">$</span>
           <Input
             id="currentLoan-totalMonthlyPayment"
-            value={formattedTotal}
+            value={displayTotal}
             placeholder="0.00"
             className="border-0 bg-transparent px-2 focus-visible:ring-0 cursor-default"
             readOnly
