@@ -10891,8 +10891,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-street-${propertyId}`}>Street Address *</Label>
                                 <Input
                                   id={`property-address-street-${propertyId}`}
-
-                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.street` as any) : {})}
+                                  {...form.register(`property.properties.${propertyIndex >= 0 ? propertyIndex : 0}.address.street` as any)}
                                   data-testid={`input-property-street-${propertyId}`}
                                 />
                               </div>
@@ -10901,7 +10900,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-unit-${propertyId}`}>Unit/Apt</Label>
                                 <Input
                                   id={`property-address-unit-${propertyId}`}
-                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.unit` as any) : {})}
+                                  {...form.register(`property.properties.${propertyIndex >= 0 ? propertyIndex : 0}.address.unit` as any)}
                                   data-testid={`input-property-unit-${propertyId}`}
                                 />
                               </div>
@@ -10910,7 +10909,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-city-${propertyId}`}>City *</Label>
                                 <Input
                                   id={`property-address-city-${propertyId}`}
-                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.city` as any) : {})}
+                                  {...form.register(`property.properties.${propertyIndex >= 0 ? propertyIndex : 0}.address.city` as any)}
                                   data-testid={`input-property-city-${propertyId}`}
                                 />
                               </div>
@@ -10938,7 +10937,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-zip-${propertyId}`}>ZIP Code *</Label>
                                 <Input
                                   id={`property-address-zip-${propertyId}`}
-                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.zip` as any) : {})}
+                                  {...form.register(`property.properties.${propertyIndex >= 0 ? propertyIndex : 0}.address.zip` as any)}
                                   data-testid={`input-property-zip-${propertyId}`}
                                 />
                               </div>
@@ -10947,7 +10946,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-county-${propertyId}`}>County</Label>
                                 <Input
                                   id={`property-address-county-${propertyId}`}
-                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.county` as any) : {})}
+                                  {...form.register(`property.properties.${propertyIndex >= 0 ? propertyIndex : 0}.address.county` as any)}
                                   data-testid={`input-property-county-${propertyId}`}
                                 />
                               </div>
