@@ -13967,7 +13967,7 @@ export default function AdminAddClient() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label className="text-lg font-semibold">New Loan Type</Label>
+                    <Label className="text-lg font-semibold">Loan Category</Label>
                     <div className="min-h-[40px] flex items-center">
                       <div
                         className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
@@ -13985,7 +13985,7 @@ export default function AdminAddClient() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label className="text-lg font-semibold">Current Loans</Label>
+                    <Label className="text-lg font-semibold">Existing Loans</Label>
                     <div className="min-h-[40px] flex items-center">
                       <div
                         className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
@@ -14185,11 +14185,23 @@ export default function AdminAddClient() {
                       
                       <div className="space-y-2">
                         <Label htmlFor="newLoan-loanProgram">Loan Program</Label>
-                        <Input
-                          id="newLoan-loanProgram"
-                          {...form.register('newLoan.loanProgram')}
-                          data-testid="input-newLoan-loanProgram"
-                        />
+                        <Select 
+                          value={form.watch('newLoan.loanProgram') || ''}
+                          onValueChange={(value) => form.setValue('newLoan.loanProgram', value as any)}
+                        >
+                          <SelectTrigger data-testid="select-newLoan-loanProgram">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="select">Select</SelectItem>
+                            <SelectItem value="conventional">Conventional</SelectItem>
+                            <SelectItem value="conventional-jumbo">Conventional Jumbo</SelectItem>
+                            <SelectItem value="fha">FHA</SelectItem>
+                            <SelectItem value="va">VA</SelectItem>
+                            <SelectItem value="va-jumbo">VA Jumbo</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                       
                       <div className="space-y-2">
