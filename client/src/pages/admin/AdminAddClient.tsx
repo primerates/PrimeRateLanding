@@ -1274,25 +1274,25 @@ export default function AdminAddClient() {
   const [escrowPaymentFieldType, setEscrowPaymentFieldType] = useState<Record<string, 'tax-insurance' | 'property-tax' | 'home-insurance'>>({});
 
   // Current Primary Loan escrow toggle state (3-state cycle)
-  const [currentLoanEscrowType, setCurrentLoanEscrowType] = useState<'monthly-escrow' | 'insurance-only' | 'property-tax-only'>('monthly-escrow');
+  const [currentLoanEscrowType, setCurrentLoanEscrowType] = useState<'tax-insurance' | 'insurance-only' | 'property-tax-only'>('tax-insurance');
 
   // Helper function to get Current Primary Loan escrow label and handle toggle cycling
   const getCurrentLoanEscrowLabel = () => {
     switch (currentLoanEscrowType) {
-      case 'monthly-escrow': return 'Monthly Escrow';
+      case 'tax-insurance': return 'Tax & Insurance';
       case 'insurance-only': return 'Insurance Only';
       case 'property-tax-only': return 'Property Tax Only';
-      default: return 'Monthly Escrow';
+      default: return 'Tax & Insurance';
     }
   };
 
   const cycleCurrentLoanEscrowType = () => {
     setCurrentLoanEscrowType(current => {
       switch (current) {
-        case 'monthly-escrow': return 'insurance-only';
+        case 'tax-insurance': return 'insurance-only';
         case 'insurance-only': return 'property-tax-only';
-        case 'property-tax-only': return 'monthly-escrow';
-        default: return 'monthly-escrow';
+        case 'property-tax-only': return 'tax-insurance';
+        default: return 'tax-insurance';
       }
     });
   };
