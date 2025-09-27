@@ -3524,6 +3524,144 @@ export default function AdminAddClient() {
                 </div>
               </div>
               
+              {/* Row 3: Principal & Interest Payment, Escrow Payment, Total Monthly Payment, Pre-Payment Penalty, Attached to Property */}
+              <Card className={`bg-muted ${
+                showSecondLoanCardAnimation[idPrefix] ? 'animate-roll-up-grey-box' : ''
+              }`}>
+                <CardContent className="pt-6">
+                  <div className="grid grid-cols-1 md:grid-cols-10 gap-4">
+                <div className="space-y-2 md:col-span-1">
+                  <Label htmlFor="secondLoan-interestRate">Interest Rate</Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <Input
+                      id="secondLoan-interestRate"
+                      {...targetForm.register('secondLoan.interestRate')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-secondLoan-interestRate"
+                    />
+                    <span className="text-muted-foreground text-sm">%</span>
+                  </div>
+                </div>
+                
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="secondLoan-principalInterestPayment">Principal & Interest Payment</Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="secondLoan-principalInterestPayment"
+                      {...targetForm.register('secondLoan.principalAndInterestPayment')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-secondLoan-principalInterestPayment"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2 md:col-span-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <Label htmlFor="secondLoan-monthlyEscrow" className="text-sm">
+                      Escrow Payment
+                    </Label>
+                    <Switch
+                      checked={secondLoanEscrowType === 'tax-insurance'} // On (blue) when Tax & Insurance is selected
+                      onCheckedChange={() => {}} // Placeholder for escrow type cycling
+                      data-testid="toggle-secondLoan-escrow-type"
+                      className="scale-[0.8]"
+                    />
+                  </div>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="secondLoan-monthlyEscrow"
+                      {...targetForm.register('secondLoan.escrowPayment')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-secondLoan-monthlyEscrow"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="secondLoan-totalMonthlyPayment">Total Monthly Payment</Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="secondLoan-totalMonthlyPayment"
+                      {...targetForm.register('secondLoan.totalMonthlyPayment')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-secondLoan-totalMonthlyPayment"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2 md:col-span-3">
+                  <Label htmlFor="secondLoan-attachedProperty">Attached to Property</Label>
+                  <Select value={targetForm.watch('secondLoan.attachedProperty') || ''} onValueChange={(value) => {
+                    targetForm.setValue('secondLoan.attachedProperty', value);
+                    if (value && value !== 'Other' && value !== 'select') {
+                      setTimeout(() => onAutoCopyAddress?.(), 100);
+                    } else if (value === 'Other' || value === 'select') {
+                      // Clear address fields for Other or empty
+                      targetForm.setValue('secondLoan.propertyAddress.street', '');
+                      targetForm.setValue('secondLoan.propertyAddress.unit', '');
+                      targetForm.setValue('secondLoan.propertyAddress.city', '');
+                      targetForm.setValue('secondLoan.propertyAddress.state', '');
+                      targetForm.setValue('secondLoan.propertyAddress.zipCode', '');
+                      targetForm.setValue('secondLoan.propertyAddress.county', '');
+                    }
+                  }}>
+                    <SelectTrigger data-testid="select-secondLoan-attachedProperty">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      {(() => {
+                        const properties = targetForm.watch('property.properties') || [];
+                        return properties
+                          .filter((property: any) => property.address?.street || property.use === 'primary') // Show properties with street addresses OR primary residence properties
+                          .map((property: any, index: number) => {
+                            const address = property.address;
+                            const streetAddress = address?.street;
+                            const city = address?.city;
+                            const state = address?.state;
+                            const zipCode = address?.zip;
+                            
+                            // Build display text using address components for uniqueness
+                            let displayText;
+                            
+                            // Special handling for Primary Residence without address
+                            if (property.use === 'primary' && !streetAddress) {
+                              displayText = 'Primary Residence';
+                            } else {
+                              displayText = streetAddress || 'Property';
+                              if (city && state) {
+                                displayText += `, ${city}, ${state}`;
+                              } else if (city) {
+                                displayText += `, ${city}`;
+                              } else if (state) {
+                                displayText += `, ${state}`;
+                              }
+                              if (zipCode) {
+                                displayText += ` ${zipCode}`;
+                              }
+                            }
+                            
+                            return (
+                              <SelectItem key={`property-${property.id}`} value={property.id}>
+                                {displayText}
+                              </SelectItem>
+                            );
+                          });
+                      })()}
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                  </div>
+                </CardContent>
+              </Card>
             </CardContent>
           </CollapsibleContent>
         </Collapsible>
