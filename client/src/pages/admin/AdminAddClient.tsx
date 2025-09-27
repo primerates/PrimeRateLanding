@@ -13946,7 +13946,7 @@ export default function AdminAddClient() {
                 <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
                   <div className="space-y-2">
                     <Label className="text-lg font-semibold">Transaction</Label>
-                    <div className="mt-6">
+                    <div className="mt-8">
                       <span className="text-muted-foreground" style={{ fontSize: '28px' }}>
                         {form.watch('newLoan.loanPurpose') && form.watch('newLoan.loanPurpose') !== 'select' 
                           ? form.watch('newLoan.loanPurpose') === 'rate-term' 
@@ -13987,7 +13987,13 @@ export default function AdminAddClient() {
                         className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
                         style={{
                           fontFamily: 'ui-sans-serif, system-ui, sans-serif',
-                          fontSize: '32px',
+                          fontSize: (() => {
+                            const loanProgram = form.watch('newLoan.loanProgram');
+                            if (loanProgram === 'va' || loanProgram === 'va-jumbo') return '32px'; // VA: keep current size
+                            if (loanProgram === 'fha') return '28px'; // FHA: one size smaller
+                            if (loanProgram === 'conventional' || loanProgram === 'conventional-jumbo') return '24px'; // FNM: two sizes smaller
+                            return '32px';
+                          })(),
                           fontWeight: 600,
                           backgroundColor: '#1a3373',
                           boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
