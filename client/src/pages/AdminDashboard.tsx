@@ -137,16 +137,16 @@ export default function AdminDashboard() {
         backgroundRepeat: 'no-repeat'
       }}
     >
-      {/* Faded overlay to make background subtle */}
-      <div className="absolute inset-0 bg-background/85" />
+      {/* Light overlay to maintain text readability */}
+      <div className="absolute inset-0 bg-background/25" />
       
       {/* Progressive focus overlay - starts blurred at top, gradually reveals sharp background */}
       <div 
         className="absolute inset-0 transition-all duration-75 ease-out"
         style={{
           background: `linear-gradient(to bottom, 
-            rgba(255, 255, 255, 0.8) 0%, 
-            rgba(255, 255, 255, 0.3) ${Math.max(0, 60 - (backgroundFocusProgress * 60))}%, 
+            rgba(255, 255, 255, 0.3) 0%, 
+            rgba(255, 255, 255, 0.1) ${Math.max(0, 60 - (backgroundFocusProgress * 60))}%, 
             transparent ${Math.max(0, 80 - (backgroundFocusProgress * 80))}%
           )`,
           backdropFilter: `blur(${Math.max(0, 8 - (backgroundFocusProgress * 8))}px)`,
