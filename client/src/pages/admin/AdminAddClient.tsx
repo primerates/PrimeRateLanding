@@ -1273,6 +1273,30 @@ export default function AdminAddClient() {
   // Escrow payment field toggle state (per property)
   const [escrowPaymentFieldType, setEscrowPaymentFieldType] = useState<Record<string, 'tax-insurance' | 'property-tax' | 'home-insurance'>>({});
 
+  // Current Primary Loan escrow toggle state (3-state cycle)
+  const [currentLoanEscrowType, setCurrentLoanEscrowType] = useState<'monthly-escrow' | 'insurance-only' | 'property-tax-only'>('monthly-escrow');
+
+  // Helper function to get Current Primary Loan escrow label and handle toggle cycling
+  const getCurrentLoanEscrowLabel = () => {
+    switch (currentLoanEscrowType) {
+      case 'monthly-escrow': return 'Monthly Escrow';
+      case 'insurance-only': return 'Insurance Only';
+      case 'property-tax-only': return 'Property Tax Only';
+      default: return 'Monthly Escrow';
+    }
+  };
+
+  const cycleCurrentLoanEscrowType = () => {
+    setCurrentLoanEscrowType(current => {
+      switch (current) {
+        case 'monthly-escrow': return 'insurance-only';
+        case 'insurance-only': return 'property-tax-only';
+        case 'property-tax-only': return 'monthly-escrow';
+        default: return 'monthly-escrow';
+      }
+    });
+  };
+
   const form = useForm<InsertClient>({
     resolver: zodResolver(insertClientSchema),
     defaultValues: {
@@ -3068,7 +3092,17 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="currentLoan-monthlyEscrow">Monthly Escrow</Label>
+                  <div className="flex items-center justify-between mb-2">
+                    <Label htmlFor="currentLoan-monthlyEscrow" className="text-sm">
+                      {getCurrentLoanEscrowLabel()}
+                    </Label>
+                    <Switch
+                      checked={false} // Always false since we're cycling states, not toggling on/off
+                      onCheckedChange={cycleCurrentLoanEscrowType}
+                      data-testid="toggle-currentLoan-escrow-type"
+                      className="scale-[0.8]"
+                    />
+                  </div>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
