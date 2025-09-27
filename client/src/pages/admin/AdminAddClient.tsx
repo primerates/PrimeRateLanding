@@ -12006,12 +12006,14 @@ export default function AdminAddClient() {
                                     <SelectValue placeholder="Select" />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    <SelectItem value="single-family">Single Family Home</SelectItem>
-                                    <SelectItem value="condo">Condominium</SelectItem>
+                                    <SelectItem value="single-family">Single Family</SelectItem>
+                                    <SelectItem value="condo">Condo</SelectItem>
                                     <SelectItem value="townhouse">Townhouse</SelectItem>
                                     <SelectItem value="duplex">Duplex</SelectItem>
                                     <SelectItem value="multi-family">Multi-Family</SelectItem>
-                                    <SelectItem value="manufactured">Manufactured Home</SelectItem>
+                                    <SelectItem value="mobile-home-sw">Mobile Home SW</SelectItem>
+                                    <SelectItem value="mobile-home-dw">Mobile Home DW</SelectItem>
+                                    <SelectItem value="other">Other</SelectItem>
                                   </SelectContent>
                                 </Select>
                               </div>
@@ -12712,12 +12714,14 @@ export default function AdminAddClient() {
                                     <SelectValue placeholder="Select" />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    <SelectItem value="single-family">Single Family Home</SelectItem>
-                                    <SelectItem value="condo">Condominium</SelectItem>
+                                    <SelectItem value="single-family">Single Family</SelectItem>
+                                    <SelectItem value="condo">Condo</SelectItem>
                                     <SelectItem value="townhouse">Townhouse</SelectItem>
                                     <SelectItem value="duplex">Duplex</SelectItem>
                                     <SelectItem value="multi-family">Multi-Family</SelectItem>
-                                    <SelectItem value="manufactured">Manufactured Home</SelectItem>
+                                    <SelectItem value="mobile-home-sw">Mobile Home SW</SelectItem>
+                                    <SelectItem value="mobile-home-dw">Mobile Home DW</SelectItem>
+                                    <SelectItem value="other">Other</SelectItem>
                                   </SelectContent>
                                 </Select>
                               </div>
