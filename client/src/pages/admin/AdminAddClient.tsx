@@ -13946,6 +13946,19 @@ export default function AdminAddClient() {
                 <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
                   <div className="space-y-2">
                     <Label className="text-lg font-semibold">Transaction</Label>
+                    <div className="mt-4">
+                      <span className="text-sm text-muted-foreground">
+                        {form.watch('newLoan.loanPurpose') && form.watch('newLoan.loanPurpose') !== 'select' 
+                          ? form.watch('newLoan.loanPurpose') === 'rate-term' 
+                            ? 'Rate & Term'
+                            : form.watch('newLoan.loanPurpose') === 'cash-out'
+                            ? 'Cash Out'
+                            : form.watch('newLoan.loanPurpose') === 'purchase'
+                            ? 'Purchase'
+                            : ''
+                          : ''}
+                      </span>
+                    </div>
                   </div>
                   
                   <div className="space-y-2">
