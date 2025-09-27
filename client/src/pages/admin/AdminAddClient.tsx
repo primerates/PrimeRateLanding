@@ -1941,8 +1941,14 @@ export default function AdminAddClient() {
             </div>
           </div>
 
-          {/* Row 2: Loan Term, Loan Purpose, Statement Balance, Current Rate */}
+          {/* Row 2: Statement Balance, Loan Term, Loan Purpose, Interest */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground">Statement Balance</Label>
+              <div className="p-2 bg-gray-50 rounded-md border">
+                <span className="text-sm">{formatCurrency(statementBalance) || 'Not specified'}</span>
+              </div>
+            </div>
             <div className="space-y-2">
               <Label className="text-sm font-medium text-muted-foreground">Loan Term</Label>
               <div className="p-2 bg-gray-50 rounded-md border">
@@ -1956,13 +1962,7 @@ export default function AdminAddClient() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-muted-foreground">Statement Balance</Label>
-              <div className="p-2 bg-gray-50 rounded-md border">
-                <span className="text-sm">{formatCurrency(statementBalance) || 'Not specified'}</span>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-sm font-medium text-muted-foreground">Loan Rate</Label>
+              <Label className="text-sm font-medium text-muted-foreground">Interest</Label>
               <div className="p-2 bg-gray-50 rounded-md border">
                 <span className="text-sm">{currentRate ? `${currentRate}%` : 'Not specified'}</span>
               </div>
