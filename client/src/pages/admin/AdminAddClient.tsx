@@ -3723,7 +3723,7 @@ export default function AdminAddClient() {
           </CardHeader>
           <CollapsibleContent>
             <CardContent className="space-y-4">
-              {/* Row 1: Lender Name, Loan Number, Loan Category, Loan Program, Loan Duration */}
+              {/* Row 1: Lender Name, Loan Number, Current Balance, Loan Program, Loan Duration */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor={`${loanId}-lenderName`}>Lender Name</Label>
@@ -3746,17 +3746,17 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor={`${loanId}-loanCategory`}>Loan Category</Label>
-                  <Select value={targetForm.watch(`${loanId}.loanCategory`) || ''} onValueChange={(value) => targetForm.setValue(`${loanId}.loanCategory`, value)}>
-                    <SelectTrigger data-testid={`select-${loanId}-loanCategory`}>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="heloc">HELOC</SelectItem>
-                      <SelectItem value="fixed">FIXED</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Label htmlFor={`${loanId}-currentBalance`}>Current Balance</Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id={`${loanId}-currentBalance`}
+                      {...targetForm.register(`${loanId}.currentBalance`)}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid={`input-${loanId}-currentBalance`}
+                    />
+                  </div>
                 </div>
                 
                 <div className="space-y-2">
@@ -3794,20 +3794,20 @@ export default function AdminAddClient() {
                 </div>
               </div>
               
-              {/* Row 2: Current Balance, Current Rate, Monthly Payment, Pre-Payment Penalty, Attached to Property */}
+              {/* Row 2: Loan Category, Current Rate, Monthly Payment, Pre-Payment Penalty, Attached to Property */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor={`${loanId}-currentBalance`}>Current Balance</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id={`${loanId}-currentBalance`}
-                      {...targetForm.register(`${loanId}.currentBalance`)}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid={`input-${loanId}-currentBalance`}
-                    />
-                  </div>
+                  <Label htmlFor={`${loanId}-loanCategory`}>Loan Category</Label>
+                  <Select value={targetForm.watch(`${loanId}.loanCategory`) || ''} onValueChange={(value) => targetForm.setValue(`${loanId}.loanCategory`, value)}>
+                    <SelectTrigger data-testid={`select-${loanId}-loanCategory`}>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      <SelectItem value="heloc">HELOC</SelectItem>
+                      <SelectItem value="fixed">FIXED</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 
                 <div className="space-y-2">
