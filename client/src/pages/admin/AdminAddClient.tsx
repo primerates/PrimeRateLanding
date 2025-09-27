@@ -10870,5 +10870,3 @@ export default function AdminAddClient() {
     </div>
   );
 };
-
-export default AdminAddClient;
