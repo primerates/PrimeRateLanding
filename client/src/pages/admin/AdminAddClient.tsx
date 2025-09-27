@@ -14233,12 +14233,13 @@ export default function AdminAddClient() {
                           onValueChange={(value) => form.setValue('newLoan.loanPurpose', value as any)}
                         >
                           <SelectTrigger data-testid="select-newLoan-loanPurpose">
-                            <SelectValue placeholder="Select purpose" />
+                            <SelectValue placeholder="Select" />
                           </SelectTrigger>
                           <SelectContent>
+                            <SelectItem value="select">Select</SelectItem>
                             <SelectItem value="purchase">Purchase</SelectItem>
-                            <SelectItem value="refinance">Refinance</SelectItem>
-                            <SelectItem value="cash-out">Cash-Out Refinance</SelectItem>
+                            <SelectItem value="rate-term">Rate & Term</SelectItem>
+                            <SelectItem value="cash-out">Cash Out</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
