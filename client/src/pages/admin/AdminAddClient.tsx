@@ -13962,6 +13962,7 @@ export default function AdminAddClient() {
                         }}
                         data-testid="circle-1"
                       >
+                        {isNewLoanOpen ? 1 : 0}
                       </div>
                     </div>
                   </div>
@@ -13998,6 +13999,7 @@ export default function AdminAddClient() {
                         }}
                         data-testid="circle-3"
                       >
+                        {(showCurrentLoan ? 1 : 0) + (showSecondLoan ? 1 : 0) + (showThirdLoan ? 1 : 0)}
                       </div>
                     </div>
                   </div>
