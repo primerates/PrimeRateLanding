@@ -2860,7 +2860,7 @@ export default function AdminAddClient() {
                   title="Add Current Loan"
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  + Add Current Primary Loan
+                  Add Current Primary Loan
                 </Button>
                 
                 {/* Remove Button */}
