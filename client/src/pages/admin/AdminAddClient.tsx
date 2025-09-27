@@ -3859,6 +3859,135 @@ export default function AdminAddClient() {
                 </div>
               </div>
               
+              {/* Row 3: Principal & Interest Payment, Escrow Payment, Total Monthly Payment, Pre-Payment Penalty, Attached to Property */}
+              <Card className="bg-muted">
+                <CardContent className="pt-6">
+                  <div className="grid grid-cols-1 md:grid-cols-10 gap-4">
+                <div className="space-y-2 md:col-span-1">
+                  <Label htmlFor="thirdLoan-interestRate">Interest Rate</Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <Input
+                      id="thirdLoan-interestRate"
+                      {...targetForm.register('thirdLoan.interestRate')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-thirdLoan-interestRate"
+                    />
+                    <span className="text-muted-foreground text-sm">%</span>
+                  </div>
+                </div>
+                
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="thirdLoan-principalInterestPayment">Loan Balance</Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="thirdLoan-principalInterestPayment"
+                      {...targetForm.register('thirdLoan.principalAndInterestPayment')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-thirdLoan-principalInterestPayment"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="thirdLoan-monthlyEscrow">Monthly Payment</Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="thirdLoan-monthlyEscrow"
+                      {...targetForm.register('thirdLoan.escrowPayment')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-thirdLoan-monthlyEscrow"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="thirdLoan-prePaymentPenalty">Pre-Payment Penalty</Label>
+                  <Select value={targetForm.watch('thirdLoan.prePaymentPenalty') || ''} onValueChange={(value) => {
+                    targetForm.setValue('thirdLoan.prePaymentPenalty', value);
+                  }}>
+                    <SelectTrigger data-testid="select-thirdLoan-prePaymentPenalty">
+                      <SelectValue placeholder="select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">select</SelectItem>
+                      <SelectItem value="No">No</SelectItem>
+                      <SelectItem value="Yes - See Loan Notes">Yes - See Loan Notes</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2 md:col-span-3">
+                  <Label htmlFor="thirdLoan-attachedToProperty">Attached to Property</Label>
+                  <Select value={targetForm.watch('thirdLoan.attachedToProperty') || ''} onValueChange={(value) => {
+                    targetForm.setValue('thirdLoan.attachedToProperty', value as any);
+                    if (value && value !== 'Other' && value !== 'select') {
+                      setTimeout(() => onAutoCopyAddress?.(), 100);
+                    } else if (value === 'Other' || value === 'select') {
+                      // Clear address fields for Other or empty
+                      targetForm.setValue('thirdLoan.propertyAddress.street', '');
+                      targetForm.setValue('thirdLoan.propertyAddress.unit', '');
+                      targetForm.setValue('thirdLoan.propertyAddress.city', '');
+                      targetForm.setValue('thirdLoan.propertyAddress.state', '');
+                      targetForm.setValue('thirdLoan.propertyAddress.zipCode', '');
+                      targetForm.setValue('thirdLoan.propertyAddress.county', '');
+                    }
+                  }}>
+                    <SelectTrigger data-testid="select-thirdLoan-attachedToProperty">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      {(() => {
+                        const properties = targetForm.watch('property.properties') || [];
+                        return properties
+                          .filter((property: any) => property.address?.street || property.use === 'primary') // Show properties with street addresses OR primary residence properties
+                          .map((property: any, index: number) => {
+                            const address = property.address;
+                            const streetAddress = address?.street;
+                            const city = address?.city;
+                            const state = address?.state;
+                            const zipCode = address?.zip;
+                            
+                            // Build display text using address components for uniqueness
+                            let displayText;
+                            
+                            // Special handling for Primary Residence without address
+                            if (property.use === 'primary' && !streetAddress) {
+                              displayText = 'Primary Residence';
+                            } else {
+                              displayText = streetAddress || 'Property';
+                              if (city && state) {
+                                displayText += `, ${city}, ${state}`;
+                              } else if (city) {
+                                displayText += `, ${city}`;
+                              } else if (state) {
+                                displayText += `, ${state}`;
+                              }
+                              if (zipCode) {
+                                displayText += ` ${zipCode}`;
+                              }
+                            }
+                            
+                            return (
+                              <SelectItem key={`property-${property.id}`} value={property.id}>
+                                {displayText}
+                              </SelectItem>
+                            );
+                          });
+                      })()}
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
             </CardContent>
           </CollapsibleContent>
         </Collapsible>
