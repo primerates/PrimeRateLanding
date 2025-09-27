@@ -8135,6 +8135,253 @@ export default function AdminAddClient() {
                 );
               })}
 
+              {/* Borrower Second Employment Cards */}
+              {form.watch('income.incomeTypes.secondEmployment') && (borrowerSecondEmployerCards || ['default']).map((cardId, index) => {
+                const propertyId = cardId === 'default' ? 'second-template-card' : cardId;
+                const isOpen = propertyCardStates[propertyId] ?? true;
+                
+                return (
+                  <Card key={cardId} className="transition-colors duration-200">
+                    <Collapsible 
+                      open={isOpen} 
+                      onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
+                    >
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-8">
+                            <CardTitle className="flex items-center gap-2">
+                              Borrower - Second Employer
+                            </CardTitle>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {/* Add Employer Button */}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                const newId = `second-employer-${Date.now()}`;
+                                setBorrowerSecondEmployerCards(prev => [...(prev || ['default']), newId]);
+                              }}
+                              className="hover:bg-blue-500 hover:text-white"
+                              data-testid="button-add-second-employer"
+                              title="Add New Employer"
+                            >
+                              <Plus className="h-4 w-4 mr-2" />
+                              Add Employer
+                            </Button>
+                            
+                            {/* Delete Employer Button */}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setDeleteSecondEmployerDialog({ isOpen: true, cardId: propertyId })}
+                              className="hover:bg-red-500 hover:text-white"
+                              data-testid="button-delete-second-employer"
+                              title="Delete Employer"
+                            >
+                              <Minus className="h-4 w-4 mr-2" />
+                              Remove
+                            </Button>
+                            
+                            <CollapsibleTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="hover:bg-orange-500 hover:text-white" 
+                                data-testid={`button-toggle-second-employment-income-${propertyId}`}
+                                title={isOpen ? 'Minimize' : 'Expand'}
+                                key={`second-employment-income-${propertyId}-${isOpen}`}
+                              >
+                                {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </div>
+                        </div>
+                      </CardHeader>
+                    
+                    <CollapsibleContent>
+                      <CardContent>
+                        <div className="space-y-6">
+                          {/* Employment Type Selection */}
+                          <Card className={`bg-muted ${
+                            showIncomeCardAnimation['borrower-second-employment'] ? 'animate-roll-down-subject-property' : ''
+                          }`}>
+                            <CardContent className="pt-6">
+                              <div className="space-y-3">
+                                <div className="flex gap-4">
+                                  <div className="flex items-center space-x-2">
+                                    <input
+                                      type="radio"
+                                      id="second-employment-current"
+                                      name="second-employment-type"
+                                      data-testid="radio-second-employment-current"
+                                    />
+                                    <Label htmlFor="second-employment-current">Current Employer</Label>
+                                  </div>
+                                  
+                                  <div className="flex items-center space-x-2">
+                                    <input
+                                      type="radio"
+                                      id="second-employment-prior"
+                                      name="second-employment-type"
+                                      data-testid="radio-second-employment-prior"
+                                    />
+                                    <Label htmlFor="second-employment-prior">Prior Employer</Label>
+                                  </div>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+
+                          {/* Employment Information - Single Row */}
+                          <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor={`income-secondEmployerName-${cardId}`}>Employer Name</Label>
+                              <Input
+                                id={`income-secondEmployerName-${cardId}`}
+                                {...form.register(getSecondEmployerFieldPath(cardId, 'employerName'))}
+                                data-testid={`input-income-secondEmployerName-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor={`income-second-employer-phone-${cardId}`} className="text-xs">
+                                  {form.watch('income.isShowingSecondEmploymentVerification') ? 'Job Verification' : 'Employer Phone'}
+                                </Label>
+                                <Switch
+                                  checked={form.watch('income.isShowingSecondEmploymentVerification') || false}
+                                  onCheckedChange={(checked) => form.setValue('income.isShowingSecondEmploymentVerification', checked)}
+                                  data-testid={`toggle-second-employment-verification-${cardId}`}
+                                  className="scale-[0.8]"
+                                />
+                              </div>
+                              <Input
+                                id={`income-second-employer-phone-${cardId}`}
+                                placeholder="(XXX) XXX-XXXX"
+                                value={form.watch('income.isShowingSecondEmploymentVerification') 
+                                  ? (form.watch(getSecondEmployerFieldPath(cardId, 'employmentVerificationPhone')) || '')
+                                  : (form.watch(getSecondEmployerFieldPath(cardId, 'phone')) || '')}
+                                onChange={(e) => {
+                                  const fieldName = form.watch('income.isShowingSecondEmploymentVerification') 
+                                    ? getSecondEmployerFieldPath(cardId, 'employmentVerificationPhone')
+                                    : getSecondEmployerFieldPath(cardId, 'phone');
+                                  handlePhoneChange(fieldName, e.target.value);
+                                }}
+                                data-testid={`input-income-second-employer-phone-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor={`income-secondPosition-${cardId}`}>Job Title</Label>
+                              <Input
+                                id={`income-secondPosition-${cardId}`}
+                                {...form.register(getSecondEmployerFieldPath(cardId, 'position'))}
+                                data-testid={`input-income-secondPosition-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor={`income-secondMonthlySalary-${cardId}`}>Gross Monthly Income</Label>
+                              <Controller
+                                control={form.control}
+                                name={getSecondEmployerFieldPath(cardId, 'monthlySalary')}
+                                defaultValue=""
+                                render={({ field }) => (
+                                  <Input
+                                    id={`income-secondMonthlySalary-${cardId}`}
+                                    value={formatDollarDisplay(field.value || '')}
+                                    onChange={(e) => {
+                                      const rawValue = parseDollarInput(e.target.value);
+                                      field.onChange(rawValue);
+                                    }}
+                                    placeholder="$0.00"
+                                    data-testid={`input-income-secondMonthlySalary-${cardId}`}
+                                  />
+                                )}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor={`income-secondStartDate-${cardId}`}>Start Date</Label>
+                              <Input
+                                id={`income-secondStartDate-${cardId}`}
+                                type="date"
+                                {...form.register(getSecondEmployerFieldPath(cardId, 'startDate'))}
+                                data-testid={`input-income-secondStartDate-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor={`income-secondEndDate-${cardId}`} className="text-sm">
+                                  {form.watch(getSecondEmployerFieldPath(cardId, 'isPresent')) ? 'Present' : 'End Date'}
+                                </Label>
+                                <Switch
+                                  checked={form.watch(getSecondEmployerFieldPath(cardId, 'isPresent')) ?? true}
+                                  onCheckedChange={(checked) => form.setValue(getSecondEmployerFieldPath(cardId, 'isPresent'), checked)}
+                                  data-testid={`toggle-second-present-${cardId}`}
+                                  className="scale-[0.8]"
+                                />
+                              </div>
+                              <Input
+                                id={`income-secondEndDate-${cardId}`}
+                                type={form.watch(getSecondEmployerFieldPath(cardId, 'isPresent')) ? 'text' : 'date'}
+                                value={form.watch(getSecondEmployerFieldPath(cardId, 'isPresent')) ? 'present' : (form.watch(getSecondEmployerFieldPath(cardId, 'endDate')) || '')}
+                                onChange={(e) => {
+                                  if (!form.watch(getSecondEmployerFieldPath(cardId, 'isPresent'))) {
+                                    form.setValue(getSecondEmployerFieldPath(cardId, 'endDate'), e.target.value);
+                                  }
+                                }}
+                                placeholder={form.watch(getSecondEmployerFieldPath(cardId, 'isPresent')) ? 'Present' : 'MM/DD/YYYY'}
+                                readOnly={form.watch(getSecondEmployerFieldPath(cardId, 'isPresent'))}
+                                className={form.watch(getSecondEmployerFieldPath(cardId, 'isPresent')) ? 'bg-muted' : ''}
+                                data-testid={`input-income-secondEndDate-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor={`income-secondEmploymentDuration-${cardId}`}>Employment Duration</Label>
+                              <Input
+                                id={`income-secondEmploymentDuration-${cardId}`}
+                                {...form.register(getSecondEmployerFieldPath(cardId, 'duration'))}
+                                placeholder={form.watch(getSecondEmployerFieldPath(cardId, 'isPresent')) ? 'Enter' : '0'}
+                                readOnly={!form.watch(getSecondEmployerFieldPath(cardId, 'isPresent'))}
+                                className={!form.watch(getSecondEmployerFieldPath(cardId, 'isPresent')) ? 'bg-muted' : ''}
+                                data-testid={`input-income-secondEmploymentDuration-${cardId}`}
+                              />
+                            </div>
+                          </div>
+
+                          {/* Employment Type */}
+                          <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor={`income-secondEmploymentType-${cardId}`}>Full-Time / Part-Time</Label>
+                              <Select
+                                value={form.watch(getSecondEmployerFieldPath(cardId, 'employmentType')) || ''}
+                                onValueChange={(value) => form.setValue(getSecondEmployerFieldPath(cardId, 'employmentType'), value)}
+                              >
+                                <SelectTrigger data-testid="select-income-secondEmploymentType">
+                                  <SelectValue placeholder="Select type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
+                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+
+                        </div>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </Card>
+                );
+              })}
+
               {/* Borrower - Self-Employment Cards */}
               {form.watch('income.incomeTypes.selfEmployment') && (borrowerSelfEmploymentCards || ['default']).map((cardId, index) => {
                 const propertyId = cardId === 'default' ? 'self-employment-template-card' : cardId;
@@ -8858,339 +9105,6 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
-              {/* Borrower Second Employment Cards */}
-              {form.watch('income.incomeTypes.secondEmployment') && (borrowerSecondEmployerCards || ['default']).map((cardId, index) => {
-                const propertyId = cardId === 'default' ? 'second-template-card' : cardId;
-                const isOpen = propertyCardStates[propertyId] ?? true;
-                
-                return (
-                  <Card key={cardId} className="transition-colors duration-200">
-                    <Collapsible 
-                      open={isOpen} 
-                      onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
-                    >
-                      <CardHeader>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-8">
-                            <CardTitle className="flex items-center gap-2">
-                              Borrower - Second Employer
-                            </CardTitle>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {/* Add Employer Button */}
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                const newId = `second-employer-${Date.now()}`;
-                                setBorrowerSecondEmployerCards(prev => [...(prev || ['default']), newId]);
-                              }}
-                              className="hover:bg-blue-500 hover:text-white"
-                              data-testid="button-add-second-employer"
-                              title="Add New Employer"
-                            >
-                              <Plus className="h-4 w-4 mr-2" />
-                              Add Employer
-                            </Button>
-                            
-                            {/* Delete Employer Button */}
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => setDeleteSecondEmployerDialog({ isOpen: true, cardId: propertyId })}
-                              className="hover:bg-red-500 hover:text-white"
-                              data-testid="button-delete-second-employer"
-                              title="Delete Employer"
-                            >
-                              <Minus className="h-4 w-4 mr-2" />
-                              Remove
-                            </Button>
-                            
-                            <CollapsibleTrigger asChild>
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                className="hover:bg-orange-500 hover:text-white" 
-                                data-testid={`button-toggle-second-employment-income-${propertyId}`}
-                                title={isOpen ? 'Minimize' : 'Expand'}
-                                key={`second-employment-income-${propertyId}-${isOpen}`}
-                              >
-                                {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                              </Button>
-                            </CollapsibleTrigger>
-                          </div>
-                        </div>
-                      </CardHeader>
-                    
-                    <CollapsibleContent>
-                      <CardContent>
-                        <div className="space-y-6">
-                          {/* Employment Type Selection */}
-                          <Card className={`bg-muted ${
-                            showIncomeCardAnimation['borrower-second-employment'] ? 'animate-roll-down-subject-property' : ''
-                          }`}>
-                            <CardContent className="pt-6">
-                              <div className="space-y-3">
-                                <div className="flex gap-4">
-                                  <div className="flex items-center space-x-2">
-                                    <input
-                                      type="radio"
-                                      id="second-employment-current"
-                                      name="second-employment-type"
-                                      data-testid="radio-second-employment-current"
-                                    />
-                                    <Label htmlFor="second-employment-current">Current Employer</Label>
-                                  </div>
-                                  
-                                  <div className="flex items-center space-x-2">
-                                    <input
-                                      type="radio"
-                                      id="second-employment-prior"
-                                      name="second-employment-type"
-                                      data-testid="radio-second-employment-prior"
-                                    />
-                                    <Label htmlFor="second-employment-prior">Prior Employer</Label>
-                                  </div>
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-
-                          {/* Employment Information - Single Row */}
-                          <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor={`income-secondEmployerName-${cardId}`}>Employer Name</Label>
-                              <Input
-                                id={`income-secondEmployerName-${cardId}`}
-                                {...form.register(getSecondEmployerFieldPath(cardId, 'employerName'))}
-                                data-testid={`input-income-secondEmployerName-${cardId}`}
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <div className="flex items-center justify-between mb-2">
-                                <Label htmlFor={`income-second-employer-phone-${cardId}`} className="text-xs">
-                                  {form.watch(getSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) ? 'Job Verification' : 'Employer Phone'}
-                                </Label>
-                                <Switch
-                                  checked={form.watch(getSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) || false}
-                                  onCheckedChange={(checked) => form.setValue(getSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification') as any, checked)}
-                                  data-testid={`toggle-second-employment-verification-${cardId}`}
-                                  className="scale-[0.8]"
-                                />
-                              </div>
-                              <Input
-                                id={`income-second-employer-phone-${cardId}`}
-                                placeholder="(XXX) XXX-XXXX"
-                                value={form.watch(getSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) 
-                                  ? (form.watch(getSecondEmployerFieldPath(cardId, 'employmentVerificationPhone')) || '')
-                                  : (form.watch(getSecondEmployerFieldPath(cardId, 'employerPhone')) || '')}
-                                onChange={(e) => {
-                                  const fieldName = form.watch(getSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) 
-                                    ? getSecondEmployerFieldPath(cardId, 'employmentVerificationPhone')
-                                    : getSecondEmployerFieldPath(cardId, 'employerPhone');
-                                  handlePhoneChange(fieldName, e.target.value);
-                                }}
-                                data-testid={`input-income-second-employer-phone-${cardId}`}
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor={`income-secondJobTitle-${cardId}`}>Job Title</Label>
-                              <Input
-                                id={`income-secondJobTitle-${cardId}`}
-                                {...form.register(getSecondEmployerFieldPath(cardId, 'jobTitle'))}
-                                data-testid={`input-income-secondJobTitle-${cardId}`}
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor={`income-secondMonthlyIncome-${cardId}`}>Gross Monthly Income</Label>
-                              <Controller
-                                control={form.control}
-                                name={getSecondEmployerFieldPath(cardId, 'monthlyIncome')}
-                                render={({ field }) => (
-                                  <Input
-                                    id={`income-secondMonthlyIncome-${cardId}`}
-                                    value={formatDollarDisplay(field.value)}
-                                    onChange={(e) => {
-                                      const rawValue = parseDollarInput(e.target.value);
-                                      field.onChange(rawValue);
-                                    }}
-                                    placeholder="$0.00"
-                                    data-testid={`input-income-secondMonthlyIncome-${cardId}`}
-                                  />
-                                )}
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor={`income-second-startDate-${cardId}`}>Start Date</Label>
-                              <Input
-                                id={`income-second-startDate-${cardId}`}
-                                type="date"
-                                value={employmentDates[`second-employment-${cardId}`]?.startDate || ''}
-                                onChange={(e) => {
-                                  const startDate = e.target.value;
-                                  const currentData = employmentDates[`second-employment-${cardId}`] || { endDate: '', isPresent: false, duration: '' };
-                                  updateEmploymentDuration(`second-employment-${cardId}`, startDate, currentData.endDate, currentData.isPresent);
-                                }}
-                                placeholder="MM/DD/YYYY"
-                                data-testid={`input-income-second-startDate-${cardId}`}
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <div className="flex items-center justify-between mb-2">
-                                <Label htmlFor={`income-second-endDate-${cardId}`} className="text-sm">
-                                  {employmentDates[`second-employment-${cardId}`]?.isPresent ? 'Present' : 'End Date'}
-                                </Label>
-                                <Switch
-                                  checked={employmentDates[`second-employment-${cardId}`]?.isPresent ?? true}
-                                  onCheckedChange={(checked) => {
-                                    const currentData = employmentDates[`second-employment-${cardId}`] || { startDate: '', endDate: '', duration: '' };
-                                    updateEmploymentDuration(`second-employment-${cardId}`, currentData.startDate, currentData.endDate, checked);
-                                  }}
-                                  data-testid="toggle-second-employment-present"
-                                  className="scale-[0.8]"
-                                />
-                              </div>
-                              <Input
-                                id={`income-second-endDate-${cardId}`}
-                                type={employmentDates[`second-employment-${cardId}`]?.isPresent ? 'text' : 'date'}
-                                value={employmentDates[`second-employment-${cardId}`]?.isPresent ? 'present' : (employmentDates[`second-employment-${cardId}`]?.endDate || '')}
-                                onChange={(e) => {
-                                  if (!employmentDates[`second-employment-${cardId}`]?.isPresent) {
-                                    const endDate = e.target.value;
-                                    const currentData = employmentDates[`second-employment-${cardId}`] || { startDate: '', isPresent: false, duration: '' };
-                                    updateEmploymentDuration(`second-employment-${cardId}`, currentData.startDate, endDate, currentData.isPresent);
-                                  }
-                                }}
-                                placeholder={employmentDates[`second-employment-${cardId}`]?.isPresent ? 'Enter' : 'MM/DD/YYYY'}
-                                readOnly={employmentDates[`second-employment-${cardId}`]?.isPresent}
-                                className={employmentDates[`second-employment-${cardId}`]?.isPresent ? 'bg-muted' : ''}
-                                data-testid={`input-income-second-endDate-${cardId}`}
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label htmlFor="income-second-employment-duration">Employment Duration</Label>
-                              <Input
-                                id="income-second-employment-duration"
-                                value={employmentDates['second-employment']?.duration || ''}
-                                placeholder={employmentDates['second-employment']?.isPresent ? 'Enter' : '0'}
-                                readOnly={!employmentDates['second-employment']?.isPresent}
-                                className={!employmentDates['second-employment']?.isPresent ? 'bg-muted' : ''}
-                                onChange={(e) => {
-                                  if (employmentDates['second-employment']?.isPresent) {
-                                    const currentData = employmentDates['second-employment'] || { startDate: '', endDate: '', isPresent: false };
-                                    setEmploymentDates(prev => ({
-                                      ...prev,
-                                      'second-employment': {
-                                        ...currentData,
-                                        duration: e.target.value
-                                      }
-                                    }));
-                                  }
-                                }}
-                                data-testid="input-income-second-employment-duration"
-                              />
-                            </div>
-                          </div>
-
-                          {/* Employer Address Row */}
-                          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                            <div className="space-y-2 md:col-span-3">
-                              <Label htmlFor={`income-secondEmployerAddress-street-${cardId}`}>Street Address</Label>
-                              <Input
-                                id={`income-secondEmployerAddress-street-${cardId}`}
-                                {...form.register(getSecondEmployerFieldPath(cardId, 'employerAddress.street'))}
-                                data-testid={`input-income-secondEmployerAddress-street-${cardId}`}
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-1">
-                              <Label htmlFor={`income-secondEmployerAddress-unit-${cardId}`}>Unit/Suite</Label>
-                              <Input
-                                id={`income-secondEmployerAddress-unit-${cardId}`}
-                                {...form.register(getSecondEmployerFieldPath(cardId, 'employerAddress.unit'))}
-                                data-testid={`input-income-secondEmployerAddress-unit-${cardId}`}
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="income-secondEmployerAddress-city">City</Label>
-                              <Input
-                                id={`income-secondEmployerAddress-city-${cardId}`}
-                                {...form.register(getSecondEmployerFieldPath(cardId, 'employerAddress.city'))}
-                                data-testid={`input-income-secondEmployerAddress-city-${cardId}`}
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-1">
-                              <Label htmlFor="income-secondEmployerAddress-state">State</Label>
-                              <Select
-                                value={form.watch(getSecondEmployerFieldPath(cardId, 'employerAddress.state')) || ''}
-                                onValueChange={(value) => form.setValue(getSecondEmployerFieldPath(cardId, 'employerAddress.state') as any, value)}
-                              >
-                                <SelectTrigger data-testid="select-income-secondEmployerAddress-state">
-                                  <SelectValue placeholder="State" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {US_STATES.map((state) => (
-                                    <SelectItem key={state.value} value={state.value}>
-                                      {state.value}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-1">
-                              <Label htmlFor="income-secondEmployerAddress-zip">ZIP Code</Label>
-                              <Input
-                                id={`income-secondEmployerAddress-zip-${cardId}`}
-                                {...form.register(getSecondEmployerFieldPath(cardId, 'employerAddress.zip'))}
-                                data-testid={`input-income-secondEmployerAddress-zip-${cardId}`}
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="income-secondEmployerAddress-county">County</Label>
-                              <Input
-                                id={`income-secondEmployerAddress-county-${cardId}`}
-                                {...form.register(getSecondEmployerFieldPath(cardId, 'employerAddress.county'))}
-                                data-testid={`input-income-secondEmployerAddress-county-${cardId}`}
-                              />
-                            </div>
-                            
-                            <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="income-secondEmploymentType">Full-Time / Part-Time</Label>
-                              <Select
-                                value={form.watch(getSecondEmployerFieldPath(cardId, 'employmentType')) || ''}
-                                onValueChange={(value) => form.setValue(getSecondEmployerFieldPath(cardId, 'employmentType') as any, value)}
-                              >
-                                <SelectTrigger data-testid="select-income-secondEmploymentType">
-                                  <SelectValue placeholder="Select type" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
-                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </div>
-
-                        </div>
-                      </CardContent>
-                    </CollapsibleContent>
-                  </Collapsible>
-                </Card>
-                );
-              })}
-
               {/* Co-Borrower Income */}
               {hasCoBorrower && (
                 <Card className="border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
@@ -9276,12 +9190,12 @@ export default function AdminAddClient() {
                               if (!checked && form.watch('coBorrowerIncome.incomeTypes.vaBenefits')) {
                                 return; // Do nothing - prevent unchecking
                               }
-                              handleIncomeTypeChange('coBorrowerIncome.incomeTypes.vaBenefits', !!checked, 'VA Disability', true);
+                              handleIncomeTypeChange('coBorrowerIncome.incomeTypes.vaBenefits', !!checked, 'VA Benefits', true);
                             }}
                             data-testid="checkbox-coborrower-vaBenefits"
                             className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           />
-                          <Label htmlFor="coBorrowerIncome-type-vaBenefits">VA Disability</Label>
+                          <Label htmlFor="coBorrowerIncome-type-vaBenefits">VA Benefits</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <Checkbox
@@ -9303,11 +9217,17 @@ export default function AdminAddClient() {
                           <Checkbox
                             id="coBorrowerIncome-type-other"
                             checked={form.watch('coBorrowerIncome.incomeTypes.other') || false}
-                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.other', !!checked, 'Other', true)}
-                            data-testid="checkbox-coborrower-other"
+                            onCheckedChange={(checked) => {
+                              // Prevent unchecking - once checked, can only be removed via Remove button
+                              if (!checked && form.watch('coBorrowerIncome.incomeTypes.other')) {
+                                return; // Do nothing - prevent unchecking
+                              }
+                              handleIncomeTypeChange('coBorrowerIncome.incomeTypes.other', !!checked, 'Other Income', true);
+                            }}
+                            data-testid="checkbox-coborrower-otherIncome"
                             className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           />
-                          <Label htmlFor="coBorrowerIncome-type-other">Other</Label>
+                          <Label htmlFor="coBorrowerIncome-type-other">Other Income</Label>
                         </div>
                       </div>
                     </div>
@@ -9315,9 +9235,9 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
-              {/* Co-Borrower Employment Income Card */}
-              {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.employment') && (coBorrowerEmployerCards || ['default']).map((cardId, index) => {
-                const propertyId = cardId === 'default' ? 'coborrower-template-card' : cardId;
+              {/* Borrower - Self-Employment Cards */}
+              {form.watch('income.incomeTypes.selfEmployment') && (borrowerSelfEmploymentCards || ['default']).map((cardId, index) => {
+                const propertyId = cardId === 'default' ? 'self-employment-template-card' : cardId;
                 const isOpen = propertyCardStates[propertyId] ?? true;
                 
                 return (
@@ -9330,7 +9250,683 @@ export default function AdminAddClient() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-8">
                             <CardTitle className="flex items-center gap-2">
-                              Co-Borrower Employer
+                              Borrower - Self-Employment
+                            </CardTitle>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {/* Add Self-Employment Button */}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                const newId = `self-employment-${Date.now()}`;
+                                setBorrowerSelfEmploymentCards(prev => [...(prev || ['default']), newId]);
+                              }}
+                              className="hover:bg-blue-500 hover:text-white"
+                              data-testid="button-add-self-employment"
+                              title="Add New Self-Employment"
+                            >
+                              <Plus className="h-4 w-4 mr-2" />
+                              Add Self-Employment
+                            </Button>
+                            
+                            {/* Delete Self-Employment Button */}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setDeleteSelfEmploymentDialog({ isOpen: true, cardId: propertyId })}
+                              className="hover:bg-red-500 hover:text-white"
+                              data-testid={`button-delete-self-employment-${cardId}`}
+                              title="Delete Self-Employment"
+                            >
+                              <Minus className="h-4 w-4 mr-2" />
+                              Remove
+                            </Button>
+                            
+                            <CollapsibleTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="hover:bg-orange-500 hover:text-white" 
+                                data-testid={`button-toggle-self-employment-income-${propertyId}`}
+                                title={isOpen ? 'Minimize' : 'Expand'}
+                                key={`self-employment-income-${propertyId}-${isOpen}`}
+                              >
+                                {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </div>
+                        </div>
+                      </CardHeader>
+                    
+                    <CollapsibleContent>
+                      <CardContent>
+                        <div className="space-y-6">
+                          {/* Business Information */}
+                          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor={`income-businessName-${cardId}`}>Business Name</Label>
+                              <Input
+                                id={`income-businessName-${cardId}`}
+                                {...form.register(getSelfEmploymentFieldPath(cardId, 'businessName'))}
+                                data-testid={`input-income-businessName-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor={`income-businessType-${cardId}`}>Business Type</Label>
+                              <Input
+                                id={`income-businessType-${cardId}`}
+                                {...form.register(getSelfEmploymentFieldPath(cardId, 'businessType'))}
+                                data-testid={`input-income-businessType-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor={`income-monthlyIncome-${cardId}`}>Net Monthly Income</Label>
+                              <Controller
+                                control={form.control}
+                                name={getSelfEmploymentFieldPath(cardId, 'monthlyIncome')}
+                                defaultValue=""
+                                render={({ field }) => (
+                                  <Input
+                                    id={`income-monthlyIncome-${cardId}`}
+                                    value={formatDollarDisplay(field.value || '')}
+                                    onChange={(e) => {
+                                      const rawValue = parseDollarInput(e.target.value);
+                                      field.onChange(rawValue);
+                                    }}
+                                    placeholder="$0.00"
+                                    data-testid={`input-income-monthlyIncome-${cardId}`}
+                                  />
+                                )}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor={`income-businessStartDate-${cardId}`}>Start Date</Label>
+                              <Input
+                                id={`income-businessStartDate-${cardId}`}
+                                type="date"
+                                {...form.register(getSelfEmploymentFieldPath(cardId, 'startDate'))}
+                                data-testid={`input-income-businessStartDate-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor={`income-businessPercentage-${cardId}`}>Ownership %</Label>
+                              <Input
+                                id={`income-businessPercentage-${cardId}`}
+                                type="number"
+                                min="0"
+                                max="100"
+                                {...form.register(getSelfEmploymentFieldPath(cardId, 'ownershipPercentage'))}
+                                data-testid={`input-income-businessPercentage-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor={`income-businessDuration-${cardId}`}>Business Duration</Label>
+                              <Input
+                                id={`income-businessDuration-${cardId}`}
+                                {...form.register(getSelfEmploymentFieldPath(cardId, 'duration'))}
+                                placeholder="Years in business"
+                                data-testid={`input-income-businessDuration-${cardId}`}
+                              />
+                            </div>
+                          </div>
+
+                          {/* Business Address */}
+                          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                            <div className="space-y-2 md:col-span-4">
+                              <Label htmlFor={`income-businessAddress-street-${cardId}`}>Business Street Address</Label>
+                              <Input
+                                id={`income-businessAddress-street-${cardId}`}
+                                {...form.register(getSelfEmploymentFieldPath(cardId, 'businessAddress.street'))}
+                                data-testid={`input-income-businessAddress-street-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor={`income-businessAddress-unit-${cardId}`}>Unit/Suite</Label>
+                              <Input
+                                id={`income-businessAddress-unit-${cardId}`}
+                                {...form.register(getSelfEmploymentFieldPath(cardId, 'businessAddress.unit'))}
+                                data-testid={`input-income-businessAddress-unit-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor={`income-businessAddress-city-${cardId}`}>City</Label>
+                              <Input
+                                id={`income-businessAddress-city-${cardId}`}
+                                {...form.register(getSelfEmploymentFieldPath(cardId, 'businessAddress.city'))}
+                                data-testid={`input-income-businessAddress-city-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor={`income-businessAddress-state-${cardId}`}>State</Label>
+                              <Select
+                                value={form.watch(getSelfEmploymentFieldPath(cardId, 'businessAddress.state')) || ''}
+                                onValueChange={(value) => form.setValue(getSelfEmploymentFieldPath(cardId, 'businessAddress.state') as any, value)}
+                              >
+                                <SelectTrigger data-testid={`select-income-businessAddress-state-${cardId}`}>
+                                  <SelectValue placeholder="State" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {US_STATES.map((state) => (
+                                    <SelectItem key={state.value} value={state.value}>
+                                      {state.value}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor={`income-businessAddress-zip-${cardId}`}>ZIP Code</Label>
+                              <Input
+                                id={`income-businessAddress-zip-${cardId}`}
+                                {...form.register(getSelfEmploymentFieldPath(cardId, 'businessAddress.zip'))}
+                                data-testid={`input-income-businessAddress-zip-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor={`income-businessAddress-county-${cardId}`}>County</Label>
+                              <Input
+                                id={`income-businessAddress-county-${cardId}`}
+                                {...form.register(getSelfEmploymentFieldPath(cardId, 'businessAddress.county'))}
+                                data-testid={`input-income-businessAddress-county-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor={`income-businessPhone-${cardId}`}>Business Phone</Label>
+                              <Input
+                                id={`income-businessPhone-${cardId}`}
+                                placeholder="(XXX) XXX-XXXX"
+                                value={form.watch(getSelfEmploymentFieldPath(cardId, 'businessPhone')) || ''}
+                                onChange={(e) => {
+                                  const fieldName = getSelfEmploymentFieldPath(cardId, 'businessPhone');
+                                  handlePhoneChange(fieldName, e.target.value);
+                                }}
+                                data-testid={`input-income-businessPhone-${cardId}`}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </Card>
+                );
+              })}
+
+              {/* VA Benefits Card */}
+              {form.watch('income.incomeTypes.vaBenefits') && (
+                <Card>
+                  <Collapsible 
+                    open={isVaBenefitsOpen} 
+                    onOpenChange={setIsVaBenefitsOpen}
+                  >
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>VA Benefits</CardTitle>
+                        <div className="flex items-center gap-2">
+                          <Button 
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              form.setValue('income.incomeTypes.vaBenefits', false);
+                              form.setValue('income.vaBenefitsMonthlyAmount', '');
+                              setShowIncomeCardAnimation(prev => ({ ...prev, 'va-benefits': false }));
+                            }}
+                            className="hover:bg-red-500 hover:text-white"
+                            data-testid="button-remove-va-benefits"
+                            title="Remove VA Benefits"
+                          >
+                            <Minus className="h-4 w-4 mr-2" />
+                            Remove
+                          </Button>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-va-benefits"
+                              title={isVaBenefitsOpen ? 'Minimize' : 'Expand'}
+                            >
+                              {isVaBenefitsOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    
+                    <CollapsibleContent>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="income-vaBenefitsDescription">Description</Label>
+                              <Input
+                                id="income-vaBenefitsDescription"
+                                {...form.register('income.vaBenefitsDescription')}
+                                placeholder="Service-connected disability, pension, etc."
+                                data-testid="input-income-vaBenefitsDescription"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="income-vaBenefitsMonthlyAmount">Monthly Amount</Label>
+                              <Controller
+                                control={form.control}
+                                name="income.vaBenefitsMonthlyAmount"
+                                defaultValue=""
+                                render={({ field }) => (
+                                  <Input
+                                    id="income-vaBenefitsMonthlyAmount"
+                                    value={formatDollarDisplay(field.value || '')}
+                                    onChange={(e) => {
+                                      const rawValue = parseDollarInput(e.target.value);
+                                      field.onChange(rawValue);
+                                    }}
+                                    placeholder="$0.00"
+                                    data-testid="input-income-vaBenefitsMonthlyAmount"
+                                    className={(() => {
+                                      const value = field.value || '';
+                                      if (value.startsWith && value.startsWith('-')) return 'text-red-600';
+                                      if (value && !value.toString().startsWith('$0') && parseFloat(value.toString().replace(/[$,]/g, '')) > 0) return 'text-green-600';
+                                      return '';
+                                    })()}
+                                  />
+                                )}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </Card>
+              )}
+
+              {/* Social Security Card */}
+              {form.watch('income.incomeTypes.socialSecurity') && (
+                <Card>
+                  <Collapsible 
+                    open={isSocialSecurityOpen} 
+                    onOpenChange={setIsSocialSecurityOpen}
+                  >
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Social Security</CardTitle>
+                        <div className="flex items-center gap-2">
+                          <Button 
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              form.setValue('income.incomeTypes.socialSecurity', false);
+                              form.setValue('income.socialSecurityMonthlyAmount', '');
+                              setShowIncomeCardAnimation(prev => ({ ...prev, 'social-security': false }));
+                            }}
+                            className="hover:bg-red-500 hover:text-white"
+                            data-testid="button-remove-social-security"
+                            title="Remove Social Security"
+                          >
+                            <Minus className="h-4 w-4 mr-2" />
+                            Remove
+                          </Button>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-social-security"
+                              title={isSocialSecurityOpen ? 'Minimize' : 'Expand'}
+                            >
+                              {isSocialSecurityOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    
+                    <CollapsibleContent>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="income-socialSecurityDescription">Description</Label>
+                              <Input
+                                id="income-socialSecurityDescription"
+                                {...form.register('income.socialSecurityDescription')}
+                                placeholder="Retirement, disability, survivor benefits"
+                                data-testid="input-income-socialSecurityDescription"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="income-socialSecurityMonthlyAmount">Monthly Amount</Label>
+                              <Controller
+                                control={form.control}
+                                name="income.socialSecurityMonthlyAmount"
+                                defaultValue=""
+                                render={({ field }) => (
+                                  <Input
+                                    id="income-socialSecurityMonthlyAmount"
+                                    value={formatDollarDisplay(field.value || '')}
+                                    onChange={(e) => {
+                                      const rawValue = parseDollarInput(e.target.value);
+                                      field.onChange(rawValue);
+                                    }}
+                                    placeholder="$0.00"
+                                    data-testid="input-income-socialSecurityMonthlyAmount"
+                                    className={(() => {
+                                      const value = field.value || '';
+                                      if (value.startsWith && value.startsWith('-')) return 'text-red-600';
+                                      if (value && !value.toString().startsWith('$0') && parseFloat(value.toString().replace(/[$,]/g, '')) > 0) return 'text-green-600';
+                                      return '';
+                                    })()}
+                                  />
+                                )}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </Card>
+              )}
+
+              {/* Pension Card */}
+              {form.watch('income.incomeTypes.pension') && (
+                <Card>
+                  <Collapsible 
+                    open={isPensionOpen} 
+                    onOpenChange={setIsPensionOpen}
+                  >
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Pension</CardTitle>
+                        <div className="flex items-center gap-2">
+                          <Button 
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              form.setValue('income.incomeTypes.pension', false);
+                              form.setValue('income.pensionMonthlyAmount', '');
+                              setShowIncomeCardAnimation(prev => ({ ...prev, 'pension': false }));
+                            }}
+                            className="hover:bg-red-500 hover:text-white"
+                            data-testid="button-remove-pension"
+                            title="Remove Pension"
+                          >
+                            <Minus className="h-4 w-4 mr-2" />
+                            Remove
+                          </Button>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-pension"
+                              title={isPensionOpen ? 'Minimize' : 'Expand'}
+                            >
+                              {isPensionOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    
+                    <CollapsibleContent>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="income-pensionDescription">Pension Source</Label>
+                              <Input
+                                id="income-pensionDescription"
+                                {...form.register('income.pensionDescription')}
+                                placeholder="Previous employer, military, government"
+                                data-testid="input-income-pensionDescription"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="income-pensionMonthlyAmount">Monthly Amount</Label>
+                              <Controller
+                                control={form.control}
+                                name="income.pensionMonthlyAmount"
+                                defaultValue=""
+                                render={({ field }) => (
+                                  <Input
+                                    id="income-pensionMonthlyAmount"
+                                    value={formatDollarDisplay(field.value || '')}
+                                    onChange={(e) => {
+                                      const rawValue = parseDollarInput(e.target.value);
+                                      field.onChange(rawValue);
+                                    }}
+                                    placeholder="$0.00"
+                                    data-testid="input-income-pensionMonthlyAmount"
+                                    className={(() => {
+                                      const value = field.value || '';
+                                      if (value.startsWith && value.startsWith('-')) return 'text-red-600';
+                                      if (value && !value.toString().startsWith('$0') && parseFloat(value.toString().replace(/[$,]/g, '')) > 0) return 'text-green-600';
+                                      return '';
+                                    })()}
+                                  />
+                                )}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </Card>
+              )}
+
+              {/* Disability Card */}
+              {form.watch('income.incomeTypes.disability') && (
+                <Card>
+                  <Collapsible 
+                    open={isDisabilityOpen} 
+                    onOpenChange={setIsDisabilityOpen}
+                  >
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Disability</CardTitle>
+                        <div className="flex items-center gap-2">
+                          <Button 
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              form.setValue('income.incomeTypes.disability', false);
+                              form.setValue('income.disabilityMonthlyAmount', '');
+                              setShowIncomeCardAnimation(prev => ({ ...prev, 'disability': false }));
+                            }}
+                            className="hover:bg-red-500 hover:text-white"
+                            data-testid="button-remove-disability"
+                            title="Remove Disability"
+                          >
+                            <Minus className="h-4 w-4 mr-2" />
+                            Remove
+                          </Button>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-disability"
+                              title={isDisabilityOpen ? 'Minimize' : 'Expand'}
+                            >
+                              {isDisabilityOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    
+                    <CollapsibleContent>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="income-disabilityDescription">Description</Label>
+                              <Input
+                                id="income-disabilityDescription"
+                                {...form.register('income.disabilityDescription')}
+                                placeholder="Long-term disability, SSDI, workers comp"
+                                data-testid="input-income-disabilityDescription"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="income-disabilityMonthlyAmount">Monthly Amount</Label>
+                              <Controller
+                                control={form.control}
+                                name="income.disabilityMonthlyAmount"
+                                defaultValue=""
+                                render={({ field }) => (
+                                  <Input
+                                    id="income-disabilityMonthlyAmount"
+                                    value={formatDollarDisplay(field.value || '')}
+                                    onChange={(e) => {
+                                      const rawValue = parseDollarInput(e.target.value);
+                                      field.onChange(rawValue);
+                                    }}
+                                    placeholder="$0.00"
+                                    data-testid="input-income-disabilityMonthlyAmount"
+                                    className={(() => {
+                                      const value = field.value || '';
+                                      if (value.startsWith && value.startsWith('-')) return 'text-red-600';
+                                      if (value && !value.toString().startsWith('$0') && parseFloat(value.toString().replace(/[$,]/g, '')) > 0) return 'text-green-600';
+                                      return '';
+                                    })()}
+                                  />
+                                )}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </Card>
+              )}
+
+              {/* Other Income Card */}
+              {form.watch('income.incomeTypes.other') && (
+                <Card>
+                  <Collapsible 
+                    open={isOtherIncomeOpen} 
+                    onOpenChange={setIsOtherIncomeOpen}
+                  >
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Other Income</CardTitle>
+                        <div className="flex items-center gap-2">
+                          <Button 
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              form.setValue('income.incomeTypes.other', false);
+                              form.setValue('income.otherIncomeMonthlyAmount', '');
+                              setShowIncomeCardAnimation(prev => ({ ...prev, 'other-income': false }));
+                            }}
+                            className="hover:bg-red-500 hover:text-white"
+                            data-testid="button-remove-other-income"
+                            title="Remove Other Income"
+                          >
+                            <Minus className="h-4 w-4 mr-2" />
+                            Remove
+                          </Button>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-other-income"
+                              title={isOtherIncomeOpen ? 'Minimize' : 'Expand'}
+                            >
+                              {isOtherIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    
+                    <CollapsibleContent>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="income-otherIncomeDescription">Description</Label>
+                              <Input
+                                id="income-otherIncomeDescription"
+                                {...form.register('income.otherIncomeDescription')}
+                                placeholder="Rental income, alimony, investments"
+                                data-testid="input-income-otherIncomeDescription"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="income-otherIncomeMonthlyAmount">Monthly Amount</Label>
+                              <Controller
+                                control={form.control}
+                                name="income.otherIncomeMonthlyAmount"
+                                defaultValue=""
+                                render={({ field }) => (
+                                  <Input
+                                    id="income-otherIncomeMonthlyAmount"
+                                    value={formatDollarDisplay(field.value || '')}
+                                    onChange={(e) => {
+                                      const rawValue = parseDollarInput(e.target.value);
+                                      field.onChange(rawValue);
+                                    }}
+                                    placeholder="$0.00"
+                                    data-testid="input-income-otherIncomeMonthlyAmount"
+                                    className={(() => {
+                                      const value = field.value || '';
+                                      if (value.startsWith && value.startsWith('-')) return 'text-red-600';
+                                      if (value && !value.toString().startsWith('$0') && parseFloat(value.toString().replace(/[$,]/g, '')) > 0) return 'text-green-600';
+                                      return '';
+                                    })()}
+                                  />
+                                )}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </Card>
+              )}
+
+              {/* Co-Borrower - Employer Cards */}
+              {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.employment') && (coBorrowerEmployerCards || ['default']).map((cardId, index) => {
+                const propertyId = cardId === 'default' ? 'co-borrower-employer-template-card' : cardId;
+                const isOpen = propertyCardStates[propertyId] ?? true;
+                
+                return (
+                  <Card key={cardId} className="transition-colors duration-200">
+                    <Collapsible 
+                      open={isOpen} 
+                      onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
+                    >
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-8">
+                            <CardTitle className="flex items-center gap-2">
+                              Co-Borrower - Employer
                             </CardTitle>
                           </div>
                           <div className="flex items-center gap-2">
@@ -9340,13 +9936,12 @@ export default function AdminAddClient() {
                               variant="outline"
                               size="sm"
                               onClick={() => {
-                                const newId = `coborrower-employer-${Date.now()}`;
+                                const newId = `co-borrower-employer-${Date.now()}`;
                                 setCoBorrowerEmployerCards(prev => [...(prev || ['default']), newId]);
-                                setPropertyCardStates(prev => ({ ...prev, [newId]: true }));
                               }}
                               className="hover:bg-blue-500 hover:text-white"
-                              data-testid="button-add-coborrower-employer"
-                              title="Add New Employer"
+                              data-testid="button-add-co-borrower-employer"
+                              title="Add New Co-Borrower Employer"
                             >
                               <Plus className="h-4 w-4 mr-2" />
                               Add Employer
@@ -9359,8 +9954,8 @@ export default function AdminAddClient() {
                               size="sm"
                               onClick={() => setDeleteCoBorrowerEmployerDialog({ isOpen: true, cardId: propertyId })}
                               className="hover:bg-red-500 hover:text-white"
-                              data-testid="button-delete-coborrower-employer"
-                              title="Delete Employer"
+                              data-testid={`button-delete-co-borrower-employer-${cardId}`}
+                              title="Delete Co-Borrower Employer"
                             >
                               <Minus className="h-4 w-4 mr-2" />
                               Remove
@@ -9371,9 +9966,9 @@ export default function AdminAddClient() {
                                 variant="ghost" 
                                 size="sm" 
                                 className="hover:bg-orange-500 hover:text-white" 
-                                data-testid={`button-toggle-coborrower-income-property-${propertyId}`}
+                                data-testid={`button-toggle-co-borrower-employment-income-${propertyId}`}
                                 title={isOpen ? 'Minimize' : 'Expand'}
-                                key={`coborrower-income-property-toggle-${propertyId}-${isOpen}`}
+                                key={`co-borrower-employment-income-${propertyId}-${isOpen}`}
                               >
                                 {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                               </Button>
@@ -9381,369 +9976,255 @@ export default function AdminAddClient() {
                           </div>
                         </div>
                       </CardHeader>
-                      
-                      <CollapsibleContent>
-                        <CardContent>
-                          <div className="space-y-6">
-                            {/* Employment Type Selection */}
-                            <Card className={`bg-muted ${
-                              showIncomeCardAnimation[`co-borrower-employment-${propertyId}`] ? 'animate-roll-down-subject-property' : ''
-                            }`}>
-                              <CardContent className="pt-6">
-                                <div className="space-y-3">
-                                  <div className="flex gap-4">
-                                    <div className="flex items-center space-x-2">
-                                      <input
-                                        type="radio"
-                                        id={`coborrower-employment-current-${propertyId}`}
-                                        name={`coborrower-employment-type-${propertyId}`}
-                                        data-testid={`radio-coborrower-employment-current-${propertyId}`}
-                                      />
-                                      <Label htmlFor={`coborrower-employment-current-${propertyId}`}>Current Employer</Label>
-                                    </div>
-                                    
-                                    <div className="flex items-center space-x-2">
-                                      <input
-                                        type="radio"
-                                        id={`coborrower-employment-prior-${propertyId}`}
-                                        name={`coborrower-employment-type-${propertyId}`}
-                                        data-testid={`radio-coborrower-employment-prior-${propertyId}`}
-                                      />
-                                      <Label htmlFor={`coborrower-employment-prior-${propertyId}`}>Prior Employer</Label>
-                                    </div>
+                    
+                    <CollapsibleContent>
+                      <CardContent>
+                        <div className="space-y-6">
+                          {/* Employment Type Selection */}
+                          <Card className={`bg-muted ${
+                            showIncomeCardAnimation['co-borrower-employment'] ? 'animate-roll-down-subject-property' : ''
+                          }`}>
+                            <CardContent className="pt-6">
+                              <div className="space-y-3">
+                                <div className="flex gap-4">
+                                  <div className="flex items-center space-x-2">
+                                    <input
+                                      type="radio"
+                                      id={`co-borrower-employment-current-${cardId}`}
+                                      name={`co-borrower-employment-type-${cardId}`}
+                                      data-testid={`radio-co-borrower-employment-current-${cardId}`}
+                                    />
+                                    <Label htmlFor={`co-borrower-employment-current-${cardId}`}>Current Employer</Label>
+                                  </div>
+                                  
+                                  <div className="flex items-center space-x-2">
+                                    <input
+                                      type="radio"
+                                      id={`co-borrower-employment-prior-${cardId}`}
+                                      name={`co-borrower-employment-type-${cardId}`}
+                                      data-testid={`radio-co-borrower-employment-prior-${cardId}`}
+                                    />
+                                    <Label htmlFor={`co-borrower-employment-prior-${cardId}`}>Prior Employer</Label>
                                   </div>
                                 </div>
-                              </CardContent>
-                            </Card>
+                              </div>
+                            </CardContent>
+                          </Card>
 
-                            {/* Employment Information - Single Row */}
-                            <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
-                              <div className="space-y-2">
-                                <Label htmlFor={`${propertyId}-coborrower-employerName`}>Employer Name</Label>
-                                <Controller
-                                  control={form.control}
-                                  name={getCoBorrowerEmployerFieldPath(cardId, 'employerName')}
-                                  render={({ field }) => (
-                                    <Input
-                                      id={`${propertyId}-coborrower-employerName`}
-                                      value={field.value || ''}
-                                      onChange={field.onChange}
-                                      data-testid={`input-${propertyId}-coborrower-employerName`}
-                                    />
-                                  )}
-                                />
-                              </div>
-                              
-                              <div className="space-y-2">
-                                <div className="flex items-center justify-between mb-2">
-                                  <Label htmlFor={`${propertyId}-coborrower-employer-phone`} className="text-xs">
-                                    {form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) ? 'Job Verification' : 'Employer Phone'}
-                                  </Label>
-                                  <Switch
-                                    checked={form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) || false}
-                                    onCheckedChange={(checked) => form.setValue(getCoBorrowerEmployerFieldPath(cardId, 'isShowingEmploymentVerification'), checked)}
-                                    data-testid={`toggle-${propertyId}-coborrower-employment-verification`}
-                                    className="scale-[0.8]"
-                                  />
-                                </div>
-                                <Controller
-                                  control={form.control}
-                                  name={form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) 
-                                    ? getCoBorrowerEmployerFieldPath(cardId, 'employmentVerificationPhone')
-                                    : getCoBorrowerEmployerFieldPath(cardId, 'employerPhone')}
-                                  render={({ field }) => (
-                                    <Input
-                                      id={`${propertyId}-coborrower-employer-phone`}
-                                      placeholder="(XXX) XXX-XXXX"
-                                      value={field.value || ''}
-                                      onChange={(e) => {
-                                        const formattedValue = formatPhoneNumber(e.target.value);
-                                        field.onChange(formattedValue);
-                                      }}
-                                      data-testid={`input-${propertyId}-coborrower-employer-phone`}
-                                    />
-                                  )}
-                                />
-                              </div>
-                              
-                              <div className="space-y-2">
-                                <Label htmlFor={`${propertyId}-coborrower-jobTitle`}>Job Title</Label>
-                                <Controller
-                                  control={form.control}
-                                  name={getCoBorrowerEmployerFieldPath(cardId, 'jobTitle')}
-                                  render={({ field }) => (
-                                    <Input
-                                      id={`${propertyId}-coborrower-jobTitle`}
-                                      value={field.value || ''}
-                                      onChange={field.onChange}
-                                      data-testid={`input-${propertyId}-coborrower-jobTitle`}
-                                    />
-                                  )}
-                                />
-                              </div>
-                              
-                              <div className="space-y-2">
-                                <Label htmlFor={`${propertyId}-coborrower-monthlyIncome`}>Gross Monthly Income</Label>
-                                <Controller
-                                  control={form.control}
-                                  name={getCoBorrowerEmployerFieldPath(cardId, 'monthlyIncome')}
-                                  render={({ field }) => (
-                                    <Input
-                                      id={`${propertyId}-coborrower-monthlyIncome`}
-                                      value={formatDollarDisplay(field.value)}
-                                      onChange={(e) => {
-                                        const rawValue = parseDollarInput(e.target.value);
-                                        field.onChange(rawValue);
-                                      }}
-                                      placeholder="$0.00"
-                                      data-testid={`input-${propertyId}-coborrower-monthlyIncome`}
-                                    />
-                                  )}
-                                />
-                              </div>
-                              
-                              <div className="space-y-2">
-                                <Label htmlFor={`${propertyId}-coborrower-startDate`}>Start Date</Label>
-                                <Input
-                                  id={`${propertyId}-coborrower-startDate`}
-                                  type="date"
-                                  value={employmentDates[propertyId]?.startDate || ''}
-                                  onChange={(e) => {
-                                    const startDate = e.target.value;
-                                    const currentData = employmentDates[propertyId] || { endDate: '', isPresent: false, duration: '' };
-                                    updateEmploymentDuration(propertyId, startDate, currentData.endDate, currentData.isPresent);
-                                  }}
-                                  placeholder="MM/DD/YYYY"
-                                  data-testid={`input-${propertyId}-coborrower-startDate`}
-                                />
-                              </div>
-                              
-                              <div className="space-y-2">
-                                <div className="flex items-center justify-between mb-2">
-                                  <Label htmlFor={`${propertyId}-coborrower-endDate`} className="text-sm">
-                                    {employmentDates[propertyId]?.isPresent ? 'Present' : 'End Date'}
-                                  </Label>
-                                  <Switch
-                                    checked={employmentDates[propertyId]?.isPresent ?? true}
-                                    onCheckedChange={(checked) => {
-                                      const currentData = employmentDates[propertyId] || { startDate: '', endDate: '', duration: '' };
-                                      updateEmploymentDuration(propertyId, currentData.startDate, currentData.endDate, checked);
-                                    }}
-                                    data-testid={`toggle-${propertyId}-coborrower-present`}
-                                    className="scale-[0.8]"
-                                  />
-                                </div>
-                                <Input
-                                  id={`${propertyId}-coborrower-endDate`}
-                                  type={employmentDates[propertyId]?.isPresent ? 'text' : 'date'}
-                                  value={employmentDates[propertyId]?.isPresent ? 'present' : (employmentDates[propertyId]?.endDate || '')}
-                                  onChange={(e) => {
-                                    if (!employmentDates[propertyId]?.isPresent) {
-                                      const endDate = e.target.value;
-                                      const currentData = employmentDates[propertyId] || { startDate: '', isPresent: false, duration: '' };
-                                      updateEmploymentDuration(propertyId, currentData.startDate, endDate, currentData.isPresent);
-                                    }
-                                  }}
-                                  placeholder={employmentDates[propertyId]?.isPresent ? 'Present' : 'MM/DD/YYYY'}
-                                  readOnly={employmentDates[propertyId]?.isPresent}
-                                  className={employmentDates[propertyId]?.isPresent ? 'bg-muted' : ''}
-                                  data-testid={`input-${propertyId}-coborrower-endDate`}
-                                />
-                              </div>
-                              
-                              <div className="space-y-2">
-                                <Label htmlFor={`${propertyId}-coborrower-employment-duration`}>Employment Duration</Label>
-                                <Input
-                                  id={`${propertyId}-coborrower-employment-duration`}
-                                  value={employmentDates[propertyId]?.duration || ''}
-                                  placeholder={employmentDates[propertyId]?.isPresent ? 'Enter' : '0'}
-                                  readOnly={!employmentDates[propertyId]?.isPresent}
-                                  className={!employmentDates[propertyId]?.isPresent ? 'bg-muted' : ''}
-                                  onChange={(e) => {
-                                    if (employmentDates[propertyId]?.isPresent) {
-                                      const currentData = employmentDates[propertyId] || { startDate: '', endDate: '', isPresent: false };
-                                      setEmploymentDates(prev => ({
-                                        ...prev,
-                                        [propertyId]: {
-                                          ...currentData,
-                                          duration: e.target.value
-                                        }
-                                      }));
-                                    }
-                                  }}
-                                  data-testid={`input-${propertyId}-coborrower-employment-duration`}
-                                />
-                              </div>
+                          {/* Employment Information - Single Row */}
+                          <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor={`coBorrowerIncome-employerName-${cardId}`}>Employer Name</Label>
+                              <Input
+                                id={`coBorrowerIncome-employerName-${cardId}`}
+                                {...form.register(getCoBorrowerEmployerFieldPath(cardId, 'employerName'))}
+                                data-testid={`input-coBorrowerIncome-employerName-${cardId}`}
+                              />
                             </div>
-
-                            {/* Employer Address Row */}
-                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                              <div className="space-y-2 md:col-span-3">
-                                <Label htmlFor={`${propertyId}-coborrower-employer-street`}>Street Address</Label>
-                                <Controller
-                                  control={form.control}
-                                  name={getCoBorrowerEmployerFieldPath(cardId, 'employerAddress.street')}
-                                  render={({ field }) => (
-                                    <Input
-                                      id={`${propertyId}-coborrower-employer-street`}
-                                      value={field.value || ''}
-                                      onChange={field.onChange}
-                                      data-testid={`input-${propertyId}-coborrower-employer-street`}
-                                    />
-                                  )}
+                            
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor={`coBorrowerIncome-employer-phone-${cardId}`} className="text-xs">
+                                  {form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) ? 'Job Verification' : 'Employer Phone'}
+                                </Label>
+                                <Switch
+                                  checked={form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) || false}
+                                  onCheckedChange={(checked) => form.setValue(getCoBorrowerEmployerFieldPath(cardId, 'isShowingEmploymentVerification') as any, checked)}
+                                  data-testid={`toggle-co-borrower-employment-verification-${cardId}`}
+                                  className="scale-[0.8]"
                                 />
                               </div>
-                              
-                              <div className="space-y-2 md:col-span-1">
-                                <Label htmlFor={`${propertyId}-coborrower-employer-unit`}>Unit/Suite</Label>
-                                <Controller
-                                  control={form.control}
-                                  name={getCoBorrowerEmployerFieldPath(cardId, 'employerAddress.unit')}
-                                  render={({ field }) => (
-                                    <Input
-                                      id={`${propertyId}-coborrower-employer-unit`}
-                                      value={field.value || ''}
-                                      onChange={field.onChange}
-                                      data-testid={`input-${propertyId}-coborrower-employer-unit`}
-                                    />
-                                  )}
+                              <Input
+                                id={`coBorrowerIncome-employer-phone-${cardId}`}
+                                placeholder="(XXX) XXX-XXXX"
+                                value={form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) 
+                                  ? (form.watch(getCoBorrowerEmployerFieldPath(cardId, 'employmentVerificationPhone')) || '')
+                                  : (form.watch(getCoBorrowerEmployerFieldPath(cardId, 'phone')) || '')}
+                                onChange={(e) => {
+                                  const fieldName = form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) 
+                                    ? getCoBorrowerEmployerFieldPath(cardId, 'employmentVerificationPhone')
+                                    : getCoBorrowerEmployerFieldPath(cardId, 'phone');
+                                  handlePhoneChange(fieldName, e.target.value);
+                                }}
+                                data-testid={`input-coBorrowerIncome-employer-phone-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor={`coBorrowerIncome-position-${cardId}`}>Job Title</Label>
+                              <Input
+                                id={`coBorrowerIncome-position-${cardId}`}
+                                {...form.register(getCoBorrowerEmployerFieldPath(cardId, 'position'))}
+                                data-testid={`input-coBorrowerIncome-position-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor={`coBorrowerIncome-monthlySalary-${cardId}`}>Gross Monthly Income</Label>
+                              <Controller
+                                control={form.control}
+                                name={getCoBorrowerEmployerFieldPath(cardId, 'monthlySalary')}
+                                defaultValue=""
+                                render={({ field }) => (
+                                  <Input
+                                    id={`coBorrowerIncome-monthlySalary-${cardId}`}
+                                    value={formatDollarDisplay(field.value || '')}
+                                    onChange={(e) => {
+                                      const rawValue = parseDollarInput(e.target.value);
+                                      field.onChange(rawValue);
+                                    }}
+                                    placeholder="$0.00"
+                                    data-testid={`input-coBorrowerIncome-monthlySalary-${cardId}`}
+                                  />
+                                )}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor={`coBorrowerIncome-startDate-${cardId}`}>Start Date</Label>
+                              <Input
+                                id={`coBorrowerIncome-startDate-${cardId}`}
+                                type="date"
+                                {...form.register(getCoBorrowerEmployerFieldPath(cardId, 'startDate'))}
+                                data-testid={`input-coBorrowerIncome-startDate-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between mb-2">
+                                <Label htmlFor={`coBorrowerIncome-endDate-${cardId}`} className="text-sm">
+                                  {form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isPresent')) ? 'Present' : 'End Date'}
+                                </Label>
+                                <Switch
+                                  checked={form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isPresent')) ?? true}
+                                  onCheckedChange={(checked) => form.setValue(getCoBorrowerEmployerFieldPath(cardId, 'isPresent'), checked)}
+                                  data-testid={`toggle-co-borrower-present-${cardId}`}
+                                  className="scale-[0.8]"
                                 />
                               </div>
-                              
-                              <div className="space-y-2 md:col-span-2">
-                                <Label htmlFor={`${propertyId}-coborrower-employer-city`}>City</Label>
-                                <Controller
-                                  control={form.control}
-                                  name={getCoBorrowerEmployerFieldPath(cardId, 'employerAddress.city')}
-                                  render={({ field }) => (
-                                    <Input
-                                      id={`${propertyId}-coborrower-employer-city`}
-                                      value={field.value || ''}
-                                      onChange={field.onChange}
-                                      data-testid={`input-${propertyId}-coborrower-employer-city`}
-                                    />
-                                  )}
-                                />
-                              </div>
-                              
-                              <div className="space-y-2 md:col-span-1">
-                                <Label htmlFor={`${propertyId}-coborrower-employer-state`}>State</Label>
-                                <Controller
-                                  control={form.control}
-                                  name={getCoBorrowerEmployerFieldPath(cardId, 'employerAddress.state')}
-                                  render={({ field }) => (
-                                    <Select
-                                      value={field.value || ''}
-                                      onValueChange={field.onChange}
-                                    >
-                                      <SelectTrigger data-testid={`select-${propertyId}-coborrower-employer-state`}>
-                                        <SelectValue placeholder="Select" />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                        {US_STATES.map((state) => (
-                                          <SelectItem key={state.value} value={state.value}>
-                                            {state.value}
-                                          </SelectItem>
-                                        ))}
-                                      </SelectContent>
-                                    </Select>
-                                  )}
-                                />
-                              </div>
-                              
-                              <div className="space-y-2 md:col-span-1">
-                                <Label htmlFor={`${propertyId}-coborrower-employer-zip`}>ZIP Code</Label>
-                                <Controller
-                                  control={form.control}
-                                  name={getCoBorrowerEmployerFieldPath(cardId, 'employerAddress.zip')}
-                                  render={({ field }) => (
-                                    <Input
-                                      id={`${propertyId}-coborrower-employer-zip`}
-                                      value={field.value || ''}
-                                      onChange={(e) => {
-                                        field.onChange(e.target.value);
-                                        handleCoBorrowerEmployerZipCodeLookup(e.target.value, propertyId);
-                                      }}
-                                      data-testid={`input-${propertyId}-coborrower-employer-zip`}
-                                    />
-                                  )}
-                                />
-                              </div>
-                              
-                              <div className="space-y-2 md:col-span-2">
-                                <Label htmlFor={`${propertyId}-coborrower-employer-county`}>County</Label>
-                                <Controller
-                                  control={form.control}
-                                  name={getCoBorrowerEmployerFieldPath(cardId, 'employerAddress.county')}
-                                  render={({ field }) => (
-                                    <>
-                                      {coBorrowerEmployerCountyOptions[propertyId]?.length > 0 ? (
-                                        <Select
-                                          value={field.value || ''}
-                                          onValueChange={(value) => {
-                                            field.onChange(value);
-                                            setCoBorrowerEmployerCountyOptions(prev => ({...prev, [propertyId]: []}));
-                                          }}
-                                        >
-                                          <SelectTrigger data-testid={`select-${propertyId}-coborrower-employer-county`}>
-                                            <SelectValue placeholder={countyLookupLoading.coBorrowerEmployer[propertyId] ? "Looking up counties..." : "Select county"} />
-                                          </SelectTrigger>
-                                          <SelectContent>
-                                            {coBorrowerEmployerCountyOptions[propertyId]?.map((option) => (
-                                              <SelectItem key={option.value} value={option.label}>
-                                                {option.label}
-                                              </SelectItem>
-                                            ))}
-                                          </SelectContent>
-                                        </Select>
-                                      ) : (
-                                        <Input
-                                          id={`${propertyId}-coborrower-employer-county`}
-                                          value={field.value || ''}
-                                          onChange={field.onChange}
-                                          placeholder={countyLookupLoading.coBorrowerEmployer[propertyId] ? "Looking up counties..." : ""}
-                                          disabled={countyLookupLoading.coBorrowerEmployer[propertyId]}
-                                          data-testid={`input-${propertyId}-coborrower-employer-county`}
-                                        />
-                                      )}
-                                    </>
-                                  )}
-                                />
-                              </div>
-                              
-                              <div className="space-y-2 md:col-span-2">
-                                <Label htmlFor={`${propertyId}-coborrower-employer-employment-type`}>Full-Time / Part-Time</Label>
-                                <Controller
-                                  control={form.control}
-                                  name={getCoBorrowerEmployerFieldPath(cardId, 'employmentType')}
-                                  render={({ field }) => (
-                                    <Select
-                                      value={field.value || ''}
-                                      onValueChange={field.onChange}
-                                    >
-                                      <SelectTrigger data-testid={`select-${propertyId}-coborrower-employer-employment-type`}>
-                                        <SelectValue placeholder="Select" />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                        <SelectItem value="Full-Time">Full-Time</SelectItem>
-                                        <SelectItem value="Part-Time">Part-Time</SelectItem>
-                                      </SelectContent>
-                                    </Select>
-                                  )}
-                                />
-                              </div>
+                              <Input
+                                id={`coBorrowerIncome-endDate-${cardId}`}
+                                type={form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isPresent')) ? 'text' : 'date'}
+                                value={form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isPresent')) ? 'present' : (form.watch(getCoBorrowerEmployerFieldPath(cardId, 'endDate')) || '')}
+                                onChange={(e) => {
+                                  if (!form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isPresent'))) {
+                                    form.setValue(getCoBorrowerEmployerFieldPath(cardId, 'endDate'), e.target.value);
+                                  }
+                                }}
+                                placeholder={form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isPresent')) ? 'Present' : 'MM/DD/YYYY'}
+                                readOnly={form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isPresent'))}
+                                className={form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isPresent')) ? 'bg-muted' : ''}
+                                data-testid={`input-coBorrowerIncome-endDate-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor={`coBorrowerIncome-employmentDuration-${cardId}`}>Employment Duration</Label>
+                              <Input
+                                id={`coBorrowerIncome-employmentDuration-${cardId}`}
+                                {...form.register(getCoBorrowerEmployerFieldPath(cardId, 'duration'))}
+                                placeholder={form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isPresent')) ? 'Enter' : '0'}
+                                readOnly={!form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isPresent'))}
+                                className={!form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isPresent')) ? 'bg-muted' : ''}
+                                data-testid={`input-coBorrowerIncome-employmentDuration-${cardId}`}
+                              />
                             </div>
                           </div>
-                        </CardContent>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  </Card>
+
+                          {/* Co-Borrower Employment Address Row */}
+                          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                            <div className="space-y-2 md:col-span-3">
+                              <Label htmlFor="coBorrowerIncome-employerAddress-street">Street Address</Label>
+                              <Input
+                                id={`coBorrowerIncome-employerAddress-street-${cardId}`}
+                                {...form.register(getCoBorrowerEmployerFieldPath(cardId, 'employerAddress.street'))}
+                                data-testid={`input-coBorrowerIncome-employerAddress-street-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="coBorrowerIncome-employerAddress-unit">Unit/Suite</Label>
+                              <Input
+                                id={`coBorrowerIncome-employerAddress-unit-${cardId}`}
+                                {...form.register(getCoBorrowerEmployerFieldPath(cardId, 'employerAddress.unit'))}
+                                data-testid={`input-coBorrowerIncome-employerAddress-unit-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="coBorrowerIncome-employerAddress-city">City</Label>
+                              <Input
+                                id={`coBorrowerIncome-employerAddress-city-${cardId}`}
+                                {...form.register(getCoBorrowerEmployerFieldPath(cardId, 'employerAddress.city'))}
+                                data-testid={`input-coBorrowerIncome-employerAddress-city-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="coBorrowerIncome-employerAddress-state">State</Label>
+                              <Select
+                                value={form.watch(getCoBorrowerEmployerFieldPath(cardId, 'employerAddress.state')) || ''}
+                                onValueChange={(value) => form.setValue(getCoBorrowerEmployerFieldPath(cardId, 'employerAddress.state') as any, value)}
+                              >
+                                <SelectTrigger data-testid={`select-coBorrowerIncome-employerAddress-state-${cardId}`}>
+                                  <SelectValue placeholder="State" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {US_STATES.map((state) => (
+                                    <SelectItem key={state.value} value={state.value}>
+                                      {state.value}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="coBorrowerIncome-employerAddress-zip">ZIP Code</Label>
+                              <Input
+                                id={`coBorrowerIncome-employerAddress-zip-${cardId}`}
+                                {...form.register(getCoBorrowerEmployerFieldPath(cardId, 'employerAddress.zip'))}
+                                data-testid={`input-coBorrowerIncome-employerAddress-zip-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="coBorrowerIncome-employerAddress-county">County</Label>
+                              <Input
+                                id={`coBorrowerIncome-employerAddress-county-${cardId}`}
+                                {...form.register(getCoBorrowerEmployerFieldPath(cardId, 'employerAddress.county'))}
+                                data-testid={`input-coBorrowerIncome-employerAddress-county-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="coBorrowerIncome-employmentType">Full-Time / Part-Time</Label>
+                              <Select
+                                value={form.watch(getCoBorrowerEmployerFieldPath(cardId, 'employmentType')) || ''}
+                                onValueChange={(value) => form.setValue(getCoBorrowerEmployerFieldPath(cardId, 'employmentType') as any, value)}
+                              >
+                                <SelectTrigger data-testid="select-coBorrowerIncome-employmentType">
+                                  <SelectValue placeholder="Select type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
+                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+
+                        </div>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </Card>
                 );
               })}
 
-              {/* Co-borrower Second Employment Cards */}
+              {/* Co-Borrower - Second Employment Cards */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.secondEmployment') && (coBorrowerSecondEmployerCards || ['default']).map((cardId, index) => {
-                const propertyId = cardId === 'default' ? 'coborrower-second-template-card' : cardId;
+                const propertyId = cardId === 'default' ? 'co-borrower-second-template-card' : cardId;
                 const isOpen = propertyCardStates[propertyId] ?? true;
                 
                 return (
@@ -9756,7 +10237,7 @@ export default function AdminAddClient() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-8">
                             <CardTitle className="flex items-center gap-2">
-                              Co-borrower - Second Employer
+                              Co-Borrower - Second Employer
                             </CardTitle>
                           </div>
                           <div className="flex items-center gap-2">
@@ -9766,12 +10247,12 @@ export default function AdminAddClient() {
                               variant="outline"
                               size="sm"
                               onClick={() => {
-                                const newId = `coborrower-second-employer-${Date.now()}`;
+                                const newId = `co-borrower-second-employer-${Date.now()}`;
                                 setCoBorrowerSecondEmployerCards(prev => [...(prev || ['default']), newId]);
                               }}
                               className="hover:bg-blue-500 hover:text-white"
-                              data-testid="button-add-coborrower-second-employer"
-                              title="Add New Employer"
+                              data-testid="button-add-co-borrower-second-employer"
+                              title="Add New Co-Borrower Second Employer"
                             >
                               <Plus className="h-4 w-4 mr-2" />
                               Add Employer
@@ -9784,8 +10265,8 @@ export default function AdminAddClient() {
                               size="sm"
                               onClick={() => setDeleteCoBorrowerSecondEmployerDialog({ isOpen: true, cardId: propertyId })}
                               className="hover:bg-red-500 hover:text-white"
-                              data-testid="button-delete-coborrower-second-employer"
-                              title="Delete Employer"
+                              data-testid="button-delete-co-borrower-second-employer"
+                              title="Delete Co-Borrower Second Employer"
                             >
                               <Minus className="h-4 w-4 mr-2" />
                               Remove
@@ -9796,9 +10277,9 @@ export default function AdminAddClient() {
                                 variant="ghost" 
                                 size="sm" 
                                 className="hover:bg-orange-500 hover:text-white" 
-                                data-testid={`button-toggle-coborrower-second-employment-income-${propertyId}`}
+                                data-testid={`button-toggle-co-borrower-second-employment-income-${propertyId}`}
                                 title={isOpen ? 'Minimize' : 'Expand'}
-                                key={`coborrower-second-employment-income-${propertyId}-${isOpen}`}
+                                key={`co-borrower-second-employment-income-${propertyId}-${isOpen}`}
                               >
                                 {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                               </Button>
@@ -9820,21 +10301,21 @@ export default function AdminAddClient() {
                                   <div className="flex items-center space-x-2">
                                     <input
                                       type="radio"
-                                      id="coborrower-second-employment-current"
-                                      name="coborrower-second-employment-type"
-                                      data-testid="radio-coborrower-second-employment-current"
+                                      id={`co-borrower-second-employment-current-${cardId}`}
+                                      name={`co-borrower-second-employment-type-${cardId}`}
+                                      data-testid={`radio-co-borrower-second-employment-current-${cardId}`}
                                     />
-                                    <Label htmlFor="coborrower-second-employment-current">Current Employer</Label>
+                                    <Label htmlFor={`co-borrower-second-employment-current-${cardId}`}>Current Employer</Label>
                                   </div>
                                   
                                   <div className="flex items-center space-x-2">
                                     <input
                                       type="radio"
-                                      id="coborrower-second-employment-prior"
-                                      name="coborrower-second-employment-type"
-                                      data-testid="radio-coborrower-second-employment-prior"
+                                      id={`co-borrower-second-employment-prior-${cardId}`}
+                                      name={`co-borrower-second-employment-type-${cardId}`}
+                                      data-testid={`radio-co-borrower-second-employment-prior-${cardId}`}
                                     />
-                                    <Label htmlFor="coborrower-second-employment-prior">Prior Employer</Label>
+                                    <Label htmlFor={`co-borrower-second-employment-prior-${cardId}`}>Prior Employer</Label>
                                   </div>
                                 </div>
                               </div>
@@ -9855,25 +10336,25 @@ export default function AdminAddClient() {
                             <div className="space-y-2">
                               <div className="flex items-center justify-between mb-2">
                                 <Label htmlFor={`coBorrowerIncome-second-employer-phone-${cardId}`} className="text-xs">
-                                  {form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) ? 'Job Verification' : 'Employer Phone'}
+                                  {form.watch('coBorrowerIncome.isShowingSecondEmploymentVerification') ? 'Job Verification' : 'Employer Phone'}
                                 </Label>
                                 <Switch
-                                  checked={form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) || false}
-                                  onCheckedChange={(checked) => form.setValue(getCoBorrowerSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification') as any, checked)}
-                                  data-testid={`toggle-coborrower-second-employment-verification-${cardId}`}
+                                  checked={form.watch('coBorrowerIncome.isShowingSecondEmploymentVerification') || false}
+                                  onCheckedChange={(checked) => form.setValue('coBorrowerIncome.isShowingSecondEmploymentVerification', checked)}
+                                  data-testid={`toggle-co-borrower-second-employment-verification-${cardId}`}
                                   className="scale-[0.8]"
                                 />
                               </div>
                               <Input
                                 id={`coBorrowerIncome-second-employer-phone-${cardId}`}
                                 placeholder="(XXX) XXX-XXXX"
-                                value={form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) 
+                                value={form.watch('coBorrowerIncome.isShowingSecondEmploymentVerification') 
                                   ? (form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'employmentVerificationPhone')) || '')
-                                  : (form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerPhone')) || '')}
+                                  : (form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'phone')) || '')}
                                 onChange={(e) => {
-                                  const fieldName = form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) 
+                                  const fieldName = form.watch('coBorrowerIncome.isShowingSecondEmploymentVerification') 
                                     ? getCoBorrowerSecondEmployerFieldPath(cardId, 'employmentVerificationPhone')
-                                    : getCoBorrowerSecondEmployerFieldPath(cardId, 'employerPhone');
+                                    : getCoBorrowerSecondEmployerFieldPath(cardId, 'phone');
                                   handlePhoneChange(fieldName, e.target.value);
                                 }}
                                 data-testid={`input-coBorrowerIncome-second-employer-phone-${cardId}`}
@@ -9881,112 +10362,90 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor={`coBorrowerIncome-secondJobTitle-${cardId}`}>Job Title</Label>
+                              <Label htmlFor={`coBorrowerIncome-secondPosition-${cardId}`}>Job Title</Label>
                               <Input
-                                id={`coBorrowerIncome-secondJobTitle-${cardId}`}
-                                {...form.register(getCoBorrowerSecondEmployerFieldPath(cardId, 'jobTitle'))}
-                                data-testid={`input-coBorrowerIncome-secondJobTitle-${cardId}`}
+                                id={`coBorrowerIncome-secondPosition-${cardId}`}
+                                {...form.register(getCoBorrowerSecondEmployerFieldPath(cardId, 'position'))}
+                                data-testid={`input-coBorrowerIncome-secondPosition-${cardId}`}
                               />
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor={`coBorrowerIncome-secondMonthlyIncome-${cardId}`}>Gross Monthly Income</Label>
+                              <Label htmlFor={`coBorrowerIncome-secondMonthlySalary-${cardId}`}>Gross Monthly Income</Label>
                               <Controller
                                 control={form.control}
-                                name={getCoBorrowerSecondEmployerFieldPath(cardId, 'monthlyIncome')}
+                                name={getCoBorrowerSecondEmployerFieldPath(cardId, 'monthlySalary')}
+                                defaultValue=""
                                 render={({ field }) => (
                                   <Input
-                                    id={`coBorrowerIncome-secondMonthlyIncome-${cardId}`}
-                                    value={formatDollarDisplay(field.value)}
+                                    id={`coBorrowerIncome-secondMonthlySalary-${cardId}`}
+                                    value={formatDollarDisplay(field.value || '')}
                                     onChange={(e) => {
                                       const rawValue = parseDollarInput(e.target.value);
                                       field.onChange(rawValue);
                                     }}
                                     placeholder="$0.00"
-                                    data-testid={`input-coBorrowerIncome-secondMonthlyIncome-${cardId}`}
+                                    data-testid={`input-coBorrowerIncome-secondMonthlySalary-${cardId}`}
                                   />
                                 )}
                               />
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor={`coBorrowerIncome-second-startDate-${cardId}`}>Start Date</Label>
+                              <Label htmlFor={`coBorrowerIncome-secondStartDate-${cardId}`}>Start Date</Label>
                               <Input
-                                id={`coBorrowerIncome-second-startDate-${cardId}`}
+                                id={`coBorrowerIncome-secondStartDate-${cardId}`}
                                 type="date"
-                                value={employmentDates[`coborrower-second-employment-${cardId}`]?.startDate || ''}
-                                onChange={(e) => {
-                                  const startDate = e.target.value;
-                                  const currentData = employmentDates[`coborrower-second-employment-${cardId}`] || { endDate: '', isPresent: false, duration: '' };
-                                  updateEmploymentDuration(`coborrower-second-employment-${cardId}`, startDate, currentData.endDate, currentData.isPresent);
-                                }}
-                                placeholder="MM/DD/YYYY"
-                                data-testid={`input-coBorrowerIncome-second-startDate-${cardId}`}
+                                {...form.register(getCoBorrowerSecondEmployerFieldPath(cardId, 'startDate'))}
+                                data-testid={`input-coBorrowerIncome-secondStartDate-${cardId}`}
                               />
                             </div>
                             
                             <div className="space-y-2">
                               <div className="flex items-center justify-between mb-2">
-                                <Label htmlFor={`coBorrowerIncome-second-endDate-${cardId}`} className="text-sm">
-                                  {employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent ? 'Present' : 'End Date'}
+                                <Label htmlFor={`coBorrowerIncome-secondEndDate-${cardId}`} className="text-sm">
+                                  {form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isPresent')) ? 'Present' : 'End Date'}
                                 </Label>
                                 <Switch
-                                  checked={employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent ?? true}
-                                  onCheckedChange={(checked) => {
-                                    const currentData = employmentDates[`coborrower-second-employment-${cardId}`] || { startDate: '', endDate: '', duration: '' };
-                                    updateEmploymentDuration(`coborrower-second-employment-${cardId}`, currentData.startDate, currentData.endDate, checked);
-                                  }}
-                                  data-testid="toggle-coborrower-second-employment-present"
+                                  checked={form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isPresent')) ?? true}
+                                  onCheckedChange={(checked) => form.setValue(getCoBorrowerSecondEmployerFieldPath(cardId, 'isPresent'), checked)}
+                                  data-testid={`toggle-co-borrower-second-present-${cardId}`}
                                   className="scale-[0.8]"
                                 />
                               </div>
                               <Input
-                                id={`coBorrowerIncome-second-endDate-${cardId}`}
-                                type={employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent ? 'text' : 'date'}
-                                value={employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent ? 'present' : (employmentDates[`coborrower-second-employment-${cardId}`]?.endDate || '')}
+                                id={`coBorrowerIncome-secondEndDate-${cardId}`}
+                                type={form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isPresent')) ? 'text' : 'date'}
+                                value={form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isPresent')) ? 'present' : (form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'endDate')) || '')}
                                 onChange={(e) => {
-                                  if (!employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent) {
-                                    const endDate = e.target.value;
-                                    const currentData = employmentDates[`coborrower-second-employment-${cardId}`] || { startDate: '', isPresent: false, duration: '' };
-                                    updateEmploymentDuration(`coborrower-second-employment-${cardId}`, currentData.startDate, endDate, currentData.isPresent);
+                                  if (!form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isPresent'))) {
+                                    form.setValue(getCoBorrowerSecondEmployerFieldPath(cardId, 'endDate'), e.target.value);
                                   }
                                 }}
-                                placeholder={employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent ? 'Enter' : 'MM/DD/YYYY'}
-                                readOnly={employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent}
-                                className={employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent ? 'bg-muted' : ''}
-                                data-testid={`input-coBorrowerIncome-second-endDate-${cardId}`}
+                                placeholder={form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isPresent')) ? 'Present' : 'MM/DD/YYYY'}
+                                readOnly={form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isPresent'))}
+                                className={form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isPresent')) ? 'bg-muted' : ''}
+                                data-testid={`input-coBorrowerIncome-secondEndDate-${cardId}`}
                               />
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="coBorrowerIncome-second-employment-duration">Employment Duration</Label>
+                              <Label htmlFor={`coBorrowerIncome-secondEmploymentDuration-${cardId}`}>Employment Duration</Label>
                               <Input
-                                id="coBorrowerIncome-second-employment-duration"
-                                value={employmentDates['coborrower-second-employment']?.duration || ''}
-                                placeholder={employmentDates['coborrower-second-employment']?.isPresent ? 'Enter' : '0'}
-                                readOnly={!employmentDates['coborrower-second-employment']?.isPresent}
-                                className={!employmentDates['coborrower-second-employment']?.isPresent ? 'bg-muted' : ''}
-                                onChange={(e) => {
-                                  if (employmentDates['coborrower-second-employment']?.isPresent) {
-                                    const currentData = employmentDates['coborrower-second-employment'] || { startDate: '', endDate: '', isPresent: false };
-                                    setEmploymentDates(prev => ({
-                                      ...prev,
-                                      'coborrower-second-employment': {
-                                        ...currentData,
-                                        duration: e.target.value
-                                      }
-                                    }));
-                                  }
-                                }}
-                                data-testid="input-coBorrowerIncome-second-employment-duration"
+                                id={`coBorrowerIncome-secondEmploymentDuration-${cardId}`}
+                                {...form.register(getCoBorrowerSecondEmployerFieldPath(cardId, 'duration'))}
+                                placeholder={form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isPresent')) ? 'Enter' : '0'}
+                                readOnly={!form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isPresent'))}
+                                className={!form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isPresent')) ? 'bg-muted' : ''}
+                                data-testid={`input-coBorrowerIncome-secondEmploymentDuration-${cardId}`}
                               />
                             </div>
                           </div>
 
-                          {/* Employer Address Row */}
+                          {/* Second Employment Address Row */}
                           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                             <div className="space-y-2 md:col-span-3">
-                              <Label htmlFor={`coBorrowerIncome-secondEmployerAddress-street-${cardId}`}>Street Address</Label>
+                              <Label htmlFor="coBorrowerIncome-secondEmployerAddress-street">Street Address</Label>
                               <Input
                                 id={`coBorrowerIncome-secondEmployerAddress-street-${cardId}`}
                                 {...form.register(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerAddress.street'))}
@@ -9995,7 +10454,7 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2 md:col-span-1">
-                              <Label htmlFor={`coBorrowerIncome-secondEmployerAddress-unit-${cardId}`}>Unit/Suite</Label>
+                              <Label htmlFor="coBorrowerIncome-secondEmployerAddress-unit">Unit/Suite</Label>
                               <Input
                                 id={`coBorrowerIncome-secondEmployerAddress-unit-${cardId}`}
                                 {...form.register(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerAddress.unit'))}
@@ -10018,7 +10477,7 @@ export default function AdminAddClient() {
                                 value={form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerAddress.state')) || ''}
                                 onValueChange={(value) => form.setValue(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerAddress.state') as any, value)}
                               >
-                                <SelectTrigger data-testid="select-coBorrowerIncome-secondEmployerAddress-state">
+                                <SelectTrigger data-testid={`select-coBorrowerIncome-secondEmployerAddress-state-${cardId}`}>
                                   <SelectValue placeholder="State" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -10033,6 +10492,311 @@ export default function AdminAddClient() {
                             
                             <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="coBorrowerIncome-secondEmployerAddress-zip">ZIP Code</Label>
+                              <Input
+                                id={`coBorrowerIncome-secondEmployerAddress-zip-${cardId}`}
+                                {...form.register(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerAddress.zip'))}
+                                data-testid={`input-coBorrowerIncome-secondEmployerAddress-zip-${cardId}`}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="coBorrowerIncome-secondEmployerAddress-county">County</Label>
+                              <Controller
+                                control={form.control}
+                                name={getCoBorrowerSecondEmployerFieldPath(cardId, 'employerAddress.county')}
+                                render={({ field }) => (
+                                  <Input
+                                    id={`coBorrowerIncome-secondEmployerAddress-county-${cardId}`}
+                                    {...form.register(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerAddress.county'))}
+                                    data-testid={`input-coBorrowerIncome-secondEmployerAddress-county-${cardId}`}
+                                  />
+                                )}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="coBorrowerIncome-secondEmploymentType">Full-Time / Part-Time</Label>
+                              <Select
+                                value={form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'employmentType')) || ''}
+                                onValueChange={(value) => form.setValue(getCoBorrowerSecondEmployerFieldPath(cardId, 'employmentType') as any, value)}
+                              >
+                                <SelectTrigger data-testid="select-coBorrowerIncome-secondEmploymentType">
+                                  <SelectValue placeholder="Select type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Full-Time">Full-Time</SelectItem>
+                                  <SelectItem value="Part-Time">Part-Time</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+
+                        </div>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </Card>
+                );
+              })}
+
+              {/* Co-Borrower Income */}
+              {hasCoBorrower && (
+                <Card className="border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-3">
+                      Co-Borrower Income
+                      <span className="text-lg font-semibold" data-testid="text-total-coborrower-income">
+                        {totalCoBorrowerIncomeFormatted}
+                      </span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="coBorrowerIncome-type-employment"
+                            checked={form.watch('coBorrowerIncome.incomeTypes.employment') || false}
+                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.employment', !!checked, 'Employment', true)}
+                            data-testid="checkbox-coborrower-employment"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="coBorrowerIncome-type-employment">Employment</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="coBorrowerIncome-type-secondEmployment"
+                            checked={form.watch('coBorrowerIncome.incomeTypes.secondEmployment') || false}
+                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.secondEmployment', !!checked, 'Second Employment', true)}
+                            data-testid="checkbox-coborrower-secondEmployment"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="coBorrowerIncome-type-secondEmployment">Second Employment</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="coBorrowerIncome-type-selfEmployment"
+                            checked={form.watch('coBorrowerIncome.incomeTypes.selfEmployment') || false}
+                            onCheckedChange={(checked) => {
+                              // Prevent unchecking - once checked, can only be removed via Remove button
+                              if (!checked && form.watch('coBorrowerIncome.incomeTypes.selfEmployment')) {
+                                return; // Do nothing - prevent unchecking
+                              }
+                              handleIncomeTypeChange('coBorrowerIncome.incomeTypes.selfEmployment', !!checked, 'Self-Employment', true);
+                            }}
+                            data-testid="checkbox-coborrower-selfEmployment"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="coBorrowerIncome-type-selfEmployment">Self-Employment</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="coBorrowerIncome-type-vaBenefits"
+                            checked={form.watch('coBorrowerIncome.incomeTypes.vaBenefits') || false}
+                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.vaBenefits', !!checked, 'VA Benefits', true)}
+                            data-testid="checkbox-coborrower-vaBenefits"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="coBorrowerIncome-type-vaBenefits">VA Benefits</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="coBorrowerIncome-type-socialSecurity"
+                            checked={form.watch('coBorrowerIncome.incomeTypes.socialSecurity') || false}
+                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.socialSecurity', !!checked, 'Social Security', true)}
+                            data-testid="checkbox-coborrower-socialSecurity"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="coBorrowerIncome-type-socialSecurity">Social Security</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="coBorrowerIncome-type-pension"
+                            checked={form.watch('coBorrowerIncome.incomeTypes.pension') || false}
+                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.pension', !!checked, 'Pension', true)}
+                            data-testid="checkbox-coborrower-pension"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="coBorrowerIncome-type-pension">Pension</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="coBorrowerIncome-type-disability"
+                            checked={form.watch('coBorrowerIncome.incomeTypes.disability') || false}
+                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.disability', !!checked, 'Disability', true)}
+                            data-testid="checkbox-coborrower-disability"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="coBorrowerIncome-type-disability">Disability</Label>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+            </TabsContent>
+
+            {/* Property Tab */}
+            <TabsContent value="property" className="space-y-6">
+              {/* Property Summary Card - Matching Income Tab Structure */}
+              <Card className="transition-all duration-700">
+                <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
+                  <div className="space-y-2">
+                    <Label className="text-lg font-semibold">Subject Property</Label>
+                    <div className="mt-24">
+                      <span className="text-muted-foreground" style={{ fontSize: '28px', color: '#1a3373', fontWeight: 'bold' }}>
+                        {(() => {
+                          // Find properties that have isSubject=true and get their property type
+                          const properties = form.watch('property.properties') || [];
+                          const subjectProperty = properties.find(p => p.isSubject === true);
+                          
+                          // If no subject property found, display TBD
+                          if (!subjectProperty) {
+                            return 'TBD';
+                          }
+                          
+                          // Get the property type from the subject property
+                          const propertyType = subjectProperty.propertyType || '';
+                          
+                          // If no property type selected, display TBD
+                          if (!propertyType || propertyType.trim() === '') {
+                            return 'TBD';
+                          }
+                          
+                          // Apply mapping rules
+                          if (propertyType === 'mobile-home-sw') {
+                            return 'SW';
+                          } else if (propertyType === 'mobile-home-dw') {
+                            return 'DW';
+                          } else if (propertyType === 'other') {
+                            return 'TBD';
+                          } else {
+                            // For other values, display them as-is with proper formatting
+                            return propertyType
+                              .split('-')
+                              .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                              .join(' ');
+                          }
+                        })()}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-lg font-semibold">Property Count</Label>
+                    <div className="min-h-[40px] flex items-center">
+                      <div
+                        className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                        style={{
+                          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                          fontSize: '36px',
+                          fontWeight: 600,
+                          backgroundColor: '#1a3373',
+                          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+                        }}
+                        data-testid="text-property-count"
+                      >
+                        <span className={`${showPropertyAnimation ? 'animate-roll-down' : ''}`}>
+                          {(() => {
+                            // Count all active property cards
+                            const primaryCards = (primaryResidenceCards || []).length;
+                            const secondHomeCardsCount = (secondHomeCards || []).length;
+                            const formProperties = (form.watch('property.properties') || []);
+                            const investmentCards = formProperties.filter(p => p.use === 'investment').length;
+                            const homePurchaseCards = formProperties.filter(p => p.use === 'home-purchase').length;
+                            
+                            return primaryCards + secondHomeCardsCount + investmentCards + homePurchaseCards;
+                          })()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-lg font-semibold">Estimated LTV</Label>
+                    <div className="min-h-[40px] flex items-center">
+                      <div
+                        className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                        style={{
+                          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                          fontSize: '36px',
+                          fontWeight: 600,
+                          backgroundColor: '#1a3373',
+                          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+                        }}
+                        data-testid="text-estimated-ltv"
+                      >
+                        <span className={`${showPropertyAnimation ? 'animate-roll-down' : ''}`}>
+                          {(() => {
+                            // Find the subject property
+                            const properties = form.watch('property.properties') || [];
+                            const subjectProperty = properties.find(p => p.isSubject === true);
+                            
+                            // Get the New Loan amount
+                            const loanAmount = form.watch('newLoan.loanAmount') || '';
+                            
+                            // If no subject property or loan amount, return default %
+                            if (!subjectProperty || !loanAmount || loanAmount.trim() === '') {
+                              return <span style={{ fontSize: '28px' }}>%</span>;
+                            }
+                            
+                            // Get the property's value
+                            const propertyValue = parseFloat(subjectProperty.value?.replace(/[^0-9.-]+/g, '') || '0');
+                            const loanAmountValue = parseFloat(loanAmount.replace(/[^0-9.-]+/g, '') || '0');
+                            
+                            // Calculate LTV
+                            if (propertyValue > 0 && loanAmountValue > 0) {
+                              const ltv = Math.round((loanAmountValue / propertyValue) * 100);
+                              return <span>{ltv}%</span>;
+                            } else {
+                              return <span style={{ fontSize: '28px' }}>%</span>;
+                            }
+                          })()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-lg font-semibold">Total Value</Label>
+                    <div className="min-h-[40px] flex items-center">
+                      <span className="text-lg font-semibold" data-testid="text-total-property-value">
+                        {(() => {
+                          // Calculate total property value from all properties
+                          const primaryCards = primaryResidenceCards || [];
+                          const secondHomeCardsData = secondHomeCards || [];
+                          const formProperties = form.watch('property.properties') || [];
+                          
+                          let totalValue = 0;
+                          
+                          // Add values from primary residence cards
+                          primaryCards.forEach(cardId => {
+                            const value = form.watch(`primaryResidence.${cardId}.value`) || '';
+                            const numericValue = parseFloat(value.replace(/[^0-9.-]+/g, '') || '0');
+                            totalValue += numericValue;
+                          });
+                          
+                          // Add values from second home cards
+                          secondHomeCardsData.forEach(cardId => {
+                            const value = form.watch(`secondHome.${cardId}.value`) || '';
+                            const numericValue = parseFloat(value.replace(/[^0-9.-]+/g, '') || '0');
+                            totalValue += numericValue;
+                          });
+                          
+                          // Add values from form properties
+                          formProperties.forEach(property => {
+                            const numericValue = parseFloat(property.value?.replace(/[^0-9.-]+/g, '') || '0');
+                            totalValue += numericValue;
+                          });
+                          
+                          return totalValue > 0 ? `$${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '$0.00';
+                        })()}
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
                               <Input
                                 id={`coBorrowerIncome-secondEmployerAddress-zip-${cardId}`}
                                 {...form.register(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerAddress.zip'))}
