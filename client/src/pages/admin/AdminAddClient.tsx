@@ -14044,7 +14044,7 @@ export default function AdminAddClient() {
                         }}
                         data-testid="circle-1"
                       >
-                        {isNewLoanOpen ? 1 : 0}
+                        1
                       </div>
                     </div>
                   </div>
