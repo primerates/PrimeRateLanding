@@ -3032,7 +3032,7 @@ export default function AdminAddClient() {
                 
                 <div className="space-y-2 md:col-span-1">
                   <Label htmlFor="currentLoan-escrowPayment">Escrow</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md focus-within:ring-2 focus-within:ring-ring focus-within:border-ring">
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
                       id="currentLoan-escrowPayment"
