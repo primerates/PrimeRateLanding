@@ -3394,8 +3394,8 @@ export default function AdminAddClient() {
               </div>
               
               {/* Row 2: Current Balance, Monthly Payment, Pre-Payment Penalty, Attached to Property */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="space-y-2">
+              <div className="grid grid-cols-1 md:grid-cols-20 gap-4">
+                <div className="space-y-2 md:col-span-5">
                   <Label htmlFor="secondLoan-currentBalance">Loan Balance</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
@@ -3409,7 +3409,7 @@ export default function AdminAddClient() {
                   </div>
                 </div>
                 
-                <div className="space-y-2">
+                <div className="space-y-2 md:col-span-5">
                   <Label htmlFor="secondLoan-monthlyPayment">Monthly Payment</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
@@ -3423,7 +3423,7 @@ export default function AdminAddClient() {
                   </div>
                 </div>
                 
-                <div className="space-y-2">
+                <div className="space-y-2 md:col-span-4">
                   <Label htmlFor="secondLoan-prepaymentPenalty">Pre-Payment Penalty</Label>
                   <Select value={targetForm.watch('secondLoan.prepaymentPenalty') || ''} onValueChange={(value: 'Yes - see notes' | 'No') => targetForm.setValue('secondLoan.prepaymentPenalty', value)}>
                     <SelectTrigger data-testid="select-secondLoan-prepaymentPenalty">
@@ -3436,7 +3436,7 @@ export default function AdminAddClient() {
                   </Select>
                 </div>
                 
-                <div className="space-y-2">
+                <div className="space-y-2 md:col-span-6">
                   <Label htmlFor="secondLoan-attachedToProperty">Attached to Property</Label>
                   <Select value={targetForm.watch('secondLoan.attachedToProperty') || ''} onValueChange={(value) => {
                     targetForm.setValue('secondLoan.attachedToProperty', value as any);
