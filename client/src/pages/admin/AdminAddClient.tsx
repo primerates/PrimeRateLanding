@@ -3250,6 +3250,47 @@ export default function AdminAddClient() {
             <div className="flex items-center justify-between">
               <CardTitle>Current Second Loan</CardTitle>
               <div className="flex items-center gap-2">
+                {/* Add Current Second Loan Button */}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    // Generate a unique ID for the new loan card
+                    const newLoanId = `current-second-loan-${Date.now()}`;
+                    
+                    // Add to cards array
+                    setCurrentSecondLoanCards(prev => [...(prev || []), newLoanId]);
+                    
+                    // Initialize data state for new card
+                    setCurrentSecondLoanData(prev => ({ 
+                      ...prev, 
+                      [newLoanId]: { isDefaultCard: false } 
+                    }));
+                    
+                    // Initialize per-card collapsible state (auto-expand like Property cards)
+                    setSecondLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
+                    
+                    // Auto-expand the loan card
+                    setShowSecondLoan(true);
+                    
+                    // Trigger animation for newly created loan card
+                    setTimeout(() => {
+                      setShowSubjectPropertyAnimation(prev => ({ ...prev, [newLoanId]: true }));
+                      setTimeout(() => {
+                        setShowSubjectPropertyAnimation(prev => ({ ...prev, [newLoanId]: false }));
+                      }, 800);
+                    }, 200);
+                  }}
+                  className="hover:bg-blue-500 hover:text-white"
+                  data-testid="button-add-current-second-loan"
+                  title="Add Current Second Loan"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Current Second Loan
+                </Button>
+                
+                {/* Remove Button */}
                 {onRemove && (
                   <Button
                     type="button"
@@ -3258,11 +3299,13 @@ export default function AdminAddClient() {
                     onClick={onRemove}
                     className="hover:bg-red-500 hover:text-white"
                     data-testid={`button-remove-second-loan-${idPrefix}`}
-                    title="Delete"
+                    title="Remove Current Second Loan"
                   >
-                    <Minus className="h-4 w-4" />
+                    <Minus className="h-4 w-4 mr-2" />
+                    Remove
                   </Button>
                 )}
+                
                 <CollapsibleTrigger asChild>
                   <Button 
                     variant="ghost" 
