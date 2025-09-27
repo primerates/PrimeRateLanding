@@ -3554,6 +3554,20 @@ export default function AdminAddClient() {
               <Card className="bg-muted">
                 <CardContent className="pt-6">
                   <div className="grid grid-cols-1 md:grid-cols-10 gap-4">
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="secondLoan-principalInterestPayment">Loan Balance</Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="secondLoan-principalInterestPayment"
+                      {...targetForm.register('secondLoan.principalAndInterestPayment')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-secondLoan-principalInterestPayment"
+                    />
+                  </div>
+                </div>
+                
                 <div className="space-y-2 md:col-span-1">
                   <Label htmlFor="secondLoan-interestRate">Interest Rate</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
@@ -3569,31 +3583,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="secondLoan-principalInterestPayment">Loan Balance</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="secondLoan-principalInterestPayment"
-                      {...targetForm.register('secondLoan.principalAndInterestPayment')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-secondLoan-principalInterestPayment"
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2 md:col-span-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <Label htmlFor="secondLoan-monthlyEscrow" className="text-sm">
-                      Monthly Payment
-                    </Label>
-                    <Switch
-                      checked={true} // Default to on
-                      onCheckedChange={() => {}} // Placeholder
-                      data-testid="toggle-secondLoan-escrow-type"
-                      className="scale-[0.8]"
-                    />
-                  </div>
+                  <Label htmlFor="secondLoan-monthlyEscrow">Monthly Payment</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
@@ -3607,17 +3597,19 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="secondLoan-totalMonthlyPayment">Pre-Payment Penalty</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="secondLoan-totalMonthlyPayment"
-                      {...targetForm.register('secondLoan.totalMonthlyPayment')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-secondLoan-totalMonthlyPayment"
-                    />
-                  </div>
+                  <Label htmlFor="secondLoan-prePaymentPenalty">Pre-Payment Penalty</Label>
+                  <Select value={targetForm.watch('secondLoan.prePaymentPenalty') || ''} onValueChange={(value) => {
+                    targetForm.setValue('secondLoan.prePaymentPenalty', value);
+                  }}>
+                    <SelectTrigger data-testid="select-secondLoan-prePaymentPenalty">
+                      <SelectValue placeholder="select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">select</SelectItem>
+                      <SelectItem value="No">No</SelectItem>
+                      <SelectItem value="Yes - See Loan Notes">Yes - See Loan Notes</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 
                 <div className="space-y-2 md:col-span-3">
