@@ -11282,6 +11282,36 @@ export default function AdminAddClient() {
                                         // Add your button functionality here
                                         console.log('New button clicked');
                                       }}
+                                      style={(() => {
+                                        const properties = form.watch('property.properties') || [];
+                                        const primaryIndex = properties.findIndex(p => p.use === 'primary');
+                                        const currentProperty = primaryIndex >= 0 ? properties[primaryIndex] : null;
+                                        
+                                        // Check which loans are attached to this property for counter
+                                        const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                        const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                        
+                                        const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                        const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                        
+                                        // Check third loan (first additional loan - Current Loan 3)
+                                        const additionalLoansData = additionalLoans || [];
+                                        const firstAdditionalLoan = additionalLoansData[0];
+                                        const isThirdLoanAttached = firstAdditionalLoan ? (() => {
+                                          const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
+                                          return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                        })() : false;
+                                        
+                                        // Count active loans
+                                        let activeLoansCount = 0;
+                                        if (isCurrentLoanAttached) activeLoansCount++;
+                                        if (isSecondLoanAttached) activeLoansCount++;
+                                        if (isThirdLoanAttached) activeLoansCount++;
+                                        
+                                        return activeLoansCount > 0 
+                                          ? { backgroundColor: '#3b82f6', borderColor: '#3b82f6' } 
+                                          : {};
+                                      })()}
                                       className={(() => {
                                         const properties = form.watch('property.properties') || [];
                                         const primaryIndex = properties.findIndex(p => p.use === 'primary');
@@ -11309,7 +11339,7 @@ export default function AdminAddClient() {
                                         if (isThirdLoanAttached) activeLoansCount++;
                                         
                                         return activeLoansCount > 0 
-                                          ? "w-24 bg-blue-500 text-white hover:bg-blue-600 border-blue-500" 
+                                          ? "w-24 text-white border-2" 
                                           : "w-24 hover:bg-red-500 hover:text-white";
                                       })()}
                                       data-testid={`button-grey-box-action-${propertyId}`}
@@ -12060,6 +12090,34 @@ export default function AdminAddClient() {
                                         // Add your button functionality here
                                         console.log('Second Home Loans button clicked');
                                       }}
+                                      style={(() => {
+                                        const currentProperty = property;
+                                        
+                                        // Check which loans are attached to this property for counter
+                                        const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                        const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                        
+                                        const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                        const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                        
+                                        // Check third loan (first additional loan - Current Loan 3)
+                                        const additionalLoansData = additionalLoans || [];
+                                        const firstAdditionalLoan = additionalLoansData[0];
+                                        const isThirdLoanAttached = firstAdditionalLoan ? (() => {
+                                          const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
+                                          return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                        })() : false;
+                                        
+                                        // Count active loans
+                                        let activeLoansCount = 0;
+                                        if (isCurrentLoanAttached) activeLoansCount++;
+                                        if (isSecondLoanAttached) activeLoansCount++;
+                                        if (isThirdLoanAttached) activeLoansCount++;
+                                        
+                                        return activeLoansCount > 0 
+                                          ? { backgroundColor: '#3b82f6', borderColor: '#3b82f6' } 
+                                          : {};
+                                      })()}
                                       className={(() => {
                                         const currentProperty = property;
                                         
@@ -12085,7 +12143,7 @@ export default function AdminAddClient() {
                                         if (isThirdLoanAttached) activeLoansCount++;
                                         
                                         return activeLoansCount > 0 
-                                          ? "w-24 bg-blue-500 text-white hover:bg-blue-600 border-blue-500" 
+                                          ? "w-24 text-white border-2" 
                                           : "w-24 hover:bg-red-500 hover:text-white";
                                       })()}
                                       data-testid={`button-second-home-grey-box-action-${propertyId}`}
@@ -12839,6 +12897,34 @@ export default function AdminAddClient() {
                                         // Add your button functionality here
                                         console.log('Investment Property Loans button clicked');
                                       }}
+                                      style={(() => {
+                                        const currentProperty = property;
+                                        
+                                        // Check which loans are attached to this property for counter
+                                        const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                        const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                        
+                                        const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                        const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                        
+                                        // Check third loan (first additional loan - Current Loan 3)
+                                        const additionalLoansData = additionalLoans || [];
+                                        const firstAdditionalLoan = additionalLoansData[0];
+                                        const isThirdLoanAttached = firstAdditionalLoan ? (() => {
+                                          const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
+                                          return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                        })() : false;
+                                        
+                                        // Count active loans
+                                        let activeLoansCount = 0;
+                                        if (isCurrentLoanAttached) activeLoansCount++;
+                                        if (isSecondLoanAttached) activeLoansCount++;
+                                        if (isThirdLoanAttached) activeLoansCount++;
+                                        
+                                        return activeLoansCount > 0 
+                                          ? { backgroundColor: '#3b82f6', borderColor: '#3b82f6' } 
+                                          : {};
+                                      })()}
                                       className={(() => {
                                         const currentProperty = property;
                                         
@@ -12864,7 +12950,7 @@ export default function AdminAddClient() {
                                         if (isThirdLoanAttached) activeLoansCount++;
                                         
                                         return activeLoansCount > 0 
-                                          ? "w-24 bg-blue-500 text-white hover:bg-blue-600 border-blue-500" 
+                                          ? "w-24 text-white border-2" 
                                           : "w-24 hover:bg-red-500 hover:text-white";
                                       })()}
                                       data-testid={`button-investment-grey-box-action-${propertyId}`}
@@ -13607,6 +13693,34 @@ export default function AdminAddClient() {
                                         // Add your button functionality here
                                         console.log('Home Purchase Loans button clicked');
                                       }}
+                                      style={(() => {
+                                        const currentProperty = property;
+                                        
+                                        // Check which loans are attached to this property for counter
+                                        const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                        const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                        
+                                        const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                        const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                        
+                                        // Check third loan (first additional loan - Current Loan 3)
+                                        const additionalLoansData = additionalLoans || [];
+                                        const firstAdditionalLoan = additionalLoansData[0];
+                                        const isThirdLoanAttached = firstAdditionalLoan ? (() => {
+                                          const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
+                                          return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                        })() : false;
+                                        
+                                        // Count active loans
+                                        let activeLoansCount = 0;
+                                        if (isCurrentLoanAttached) activeLoansCount++;
+                                        if (isSecondLoanAttached) activeLoansCount++;
+                                        if (isThirdLoanAttached) activeLoansCount++;
+                                        
+                                        return activeLoansCount > 0 
+                                          ? { backgroundColor: '#3b82f6', borderColor: '#3b82f6' } 
+                                          : {};
+                                      })()}
                                       className={(() => {
                                         const currentProperty = property;
                                         
@@ -13632,7 +13746,7 @@ export default function AdminAddClient() {
                                         if (isThirdLoanAttached) activeLoansCount++;
                                         
                                         return activeLoansCount > 0 
-                                          ? "w-24 bg-blue-500 text-white hover:bg-blue-600 border-blue-500" 
+                                          ? "w-24 text-white border-2" 
                                           : "w-24 hover:bg-red-500 hover:text-white";
                                       })()}
                                       data-testid={`button-home-purchase-grey-box-action-${propertyId}`}
