@@ -3682,8 +3682,8 @@ export default function AdminAddClient() {
                 </div>
               </div>
               
-              {/* Row 2: Current Balance, Current Rate, Monthly Payment, Pre-payment Penalty, Attached to Property */}
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              {/* Row 2: Current Balance, Monthly Payment, Pre-payment Penalty, Attached to Property */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="thirdLoan-currentBalance">Loan Balance</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
@@ -3695,20 +3695,6 @@ export default function AdminAddClient() {
                       className="border-0 bg-transparent px-2 focus-visible:ring-0"
                       data-testid="input-thirdLoan-currentBalance"
                     />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="thirdLoan-currentRate">Interest Rate</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <Input
-                      id="thirdLoan-currentRate"
-                      {...targetForm.register('thirdLoan.currentRate')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-thirdLoan-currentRate"
-                    />
-                    <span className="text-muted-foreground text-sm">%</span>
                   </div>
                 </div>
                 
