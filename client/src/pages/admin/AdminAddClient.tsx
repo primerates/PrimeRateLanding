@@ -12115,7 +12115,7 @@ export default function AdminAddClient() {
                                         if (isThirdLoanAttached) activeLoansCount++;
                                         
                                         return activeLoansCount > 0 
-                                          ? { backgroundColor: '#3b82f6', borderColor: '#3b82f6' } 
+                                          ? { backgroundColor: '#1a3373', borderColor: '#1a3373' } 
                                           : {};
                                       })()}
                                       className={(() => {
@@ -12922,7 +12922,7 @@ export default function AdminAddClient() {
                                         if (isThirdLoanAttached) activeLoansCount++;
                                         
                                         return activeLoansCount > 0 
-                                          ? { backgroundColor: '#3b82f6', borderColor: '#3b82f6' } 
+                                          ? { backgroundColor: '#1a3373', borderColor: '#1a3373' } 
                                           : {};
                                       })()}
                                       className={(() => {
@@ -13718,7 +13718,7 @@ export default function AdminAddClient() {
                                         if (isThirdLoanAttached) activeLoansCount++;
                                         
                                         return activeLoansCount > 0 
-                                          ? { backgroundColor: '#3b82f6', borderColor: '#3b82f6' } 
+                                          ? { backgroundColor: '#1a3373', borderColor: '#1a3373' } 
                                           : {};
                                       })()}
                                       className={(() => {
