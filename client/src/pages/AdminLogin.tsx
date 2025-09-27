@@ -14,7 +14,7 @@ export default function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [dashboardImage, setDashboardImage] = useState('futuristic-grid');
+  const [dashboardImage, setDashboardImage] = useState('abstract-geometric-cubes');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: boolean}>({});
   const { toast } = useToast();
@@ -172,6 +172,9 @@ export default function AdminLogin() {
                   <SelectValue placeholder="Select dashboard background" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="abstract-geometric-cubes" data-testid="option-abstract-geometric-cubes">
+                    Current Dashboard Background
+                  </SelectItem>
                   <SelectItem value="futuristic-grid" data-testid="option-futuristic-grid">
                     Futuristic 3D Grid
                   </SelectItem>
