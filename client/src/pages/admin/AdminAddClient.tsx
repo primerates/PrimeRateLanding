@@ -3038,7 +3038,7 @@ export default function AdminAddClient() {
                       id="currentLoan-escrowPayment"
                       {...form.register('currentLoan.escrowPayment')}
                       placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0 focus-visible:outline-none focus:outline-none"
                       data-testid="input-currentLoan-escrowPayment"
                     />
                   </div>
