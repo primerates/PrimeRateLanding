@@ -2505,6 +2505,23 @@ export default function AdminAddClient() {
     [totalBorrowerIncome]
   );
 
+  // Calculate total monthly payment for Current Primary Loan - using same pattern as Income tab
+  const currentLoanData = form.watch('currentLoan');
+  
+  const totalCurrentLoanPayment = useMemo(() => {
+    const principalPayment = parseMonetaryValue(currentLoanData?.principalAndInterestPayment);
+    const escrowPayment = parseMonetaryValue(currentLoanData?.escrowPayment);
+    const total = principalPayment + escrowPayment;
+    return total;
+  }, [currentLoanData?.principalAndInterestPayment, currentLoanData?.escrowPayment]);
+  
+  const totalCurrentLoanPaymentFormatted = useMemo(() => 
+    totalCurrentLoanPayment > 0 
+      ? `$${totalCurrentLoanPayment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` 
+      : '$0.00',
+    [totalCurrentLoanPayment]
+  );
+
   // Calculate co-borrower income - optimized with useMemo
   const coBorrowerIncomeData = form.watch('coBorrowerIncome');
   const coBorrowerEmployersData = form.watch('coBorrowerIncome.employers');
@@ -3036,7 +3053,7 @@ export default function AdminAddClient() {
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
                       id="currentLoan-monthlyEscrow"
-                      {...form.register('currentLoan.statementBalance.amount')}
+                      {...form.register('currentLoan.escrowPayment')}
                       placeholder="0.00"
                       className="border-0 bg-transparent px-2 focus-visible:ring-0"
                       data-testid="input-currentLoan-monthlyEscrow"
@@ -3045,16 +3062,11 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="currentLoan-totalMonthlyPayment">Total Monthly Payment</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="currentLoan-totalMonthlyPayment"
-                      {...form.register('currentLoan.totalMonthlyPayment')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-currentLoan-totalMonthlyPayment"
-                    />
+                  <Label className="text-sm font-medium text-muted-foreground">Total Monthly Payment</Label>
+                  <div className="p-2 bg-green-50 rounded-md border border-green-200">
+                    <span className="text-sm font-semibold text-green-700" data-testid="text-total-current-loan-payment">
+                      {totalCurrentLoanPaymentFormatted}
+                    </span>
                   </div>
                 </div>
                 
