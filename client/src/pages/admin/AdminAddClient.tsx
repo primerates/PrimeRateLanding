@@ -542,6 +542,8 @@ export default function AdminAddClient() {
   const [showIncomeCardAnimation, setShowIncomeCardAnimation] = useState<{[key: string]: boolean}>({});
   // Animation state for loan tab blue circles roll-up
   const [showLoanCircleAnimation, setShowLoanCircleAnimation] = useState(false);
+  // Animation state for current loan card grey box roll-up
+  const [showCurrentLoanCardAnimation, setShowCurrentLoanCardAnimation] = useState<{[key: string]: boolean}>({});
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
@@ -2907,11 +2909,12 @@ export default function AdminAddClient() {
                     // Auto-expand the loan card
                     setShowCurrentLoan(true);
                     
-                    // Trigger animation for newly created loan card
+                    // Trigger animation for newly created loan card grey box
                     setTimeout(() => {
-                      setShowSubjectPropertyAnimation(prev => ({ ...prev, [newLoanId]: true }));
+                      const cardIndex = (currentPrimaryLoanCards || []).length;
+                      setShowCurrentLoanCardAnimation(prev => ({ ...prev, [`card-${cardIndex}-`]: true }));
                       setTimeout(() => {
-                        setShowSubjectPropertyAnimation(prev => ({ ...prev, [newLoanId]: false }));
+                        setShowCurrentLoanCardAnimation(prev => ({ ...prev, [`card-${cardIndex}-`]: false }));
                       }, 800);
                     }, 200);
                   }}
@@ -3096,7 +3099,9 @@ export default function AdminAddClient() {
               </div>
               
               {/* Row 3: Principal & Interest Payment, Escrow Payment, Total Monthly Payment, Pre-Payment Penalty, Attached to Property */}
-              <Card className="bg-muted">
+              <Card className={`bg-muted ${
+                showCurrentLoanCardAnimation[idPrefix] ? 'animate-roll-up-grey-box' : ''
+              }`}>
                 <CardContent className="pt-6">
                   <div className="grid grid-cols-1 md:grid-cols-10 gap-4">
                 <div className="space-y-2 md:col-span-1">
@@ -5564,6 +5569,14 @@ export default function AdminAddClient() {
     setShowCurrentLoan(true);
     // REMOVED: Auto-creation of Primary Residence property
     // Loan cards are now exclusive to Loan tab
+    
+    // Trigger grey box animation for current loan card
+    setTimeout(() => {
+      setShowCurrentLoanCardAnimation(prev => ({ ...prev, 'current-loan': true }));
+      setTimeout(() => {
+        setShowCurrentLoanCardAnimation(prev => ({ ...prev, 'current-loan': false }));
+      }, 800);
+    }, 200);
   };
 
   // Handle removing current loan
