@@ -19,14 +19,70 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import futuristicGridBackground from '@assets/A_digital_image_presents_a_futuristic,_abstract_3D_1758993474405.png';
+import cubesBackground from '@assets/stock_images/abstract_geometric_c_b9135c5b.jpg';
 
 export default function AdminDashboard() {
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [backgroundFocusProgress, setBackgroundFocusProgress] = useState(0);
   const [showUsername, setShowUsername] = useState(false);
+  const animationRef = useRef<number | null>(null);
+  const timerRefs = useRef<{ start?: NodeJS.Timeout }>({});
+  const isMountedRef = useRef(true);
 
+  useEffect(() => {
+    // Trigger animations after component mounts
+    const timer = setTimeout(() => {
+      if (isMountedRef.current) {
+        setIsLoaded(true);
+      }
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
+  useEffect(() => {
+    if (!isLoaded) return;
+
+    // Start background focus animation slightly before tiles finish
+    const startTime = 400; // Start just before first tiles
+    const duration = 1800; // Complete as last tiles finish (around 2000ms total)
+    const startAnimationTime = Date.now();
+    
+    timerRefs.current.start = setTimeout(() => {
+      if (!isMountedRef.current) return;
+
+      const animate = () => {
+        if (!isMountedRef.current) return;
+
+        const elapsed = Date.now() - startAnimationTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        setBackgroundFocusProgress(progress);
+
+        if (progress < 1) {
+          animationRef.current = requestAnimationFrame(animate);
+        } else {
+          setBackgroundFocusProgress(1);
+        }
+      };
+
+      animationRef.current = requestAnimationFrame(animate);
+    }, startTime);
+
+    return () => {
+      // Cleanup all timers and animations
+      if (timerRefs.current.start) clearTimeout(timerRefs.current.start);
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, [isLoaded]);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const menuItems = [
     // Line 1
@@ -75,12 +131,30 @@ export default function AdminDashboard() {
     <div 
       className="min-h-screen bg-background relative"
       style={{
-        backgroundImage: `url(${futuristicGridBackground})`,
+        backgroundImage: `url(${cubesBackground})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
       }}
     >
+      {/* Faded overlay to make background subtle */}
+      <div className="absolute inset-0 bg-background/85" />
+      
+      {/* Progressive focus overlay - starts blurred at top, gradually reveals sharp background */}
+      <div 
+        className="absolute inset-0 transition-all duration-75 ease-out"
+        style={{
+          background: `linear-gradient(to bottom, 
+            rgba(255, 255, 255, 0.8) 0%, 
+            rgba(255, 255, 255, 0.3) ${Math.max(0, 60 - (backgroundFocusProgress * 60))}%, 
+            transparent ${Math.max(0, 80 - (backgroundFocusProgress * 80))}%
+          )`,
+          backdropFilter: `blur(${Math.max(0, 8 - (backgroundFocusProgress * 8))}px)`,
+          WebkitBackdropFilter: `blur(${Math.max(0, 8 - (backgroundFocusProgress * 8))}px)`,
+          opacity: Math.max(0, 1 - backgroundFocusProgress),
+          willChange: 'backdrop-filter, opacity'
+        }}
+      />
       {/* Header */}
       <header className="bg-primary text-primary-foreground shadow-lg border-b transition-shadow duration-300 hover:shadow-2xl hover:shadow-primary/20 relative z-10">
         <div className="container mx-auto px-6 py-4">
@@ -134,7 +208,16 @@ export default function AdminDashboard() {
       </header>
 
       {/* Main Content */}
-      <div className="container mx-auto px-6 py-8 relative z-10">
+      <div 
+        className={`container mx-auto px-6 py-8 relative z-10 transition-all duration-1000 ease-out ${
+          isLoaded 
+            ? 'transform translate-y-0 opacity-100' 
+            : 'transform -translate-y-full opacity-0'
+        }`}
+        style={{
+          transformOrigin: 'top'
+        }}
+      >
         <div className="mb-16">
           <h2 className="text-2xl font-bold mb-2" data-testid="text-dashboard-welcome">
             Dashboard
@@ -148,7 +231,15 @@ export default function AdminDashboard() {
             return (
               <Card 
                 key={item.id}
-                className={`cursor-pointer transition-all duration-500 ${getTileHoverClass(item.id, false)} group`}
+                className={`cursor-pointer transition-all duration-500 ${getTileHoverClass(item.id, false)} group ${
+                  isLoaded 
+                    ? 'transform scale-x-100 opacity-100' 
+                    : 'transform scale-x-0 opacity-0'
+                }`}
+                style={{
+                  transformOrigin: 'left',
+                  transitionDelay: `${500 + (index * 150)}ms`
+                }}
                 onClick={() => handleMenuClick(item.path)}
                 data-testid={`card-admin-${item.id}`}
               >
@@ -170,7 +261,15 @@ export default function AdminDashboard() {
             return (
               <Card 
                 key={item.id}
-                className={`cursor-pointer transition-all duration-500 ${getTileHoverClass(item.id, true)} group`}
+                className={`cursor-pointer transition-all duration-500 ${getTileHoverClass(item.id, true)} group ${
+                  isLoaded 
+                    ? 'transform scale-x-100 opacity-100' 
+                    : 'transform scale-x-0 opacity-0'
+                }`}
+                style={{
+                  transformOrigin: 'left',
+                  transitionDelay: `${1250 + (index * 150)}ms`
+                }}
                 onClick={() => handleMenuClick(item.path)}
                 data-testid={`card-admin-${item.id}`}
               >

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Eye, EyeOff, HelpCircle } from 'lucide-react';
+import { Loader2, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 
@@ -121,7 +121,7 @@ export default function AdminLogin() {
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`pr-20 transition-colors ${
+                  className={`pr-10 transition-colors ${
                     errors.password 
                       ? 'border-red-500 focus:border-red-500' 
                       : password.trim() 
@@ -131,53 +131,50 @@ export default function AdminLogin() {
                   data-testid="input-admin-password"
                   required
                 />
-                <div className="absolute right-0 top-0 h-full flex items-center">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="h-full px-2 py-2 hover:bg-transparent"
-                    onClick={handleForgotPassword}
-                    data-testid="button-forgot-password"
-                    title="Forgot password?"
-                  >
-                    <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-primary" />
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="h-full px-2 py-2 hover:bg-transparent"
-                    onClick={() => setShowPassword(!showPassword)}
-                    data-testid="button-toggle-password"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-muted-foreground" />
-                    ) : (
-                      <Eye className="h-4 w-4 text-muted-foreground" />
-                    )}
-                  </Button>
-                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowPassword(!showPassword)}
+                  data-testid="button-toggle-password"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-muted-foreground" />
+                  )}
+                </Button>
               </div>
             </div>
 
-            <div className="pt-4">
+            <div className="flex items-center justify-between">
               <Button
-                type="submit"
-                className="w-full bg-primary hover:bg-primary/90"
-                disabled={isSubmitting}
-                data-testid="button-admin-login"
+                type="button"
+                variant="ghost"
+                className="px-0 text-primary hover:bg-transparent"
+                onClick={handleForgotPassword}
+                data-testid="button-forgot-password"
               >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Signing in...
-                  </>
-                ) : (
-                  'Sign In'
-                )}
+                Forgot password?
               </Button>
             </div>
+
+            <Button
+              type="submit"
+              className="w-full bg-primary hover:bg-primary/90"
+              disabled={isSubmitting}
+              data-testid="button-admin-login"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                'Sign In'
+              )}
+            </Button>
           </form>
 
           <div className="mt-6 text-center">
