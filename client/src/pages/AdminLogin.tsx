@@ -178,8 +178,8 @@ export default function AdminLogin() {
                   <SelectItem value="futuristic-grid" data-testid="option-futuristic-grid">
                     Futuristic 3D Grid
                   </SelectItem>
-                  <SelectItem value="family-home" data-testid="option-family-home">
-                    Happy Family Home
+                  <SelectItem value="neural-network" data-testid="option-neural-network">
+                    Neural Network Pattern
                   </SelectItem>
                   <SelectItem value="bright-room" data-testid="option-bright-room">
                     Bright Living Room
