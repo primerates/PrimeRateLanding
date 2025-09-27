@@ -13994,6 +13994,13 @@ export default function AdminAddClient() {
                         }}
                         data-testid="circle-2"
                       >
+                        {(() => {
+                          const loanProgram = form.watch('newLoan.loanProgram');
+                          if (loanProgram === 'va' || loanProgram === 'va-jumbo') return 'VA';
+                          if (loanProgram === 'fha') return 'FHA';
+                          if (loanProgram === 'conventional' || loanProgram === 'conventional-jumbo') return 'FNM';
+                          return '';
+                        })()}
                       </div>
                     </div>
                   </div>
