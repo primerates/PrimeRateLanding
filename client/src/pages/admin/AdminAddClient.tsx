@@ -11288,7 +11288,7 @@ export default function AdminAddClient() {
                                         return (
                                           <span>
                                             <span className="mr-3 font-semibold">{activeLoansCount}</span>
-                                            <span>Loans</span>
+                                            <span>{activeLoansCount === 1 ? 'Loan' : 'Loans'}</span>
                                           </span>
                                         );
                                       })()}
