@@ -3804,7 +3804,7 @@ export default function AdminAddClient() {
             <div className="flex items-center justify-between">
               <CardTitle>Current Third Loan</CardTitle>
               <div className="flex items-center gap-2">
-                {/* Add Current Third Loan Button */}
+                {/* Add Current Loan Button */}
                 <Button
                   type="button"
                   variant="outline"
@@ -3837,11 +3837,11 @@ export default function AdminAddClient() {
                     }, 200);
                   }}
                   className="hover:bg-blue-500 hover:text-white"
-                  data-testid="button-add-current-third-loan"
-                  title="Add Current Third Loan"
+                  data-testid="button-add-current-loan"
+                  title="Add Current Loan"
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Current Third Loan
+                  Add Current Primary Loan
                 </Button>
                 
                 {/* Remove Button */}
@@ -3852,8 +3852,8 @@ export default function AdminAddClient() {
                     size="sm"
                     onClick={onRemove}
                     className="hover:bg-red-500 hover:text-white"
-                    data-testid={`button-remove-third-loan-${idPrefix}`}
-                    title="Remove Current Third Loan"
+                    data-testid="button-remove-current-loan"
+                    title="Remove Current Loan"
                   >
                     <Minus className="h-4 w-4 mr-2" />
                     Remove
