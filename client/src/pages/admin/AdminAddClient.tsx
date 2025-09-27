@@ -1794,6 +1794,40 @@ export default function AdminAddClient() {
     return isNaN(parsed) ? 0 : parsed;
   };
 
+  // Auto-Sum Payment Fields Component - isolated calculation without parent re-renders
+  const AutoSumPaymentFields = React.memo(() => {
+    const { control } = useFormContext();
+    
+    // Watch specific fields for auto-sum calculation - isolated from parent component
+    const principalPayment = useWatch({ control, name: 'currentLoan.principalAndInterestPayment' }) || '';
+    const escrowPayment = useWatch({ control, name: 'currentLoan.escrowPayment' }) || '';
+    
+    // Calculate total with useMemo for performance
+    const totalPayment = useMemo(() => {
+      const principal = parseMonetaryValue(principalPayment);
+      const escrow = parseMonetaryValue(escrowPayment);
+      return principal + escrow;
+    }, [principalPayment, escrowPayment]);
+    
+    const totalPaymentFormatted = useMemo(() => 
+      totalPayment > 0 
+        ? `$${totalPayment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` 
+        : '$0.00',
+      [totalPayment]
+    );
+
+    return (
+      <div className="space-y-2 md:col-span-2">
+        <Label className="text-sm font-medium text-muted-foreground">Total Monthly Payment</Label>
+        <div className="p-2 bg-green-50 rounded-md border border-green-200">
+          <span className="text-sm font-semibold text-green-700" data-testid="text-total-current-loan-payment">
+            {totalPaymentFormatted}
+          </span>
+        </div>
+      </div>
+    );
+  });
+
   // Format percentage value for display only
   const formatPercentageDisplay = (value: string | number | undefined): string => {
     if (!value && value !== 0) return '';
@@ -2505,22 +2539,6 @@ export default function AdminAddClient() {
     [totalBorrowerIncome]
   );
 
-  // Calculate total monthly payment for Current Primary Loan - using same pattern as Income tab
-  const currentLoanData = form.watch('currentLoan');
-  
-  const totalCurrentLoanPayment = useMemo(() => {
-    const principalPayment = parseMonetaryValue(currentLoanData?.principalAndInterestPayment);
-    const escrowPayment = parseMonetaryValue(currentLoanData?.escrowPayment);
-    const total = principalPayment + escrowPayment;
-    return total;
-  }, [currentLoanData?.principalAndInterestPayment, currentLoanData?.escrowPayment]);
-  
-  const totalCurrentLoanPaymentFormatted = useMemo(() => 
-    totalCurrentLoanPayment > 0 
-      ? `$${totalCurrentLoanPayment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` 
-      : '$0.00',
-    [totalCurrentLoanPayment]
-  );
 
   // Calculate co-borrower income - optimized with useMemo
   const coBorrowerIncomeData = form.watch('coBorrowerIncome');
@@ -3061,14 +3079,7 @@ export default function AdminAddClient() {
                   </div>
                 </div>
                 
-                <div className="space-y-2 md:col-span-2">
-                  <Label className="text-sm font-medium text-muted-foreground">Total Monthly Payment</Label>
-                  <div className="p-2 bg-green-50 rounded-md border border-green-200">
-                    <span className="text-sm font-semibold text-green-700" data-testid="text-total-current-loan-payment">
-                      {totalCurrentLoanPaymentFormatted}
-                    </span>
-                  </div>
-                </div>
+                <AutoSumPaymentFields />
                 
                 <div className="space-y-2 md:col-span-3">
                   <Label htmlFor={`${idPrefix}currentLoan-attachedToProperty`}>Attached to Property</Label>
