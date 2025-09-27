@@ -11057,7 +11057,7 @@ export default function AdminAddClient() {
               {/* Property List Card */}
               <Card className="transition-all duration-700">
                 <CardHeader>
-                  <CardTitle>Property List</CardTitle>
+                  <CardTitle>Properties</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
