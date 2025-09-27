@@ -3,9 +3,6 @@ import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
 import { 
   LayoutDashboard, 
   FileText, 
@@ -18,91 +15,16 @@ import {
   User,
   BarChart3,
   UserCheck,
-  Handshake,
-  Settings
+  Handshake
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import futuristicGridBackground from '@assets/A_digital_image_presents_a_futuristic,_abstract_3D_1758993474405.png';
-import neuralNetworkBackground from '@assets/neural network_1758994654443.png';
-import lightspeedBackground from '@assets/Lightspeed_1758994776896.png';
-import cubesBackground from '@assets/stock_images/abstract_geometric_c_b9135c5b.jpg';
 
 export default function AdminDashboard() {
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
   const [showUsername, setShowUsername] = useState(false);
-  const [settingsOpen, setSettingsOpen] = useState(false);
-  const [currentBackground, setCurrentBackground] = useState('abstract-geometric-cubes');
-  const [animationProgress, setAnimationProgress] = useState(0);
-  const animationRef = useRef<number | null>(null);
-
-  // Background image mapping
-  const getBackgroundImage = (backgroundKey: string) => {
-    switch (backgroundKey) {
-      case 'abstract-geometric-cubes':
-        return cubesBackground;
-      case 'futuristic-grid':
-        return futuristicGridBackground;
-      case 'neural-network':
-        return neuralNetworkBackground;
-      case 'lightspeed':
-        return lightspeedBackground;
-      default:
-        return cubesBackground; // Default to cubes background with animation
-    }
-  };
-
-  // Determine if background is dark or light for text color
-  const isDarkBackground = (backgroundKey: string) => {
-    switch (backgroundKey) {
-      case 'abstract-geometric-cubes':
-      case 'futuristic-grid':
-      case 'neural-network':
-      case 'lightspeed':
-        return true; // All current backgrounds are dark
-      default:
-        return true;
-    }
-  };
-
-  // Get appropriate text color for dashboard title
-  const getDashboardTitleColor = () => {
-    return isDarkBackground(currentBackground) ? 'text-white' : 'text-black';
-  };
-
-  // Progressive Focus Animation - starts after 400ms delay, runs for 1800ms
-  useEffect(() => {
-    const startAnimation = () => {
-      const startTime = Date.now();
-      const duration = 1800; // 1.8 seconds
-      
-      const animate = () => {
-        const elapsed = Date.now() - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        setAnimationProgress(progress);
-        
-        if (progress < 1) {
-          animationRef.current = requestAnimationFrame(animate);
-        }
-      };
-      
-      animationRef.current = requestAnimationFrame(animate);
-    };
-
-    // Start animation after 400ms delay
-    const delayTimeout = setTimeout(() => {
-      startAnimation();
-    }, 400);
-
-    return () => {
-      clearTimeout(delayTimeout);
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, [currentBackground]); // Restart animation when background changes
 
 
 
@@ -153,26 +75,12 @@ export default function AdminDashboard() {
     <div 
       className="min-h-screen bg-background relative"
       style={{
-        backgroundImage: `url(${getBackgroundImage(currentBackground)})`,
+        backgroundImage: `url(${futuristicGridBackground})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
       }}
     >
-      {/* Progressive Focus Animation Overlay */}
-      <div 
-        className="absolute inset-0 pointer-events-none z-0"
-        style={{
-          background: `linear-gradient(180deg, 
-            rgba(255, 255, 255, ${1 - animationProgress}) 0%, 
-            rgba(255, 255, 255, ${(1 - animationProgress) * 0.7}) 30%, 
-            rgba(255, 255, 255, ${(1 - animationProgress) * 0.3}) 60%, 
-            rgba(255, 255, 255, 0) 100%
-          )`,
-          filter: `blur(${8 * (1 - animationProgress)}px)`,
-          transition: animationProgress === 0 ? 'none' : undefined
-        }}
-      />
       {/* Header */}
       <header className="bg-primary text-primary-foreground shadow-lg border-b transition-shadow duration-300 hover:shadow-2xl hover:shadow-primary/20 relative z-10">
         <div className="container mx-auto px-6 py-4">
@@ -204,49 +112,6 @@ export default function AdminDashboard() {
                 <LogOut className="h-4 w-4 mr-2" />
                 Logout
               </Button>
-              
-              {/* Settings Dialog */}
-              <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
-                <DialogTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-primary-foreground hover:bg-blue-500 hover:text-white hover:border-blue-500"
-                    data-testid="button-settings"
-                  >
-                    <Settings className="h-4 w-4" />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
-                  <DialogHeader>
-                    <DialogTitle>Dashboard Settings</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4 py-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="background-select">Dashboard Background</Label>
-                      <Select value={currentBackground} onValueChange={setCurrentBackground}>
-                        <SelectTrigger data-testid="settings-background-select">
-                          <SelectValue placeholder="Select background" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="abstract-geometric-cubes" data-testid="settings-option-abstract-geometric-cubes">
-                            Cubes Background + Focus Animation
-                          </SelectItem>
-                          <SelectItem value="futuristic-grid" data-testid="settings-option-futuristic-grid">
-                            Futuristic 3D Grid
-                          </SelectItem>
-                          <SelectItem value="neural-network" data-testid="settings-option-neural-network">
-                            Neural Network Pattern
-                          </SelectItem>
-                          <SelectItem value="lightspeed" data-testid="settings-option-lightspeed">
-                            Lightspeed
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
               <div 
                 className="relative flex items-center cursor-pointer"
                 onMouseEnter={() => setShowUsername(true)}
@@ -271,7 +136,7 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <div className="container mx-auto px-6 py-8 relative z-10">
         <div className="mb-16">
-          <h2 className={`text-2xl font-bold mb-2 ${getDashboardTitleColor()}`} data-testid="text-dashboard-welcome">
+          <h2 className="text-2xl font-bold mb-2" data-testid="text-dashboard-welcome">
             Dashboard
           </h2>
         </div>
