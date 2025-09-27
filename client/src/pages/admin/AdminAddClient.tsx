@@ -3043,14 +3043,7 @@ export default function AdminAddClient() {
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
                       id="currentLoan-currentBalance"
-                      value={(() => {
-                        const currentValue = form.watch('currentLoan.statementBalance.amount') || '';
-                        return formatMonetaryValue(currentValue);
-                      })()}
-                      onChange={(e) => {
-                        const formatted = formatMonetaryValue(e.target.value);
-                        form.setValue('currentLoan.statementBalance.amount', formatted);
-                      }}
+                      {...form.register('currentLoan.statementBalance.amount')}
                       placeholder="0.00"
                       className="border-0 bg-transparent px-2 focus-visible:ring-0"
                       data-testid="input-currentLoan-currentBalance"
