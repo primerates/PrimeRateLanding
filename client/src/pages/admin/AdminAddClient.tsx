@@ -11309,7 +11309,7 @@ export default function AdminAddClient() {
                                         if (isThirdLoanAttached) activeLoansCount++;
                                         
                                         return activeLoansCount > 0 
-                                          ? { backgroundColor: '#1a3373', borderColor: '#1a3373' } 
+                                          ? { backgroundColor: '#4b5563', borderColor: '#4b5563' } 
                                           : {};
                                       })()}
                                       className={(() => {
