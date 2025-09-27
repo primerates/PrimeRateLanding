@@ -10898,36 +10898,6 @@ export default function AdminAddClient() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label className="text-lg font-semibold">Property Count</Label>
-                    <div className="min-h-[40px] flex items-center">
-                      <div
-                        className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
-                        style={{
-                          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
-                          fontSize: '36px',
-                          fontWeight: 600,
-                          backgroundColor: '#1a3373',
-                          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
-                        }}
-                        data-testid="text-property-count"
-                      >
-                        <span className={`${showPropertyAnimation ? 'animate-roll-down' : ''}`}>
-                          {(() => {
-                            // Count all active property cards
-                            const primaryCards = (primaryResidenceCards || []).length;
-                            const secondHomeCardsCount = (secondHomeCards || []).length;
-                            const formProperties = (form.watch('property.properties') || []);
-                            const investmentCards = formProperties.filter(p => p.use === 'investment').length;
-                            const homePurchaseCards = formProperties.filter(p => p.use === 'home-purchase').length;
-                            
-                            return primaryCards + secondHomeCardsCount + investmentCards + homePurchaseCards;
-                          })()}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
                     <Label className="text-lg font-semibold">Estimated LTV</Label>
                     <div className="min-h-[40px] flex items-center">
                       <div
@@ -11045,6 +11015,36 @@ export default function AdminAddClient() {
                                 <span style={{ fontSize: '28px' }}>%</span>
                               </span>
                             );
+                          })()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-lg font-semibold">Property Count</Label>
+                    <div className="min-h-[40px] flex items-center">
+                      <div
+                        className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                        style={{
+                          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                          fontSize: '36px',
+                          fontWeight: 600,
+                          backgroundColor: '#1a3373',
+                          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+                        }}
+                        data-testid="text-property-count"
+                      >
+                        <span className={`${showPropertyAnimation ? 'animate-roll-down' : ''}`}>
+                          {(() => {
+                            // Count all active property cards
+                            const primaryCards = (primaryResidenceCards || []).length;
+                            const secondHomeCardsCount = (secondHomeCards || []).length;
+                            const formProperties = (form.watch('property.properties') || []);
+                            const investmentCards = formProperties.filter(p => p.use === 'investment').length;
+                            const homePurchaseCards = formProperties.filter(p => p.use === 'home-purchase').length;
+                            
+                            return primaryCards + secondHomeCardsCount + investmentCards + homePurchaseCards;
                           })()}
                         </span>
                       </div>
