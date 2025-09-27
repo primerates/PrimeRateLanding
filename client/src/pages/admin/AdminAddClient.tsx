@@ -10831,7 +10831,44 @@ export default function AdminAddClient() {
               <Card className="transition-all duration-700">
                 <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
                   <div className="space-y-2">
-                    <Label className="text-lg font-semibold">Property Summary</Label>
+                    <Label className="text-lg font-semibold">Subject Property</Label>
+                    <div className="mt-24">
+                      <span className="text-muted-foreground" style={{ fontSize: '28px', color: '#1a3373', fontWeight: 'bold' }}>
+                        {(() => {
+                          // Find properties that have isSubject=true and get their property type
+                          const properties = form.watch('property.properties') || [];
+                          const subjectProperty = properties.find(p => p.isSubject === true);
+                          
+                          // If no subject property found, display TBD
+                          if (!subjectProperty) {
+                            return 'TBD';
+                          }
+                          
+                          // Get the property type from the subject property
+                          const propertyType = subjectProperty.propertyType || '';
+                          
+                          // If no property type selected, display TBD
+                          if (!propertyType || propertyType.trim() === '') {
+                            return 'TBD';
+                          }
+                          
+                          // Apply mapping rules
+                          if (propertyType === 'mobile-home-sw') {
+                            return 'SW';
+                          } else if (propertyType === 'mobile-home-dw') {
+                            return 'DW';
+                          } else if (propertyType === 'other') {
+                            return 'TBD';
+                          } else {
+                            // For other values, display them as-is with proper formatting
+                            return propertyType
+                              .split('-')
+                              .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                              .join(' ');
+                          }
+                        })()}
+                      </span>
+                    </div>
                   </div>
                   
                   <div className="space-y-2">
