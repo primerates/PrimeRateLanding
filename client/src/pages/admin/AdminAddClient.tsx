@@ -3323,7 +3323,7 @@ export default function AdminAddClient() {
             </div>
           </CardHeader>
           <CollapsibleContent>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               {/* Row 1: Lender Name, Loan Number, Loan Category, Loan Term, Loan Duration */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
@@ -3626,7 +3626,7 @@ export default function AdminAddClient() {
             </div>
           </CardHeader>
           <CollapsibleContent>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               {/* Row 1: Lender Name, Loan Number, Loan Category, Loan Term, Loan Duration */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
