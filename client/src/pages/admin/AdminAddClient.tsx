@@ -14361,7 +14361,17 @@ export default function AdminAddClient() {
                     idPrefix={`card-${index}-`}
                     borderVariant="blue"
                     isOpen={isOpen}
-                    setIsOpen={(open) => setCurrentLoanCardStates(prev => ({ ...prev, [cardId]: open }))}
+                    setIsOpen={(open) => {
+                      setCurrentLoanCardStates(prev => ({ ...prev, [cardId]: open }));
+                      // Trigger grey box animation when card is opened
+                      if (open) {
+                        const animationKey = `card-${index}-`;
+                        setShowCurrentLoanCardAnimation(prev => ({ ...prev, [animationKey]: true }));
+                        setTimeout(() => {
+                          setShowCurrentLoanCardAnimation(prev => ({ ...prev, [animationKey]: false }));
+                        }, 800);
+                      }
+                    }}
                     onRemove={() => {
                       setDeleteCurrentPrimaryLoanDialog({
                         isOpen: true,
