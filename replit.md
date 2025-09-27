@@ -62,8 +62,8 @@ Preferred communication style: Simple, everyday language.
 For auto-calculating fields that sum multiple form inputs, use this pattern to avoid typing lag:
 
 ```typescript
-// RECOMMENDED: Direct useMemo calculation (no debouncing)
-const AutoSumComponent: React.FC<{control: any}> = ({ control }) => {
+// RECOMMENDED: Isolated React.memo component with direct props
+const AutoSumComponent = React.memo<{ control: any }>(({ control }) => {
   const field1 = useWatch({ control, name: 'path.field1' }) || '';
   const field2 = useWatch({ control, name: 'path.field2' }) || '';
 
@@ -74,21 +74,31 @@ const AutoSumComponent: React.FC<{control: any}> = ({ control }) => {
   }, [field1, field2]);
 
   const formattedTotal = useMemo(() => 
-    total > 0 ? total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '',
+    total > 0 ? `$${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '$0.00',
     [total]
   );
 
   return (
-    <Input value={formattedTotal} readOnly />
+    <div className="p-2 bg-green-50 rounded-md border border-green-200">
+      <span className="text-sm font-semibold text-green-700">
+        {formattedTotal}
+      </span>
+    </div>
   );
-};
+});
+
+// Usage: <AutoSumComponent control={form.control} />
 ```
 
-**Key Points:**
-- Use `useWatch` for field isolation (prevents unnecessary re-renders)
-- Calculate directly in `useMemo` without debouncing
-- Avoid `useState` + `useEffect` timers as they cause typing lag
-- Isolate auto-sum logic in separate components for performance
+**Critical Rules for Zero-Lag Auto-Sum:**
+- **Always use React.memo** - Prevents parent component re-renders
+- **Pass control as prop** - Never use useFormContext() in auto-sum components  
+- **Use useWatch for isolation** - Prevents unnecessary re-renders
+- **Never add auto-sum to large parent components** - Causes entire form to re-render
+- **Reference working pattern**: Income tab Borrower Employer cards (proven zero-lag)
+
+**Troubleshooting Typing Lag:**
+If typing lag occurs: "Extract calculation into isolated React.memo component with useWatch + useMemo pattern like Income tab"
 
 ### Development Infrastructure
 - **TypeScript** configuration with path aliases for clean imports
