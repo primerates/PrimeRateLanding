@@ -3594,7 +3594,7 @@ export default function AdminAddClient() {
                   title="Add Current Loan"
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Current Primary Loan
+                  Add Current Third Loan
                 </Button>
                 
                 {/* Remove Button */}
@@ -3822,119 +3822,6 @@ export default function AdminAddClient() {
                 </div>
               </div>
               
-              {/* Conditional Property Address Fields - Show when Attached to Property is selected */}
-              {targetForm.watch('thirdLoan.attachedToProperty') && targetForm.watch('thirdLoan.attachedToProperty') !== 'select' && (
-                <div className="mt-4 p-4 border-t border-gray-200">
-                  <Collapsible open={isPropertyAddressOpen} onOpenChange={setIsPropertyAddressOpen}>
-                    <div className="flex items-center justify-between mb-3">
-                      <Label className="text-sm font-medium text-gray-700">
-                        Property Address ({(() => {
-                          const attachedPropertyId = targetForm.watch('thirdLoan.attachedToProperty');
-                          if (attachedPropertyId === 'Other') return 'Other';
-                          const properties = targetForm.watch('property.properties') || [];
-                          const selectedProperty = properties.find((p: any) => p.id === attachedPropertyId);
-                          return selectedProperty?.address?.street || attachedPropertyId;
-                        })()})
-                      </Label>
-                      <CollapsibleTrigger asChild>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="hover:bg-orange-500 hover:text-white"
-                          data-testid="button-toggle-property-address-third-loan"
-                          title={isPropertyAddressOpen ? 'Minimize' : 'Expand'}
-                        >
-                          {isPropertyAddressOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                        </Button>
-                      </CollapsibleTrigger>
-                    </div>
-                    <CollapsibleContent>
-                      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                        <div className="space-y-2 md:col-span-4">
-                          <Label htmlFor="thirdLoan-property-street">Street Address</Label>
-                          <Input
-                            id="thirdLoan-property-street"
-                            {...targetForm.register('thirdLoan.propertyAddress.street')}
-                            data-testid="input-thirdLoan-property-street"
-                            readOnly={targetForm.watch('thirdLoan.attachedToProperty') !== 'Other'}
-                            className={targetForm.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
-                          />
-                        </div>
-                        
-                        <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="thirdLoan-property-unit">Unit/Apt</Label>
-                          <Input
-                            id="thirdLoan-property-unit"
-                            {...targetForm.register('thirdLoan.propertyAddress.unit')}
-                            data-testid="input-thirdLoan-property-unit"
-                            readOnly={targetForm.watch('thirdLoan.attachedToProperty') !== 'Other'}
-                            className={targetForm.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
-                          />
-                        </div>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mt-4">
-                        <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="thirdLoan-property-city">City</Label>
-                          <Input
-                            id="thirdLoan-property-city"
-                            {...targetForm.register('thirdLoan.propertyAddress.city')}
-                            data-testid="input-thirdLoan-property-city"
-                            readOnly={targetForm.watch('thirdLoan.attachedToProperty') !== 'Other'}
-                            className={targetForm.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
-                          />
-                        </div>
-                        
-                        <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="thirdLoan-property-state">State</Label>
-                          <Select
-                            value={targetForm.watch('thirdLoan.propertyAddress.state') || ''}
-                            onValueChange={(value) => targetForm.setValue('thirdLoan.propertyAddress.state', value)}
-                            disabled={targetForm.watch('thirdLoan.attachedToProperty') !== 'Other'}
-                          >
-                            <SelectTrigger
-                              data-testid="select-thirdLoan-property-state"
-                              className={targetForm.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
-                            >
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {US_STATES.map(state => (
-                                <SelectItem key={state.value} value={state.value}>
-                                  {state.value}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="thirdLoan-property-zipCode">ZIP Code</Label>
-                          <Input
-                            id="thirdLoan-property-zipCode"
-                            {...targetForm.register('thirdLoan.propertyAddress.zipCode')}
-                            data-testid="input-thirdLoan-property-zipCode"
-                            readOnly={targetForm.watch('thirdLoan.attachedToProperty') !== 'Other'}
-                            className={targetForm.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="thirdLoan-property-county">County</Label>
-                          <Input
-                            id="thirdLoan-property-county"
-                            {...targetForm.register('thirdLoan.propertyAddress.county')}
-                            data-testid="input-thirdLoan-property-county"
-                            readOnly={targetForm.watch('thirdLoan.attachedToProperty') !== 'Other'}
-                            className={targetForm.watch('thirdLoan.attachedToProperty') !== 'Other' ? 'bg-gray-50' : ''}
-                          />
-                        </div>
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-                </div>
-              )}
             </CardContent>
           </CollapsibleContent>
         </Collapsible>
