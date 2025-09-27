@@ -11259,7 +11259,6 @@ export default function AdminAddClient() {
                                       data-testid={`button-grey-box-action-${propertyId}`}
                                       title="Loans"
                                     >
-                                      <Minus className="h-4 w-4 mr-2" />
                                       {(() => {
                                         const properties = form.watch('property.properties') || [];
                                         const primaryIndex = properties.findIndex(p => p.use === 'primary');
@@ -11286,7 +11285,12 @@ export default function AdminAddClient() {
                                         if (isSecondLoanAttached) activeLoansCount++;
                                         if (isThirdLoanAttached) activeLoansCount++;
                                         
-                                        return `${activeLoansCount} Loans`;
+                                        return (
+                                          <span>
+                                            <span className="mr-3 font-semibold">{activeLoansCount}</span>
+                                            <span>Loans</span>
+                                          </span>
+                                        );
                                       })()}
                                     </Button>
                                   </div>
