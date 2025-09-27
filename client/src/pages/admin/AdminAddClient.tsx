@@ -540,6 +540,8 @@ export default function AdminAddClient() {
   const [showSubjectPropertyAnimation, setShowSubjectPropertyAnimation] = useState<{[key: string]: boolean}>({});
   // Animation state for income card grey background roll-down
   const [showIncomeCardAnimation, setShowIncomeCardAnimation] = useState<{[key: string]: boolean}>({});
+  // Animation state for loan tab blue circles roll-up
+  const [showLoanCircleAnimation, setShowLoanCircleAnimation] = useState(false);
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
@@ -6093,6 +6095,11 @@ export default function AdminAddClient() {
               setShowPropertyAnimation(true);
               // Reset animation after it completes so it can trigger again if needed
               setTimeout(() => setShowPropertyAnimation(false), 1000);
+            }
+            if (value === 'loan') {
+              setShowLoanCircleAnimation(true);
+              // Reset animation after it completes so it can trigger again if needed
+              setTimeout(() => setShowLoanCircleAnimation(false), 1000);
             }
           }}>
             <TabsList className="grid w-full grid-cols-9 bg-transparent h-auto p-0 relative border-b border-gray-200 group">
@@ -14006,7 +14013,9 @@ export default function AdminAddClient() {
                     <Label className="text-lg font-semibold">New Loans</Label>
                     <div className="min-h-[40px] flex items-center">
                       <div
-                        className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                        className={`bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200 ${
+                          showLoanCircleAnimation ? 'animate-roll-up-circle-1' : ''
+                        }`}
                         style={{
                           fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                           fontSize: '36px',
@@ -14025,7 +14034,9 @@ export default function AdminAddClient() {
                     <Label className="text-lg font-semibold">Loan Category</Label>
                     <div className="min-h-[40px] flex items-center">
                       <div
-                        className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                        className={`bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200 ${
+                          showLoanCircleAnimation ? 'animate-roll-up-circle-2' : ''
+                        }`}
                         style={{
                           fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                           fontSize: (() => {
@@ -14056,7 +14067,9 @@ export default function AdminAddClient() {
                     <Label className="text-lg font-semibold">Existing Loans</Label>
                     <div className="min-h-[40px] flex items-center">
                       <div
-                        className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
+                        className={`bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200 ${
+                          showLoanCircleAnimation ? 'animate-roll-up-circle-3' : ''
+                        }`}
                         style={{
                           fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                           fontSize: '36px',
