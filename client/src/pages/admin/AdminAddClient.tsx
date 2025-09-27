@@ -11246,7 +11246,7 @@ export default function AdminAddClient() {
                                   </div>
                                   
                                   {/* New button positioned more to the left */}
-                                  <div className="flex items-center mr-16">
+                                  <div className="flex items-center mr-8">
                                     <Button
                                       type="button"
                                       variant="outline"
