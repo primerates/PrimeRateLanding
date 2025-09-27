@@ -1817,10 +1817,11 @@ export default function AdminAddClient() {
     return (
       <div className="space-y-2 md:col-span-2">
         <Label className="text-sm font-medium text-muted-foreground">Total Monthly Payment</Label>
-        <div className="p-2 bg-gray-50 rounded-md border border-gray-200">
-          <span className="text-sm font-semibold text-gray-700" data-testid="text-total-current-loan-payment">
-            {totalPaymentFormatted}
-          </span>
+        <div className="flex items-center border border-input bg-background px-3 rounded-md">
+          <span className="text-muted-foreground text-sm">$</span>
+          <div className="border-0 bg-transparent px-2" data-testid="text-total-current-loan-payment">
+            {totalPaymentFormatted.replace('$', '')}
+          </div>
         </div>
       </div>
     );
