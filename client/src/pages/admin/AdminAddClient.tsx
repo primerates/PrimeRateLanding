@@ -3030,16 +3030,16 @@ export default function AdminAddClient() {
                   </div>
                 </div>
                 
-                <div className="space-y-2 md:col-span-1">
-                  <Label htmlFor="currentLoan-loanBalance">Loan Balance</Label>
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="currentLoan-monthlyEscrow">Monthly Escrow</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
-                      id="currentLoan-loanBalance"
+                      id="currentLoan-monthlyEscrow"
                       {...form.register('currentLoan.statementBalance.amount')}
                       placeholder="0.00"
                       className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-currentLoan-loanBalance"
+                      data-testid="input-currentLoan-monthlyEscrow"
                     />
                   </div>
                 </div>
@@ -3058,7 +3058,7 @@ export default function AdminAddClient() {
                   </div>
                 </div>
                 
-                <div className="space-y-2 md:col-span-4">
+                <div className="space-y-2 md:col-span-3">
                   <Label htmlFor={`${idPrefix}currentLoan-attachedToProperty`}>Attached to Property</Label>
                   <Select 
                     {...attachedToPropertyBinding}
