@@ -864,6 +864,10 @@ export default function AdminAddClient() {
   // Pension income collapsible state
   const [isPensionIncomeOpen, setIsPensionIncomeOpen] = useState(false);
   const [isCoBorrowerPensionIncomeOpen, setIsCoBorrowerPensionIncomeOpen] = useState(false);
+  
+  // Missing state variables for collapsible sections
+  const [isPensionOpen, setIsPensionOpen] = useState(false);
+  const [isSocialSecurityOpen, setIsSocialSecurityOpen] = useState(false);
 
   // Address box collapsible states
   const [isBorrowerResidenceOpen, setIsBorrowerResidenceOpen] = useState(false);
