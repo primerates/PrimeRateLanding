@@ -11255,7 +11255,7 @@ export default function AdminAddClient() {
                                         // Add your button functionality here
                                         console.log('New button clicked');
                                       }}
-                                      className="hover:bg-red-500 hover:text-white w-20"
+                                      className="hover:bg-red-500 hover:text-white w-24"
                                       data-testid={`button-grey-box-action-${propertyId}`}
                                       title="Loans"
                                     >
