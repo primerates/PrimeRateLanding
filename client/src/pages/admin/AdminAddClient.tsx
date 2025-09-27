@@ -3490,7 +3490,7 @@ export default function AdminAddClient() {
                   </Select>
                 </div>
                 
-                <div className="space-y-2 md:col-span-2">
+                <div className="space-y-2 md:col-span-3">
                   <Label htmlFor="secondLoan-attachedToProperty">Attached to Property</Label>
                   <Select value={targetForm.watch('secondLoan.attachedToProperty') || ''} onValueChange={(value) => {
                     targetForm.setValue('secondLoan.attachedToProperty', value as any);
