@@ -11260,7 +11260,34 @@ export default function AdminAddClient() {
                                       title="Loans"
                                     >
                                       <Minus className="h-4 w-4 mr-2" />
-                                      Loans
+                                      {(() => {
+                                        const properties = form.watch('property.properties') || [];
+                                        const primaryIndex = properties.findIndex(p => p.use === 'primary');
+                                        const currentProperty = primaryIndex >= 0 ? properties[primaryIndex] : null;
+                                        
+                                        // Check which loans are attached to this property for counter
+                                        const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                        const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                        
+                                        const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                        const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                        
+                                        // Check third loan (first additional loan - Current Loan 3)
+                                        const additionalLoansData = additionalLoans || [];
+                                        const firstAdditionalLoan = additionalLoansData[0];
+                                        const isThirdLoanAttached = firstAdditionalLoan ? (() => {
+                                          const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
+                                          return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                        })() : false;
+                                        
+                                        // Count active loans
+                                        let activeLoansCount = 0;
+                                        if (isCurrentLoanAttached) activeLoansCount++;
+                                        if (isSecondLoanAttached) activeLoansCount++;
+                                        if (isThirdLoanAttached) activeLoansCount++;
+                                        
+                                        return `${activeLoansCount} Loans`;
+                                      })()}
                                     </Button>
                                   </div>
                                 </div>
@@ -11703,42 +11730,6 @@ export default function AdminAddClient() {
                                       );
                                     })()}
                                   </div>
-                                  {(() => {
-                                    const properties = form.watch('property.properties') || [];
-                                    const primaryIndex = properties.findIndex(p => p.use === 'primary');
-                                    const currentProperty = primaryIndex >= 0 ? properties[primaryIndex] : null;
-                                    
-                                    // Check which loans are attached to this property for counter
-                                    const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
-                                    const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
-                                    
-                                    const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
-                                    const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
-                                    
-                                    // Check third loan (first additional loan - Current Loan 3)
-                                    const additionalLoansData = additionalLoans || [];
-                                    const firstAdditionalLoan = additionalLoansData[0];
-                                    const isThirdLoanAttached = firstAdditionalLoan ? (() => {
-                                      const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
-                                      return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
-                                    })() : false;
-                                    
-                                    // Count active loans
-                                    let activeLoansCount = 0;
-                                    if (isCurrentLoanAttached) activeLoansCount++;
-                                    if (isSecondLoanAttached) activeLoansCount++;
-                                    if (isThirdLoanAttached) activeLoansCount++;
-                                    
-                                    return (
-                                      <div 
-                                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 border border-gray-300 text-xs font-semibold text-gray-600"
-                                        data-testid={`loan-counter-${propertyId}`}
-                                        title={`${activeLoansCount} loan(s) connected`}
-                                      >
-                                        {activeLoansCount}
-                                      </div>
-                                    );
-                                  })()}
                                 </div>
                                 {(() => {
                                   // Automatic loan detection logic
