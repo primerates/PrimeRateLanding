@@ -173,7 +173,7 @@ export default function AdminLogin() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="abstract-geometric-cubes" data-testid="option-abstract-geometric-cubes">
-                    Current Dashboard Background
+                    Cubes Background + Focus Animation
                   </SelectItem>
                   <SelectItem value="futuristic-grid" data-testid="option-futuristic-grid">
                     Futuristic 3D Grid

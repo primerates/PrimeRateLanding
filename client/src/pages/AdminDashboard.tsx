@@ -26,6 +26,7 @@ import { apiRequest } from '@/lib/queryClient';
 import futuristicGridBackground from '@assets/A_digital_image_presents_a_futuristic,_abstract_3D_1758993474405.png';
 import neuralNetworkBackground from '@assets/neural network_1758994654443.png';
 import lightspeedBackground from '@assets/Lightspeed_1758994776896.png';
+import cubesBackground from '@assets/stock_images/abstract_geometric_c_b9135c5b.jpg';
 
 export default function AdminDashboard() {
   const [location, setLocation] = useLocation();
@@ -37,15 +38,16 @@ export default function AdminDashboard() {
   // Background image mapping
   const getBackgroundImage = (backgroundKey: string) => {
     switch (backgroundKey) {
+      case 'abstract-geometric-cubes':
+        return cubesBackground;
       case 'futuristic-grid':
         return futuristicGridBackground;
       case 'neural-network':
         return neuralNetworkBackground;
       case 'lightspeed':
         return lightspeedBackground;
-      case 'abstract-geometric-cubes':
       default:
-        return futuristicGridBackground; // Default to current grid background for now
+        return cubesBackground; // Default to cubes background with animation
     }
   };
 
@@ -179,7 +181,7 @@ export default function AdminDashboard() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="abstract-geometric-cubes" data-testid="settings-option-abstract-geometric-cubes">
-                            Current Dashboard Background
+                            Cubes Background + Focus Animation
                           </SelectItem>
                           <SelectItem value="futuristic-grid" data-testid="settings-option-futuristic-grid">
                             Futuristic 3D Grid
