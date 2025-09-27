@@ -3058,35 +3058,43 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="currentLoan-currentLender">Current Lender</Label>
-                  <Input
-                    id="currentLoan-currentLender"
-                    {...form.register('currentLoan.currentLender')}
-                    className="border border-input bg-background px-3 rounded-md"
-                    data-testid="input-currentLoan-currentLender"
-                  />
-                </div>
-                
-                <div className="space-y-2 md:col-span-1">
-                  <Label htmlFor="currentLoan-loanNumber">Loan Number</Label>
-                  <Input
-                    id="currentLoan-loanNumber"
-                    {...form.register('currentLoan.loanNumber')}
-                    className="border border-input bg-background px-3 rounded-md"
-                    data-testid="input-currentLoan-loanNumber"
-                  />
-                </div>
-                
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="currentLoan-loanBalance">Loan Balance</Label>
+                  <Label htmlFor="currentLoan-principalInterestPayment">Principal & Interest Payment</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
-                      id="currentLoan-loanBalance"
-                      {...form.register('currentLoan.statementBalance.amount')}
+                      id="currentLoan-principalInterestPayment"
+                      {...form.register('currentLoan.principalAndInterestPayment')}
                       placeholder="0.00"
                       className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-currentLoan-loanBalance"
+                      data-testid="input-currentLoan-principalInterestPayment"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2 md:col-span-1">
+                  <Label htmlFor="currentLoan-escrowPayment">Escrow</Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="currentLoan-escrowPayment"
+                      {...form.register('currentLoan.escrowPayment')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-currentLoan-escrowPayment"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="currentLoan-totalMonthlyPayment">Total Monthly Payment</Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="currentLoan-totalMonthlyPayment"
+                      {...form.register('currentLoan.totalMonthlyPayment')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-currentLoan-totalMonthlyPayment"
                     />
                   </div>
                 </div>
