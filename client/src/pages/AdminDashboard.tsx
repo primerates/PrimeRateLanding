@@ -34,6 +34,8 @@ export default function AdminDashboard() {
   const [showUsername, setShowUsername] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [currentBackground, setCurrentBackground] = useState('abstract-geometric-cubes');
+  const [animationProgress, setAnimationProgress] = useState(0);
+  const animationRef = useRef<number | null>(null);
 
   // Background image mapping
   const getBackgroundImage = (backgroundKey: string) => {
@@ -68,6 +70,39 @@ export default function AdminDashboard() {
   const getDashboardTitleColor = () => {
     return isDarkBackground(currentBackground) ? 'text-white' : 'text-black';
   };
+
+  // Progressive Focus Animation - starts after 400ms delay, runs for 1800ms
+  useEffect(() => {
+    const startAnimation = () => {
+      const startTime = Date.now();
+      const duration = 1800; // 1.8 seconds
+      
+      const animate = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        setAnimationProgress(progress);
+        
+        if (progress < 1) {
+          animationRef.current = requestAnimationFrame(animate);
+        }
+      };
+      
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    // Start animation after 400ms delay
+    const delayTimeout = setTimeout(() => {
+      startAnimation();
+    }, 400);
+
+    return () => {
+      clearTimeout(delayTimeout);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [currentBackground]); // Restart animation when background changes
 
 
 
@@ -124,6 +159,20 @@ export default function AdminDashboard() {
         backgroundRepeat: 'no-repeat'
       }}
     >
+      {/* Progressive Focus Animation Overlay */}
+      <div 
+        className="absolute inset-0 pointer-events-none z-0"
+        style={{
+          background: `linear-gradient(180deg, 
+            rgba(255, 255, 255, ${1 - animationProgress}) 0%, 
+            rgba(255, 255, 255, ${(1 - animationProgress) * 0.7}) 30%, 
+            rgba(255, 255, 255, ${(1 - animationProgress) * 0.3}) 60%, 
+            rgba(255, 255, 255, 0) 100%
+          )`,
+          filter: `blur(${8 * (1 - animationProgress)}px)`,
+          transition: animationProgress === 0 ? 'none' : undefined
+        }}
+      />
       {/* Header */}
       <header className="bg-primary text-primary-foreground shadow-lg border-b transition-shadow duration-300 hover:shadow-2xl hover:shadow-primary/20 relative z-10">
         <div className="container mx-auto px-6 py-4">
