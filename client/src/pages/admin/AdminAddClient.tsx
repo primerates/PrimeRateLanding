@@ -10854,8 +10854,8 @@ export default function AdminAddClient() {
         </form>
         </div>
       </div>
-    );
-  };
+    </TooltipProvider>
+  );
 
   return (
     <div className="container mx-auto p-6 max-w-7xl">
