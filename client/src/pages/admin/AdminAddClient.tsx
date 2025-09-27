@@ -11189,64 +11189,62 @@ export default function AdminAddClient() {
                               showSubjectPropertyAnimation[propertyId] ? 'animate-roll-down-subject-property' : ''
                             }`}>
                               <CardContent className="pt-6">
-                                <div className="flex justify-between items-center">
-                                  <div className="space-y-3 flex-1">
-                                    <Label className="text-base font-semibold">Is the loan transaction for this property?</Label>
-                                    <div className="flex gap-4">
-                                      <div className="flex items-center space-x-2">
-                                        <input
-                                          type="radio"
-                                          id={`subject-yes-${propertyId}`}
-                                          name={`subject-${propertyId}`}
-                                          checked={primaryResidenceData[propertyId]?.isSubjectProperty === true}
-                                          onChange={() => {
-                                            setPrimaryResidenceData(prev => ({
-                                              ...prev,
-                                              [propertyId]: { 
-                                                ...prev[propertyId],
-                                                purpose: prev[propertyId]?.purpose ?? 'primary',
-                                                isSubjectProperty: true
-                                              }
-                                            }));
-                                            // Trigger same green animation as Second Home
-                                            setSubjectProperty(propertyId);
-                                          }}
-                                          data-testid={`radio-subject-yes-${propertyId}`}
-                                        />
-                                        <Label htmlFor={`subject-yes-${propertyId}`}>Yes</Label>
-                                      </div>
-                                      
-                                      <div className="flex items-center space-x-2">
-                                        <input
-                                          type="radio"
-                                          id={`subject-no-${propertyId}`}
-                                          name={`subject-${propertyId}`}
-                                          checked={primaryResidenceData[propertyId]?.isSubjectProperty === false}
-                                          onChange={() => {
-                                            setPrimaryResidenceData(prev => ({
-                                              ...prev,
-                                              [propertyId]: { 
-                                                ...prev[propertyId],
-                                                purpose: prev[propertyId]?.purpose ?? 'primary',
-                                                isSubjectProperty: false
-                                              }
-                                            }));
-                                            // Update global form state to reverse green animation (same as Second Home)
-                                            const properties = form.watch('property.properties') || [];
-                                            const updatedProperties = properties.map(p => 
-                                              p.id === propertyId ? { ...p, isSubject: false } : p
-                                            );
-                                            form.setValue('property.properties', updatedProperties);
-                                          }}
-                                          data-testid={`radio-subject-no-${propertyId}`}
-                                        />
-                                        <Label htmlFor={`subject-no-${propertyId}`}>No</Label>
-                                      </div>
+                                <div className="space-y-3">
+                                  <Label className="text-base font-semibold">Is the loan transaction for this property?</Label>
+                                  <div className="flex gap-4">
+                                    <div className="flex items-center space-x-2">
+                                      <input
+                                        type="radio"
+                                        id={`subject-yes-${propertyId}`}
+                                        name={`subject-${propertyId}`}
+                                        checked={primaryResidenceData[propertyId]?.isSubjectProperty === true}
+                                        onChange={() => {
+                                          setPrimaryResidenceData(prev => ({
+                                            ...prev,
+                                            [propertyId]: { 
+                                              ...prev[propertyId],
+                                              purpose: prev[propertyId]?.purpose ?? 'primary',
+                                              isSubjectProperty: true
+                                            }
+                                          }));
+                                          // Trigger same green animation as Second Home
+                                          setSubjectProperty(propertyId);
+                                        }}
+                                        data-testid={`radio-subject-yes-${propertyId}`}
+                                      />
+                                      <Label htmlFor={`subject-yes-${propertyId}`}>Yes</Label>
+                                    </div>
+                                    
+                                    <div className="flex items-center space-x-2">
+                                      <input
+                                        type="radio"
+                                        id={`subject-no-${propertyId}`}
+                                        name={`subject-${propertyId}`}
+                                        checked={primaryResidenceData[propertyId]?.isSubjectProperty === false}
+                                        onChange={() => {
+                                          setPrimaryResidenceData(prev => ({
+                                            ...prev,
+                                            [propertyId]: { 
+                                              ...prev[propertyId],
+                                              purpose: prev[propertyId]?.purpose ?? 'primary',
+                                              isSubjectProperty: false
+                                            }
+                                          }));
+                                          // Update global form state to reverse green animation (same as Second Home)
+                                          const properties = form.watch('property.properties') || [];
+                                          const updatedProperties = properties.map(p => 
+                                            p.id === propertyId ? { ...p, isSubject: false } : p
+                                          );
+                                          form.setValue('property.properties', updatedProperties);
+                                        }}
+                                        data-testid={`radio-subject-no-${propertyId}`}
+                                      />
+                                      <Label htmlFor={`subject-no-${propertyId}`}>No</Label>
                                     </div>
                                   </div>
                                   
-                                  {/* New button on the right side */}
-                                  <div className="flex items-center">
+                                  {/* New button centered below, aligned with Remove button above */}
+                                  <div className="flex justify-end">
                                     <Button
                                       type="button"
                                       variant="outline"
