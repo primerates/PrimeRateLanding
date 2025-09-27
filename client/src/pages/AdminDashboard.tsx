@@ -49,6 +49,24 @@ export default function AdminDashboard() {
     }
   };
 
+  // Determine if background is dark or light for text color
+  const isDarkBackground = (backgroundKey: string) => {
+    switch (backgroundKey) {
+      case 'abstract-geometric-cubes':
+      case 'futuristic-grid':
+      case 'neural-network':
+      case 'lightspeed':
+        return true; // All current backgrounds are dark
+      default:
+        return true;
+    }
+  };
+
+  // Get appropriate text color for dashboard title
+  const getDashboardTitleColor = () => {
+    return isDarkBackground(currentBackground) ? 'text-white' : 'text-black';
+  };
+
 
 
   const menuItems = [
@@ -202,7 +220,7 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <div className="container mx-auto px-6 py-8 relative z-10">
         <div className="mb-16">
-          <h2 className="text-2xl font-bold mb-2" data-testid="text-dashboard-welcome">
+          <h2 className={`text-2xl font-bold mb-2 ${getDashboardTitleColor()}`} data-testid="text-dashboard-welcome">
             Dashboard
           </h2>
         </div>
