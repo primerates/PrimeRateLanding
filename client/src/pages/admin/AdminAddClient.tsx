@@ -3394,7 +3394,7 @@ export default function AdminAddClient() {
               </div>
               
               {/* Row 2: Current Balance, Monthly Payment, Pre-Payment Penalty, Attached to Property */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="secondLoan-currentBalance">Loan Balance</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
@@ -3683,7 +3683,7 @@ export default function AdminAddClient() {
               </div>
               
               {/* Row 2: Current Balance, Monthly Payment, Pre-payment Penalty, Attached to Property */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="thirdLoan-currentBalance">Loan Balance</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
