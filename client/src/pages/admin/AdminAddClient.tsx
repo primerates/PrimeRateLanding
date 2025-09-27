@@ -5123,11 +5123,11 @@ export default function AdminAddClient() {
         // Auto-expand the loan card
         setShowCurrentLoan(true);
         
-        // Trigger animation for newly created loan card
+        // Trigger animation for newly created loan card grey box
         setTimeout(() => {
-          setShowSubjectPropertyAnimation(prev => ({ ...prev, [newLoanId]: true }));
+          setShowCurrentLoanCardAnimation(prev => ({ ...prev, 'card-0-': true }));
           setTimeout(() => {
-            setShowSubjectPropertyAnimation(prev => ({ ...prev, [newLoanId]: false }));
+            setShowCurrentLoanCardAnimation(prev => ({ ...prev, 'card-0-': false }));
           }, 800);
         }, 200);
       }
