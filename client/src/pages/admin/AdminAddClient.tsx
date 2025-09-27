@@ -13947,7 +13947,7 @@ export default function AdminAddClient() {
                   <div className="space-y-2">
                     <Label className="text-lg font-semibold">Transaction</Label>
                     <div className="mt-4">
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-muted-foreground" style={{ fontSize: '28px' }}>
                         {form.watch('newLoan.loanPurpose') && form.watch('newLoan.loanPurpose') !== 'select' 
                           ? form.watch('newLoan.loanPurpose') === 'rate-term' 
                             ? 'Rate & Term'
@@ -13987,7 +13987,7 @@ export default function AdminAddClient() {
                         className="bg-navy-900 hover:bg-navy-800 text-white rounded-full w-20 h-20 flex items-center justify-center transition-colors duration-200"
                         style={{
                           fontFamily: 'ui-sans-serif, system-ui, sans-serif',
-                          fontSize: '36px',
+                          fontSize: '28px',
                           fontWeight: 600,
                           backgroundColor: '#1a3373',
                           boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
