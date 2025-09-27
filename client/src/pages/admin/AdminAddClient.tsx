@@ -3761,12 +3761,10 @@ export default function AdminAddClient() {
                   <Label htmlFor="thirdLoan-attachedToProperty">Attached to Property</Label>
                   <Select value={targetForm.watch('thirdLoan.attachedToProperty') || ''} onValueChange={(value) => {
                     targetForm.setValue('thirdLoan.attachedToProperty', value as any);
-                    if (['Home Purchase', 'Primary Residence', 'Second Home', 'Investment Property'].includes(value)) {
-                      setTimeout(() => {
-                        if (onAutoCopyAddress) onAutoCopyAddress();
-                      }, 100);
-                    } else if (value === 'Other' || value === '' || value === 'select') {
-                      // Clear address fields for Other, empty, or select
+                    if (value && value !== 'Other' && value !== 'select') {
+                      setTimeout(() => onAutoCopyAddress?.(), 100);
+                    } else if (value === 'Other' || value === 'select') {
+                      // Clear address fields for Other or empty
                       targetForm.setValue('thirdLoan.propertyAddress.street', '');
                       targetForm.setValue('thirdLoan.propertyAddress.unit', '');
                       targetForm.setValue('thirdLoan.propertyAddress.city', '');
@@ -3780,10 +3778,44 @@ export default function AdminAddClient() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="Home Purchase">Home Purchase</SelectItem>
-                      <SelectItem value="Primary Residence">Primary Residence</SelectItem>
-                      <SelectItem value="Second Home">Second Home</SelectItem>
-                      <SelectItem value="Investment Property">Investment Property</SelectItem>
+                      {(() => {
+                        const properties = targetForm.watch('property.properties') || [];
+                        return properties
+                          .filter((property: any) => property.address?.street || property.use === 'primary') // Show properties with street addresses OR primary residence properties
+                          .map((property: any, index: number) => {
+                            const address = property.address;
+                            const streetAddress = address?.street;
+                            const city = address?.city;
+                            const state = address?.state;
+                            const zipCode = address?.zip;
+                            
+                            // Build display text using address components for uniqueness
+                            let displayText;
+                            
+                            // Special handling for Primary Residence without address
+                            if (property.use === 'primary' && !streetAddress) {
+                              displayText = 'Primary Residence';
+                            } else {
+                              displayText = streetAddress || 'Property';
+                              if (city && state) {
+                                displayText += `, ${city}, ${state}`;
+                              } else if (city) {
+                                displayText += `, ${city}`;
+                              } else if (state) {
+                                displayText += `, ${state}`;
+                              }
+                              if (zipCode) {
+                                displayText += ` ${zipCode}`;
+                              }
+                            }
+                            
+                            return (
+                              <SelectItem key={`property-${property.id}`} value={property.id}>
+                                {displayText}
+                              </SelectItem>
+                            );
+                          });
+                      })()}
                       <SelectItem value="Other">Other</SelectItem>
                     </SelectContent>
                   </Select>
@@ -3791,12 +3823,18 @@ export default function AdminAddClient() {
               </div>
               
               {/* Conditional Property Address Fields - Show when Attached to Property is selected */}
-              {targetForm.watch('thirdLoan.attachedToProperty') && targetForm.watch('thirdLoan.attachedToProperty') !== '' && ['Home Purchase', 'Primary Residence', 'Second Home', 'Investment Property', 'Other'].includes(targetForm.watch('thirdLoan.attachedToProperty') || '') && (
+              {targetForm.watch('thirdLoan.attachedToProperty') && targetForm.watch('thirdLoan.attachedToProperty') !== 'select' && (
                 <div className="mt-4 p-4 border-t border-gray-200">
                   <Collapsible open={isPropertyAddressOpen} onOpenChange={setIsPropertyAddressOpen}>
                     <div className="flex items-center justify-between mb-3">
                       <Label className="text-sm font-medium text-gray-700">
-                        Property Address ({targetForm.watch('thirdLoan.attachedToProperty')})
+                        Property Address ({(() => {
+                          const attachedPropertyId = targetForm.watch('thirdLoan.attachedToProperty');
+                          if (attachedPropertyId === 'Other') return 'Other';
+                          const properties = targetForm.watch('property.properties') || [];
+                          const selectedProperty = properties.find((p: any) => p.id === attachedPropertyId);
+                          return selectedProperty?.address?.street || attachedPropertyId;
+                        })()})
                       </Label>
                       <CollapsibleTrigger asChild>
                         <Button
