@@ -3031,15 +3031,15 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2 md:col-span-1">
-                  <Label htmlFor="currentLoan-escrowPayment">Escrow</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+                  <Label htmlFor="currentLoan-loanBalance">Loan Balance</Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
-                      id="currentLoan-escrowPayment"
-                      {...form.register('currentLoan.escrowPayment')}
+                      id="currentLoan-loanBalance"
+                      {...form.register('currentLoan.statementBalance.amount')}
                       placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0 focus-visible:outline-none focus:outline-none"
-                      data-testid="input-currentLoan-escrowPayment"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-currentLoan-loanBalance"
                     />
                   </div>
                 </div>
