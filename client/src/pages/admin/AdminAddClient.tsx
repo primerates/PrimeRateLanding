@@ -2922,7 +2922,7 @@ export default function AdminAddClient() {
               {/* Row 1: Current Lender, Loan Number, Loan Purpose, Loan Start Date, Remaining Term On Credit Report */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor={currentLenderBinding.id}>Current Lender</Label>
+                  <Label htmlFor={currentLenderBinding.id}>Lender Name</Label>
                   <Input
                     id={currentLenderBinding.id}
                     {...currentLenderBinding.field}
@@ -3097,7 +3097,7 @@ export default function AdminAddClient() {
                       {getCurrentLoanEscrowLabel()}
                     </Label>
                     <Switch
-                      checked={false} // Always false since we're cycling states, not toggling on/off
+                      checked={currentLoanEscrowType === 'tax-insurance'} // On (blue) when Tax & Insurance is selected
                       onCheckedChange={cycleCurrentLoanEscrowType}
                       data-testid="toggle-currentLoan-escrow-type"
                       className="scale-[0.8]"
@@ -4227,7 +4227,7 @@ export default function AdminAddClient() {
               {/* Row 1: Current Lender, Loan Number, Loan Start Date, Remaining Term */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
-                  <Label>Current Lender</Label>
+                  <Label>Lender Name</Label>
                   <Input
                     value={currentLender}
                     readOnly
