@@ -544,6 +544,8 @@ export default function AdminAddClient() {
   const [showLoanCircleAnimation, setShowLoanCircleAnimation] = useState(false);
   // Animation state for current loan card grey box roll-up
   const [showCurrentLoanCardAnimation, setShowCurrentLoanCardAnimation] = useState<{[key: string]: boolean}>({});
+  // Animation state for second loan card grey box roll-up
+  const [showSecondLoanCardAnimation, setShowSecondLoanCardAnimation] = useState<{[key: string]: boolean}>({});
   // Animation state for revert icon rotation
   const [showRevertAnimation, setShowRevertAnimation] = useState(false);
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
@@ -3525,9 +3527,7 @@ export default function AdminAddClient() {
               </div>
               
               {/* Row 3: Principal & Interest Payment, Escrow Payment, Total Monthly Payment, Pre-Payment Penalty, Attached to Property */}
-              <Card className={`bg-muted ${
-                showSecondLoanCardAnimation[idPrefix] ? 'animate-roll-up-grey-box' : ''
-              }`}>
+              <Card className="bg-muted">
                 <CardContent className="pt-6">
                   <div className="grid grid-cols-1 md:grid-cols-10 gap-4">
                 <div className="space-y-2 md:col-span-1">
