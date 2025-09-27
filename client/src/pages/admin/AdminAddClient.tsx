@@ -1794,6 +1794,23 @@ export default function AdminAddClient() {
     return isNaN(parsed) ? 0 : parsed;
   };
 
+  // Format monetary value with commas for display
+  const formatMonetaryValue = (value: string): string => {
+    if (!value || value.trim() === '') return '';
+    // Remove any non-numeric characters except decimal point
+    const numericOnly = value.replace(/[^0-9.]/g, '');
+    if (numericOnly === '') return '';
+    
+    const num = parseFloat(numericOnly);
+    if (isNaN(num)) return '';
+    
+    // Format with commas and up to 2 decimal places
+    return num.toLocaleString('en-US', { 
+      minimumFractionDigits: 0, 
+      maximumFractionDigits: 2 
+    });
+  };
+
   // Auto-Sum Payment Fields Component - isolated calculation without parent re-renders
   const AutoSumPaymentFields = React.memo<{ control: any }>(({ control }) => {
     // Watch specific fields for auto-sum calculation - isolated from parent component
@@ -3059,7 +3076,14 @@ export default function AdminAddClient() {
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
                       id="currentLoan-principalInterestPayment"
-                      {...form.register('currentLoan.principalAndInterestPayment')}
+                      value={(() => {
+                        const currentValue = form.watch('currentLoan.principalAndInterestPayment') || '';
+                        return formatMonetaryValue(currentValue);
+                      })()}
+                      onChange={(e) => {
+                        const formatted = formatMonetaryValue(e.target.value);
+                        form.setValue('currentLoan.principalAndInterestPayment', formatted);
+                      }}
                       placeholder="0.00"
                       className="border-0 bg-transparent px-2 focus-visible:ring-0"
                       data-testid="input-currentLoan-principalInterestPayment"
@@ -3073,7 +3097,14 @@ export default function AdminAddClient() {
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
                       id="currentLoan-monthlyEscrow"
-                      {...form.register('currentLoan.escrowPayment')}
+                      value={(() => {
+                        const currentValue = form.watch('currentLoan.escrowPayment') || '';
+                        return formatMonetaryValue(currentValue);
+                      })()}
+                      onChange={(e) => {
+                        const formatted = formatMonetaryValue(e.target.value);
+                        form.setValue('currentLoan.escrowPayment', formatted);
+                      }}
                       placeholder="0.00"
                       className="border-0 bg-transparent px-2 focus-visible:ring-0"
                       data-testid="input-currentLoan-monthlyEscrow"
