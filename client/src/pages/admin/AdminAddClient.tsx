@@ -2952,7 +2952,7 @@ export default function AdminAddClient() {
             </div>
           </CardHeader>
           <CollapsibleContent>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               {/* Row 1: Current Lender, Loan Number, Loan Purpose, Loan Start Date, Remaining Term On Credit Report */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
@@ -13947,7 +13947,7 @@ export default function AdminAddClient() {
                   <div className="space-y-2">
                     <Label className="text-lg font-semibold">Transaction</Label>
                     <div className="mt-8">
-                      <span className="text-muted-foreground" style={{ fontSize: '28px' }}>
+                      <span className="text-muted-foreground" style={{ fontSize: '28px', color: '#1a3373' }}>
                         {form.watch('newLoan.loanPurpose') && form.watch('newLoan.loanPurpose') !== 'select' 
                           ? form.watch('newLoan.loanPurpose') === 'rate-term' 
                             ? 'Rate & Term'
