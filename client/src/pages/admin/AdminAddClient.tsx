@@ -11242,25 +11242,6 @@ export default function AdminAddClient() {
                                       <Label htmlFor={`subject-no-${propertyId}`}>No</Label>
                                     </div>
                                   </div>
-                                  
-                                  {/* New button centered below, aligned with Remove button above */}
-                                  <div className="flex justify-end">
-                                    <Button
-                                      type="button"
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={() => {
-                                        // Add your button functionality here
-                                        console.log('New button clicked');
-                                      }}
-                                      className="hover:bg-red-500 hover:text-white"
-                                      data-testid={`button-grey-box-action-${propertyId}`}
-                                      title="Action Button"
-                                    >
-                                      <Minus className="h-4 w-4 mr-2" />
-                                      Action
-                                    </Button>
-                                  </div>
                                 </div>
                               </CardContent>
                             </Card>
