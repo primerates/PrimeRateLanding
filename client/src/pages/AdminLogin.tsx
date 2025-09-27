@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, Eye, EyeOff, HelpCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
@@ -13,6 +14,7 @@ export default function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [dashboardImage, setDashboardImage] = useState('futuristic-grid');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: boolean}>({});
   const { toast } = useToast();
@@ -159,6 +161,34 @@ export default function AdminLogin() {
                   </Button>
                 </div>
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="dashboard-image" data-testid="label-dashboard-image">
+                Dashboard Image
+              </Label>
+              <Select value={dashboardImage} onValueChange={setDashboardImage}>
+                <SelectTrigger data-testid="select-dashboard-image">
+                  <SelectValue placeholder="Select dashboard background" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="futuristic-grid" data-testid="option-futuristic-grid">
+                    Futuristic 3D Grid
+                  </SelectItem>
+                  <SelectItem value="family-home" data-testid="option-family-home">
+                    Happy Family Home
+                  </SelectItem>
+                  <SelectItem value="bright-room" data-testid="option-bright-room">
+                    Bright Living Room
+                  </SelectItem>
+                  <SelectItem value="modern-office" data-testid="option-modern-office">
+                    Modern Office Space
+                  </SelectItem>
+                  <SelectItem value="nature-landscape" data-testid="option-nature-landscape">
+                    Nature Landscape
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="pt-4">
