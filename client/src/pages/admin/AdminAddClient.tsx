@@ -3057,33 +3057,6 @@ export default function AdminAddClient() {
                   </div>
                 </div>
                 
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="currentLoan-principalInterestPayment">Principal & Interest Payment</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="currentLoan-principalInterestPayment"
-                      {...form.register('currentLoan.principalAndInterestPayment')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-currentLoan-principalInterestPayment"
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2 md:col-span-1">
-                  <Label htmlFor="currentLoan-escrowPayment">Escrow Payment</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="currentLoan-escrowPayment"
-                      {...form.register('currentLoan.escrowPayment')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-currentLoan-escrowPayment"
-                    />
-                  </div>
-                </div>
                 
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="currentLoan-totalMonthlyPayment">Total Monthly Payment</Label>
