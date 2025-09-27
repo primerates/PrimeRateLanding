@@ -3331,7 +3331,6 @@ export default function AdminAddClient() {
                   <Input
                     id="secondLoan-lenderName"
                     {...targetForm.register('secondLoan.lenderName')}
-                    placeholder="Enter lender name"
                     data-testid="input-secondLoan-lenderName"
                   />
                 </div>
@@ -3341,7 +3340,6 @@ export default function AdminAddClient() {
                   <Input
                     id="secondLoan-loanNumber"
                     {...targetForm.register('secondLoan.loanNumber')}
-                    placeholder="Enter loan number"
                     data-testid="input-secondLoan-loanNumber"
                   />
                 </div>
@@ -3398,7 +3396,7 @@ export default function AdminAddClient() {
               {/* Row 2: Current Balance, Current Rate, Monthly Payment, Pre-Payment Penalty, Attached to Property */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="secondLoan-currentBalance">Current Balance</Label>
+                  <Label htmlFor="secondLoan-currentBalance">Loan Balance</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
@@ -3412,7 +3410,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="secondLoan-currentRate">Current Rate</Label>
+                  <Label htmlFor="secondLoan-currentRate">Interest Rate</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <Input
                       id="secondLoan-currentRate"
@@ -3440,7 +3438,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="secondLoan-prepaymentPenalty">Pre-payment Penalty</Label>
+                  <Label htmlFor="secondLoan-prepaymentPenalty">Pre-Payment Penalty</Label>
                   <Select value={targetForm.watch('secondLoan.prepaymentPenalty') || ''} onValueChange={(value: 'Yes - see notes' | 'No') => targetForm.setValue('secondLoan.prepaymentPenalty', value)}>
                     <SelectTrigger data-testid="select-secondLoan-prepaymentPenalty">
                       <SelectValue placeholder="Select" />
@@ -3636,7 +3634,6 @@ export default function AdminAddClient() {
                   <Input
                     id="thirdLoan-lenderName"
                     {...targetForm.register('thirdLoan.lenderName')}
-                    placeholder="Enter lender name"
                     data-testid="input-thirdLoan-lenderName"
                   />
                 </div>
@@ -3646,7 +3643,6 @@ export default function AdminAddClient() {
                   <Input
                     id="thirdLoan-loanNumber"
                     {...targetForm.register('thirdLoan.loanNumber')}
-                    placeholder="Enter loan number"
                     data-testid="input-thirdLoan-loanNumber"
                   />
                 </div>
@@ -3703,7 +3699,7 @@ export default function AdminAddClient() {
               {/* Row 2: Current Balance, Current Rate, Monthly Payment, Pre-payment Penalty, Attached to Property */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="thirdLoan-currentBalance">Current Balance</Label>
+                  <Label htmlFor="thirdLoan-currentBalance">Loan Balance</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
@@ -3717,7 +3713,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="thirdLoan-currentRate">Current Rate</Label>
+                  <Label htmlFor="thirdLoan-currentRate">Interest Rate</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <Input
                       id="thirdLoan-currentRate"
@@ -3745,7 +3741,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="thirdLoan-prepaymentPenalty">Pre-payment Penalty</Label>
+                  <Label htmlFor="thirdLoan-prepaymentPenalty">Pre-Payment Penalty</Label>
                   <Select value={targetForm.watch('thirdLoan.prepaymentPenalty') || ''} onValueChange={(value: 'Yes - see notes' | 'No') => targetForm.setValue('thirdLoan.prepaymentPenalty', value)}>
                     <SelectTrigger data-testid="select-thirdLoan-prepaymentPenalty">
                       <SelectValue placeholder="Select" />
@@ -3966,7 +3962,7 @@ export default function AdminAddClient() {
               {/* Row 2: Current Balance, Current Rate, Monthly Payment, Pre-Payment Penalty, Attached to Property */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor={`${loanId}-currentBalance`}>Current Balance</Label>
+                  <Label htmlFor={`${loanId}-currentBalance`}>Loan Balance</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
@@ -3980,7 +3976,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor={`${loanId}-currentRate`}>Current Rate</Label>
+                  <Label htmlFor={`${loanId}-currentRate`}>Interest Rate</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <Input
                       id={`${loanId}-currentRate`}
@@ -4008,7 +4004,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor={`${loanId}-prepaymentPenalty`}>Pre-payment Penalty</Label>
+                  <Label htmlFor={`${loanId}-prepaymentPenalty`}>Pre-Payment Penalty</Label>
                   <Select value={targetForm.watch(`${loanId}.prepaymentPenalty`) || ''} onValueChange={(value: 'Yes - see notes' | 'No') => targetForm.setValue(`${loanId}.prepaymentPenalty`, value)}>
                     <SelectTrigger data-testid={`select-${loanId}-prepaymentPenalty`}>
                       <SelectValue placeholder="Select" />
