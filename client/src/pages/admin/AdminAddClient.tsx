@@ -13927,11 +13927,23 @@ export default function AdminAddClient() {
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="current-second-loan-tab"
-                          disabled
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
+                          checked={(currentSecondLoanCards || []).length > 0}
+                          onCheckedChange={(checked) => {
+                            if (typeof checked === 'boolean') {
+                              handleCurrentSecondLoanTypeChange(checked);
+                            }
+                          }}
+                          className={`transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black ${
+                            (currentSecondLoanCards || []).length > 0 ? 'pointer-events-none opacity-75' : ''
+                          }`}
                           data-testid="checkbox-current-second-loan-tab"
                         />
-                        <Label htmlFor="current-second-loan-tab" className="font-medium text-black">
+                        <Label 
+                          htmlFor="current-second-loan-tab" 
+                          className={`font-medium text-black ${
+                            (currentSecondLoanCards || []).length > 0 ? 'pointer-events-none opacity-75' : 'cursor-pointer'
+                          }`}
+                        >
                           Current Second Loan
                         </Label>
                       </div>
@@ -14079,19 +14091,29 @@ export default function AdminAddClient() {
                 );
               })}
 
-              {/* Second Loan Sections - Only show when added */}
-              {showSecondLoan && (
-                <CurrentSecondLoanCard
-                  idPrefix=""
-                  borderVariant="blue"
-                  isOpen={isSecondLoanOpen}
-                  setIsOpen={setIsSecondLoanOpen}
-                  onRemove={removeSecondLoan}
-                  onAutoCopyAddress={autoCopyPropertyAddressToLoanTabSecondLoan}
-                  onAddAdditionalLoan={handleAddAdditionalLoan}
-                  formInstance={form}
-                />
-              )}
+              {/* Current Second Loan Cards - Render multiple cards like Property cards and Primary Loan cards */}
+              {(currentSecondLoanCards || []).map((cardId, index) => {
+                const isOpen = secondLoanCardStates[cardId] ?? true; // Per-card state like Property cards
+                
+                return (
+                  <CurrentSecondLoanCard
+                    key={cardId}
+                    idPrefix={`second-card-${index}-`}
+                    borderVariant="blue"
+                    isOpen={isOpen}
+                    setIsOpen={(open) => setSecondLoanCardStates(prev => ({ ...prev, [cardId]: open }))}
+                    onRemove={() => {
+                      setDeleteCurrentSecondLoanDialog({
+                        isOpen: true,
+                        cardId: cardId
+                      });
+                    }}
+                    onAutoCopyAddress={autoCopyPropertyAddressToLoanTabSecondLoan}
+                    onAddAdditionalLoan={handleAddAdditionalLoan}
+                    formInstance={form}
+                  />
+                );
+              })}
 
               {/* Additional Loan Cards - Render all additional loans with sequential numbering: 3, 4, 5, etc. */}
               {additionalLoans.map((loan, index) => (
@@ -15580,6 +15602,36 @@ export default function AdminAddClient() {
                 removeCurrentPrimaryLoanCard(cardToDelete);
               }}
               data-testid="button-confirm-delete-current-primary-loan"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Current Second Loan Confirmation Dialog */}
+      <AlertDialog open={deleteCurrentSecondLoanDialog.isOpen} onOpenChange={(open) => !open && setDeleteCurrentSecondLoanDialog({ isOpen: false, cardId: '' })}>
+        <AlertDialogContent data-testid="dialog-delete-current-second-loan">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Current Second Loan Card</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this current second loan card? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteCurrentSecondLoanDialog({ isOpen: false, cardId: '' })}
+              data-testid="button-cancel-delete-current-second-loan"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                const cardToDelete = deleteCurrentSecondLoanDialog.cardId;
+                removeCurrentSecondLoanCard(cardToDelete);
+              }}
+              data-testid="button-confirm-delete-current-second-loan"
               className="bg-red-600 hover:bg-red-700"
             >
               Delete
