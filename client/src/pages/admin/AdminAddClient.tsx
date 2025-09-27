@@ -3212,21 +3212,6 @@ export default function AdminAddClient() {
                   </div>
                 </CardContent>
               </Card>
-              
-              {/* Add Second Loan Button - positioned at bottom right */}
-              <div className="flex justify-end mt-4">
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={handleAddSecondLoan}
-                  className="hover:bg-orange-500 hover:text-white hover:border-orange-500 no-default-hover-elevate no-default-active-elevate"
-                  data-testid={`button-add-second-loan-${idPrefix}`}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Second Loan
-                </Button>
-              </div>
             </CardContent>
           </CollapsibleContent>
         </Collapsible>
