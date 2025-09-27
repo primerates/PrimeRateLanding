@@ -181,8 +181,8 @@ export default function AdminLogin() {
                   <SelectItem value="neural-network" data-testid="option-neural-network">
                     Neural Network Pattern
                   </SelectItem>
-                  <SelectItem value="bright-room" data-testid="option-bright-room">
-                    Bright Living Room
+                  <SelectItem value="lightspeed" data-testid="option-lightspeed">
+                    Lightspeed
                   </SelectItem>
                   <SelectItem value="modern-office" data-testid="option-modern-office">
                     Modern Office Space
