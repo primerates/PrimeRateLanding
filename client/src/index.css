@@ -105,6 +105,19 @@
   opacity: 0;
 }
 
+@keyframes rotate-360 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-rotate-360 {
+  animation: rotate-360 0.6s ease-out forwards;
+}
+
 /* Additional animation classes for Property title staggered animations */
 .animate-roll-down-property-1 {
   animation: roll-down-delayed 0.6s ease-out 0.3s forwards;

@@ -544,6 +544,8 @@ export default function AdminAddClient() {
   const [showLoanCircleAnimation, setShowLoanCircleAnimation] = useState(false);
   // Animation state for current loan card grey box roll-up
   const [showCurrentLoanCardAnimation, setShowCurrentLoanCardAnimation] = useState<{[key: string]: boolean}>({});
+  // Animation state for revert icon rotation
+  const [showRevertAnimation, setShowRevertAnimation] = useState(false);
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
@@ -6045,13 +6047,17 @@ export default function AdminAddClient() {
                     variant="ghost"
                     size="sm"
                     onClick={() => {
+                      // Trigger rotation animation
+                      setShowRevertAnimation(true);
+                      setTimeout(() => setShowRevertAnimation(false), 600);
+                      
                       // Always show unsaved changes dialog when navigating away from Add Client page
                       setUnsavedChangesDialog({ isOpen: true });
                     }}
-                    className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/10 p-2"
+                    className="text-primary-foreground hover:text-white hover:bg-green-600 p-2 transition-colors duration-200"
                     data-testid="button-back-to-dashboard"
                   >
-                    <RotateCcw className="h-6 w-6" />
+                    <RotateCcw className={`h-6 w-6 ${showRevertAnimation ? 'animate-rotate-360' : ''}`} />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="left" sideOffset={10} className="text-sm">
