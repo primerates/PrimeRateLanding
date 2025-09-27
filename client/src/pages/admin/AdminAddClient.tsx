@@ -3569,7 +3569,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="secondLoan-principalInterestPayment">Principal & Interest Payment</Label>
+                  <Label htmlFor="secondLoan-principalInterestPayment">Loan Balance</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
@@ -3585,7 +3585,7 @@ export default function AdminAddClient() {
                 <div className="space-y-2 md:col-span-2">
                   <div className="flex items-center justify-between mb-2">
                     <Label htmlFor="secondLoan-monthlyEscrow" className="text-sm">
-                      Tax & Insurance
+                      Monthly Payment
                     </Label>
                     <Switch
                       checked={true} // Default to on
@@ -3607,7 +3607,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="secondLoan-totalMonthlyPayment">Total Monthly Payment</Label>
+                  <Label htmlFor="secondLoan-totalMonthlyPayment">Pre-Payment Penalty</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
