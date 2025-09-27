@@ -11257,10 +11257,10 @@ export default function AdminAddClient() {
                                       }}
                                       className="hover:bg-red-500 hover:text-white"
                                       data-testid={`button-grey-box-action-${propertyId}`}
-                                      title="Action Button"
+                                      title="Loans"
                                     >
                                       <Minus className="h-4 w-4 mr-2" />
-                                      Action
+                                      Loans
                                     </Button>
                                   </div>
                                 </div>
