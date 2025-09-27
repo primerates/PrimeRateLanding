@@ -11625,7 +11625,7 @@ export default function AdminAddClient() {
                                       return (
                                         <div className="flex items-center gap-1">
                                           <div 
-                                            className={`w-3 h-3 rounded-full border-2 cursor-pointer ${
+                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer ${
                                               isCurrentLoanAttached
                                                 ? 'bg-blue-500 border-blue-500 hover:bg-blue-600'
                                                 : 'bg-gray-200 border-gray-300'
