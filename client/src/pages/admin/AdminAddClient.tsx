@@ -868,6 +868,8 @@ export default function AdminAddClient() {
   // Missing state variables for collapsible sections
   const [isPensionOpen, setIsPensionOpen] = useState(false);
   const [isSocialSecurityOpen, setIsSocialSecurityOpen] = useState(false);
+  const [isVaBenefitsOpen, setIsVaBenefitsOpen] = useState(false);
+  const [isDisabilityOpen, setIsDisabilityOpen] = useState(false);
 
   // Address box collapsible states
   const [isBorrowerResidenceOpen, setIsBorrowerResidenceOpen] = useState(false);
