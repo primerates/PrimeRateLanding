@@ -13947,7 +13947,7 @@ export default function AdminAddClient() {
                   <div className="space-y-2">
                     <Label className="text-lg font-semibold">Transaction</Label>
                     <div className="mt-8">
-                      <span className="text-muted-foreground" style={{ fontSize: '28px', color: '#1a3373' }}>
+                      <span className="text-muted-foreground" style={{ fontSize: '28px', color: '#1a3373', fontWeight: 'bold' }}>
                         {form.watch('newLoan.loanPurpose') && form.watch('newLoan.loanPurpose') !== 'select' 
                           ? form.watch('newLoan.loanPurpose') === 'rate-term' 
                             ? 'Rate & Term'
