@@ -905,6 +905,12 @@ export default function AdminAddClient() {
     return `income.secondEmployers.${cleanCardId}.${fieldName}` as const;
   };
 
+  // Helper function to generate dynamic field paths for self-employment cards
+  const getSelfEmploymentFieldPath = (cardId: string, fieldName: string) => {
+    const cleanCardId = cardId === 'default' ? 'default' : cardId;
+    return `income.selfEmployment.${cleanCardId}.${fieldName}` as const;
+  };
+
   // Helper function to generate dynamic field paths for co-borrower employer cards
   const getCoBorrowerEmployerFieldPath = (cardId: string, fieldName: string) => {
     const cleanCardId = cardId === 'default' ? 'default' : cardId;
