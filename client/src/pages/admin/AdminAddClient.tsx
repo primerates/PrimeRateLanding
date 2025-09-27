@@ -11915,56 +11915,108 @@ export default function AdminAddClient() {
                               showSubjectPropertyAnimation[propertyId] ? 'animate-roll-down-subject-property' : ''
                             }`}>
                               <CardContent className="pt-6">
-                                <div className="space-y-3">
-                                  <Label className="text-base font-semibold">Is the loan transaction for this property?</Label>
-                                  <div className="flex gap-4">
-                                    <div className="flex items-center space-x-2">
-                                      <input
-                                        type="radio"
-                                        id={`second-home-subject-yes-${propertyId}`}
-                                        name={`second-home-subject-${propertyId}`}
-                                        checked={secondHomeData[propertyId]?.isSubjectProperty === true}
-                                        onChange={() => {
-                                          setSecondHomeData(prev => ({
-                                            ...prev,
-                                            [propertyId]: { 
-                                              ...prev[propertyId],
-                                              isSubjectProperty: true
-                                            }
-                                          }));
-                                          // Trigger same green animation as Primary Residence
-                                          setSubjectProperty(propertyId);
-                                        }}
-                                        data-testid={`radio-second-home-subject-yes-${propertyId}`}
-                                      />
-                                      <Label htmlFor={`second-home-subject-yes-${propertyId}`}>Yes</Label>
+                                <div className="flex justify-between items-center">
+                                  <div className="space-y-3 flex-1">
+                                    <Label className="text-base font-semibold">Is the loan transaction for this property?</Label>
+                                    <div className="flex gap-4">
+                                      <div className="flex items-center space-x-2">
+                                        <input
+                                          type="radio"
+                                          id={`second-home-subject-yes-${propertyId}`}
+                                          name={`second-home-subject-${propertyId}`}
+                                          checked={secondHomeData[propertyId]?.isSubjectProperty === true}
+                                          onChange={() => {
+                                            setSecondHomeData(prev => ({
+                                              ...prev,
+                                              [propertyId]: { 
+                                                ...prev[propertyId],
+                                                isSubjectProperty: true
+                                              }
+                                            }));
+                                            // Trigger same green animation as Primary Residence
+                                            setSubjectProperty(propertyId);
+                                          }}
+                                          data-testid={`radio-second-home-subject-yes-${propertyId}`}
+                                        />
+                                        <Label htmlFor={`second-home-subject-yes-${propertyId}`}>Yes</Label>
+                                      </div>
+                                      
+                                      <div className="flex items-center space-x-2">
+                                        <input
+                                          type="radio"
+                                          id={`second-home-subject-no-${propertyId}`}
+                                          name={`second-home-subject-${propertyId}`}
+                                          checked={secondHomeData[propertyId]?.isSubjectProperty === false}
+                                          onChange={() => {
+                                            setSecondHomeData(prev => ({
+                                              ...prev,
+                                              [propertyId]: { 
+                                                ...prev[propertyId],
+                                                isSubjectProperty: false
+                                              }
+                                            }));
+                                            // Update global form state to reverse green animation (same as Primary Residence)
+                                            const properties = form.watch('property.properties') || [];
+                                            const updatedProperties = properties.map(p => 
+                                              p.id === propertyId ? { ...p, isSubject: false } : p
+                                            );
+                                            form.setValue('property.properties', updatedProperties);
+                                          }}
+                                          data-testid={`radio-second-home-subject-no-${propertyId}`}
+                                        />
+                                        <Label htmlFor={`second-home-subject-no-${propertyId}`}>No</Label>
+                                      </div>
                                     </div>
-                                    
-                                    <div className="flex items-center space-x-2">
-                                      <input
-                                        type="radio"
-                                        id={`second-home-subject-no-${propertyId}`}
-                                        name={`second-home-subject-${propertyId}`}
-                                        checked={secondHomeData[propertyId]?.isSubjectProperty === false}
-                                        onChange={() => {
-                                          setSecondHomeData(prev => ({
-                                            ...prev,
-                                            [propertyId]: { 
-                                              ...prev[propertyId],
-                                              isSubjectProperty: false
-                                            }
-                                          }));
-                                          // Update global form state to reverse green animation (same as Primary Residence)
-                                          const properties = form.watch('property.properties') || [];
-                                          const updatedProperties = properties.map(p => 
-                                            p.id === propertyId ? { ...p, isSubject: false } : p
-                                          );
-                                          form.setValue('property.properties', updatedProperties);
-                                        }}
-                                        data-testid={`radio-second-home-subject-no-${propertyId}`}
-                                      />
-                                      <Label htmlFor={`second-home-subject-no-${propertyId}`}>No</Label>
-                                    </div>
+                                  </div>
+                                  
+                                  {/* New button positioned more to the left */}
+                                  <div className="flex items-center mr-8">
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => {
+                                        // Add your button functionality here
+                                        console.log('Second Home Loans button clicked');
+                                      }}
+                                      className="hover:bg-red-500 hover:text-white w-24"
+                                      data-testid={`button-second-home-grey-box-action-${propertyId}`}
+                                      title="Loans"
+                                    >
+                                      {(() => {
+                                        const properties = form.watch('property.properties') || [];
+                                        const secondHomeIndex = properties.findIndex(p => p.use === 'second-home' && p.id === propertyId);
+                                        const currentProperty = secondHomeIndex >= 0 ? properties[secondHomeIndex] : null;
+                                        
+                                        // Check which loans are attached to this property for counter
+                                        const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                        const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                        
+                                        const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                        const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                        
+                                        // Check third loan (first additional loan - Current Loan 3)
+                                        const additionalLoansData = additionalLoans || [];
+                                        const firstAdditionalLoan = additionalLoansData[0];
+                                        const isThirdLoanAttached = firstAdditionalLoan ? (() => {
+                                          const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
+                                          return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                        })() : false;
+                                        
+                                        // Count active loans
+                                        let activeLoansCount = 0;
+                                        if (isCurrentLoanAttached) activeLoansCount++;
+                                        if (isSecondLoanAttached) activeLoansCount++;
+                                        if (isThirdLoanAttached) activeLoansCount++;
+                                        
+                                        return (
+                                          <span>
+                                            <span className="mr-3 font-semibold">{activeLoansCount}</span>
+                                            <span>{activeLoansCount === 1 ? 'Loan' : 'Loans'}</span>
+                                          </span>
+                                        );
+                                      })()}
+                                    </Button>
                                   </div>
                                 </div>
                               </CardContent>
@@ -12408,42 +12460,6 @@ export default function AdminAddClient() {
                                       );
                                     })()}
                                   </div>
-                                  {(() => {
-                                    const properties = form.watch('property.properties') || [];
-                                    const secondHomeIndex = properties.findIndex(p => p.use === 'second-home' && p.id === propertyId);
-                                    const currentProperty = secondHomeIndex >= 0 ? properties[secondHomeIndex] : null;
-                                    
-                                    // Check which loans are attached to this property for counter
-                                    const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
-                                    const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
-                                    
-                                    const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
-                                    const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
-                                    
-                                    // Check third loan (first additional loan - Current Loan 3)
-                                    const additionalLoansData = additionalLoans || [];
-                                    const firstAdditionalLoan = additionalLoansData[0];
-                                    const isThirdLoanAttached = firstAdditionalLoan ? (() => {
-                                      const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
-                                      return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
-                                    })() : false;
-                                    
-                                    // Count active loans
-                                    let activeLoansCount = 0;
-                                    if (isCurrentLoanAttached) activeLoansCount++;
-                                    if (isSecondLoanAttached) activeLoansCount++;
-                                    if (isThirdLoanAttached) activeLoansCount++;
-                                    
-                                    return (
-                                      <div 
-                                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 border border-gray-300 text-xs font-semibold text-gray-600"
-                                        data-testid={`second-home-loan-counter-${propertyId}`}
-                                        title={`${activeLoansCount} loan(s) connected`}
-                                      >
-                                        {activeLoansCount}
-                                      </div>
-                                    );
-                                  })()}
                                 </div>
                                 {(() => {
                                   // Automatic loan detection logic for Second Home
@@ -12626,56 +12642,108 @@ export default function AdminAddClient() {
                               showSubjectPropertyAnimation[propertyId] ? 'animate-roll-down-subject-property' : ''
                             }`}>
                               <CardContent className="pt-6">
-                                <div className="space-y-3">
-                                  <Label className="text-base font-semibold">Is the loan transaction for this property?</Label>
-                                  <div className="flex gap-4">
-                                    <div className="flex items-center space-x-2">
-                                      <input
-                                        type="radio"
-                                        id={`investment-property-subject-yes-${propertyId}`}
-                                        name={`investment-property-subject-${propertyId}`}
-                                        checked={investmentData[propertyId]?.isSubjectProperty === true}
-                                        onChange={() => {
-                                          setInvestmentData(prev => ({
-                                            ...prev,
-                                            [propertyId]: { 
-                                              ...prev[propertyId],
-                                              isSubjectProperty: true
-                                            }
-                                          }));
-                                          // Trigger same green animation as Primary Residence
-                                          setSubjectProperty(propertyId);
-                                        }}
-                                        data-testid={`radio-investment-property-subject-yes-${propertyId}`}
-                                      />
-                                      <Label htmlFor={`investment-property-subject-yes-${propertyId}`}>Yes</Label>
+                                <div className="flex justify-between items-center">
+                                  <div className="space-y-3 flex-1">
+                                    <Label className="text-base font-semibold">Is the loan transaction for this property?</Label>
+                                    <div className="flex gap-4">
+                                      <div className="flex items-center space-x-2">
+                                        <input
+                                          type="radio"
+                                          id={`investment-property-subject-yes-${propertyId}`}
+                                          name={`investment-property-subject-${propertyId}`}
+                                          checked={investmentData[propertyId]?.isSubjectProperty === true}
+                                          onChange={() => {
+                                            setInvestmentData(prev => ({
+                                              ...prev,
+                                              [propertyId]: { 
+                                                ...prev[propertyId],
+                                                isSubjectProperty: true
+                                              }
+                                            }));
+                                            // Trigger same green animation as Primary Residence
+                                            setSubjectProperty(propertyId);
+                                          }}
+                                          data-testid={`radio-investment-property-subject-yes-${propertyId}`}
+                                        />
+                                        <Label htmlFor={`investment-property-subject-yes-${propertyId}`}>Yes</Label>
+                                      </div>
+                                      
+                                      <div className="flex items-center space-x-2">
+                                        <input
+                                          type="radio"
+                                          id={`investment-property-subject-no-${propertyId}`}
+                                          name={`investment-property-subject-${propertyId}`}
+                                          checked={investmentData[propertyId]?.isSubjectProperty === false}
+                                          onChange={() => {
+                                            setInvestmentData(prev => ({
+                                              ...prev,
+                                              [propertyId]: { 
+                                                ...prev[propertyId],
+                                                isSubjectProperty: false
+                                              }
+                                            }));
+                                            // Update global form state to reverse green animation (same as Primary Residence)
+                                            const properties = form.watch('property.properties') || [];
+                                            const updatedProperties = properties.map(p => 
+                                              p.id === propertyId ? { ...p, isSubject: false } : p
+                                            );
+                                            form.setValue('property.properties', updatedProperties);
+                                          }}
+                                          data-testid={`radio-investment-property-subject-no-${propertyId}`}
+                                        />
+                                        <Label htmlFor={`investment-property-subject-no-${propertyId}`}>No</Label>
+                                      </div>
                                     </div>
-                                    
-                                    <div className="flex items-center space-x-2">
-                                      <input
-                                        type="radio"
-                                        id={`investment-property-subject-no-${propertyId}`}
-                                        name={`investment-property-subject-${propertyId}`}
-                                        checked={investmentData[propertyId]?.isSubjectProperty === false}
-                                        onChange={() => {
-                                          setInvestmentData(prev => ({
-                                            ...prev,
-                                            [propertyId]: { 
-                                              ...prev[propertyId],
-                                              isSubjectProperty: false
-                                            }
-                                          }));
-                                          // Update global form state to reverse green animation (same as Primary Residence)
-                                          const properties = form.watch('property.properties') || [];
-                                          const updatedProperties = properties.map(p => 
-                                            p.id === propertyId ? { ...p, isSubject: false } : p
-                                          );
-                                          form.setValue('property.properties', updatedProperties);
-                                        }}
-                                        data-testid={`radio-investment-property-subject-no-${propertyId}`}
-                                      />
-                                      <Label htmlFor={`investment-property-subject-no-${propertyId}`}>No</Label>
-                                    </div>
+                                  </div>
+                                  
+                                  {/* New button positioned more to the left */}
+                                  <div className="flex items-center mr-8">
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => {
+                                        // Add your button functionality here
+                                        console.log('Investment Property Loans button clicked');
+                                      }}
+                                      className="hover:bg-red-500 hover:text-white w-24"
+                                      data-testid={`button-investment-grey-box-action-${propertyId}`}
+                                      title="Loans"
+                                    >
+                                      {(() => {
+                                        const properties = form.watch('property.properties') || [];
+                                        const investmentIndex = properties.findIndex(p => p.use === 'investment' && p.id === propertyId);
+                                        const currentProperty = investmentIndex >= 0 ? properties[investmentIndex] : null;
+                                        
+                                        // Check which loans are attached to this property for counter
+                                        const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                        const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                        
+                                        const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                        const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                        
+                                        // Check third loan (first additional loan - Current Loan 3)
+                                        const additionalLoansData = additionalLoans || [];
+                                        const firstAdditionalLoan = additionalLoansData[0];
+                                        const isThirdLoanAttached = firstAdditionalLoan ? (() => {
+                                          const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
+                                          return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                        })() : false;
+                                        
+                                        // Count active loans
+                                        let activeLoansCount = 0;
+                                        if (isCurrentLoanAttached) activeLoansCount++;
+                                        if (isSecondLoanAttached) activeLoansCount++;
+                                        if (isThirdLoanAttached) activeLoansCount++;
+                                        
+                                        return (
+                                          <span>
+                                            <span className="mr-3 font-semibold">{activeLoansCount}</span>
+                                            <span>{activeLoansCount === 1 ? 'Loan' : 'Loans'}</span>
+                                          </span>
+                                        );
+                                      })()}
+                                    </Button>
                                   </div>
                                 </div>
                               </CardContent>
@@ -13116,42 +13184,6 @@ export default function AdminAddClient() {
                                       );
                                     })()}
                                   </div>
-                                  {(() => {
-                                    const properties = form.watch('property.properties') || [];
-                                    const investmentIndex = properties.findIndex(p => p.use === 'investment' && p.id === propertyId);
-                                    const currentProperty = investmentIndex >= 0 ? properties[investmentIndex] : null;
-                                    
-                                    // Check which loans are attached to this property for counter
-                                    const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
-                                    const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
-                                    
-                                    const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
-                                    const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
-                                    
-                                    // Check third loan (first additional loan - Current Loan 3)
-                                    const additionalLoansData = additionalLoans || [];
-                                    const firstAdditionalLoan = additionalLoansData[0];
-                                    const isThirdLoanAttached = firstAdditionalLoan ? (() => {
-                                      const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
-                                      return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
-                                    })() : false;
-                                    
-                                    // Count active loans
-                                    let activeLoansCount = 0;
-                                    if (isCurrentLoanAttached) activeLoansCount++;
-                                    if (isSecondLoanAttached) activeLoansCount++;
-                                    if (isThirdLoanAttached) activeLoansCount++;
-                                    
-                                    return (
-                                      <div 
-                                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 border border-gray-300 text-xs font-semibold text-gray-600"
-                                        data-testid={`investment-property-loan-counter-${propertyId}`}
-                                        title={`${activeLoansCount} loan(s) connected`}
-                                      >
-                                        {activeLoansCount}
-                                      </div>
-                                    );
-                                  })()}
                                 </div>
                                 {(() => {
                                   // Automatic loan detection logic for Investment Property
@@ -13344,38 +13376,88 @@ export default function AdminAddClient() {
                               showSubjectPropertyAnimation[propertyId] ? 'animate-roll-down-subject-property' : ''
                             }`}>
                               <CardContent className="pt-6">
-                                <div className="space-y-3">
-                                  <Label className="text-base font-semibold">Is the loan transaction for this property?</Label>
-                                  <div className="flex gap-4">
-                                    <div className="flex items-center space-x-2">
-                                      <input
-                                        type="radio"
-                                        id={`subject-yes-${propertyId}`}
-                                        name={`subject-${propertyId}`}
-                                        checked={property.isSubject === true}
-                                        onChange={() => setSubjectProperty(propertyId)}
-                                        data-testid={`radio-subject-yes-${propertyId}`}
-                                      />
-                                      <Label htmlFor={`subject-yes-${propertyId}`}>Yes</Label>
+                                <div className="flex justify-between items-center">
+                                  <div className="space-y-3 flex-1">
+                                    <Label className="text-base font-semibold">Is the loan transaction for this property?</Label>
+                                    <div className="flex gap-4">
+                                      <div className="flex items-center space-x-2">
+                                        <input
+                                          type="radio"
+                                          id={`subject-yes-${propertyId}`}
+                                          name={`subject-${propertyId}`}
+                                          checked={property.isSubject === true}
+                                          onChange={() => setSubjectProperty(propertyId)}
+                                          data-testid={`radio-subject-yes-${propertyId}`}
+                                        />
+                                        <Label htmlFor={`subject-yes-${propertyId}`}>Yes</Label>
+                                      </div>
+                                      
+                                      <div className="flex items-center space-x-2">
+                                        <input
+                                          type="radio"
+                                          id={`subject-no-${propertyId}`}
+                                          name={`subject-${propertyId}`}
+                                          checked={property.isSubject === false}
+                                          onChange={() => {
+                                            const properties = form.watch('property.properties') || [];
+                                            const updatedProperties = properties.map(p => 
+                                              p.id === propertyId ? { ...p, isSubject: false } : p
+                                            );
+                                            form.setValue('property.properties', updatedProperties);
+                                          }}
+                                          data-testid={`radio-subject-no-${propertyId}`}
+                                        />
+                                        <Label htmlFor={`subject-no-${propertyId}`}>No</Label>
+                                      </div>
                                     </div>
-                                    
-                                    <div className="flex items-center space-x-2">
-                                      <input
-                                        type="radio"
-                                        id={`subject-no-${propertyId}`}
-                                        name={`subject-${propertyId}`}
-                                        checked={property.isSubject === false}
-                                        onChange={() => {
-                                          const properties = form.watch('property.properties') || [];
-                                          const updatedProperties = properties.map(p => 
-                                            p.id === propertyId ? { ...p, isSubject: false } : p
-                                          );
-                                          form.setValue('property.properties', updatedProperties);
-                                        }}
-                                        data-testid={`radio-subject-no-${propertyId}`}
-                                      />
-                                      <Label htmlFor={`subject-no-${propertyId}`}>No</Label>
-                                    </div>
+                                  </div>
+                                  
+                                  {/* New button positioned more to the left */}
+                                  <div className="flex items-center mr-8">
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => {
+                                        // Add your button functionality here
+                                        console.log('Home Purchase Loans button clicked');
+                                      }}
+                                      className="hover:bg-red-500 hover:text-white w-24"
+                                      data-testid={`button-home-purchase-grey-box-action-${propertyId}`}
+                                      title="Loans"
+                                    >
+                                      {(() => {
+                                        const currentProperty = property;
+                                        
+                                        // Check which loans are attached to this property for counter
+                                        const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                        const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                        
+                                        const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                        const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                        
+                                        // Check third loan (first additional loan - Current Loan 3)
+                                        const additionalLoansData = additionalLoans || [];
+                                        const firstAdditionalLoan = additionalLoansData[0];
+                                        const isThirdLoanAttached = firstAdditionalLoan ? (() => {
+                                          const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
+                                          return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                        })() : false;
+                                        
+                                        // Count active loans
+                                        let activeLoansCount = 0;
+                                        if (isCurrentLoanAttached) activeLoansCount++;
+                                        if (isSecondLoanAttached) activeLoansCount++;
+                                        if (isThirdLoanAttached) activeLoansCount++;
+                                        
+                                        return (
+                                          <span>
+                                            <span className="mr-3 font-semibold">{activeLoansCount}</span>
+                                            <span>{activeLoansCount === 1 ? 'Loan' : 'Loans'}</span>
+                                          </span>
+                                        );
+                                      })()}
+                                    </Button>
                                   </div>
                                 </div>
                               </CardContent>
@@ -13793,40 +13875,6 @@ export default function AdminAddClient() {
                                       );
                                     })()}
                                   </div>
-                                  {(() => {
-                                    const currentProperty = property;
-                                    
-                                    // Check which loans are attached to this property for counter
-                                    const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
-                                    const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
-                                    
-                                    const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
-                                    const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
-                                    
-                                    // Check third loan (first additional loan - Current Loan 3)
-                                    const additionalLoansData = additionalLoans || [];
-                                    const firstAdditionalLoan = additionalLoansData[0];
-                                    const isThirdLoanAttached = firstAdditionalLoan ? (() => {
-                                      const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
-                                      return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
-                                    })() : false;
-                                    
-                                    // Count active loans
-                                    let activeLoansCount = 0;
-                                    if (isCurrentLoanAttached) activeLoansCount++;
-                                    if (isSecondLoanAttached) activeLoansCount++;
-                                    if (isThirdLoanAttached) activeLoansCount++;
-                                    
-                                    return (
-                                      <div 
-                                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 border border-gray-300 text-xs font-semibold text-gray-600"
-                                        data-testid={`loan-counter-${property.id}`}
-                                        title={`${activeLoansCount} loan(s) connected`}
-                                      >
-                                        {activeLoansCount}
-                                      </div>
-                                    );
-                                  })()}
                                   <Button
                                     type="button"
                                     variant="ghost"
