@@ -3040,7 +3040,7 @@ export default function AdminAddClient() {
                 <CardContent className="pt-6">
                   <div className="grid grid-cols-1 md:grid-cols-10 gap-4">
                 <div className="space-y-2 md:col-span-1">
-                  <Label htmlFor="currentLoan-currentRate">Interest</Label>
+                  <Label htmlFor="currentLoan-currentRate">Interest Rate</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <Input
                       id="currentLoan-currentRate"
