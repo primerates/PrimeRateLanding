@@ -11643,7 +11643,7 @@ export default function AdminAddClient() {
                                             data-testid={`indicator-secured-loan-1-${propertyId}`}
                                           />
                                           <div 
-                                            className={`w-3 h-3 rounded-full border-2 cursor-pointer ${
+                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer ${
                                               isSecondLoanAttached
                                                 ? 'bg-purple-500 border-purple-500 hover:bg-purple-600'
                                                 : 'bg-gray-200 border-gray-300'
@@ -11661,7 +11661,7 @@ export default function AdminAddClient() {
                                             data-testid={`indicator-secured-loan-2-${propertyId}`}
                                           />
                                           <div 
-                                            className={`w-3 h-3 rounded-full border-2 cursor-pointer ${
+                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer ${
                                               isThirdLoanAttached
                                                 ? 'bg-orange-500 border-orange-500 hover:bg-orange-600'
                                                 : 'bg-gray-200 border-gray-300'
