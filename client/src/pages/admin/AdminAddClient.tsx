@@ -14420,11 +14420,23 @@ export default function AdminAddClient() {
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="current-third-loan-tab"
-                          disabled
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
+                          checked={(currentThirdLoanCards || []).length > 0}
+                          onCheckedChange={(checked) => {
+                            if (typeof checked === 'boolean') {
+                              handleCurrentThirdLoanTypeChange(checked);
+                            }
+                          }}
+                          className={`transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black ${
+                            (currentThirdLoanCards || []).length > 0 ? 'pointer-events-none opacity-75' : ''
+                          }`}
                           data-testid="checkbox-current-third-loan-tab"
                         />
-                        <Label htmlFor="current-third-loan-tab" className="font-medium text-black">
+                        <Label 
+                          htmlFor="current-third-loan-tab" 
+                          className={`font-medium text-black ${
+                            (currentThirdLoanCards || []).length > 0 ? 'pointer-events-none opacity-75' : 'cursor-pointer'
+                          }`}
+                        >
                           Current Third Loan
                         </Label>
                       </div>
