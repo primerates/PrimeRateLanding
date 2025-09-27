@@ -1318,6 +1318,9 @@ export default function AdminAddClient() {
   // Current Primary Loan escrow toggle state (3-state cycle)
   const [currentLoanEscrowType, setCurrentLoanEscrowType] = useState<'tax-insurance' | 'insurance-only' | 'property-tax-only'>('tax-insurance');
 
+  // Current Second Loan escrow toggle state (3-state cycle)
+  const [secondLoanEscrowType, setSecondLoanEscrowType] = useState<'tax-insurance' | 'insurance-only' | 'property-tax-only'>('tax-insurance');
+
   // Helper function to get Current Primary Loan escrow label and handle toggle cycling
   const getCurrentLoanEscrowLabel = () => {
     switch (currentLoanEscrowType) {
@@ -1328,8 +1331,29 @@ export default function AdminAddClient() {
     }
   };
 
+  // Helper function to get Current Second Loan escrow label and handle toggle cycling
+  const getSecondLoanEscrowLabel = () => {
+    switch (secondLoanEscrowType) {
+      case 'tax-insurance': return 'Tax & Insurance';
+      case 'insurance-only': return 'Insurance Only';
+      case 'property-tax-only': return 'Property Tax Only';
+      default: return 'Tax & Insurance';
+    }
+  };
+
   const cycleCurrentLoanEscrowType = () => {
     setCurrentLoanEscrowType(current => {
+      switch (current) {
+        case 'tax-insurance': return 'insurance-only';
+        case 'insurance-only': return 'property-tax-only';
+        case 'property-tax-only': return 'tax-insurance';
+        default: return 'tax-insurance';
+      }
+    });
+  };
+
+  const cycleSecondLoanEscrowType = () => {
+    setSecondLoanEscrowType(current => {
       switch (current) {
         case 'tax-insurance': return 'insurance-only';
         case 'insurance-only': return 'property-tax-only';
@@ -3561,11 +3585,11 @@ export default function AdminAddClient() {
                 <div className="space-y-2 md:col-span-2">
                   <div className="flex items-center justify-between mb-2">
                     <Label htmlFor="secondLoan-monthlyEscrow" className="text-sm">
-                      Escrow Payment
+                      Tax & Insurance
                     </Label>
                     <Switch
-                      checked={secondLoanEscrowType === 'tax-insurance'} // On (blue) when Tax & Insurance is selected
-                      onCheckedChange={() => {}} // Placeholder for escrow type cycling
+                      checked={true} // Default to on
+                      onCheckedChange={() => {}} // Placeholder
                       data-testid="toggle-secondLoan-escrow-type"
                       className="scale-[0.8]"
                     />
