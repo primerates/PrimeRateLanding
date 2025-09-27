@@ -3428,65 +3428,7 @@ export default function AdminAddClient() {
                 </div>
               </div>
               
-              {/* Row 2: Current Balance, Current Rate, Monthly Payment, Pre-Payment Penalty, Attached to Property */}
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="secondLoan-currentBalance">Loan Balance</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="secondLoan-currentBalance"
-                      {...targetForm.register('secondLoan.currentBalance')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-secondLoan-currentBalance"
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="secondLoan-currentRate">Interest Rate</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <Input
-                      id="secondLoan-currentRate"
-                      {...targetForm.register('secondLoan.currentRate')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-secondLoan-currentRate"
-                    />
-                    <span className="text-muted-foreground text-sm">%</span>
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="secondLoan-monthlyPayment">Monthly Payment</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="secondLoan-monthlyPayment"
-                      {...targetForm.register('secondLoan.monthlyPayment')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-secondLoan-monthlyPayment"
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="secondLoan-prepaymentPenalty">Pre-Payment Penalty</Label>
-                  <Select value={targetForm.watch('secondLoan.prepaymentPenalty') || ''} onValueChange={(value: 'Yes - see notes' | 'No') => targetForm.setValue('secondLoan.prepaymentPenalty', value)}>
-                    <SelectTrigger data-testid="select-secondLoan-prepaymentPenalty">
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="No">No</SelectItem>
-                      <SelectItem value="Yes - see notes">Yes - see notes</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              
-              {/* Row 3: Principal & Interest Payment, Escrow Payment, Total Monthly Payment, Pre-Payment Penalty, Attached to Property */}
+              {/* Row 2: Principal & Interest Payment, Escrow Payment, Total Monthly Payment, Pre-Payment Penalty, Attached to Property */}
               <Card className="bg-muted">
                 <CardContent className="pt-6">
                   <div className="grid grid-cols-1 md:grid-cols-10 gap-4">
