@@ -958,6 +958,9 @@ export default function AdminAddClient() {
   // Current Second Loan card collapsible state (per-card state management)
   const [secondLoanCardStates, setSecondLoanCardStates] = useState<Record<string, boolean>>({});
   
+  // Current Third Loan card collapsible state (per-card state management)
+  const [thirdLoanCardStates, setThirdLoanCardStates] = useState<Record<string, boolean>>({});
+  
   // Borrower Employer cards state management
   const [borrowerEmployerCards, setBorrowerEmployerCards] = useState<string[]>([]);
   
@@ -1010,6 +1013,14 @@ export default function AdminAddClient() {
   
   // Current Second Loan card data state
   const [currentSecondLoanData, setCurrentSecondLoanData] = useState<Record<string, {
+    isDefaultCard: boolean | null; // null = not selected, true = default card created
+  }>>({});
+
+  // Current Third Loan cards state management (similar to property cards and other loan cards)
+  const [currentThirdLoanCards, setCurrentThirdLoanCards] = useState<string[]>([]);
+  
+  // Current Third Loan card data state
+  const [currentThirdLoanData, setCurrentThirdLoanData] = useState<Record<string, {
     isDefaultCard: boolean | null; // null = not selected, true = default card created
   }>>({});
   
@@ -1065,6 +1076,12 @@ export default function AdminAddClient() {
 
   // Delete confirmation dialog state for Current Second Loan cards
   const [deleteCurrentSecondLoanDialog, setDeleteCurrentSecondLoanDialog] = useState<{
+    isOpen: boolean;
+    cardId: string;
+  }>({ isOpen: false, cardId: '' });
+
+  // Delete confirmation dialog state for Current Third Loan cards
+  const [deleteCurrentThirdLoanDialog, setDeleteCurrentThirdLoanDialog] = useState<{
     isOpen: boolean;
     cardId: string;
   }>({ isOpen: false, cardId: '' });
@@ -5153,6 +5170,78 @@ export default function AdminAddClient() {
     
     // Close the dialog
     setDeleteCurrentSecondLoanDialog({ isOpen: false, cardId: '' });
+  };
+
+  // Helper function to handle Current Third Loan type changes with card management (similar to Current Primary and Second Loan)
+  const handleCurrentThirdLoanTypeChange = (checked: boolean) => {
+    if (!checked) {
+      // Special handling for Current Third Loan - don't allow unchecking if cards already exist
+      const hasCards = (currentThirdLoanCards || []).length > 0;
+      
+      if (hasCards) {
+        // Cards already exist, prevent unchecking - all removal must be done through card buttons
+        return;
+      }
+    } else {
+      // When checking, auto-create default loan card
+      const hasCards = (currentThirdLoanCards || []).length > 0;
+      
+      // Only create default loan card if none exist yet
+      if (!hasCards) {
+        // Generate a unique ID for the default loan card
+        const newLoanId = `current-third-loan-${Date.now()}`;
+        
+        // Add to cards array
+        setCurrentThirdLoanCards(prev => [...(prev || []), newLoanId]);
+        
+        // Initialize data state for new card  
+        setCurrentThirdLoanData(prev => ({ 
+          ...prev, 
+          [newLoanId]: { isDefaultCard: true } 
+        }));
+        
+        // Initialize per-card collapsible state (auto-expand like Property cards)
+        setThirdLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
+        
+        // Auto-expand the loan card
+        setShowThirdLoan(true);
+        
+        // Trigger animation for newly created loan card
+        setTimeout(() => {
+          setShowSubjectPropertyAnimation(prev => ({ ...prev, [newLoanId]: true }));
+          setTimeout(() => {
+            setShowSubjectPropertyAnimation(prev => ({ ...prev, [newLoanId]: false }));
+          }, 800);
+        }, 200);
+      }
+    }
+  };
+
+  // Handle removing current third loan cards (new system)
+  const removeCurrentThirdLoanCard = (cardId: string) => {
+    // Remove the specific card from cards array
+    setCurrentThirdLoanCards(prev => prev.filter(id => id !== cardId));
+    
+    // Remove data state for this card
+    setCurrentThirdLoanData(prev => {
+      const { [cardId]: _, ...rest } = prev;
+      return rest;
+    });
+    
+    // Remove per-card collapsible state
+    setThirdLoanCardStates(prev => {
+      const { [cardId]: _, ...rest } = prev;
+      return rest;
+    });
+    
+    // If no cards remain, hide the third loan section
+    const remainingCards = currentThirdLoanCards.filter(id => id !== cardId);
+    if (remainingCards.length === 0) {
+      setShowThirdLoan(false);
+    }
+    
+    // Close the dialog
+    setDeleteCurrentThirdLoanDialog({ isOpen: false, cardId: '' });
   };
 
   // Property type management functions
