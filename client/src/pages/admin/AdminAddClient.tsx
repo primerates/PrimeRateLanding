@@ -1795,9 +1795,7 @@ export default function AdminAddClient() {
   };
 
   // Auto-Sum Payment Fields Component - isolated calculation without parent re-renders
-  const AutoSumPaymentFields = React.memo(() => {
-    const { control } = useFormContext();
-    
+  const AutoSumPaymentFields = React.memo<{ control: any }>(({ control }) => {
     // Watch specific fields for auto-sum calculation - isolated from parent component
     const principalPayment = useWatch({ control, name: 'currentLoan.principalAndInterestPayment' }) || '';
     const escrowPayment = useWatch({ control, name: 'currentLoan.escrowPayment' }) || '';
@@ -3079,7 +3077,7 @@ export default function AdminAddClient() {
                   </div>
                 </div>
                 
-                <AutoSumPaymentFields />
+                <AutoSumPaymentFields control={form.control} />
                 
                 <div className="space-y-2 md:col-span-3">
                   <Label htmlFor={`${idPrefix}currentLoan-attachedToProperty`}>Attached to Property</Label>
