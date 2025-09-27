@@ -2952,7 +2952,7 @@ export default function AdminAddClient() {
             </div>
           </CardHeader>
           <CollapsibleContent>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-4">
               {/* Row 1: Current Lender, Loan Number, Loan Purpose, Loan Start Date, Remaining Term On Credit Report */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
