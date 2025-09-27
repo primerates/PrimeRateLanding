@@ -1819,9 +1819,12 @@ export default function AdminAddClient() {
         <Label className="text-sm font-medium text-muted-foreground">Total Monthly Payment</Label>
         <div className="flex items-center border border-input bg-background px-3 rounded-md">
           <span className="text-muted-foreground text-sm">$</span>
-          <div className="border-0 bg-transparent px-2" data-testid="text-total-current-loan-payment">
-            {totalPaymentFormatted.replace('$', '')}
-          </div>
+          <Input
+            value={totalPaymentFormatted.replace('$', '')}
+            readOnly
+            className="border-0 bg-transparent px-2 focus-visible:ring-0"
+            data-testid="text-total-current-loan-payment"
+          />
         </div>
       </div>
     );
