@@ -955,6 +955,9 @@ export default function AdminAddClient() {
   // Current Primary Loan card collapsible state (per-card state management)
   const [currentLoanCardStates, setCurrentLoanCardStates] = useState<Record<string, boolean>>({});
   
+  // Current Second Loan card collapsible state (per-card state management)
+  const [secondLoanCardStates, setSecondLoanCardStates] = useState<Record<string, boolean>>({});
+  
   // Borrower Employer cards state management
   const [borrowerEmployerCards, setBorrowerEmployerCards] = useState<string[]>([]);
   
@@ -999,6 +1002,14 @@ export default function AdminAddClient() {
   
   // Current Primary Loan card data state
   const [currentPrimaryLoanData, setCurrentPrimaryLoanData] = useState<Record<string, {
+    isDefaultCard: boolean | null; // null = not selected, true = default card created
+  }>>({});
+
+  // Current Second Loan cards state management (similar to property cards and primary loan cards)
+  const [currentSecondLoanCards, setCurrentSecondLoanCards] = useState<string[]>([]);
+  
+  // Current Second Loan card data state
+  const [currentSecondLoanData, setCurrentSecondLoanData] = useState<Record<string, {
     isDefaultCard: boolean | null; // null = not selected, true = default card created
   }>>({});
   
@@ -1048,6 +1059,12 @@ export default function AdminAddClient() {
 
   // Delete confirmation dialog state for Current Primary Loan cards
   const [deleteCurrentPrimaryLoanDialog, setDeleteCurrentPrimaryLoanDialog] = useState<{
+    isOpen: boolean;
+    cardId: string;
+  }>({ isOpen: false, cardId: '' });
+
+  // Delete confirmation dialog state for Current Second Loan cards
+  const [deleteCurrentSecondLoanDialog, setDeleteCurrentSecondLoanDialog] = useState<{
     isOpen: boolean;
     cardId: string;
   }>({ isOpen: false, cardId: '' });
@@ -5021,6 +5038,78 @@ export default function AdminAddClient() {
     
     // Close the dialog
     setDeleteCurrentPrimaryLoanDialog({ isOpen: false, cardId: '' });
+  };
+
+  // Helper function to handle Current Second Loan type changes with card management (similar to Current Primary Loan)
+  const handleCurrentSecondLoanTypeChange = (checked: boolean) => {
+    if (!checked) {
+      // Special handling for Current Second Loan - don't allow unchecking if cards already exist
+      const hasCards = (currentSecondLoanCards || []).length > 0;
+      
+      if (hasCards) {
+        // Cards already exist, prevent unchecking - all removal must be done through card buttons
+        return;
+      }
+    } else {
+      // When checking, auto-create default loan card
+      const hasCards = (currentSecondLoanCards || []).length > 0;
+      
+      // Only create default loan card if none exist yet
+      if (!hasCards) {
+        // Generate a unique ID for the default loan card
+        const newLoanId = `current-second-loan-${Date.now()}`;
+        
+        // Add to cards array
+        setCurrentSecondLoanCards(prev => [...(prev || []), newLoanId]);
+        
+        // Initialize data state for new card  
+        setCurrentSecondLoanData(prev => ({ 
+          ...prev, 
+          [newLoanId]: { isDefaultCard: true } 
+        }));
+        
+        // Initialize per-card collapsible state (auto-expand like Property cards)
+        setSecondLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
+        
+        // Auto-expand the loan card
+        setShowSecondLoan(true);
+        
+        // Trigger animation for newly created loan card
+        setTimeout(() => {
+          setShowSubjectPropertyAnimation(prev => ({ ...prev, [newLoanId]: true }));
+          setTimeout(() => {
+            setShowSubjectPropertyAnimation(prev => ({ ...prev, [newLoanId]: false }));
+          }, 800);
+        }, 200);
+      }
+    }
+  };
+
+  // Handle removing current second loan cards (new system)
+  const removeCurrentSecondLoanCard = (cardId: string) => {
+    // Remove the specific card from cards array
+    setCurrentSecondLoanCards(prev => prev.filter(id => id !== cardId));
+    
+    // Remove data state for this card
+    setCurrentSecondLoanData(prev => {
+      const { [cardId]: _, ...rest } = prev;
+      return rest;
+    });
+    
+    // Remove per-card collapsible state
+    setSecondLoanCardStates(prev => {
+      const { [cardId]: _, ...rest } = prev;
+      return rest;
+    });
+    
+    // If no cards remain, hide the second loan section
+    const remainingCards = currentSecondLoanCards.filter(id => id !== cardId);
+    if (remainingCards.length === 0) {
+      setShowSecondLoan(false);
+    }
+    
+    // Close the dialog
+    setDeleteCurrentSecondLoanDialog({ isOpen: false, cardId: '' });
   };
 
   // Property type management functions
