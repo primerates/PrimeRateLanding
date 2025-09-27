@@ -3323,7 +3323,7 @@ export default function AdminAddClient() {
             </div>
           </CardHeader>
           <CollapsibleContent>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 pt-[1.7rem]">
               {/* Row 1: Lender Name, Loan Number, Loan Category, Loan Term, Loan Duration */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
@@ -3626,7 +3626,7 @@ export default function AdminAddClient() {
             </div>
           </CardHeader>
           <CollapsibleContent>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 pt-[1.7rem]">
               {/* Row 1: Lender Name, Loan Number, Loan Category, Loan Term, Loan Duration */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
@@ -13945,7 +13945,7 @@ export default function AdminAddClient() {
               <Card className="transition-all duration-700">
                 <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
                   <div className="space-y-2">
-                    <Label className="text-lg font-semibold">Transaction</Label>
+                    <Label className="text-lg font-semibold">Loan Purpose</Label>
                     <div className="mt-24">
                       <span className="text-muted-foreground" style={{ fontSize: '28px', color: '#1a3373', fontWeight: 'bold' }}>
                         {form.watch('newLoan.loanPurpose') && form.watch('newLoan.loanPurpose') !== 'select' 
@@ -14200,7 +14200,7 @@ export default function AdminAddClient() {
                     </div>
                   </CardHeader>
                   <CollapsibleContent>
-                    <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-[1.7rem]">
                       <div className="space-y-2">
                         <Label htmlFor="newLoan-loanAmount">Loan Amount</Label>
                         <Input
