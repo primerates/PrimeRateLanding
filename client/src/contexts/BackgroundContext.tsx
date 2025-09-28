@@ -4,6 +4,7 @@ import infinityGridBackground from '@assets/Infinity_1759031666053.png';
 import pyramidsBackground from '@assets/stock_images/egyptian_pyramids_de_debf6a77.jpg';
 import moonBackground from '@assets/stock_images/moon_landing_apollo__46fa586b.jpg';
 import rocketBackground from '@assets/stock_images/spacex_rocket_launch_e241bee8.jpg';
+import glowingCubeBackground from '@assets/glowing cube_1759038202702.jpg';
 
 export type BackgroundType = 'animated' | 'static';
 
@@ -58,6 +59,14 @@ export const backgroundPresets: BackgroundPreset[] = [
     type: 'static',
     assetPath: rocketBackground,
     description: 'Dramatic SpaceX rocket launch with fire and smoke',
+    isDark: true
+  },
+  {
+    id: 'glowing-cube-static',
+    label: 'Glowing Cube',
+    type: 'static',
+    assetPath: glowingCubeBackground,
+    description: 'Vibrant glowing cubes floating in dark space',
     isDark: true
   }
 ];
