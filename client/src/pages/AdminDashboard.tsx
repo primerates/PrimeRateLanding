@@ -27,6 +27,11 @@ export default function AdminDashboard() {
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
   const { getBackgroundStyle, isAnimated, isPulsing, isDarkBackground, selectedBackground, setBackground, getCurrentPreset } = useBackground();
+  
+  // Check if current background is a glowing cube animated type
+  const isGlowingCubeAnimated = () => {
+    return selectedBackground === 'glowing-cube-animated';
+  };
   const [isLoaded, setIsLoaded] = useState(false);
   const [backgroundFocusProgress, setBackgroundFocusProgress] = useState(0);
   const [showUsername, setShowUsername] = useState(false);
@@ -147,7 +152,13 @@ export default function AdminDashboard() {
     >
       {/* Faded overlay to make background subtle - only for animated backgrounds */}
       {isAnimated() && (
-        <div className="absolute inset-0 bg-background/85" />
+        <div 
+          className="absolute inset-0 bg-background/85 transition-opacity duration-75 ease-out" 
+          style={{
+            // For glowing cube animated, fade this overlay away completely
+            opacity: isGlowingCubeAnimated() ? Math.max(0, 1 - backgroundFocusProgress) : 1
+          }}
+        />
       )}
       
       {/* Progressive focus overlay - only for animated backgrounds */}
