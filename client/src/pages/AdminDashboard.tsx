@@ -26,7 +26,7 @@ import { useBackground, backgroundPresets } from '@/contexts/BackgroundContext';
 export default function AdminDashboard() {
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
-  const { getBackgroundStyle, isAnimated, selectedBackground, setBackground, getCurrentPreset } = useBackground();
+  const { getBackgroundStyle, isAnimated, isDarkBackground, selectedBackground, setBackground, getCurrentPreset } = useBackground();
   const [isLoaded, setIsLoaded] = useState(false);
   const [backgroundFocusProgress, setBackgroundFocusProgress] = useState(0);
   const [showUsername, setShowUsername] = useState(false);
@@ -297,7 +297,9 @@ export default function AdminDashboard() {
         }}
       >
         <div className="mb-16">
-          <h2 className="text-2xl font-bold mb-2" data-testid="text-dashboard-welcome">
+          <h2 className={`text-2xl font-bold mb-2 ${
+            isDarkBackground() ? 'text-white' : 'text-foreground'
+          }`} data-testid="text-dashboard-welcome">
             Dashboard
           </h2>
         </div>

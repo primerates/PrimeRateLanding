@@ -14,6 +14,7 @@ export interface BackgroundPreset {
   assetPath: string;
   description: string;
   credits?: string;
+  isDark?: boolean;
 }
 
 // Background presets configuration
@@ -24,35 +25,40 @@ export const backgroundPresets: BackgroundPreset[] = [
     type: 'animated',
     assetPath: cubesBackground,
     description: 'Cool animated focus effect with geometric cubes background',
-    credits: 'Default'
+    credits: 'Default',
+    isDark: false
   },
   {
     id: 'infinity-grid',
     label: 'Infinity Grid',
     type: 'static',
     assetPath: infinityGridBackground,
-    description: 'Futuristic infinity grid with deep blue tones'
+    description: 'Futuristic infinity grid with deep blue tones',
+    isDark: true
   },
   {
     id: 'pyramids-static',
     label: 'Egyptian Pyramids',
     type: 'static',
     assetPath: pyramidsBackground,
-    description: 'Majestic Egyptian pyramids at sunset'
+    description: 'Majestic Egyptian pyramids at sunset',
+    isDark: false
   },
   {
     id: 'moon-static',
     label: 'Apollo Moon Landing',
     type: 'static',
     assetPath: moonBackground,
-    description: 'Historic Apollo mission moon landing scene'
+    description: 'Historic Apollo mission moon landing scene',
+    isDark: true
   },
   {
     id: 'rocket-static',
     label: 'SpaceX Rocket Launch',
     type: 'static',
     assetPath: rocketBackground,
-    description: 'Dramatic SpaceX rocket launch with fire and smoke'
+    description: 'Dramatic SpaceX rocket launch with fire and smoke',
+    isDark: true
   }
 ];
 
@@ -61,6 +67,7 @@ interface BackgroundContextType {
   setBackground: (backgroundId: string) => void;
   getCurrentPreset: () => BackgroundPreset | undefined;
   isAnimated: () => boolean;
+  isDarkBackground: () => boolean;
   getBackgroundStyle: () => React.CSSProperties;
 }
 
@@ -89,6 +96,11 @@ export function BackgroundProvider({ children }: BackgroundProviderProps) {
     return preset?.type === 'animated';
   };
 
+  const isDarkBackground = () => {
+    const preset = getCurrentPreset();
+    return preset?.isDark ?? false;
+  };
+
   const getBackgroundStyle = (): React.CSSProperties => {
     const preset = getCurrentPreset();
     if (!preset) return {};
@@ -106,6 +118,7 @@ export function BackgroundProvider({ children }: BackgroundProviderProps) {
     setBackground,
     getCurrentPreset,
     isAnimated,
+    isDarkBackground,
     getBackgroundStyle
   };
 
