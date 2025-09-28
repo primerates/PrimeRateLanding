@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import cubesBackground from '@assets/stock_images/abstract_geometric_c_b9135c5b.jpg';
+import infinityGridBackground from '@assets/Infinity_1759031666053.png';
 import pyramidsBackground from '@assets/stock_images/egyptian_pyramids_de_debf6a77.jpg';
 import moonBackground from '@assets/stock_images/moon_landing_apollo__46fa586b.jpg';
 import rocketBackground from '@assets/stock_images/spacex_rocket_launch_e241bee8.jpg';
@@ -26,11 +27,11 @@ export const backgroundPresets: BackgroundPreset[] = [
     credits: 'Default'
   },
   {
-    id: 'cubes-static',
-    label: 'Geometric Cubes (Static)',
+    id: 'infinity-grid',
+    label: 'Infinity Grid',
     type: 'static',
-    assetPath: cubesBackground,
-    description: 'Same geometric cubes background without animation'
+    assetPath: infinityGridBackground,
+    description: 'Futuristic infinity grid with deep blue tones'
   },
   {
     id: 'pyramids-static',
