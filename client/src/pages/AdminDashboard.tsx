@@ -3,6 +3,7 @@ import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { 
   LayoutDashboard, 
   FileText, 
@@ -15,19 +16,21 @@ import {
   User,
   BarChart3,
   UserCheck,
-  Handshake
+  Handshake,
+  Monitor
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { useBackground } from '@/contexts/BackgroundContext';
+import { useBackground, backgroundPresets } from '@/contexts/BackgroundContext';
 
 export default function AdminDashboard() {
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
-  const { getBackgroundStyle, isAnimated } = useBackground();
+  const { getBackgroundStyle, isAnimated, selectedBackground, setBackground, getCurrentPreset } = useBackground();
   const [isLoaded, setIsLoaded] = useState(false);
   const [backgroundFocusProgress, setBackgroundFocusProgress] = useState(0);
   const [showUsername, setShowUsername] = useState(false);
+  const [isBackgroundSelectorOpen, setIsBackgroundSelectorOpen] = useState(false);
   const animationRef = useRef<number | null>(null);
   const timerRefs = useRef<{ start?: NodeJS.Timeout }>({});
   const isMountedRef = useRef(true);
@@ -193,6 +196,72 @@ export default function AdminDashboard() {
                 <LogOut className="h-4 w-4 mr-2" />
                 Logout
               </Button>
+              
+              {/* Background Selector */}
+              <Popover open={isBackgroundSelectorOpen} onOpenChange={setIsBackgroundSelectorOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-primary-foreground"
+                    data-testid="button-background-selector"
+                    aria-label="Change Dashboard Background"
+                  >
+                    <Monitor className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80 p-4" align="end">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium">Dashboard Background</h4>
+                      <p className="text-xs text-muted-foreground">
+                        Choose your preferred background for the dashboard
+                      </p>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 gap-3">
+                      {backgroundPresets.map((preset) => (
+                        <Button
+                          key={preset.id}
+                          variant="ghost"
+                          size="lg"
+                          className={`justify-start transition-all duration-200 ${
+                            selectedBackground === preset.id 
+                              ? 'ring-2 ring-primary ring-offset-2 bg-accent' 
+                              : ''
+                          }`}
+                          onClick={() => {
+                            setBackground(preset.id);
+                            toast({
+                              title: "Background Changed",
+                              description: `Switched to ${preset.label}`,
+                            });
+                          }}
+                          data-testid={`button-background-${preset.id}`}
+                          aria-label={`Select ${preset.label} background`}
+                        >
+                          <div className="flex items-center space-x-3 w-full">
+                            <div 
+                              className="w-12 h-8 rounded-md border bg-cover bg-center flex-shrink-0"
+                              style={{ backgroundImage: `url(${preset.assetPath})` }}
+                            />
+                            <div className="flex-1 min-w-0 text-left">
+                              <p className="text-sm font-medium truncate">{preset.label}</p>
+                              <p className="text-xs text-muted-foreground truncate">{preset.description}</p>
+                              {preset.type === 'animated' && (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 mt-1">
+                                  Animated
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+              
               <div 
                 className="relative flex items-center cursor-pointer"
                 onMouseEnter={() => setShowUsername(true)}
