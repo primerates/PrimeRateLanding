@@ -1362,6 +1362,7 @@ export default function AdminAddClient() {
   const [brandNewLoanPaymentType, setBrandNewLoanPaymentType] = useState<'principal-interest' | 'interest-only'>('principal-interest');
   const [brandNewLoanCashOutType, setBrandNewLoanCashOutType] = useState<'cash-out' | 'benefits-summary'>('cash-out');
   const [brandNewLoanDebtPayOffType, setBrandNewLoanDebtPayOffType] = useState<'total-debt-payoff' | 'total-debt-payments'>('total-debt-payoff');
+  const [brandNewLoanTermType, setBrandNewLoanTermType] = useState<'dropdown' | 'manual'>('dropdown');
 
   // Helper function to get Current Primary Loan escrow label and handle toggle cycling
   const getCurrentLoanEscrowLabel = () => {
@@ -1476,6 +1477,20 @@ export default function AdminAddClient() {
         case 'total-debt-payoff': return 'total-debt-payments';
         case 'total-debt-payments': return 'total-debt-payoff';
         default: return 'total-debt-payoff';
+      }
+    });
+  };
+
+  const getBrandNewLoanTermLabel = () => {
+    return 'Loan Term';
+  };
+
+  const cycleBrandNewLoanTermType = () => {
+    setBrandNewLoanTermType(current => {
+      switch (current) {
+        case 'dropdown': return 'manual';
+        case 'manual': return 'dropdown';
+        default: return 'dropdown';
       }
     });
   };
@@ -3609,18 +3624,39 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor={`${idPrefix}brandNewLoan-loanProgram`}>Loan Term</Label>
-                  <Select {...loanProgramBinding}>
-                    <SelectTrigger data-testid={loanProgramBinding['data-testid']}>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="fixed-rate">Fixed Rate</SelectItem>
-                      <SelectItem value="adjustable">Adjustable</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="flex items-center justify-between mb-2">
+                    <Label htmlFor={`${idPrefix}brandNewLoan-loanProgram`} className="text-sm">
+                      {getBrandNewLoanTermLabel()}
+                    </Label>
+                    <Switch
+                      checked={brandNewLoanTermType === 'dropdown'}
+                      onCheckedChange={cycleBrandNewLoanTermType}
+                      data-testid="toggle-brandNewLoan-term-type"
+                      className="scale-[0.8]"
+                    />
+                  </div>
+                  {brandNewLoanTermType === 'dropdown' ? (
+                    <Select {...loanProgramBinding}>
+                      <SelectTrigger data-testid={loanProgramBinding['data-testid']}>
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="select">Select</SelectItem>
+                        <SelectItem value="30-year-fixed">30 year fixed</SelectItem>
+                        <SelectItem value="25-year-fixed">25 year fixed</SelectItem>
+                        <SelectItem value="20-year-fixed">20 year fixed</SelectItem>
+                        <SelectItem value="15-year-fixed">15 year fixed</SelectItem>
+                        <SelectItem value="10-year-fixed">10 year fixed</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      id={`${idPrefix}brandNewLoan-loanProgram`}
+                      {...loanProgramBinding.field}
+                      placeholder="Enter loan term"
+                      data-testid={loanProgramBinding['data-testid']}
+                    />
+                  )}
                 </div>
                 
                 <div className="space-y-2">
