@@ -5261,11 +5261,11 @@ export default function AdminAddClient() {
           form.setValue('secondLoan.attachedToProperty', subjectProperty.id);
         }
         
-        // Trigger animation for newly created loan card
+        // Trigger animation for newly created loan card (copied from Primary Loan)
         setTimeout(() => {
-          setShowSubjectPropertyAnimation(prev => ({ ...prev, [newLoanId]: true }));
+          setShowSecondLoanCardAnimation(prev => ({ ...prev, 'second-card-0-': true }));
           setTimeout(() => {
-            setShowSubjectPropertyAnimation(prev => ({ ...prev, [newLoanId]: false }));
+            setShowSecondLoanCardAnimation(prev => ({ ...prev, 'second-card-0-': false }));
           }, 800);
         }, 200);
       }
@@ -5340,11 +5340,11 @@ export default function AdminAddClient() {
           form.setValue('thirdLoan.attachedToProperty', subjectProperty.id);
         }
         
-        // Trigger animation for newly created loan card
+        // Trigger animation for newly created loan card (copied from Primary Loan)
         setTimeout(() => {
-          setShowSubjectPropertyAnimation(prev => ({ ...prev, [newLoanId]: true }));
+          setShowThirdLoanCardAnimation(prev => ({ ...prev, 'third-card-0-': true }));
           setTimeout(() => {
-            setShowSubjectPropertyAnimation(prev => ({ ...prev, [newLoanId]: false }));
+            setShowThirdLoanCardAnimation(prev => ({ ...prev, 'third-card-0-': false }));
           }, 800);
         }, 200);
       }
