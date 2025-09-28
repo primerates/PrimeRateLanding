@@ -3996,8 +3996,20 @@ export default function AdminAddClient() {
                       <SelectItem value="select">Select</SelectItem>
                       {(() => {
                         const properties = targetForm.watch('property.properties') || [];
+                        const loanPurpose = targetForm.watch('brandNewLoan.loanPurpose');
+                        
                         return properties
-                          .filter((property: any) => property.address?.street || property.use === 'primary') // Show properties with street addresses OR primary residence properties
+                          .filter((property: any) => {
+                            // If loan purpose is "purchase", only show Home Purchase properties
+                            if (loanPurpose === 'purchase') {
+                              return property.use === 'home-purchase' && (property.address?.street || property.use === 'home-purchase');
+                            }
+                            // For any other loan purpose, show Primary Residence, Second Home, Investment Property (but NOT Home Purchase)
+                            else {
+                              return (property.use === 'primary' || property.use === 'second-home' || property.use === 'investment') && 
+                                     (property.address?.street || property.use === 'primary');
+                            }
+                          })
                           .map((property: any, index: number) => {
                             const address = property.address;
                             const streetAddress = address?.street;
