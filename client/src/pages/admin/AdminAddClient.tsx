@@ -11819,7 +11819,9 @@ export default function AdminAddClient() {
                                             title={isCurrentLoanAttached ? "View Current Loan Details" : ""}
                                             data-testid={`indicator-secured-loan-1-${propertyId}`}
                                           >
-                                            <span className="text-xs font-semibold text-white">P</span>
+                                            {isCurrentLoanAttached && (
+                                              <span className="text-xs font-semibold text-white">P</span>
+                                            )}
                                           </div>
                                           <div 
                                             className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center ${
@@ -11839,7 +11841,9 @@ export default function AdminAddClient() {
                                             title={isSecondLoanAttached ? "View Current Loan 2 Details" : ""}
                                             data-testid={`indicator-secured-loan-2-${propertyId}`}
                                           >
-                                            <span className="text-xs font-semibold text-white">S</span>
+                                            {isSecondLoanAttached && (
+                                              <span className="text-xs font-semibold text-white">S</span>
+                                            )}
                                           </div>
                                           <div 
                                             className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center ${
@@ -11859,7 +11863,9 @@ export default function AdminAddClient() {
                                             title={isThirdLoanAttached ? "View Current Third Loan Details" : ""}
                                             data-testid={`indicator-secured-loan-3-${propertyId}`}
                                           >
-                                            <span className="text-xs font-semibold text-white">T</span>
+                                            {isThirdLoanAttached && (
+                                              <span className="text-xs font-semibold text-white">T</span>
+                                            )}
                                           </div>
                                         </div>
                                       );
