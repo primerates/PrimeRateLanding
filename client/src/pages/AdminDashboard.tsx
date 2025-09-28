@@ -245,10 +245,6 @@ export default function AdminDashboard() {
                           }`}
                           onClick={() => {
                             setBackground(preset.id);
-                            toast({
-                              title: "Background Changed",
-                              description: `Switched to ${preset.label}`,
-                            });
                           }}
                           data-testid={`button-background-${preset.id}`}
                           aria-label={`Select ${preset.label} background`}

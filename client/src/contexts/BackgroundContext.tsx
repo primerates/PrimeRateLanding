@@ -50,14 +50,6 @@ export const backgroundPresets: BackgroundPreset[] = [
     description: 'Glowing cubes with progressive focus animation',
     isDark: true
   },
-  {
-    id: 'glowing-cube-pulsing',
-    label: 'Glowing Cube (Pulsing)',
-    type: 'pulsing',
-    assetPath: glowingCubeBackground,
-    description: 'Glowing cubes with gentle pulsing glow effect',
-    isDark: true
-  }
 ];
 
 interface BackgroundContextType {
