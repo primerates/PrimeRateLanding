@@ -12620,7 +12620,7 @@ export default function AdminAddClient() {
                                       return (
                                         <div className="flex items-center gap-1">
                                           <div 
-                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer ${
+                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center ${
                                               isCurrentLoanAttached
                                                 ? 'bg-blue-500 border-blue-500 hover:bg-blue-600'
                                                 : 'bg-gray-200 border-gray-300'
@@ -12636,9 +12636,13 @@ export default function AdminAddClient() {
                                             }}
                                             title={isCurrentLoanAttached ? "View Current Loan Details" : ""}
                                             data-testid={`indicator-second-home-secured-loan-1-${propertyId}`}
-                                          />
+                                          >
+                                            {isCurrentLoanAttached && (
+                                              <span className="text-xs font-semibold text-white">P</span>
+                                            )}
+                                          </div>
                                           <div 
-                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer ${
+                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center ${
                                               isSecondLoanAttached
                                                 ? 'bg-purple-500 border-purple-500 hover:bg-purple-600'
                                                 : 'bg-gray-200 border-gray-300'
@@ -12654,9 +12658,13 @@ export default function AdminAddClient() {
                                             }}
                                             title={isSecondLoanAttached ? "View Current Loan 2 Details" : ""}
                                             data-testid={`indicator-second-home-secured-loan-2-${propertyId}`}
-                                          />
+                                          >
+                                            {isSecondLoanAttached && (
+                                              <span className="text-xs font-semibold text-white">S</span>
+                                            )}
+                                          </div>
                                           <div 
-                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer ${
+                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center ${
                                               isThirdLoanAttached
                                                 ? 'bg-orange-500 border-orange-500 hover:bg-orange-600'
                                                 : 'bg-gray-200 border-gray-300'
@@ -12672,7 +12680,11 @@ export default function AdminAddClient() {
                                             }}
                                             title={isThirdLoanAttached ? "View Current Third Loan Details" : ""}
                                             data-testid={`indicator-second-home-secured-loan-3-${propertyId}`}
-                                          />
+                                          >
+                                            {isThirdLoanAttached && (
+                                              <span className="text-xs font-semibold text-white">T</span>
+                                            )}
+                                          </div>
                                         </div>
                                       );
                                     })()}
@@ -13424,7 +13436,7 @@ export default function AdminAddClient() {
                                       return (
                                         <div className="flex items-center gap-1">
                                           <div 
-                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer ${
+                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center ${
                                               isCurrentLoanAttached
                                                 ? 'bg-blue-500 border-blue-500 hover:bg-blue-600'
                                                 : 'bg-gray-200 border-gray-300'
@@ -13440,9 +13452,13 @@ export default function AdminAddClient() {
                                             }}
                                             title={isCurrentLoanAttached ? "View Current Loan Details" : ""}
                                             data-testid={`indicator-investment-property-secured-loan-1-${propertyId}`}
-                                          />
+                                          >
+                                            {isCurrentLoanAttached && (
+                                              <span className="text-xs font-semibold text-white">P</span>
+                                            )}
+                                          </div>
                                           <div 
-                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer ${
+                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center ${
                                               isSecondLoanAttached
                                                 ? 'bg-purple-500 border-purple-500 hover:bg-purple-600'
                                                 : 'bg-gray-200 border-gray-300'
@@ -13458,9 +13474,13 @@ export default function AdminAddClient() {
                                             }}
                                             title={isSecondLoanAttached ? "View Current Loan 2 Details" : ""}
                                             data-testid={`indicator-investment-property-secured-loan-2-${propertyId}`}
-                                          />
+                                          >
+                                            {isSecondLoanAttached && (
+                                              <span className="text-xs font-semibold text-white">S</span>
+                                            )}
+                                          </div>
                                           <div 
-                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer ${
+                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center ${
                                               isThirdLoanAttached
                                                 ? 'bg-orange-500 border-orange-500 hover:bg-orange-600'
                                                 : 'bg-gray-200 border-gray-300'
@@ -13476,7 +13496,11 @@ export default function AdminAddClient() {
                                             }}
                                             title={isThirdLoanAttached ? "View Current Third Loan Details" : ""}
                                             data-testid={`indicator-investment-property-secured-loan-3-${propertyId}`}
-                                          />
+                                          >
+                                            {isThirdLoanAttached && (
+                                              <span className="text-xs font-semibold text-white">T</span>
+                                            )}
+                                          </div>
                                         </div>
                                       );
                                     })()}
@@ -14195,7 +14219,7 @@ export default function AdminAddClient() {
                                       return (
                                         <div className="flex items-center gap-1">
                                           <div 
-                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer ${
+                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center ${
                                               isCurrentLoanAttached
                                                 ? 'bg-blue-500 border-blue-500 hover:bg-blue-600'
                                                 : 'bg-gray-200 border-gray-300'
@@ -14211,9 +14235,13 @@ export default function AdminAddClient() {
                                             }}
                                             title={isCurrentLoanAttached ? "View Current Loan Details" : ""}
                                             data-testid={`indicator-secured-loan-1-${property.id}`}
-                                          />
+                                          >
+                                            {isCurrentLoanAttached && (
+                                              <span className="text-xs font-semibold text-white">P</span>
+                                            )}
+                                          </div>
                                           <div 
-                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer ${
+                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center ${
                                               isSecondLoanAttached
                                                 ? 'bg-purple-500 border-purple-500 hover:bg-purple-600'
                                                 : 'bg-gray-200 border-gray-300'
@@ -14229,9 +14257,13 @@ export default function AdminAddClient() {
                                             }}
                                             title={isSecondLoanAttached ? "View Current Loan 2 Details" : ""}
                                             data-testid={`indicator-secured-loan-2-${property.id}`}
-                                          />
+                                          >
+                                            {isSecondLoanAttached && (
+                                              <span className="text-xs font-semibold text-white">S</span>
+                                            )}
+                                          </div>
                                           <div 
-                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer ${
+                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center ${
                                               isThirdLoanAttached
                                                 ? 'bg-orange-500 border-orange-500 hover:bg-orange-600'
                                                 : 'bg-gray-200 border-gray-300'
@@ -14247,7 +14279,11 @@ export default function AdminAddClient() {
                                             }}
                                             title={isThirdLoanAttached ? "View Current Third Loan Details" : ""}
                                             data-testid={`indicator-secured-loan-3-${property.id}`}
-                                          />
+                                          >
+                                            {isThirdLoanAttached && (
+                                              <span className="text-xs font-semibold text-white">T</span>
+                                            )}
+                                          </div>
                                         </div>
                                       );
                                     })()}
