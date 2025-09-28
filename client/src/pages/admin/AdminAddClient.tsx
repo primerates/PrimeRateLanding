@@ -3493,8 +3493,22 @@ export default function AdminAddClient() {
                 </div>
               </div>
               
-              {/* Row 2: Loan Category, Loan Term, Loan Duration, Remaining Term On Credit Report, Loan Balance */}
+              {/* Row 2: New Loan Amount, Loan Category, Loan Term, Cash Out Amount, Total Debt Pay Off */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="brandNewLoan-currentBalance">New Loan Amount</Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="brandNewLoan-currentBalance"
+                      {...targetForm.register('brandNewLoan.statementBalance.amount')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-brandNewLoan-currentBalance"
+                    />
+                  </div>
+                </div>
+                
                 <div className="space-y-2">
                   <Label htmlFor={`${idPrefix}brandNewLoan-loanCategory`}>Loan Category</Label>
                   <Select {...loanCategoryBinding}>
@@ -3529,43 +3543,29 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor={`${idPrefix}brandNewLoan-loanTerm`}>Loan Duration</Label>
-                  <Select {...loanTermBinding}>
-                    <SelectTrigger data-testid={loanTermBinding['data-testid']}>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="30-years">30 years</SelectItem>
-                      <SelectItem value="25-years">25 years</SelectItem>
-                      <SelectItem value="20-years">20 years</SelectItem>
-                      <SelectItem value="15-years">15 years</SelectItem>
-                      <SelectItem value="10-years">10 years</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor={remainingTermBinding.id}>Remaining Term On Credit Report</Label>
-                  <Input
-                    id={remainingTermBinding.id}
-                    {...remainingTermBinding.field}
-                    placeholder="Years/Months"
-                    data-testid={remainingTermBinding['data-testid']}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="brandNewLoan-currentBalance">Loan Balance</Label>
+                  <Label htmlFor={`${idPrefix}brandNewLoan-loanTerm`}>Cash Out Amount</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
-                      id="brandNewLoan-currentBalance"
-                      {...targetForm.register('brandNewLoan.statementBalance.amount')}
+                      id={`${idPrefix}brandNewLoan-loanTerm`}
+                      {...loanTermBinding.field}
                       placeholder="0.00"
                       className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-brandNewLoan-currentBalance"
+                      data-testid={loanTermBinding['data-testid']}
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={remainingTermBinding.id}>Total Debt Pay Off</Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id={remainingTermBinding.id}
+                      {...remainingTermBinding.field}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid={remainingTermBinding['data-testid']}
                     />
                   </div>
                 </div>
