@@ -3582,10 +3582,10 @@ export default function AdminAddClient() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="select">Select</SelectItem>
+                      <SelectItem value="cash-out">Cash Out</SelectItem>
+                      <SelectItem value="rate-reduction">Rate Reduction</SelectItem>
+                      <SelectItem value="term-reduction">Term Reduction</SelectItem>
                       <SelectItem value="purchase">Purchase</SelectItem>
-                      <SelectItem value="refinance-rate-term">Refinance Rate & Term</SelectItem>
-                      <SelectItem value="refinance-cash-out">Refinance Cash Out</SelectItem>
-                      <SelectItem value="construction">Construction</SelectItem>
                       <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
@@ -15579,46 +15579,6 @@ export default function AdminAddClient() {
                           placeholder="$0.00"
                           data-testid="input-newLoan-loanAmount"
                         />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="newLoan-loanProgram">Loan Program</Label>
-                        <Select 
-                          value={form.watch('newLoan.loanProgram') || ''}
-                          onValueChange={(value) => form.setValue('newLoan.loanProgram', value as any)}
-                        >
-                          <SelectTrigger data-testid="select-newLoan-loanProgram">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="select">Select</SelectItem>
-                            <SelectItem value="conventional">Conventional</SelectItem>
-                            <SelectItem value="conventional-jumbo">Conventional Jumbo</SelectItem>
-                            <SelectItem value="fha">FHA</SelectItem>
-                            <SelectItem value="va">VA</SelectItem>
-                            <SelectItem value="va-jumbo">VA Jumbo</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="newLoan-loanPurpose">Loan Purpose</Label>
-                        <Select 
-                          value={form.watch('newLoan.loanPurpose') || ''}
-                          onValueChange={(value) => form.setValue('newLoan.loanPurpose', value as any)}
-                        >
-                          <SelectTrigger data-testid="select-newLoan-loanPurpose">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="select">Select</SelectItem>
-                            <SelectItem value="purchase">Purchase</SelectItem>
-                            <SelectItem value="rate-term">Rate & Term</SelectItem>
-                            <SelectItem value="cash-out">Cash Out</SelectItem>
-                          </SelectContent>
-                        </Select>
                       </div>
                       
                     </CardContent>
