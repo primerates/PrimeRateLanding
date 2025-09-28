@@ -1,9 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import cubesBackground from '@assets/stock_images/abstract_geometric_c_b9135c5b.jpg';
 import infinityGridBackground from '@assets/Infinity_1759031666053.png';
-import pyramidsBackground from '@assets/stock_images/egyptian_pyramids_de_debf6a77.jpg';
-import moonBackground from '@assets/stock_images/moon_landing_apollo__46fa586b.jpg';
-import rocketBackground from '@assets/stock_images/spacex_rocket_launch_e241bee8.jpg';
 import glowingCubeBackground from '@assets/glowing cube_1759038202702.jpg';
 
 export type BackgroundType = 'animated' | 'static' | 'pulsing';
@@ -35,30 +32,6 @@ export const backgroundPresets: BackgroundPreset[] = [
     type: 'static',
     assetPath: infinityGridBackground,
     description: 'Futuristic infinity grid with deep blue tones',
-    isDark: true
-  },
-  {
-    id: 'pyramids-static',
-    label: 'Egyptian Pyramids',
-    type: 'static',
-    assetPath: pyramidsBackground,
-    description: 'Majestic Egyptian pyramids at sunset',
-    isDark: false
-  },
-  {
-    id: 'moon-static',
-    label: 'Apollo Moon Landing',
-    type: 'static',
-    assetPath: moonBackground,
-    description: 'Historic Apollo mission moon landing scene',
-    isDark: true
-  },
-  {
-    id: 'rocket-static',
-    label: 'SpaceX Rocket Launch',
-    type: 'static',
-    assetPath: rocketBackground,
-    description: 'Dramatic SpaceX rocket launch with fire and smoke',
     isDark: true
   },
   {
