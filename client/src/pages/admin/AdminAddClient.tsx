@@ -5164,6 +5164,13 @@ export default function AdminAddClient() {
         // Auto-expand the loan card
         setShowCurrentLoan(true);
         
+        // Auto-attach to subject property if one exists
+        const properties = form.watch('property.properties') || [];
+        const subjectProperty = properties.find(p => p.isSubject);
+        if (subjectProperty?.id) {
+          form.setValue('currentLoan.attachedToProperty', subjectProperty.id);
+        }
+        
         // Trigger animation for newly created loan card grey box
         setTimeout(() => {
           setShowCurrentLoanCardAnimation(prev => ({ ...prev, 'card-0-': true }));
@@ -5236,6 +5243,13 @@ export default function AdminAddClient() {
         // Auto-expand the loan card
         setShowSecondLoan(true);
         
+        // Auto-attach to subject property if one exists
+        const properties = form.watch('property.properties') || [];
+        const subjectProperty = properties.find(p => p.isSubject);
+        if (subjectProperty?.id) {
+          form.setValue('secondLoan.attachedToProperty', subjectProperty.id);
+        }
+        
         // Trigger animation for newly created loan card
         setTimeout(() => {
           setShowSubjectPropertyAnimation(prev => ({ ...prev, [newLoanId]: true }));
@@ -5307,6 +5321,13 @@ export default function AdminAddClient() {
         
         // Auto-expand the loan card
         setShowThirdLoan(true);
+        
+        // Auto-attach to subject property if one exists
+        const properties = form.watch('property.properties') || [];
+        const subjectProperty = properties.find(p => p.isSubject);
+        if (subjectProperty?.id) {
+          form.setValue('thirdLoan.attachedToProperty', subjectProperty.id);
+        }
         
         // Trigger animation for newly created loan card
         setTimeout(() => {
