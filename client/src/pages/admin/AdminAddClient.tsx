@@ -1402,6 +1402,11 @@ export default function AdminAddClient() {
   const [brandNewLoanExpirationDurationType, setBrandNewLoanExpirationDurationType] = useState<'expiration' | 'duration'>('expiration');
   const [brandNewLoanCreditType, setBrandNewLoanCreditType] = useState<'lender' | 'broker'>('lender');
 
+  // Purchase Loan toggle states
+  const [purchaseLoanCashOutType, setPurchaseLoanCashOutType] = useState<'cash-out' | 'benefits-summary'>('cash-out');
+  const [purchaseLoanDebtPayOffType, setPurchaseLoanDebtPayOffType] = useState<'total-debt-payoff' | 'total-debt-payments'>('total-debt-payoff');
+  const [purchaseLoanTermType, setPurchaseLoanTermType] = useState<'dropdown' | 'manual'>('dropdown');
+
   // Helper function to get Current Primary Loan escrow label and handle toggle cycling
   const getCurrentLoanEscrowLabel = () => {
     switch (currentLoanEscrowType) {
@@ -1525,6 +1530,57 @@ export default function AdminAddClient() {
 
   const cycleBrandNewLoanTermType = () => {
     setBrandNewLoanTermType(current => {
+      switch (current) {
+        case 'dropdown': return 'manual';
+        case 'manual': return 'dropdown';
+        default: return 'dropdown';
+      }
+    });
+  };
+
+  // Purchase Loan functions
+  const getPurchaseLoanCashOutLabel = () => {
+    switch (purchaseLoanCashOutType) {
+      case 'cash-out': return 'Cash Out Amount';
+      case 'benefits-summary': return 'Benefits Summary';
+      default: return 'Cash Out Amount';
+    }
+  };
+
+  const cyclePurchaseLoanCashOutType = () => {
+    setPurchaseLoanCashOutType(current => {
+      switch (current) {
+        case 'cash-out': return 'benefits-summary';
+        case 'benefits-summary': return 'cash-out';
+        default: return 'cash-out';
+      }
+    });
+  };
+
+  const getPurchaseLoanDebtPayOffLabel = () => {
+    switch (purchaseLoanDebtPayOffType) {
+      case 'total-debt-payoff': return 'Total Debt Pay Off';
+      case 'total-debt-payments': return 'Total Debt Pay Off Payments';
+      default: return 'Total Debt Pay Off';
+    }
+  };
+
+  const cyclePurchaseLoanDebtPayOffType = () => {
+    setPurchaseLoanDebtPayOffType(current => {
+      switch (current) {
+        case 'total-debt-payoff': return 'total-debt-payments';
+        case 'total-debt-payments': return 'total-debt-payoff';
+        default: return 'total-debt-payoff';
+      }
+    });
+  };
+
+  const getPurchaseLoanTermLabel = () => {
+    return 'Loan Term';
+  };
+
+  const cyclePurchaseLoanTermType = () => {
+    setPurchaseLoanTermType(current => {
       switch (current) {
         case 'dropdown': return 'manual';
         case 'manual': return 'dropdown';
@@ -4238,6 +4294,134 @@ export default function AdminAddClient() {
                       <SelectItem value="Yes - 5 Years">Yes - 5 Years</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+              </div>
+              
+              {/* Row 2: New Loan Amount, Loan Category, Loan Term, Cash Out Amount, Total Debt Pay Off */}
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="newLoan-loanAmount">New Loan Amount</Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="newLoan-loanAmount"
+                      {...form.register('newLoan.loanAmount')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-newLoan-loanAmount"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}purchaseLoan-loanCategory`}>Loan Category</Label>
+                  <Select {...loanCategoryBinding}>
+                    <SelectTrigger data-testid={loanCategoryBinding['data-testid']}>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      <SelectItem value="conventional">Conventional</SelectItem>
+                      <SelectItem value="conventional-jumbo">Conventional Jumbo</SelectItem>
+                      <SelectItem value="fha">FHA</SelectItem>
+                      <SelectItem value="va">VA</SelectItem>
+                      <SelectItem value="va-jumbo">VA Jumbo</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <Label htmlFor={`${idPrefix}purchaseLoan-loanProgram`} className="text-sm">
+                      {getPurchaseLoanTermLabel()}
+                    </Label>
+                    <Switch
+                      checked={purchaseLoanTermType === 'dropdown'}
+                      onCheckedChange={cyclePurchaseLoanTermType}
+                      data-testid="toggle-purchaseLoan-term-type"
+                      className="scale-[0.8]"
+                    />
+                  </div>
+                  {purchaseLoanTermType === 'dropdown' ? (
+                    <Select {...loanProgramBinding}>
+                      <SelectTrigger data-testid={loanProgramBinding['data-testid']}>
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="select">Select</SelectItem>
+                        <SelectItem value="30-year-fixed">30 year fixed</SelectItem>
+                        <SelectItem value="25-year-fixed">25 year fixed</SelectItem>
+                        <SelectItem value="20-year-fixed">20 year fixed</SelectItem>
+                        <SelectItem value="15-year-fixed">15 year fixed</SelectItem>
+                        <SelectItem value="10-year-fixed">10 year fixed</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      id={`${idPrefix}purchaseLoan-loanProgram`}
+                      {...loanProgramBinding.field}
+                      placeholder="Enter loan term"
+                      data-testid={loanProgramBinding['data-testid']}
+                    />
+                  )}
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <Label htmlFor={`${idPrefix}purchaseLoan-loanTerm`} className="text-sm">
+                      {getPurchaseLoanCashOutLabel()}
+                    </Label>
+                    <Switch
+                      checked={purchaseLoanCashOutType === 'cash-out'}
+                      onCheckedChange={cyclePurchaseLoanCashOutType}
+                      data-testid="toggle-purchaseLoan-cashOut-type"
+                      className="scale-[0.8]"
+                    />
+                  </div>
+                  {purchaseLoanCashOutType === 'cash-out' ? (
+                    <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                      <span className="text-muted-foreground text-sm">$</span>
+                      <Input
+                        id={`${idPrefix}purchaseLoan-loanTerm`}
+                        {...loanTermBinding.field}
+                        placeholder="0.00"
+                        className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                        data-testid={loanTermBinding['data-testid']}
+                      />
+                    </div>
+                  ) : (
+                    <Input
+                      id={`${idPrefix}purchaseLoan-loanTerm`}
+                      {...loanTermBinding.field}
+                      placeholder="Enter benefits summary"
+                      data-testid={loanTermBinding['data-testid']}
+                    />
+                  )}
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <Label htmlFor={remainingTermBinding.id} className="text-sm">
+                      {getPurchaseLoanDebtPayOffLabel()}
+                    </Label>
+                    <Switch
+                      checked={purchaseLoanDebtPayOffType === 'total-debt-payoff'}
+                      onCheckedChange={cyclePurchaseLoanDebtPayOffType}
+                      data-testid="toggle-purchaseLoan-debtPayOff-type"
+                      className="scale-[0.8]"
+                    />
+                  </div>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id={remainingTermBinding.id}
+                      {...remainingTermBinding.field}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid={remainingTermBinding['data-testid']}
+                    />
+                  </div>
                 </div>
               </div>
             </CardContent>
