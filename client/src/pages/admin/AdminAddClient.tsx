@@ -3754,150 +3754,12 @@ export default function AdminAddClient() {
                 </div>
               </div>
               
-              {/* Row 3: Principal & Interest Payment, Escrow Payment, Total Monthly Payment, Pre-Payment Penalty, Attached to Property */}
+              {/* Row 3: Mid FICO, Rate Lock Status, Rate Lock Date, Rate Lock Duration / Rate Lock Expiration, Lender Credit */}
               <Card className={`bg-muted ${
                 showBrandNewLoanCardAnimation[idPrefix] ? 'animate-roll-up-grey-box' : ''
               }`}>
                 <CardContent className="pt-6">
-                  <div className="grid grid-cols-1 md:grid-cols-10 gap-4">
-                <div className="space-y-2 md:col-span-1">
-                  <Label htmlFor="brandNewLoan-currentRate">Interest Rate</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <Input
-                      id="brandNewLoan-currentRate"
-                      {...targetForm.register('brandNewLoan.currentRate')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-brandNewLoan-currentRate"
-                    />
-                    <span className="text-muted-foreground text-sm">%</span>
-                  </div>
-                </div>
-                
-                <div className="space-y-2 md:col-span-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <Label htmlFor="brandNewLoan-principalInterestPayment" className="text-sm">
-                      {getBrandNewLoanPaymentLabel()}
-                    </Label>
-                    <Switch
-                      checked={brandNewLoanPaymentType === 'principal-interest'}
-                      onCheckedChange={cycleBrandNewLoanPaymentType}
-                      data-testid="toggle-brandNewLoan-payment-type"
-                      className="scale-[0.8]"
-                    />
-                  </div>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="brandNewLoan-principalInterestPayment"
-                      {...targetForm.register('brandNewLoan.principalAndInterestPayment')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-brandNewLoan-principalInterestPayment"
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2 md:col-span-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <Label htmlFor="brandNewLoan-monthlyEscrow" className="text-sm">
-                      {getBrandNewLoanEscrowLabel()}
-                    </Label>
-                    <Switch
-                      checked={brandNewLoanEscrowType === 'tax-insurance'}
-                      onCheckedChange={cycleBrandNewLoanEscrowType}
-                      data-testid="toggle-brandNewLoan-escrow-type"
-                      className="scale-[0.8]"
-                    />
-                  </div>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="brandNewLoan-monthlyEscrow"
-                      {...targetForm.register('brandNewLoan.escrowPayment')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-brandNewLoan-monthlyEscrow"
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="brandNewLoan-totalMonthlyPayment">Total Monthly Payment</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="brandNewLoan-totalMonthlyPayment"
-                      {...totalMonthlyPaymentBinding.field}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-brandNewLoan-totalMonthlyPayment"
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2 md:col-span-3">
-                  <Label htmlFor={`${idPrefix}brandNewLoan-attachedToProperty`}>Attached to Property</Label>
-                  <Select 
-                    {...attachedToPropertyBinding}
-                    onValueChange={(value) => {
-                      attachedToPropertyBinding.onValueChange(value);
-                      if (value && value !== '' && onAutoCopyAddress) {
-                        setTimeout(() => onAutoCopyAddress(), 100);
-                      }
-                    }}
-                  >
-                    <SelectTrigger data-testid={attachedToPropertyBinding['data-testid']}>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      {(() => {
-                        const properties = targetForm.watch('property.properties') || [];
-                        return properties
-                          .filter((property: any) => property.address?.street || property.use === 'primary') // Show properties with street addresses OR primary residence properties
-                          .map((property: any, index: number) => {
-                            const address = property.address;
-                            const streetAddress = address?.street;
-                            const city = address?.city;
-                            const state = address?.state;
-                            const zipCode = address?.zip;
-                            
-                            // Build display text using address components for uniqueness
-                            let displayText;
-                            
-                            // Special handling for Primary Residence without address
-                            if (property.use === 'primary' && !streetAddress) {
-                              displayText = 'Primary Residence';
-                            } else {
-                              displayText = streetAddress || 'Property';
-                              if (city && state) {
-                                displayText += `, ${city}, ${state}`;
-                              } else if (city) {
-                                displayText += `, ${city}`;
-                              } else if (state) {
-                                displayText += `, ${state}`;
-                              }
-                              if (zipCode) {
-                                displayText += ` ${zipCode}`;
-                              }
-                            }
-                            
-                            return (
-                              <SelectItem key={`property-${property.id}`} value={property.id}>
-                                {displayText}
-                              </SelectItem>
-                            );
-                          });
-                      })()}
-                      <SelectItem value="Other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                  </div>
-                  
-                  {/* Row 4: Mid FICO, Rate Lock Status, Rate Lock Date, Rate Lock Duration / Rate Lock Expiration, Lender Credit */}
-                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-6">
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div className="space-y-2">
                       <div className="flex items-center justify-between mb-2">
                         <Label htmlFor="brandNewLoan-midFico" className="text-sm">
@@ -4036,6 +3898,144 @@ export default function AdminAddClient() {
                         />
                       </div>
                     </div>
+                  </div>
+                  
+                  {/* Row 4: Principal & Interest Payment, Escrow Payment, Total Monthly Payment, Pre-Payment Penalty, Attached to Property */}
+                  <div className="grid grid-cols-1 md:grid-cols-10 gap-4 mt-6">
+                <div className="space-y-2 md:col-span-1">
+                  <Label htmlFor="brandNewLoan-currentRate">Interest Rate</Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <Input
+                      id="brandNewLoan-currentRate"
+                      {...targetForm.register('brandNewLoan.currentRate')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-brandNewLoan-currentRate"
+                    />
+                    <span className="text-muted-foreground text-sm">%</span>
+                  </div>
+                </div>
+                
+                <div className="space-y-2 md:col-span-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <Label htmlFor="brandNewLoan-principalInterestPayment" className="text-sm">
+                      {getBrandNewLoanPaymentLabel()}
+                    </Label>
+                    <Switch
+                      checked={brandNewLoanPaymentType === 'principal-interest'}
+                      onCheckedChange={cycleBrandNewLoanPaymentType}
+                      data-testid="toggle-brandNewLoan-payment-type"
+                      className="scale-[0.8]"
+                    />
+                  </div>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="brandNewLoan-principalInterestPayment"
+                      {...targetForm.register('brandNewLoan.principalAndInterestPayment')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-brandNewLoan-principalInterestPayment"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2 md:col-span-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <Label htmlFor="brandNewLoan-monthlyEscrow" className="text-sm">
+                      {getBrandNewLoanEscrowLabel()}
+                    </Label>
+                    <Switch
+                      checked={brandNewLoanEscrowType === 'tax-insurance'}
+                      onCheckedChange={cycleBrandNewLoanEscrowType}
+                      data-testid="toggle-brandNewLoan-escrow-type"
+                      className="scale-[0.8]"
+                    />
+                  </div>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="brandNewLoan-monthlyEscrow"
+                      {...targetForm.register('brandNewLoan.escrowPayment')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-brandNewLoan-monthlyEscrow"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="brandNewLoan-totalMonthlyPayment">Total Monthly Payment</Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="brandNewLoan-totalMonthlyPayment"
+                      {...totalMonthlyPaymentBinding.field}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-brandNewLoan-totalMonthlyPayment"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2 md:col-span-3">
+                  <Label htmlFor={`${idPrefix}brandNewLoan-attachedToProperty`}>Attached to Property</Label>
+                  <Select 
+                    {...attachedToPropertyBinding}
+                    onValueChange={(value) => {
+                      attachedToPropertyBinding.onValueChange(value);
+                      if (value && value !== '' && onAutoCopyAddress) {
+                        setTimeout(() => onAutoCopyAddress(), 100);
+                      }
+                    }}
+                  >
+                    <SelectTrigger data-testid={attachedToPropertyBinding['data-testid']}>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      {(() => {
+                        const properties = targetForm.watch('property.properties') || [];
+                        return properties
+                          .filter((property: any) => property.address?.street || property.use === 'primary') // Show properties with street addresses OR primary residence properties
+                          .map((property: any, index: number) => {
+                            const address = property.address;
+                            const streetAddress = address?.street;
+                            const city = address?.city;
+                            const state = address?.state;
+                            const zipCode = address?.zip;
+                            
+                            // Build display text using address components for uniqueness
+                            let displayText;
+                            
+                            // Special handling for Primary Residence without address
+                            if (property.use === 'primary' && !streetAddress) {
+                              displayText = 'Primary Residence';
+                            } else {
+                              displayText = streetAddress || 'Property';
+                              if (city && state) {
+                                displayText += `, ${city}, ${state}`;
+                              } else if (city) {
+                                displayText += `, ${city}`;
+                              } else if (state) {
+                                displayText += `, ${state}`;
+                              }
+                              if (zipCode) {
+                                displayText += ` ${zipCode}`;
+                              }
+                            }
+                            
+                            return (
+                              <SelectItem key={`property-${property.id}`} value={property.id}>
+                                {displayText}
+                              </SelectItem>
+                            );
+                          });
+                      })()}
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                   </div>
                 </CardContent>
               </Card>
@@ -15292,12 +15292,12 @@ export default function AdminAddClient() {
                     <Label className="text-lg font-semibold">Loan Purpose</Label>
                     <div className="mt-24">
                       <span className="text-muted-foreground" style={{ fontSize: '28px', color: '#1a3373', fontWeight: 'bold' }}>
-                        {form.watch('newLoan.loanPurpose') && form.watch('newLoan.loanPurpose') !== 'select' 
-                          ? form.watch('newLoan.loanPurpose') === 'rate-term' 
+                        {form.watch('brandNewLoan.loanPurpose') && form.watch('brandNewLoan.loanPurpose') !== 'select' 
+                          ? form.watch('brandNewLoan.loanPurpose') === 'rate-term' 
                             ? 'Rate & Term'
-                            : form.watch('newLoan.loanPurpose') === 'cash-out'
+                            : form.watch('brandNewLoan.loanPurpose') === 'cash-out'
                             ? 'Cash Out'
-                            : form.watch('newLoan.loanPurpose') === 'purchase'
+                            : form.watch('brandNewLoan.loanPurpose') === 'purchase'
                             ? 'Purchase'
                             : ''
                           : ''}
@@ -15336,10 +15336,10 @@ export default function AdminAddClient() {
                         style={{
                           fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                           fontSize: (() => {
-                            const loanProgram = form.watch('newLoan.loanProgram');
-                            if (loanProgram === 'va' || loanProgram === 'va-jumbo') return '32px'; // VA: keep current size
-                            if (loanProgram === 'fha') return '28px'; // FHA: one size smaller
-                            if (loanProgram === 'conventional' || loanProgram === 'conventional-jumbo') return '24px'; // FNM: two sizes smaller
+                            const loanCategory = form.watch('brandNewLoan.loanCategory');
+                            if (loanCategory === 'va' || loanCategory === 'va-jumbo') return '32px'; // VA: keep current size
+                            if (loanCategory === 'fha') return '28px'; // FHA: one size smaller
+                            if (loanCategory === 'conventional' || loanCategory === 'conventional-jumbo') return '24px'; // FNM: two sizes smaller
                             return '32px';
                           })(),
                           fontWeight: 600,
@@ -15349,10 +15349,10 @@ export default function AdminAddClient() {
                         data-testid="circle-2"
                       >
                         {(() => {
-                          const loanProgram = form.watch('newLoan.loanProgram');
-                          if (loanProgram === 'va' || loanProgram === 'va-jumbo') return 'VA';
-                          if (loanProgram === 'fha') return 'FHA';
-                          if (loanProgram === 'conventional' || loanProgram === 'conventional-jumbo') return 'FNM';
+                          const loanCategory = form.watch('brandNewLoan.loanCategory');
+                          if (loanCategory === 'va' || loanCategory === 'va-jumbo') return 'VA';
+                          if (loanCategory === 'fha') return 'FHA';
+                          if (loanCategory === 'conventional' || loanCategory === 'conventional-jumbo') return 'FNM';
                           return '';
                         })()}
                       </div>
@@ -15602,25 +15602,6 @@ export default function AdminAddClient() {
                         </Select>
                       </div>
                       
-                      <div className="space-y-2">
-                        <Label htmlFor="newLoan-interestRate">Interest Rate</Label>
-                        <Input
-                          id="newLoan-interestRate"
-                          {...form.register('newLoan.interestRate')}
-                          placeholder="0.00%"
-                          data-testid="input-newLoan-interestRate"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="newLoan-loanTerm">Loan Duration</Label>
-                        <Input
-                          id="newLoan-loanTerm"
-                          {...form.register('newLoan.loanTerm')}
-                          placeholder="Years"
-                          data-testid="input-newLoan-loanTerm"
-                        />
-                      </div>
                       
                       <div className="space-y-2">
                         <Label htmlFor="newLoan-loanPurpose">Loan Purpose</Label>
@@ -15640,15 +15621,6 @@ export default function AdminAddClient() {
                         </Select>
                       </div>
                       
-                      <div className="space-y-2">
-                        <Label htmlFor="newLoan-monthlyPayment">Monthly Payment</Label>
-                        <Input
-                          id="newLoan-monthlyPayment"
-                          {...form.register('newLoan.monthlyPayment')}
-                          placeholder="$0.00"
-                          data-testid="input-newLoan-monthlyPayment"
-                        />
-                      </div>
                     </CardContent>
                   </CollapsibleContent>
                 </Collapsible>
