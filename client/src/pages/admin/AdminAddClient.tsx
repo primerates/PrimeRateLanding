@@ -3443,47 +3443,6 @@ export default function AdminAddClient() {
             <div className="flex items-center justify-between">
               <CardTitle>Brand New Loan</CardTitle>
               <div className="flex items-center gap-2">
-                {/* Add Brand New Loan Button */}
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    // Generate a unique ID for the new loan card
-                    const newLoanId = `brand-new-loan-${Date.now()}`;
-                    
-                    // Add to cards array
-                    setBrandNewLoanCards(prev => [...(prev || []), newLoanId]);
-                    
-                    // Initialize data state for new card
-                    setBrandNewLoanData(prev => ({ 
-                      ...prev, 
-                      [newLoanId]: { isDefaultCard: false } 
-                    }));
-                    
-                    // Initialize per-card collapsible state (auto-expand like Property cards)
-                    setBrandNewLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
-                    
-                    // Auto-expand the loan card
-                    setShowBrandNewLoan(true);
-                    
-                    // Trigger animation for newly created loan card grey box
-                    setTimeout(() => {
-                      const cardIndex = (brandNewLoanCards || []).length - 1; // Array length minus 1 = actual index
-                      const animationKey = `brand-new-card-${cardIndex}-`;
-                      setShowBrandNewLoanCardAnimation(prev => ({ ...prev, [animationKey]: true }));
-                      setTimeout(() => {
-                        setShowBrandNewLoanCardAnimation(prev => ({ ...prev, [animationKey]: false }));
-                      }, 800);
-                    }, 200);
-                  }}
-                  className="hover:bg-green-500 hover:text-white"
-                  data-testid="button-add-brand-new-loan"
-                  title="Add Brand New Loan"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Brand New Loan
-                </Button>
                 
                 {/* Remove Button */}
                 {onRemove && (
@@ -3857,6 +3816,71 @@ export default function AdminAddClient() {
                     </SelectContent>
                   </Select>
                 </div>
+                  </div>
+                  
+                  {/* Row 4: Mid FICO, Rate Lock Status, Rate Lock Date, Rate Lock Duration / Rate Lock Expiration, Lender Credit */}
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="brandNewLoan-midFico">Mid FICO</Label>
+                      <Input
+                        id="brandNewLoan-midFico"
+                        {...targetForm.register('brandNewLoan.midFico')}
+                        placeholder="Enter FICO"
+                        className="border border-input bg-background px-3 rounded-md"
+                        data-testid="input-brandNewLoan-midFico"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="brandNewLoan-rateLockStatus">Rate Lock Status</Label>
+                      <Select {...targetForm.register('brandNewLoan.rateLockStatus')}>
+                        <SelectTrigger data-testid="select-brandNewLoan-rateLockStatus">
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="select">Select</SelectItem>
+                          <SelectItem value="locked">Locked</SelectItem>
+                          <SelectItem value="not-locked">Not Locked</SelectItem>
+                          <SelectItem value="expired">Expired</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="brandNewLoan-rateLockDate">Rate Lock Date</Label>
+                      <Input
+                        id="brandNewLoan-rateLockDate"
+                        type="date"
+                        {...targetForm.register('brandNewLoan.rateLockDate')}
+                        className="border border-input bg-background px-3 rounded-md"
+                        data-testid="input-brandNewLoan-rateLockDate"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="brandNewLoan-rateLockDuration">Rate Lock Duration / Rate Lock Expiration</Label>
+                      <Input
+                        id="brandNewLoan-rateLockDuration"
+                        {...targetForm.register('brandNewLoan.rateLockDuration')}
+                        placeholder="Enter duration"
+                        className="border border-input bg-background px-3 rounded-md"
+                        data-testid="input-brandNewLoan-rateLockDuration"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="brandNewLoan-lenderCredit">Lender Credit</Label>
+                      <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                        <span className="text-muted-foreground text-sm">$</span>
+                        <Input
+                          id="brandNewLoan-lenderCredit"
+                          {...targetForm.register('brandNewLoan.lenderCredit')}
+                          placeholder="0.00"
+                          className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                          data-testid="input-brandNewLoan-lenderCredit"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
