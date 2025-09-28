@@ -297,7 +297,7 @@ export default function AdminDashboard() {
         }}
       >
         <div className="mb-16">
-          <h2 className={`text-2xl font-bold mb-2 ${
+          <h2 className={`text-xl font-bold mb-2 ${
             isDarkBackground() ? 'text-white' : 'text-foreground'
           }`} data-testid="text-dashboard-welcome">
             Dashboard
