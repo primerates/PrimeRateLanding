@@ -11802,7 +11802,7 @@ export default function AdminAddClient() {
                                       return (
                                         <div className="flex items-center gap-1">
                                           <div 
-                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer ${
+                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center ${
                                               isCurrentLoanAttached
                                                 ? 'bg-blue-500 border-blue-500 hover:bg-blue-600'
                                                 : 'bg-gray-200 border-gray-300'
@@ -11818,7 +11818,9 @@ export default function AdminAddClient() {
                                             }}
                                             title={isCurrentLoanAttached ? "View Current Loan Details" : ""}
                                             data-testid={`indicator-secured-loan-1-${propertyId}`}
-                                          />
+                                          >
+                                            <span className="text-xs font-semibold text-white">P</span>
+                                          </div>
                                           <div 
                                             className={`w-4 h-4 rounded-full border-2 cursor-pointer ${
                                               isSecondLoanAttached
