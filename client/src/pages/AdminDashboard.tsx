@@ -26,7 +26,7 @@ import { useBackground, backgroundPresets } from '@/contexts/BackgroundContext';
 export default function AdminDashboard() {
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
-  const { getBackgroundStyle, isAnimated, isDarkBackground, selectedBackground, setBackground, getCurrentPreset } = useBackground();
+  const { getBackgroundStyle, isAnimated, isPulsing, isDarkBackground, selectedBackground, setBackground, getCurrentPreset } = useBackground();
   const [isLoaded, setIsLoaded] = useState(false);
   const [backgroundFocusProgress, setBackgroundFocusProgress] = useState(0);
   const [showUsername, setShowUsername] = useState(false);
@@ -252,7 +252,12 @@ export default function AdminDashboard() {
                               <p className="text-xs text-muted-foreground truncate">{preset.description}</p>
                               {preset.type === 'animated' && (
                                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 mt-1">
-                                  Animated
+                                  Focus Effect
+                                </span>
+                              )}
+                              {preset.type === 'pulsing' && (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800 mt-1">
+                                  Pulsing Glow
                                 </span>
                               )}
                             </div>
