@@ -15738,7 +15738,7 @@ export default function AdminAddClient() {
                           data-testid="checkbox-property-investment-loan-tab"
                         />
                         <Label htmlFor="property-type-investment-loan-tab" className="font-medium text-black">
-                          New Builder Loan
+                          New Second Loan + Purchase Loan
                         </Label>
                       </div>
                     </div>
