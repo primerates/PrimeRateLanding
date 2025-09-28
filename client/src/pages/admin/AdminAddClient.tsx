@@ -15404,7 +15404,7 @@ export default function AdminAddClient() {
                         />
                         <Label 
                           htmlFor="property-type-primary-loan-tab" 
-                          className="font-medium text-black cursor-pointer"
+                          className="font-medium text-primary-foreground cursor-pointer"
                         >
                           New Primary Loan
                         </Label>
@@ -15417,7 +15417,7 @@ export default function AdminAddClient() {
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-property-second-home-loan-tab"
                         />
-                        <Label htmlFor="property-type-second-home-loan-tab" className="font-medium text-black">
+                        <Label htmlFor="property-type-second-home-loan-tab" className="font-medium text-primary-foreground">
                           New Second Loan
                         </Label>
                       </div>
@@ -15429,7 +15429,7 @@ export default function AdminAddClient() {
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-property-investment-loan-tab"
                         />
-                        <Label htmlFor="property-type-investment-loan-tab" className="font-medium text-black">
+                        <Label htmlFor="property-type-investment-loan-tab" className="font-medium text-primary-foreground">
                           New Builder Loan
                         </Label>
                       </div>
@@ -15441,7 +15441,7 @@ export default function AdminAddClient() {
                           className="border-black"
                           data-testid="checkbox-property-home-purchase-loan-tab"
                         />
-                        <Label htmlFor="property-type-home-purchase-loan-tab" className="font-medium text-black">
+                        <Label htmlFor="property-type-home-purchase-loan-tab" className="font-medium text-primary-foreground">
                           New Loan (Other)
                         </Label>
                       </div>
@@ -15465,7 +15465,7 @@ export default function AdminAddClient() {
                         />
                         <Label 
                           htmlFor="current-primary-loan-tab" 
-                          className={`font-medium text-black ${
+                          className={`font-medium text-primary-foreground ${
                             (currentPrimaryLoanCards || []).length > 0 ? 'pointer-events-none opacity-75' : 'cursor-pointer'
                           }`}
                         >
@@ -15489,7 +15489,7 @@ export default function AdminAddClient() {
                         />
                         <Label 
                           htmlFor="current-second-loan-tab" 
-                          className={`font-medium text-black ${
+                          className={`font-medium text-primary-foreground ${
                             (currentSecondLoanCards || []).length > 0 ? 'pointer-events-none opacity-75' : 'cursor-pointer'
                           }`}
                         >
@@ -15513,7 +15513,7 @@ export default function AdminAddClient() {
                         />
                         <Label 
                           htmlFor="current-third-loan-tab" 
-                          className={`font-medium text-black ${
+                          className={`font-medium text-primary-foreground ${
                             (currentThirdLoanCards || []).length > 0 ? 'pointer-events-none opacity-75' : 'cursor-pointer'
                           }`}
                         >
@@ -15524,24 +15524,15 @@ export default function AdminAddClient() {
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="brand-new-loan-tab"
-                          checked={(brandNewLoanCards || []).length > 0}
-                          onCheckedChange={(checked) => {
-                            if (typeof checked === 'boolean') {
-                              handleBrandNewLoanTypeChange(checked);
-                            }
-                          }}
-                          className={`transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black ${
-                            (brandNewLoanCards || []).length > 0 ? 'pointer-events-none opacity-75' : ''
-                          }`}
+                          disabled
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-brand-new-loan-tab"
                         />
                         <Label 
                           htmlFor="brand-new-loan-tab" 
-                          className={`font-medium text-black ${
-                            (brandNewLoanCards || []).length > 0 ? 'pointer-events-none opacity-75' : 'cursor-pointer'
-                          }`}
+                          className="font-medium text-primary-foreground"
                         >
-                          Brand New Loan
+                          Other
                         </Label>
                       </div>
                     </div>
