@@ -11864,8 +11864,8 @@ export default function AdminAddClient() {
                             const properties = form.watch('property.properties') || [];
                             const subjectProperty = properties.find(p => p.isSubject === true);
                             
-                            // Get the New Loan amount from Brand New Loan Card
-                            const loanAmount = form.watch('brandNewLoan.statementBalance.amount') || '';
+                            // Get the New Loan amount
+                            const loanAmount = form.watch('newLoan.loanAmount') || '';
                             
                             // If no subject property or loan amount, return default %
                             if (!subjectProperty || !loanAmount || loanAmount.trim() === '') {
@@ -11926,8 +11926,8 @@ export default function AdminAddClient() {
                             const properties = form.watch('property.properties') || [];
                             const subjectProperty = properties.find(p => p.isSubject === true);
                             
-                            // Get the New Loan amount from Brand New Loan Card
-                            const loanAmount = form.watch('brandNewLoan.statementBalance.amount') || '';
+                            // Get the New Loan amount
+                            const loanAmount = form.watch('newLoan.loanAmount') || '';
                             
                             // If no subject property or loan amount, return default %
                             if (!subjectProperty || !loanAmount || loanAmount.trim() === '') {
