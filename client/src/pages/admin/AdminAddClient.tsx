@@ -11799,18 +11799,9 @@ export default function AdminAddClient() {
                                       const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
                                       const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
                                       
-                                      // Check third loan (both global third loan and first additional loan)
+                                      // Check third loan
                                       const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
-                                      const isGlobalThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
-                                      
-                                      const additionalLoansData = additionalLoans || [];
-                                      const firstAdditionalLoan = additionalLoansData[0]; // This is "Current Third Loan"
-                                      const isAdditionalThirdLoanAttached = firstAdditionalLoan ? (() => {
-                                        const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
-                                        return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
-                                      })() : false;
-                                      
-                                      const isThirdLoanAttached = isGlobalThirdLoanAttached || isAdditionalThirdLoanAttached;
+                                      const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
                                       
                                       // Check other additional loans (loan4, loan5, etc.)
                                       const isOtherAdditionalLoanAttached = additionalLoansData.slice(1).some(loan => {
@@ -11920,14 +11911,10 @@ export default function AdminAddClient() {
                                     attachedLoans.push('Current Second Loan');
                                   }
                                   
-                                  // Check third loan (first additional loan)
-                                  const additionalLoansData = additionalLoans || [];
-                                  const firstAdditionalLoan = additionalLoansData[0];
-                                  if (firstAdditionalLoan) {
-                                    const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
-                                    if (attachedPropertyId && attachedPropertyId === currentProperty.id) {
-                                      attachedLoans.push('Current Third Loan');
-                                    }
+                                  // Check third loan
+                                  const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
+                                  if (thirdLoanAttached && thirdLoanAttached === currentProperty.id) {
+                                    attachedLoans.push('Current Third Loan');
                                   }
                                   
                                   // Check other additional loans
@@ -12617,18 +12604,9 @@ export default function AdminAddClient() {
                                       const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
                                       const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
                                       
-                                      // Check third loan (both global third loan and first additional loan)
+                                      // Check third loan
                                       const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
-                                      const isGlobalThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
-                                      
-                                      const additionalLoansData = additionalLoans || [];
-                                      const firstAdditionalLoan = additionalLoansData[0]; // This is "Current Third Loan"
-                                      const isAdditionalThirdLoanAttached = firstAdditionalLoan ? (() => {
-                                        const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
-                                        return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
-                                      })() : false;
-                                      
-                                      const isThirdLoanAttached = isGlobalThirdLoanAttached || isAdditionalThirdLoanAttached;
+                                      const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
                                       
                                       // Check other additional loans (loan4, loan5, etc.)
                                       const isOtherAdditionalLoanAttached = additionalLoansData.slice(1).some(loan => {
@@ -12738,14 +12716,10 @@ export default function AdminAddClient() {
                                     attachedLoans.push('Current Second Loan');
                                   }
                                   
-                                  // Check third loan (first additional loan)
-                                  const additionalLoansData = additionalLoans || [];
-                                  const firstAdditionalLoan = additionalLoansData[0];
-                                  if (firstAdditionalLoan) {
-                                    const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
-                                    if (attachedPropertyId && attachedPropertyId === currentProperty.id) {
-                                      attachedLoans.push('Current Third Loan');
-                                    }
+                                  // Check third loan
+                                  const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
+                                  if (thirdLoanAttached && thirdLoanAttached === currentProperty.id) {
+                                    attachedLoans.push('Current Third Loan');
                                   }
                                   
                                   // Check other additional loans
@@ -13433,18 +13407,9 @@ export default function AdminAddClient() {
                                       const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
                                       const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
                                       
-                                      // Check third loan (both global third loan and first additional loan)
+                                      // Check third loan
                                       const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
-                                      const isGlobalThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
-                                      
-                                      const additionalLoansData = additionalLoans || [];
-                                      const firstAdditionalLoan = additionalLoansData[0]; // This is "Current Third Loan"
-                                      const isAdditionalThirdLoanAttached = firstAdditionalLoan ? (() => {
-                                        const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
-                                        return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
-                                      })() : false;
-                                      
-                                      const isThirdLoanAttached = isGlobalThirdLoanAttached || isAdditionalThirdLoanAttached;
+                                      const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
                                       
                                       // Check other additional loans (loan4, loan5, etc.)
                                       const isOtherAdditionalLoanAttached = additionalLoansData.slice(1).some(loan => {
@@ -13554,14 +13519,10 @@ export default function AdminAddClient() {
                                     attachedLoans.push('Current Second Loan');
                                   }
                                   
-                                  // Check third loan (first additional loan)
-                                  const additionalLoansData = additionalLoans || [];
-                                  const firstAdditionalLoan = additionalLoansData[0];
-                                  if (firstAdditionalLoan) {
-                                    const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
-                                    if (attachedPropertyId && attachedPropertyId === currentProperty.id) {
-                                      attachedLoans.push('Current Third Loan');
-                                    }
+                                  // Check third loan
+                                  const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
+                                  if (thirdLoanAttached && thirdLoanAttached === currentProperty.id) {
+                                    attachedLoans.push('Current Third Loan');
                                   }
                                   
                                   // Check other additional loans
@@ -14216,18 +14177,9 @@ export default function AdminAddClient() {
                                       const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
                                       const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
                                       
-                                      // Check third loan (both global third loan and first additional loan)
+                                      // Check third loan
                                       const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
-                                      const isGlobalThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
-                                      
-                                      const additionalLoansData = additionalLoans || [];
-                                      const firstAdditionalLoan = additionalLoansData[0]; // This is "Current Third Loan"
-                                      const isAdditionalThirdLoanAttached = firstAdditionalLoan ? (() => {
-                                        const attachedPropertyId = getDyn(`${firstAdditionalLoan.id}.attachedToProperty`);
-                                        return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
-                                      })() : false;
-                                      
-                                      const isThirdLoanAttached = isGlobalThirdLoanAttached || isAdditionalThirdLoanAttached;
+                                      const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
                                       
                                       // Check other additional loans (loan4, loan5, etc.)
                                       const isOtherAdditionalLoanAttached = additionalLoansData.slice(1).some(loan => {
