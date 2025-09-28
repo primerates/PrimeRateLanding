@@ -131,11 +131,9 @@ export default function AdminLogin() {
                   data-testid="input-admin-password"
                   required
                 />
-                <Button
+                <button
                   type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-gray-100 transition-colors"
                   onClick={() => setShowPassword(!showPassword)}
                   data-testid="button-toggle-password"
                 >
@@ -144,7 +142,7 @@ export default function AdminLogin() {
                   ) : (
                     <Eye className="h-4 w-4 text-muted-foreground" />
                   )}
-                </Button>
+                </button>
               </div>
             </div>
 
