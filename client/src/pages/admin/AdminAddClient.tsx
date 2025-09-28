@@ -15404,7 +15404,7 @@ export default function AdminAddClient() {
                         />
                         <Label 
                           htmlFor="property-type-primary-loan-tab" 
-                          className="font-medium text-primary-foreground cursor-pointer"
+                          className="font-medium text-muted-foreground cursor-pointer"
                         >
                           New Primary Loan
                         </Label>
@@ -15417,7 +15417,7 @@ export default function AdminAddClient() {
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-property-second-home-loan-tab"
                         />
-                        <Label htmlFor="property-type-second-home-loan-tab" className="font-medium text-primary-foreground">
+                        <Label htmlFor="property-type-second-home-loan-tab" className="font-medium text-muted-foreground">
                           New Second Loan
                         </Label>
                       </div>
@@ -15441,7 +15441,7 @@ export default function AdminAddClient() {
                           className="border-black"
                           data-testid="checkbox-property-home-purchase-loan-tab"
                         />
-                        <Label htmlFor="property-type-home-purchase-loan-tab" className="font-medium text-primary-foreground">
+                        <Label htmlFor="property-type-home-purchase-loan-tab" className="font-medium text-muted-foreground">
                           New Loan (Other)
                         </Label>
                       </div>
@@ -15465,7 +15465,7 @@ export default function AdminAddClient() {
                         />
                         <Label 
                           htmlFor="current-primary-loan-tab" 
-                          className={`font-medium text-primary-foreground ${
+                          className={`font-medium text-muted-foreground ${
                             (currentPrimaryLoanCards || []).length > 0 ? 'pointer-events-none opacity-75' : 'cursor-pointer'
                           }`}
                         >
@@ -15489,7 +15489,7 @@ export default function AdminAddClient() {
                         />
                         <Label 
                           htmlFor="current-second-loan-tab" 
-                          className={`font-medium text-primary-foreground ${
+                          className={`font-medium text-muted-foreground ${
                             (currentSecondLoanCards || []).length > 0 ? 'pointer-events-none opacity-75' : 'cursor-pointer'
                           }`}
                         >
@@ -15530,7 +15530,7 @@ export default function AdminAddClient() {
                         />
                         <Label 
                           htmlFor="brand-new-loan-tab" 
-                          className="font-medium text-primary-foreground"
+                          className="font-medium text-muted-foreground"
                         >
                           Other
                         </Label>
