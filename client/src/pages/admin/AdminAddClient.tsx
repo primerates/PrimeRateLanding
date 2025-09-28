@@ -1363,6 +1363,10 @@ export default function AdminAddClient() {
   const [brandNewLoanCashOutType, setBrandNewLoanCashOutType] = useState<'cash-out' | 'benefits-summary'>('cash-out');
   const [brandNewLoanDebtPayOffType, setBrandNewLoanDebtPayOffType] = useState<'total-debt-payoff' | 'total-debt-payments'>('total-debt-payoff');
   const [brandNewLoanTermType, setBrandNewLoanTermType] = useState<'dropdown' | 'manual'>('dropdown');
+  const [brandNewLoanFicoType, setBrandNewLoanFicoType] = useState<'mid-fico' | 'borrower-scores' | 'co-borrower-scores'>('mid-fico');
+  const [brandNewLoanLockDateType, setBrandNewLoanLockDateType] = useState<'date' | 'bond-entry'>('date');
+  const [brandNewLoanExpirationDurationType, setBrandNewLoanExpirationDurationType] = useState<'expiration' | 'duration'>('expiration');
+  const [brandNewLoanCreditType, setBrandNewLoanCreditType] = useState<'lender' | 'broker'>('lender');
 
   // Helper function to get Current Primary Loan escrow label and handle toggle cycling
   const getCurrentLoanEscrowLabel = () => {
@@ -1491,6 +1495,80 @@ export default function AdminAddClient() {
         case 'dropdown': return 'manual';
         case 'manual': return 'dropdown';
         default: return 'dropdown';
+      }
+    });
+  };
+
+  const getBrandNewLoanFicoLabel = () => {
+    switch (brandNewLoanFicoType) {
+      case 'mid-fico': return 'Mid FICO';
+      case 'borrower-scores': return 'Borrower Credit Scores';
+      case 'co-borrower-scores': return 'Co-Borrower Credit Scores';
+      default: return 'Mid FICO';
+    }
+  };
+
+  const cycleBrandNewLoanFicoType = () => {
+    setBrandNewLoanFicoType(current => {
+      switch (current) {
+        case 'mid-fico': return 'borrower-scores';
+        case 'borrower-scores': return 'co-borrower-scores';
+        case 'co-borrower-scores': return 'mid-fico';
+        default: return 'mid-fico';
+      }
+    });
+  };
+
+  const getBrandNewLoanLockDateLabel = () => {
+    switch (brandNewLoanLockDateType) {
+      case 'date': return 'Rate Lock Date';
+      case 'bond-entry': return 'Lock Date - 10 Year Bond';
+      default: return 'Rate Lock Date';
+    }
+  };
+
+  const cycleBrandNewLoanLockDateType = () => {
+    setBrandNewLoanLockDateType(current => {
+      switch (current) {
+        case 'date': return 'bond-entry';
+        case 'bond-entry': return 'date';
+        default: return 'date';
+      }
+    });
+  };
+
+  const getBrandNewLoanExpirationDurationLabel = () => {
+    switch (brandNewLoanExpirationDurationType) {
+      case 'expiration': return 'Rate Lock Expiration';
+      case 'duration': return 'Rate Lock Duration';
+      default: return 'Rate Lock Expiration';
+    }
+  };
+
+  const cycleBrandNewLoanExpirationDurationType = () => {
+    setBrandNewLoanExpirationDurationType(current => {
+      switch (current) {
+        case 'expiration': return 'duration';
+        case 'duration': return 'expiration';
+        default: return 'expiration';
+      }
+    });
+  };
+
+  const getBrandNewLoanCreditLabel = () => {
+    switch (brandNewLoanCreditType) {
+      case 'lender': return 'Lender Credit';
+      case 'broker': return 'Broker Credit';
+      default: return 'Lender Credit';
+    }
+  };
+
+  const cycleBrandNewLoanCreditType = () => {
+    setBrandNewLoanCreditType(current => {
+      switch (current) {
+        case 'lender': return 'broker';
+        case 'broker': return 'lender';
+        default: return 'lender';
       }
     });
   };
@@ -3821,55 +3899,132 @@ export default function AdminAddClient() {
                   {/* Row 4: Mid FICO, Rate Lock Status, Rate Lock Date, Rate Lock Duration / Rate Lock Expiration, Lender Credit */}
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-6">
                     <div className="space-y-2">
-                      <Label htmlFor="brandNewLoan-midFico">Mid FICO</Label>
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="brandNewLoan-midFico" className="text-sm">
+                          {getBrandNewLoanFicoLabel()}
+                        </Label>
+                        <Switch
+                          checked={brandNewLoanFicoType === 'mid-fico'}
+                          onCheckedChange={cycleBrandNewLoanFicoType}
+                          data-testid="toggle-brandNewLoan-fico-type"
+                          className="scale-[0.8]"
+                        />
+                      </div>
                       <Input
                         id="brandNewLoan-midFico"
                         {...targetForm.register('brandNewLoan.midFico')}
-                        placeholder="Enter FICO"
+                        placeholder="Enter"
                         className="border border-input bg-background px-3 rounded-md"
                         data-testid="input-brandNewLoan-midFico"
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="brandNewLoan-rateLockStatus">Rate Lock Status</Label>
-                      <Select {...targetForm.register('brandNewLoan.rateLockStatus')}>
-                        <SelectTrigger data-testid="select-brandNewLoan-rateLockStatus">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="select">Select</SelectItem>
-                          <SelectItem value="locked">Locked</SelectItem>
-                          <SelectItem value="not-locked">Not Locked</SelectItem>
-                          <SelectItem value="expired">Expired</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="brandNewLoan-rateLockDate">Rate Lock Date</Label>
-                      <Input
-                        id="brandNewLoan-rateLockDate"
-                        type="date"
-                        {...targetForm.register('brandNewLoan.rateLockDate')}
-                        className="border border-input bg-background px-3 rounded-md"
-                        data-testid="input-brandNewLoan-rateLockDate"
+                      <Label 
+                        htmlFor="brandNewLoan-rateLockStatus"
+                        className={(() => {
+                          const value = targetForm.watch('brandNewLoan.rateLockStatus');
+                          return (value === 'not-locked' || value === 'expired' || !value) ? 'text-red-500' : '';
+                        })()}
+                      >
+                        Rate Lock Status
+                      </Label>
+                      <Controller
+                        name="brandNewLoan.rateLockStatus"
+                        control={targetForm.control}
+                        defaultValue="not-locked"
+                        render={({ field }) => (
+                          <Select 
+                            value={field.value || "not-locked"}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger data-testid="select-brandNewLoan-rateLockStatus">
+                              <SelectValue placeholder="Not Locked" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="locked">Locked</SelectItem>
+                              <SelectItem value="not-locked">Not Locked</SelectItem>
+                              <SelectItem value="expired">Expired</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="brandNewLoan-rateLockDuration">Rate Lock Duration / Rate Lock Expiration</Label>
-                      <Input
-                        id="brandNewLoan-rateLockDuration"
-                        {...targetForm.register('brandNewLoan.rateLockDuration')}
-                        placeholder="Enter duration"
-                        className="border border-input bg-background px-3 rounded-md"
-                        data-testid="input-brandNewLoan-rateLockDuration"
-                      />
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="brandNewLoan-rateLockDate" className="text-sm">
+                          {getBrandNewLoanLockDateLabel()}
+                        </Label>
+                        <Switch
+                          checked={brandNewLoanLockDateType === 'date'}
+                          onCheckedChange={cycleBrandNewLoanLockDateType}
+                          data-testid="toggle-brandNewLoan-lockDate-type"
+                          className="scale-[0.8]"
+                        />
+                      </div>
+                      {brandNewLoanLockDateType === 'date' ? (
+                        <Input
+                          id="brandNewLoan-rateLockDate"
+                          type="date"
+                          {...targetForm.register('brandNewLoan.rateLockDate')}
+                          className="border border-input bg-background px-3 rounded-md"
+                          data-testid="input-brandNewLoan-rateLockDate"
+                        />
+                      ) : (
+                        <Input
+                          id="brandNewLoan-rateLockDate"
+                          {...targetForm.register('brandNewLoan.rateLockDate')}
+                          placeholder="Enter"
+                          className="border border-input bg-background px-3 rounded-md"
+                          data-testid="input-brandNewLoan-rateLockDate"
+                        />
+                      )}
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="brandNewLoan-lenderCredit">Lender Credit</Label>
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="brandNewLoan-rateLockDuration" className="text-sm">
+                          {getBrandNewLoanExpirationDurationLabel()}
+                        </Label>
+                        <Switch
+                          checked={brandNewLoanExpirationDurationType === 'expiration'}
+                          onCheckedChange={cycleBrandNewLoanExpirationDurationType}
+                          data-testid="toggle-brandNewLoan-expiration-duration-type"
+                          className="scale-[0.8]"
+                        />
+                      </div>
+                      {brandNewLoanExpirationDurationType === 'expiration' ? (
+                        <Input
+                          id="brandNewLoan-rateLockDuration"
+                          type="date"
+                          {...targetForm.register('brandNewLoan.rateLockDuration')}
+                          className="border border-input bg-background px-3 rounded-md"
+                          data-testid="input-brandNewLoan-rateLockDuration"
+                        />
+                      ) : (
+                        <Input
+                          id="brandNewLoan-rateLockDuration"
+                          {...targetForm.register('brandNewLoan.rateLockDuration')}
+                          placeholder="Enter duration"
+                          className="border border-input bg-background px-3 rounded-md"
+                          data-testid="input-brandNewLoan-rateLockDuration"
+                        />
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="brandNewLoan-lenderCredit" className="text-sm">
+                          {getBrandNewLoanCreditLabel()}
+                        </Label>
+                        <Switch
+                          checked={brandNewLoanCreditType === 'lender'}
+                          onCheckedChange={cycleBrandNewLoanCreditType}
+                          data-testid="toggle-brandNewLoan-credit-type"
+                          className="scale-[0.8]"
+                        />
+                      </div>
                       <div className="flex items-center border border-input bg-background px-3 rounded-md">
                         <span className="text-muted-foreground text-sm">$</span>
                         <Input
