@@ -4371,17 +4371,12 @@ export default function AdminAddClient() {
                 
                 <div className="space-y-2">
                   <Label htmlFor={`${idPrefix}purchaseLoan-loanPurpose`}>Loan Purpose</Label>
-                  <Select {...loanPurposeBinding}>
-                    <SelectTrigger data-testid={loanPurposeBinding['data-testid']}>
-                      <SelectValue placeholder="Select" />
+                  <Select {...loanPurposeBinding} disabled>
+                    <SelectTrigger data-testid={loanPurposeBinding['data-testid']} className="opacity-60 cursor-not-allowed" aria-disabled>
+                      <SelectValue placeholder="Purchase" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="cash-out">Cash Out</SelectItem>
-                      <SelectItem value="rate-reduction">Rate Reduction</SelectItem>
-                      <SelectItem value="term-reduction">Term Reduction</SelectItem>
                       <SelectItem value="purchase">Purchase</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -4493,57 +4488,50 @@ export default function AdminAddClient() {
                 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between mb-2">
-                    <Label htmlFor={`${idPrefix}purchaseLoan-loanTerm`} className="text-sm">
-                      {getPurchaseLoanCashOutLabel()}
+                    <Label htmlFor={`${idPrefix}purchaseLoan-cashOut`} className="text-sm">
+                      Cash Out Amount
                     </Label>
                     <Switch
                       checked={purchaseLoanCashOutType === 'cash-out'}
-                      onCheckedChange={cyclePurchaseLoanCashOutType}
+                      disabled
                       data-testid="toggle-purchaseLoan-cashOut-type"
-                      className="scale-[0.8]"
+                      className="scale-[0.8] opacity-50 cursor-not-allowed"
+                      aria-disabled
                     />
                   </div>
-                  {purchaseLoanCashOutType === 'cash-out' ? (
-                    <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                      <span className="text-muted-foreground text-sm">$</span>
-                      <Input
-                        id={`${idPrefix}purchaseLoan-loanTerm`}
-                        {...loanTermBinding.field}
-                        placeholder="0.00"
-                        className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                        data-testid={loanTermBinding['data-testid']}
-                      />
-                    </div>
-                  ) : (
+                  <div className="flex items-center border border-input bg-muted px-3 rounded-md opacity-60">
                     <Input
-                      id={`${idPrefix}purchaseLoan-loanTerm`}
+                      id={`${idPrefix}purchaseLoan-cashOut`}
                       {...loanTermBinding.field}
-                      placeholder="Enter benefits summary"
-                      data-testid={loanTermBinding['data-testid']}
+                      disabled
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0 cursor-not-allowed"
+                      data-testid="input-purchaseLoan-cashOut-disabled"
+                      aria-disabled
                     />
-                  )}
+                  </div>
                 </div>
                 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between mb-2">
-                    <Label htmlFor={remainingTermBinding.id} className="text-sm">
-                      {getPurchaseLoanDebtPayOffLabel()}
+                    <Label htmlFor={`${idPrefix}purchaseLoan-debtPayOff`} className="text-sm">
+                      Total Debt Pay Off
                     </Label>
                     <Switch
                       checked={purchaseLoanDebtPayOffType === 'total-debt-payoff'}
-                      onCheckedChange={cyclePurchaseLoanDebtPayOffType}
+                      disabled
                       data-testid="toggle-purchaseLoan-debtPayOff-type"
-                      className="scale-[0.8]"
+                      className="scale-[0.8] opacity-50 cursor-not-allowed"
+                      aria-disabled
                     />
                   </div>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
+                  <div className="flex items-center border border-input bg-muted px-3 rounded-md opacity-60">
                     <Input
-                      id={remainingTermBinding.id}
+                      id={`${idPrefix}purchaseLoan-debtPayOff`}
                       {...remainingTermBinding.field}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid={remainingTermBinding['data-testid']}
+                      disabled
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0 cursor-not-allowed"
+                      data-testid="input-purchaseLoan-debtPayOff-disabled"
+                      aria-disabled
                     />
                   </div>
                 </div>
@@ -7089,6 +7077,11 @@ export default function AdminAddClient() {
         
         // Auto-expand the loan card
         setShowPurchaseLoan(true);
+        
+        // Auto-fill Purchase Loan specific values
+        form.setValue('purchaseLoan.loanPurpose', 'purchase');
+        form.setValue('purchaseLoan.cashOutAmount', 'Not Applicable');
+        form.setValue('purchaseLoan.totalDebtPayOff', 'Not Applicable');
         
         // Auto-attach to subject property if one exists
         const properties = form.watch('property.properties') || [];
