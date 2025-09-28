@@ -990,18 +990,6 @@ export default function AdminAddClient() {
   
   // Brand New Loan card collapsible state (per-card state management)
   const [brandNewLoanCardStates, setBrandNewLoanCardStates] = useState<Record<string, boolean>>({});
-
-  // New Second Loan card collapsible state (per-card state management)
-  const [newSecondLoanCardStates, setNewSecondLoanCardStates] = useState<Record<string, boolean>>({});
-
-  // New Builder Loan card collapsible state (per-card state management)
-  const [newBuilderLoanCardStates, setNewBuilderLoanCardStates] = useState<Record<string, boolean>>({});
-
-  // New Other Loan card collapsible state (per-card state management)
-  const [newOtherLoanCardStates, setNewOtherLoanCardStates] = useState<Record<string, boolean>>({});
-
-  // Other Loan card collapsible state (per-card state management)
-  const [otherLoanCardStates, setOtherLoanCardStates] = useState<Record<string, boolean>>({});
   
   // Borrower Employer cards state management
   const [borrowerEmployerCards, setBorrowerEmployerCards] = useState<string[]>([]);
@@ -1073,38 +1061,6 @@ export default function AdminAddClient() {
   const [brandNewLoanData, setBrandNewLoanData] = useState<Record<string, {
     isDefaultCard: boolean | null; // null = not selected, true = default card created
   }>>({});
-
-  // New Second Loan cards state management (first row)
-  const [newSecondLoanCards, setNewSecondLoanCards] = useState<string[]>([]);
-  
-  // New Second Loan card data state
-  const [newSecondLoanData, setNewSecondLoanData] = useState<Record<string, {
-    isDefaultCard: boolean | null; // null = not selected, true = default card created
-  }>>({});
-
-  // New Builder Loan cards state management (first row)
-  const [newBuilderLoanCards, setNewBuilderLoanCards] = useState<string[]>([]);
-  
-  // New Builder Loan card data state
-  const [newBuilderLoanData, setNewBuilderLoanData] = useState<Record<string, {
-    isDefaultCard: boolean | null; // null = not selected, true = default card created
-  }>>({});
-
-  // New Loan (Other) cards state management (first row)
-  const [newOtherLoanCards, setNewOtherLoanCards] = useState<string[]>([]);
-  
-  // New Loan (Other) card data state
-  const [newOtherLoanData, setNewOtherLoanData] = useState<Record<string, {
-    isDefaultCard: boolean | null; // null = not selected, true = default card created
-  }>>({});
-
-  // Other Loan cards state management (second row)
-  const [otherLoanCards, setOtherLoanCards] = useState<string[]>([]);
-  
-  // Other Loan card data state
-  const [otherLoanData, setOtherLoanData] = useState<Record<string, {
-    isDefaultCard: boolean | null; // null = not selected, true = default card created
-  }>>({});
   
   // Employment dates state for each card
   const [employmentDates, setEmploymentDates] = useState<Record<string, {
@@ -1170,30 +1126,6 @@ export default function AdminAddClient() {
 
   // Delete confirmation dialog state for Brand New Loan cards
   const [deleteBrandNewLoanDialog, setDeleteBrandNewLoanDialog] = useState<{
-    isOpen: boolean;
-    cardId: string;
-  }>({ isOpen: false, cardId: '' });
-
-  // Delete confirmation dialog state for New Second Loan cards
-  const [deleteNewSecondLoanDialog, setDeleteNewSecondLoanDialog] = useState<{
-    isOpen: boolean;
-    cardId: string;
-  }>({ isOpen: false, cardId: '' });
-
-  // Delete confirmation dialog state for New Builder Loan cards
-  const [deleteNewBuilderLoanDialog, setDeleteNewBuilderLoanDialog] = useState<{
-    isOpen: boolean;
-    cardId: string;
-  }>({ isOpen: false, cardId: '' });
-
-  // Delete confirmation dialog state for New Other Loan cards
-  const [deleteNewOtherLoanDialog, setDeleteNewOtherLoanDialog] = useState<{
-    isOpen: boolean;
-    cardId: string;
-  }>({ isOpen: false, cardId: '' });
-
-  // Delete confirmation dialog state for Other Loan cards (second row)
-  const [deleteOtherLoanDialog, setDeleteOtherLoanDialog] = useState<{
     isOpen: boolean;
     cardId: string;
   }>({ isOpen: false, cardId: '' });
@@ -6291,154 +6223,6 @@ export default function AdminAddClient() {
             setShowBrandNewLoanCardAnimation(prev => ({ ...prev, [animationKey]: false }));
           }, 800);
         }, 200);
-      }
-    }
-  };
-
-  // Helper function to handle New Second Loan type changes with card management 
-  const handleNewSecondLoanTypeChange = (checked: boolean) => {
-    if (!checked) {
-      // Allow unchecking - remove all New Second Loan cards
-      const hasCards = (newSecondLoanCards || []).length > 0;
-      
-      if (hasCards) {
-        // Remove all New Second Loan cards when unchecked
-        setNewSecondLoanCards([]);
-        setNewSecondLoanData({});
-        setNewSecondLoanCardStates({});
-        return;
-      }
-    } else {
-      // When checking, auto-create default loan card
-      const hasCards = (newSecondLoanCards || []).length > 0;
-      
-      // Only create default loan card if none exist yet
-      if (!hasCards) {
-        // Generate a unique ID for the default loan card
-        const newLoanId = `new-second-loan-${Date.now()}`;
-        
-        // Set the loan cards state
-        setNewSecondLoanCards([newLoanId]);
-        
-        // Initialize data state for default card
-        setNewSecondLoanData(prev => ({ 
-          ...prev, 
-          [newLoanId]: { isDefaultCard: true } 
-        }));
-        
-        // Initialize per-card collapsible state (auto-expand like other cards)
-        setNewSecondLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
-      }
-    }
-  };
-
-  // Helper function to handle New Builder Loan type changes with card management 
-  const handleNewBuilderLoanTypeChange = (checked: boolean) => {
-    if (!checked) {
-      // Allow unchecking - remove all New Builder Loan cards
-      const hasCards = (newBuilderLoanCards || []).length > 0;
-      
-      if (hasCards) {
-        // Remove all New Builder Loan cards when unchecked
-        setNewBuilderLoanCards([]);
-        setNewBuilderLoanData({});
-        setNewBuilderLoanCardStates({});
-        return;
-      }
-    } else {
-      // When checking, auto-create default loan card
-      const hasCards = (newBuilderLoanCards || []).length > 0;
-      
-      // Only create default loan card if none exist yet
-      if (!hasCards) {
-        // Generate a unique ID for the default loan card
-        const newLoanId = `new-builder-loan-${Date.now()}`;
-        
-        // Set the loan cards state
-        setNewBuilderLoanCards([newLoanId]);
-        
-        // Initialize data state for default card
-        setNewBuilderLoanData(prev => ({ 
-          ...prev, 
-          [newLoanId]: { isDefaultCard: true } 
-        }));
-        
-        // Initialize per-card collapsible state (auto-expand like other cards)
-        setNewBuilderLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
-      }
-    }
-  };
-
-  // Helper function to handle New Other Loan type changes with card management 
-  const handleNewOtherLoanTypeChange = (checked: boolean) => {
-    if (!checked) {
-      // Allow unchecking - remove all New Other Loan cards
-      const hasCards = (newOtherLoanCards || []).length > 0;
-      
-      if (hasCards) {
-        // Remove all New Other Loan cards when unchecked
-        setNewOtherLoanCards([]);
-        setNewOtherLoanData({});
-        setNewOtherLoanCardStates({});
-        return;
-      }
-    } else {
-      // When checking, auto-create default loan card
-      const hasCards = (newOtherLoanCards || []).length > 0;
-      
-      // Only create default loan card if none exist yet
-      if (!hasCards) {
-        // Generate a unique ID for the default loan card
-        const newLoanId = `new-other-loan-${Date.now()}`;
-        
-        // Set the loan cards state
-        setNewOtherLoanCards([newLoanId]);
-        
-        // Initialize data state for default card
-        setNewOtherLoanData(prev => ({ 
-          ...prev, 
-          [newLoanId]: { isDefaultCard: true } 
-        }));
-        
-        // Initialize per-card collapsible state (auto-expand like other cards)
-        setNewOtherLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
-      }
-    }
-  };
-
-  // Helper function to handle Other Loan (second row) type changes with card management 
-  const handleOtherLoanTypeChange = (checked: boolean) => {
-    if (!checked) {
-      // Allow unchecking - remove all Other Loan cards
-      const hasCards = (otherLoanCards || []).length > 0;
-      
-      if (hasCards) {
-        // Remove all Other Loan cards when unchecked
-        setOtherLoanCards([]);
-        setOtherLoanData({});
-        setOtherLoanCardStates({});
-        return;
-      }
-    } else {
-      // When checking, auto-create default loan card
-      const hasCards = (otherLoanCards || []).length > 0;
-      
-      // Only create default loan card if none exist yet
-      if (!hasCards) {
-        // Generate a unique ID for the default loan card
-        const newLoanId = `other-loan-${Date.now()}`;
-        
-        // Set the loan cards state
-        setOtherLoanCards([newLoanId]);
-        
-        // Initialize data state for default card
-        setOtherLoanData(prev => ({ 
-          ...prev, 
-          [newLoanId]: { isDefaultCard: true } 
-        }));
-        
-        // Initialize per-card collapsible state (auto-expand like other cards)
-        setOtherLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
       }
     }
   };
@@ -15629,12 +15413,7 @@ export default function AdminAddClient() {
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="property-type-second-home-loan-tab"
-                          checked={(newSecondLoanCards || []).length > 0}
-                          onCheckedChange={(checked) => {
-                            if (typeof checked === 'boolean') {
-                              handleNewSecondLoanTypeChange(checked);
-                            }
-                          }}
+                          disabled
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-property-second-home-loan-tab"
                         />
@@ -15646,12 +15425,7 @@ export default function AdminAddClient() {
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="property-type-investment-loan-tab"
-                          checked={(newBuilderLoanCards || []).length > 0}
-                          onCheckedChange={(checked) => {
-                            if (typeof checked === 'boolean') {
-                              handleNewBuilderLoanTypeChange(checked);
-                            }
-                          }}
+                          disabled
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-property-investment-loan-tab"
                         />
@@ -15663,13 +15437,8 @@ export default function AdminAddClient() {
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="property-type-home-purchase-loan-tab"
-                          checked={(newOtherLoanCards || []).length > 0}
-                          onCheckedChange={(checked) => {
-                            if (typeof checked === 'boolean') {
-                              handleNewOtherLoanTypeChange(checked);
-                            }
-                          }}
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
+                          disabled
+                          className="border-black"
                           data-testid="checkbox-property-home-purchase-loan-tab"
                         />
                         <Label htmlFor="property-type-home-purchase-loan-tab" className="font-medium text-black">
@@ -15755,12 +15524,7 @@ export default function AdminAddClient() {
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="brand-new-loan-tab"
-                          checked={(otherLoanCards || []).length > 0}
-                          onCheckedChange={(checked) => {
-                            if (typeof checked === 'boolean') {
-                              handleOtherLoanTypeChange(checked);
-                            }
-                          }}
+                          disabled
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-brand-new-loan-tab"
                         />
@@ -15894,7 +15658,7 @@ export default function AdminAddClient() {
                 );
               })}
 
-              {/* FIRST ROW CARDS - New Primary Loan (Brand New Loan Cards) */}
+              {/* Brand New Loan Cards - Dynamic multiple card system like Current Primary, Second, and Third Loans */}
               {(brandNewLoanCards || []).map((cardId, index) => {
                 const isOpen = brandNewLoanCardStates[cardId] ?? true; // Per-card state like Property cards
                 
@@ -15936,102 +15700,6 @@ export default function AdminAddClient() {
                           county: address.county || ''
                         });
                       }
-                    }}
-                    formInstance={form}
-                  />
-                );
-              })}
-
-              {/* FIRST ROW CARDS - New Second Loan Cards */}
-              {(newSecondLoanCards || []).map((cardId, index) => {
-                const isOpen = newSecondLoanCardStates[cardId] ?? true;
-                
-                return (
-                  <BrandNewLoanCard
-                    key={cardId}
-                    idPrefix={`new-second-card-${index}-`}
-                    borderVariant="blue"
-                    isOpen={isOpen}
-                    setIsOpen={(open) => {
-                      setNewSecondLoanCardStates(prev => ({ ...prev, [cardId]: open }));
-                    }}
-                    onRemove={() => {
-                      setDeleteNewSecondLoanDialog({
-                        isOpen: true,
-                        cardId: cardId
-                      });
-                    }}
-                    formInstance={form}
-                  />
-                );
-              })}
-
-              {/* FIRST ROW CARDS - New Builder Loan Cards */}
-              {(newBuilderLoanCards || []).map((cardId, index) => {
-                const isOpen = newBuilderLoanCardStates[cardId] ?? true;
-                
-                return (
-                  <BrandNewLoanCard
-                    key={cardId}
-                    idPrefix={`new-builder-card-${index}-`}
-                    borderVariant="blue"
-                    isOpen={isOpen}
-                    setIsOpen={(open) => {
-                      setNewBuilderLoanCardStates(prev => ({ ...prev, [cardId]: open }));
-                    }}
-                    onRemove={() => {
-                      setDeleteNewBuilderLoanDialog({
-                        isOpen: true,
-                        cardId: cardId
-                      });
-                    }}
-                    formInstance={form}
-                  />
-                );
-              })}
-
-              {/* FIRST ROW CARDS - New Other Loan Cards */}
-              {(newOtherLoanCards || []).map((cardId, index) => {
-                const isOpen = newOtherLoanCardStates[cardId] ?? true;
-                
-                return (
-                  <BrandNewLoanCard
-                    key={cardId}
-                    idPrefix={`new-other-card-${index}-`}
-                    borderVariant="blue"
-                    isOpen={isOpen}
-                    setIsOpen={(open) => {
-                      setNewOtherLoanCardStates(prev => ({ ...prev, [cardId]: open }));
-                    }}
-                    onRemove={() => {
-                      setDeleteNewOtherLoanDialog({
-                        isOpen: true,
-                        cardId: cardId
-                      });
-                    }}
-                    formInstance={form}
-                  />
-                );
-              })}
-
-              {/* SECOND ROW CARDS - Other Loan Cards */}
-              {(otherLoanCards || []).map((cardId, index) => {
-                const isOpen = otherLoanCardStates[cardId] ?? true;
-                
-                return (
-                  <BrandNewLoanCard
-                    key={cardId}
-                    idPrefix={`other-card-${index}-`}
-                    borderVariant="blue"
-                    isOpen={isOpen}
-                    setIsOpen={(open) => {
-                      setOtherLoanCardStates(prev => ({ ...prev, [cardId]: open }));
-                    }}
-                    onRemove={() => {
-                      setDeleteOtherLoanDialog({
-                        isOpen: true,
-                        cardId: cardId
-                      });
                     }}
                     formInstance={form}
                   />
