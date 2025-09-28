@@ -1403,9 +1403,15 @@ export default function AdminAddClient() {
   const [brandNewLoanCreditType, setBrandNewLoanCreditType] = useState<'lender' | 'broker'>('lender');
 
   // Purchase Loan toggle states
+  const [purchaseLoanEscrowType, setPurchaseLoanEscrowType] = useState<'tax-insurance' | 'insurance-only' | 'property-tax-only'>('tax-insurance');
+  const [purchaseLoanPaymentType, setPurchaseLoanPaymentType] = useState<'principal-interest' | 'interest-only'>('principal-interest');
   const [purchaseLoanCashOutType, setPurchaseLoanCashOutType] = useState<'cash-out' | 'benefits-summary'>('cash-out');
   const [purchaseLoanDebtPayOffType, setPurchaseLoanDebtPayOffType] = useState<'total-debt-payoff' | 'total-debt-payments'>('total-debt-payoff');
   const [purchaseLoanTermType, setPurchaseLoanTermType] = useState<'dropdown' | 'manual'>('dropdown');
+  const [purchaseLoanFicoType, setPurchaseLoanFicoType] = useState<'mid-fico' | 'borrower-scores' | 'co-borrower-scores'>('mid-fico');
+  const [purchaseLoanLockDateType, setPurchaseLoanLockDateType] = useState<'date' | 'bond-entry'>('date');
+  const [purchaseLoanExpirationDurationType, setPurchaseLoanExpirationDurationType] = useState<'expiration' | 'duration'>('expiration');
+  const [purchaseLoanCreditType, setPurchaseLoanCreditType] = useState<'lender' | 'broker'>('lender');
 
   // Helper function to get Current Primary Loan escrow label and handle toggle cycling
   const getCurrentLoanEscrowLabel = () => {
@@ -1659,6 +1665,124 @@ export default function AdminAddClient() {
         case 'lender': return 'broker';
         case 'broker': return 'lender';
         default: return 'lender';
+      }
+    });
+  };
+
+  // Purchase Loan FICO label and type cycling functions
+  const getPurchaseLoanFicoLabel = () => {
+    switch (purchaseLoanFicoType) {
+      case 'mid-fico': return 'Mid FICO';
+      case 'borrower-scores': return 'Borrower Credit Scores';
+      case 'co-borrower-scores': return 'Co-Borrower Credit Scores';
+      default: return 'Mid FICO';
+    }
+  };
+
+  const cyclePurchaseLoanFicoType = () => {
+    setPurchaseLoanFicoType(current => {
+      switch (current) {
+        case 'mid-fico': return 'borrower-scores';
+        case 'borrower-scores': return 'co-borrower-scores';
+        case 'co-borrower-scores': return 'mid-fico';
+        default: return 'mid-fico';
+      }
+    });
+  };
+
+  // Purchase Loan Lock Date label and type cycling functions
+  const getPurchaseLoanLockDateLabel = () => {
+    switch (purchaseLoanLockDateType) {
+      case 'date': return 'Rate Lock Date';
+      case 'bond-entry': return 'Lock Date - 10 Year Bond';
+      default: return 'Rate Lock Date';
+    }
+  };
+
+  const cyclePurchaseLoanLockDateType = () => {
+    setPurchaseLoanLockDateType(current => {
+      switch (current) {
+        case 'date': return 'bond-entry';
+        case 'bond-entry': return 'date';
+        default: return 'date';
+      }
+    });
+  };
+
+  // Purchase Loan Expiration Duration label and type cycling functions
+  const getPurchaseLoanExpirationDurationLabel = () => {
+    switch (purchaseLoanExpirationDurationType) {
+      case 'expiration': return 'Rate Lock Expiration';
+      case 'duration': return 'Rate Lock Duration';
+      default: return 'Rate Lock Expiration';
+    }
+  };
+
+  const cyclePurchaseLoanExpirationDurationType = () => {
+    setPurchaseLoanExpirationDurationType(current => {
+      switch (current) {
+        case 'expiration': return 'duration';
+        case 'duration': return 'expiration';
+        default: return 'expiration';
+      }
+    });
+  };
+
+  // Purchase Loan Credit label and type cycling functions
+  const getPurchaseLoanCreditLabel = () => {
+    switch (purchaseLoanCreditType) {
+      case 'lender': return 'Lender Credit';
+      case 'broker': return 'Broker Credit';
+      default: return 'Lender Credit';
+    }
+  };
+
+  const cyclePurchaseLoanCreditType = () => {
+    setPurchaseLoanCreditType(current => {
+      switch (current) {
+        case 'lender': return 'broker';
+        case 'broker': return 'lender';
+        default: return 'lender';
+      }
+    });
+  };
+
+  // Purchase Loan Payment label and type cycling functions
+  const getPurchaseLoanPaymentLabel = () => {
+    switch (purchaseLoanPaymentType) {
+      case 'principal-interest': return 'Principal & Interest Payment';
+      case 'interest-only': return 'Interest Only Payment';
+      default: return 'Principal & Interest Payment';
+    }
+  };
+
+  const cyclePurchaseLoanPaymentType = () => {
+    setPurchaseLoanPaymentType(current => {
+      switch (current) {
+        case 'principal-interest': return 'interest-only';
+        case 'interest-only': return 'principal-interest';
+        default: return 'principal-interest';
+      }
+    });
+  };
+
+  // Purchase Loan Escrow label and type cycling functions
+  const getPurchaseLoanEscrowLabel = () => {
+    switch (purchaseLoanEscrowType) {
+      case 'tax-insurance': return 'Tax & Insurance Payment';
+      case 'insurance-only': return 'Insurance Payment';
+      case 'property-tax-only': return 'Property Tax Payment';
+      default: return 'Tax & Insurance Payment';
+    }
+  };
+
+  const cyclePurchaseLoanEscrowType = () => {
+    setPurchaseLoanEscrowType(current => {
+      switch (current) {
+        case 'tax-insurance': return 'insurance-only';
+        case 'insurance-only': return 'property-tax-only';
+        case 'property-tax-only': return 'tax-insurance';
+        default: return 'tax-insurance';
       }
     });
   };
@@ -4224,7 +4348,7 @@ export default function AdminAddClient() {
             </div>
           </CardHeader>
           <CollapsibleContent>
-            <CardContent>
+            <CardContent className="space-y-6 pt-[1.7rem]">
               {/* Row 1: Current Lender, Loan Number, Loan Purpose, Doc Type, Pre-Payment Penalty */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
@@ -4424,6 +4548,292 @@ export default function AdminAddClient() {
                   </div>
                 </div>
               </div>
+              
+              {/* Row 3: Mid FICO, Rate Lock Status, Rate Lock Date, Rate Lock Duration / Rate Lock Expiration, Lender Credit */}
+              <Card className={`bg-muted ${
+                showPurchaseLoanCardAnimation[idPrefix] ? 'animate-roll-up-grey-box' : ''
+              }`}>
+                <CardContent className="pt-6">
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="purchaseLoan-midFico" className="text-sm">
+                          {getPurchaseLoanFicoLabel()}
+                        </Label>
+                        <Switch
+                          checked={purchaseLoanFicoType === 'mid-fico'}
+                          onCheckedChange={cyclePurchaseLoanFicoType}
+                          data-testid="toggle-purchaseLoan-fico-type"
+                          className="scale-[0.8]"
+                        />
+                      </div>
+                      <Input
+                        id="purchaseLoan-midFico"
+                        {...targetForm.register('purchaseLoan.midFico')}
+                        placeholder="Enter"
+                        className="border border-input bg-background px-3 rounded-md"
+                        data-testid="input-purchaseLoan-midFico"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label 
+                        htmlFor="purchaseLoan-rateLockStatus"
+                        className={(() => {
+                          const value = targetForm.watch('purchaseLoan.rateLockStatus');
+                          return (value === 'not-locked' || value === 'expired' || !value) ? 'text-red-500' : '';
+                        })()}
+                      >
+                        Rate Lock Status
+                      </Label>
+                      <Controller
+                        name="purchaseLoan.rateLockStatus"
+                        control={targetForm.control}
+                        defaultValue="not-locked"
+                        render={({ field }) => (
+                          <Select 
+                            value={field.value || "not-locked"}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger data-testid="select-purchaseLoan-rateLockStatus">
+                              <SelectValue placeholder="Not Locked" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="locked">Locked</SelectItem>
+                              <SelectItem value="not-locked">Not Locked</SelectItem>
+                              <SelectItem value="expired">Expired</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="purchaseLoan-rateLockDate" className="text-sm">
+                          {getPurchaseLoanLockDateLabel()}
+                        </Label>
+                        <Switch
+                          checked={purchaseLoanLockDateType === 'date'}
+                          onCheckedChange={cyclePurchaseLoanLockDateType}
+                          data-testid="toggle-purchaseLoan-lockDate-type"
+                          className="scale-[0.8]"
+                        />
+                      </div>
+                      {purchaseLoanLockDateType === 'date' ? (
+                        <Input
+                          id="purchaseLoan-rateLockDate"
+                          type="date"
+                          {...targetForm.register('purchaseLoan.rateLockDate')}
+                          className="border border-input bg-background px-3 rounded-md"
+                          data-testid="input-purchaseLoan-rateLockDate"
+                        />
+                      ) : (
+                        <Input
+                          id="purchaseLoan-rateLockDate"
+                          {...targetForm.register('purchaseLoan.rateLockDate')}
+                          placeholder="Enter"
+                          className="border border-input bg-background px-3 rounded-md"
+                          data-testid="input-purchaseLoan-rateLockDate"
+                        />
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="purchaseLoan-rateLockDuration" className="text-sm">
+                          {getPurchaseLoanExpirationDurationLabel()}
+                        </Label>
+                        <Switch
+                          checked={purchaseLoanExpirationDurationType === 'expiration'}
+                          onCheckedChange={cyclePurchaseLoanExpirationDurationType}
+                          data-testid="toggle-purchaseLoan-expiration-duration-type"
+                          className="scale-[0.8]"
+                        />
+                      </div>
+                      {purchaseLoanExpirationDurationType === 'expiration' ? (
+                        <Input
+                          id="purchaseLoan-rateLockDuration"
+                          type="date"
+                          {...targetForm.register('purchaseLoan.rateLockDuration')}
+                          className="border border-input bg-background px-3 rounded-md"
+                          data-testid="input-purchaseLoan-rateLockDuration"
+                        />
+                      ) : (
+                        <Input
+                          id="purchaseLoan-rateLockDuration"
+                          {...targetForm.register('purchaseLoan.rateLockDuration')}
+                          placeholder="Enter duration"
+                          className="border border-input bg-background px-3 rounded-md"
+                          data-testid="input-purchaseLoan-rateLockDuration"
+                        />
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="purchaseLoan-lenderCredit" className="text-sm">
+                          {getPurchaseLoanCreditLabel()}
+                        </Label>
+                        <Switch
+                          checked={purchaseLoanCreditType === 'lender'}
+                          onCheckedChange={cyclePurchaseLoanCreditType}
+                          data-testid="toggle-purchaseLoan-credit-type"
+                          className="scale-[0.8]"
+                        />
+                      </div>
+                      <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                        <span className="text-muted-foreground text-sm">$</span>
+                        <Input
+                          id="purchaseLoan-lenderCredit"
+                          {...targetForm.register('purchaseLoan.lenderCredit')}
+                          placeholder="0.00"
+                          className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                          data-testid="input-purchaseLoan-lenderCredit"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Row 4: Principal & Interest Payment, Escrow Payment, Total Monthly Payment, Pre-Payment Penalty, Attached to Property */}
+                  <div className="grid grid-cols-1 md:grid-cols-10 gap-4 mt-6">
+                <div className="space-y-2 md:col-span-1">
+                  <Label htmlFor="purchaseLoan-currentRate">Interest Rate</Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <Input
+                      id="purchaseLoan-currentRate"
+                      {...targetForm.register('purchaseLoan.currentRate')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-purchaseLoan-currentRate"
+                    />
+                    <span className="text-muted-foreground text-sm">%</span>
+                  </div>
+                </div>
+                
+                <div className="space-y-2 md:col-span-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <Label htmlFor="purchaseLoan-principalInterestPayment" className="text-sm">
+                      {getPurchaseLoanPaymentLabel()}
+                    </Label>
+                    <Switch
+                      checked={purchaseLoanPaymentType === 'principal-interest'}
+                      onCheckedChange={cyclePurchaseLoanPaymentType}
+                      data-testid="toggle-purchaseLoan-payment-type"
+                      className="scale-[0.8]"
+                    />
+                  </div>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="purchaseLoan-principalInterestPayment"
+                      {...targetForm.register('purchaseLoan.principalAndInterestPayment')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-purchaseLoan-principalInterestPayment"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2 md:col-span-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <Label htmlFor="purchaseLoan-monthlyEscrow" className="text-sm">
+                      {getPurchaseLoanEscrowLabel()}
+                    </Label>
+                    <Switch
+                      checked={purchaseLoanEscrowType === 'tax-insurance'}
+                      onCheckedChange={cyclePurchaseLoanEscrowType}
+                      data-testid="toggle-purchaseLoan-escrow-type"
+                      className="scale-[0.8]"
+                    />
+                  </div>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="purchaseLoan-monthlyEscrow"
+                      {...targetForm.register('purchaseLoan.escrowPayment')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-purchaseLoan-monthlyEscrow"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="purchaseLoan-totalMonthlyPayment">Total Monthly Payment</Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="purchaseLoan-totalMonthlyPayment"
+                      {...totalMonthlyPaymentBinding.field}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-purchaseLoan-totalMonthlyPayment"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2 md:col-span-3">
+                  <Label htmlFor={`${idPrefix}purchaseLoan-attachedToProperty`}>Attached to Property</Label>
+                  <Select 
+                    {...attachedToPropertyBinding}
+                    onValueChange={(value) => {
+                      attachedToPropertyBinding.onValueChange(value);
+                      if (value && value !== '' && onAutoCopyAddress) {
+                        setTimeout(() => onAutoCopyAddress(), 100);
+                      }
+                    }}
+                  >
+                    <SelectTrigger data-testid={attachedToPropertyBinding['data-testid']}>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      {(() => {
+                        const properties = targetForm.watch('property.properties') || [];
+                        return properties
+                          .filter((property: any) => property.address?.street || property.use === 'primary') // Show properties with street addresses OR primary residence properties
+                          .map((property: any, index: number) => {
+                            const address = property.address;
+                            const streetAddress = address?.street;
+                            const city = address?.city;
+                            const state = address?.state;
+                            const zipCode = address?.zip;
+                            
+                            // Build display text using address components for uniqueness
+                            let displayText;
+                            
+                            // Special handling for Primary Residence without address
+                            if (property.use === 'primary' && !streetAddress) {
+                              displayText = 'Primary Residence';
+                            } else {
+                              displayText = streetAddress || 'Property';
+                              if (city && state) {
+                                displayText += `, ${city}, ${state}`;
+                              } else if (city) {
+                                displayText += `, ${city}`;
+                              } else if (state) {
+                                displayText += `, ${state}`;
+                              }
+                              if (zipCode) {
+                                displayText += ` ${zipCode}`;
+                              }
+                            }
+                            
+                            return (
+                              <SelectItem key={`property-${property.id}`} value={property.id}>
+                                {displayText}
+                              </SelectItem>
+                            );
+                          });
+                      })()}
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                  </div>
+                </CardContent>
+              </Card>
             </CardContent>
           </CollapsibleContent>
         </Collapsible>
