@@ -3519,7 +3519,7 @@ export default function AdminAddClient() {
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Brand New Loan</CardTitle>
+              <CardTitle>New Primary Loan</CardTitle>
               <div className="flex items-center gap-2">
                 
                 {/* Remove Button */}
@@ -3629,7 +3629,7 @@ export default function AdminAddClient() {
               {/* Row 2: New Loan Amount, Loan Category, Loan Term, Cash Out Amount, Total Debt Pay Off */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="newLoan-loanAmount">Loan Amount</Label>
+                  <Label htmlFor="newLoan-loanAmount">New Loan Amount</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
@@ -15550,31 +15550,6 @@ export default function AdminAddClient() {
                 </CardContent>
               </Card>
 
-              {/* New Loan Information */}
-              <Card className="border-l-4 border-l-green-500">
-                <Collapsible open={isNewLoanOpen} onOpenChange={setIsNewLoanOpen}>
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle>New Loan</CardTitle>
-                      <CollapsibleTrigger asChild>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="hover:bg-orange-500 hover:text-white" 
-                          data-testid="button-toggle-new-loan"
-                          title={isNewLoanOpen ? 'Minimize' : 'Expand'}
-                        >
-                          {isNewLoanOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                        </Button>
-                      </CollapsibleTrigger>
-                    </div>
-                  </CardHeader>
-                  <CollapsibleContent>
-                    <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-[1.7rem]">
-                    </CardContent>
-                  </CollapsibleContent>
-                </Collapsible>
-              </Card>
 
               {/* Current Primary Loan Cards - Render multiple cards like Property cards */}
               {(currentPrimaryLoanCards || []).map((cardId, index) => {
