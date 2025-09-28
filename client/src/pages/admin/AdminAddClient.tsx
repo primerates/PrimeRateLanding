@@ -14801,7 +14801,17 @@ export default function AdminAddClient() {
                     idPrefix={`second-card-${index}-`}
                     borderVariant="blue"
                     isOpen={isOpen}
-                    setIsOpen={(open) => setSecondLoanCardStates(prev => ({ ...prev, [cardId]: open }))}
+                    setIsOpen={(open) => {
+                      setSecondLoanCardStates(prev => ({ ...prev, [cardId]: open }));
+                      // Trigger grey box animation when card is opened (copied from Primary Loan)
+                      if (open) {
+                        const animationKey = `second-card-${index}-`;
+                        setShowSecondLoanCardAnimation(prev => ({ ...prev, [animationKey]: true }));
+                        setTimeout(() => {
+                          setShowSecondLoanCardAnimation(prev => ({ ...prev, [animationKey]: false }));
+                        }, 800);
+                      }
+                    }}
                     onRemove={() => {
                       setDeleteCurrentSecondLoanDialog({
                         isOpen: true,
@@ -14840,7 +14850,17 @@ export default function AdminAddClient() {
                     idPrefix={`third-card-${index}-`}
                     borderVariant="blue"
                     isOpen={isOpen}
-                    setIsOpen={(open) => setThirdLoanCardStates(prev => ({ ...prev, [cardId]: open }))}
+                    setIsOpen={(open) => {
+                      setThirdLoanCardStates(prev => ({ ...prev, [cardId]: open }));
+                      // Trigger grey box animation when card is opened (copied from Primary Loan)
+                      if (open) {
+                        const animationKey = `third-card-${index}-`;
+                        setShowThirdLoanCardAnimation(prev => ({ ...prev, [animationKey]: true }));
+                        setTimeout(() => {
+                          setShowThirdLoanCardAnimation(prev => ({ ...prev, [animationKey]: false }));
+                        }, 800);
+                      }
+                    }}
                     onRemove={() => {
                       setDeleteCurrentThirdLoanDialog({
                         isOpen: true,
