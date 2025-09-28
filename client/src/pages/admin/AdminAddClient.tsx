@@ -15390,6 +15390,54 @@ export default function AdminAddClient() {
                   />
                 );
               })}
+
+              {/* Brand New Loan Cards - Dynamic multiple card system like Current Primary, Second, and Third Loans */}
+              {(brandNewLoanCards || []).map((cardId, index) => {
+                const isOpen = brandNewLoanCardStates[cardId] ?? true; // Per-card state like Property cards
+                
+                return (
+                  <BrandNewLoanCard
+                    key={cardId}
+                    idPrefix={`brand-new-card-${index}-`}
+                    borderVariant="blue"
+                    isOpen={isOpen}
+                    setIsOpen={(open) => {
+                      setBrandNewLoanCardStates(prev => ({ ...prev, [cardId]: open }));
+                      // Trigger grey box animation when card is opened (copied from Primary Loan)
+                      if (open) {
+                        const animationKey = `brand-new-card-${index}-`;
+                        setShowBrandNewLoanCardAnimation(prev => ({ ...prev, [animationKey]: true }));
+                        setTimeout(() => {
+                          setShowBrandNewLoanCardAnimation(prev => ({ ...prev, [animationKey]: false }));
+                        }, 800);
+                      }
+                    }}
+                    onRemove={() => {
+                      setDeleteBrandNewLoanDialog({
+                        isOpen: true,
+                        cardId: cardId
+                      });
+                    }}
+                    onAutoCopyAddress={() => {
+                      // Auto-copy property address to Brand New Loan (similar to other loans)
+                      const properties = form.watch('property.properties') || [];
+                      const subjectProperty = properties.find(p => p.isSubject);
+                      if (subjectProperty?.address) {
+                        const address = subjectProperty.address;
+                        form.setValue('brandNewLoan.propertyAddress', {
+                          street: address.street || '',
+                          unit: address.unit || '',
+                          city: address.city || '',
+                          state: address.state || '',
+                          zipCode: address.zip || '',
+                          county: address.county || ''
+                        });
+                      }
+                    }}
+                    formInstance={form}
+                  />
+                );
+              })}
             </TabsContent>
 
             {/* Credit Tab */}
@@ -16892,6 +16940,33 @@ export default function AdminAddClient() {
             <AlertDialogAction 
               onClick={() => removeCurrentThirdLoanCard(deleteCurrentThirdLoanDialog.cardId)}
               data-testid="button-confirm-delete-current-third-loan"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Brand New Loan Card Confirmation Dialog */}
+      <AlertDialog open={deleteBrandNewLoanDialog.isOpen} onOpenChange={(open) => !open && setDeleteBrandNewLoanDialog({ isOpen: false, cardId: '' })}>
+        <AlertDialogContent data-testid="dialog-delete-brand-new-loan">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Brand New Loan</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove this Brand New Loan card? This will clear all entered data for this loan. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteBrandNewLoanDialog({ isOpen: false, cardId: '' })}
+              data-testid="button-cancel-delete-brand-new-loan"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => removeBrandNewLoanCard(deleteBrandNewLoanDialog.cardId)}
+              data-testid="button-confirm-delete-brand-new-loan"
               className="bg-red-600 hover:bg-red-700"
             >
               Remove
