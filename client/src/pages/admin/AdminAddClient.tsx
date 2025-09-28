@@ -2941,10 +2941,12 @@ export default function AdminAddClient() {
                     
                     // Trigger animation for newly created loan card grey box
                     setTimeout(() => {
-                      const cardIndex = (currentPrimaryLoanCards || []).length;
-                      setShowCurrentLoanCardAnimation(prev => ({ ...prev, [`card-${cardIndex}-`]: true }));
+                      const cardIndex = (currentPrimaryLoanCards || []).length - 1; // Match the index used in rendering
+                      const animationKey = `card-${cardIndex}-`;
+                      console.log('🎬 Primary Loan Animation:', { cardIndex, animationKey, currentCards: currentPrimaryLoanCards });
+                      setShowCurrentLoanCardAnimation(prev => ({ ...prev, [animationKey]: true }));
                       setTimeout(() => {
-                        setShowCurrentLoanCardAnimation(prev => ({ ...prev, [`card-${cardIndex}-`]: false }));
+                        setShowCurrentLoanCardAnimation(prev => ({ ...prev, [animationKey]: false }));
                       }, 800);
                     }, 200);
                   }}
@@ -3131,7 +3133,8 @@ export default function AdminAddClient() {
               {/* Row 3: Principal & Interest Payment, Escrow Payment, Total Monthly Payment, Pre-Payment Penalty, Attached to Property */}
               <Card className={`bg-muted ${
                 showCurrentLoanCardAnimation[idPrefix] ? 'animate-roll-up-grey-box' : ''
-              }`}>
+              }`} 
+              onMouseEnter={() => console.log('🔍 Primary Card idPrefix:', idPrefix, 'Animation State:', showCurrentLoanCardAnimation)}>
                 <CardContent className="pt-6">
                   <div className="grid grid-cols-1 md:grid-cols-10 gap-4">
                 <div className="space-y-2 md:col-span-1">
@@ -3315,10 +3318,12 @@ export default function AdminAddClient() {
                     
                     // Trigger animation for newly created loan card grey box
                     setTimeout(() => {
-                      const cardIndex = (currentSecondLoanCards || []).length;
-                      setShowSecondLoanCardAnimation(prev => ({ ...prev, [`card-${cardIndex}-`]: true }));
+                      const cardIndex = (currentSecondLoanCards || []).length - 1; // Match the index used in rendering
+                      const animationKey = `second-card-${cardIndex}-`;
+                      console.log('🎬 Second Loan Animation:', { cardIndex, animationKey, currentCards: currentSecondLoanCards });
+                      setShowSecondLoanCardAnimation(prev => ({ ...prev, [animationKey]: true }));
                       setTimeout(() => {
-                        setShowSecondLoanCardAnimation(prev => ({ ...prev, [`card-${cardIndex}-`]: false }));
+                        setShowSecondLoanCardAnimation(prev => ({ ...prev, [animationKey]: false }));
                       }, 800);
                     }, 200);
                   }}
@@ -3434,7 +3439,8 @@ export default function AdminAddClient() {
               {/* Row 2: Principal & Interest Payment, Escrow Payment, Total Monthly Payment, Pre-Payment Penalty, Attached to Property */}
               <Card className={`bg-muted ${
                 showSecondLoanCardAnimation[idPrefix] ? 'animate-roll-up-grey-box' : ''
-              }`}>
+              }`}
+              onMouseEnter={() => console.log('🔍 Second Card idPrefix:', idPrefix, 'Animation State:', showSecondLoanCardAnimation)}>
                 <CardContent className="pt-6">
                   <div className="grid grid-cols-1 md:grid-cols-10 gap-4">
                 <div className="space-y-2 md:col-span-1">
@@ -3627,10 +3633,12 @@ export default function AdminAddClient() {
                     
                     // Trigger animation for newly created loan card grey box
                     setTimeout(() => {
-                      const cardIndex = (currentThirdLoanCards || []).length;
-                      setShowThirdLoanCardAnimation(prev => ({ ...prev, [`card-${cardIndex}-`]: true }));
+                      const cardIndex = (currentThirdLoanCards || []).length - 1; // Match the index used in rendering
+                      const animationKey = `third-card-${cardIndex}-`;
+                      console.log('🎬 Third Loan Animation:', { cardIndex, animationKey, currentCards: currentThirdLoanCards });
+                      setShowThirdLoanCardAnimation(prev => ({ ...prev, [animationKey]: true }));
                       setTimeout(() => {
-                        setShowThirdLoanCardAnimation(prev => ({ ...prev, [`card-${cardIndex}-`]: false }));
+                        setShowThirdLoanCardAnimation(prev => ({ ...prev, [animationKey]: false }));
                       }, 800);
                     }, 200);
                   }}
@@ -3746,7 +3754,8 @@ export default function AdminAddClient() {
               {/* Row 2: Principal & Interest Payment, Escrow Payment, Total Monthly Payment, Pre-Payment Penalty, Attached to Property */}
               <Card className={`bg-muted ${
                 showThirdLoanCardAnimation[idPrefix] ? 'animate-roll-up-grey-box' : ''
-              }`}>
+              }`}
+              onMouseEnter={() => console.log('🔍 Third Card idPrefix:', idPrefix, 'Animation State:', showThirdLoanCardAnimation)}>
                 <CardContent className="pt-6">
                   <div className="grid grid-cols-1 md:grid-cols-10 gap-4">
                 <div className="space-y-2 md:col-span-1">
