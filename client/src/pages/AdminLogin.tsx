@@ -95,7 +95,7 @@ export default function AdminLogin() {
               <Input
                 id="email"
                 type="email"
-                placeholder="Enter your email address"
+                placeholder=""
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className={`transition-colors ${
@@ -118,7 +118,7 @@ export default function AdminLogin() {
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
+                  placeholder=""
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className={`pr-10 transition-colors ${
