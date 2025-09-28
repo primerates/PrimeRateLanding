@@ -512,6 +512,19 @@ export default function AdminAddClient() {
       });
     }
     
+    // Check brand new loan
+    const brandNewLoanAttached = form.watch('brandNewLoan.attachedToProperty');
+    if (brandNewLoanAttached === propertyId) {
+      form.setValue('brandNewLoan.propertyAddress', {
+        street: propertyAddress.street || '',
+        unit: propertyAddress.unit || '',
+        city: propertyAddress.city || '',
+        state: propertyAddress.state || '',
+        zipCode: propertyAddress.zip || '',
+        county: propertyAddress.county || ''
+      });
+    }
+    
     // Check all additional loans (loan3, loan4, loan5, etc.)
     additionalLoans.forEach(loan => {
       const additionalLoanAttached = getDyn(`${loan.id}.attachedToProperty`);
@@ -5806,11 +5819,18 @@ export default function AdminAddClient() {
   // Helper function to handle Brand New Loan type changes with card management (similar to Current Primary Loan)
   const handleBrandNewLoanTypeChange = (checked: boolean) => {
     if (!checked) {
-      // Special handling for Brand New Loan - don't allow unchecking if cards already exist
+      // Allow unchecking - remove all Brand New Loan cards
       const hasCards = (brandNewLoanCards || []).length > 0;
       
       if (hasCards) {
-        // Cards already exist, prevent unchecking - all removal must be done through card buttons
+        // Remove all Brand New Loan cards when unchecked
+        setBrandNewLoanCards([]);
+        setBrandNewLoanData({});
+        setBrandNewLoanCardStates({});
+        setShowBrandNewLoan(false);
+        
+        // Clear any Brand New Loan form data
+        form.setValue('brandNewLoan', undefined);
         return;
       }
     } else {
@@ -15004,7 +15024,7 @@ export default function AdminAddClient() {
                         }}
                         data-testid="circle-3"
                       >
-                        {(showCurrentLoan ? 1 : 0) + (showSecondLoan ? 1 : 0) + (showThirdLoan ? 1 : 0)}
+                        {(showCurrentLoan ? 1 : 0) + (showSecondLoan ? 1 : 0) + (showThirdLoan ? 1 : 0) + (showBrandNewLoan ? 1 : 0)}
                       </div>
                     </div>
                   </div>
@@ -15022,11 +15042,19 @@ export default function AdminAddClient() {
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="property-type-primary-loan-tab"
-                          disabled
+                          checked={(brandNewLoanCards || []).length > 0}
+                          onCheckedChange={(checked) => {
+                            if (typeof checked === 'boolean') {
+                              handleBrandNewLoanTypeChange(checked);
+                            }
+                          }}
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-property-primary-loan-tab"
                         />
-                        <Label htmlFor="property-type-primary-loan-tab" className="font-medium text-black">
+                        <Label 
+                          htmlFor="property-type-primary-loan-tab" 
+                          className="font-medium text-black cursor-pointer"
+                        >
                           New Primary Loan
                         </Label>
                       </div>
