@@ -15412,6 +15412,18 @@ export default function AdminAddClient() {
 
                       <div className="flex items-center space-x-2">
                         <Checkbox
+                          id="property-type-purchase-loan-tab"
+                          disabled
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
+                          data-testid="checkbox-property-purchase-loan-tab"
+                        />
+                        <Label htmlFor="property-type-purchase-loan-tab" className="font-medium text-black">
+                          New Loan - Purchase
+                        </Label>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
                           id="property-type-second-home-loan-tab"
                           disabled
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
@@ -15431,18 +15443,6 @@ export default function AdminAddClient() {
                         />
                         <Label htmlFor="property-type-investment-loan-tab" className="font-medium text-black">
                           New Builder Loan
-                        </Label>
-                      </div>
-
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="property-type-home-purchase-loan-tab"
-                          disabled
-                          className="border-black"
-                          data-testid="checkbox-property-home-purchase-loan-tab"
-                        />
-                        <Label htmlFor="property-type-home-purchase-loan-tab" className="font-medium text-black">
-                          New Loan (Other)
                         </Label>
                       </div>
                     </div>
