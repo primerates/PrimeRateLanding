@@ -5803,6 +5803,86 @@ export default function AdminAddClient() {
     setDeleteCurrentThirdLoanDialog({ isOpen: false, cardId: '' });
   };
 
+  // Helper function to handle Brand New Loan type changes with card management (similar to Current Primary Loan)
+  const handleBrandNewLoanTypeChange = (checked: boolean) => {
+    if (!checked) {
+      // Special handling for Brand New Loan - don't allow unchecking if cards already exist
+      const hasCards = (brandNewLoanCards || []).length > 0;
+      
+      if (hasCards) {
+        // Cards already exist, prevent unchecking - all removal must be done through card buttons
+        return;
+      }
+    } else {
+      // When checking, auto-create default loan card
+      const hasCards = (brandNewLoanCards || []).length > 0;
+      
+      // Only create default loan card if none exist yet
+      if (!hasCards) {
+        // Generate a unique ID for the default loan card
+        const newLoanId = `brand-new-loan-${Date.now()}`;
+        
+        // Set the loan cards state
+        setBrandNewLoanCards([newLoanId]);
+        
+        // Initialize data state for default card
+        setBrandNewLoanData(prev => ({ 
+          ...prev, 
+          [newLoanId]: { isDefaultCard: true } 
+        }));
+        
+        // Initialize per-card collapsible state (auto-expand like Property cards)
+        setBrandNewLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
+        
+        // Auto-expand the loan card
+        setShowBrandNewLoan(true);
+        
+        // Auto-attach to subject property if one exists
+        const properties = form.watch('property.properties') || [];
+        const subjectProperty = properties.find(p => p.isSubject);
+        if (subjectProperty?.id) {
+          form.setValue('brandNewLoan.attachedToProperty', subjectProperty.id);
+        }
+        
+        // Trigger animation for newly created loan card grey box
+        setTimeout(() => {
+          const animationKey = 'brand-new-card-0-';
+          setShowBrandNewLoanCardAnimation(prev => ({ ...prev, [animationKey]: true }));
+          setTimeout(() => {
+            setShowBrandNewLoanCardAnimation(prev => ({ ...prev, [animationKey]: false }));
+          }, 800);
+        }, 200);
+      }
+    }
+  };
+
+  // Handle removing brand new loan cards (new system)
+  const removeBrandNewLoanCard = (cardId: string) => {
+    // Remove the specific card from cards array
+    setBrandNewLoanCards(prev => prev.filter(id => id !== cardId));
+    
+    // Remove data state for this card
+    setBrandNewLoanData(prev => {
+      const { [cardId]: _, ...rest } = prev;
+      return rest;
+    });
+    
+    // Remove per-card collapsible state
+    setBrandNewLoanCardStates(prev => {
+      const { [cardId]: _, ...rest } = prev;
+      return rest;
+    });
+    
+    // If no cards remain, hide the brand new loan section
+    const remainingCards = brandNewLoanCards.filter(id => id !== cardId);
+    if (remainingCards.length === 0) {
+      setShowBrandNewLoan(false);
+    }
+    
+    // Close the dialog
+    setDeleteBrandNewLoanDialog({ isOpen: false, cardId: '' });
+  };
+
   // Property type management functions
   const addPropertyType = (type: 'primary' | 'second-home' | 'investment' | 'home-purchase') => {
     const currentProperties = form.watch('property.properties') || [];
@@ -15064,13 +15144,25 @@ export default function AdminAddClient() {
 
                       <div className="flex items-center space-x-2">
                         <Checkbox
-                          id="other-loan-tab"
-                          disabled
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
-                          data-testid="checkbox-other-loan-tab"
+                          id="brand-new-loan-tab"
+                          checked={(brandNewLoanCards || []).length > 0}
+                          onCheckedChange={(checked) => {
+                            if (typeof checked === 'boolean') {
+                              handleBrandNewLoanTypeChange(checked);
+                            }
+                          }}
+                          className={`transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black ${
+                            (brandNewLoanCards || []).length > 0 ? 'pointer-events-none opacity-75' : ''
+                          }`}
+                          data-testid="checkbox-brand-new-loan-tab"
                         />
-                        <Label htmlFor="other-loan-tab" className="font-medium text-black">
-                          Other
+                        <Label 
+                          htmlFor="brand-new-loan-tab" 
+                          className={`font-medium text-black ${
+                            (brandNewLoanCards || []).length > 0 ? 'pointer-events-none opacity-75' : 'cursor-pointer'
+                          }`}
+                        >
+                          Brand New Loan
                         </Label>
                       </div>
                     </div>
