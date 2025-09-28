@@ -3432,7 +3432,9 @@ export default function AdminAddClient() {
               </div>
               
               {/* Row 2: Principal & Interest Payment, Escrow Payment, Total Monthly Payment, Pre-Payment Penalty, Attached to Property */}
-              <Card className="bg-muted">
+              <Card className={`bg-muted ${
+                showSecondLoanCardAnimation[idPrefix] ? 'animate-roll-up-grey-box' : ''
+              }`}>
                 <CardContent className="pt-6">
                   <div className="grid grid-cols-1 md:grid-cols-10 gap-4">
                 <div className="space-y-2 md:col-span-1">
@@ -3742,7 +3744,9 @@ export default function AdminAddClient() {
               </div>
               
               {/* Row 2: Principal & Interest Payment, Escrow Payment, Total Monthly Payment, Pre-Payment Penalty, Attached to Property */}
-              <Card className="bg-muted">
+              <Card className={`bg-muted ${
+                showThirdLoanCardAnimation[idPrefix] ? 'animate-roll-up-grey-box' : ''
+              }`}>
                 <CardContent className="pt-6">
                   <div className="grid grid-cols-1 md:grid-cols-10 gap-4">
                 <div className="space-y-2 md:col-span-1">
