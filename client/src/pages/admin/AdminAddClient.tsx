@@ -3496,7 +3496,6 @@ export default function AdminAddClient() {
     const loanProgramBinding = useSelectFieldBinding('brandNewLoan.loanProgram', idPrefix, targetForm);
     const loanTermBinding = useSelectFieldBinding('brandNewLoan.loanTerm', idPrefix, targetForm);
     const loanPurposeBinding = useSelectFieldBinding('brandNewLoan.loanPurpose', idPrefix, targetForm);
-    const newLoanAmountBinding = useFieldBinding('brandNewLoan.newLoanAmount', idPrefix, targetForm);
     const prepaymentPenaltyBinding = useSelectFieldBinding('brandNewLoan.prepaymentPenalty', idPrefix, targetForm);
     const statementBalanceBinding = useFieldBinding('brandNewLoan.statementBalance.amount', idPrefix, targetForm);
     const attachedToPropertyBinding = useSelectFieldBinding('brandNewLoan.attachedToProperty', idPrefix, targetForm);
@@ -3590,17 +3589,6 @@ export default function AdminAddClient() {
                       <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor={newLoanAmountBinding.id}>New Loan Amount</Label>
-                  <CurrencyInput
-                    form={targetForm}
-                    name="brandNewLoan.newLoanAmount"
-                    placeholder="$0"
-                    id={newLoanAmountBinding.id}
-                    data-testid={newLoanAmountBinding['data-testid']}
-                  />
                 </div>
                 
                 <div className="space-y-2">
@@ -11876,8 +11864,8 @@ export default function AdminAddClient() {
                             const properties = form.watch('property.properties') || [];
                             const subjectProperty = properties.find(p => p.isSubject === true);
                             
-                            // Get the New Loan amount from Brand New Loan card
-                            const loanAmount = form.watch('brandNewLoan.newLoanAmount') || '';
+                            // Get the New Loan amount
+                            const loanAmount = form.watch('newLoan.loanAmount') || '';
                             
                             // If no subject property or loan amount, return default %
                             if (!subjectProperty || !loanAmount || loanAmount.trim() === '') {
@@ -11938,8 +11926,8 @@ export default function AdminAddClient() {
                             const properties = form.watch('property.properties') || [];
                             const subjectProperty = properties.find(p => p.isSubject === true);
                             
-                            // Get the New Loan amount from Brand New Loan card
-                            const loanAmount = form.watch('brandNewLoan.newLoanAmount') || '';
+                            // Get the New Loan amount
+                            const loanAmount = form.watch('newLoan.loanAmount') || '';
                             
                             // If no subject property or loan amount, return default %
                             if (!subjectProperty || !loanAmount || loanAmount.trim() === '') {
