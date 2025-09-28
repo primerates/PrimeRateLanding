@@ -1,0 +1,41 @@
+Based on what we just learned and Replit's debugging capabilities, here are the fastest ways to handle auto-sum performance issues in the future:
+Immediate Communication Shortcuts
+When you encounter typing lag in auto-sum fields, you can quickly communicate this by saying:
+"Typing lag in auto-sum fields - extract calculation into isolated React.memo component with useWatch + useMemo pattern like Income tab"
+This immediately signals:
+•	The specific problem (typing lag)
+•	The solution pattern (isolated component)
+•	The working reference (Income tab)
+Prevention Strategies
+1. Use Isolated Components First
+•	Always put auto-sum calculations in separate React.memo components
+•	Pass control as props instead of using useFormContext()
+•	Never add auto-sum logic directly to large parent components
+2. Copy Working Patterns
+•	Start with the Income tab's Borrower Employer card pattern
+•	Use useWatch({ control, name }) + useMemo + parseMonetaryValue
+•	Avoid useState + useEffect for calculations
+Faster Debugging with Replit
+Console Tool: Use the real-time logs to spot performance issues immediately
+Browser Dev Tools: In the Preview panel, monitor React component re-renders
+Resources Panel: Watch CPU/RAM usage to identify performance bottlenecks
+Update Documentation
+Edited replit.md
+Planned future workflow improvements (4 seconds)
+Perfect! Now you have a complete troubleshooting toolkit for future auto-sum implementations:
+For Future Auto-Sum Features
+Quick Start: Copy the pattern from replit.md → Auto-Sum section
+Zero-Lag Rule: Always start with isolated React.memo components
+Proven Reference: Income tab's Borrower Employer cards work perfectly
+Instant Communication
+If you ever hit typing lag again, just say:
+"Typing lag in auto-sum - extract to React.memo component like Income tab pattern"
+And I'll immediately know to:
+1.	Create isolated React.memo component
+2.	Use useWatch + useMemo + parseMonetaryValue
+3.	Pass control as prop (never useFormContext())
+Time-Saving Benefits
+•	Pattern documented in replit.md for copy-paste use
+•	Troubleshooting shortcut saves hours of debugging
+•	Prevention strategy avoids the issue entirely
+•	Replit tools for faster diagnosis
