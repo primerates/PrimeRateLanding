@@ -525,6 +525,19 @@ export default function AdminAddClient() {
       });
     }
     
+    // Check purchase loan
+    const purchaseLoanAttached = form.watch('purchaseLoan.attachedToProperty');
+    if (purchaseLoanAttached === propertyId) {
+      form.setValue('purchaseLoan.propertyAddress', {
+        street: propertyAddress.street || '',
+        unit: propertyAddress.unit || '',
+        city: propertyAddress.city || '',
+        state: propertyAddress.state || '',
+        zipCode: propertyAddress.zip || '',
+        county: propertyAddress.county || ''
+      });
+    }
+    
     // Check all additional loans (loan3, loan4, loan5, etc.)
     additionalLoans.forEach(loan => {
       const additionalLoanAttached = getDyn(`${loan.id}.attachedToProperty`);
