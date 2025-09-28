@@ -15406,7 +15406,7 @@ export default function AdminAddClient() {
                           htmlFor="property-type-primary-loan-tab" 
                           className="font-medium text-black cursor-pointer"
                         >
-                          New Primary Loan
+                          New Loan - Refinance
                         </Label>
                       </div>
 
