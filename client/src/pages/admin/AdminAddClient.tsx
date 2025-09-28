@@ -563,6 +563,8 @@ export default function AdminAddClient() {
   const [showThirdLoanCardAnimation, setShowThirdLoanCardAnimation] = useState<{[key: string]: boolean}>({});
   // Animation state for brand new loan card grey box roll-up
   const [showBrandNewLoanCardAnimation, setShowBrandNewLoanCardAnimation] = useState<{[key: string]: boolean}>({});
+  // Animation state for purchase loan card grey box roll-up
+  const [showPurchaseLoanCardAnimation, setShowPurchaseLoanCardAnimation] = useState<{[key: string]: boolean}>({});
   // Animation state for revert icon rotation
   const [showRevertAnimation, setShowRevertAnimation] = useState(false);
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
@@ -576,6 +578,8 @@ export default function AdminAddClient() {
   const [isThirdLoanOpen, setIsThirdLoanOpen] = useState(true);
   const [showBrandNewLoan, setShowBrandNewLoan] = useState(false);
   const [isBrandNewLoanOpen, setIsBrandNewLoanOpen] = useState(true);
+  const [showPurchaseLoan, setShowPurchaseLoan] = useState(false);
+  const [isPurchaseLoanOpen, setIsPurchaseLoanOpen] = useState(true);
   const [additionalLoans, setAdditionalLoans] = useState<Array<{id: string, isOpen: boolean}>>([]);
   const [isThirdLoanPropertyAddressOpen, setIsThirdLoanPropertyAddressOpen] = useState(false);
   
@@ -991,6 +995,9 @@ export default function AdminAddClient() {
   // Brand New Loan card collapsible state (per-card state management)
   const [brandNewLoanCardStates, setBrandNewLoanCardStates] = useState<Record<string, boolean>>({});
   
+  // Purchase Loan card collapsible state (per-card state management)
+  const [purchaseLoanCardStates, setPurchaseLoanCardStates] = useState<Record<string, boolean>>({});
+  
   // Borrower Employer cards state management
   const [borrowerEmployerCards, setBorrowerEmployerCards] = useState<string[]>([]);
   
@@ -1061,6 +1068,14 @@ export default function AdminAddClient() {
   const [brandNewLoanData, setBrandNewLoanData] = useState<Record<string, {
     isDefaultCard: boolean | null; // null = not selected, true = default card created
   }>>({});
+
+  // Purchase Loan cards state management (similar to brand new loan cards)
+  const [purchaseLoanCards, setPurchaseLoanCards] = useState<string[]>([]);
+  
+  // Purchase Loan card data state
+  const [purchaseLoanData, setPurchaseLoanData] = useState<Record<string, {
+    isDefaultCard: boolean | null; // null = not selected, true = default card created
+  }>>({});
   
   // Employment dates state for each card
   const [employmentDates, setEmploymentDates] = useState<Record<string, {
@@ -1126,6 +1141,12 @@ export default function AdminAddClient() {
 
   // Delete confirmation dialog state for Brand New Loan cards
   const [deleteBrandNewLoanDialog, setDeleteBrandNewLoanDialog] = useState<{
+    isOpen: boolean;
+    cardId: string;
+  }>({ isOpen: false, cardId: '' });
+
+  // Delete confirmation dialog state for Purchase Loan cards
+  const [deletePurchaseLoanDialog, setDeletePurchaseLoanDialog] = useState<{
     isOpen: boolean;
     cardId: string;
   }>({ isOpen: false, cardId: '' });
@@ -3519,7 +3540,7 @@ export default function AdminAddClient() {
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>New Primary Loan</CardTitle>
+              <CardTitle>New Loan - Refinance</CardTitle>
               <div className="flex items-center gap-2">
                 
                 {/* Remove Button */}
@@ -4039,6 +4060,173 @@ export default function AdminAddClient() {
                   </div>
                 </CardContent>
               </Card>
+            </CardContent>
+          </CollapsibleContent>
+        </Collapsible>
+      </Card>
+    );
+  };
+
+  // PurchaseLoanCard component - duplicate of BrandNewLoanCard with different form bindings
+  const PurchaseLoanCard = ({ 
+    idPrefix = '', 
+    borderVariant, 
+    isOpen, 
+    setIsOpen, 
+    onRemove, 
+    onAutoCopyAddress,
+    formInstance 
+  }: {
+    idPrefix?: string;
+    borderVariant: 'blue' | 'none';
+    isOpen: boolean;
+    setIsOpen: (open: boolean) => void;
+    onRemove?: () => void;
+    onAutoCopyAddress?: () => void;
+    formInstance?: any;
+  }) => {
+    const contextForm = useFormContext();
+    const targetForm = formInstance || contextForm;
+    
+    // State for property address collapse
+    const [isPropertyAddressOpen, setIsPropertyAddressOpen] = useState(true);
+    const currentLenderBinding = useFieldBinding('purchaseLoan.currentLender', idPrefix, targetForm);
+    const loanNumberBinding = useFieldBinding('purchaseLoan.loanNumber', idPrefix, targetForm);
+    const docTypeBinding = useSelectFieldBinding('purchaseLoan.docType', idPrefix, targetForm);
+    const remainingTermBinding = useFieldBinding('purchaseLoan.remainingTermPerCreditReport', idPrefix, targetForm);
+    const loanCategoryBinding = useSelectFieldBinding('purchaseLoan.loanCategory', idPrefix, targetForm);
+    const loanProgramBinding = useSelectFieldBinding('purchaseLoan.loanProgram', idPrefix, targetForm);
+    const loanTermBinding = useSelectFieldBinding('purchaseLoan.loanTerm', idPrefix, targetForm);
+    const loanPurposeBinding = useSelectFieldBinding('purchaseLoan.loanPurpose', idPrefix, targetForm);
+    const prepaymentPenaltyBinding = useSelectFieldBinding('purchaseLoan.prepaymentPenalty', idPrefix, targetForm);
+    const statementBalanceBinding = useFieldBinding('purchaseLoan.statementBalance.amount', idPrefix, targetForm);
+    const attachedToPropertyBinding = useSelectFieldBinding('purchaseLoan.attachedToProperty', idPrefix, targetForm);
+    
+    // Payment field bindings - optimized for performance
+    const currentRateBinding = useFieldBinding('purchaseLoan.currentRate', idPrefix, targetForm);
+    const totalMonthlyPaymentBinding = useFieldBinding('purchaseLoan.totalMonthlyPayment', idPrefix, targetForm);
+    
+    // Property address bindings
+    const propertyStreetBinding = useFieldBinding('purchaseLoan.propertyAddress.street', idPrefix, targetForm);
+    const propertyUnitBinding = useFieldBinding('purchaseLoan.propertyAddress.unit', idPrefix, targetForm);
+    const propertyCityBinding = useFieldBinding('purchaseLoan.propertyAddress.city', idPrefix, targetForm);
+    const propertyStateBinding = useSelectFieldBinding('purchaseLoan.propertyAddress.state', idPrefix, targetForm);
+    const propertyZipBinding = useFieldBinding('purchaseLoan.propertyAddress.zipCode', idPrefix, targetForm);
+    const propertyCountyBinding = useFieldBinding('purchaseLoan.propertyAddress.county', idPrefix, targetForm);
+    
+    const cardClassName = borderVariant === 'blue' ? 'border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200' : '';
+    
+    return (
+      <Card className={cardClassName}>
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>New Loan - Purchase</CardTitle>
+              <div className="flex items-center gap-2">
+                
+                {/* Remove Button */}
+                {onRemove && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={onRemove}
+                    className="hover:bg-red-500 hover:text-white"
+                    data-testid="button-remove-purchase-loan"
+                    title="Remove Purchase Loan"
+                  >
+                    <Minus className="h-4 w-4 mr-2" />
+                    Remove
+                  </Button>
+                )}
+                
+                <CollapsibleTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="hover:bg-orange-500 hover:text-white" 
+                    data-testid={`button-toggle-purchase-loan-${idPrefix}`}
+                    title={isOpen ? 'Minimize' : 'Expand'}
+                  >
+                    {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                  </Button>
+                </CollapsibleTrigger>
+              </div>
+            </div>
+          </CardHeader>
+          <CollapsibleContent>
+            <CardContent>
+              {/* Note: Using same field structure as BrandNewLoanCard but with 'purchaseLoan' prefix */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor={currentLenderBinding.id} className="text-sm">Current Lender</Label>
+                  <Input
+                    id={currentLenderBinding.id}
+                    {...currentLenderBinding.field}
+                    placeholder="Enter lender name"
+                    data-testid={currentLenderBinding['data-testid']}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={loanNumberBinding.id} className="text-sm">Loan Number</Label>
+                  <Input
+                    id={loanNumberBinding.id}
+                    {...loanNumberBinding.field}
+                    placeholder="Enter loan number"
+                    data-testid={loanNumberBinding['data-testid']}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-sm">Attached to Property</Label>
+                  <Select {...attachedToPropertyBinding.field}>
+                    <SelectTrigger data-testid={attachedToPropertyBinding['data-testid']}>
+                      <SelectValue placeholder="Select property" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      {(() => {
+                        const properties = targetForm.watch('property.properties') || [];
+                        return properties
+                          .filter((property: any) => property.address?.street || property.use === 'primary')
+                          .map((property: any, index: number) => {
+                            const address = property.address;
+                            const streetAddress = address?.street;
+                            const city = address?.city;
+                            const state = address?.state;
+                            const zipCode = address?.zip;
+                            
+                            let displayText;
+                            
+                            if (property.use === 'primary' && !streetAddress) {
+                              displayText = 'Primary Residence';
+                            } else {
+                              displayText = streetAddress || 'Property';
+                              if (city && state) {
+                                displayText += `, ${city}, ${state}`;
+                              } else if (city) {
+                                displayText += `, ${city}`;
+                              } else if (state) {
+                                displayText += `, ${state}`;
+                              }
+                              if (zipCode) {
+                                displayText += ` ${zipCode}`;
+                              }
+                            }
+                            
+                            return (
+                              <SelectItem key={`property-${property.id}`} value={property.id}>
+                                {displayText}
+                              </SelectItem>
+                            );
+                          });
+                      })()}
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
             </CardContent>
           </CollapsibleContent>
         </Collapsible>
@@ -6252,6 +6440,93 @@ export default function AdminAddClient() {
     
     // Close the dialog
     setDeleteBrandNewLoanDialog({ isOpen: false, cardId: '' });
+  };
+
+  // Handle purchase loan type change
+  const handlePurchaseLoanTypeChange = (checked: boolean) => {
+    if (!checked) {
+      // Allow unchecking - remove all Purchase Loan cards
+      const hasCards = (purchaseLoanCards || []).length > 0;
+      
+      if (hasCards) {
+        // Remove all Purchase Loan cards when unchecked
+        setPurchaseLoanCards([]);
+        setPurchaseLoanData({});
+        setPurchaseLoanCardStates({});
+        setShowPurchaseLoan(false);
+        
+        // Clear any Purchase Loan form data
+        form.setValue('purchaseLoan', undefined);
+        return;
+      }
+    } else {
+      // When checking, auto-create default loan card
+      const hasCards = (purchaseLoanCards || []).length > 0;
+      
+      // Only create default loan card if none exist yet
+      if (!hasCards) {
+        // Generate a unique ID for the default loan card
+        const newLoanId = `purchase-loan-${Date.now()}`;
+        
+        // Set the loan cards state
+        setPurchaseLoanCards([newLoanId]);
+        
+        // Initialize data state for default card
+        setPurchaseLoanData(prev => ({ 
+          ...prev, 
+          [newLoanId]: { isDefaultCard: true } 
+        }));
+        
+        // Initialize per-card collapsible state (auto-expand like Property cards)
+        setPurchaseLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
+        
+        // Auto-expand the loan card
+        setShowPurchaseLoan(true);
+        
+        // Auto-attach to subject property if one exists
+        const properties = form.watch('property.properties') || [];
+        const subjectProperty = properties.find(p => p.isSubject);
+        if (subjectProperty?.id) {
+          form.setValue('purchaseLoan.attachedToProperty', subjectProperty.id);
+        }
+        
+        // Trigger animation for newly created loan card grey box
+        setTimeout(() => {
+          const animationKey = 'purchase-card-0-';
+          setShowPurchaseLoanCardAnimation(prev => ({ ...prev, [animationKey]: true }));
+          setTimeout(() => {
+            setShowPurchaseLoanCardAnimation(prev => ({ ...prev, [animationKey]: false }));
+          }, 800);
+        }, 200);
+      }
+    }
+  };
+
+  // Handle removing purchase loan cards (new system)
+  const removePurchaseLoanCard = (cardId: string) => {
+    // Remove the specific card from cards array
+    setPurchaseLoanCards(prev => prev.filter(id => id !== cardId));
+    
+    // Remove data state for this card
+    setPurchaseLoanData(prev => {
+      const { [cardId]: _, ...rest } = prev;
+      return rest;
+    });
+    
+    // Remove per-card collapsible state
+    setPurchaseLoanCardStates(prev => {
+      const { [cardId]: _, ...rest } = prev;
+      return rest;
+    });
+    
+    // If no cards remain, hide the purchase loan section
+    const remainingCards = purchaseLoanCards.filter(id => id !== cardId);
+    if (remainingCards.length === 0) {
+      setShowPurchaseLoan(false);
+    }
+    
+    // Close the dialog
+    setDeletePurchaseLoanDialog({ isOpen: false, cardId: '' });
   };
 
   // Property type management functions
@@ -15413,11 +15688,19 @@ export default function AdminAddClient() {
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="property-type-purchase-loan-tab"
-                          disabled
+                          checked={(purchaseLoanCards || []).length > 0}
+                          onCheckedChange={(checked) => {
+                            if (checked !== null) {
+                              handlePurchaseLoanTypeChange(checked);
+                            }
+                          }}
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
                           data-testid="checkbox-property-purchase-loan-tab"
                         />
-                        <Label htmlFor="property-type-purchase-loan-tab" className="font-medium text-black">
+                        <Label 
+                          htmlFor="property-type-purchase-loan-tab" 
+                          className="font-medium text-black cursor-pointer"
+                        >
                           New Loan - Purchase
                         </Label>
                       </div>
@@ -15576,6 +15859,54 @@ export default function AdminAddClient() {
                       if (subjectProperty?.address) {
                         const address = subjectProperty.address;
                         form.setValue('brandNewLoan.propertyAddress', {
+                          street: address.street || '',
+                          unit: address.unit || '',
+                          city: address.city || '',
+                          state: address.state || '',
+                          zipCode: address.zip || '',
+                          county: address.county || ''
+                        });
+                      }
+                    }}
+                    formInstance={form}
+                  />
+                );
+              })}
+
+              {/* Purchase Loan Cards - Dynamic multiple card system like Brand New Loan Cards */}
+              {(purchaseLoanCards || []).map((cardId, index) => {
+                const isOpen = purchaseLoanCardStates[cardId] ?? true; // Per-card state like Property cards
+                
+                return (
+                  <PurchaseLoanCard
+                    key={cardId}
+                    idPrefix={`purchase-card-${index}-`}
+                    borderVariant="blue"
+                    isOpen={isOpen}
+                    setIsOpen={(open) => {
+                      setPurchaseLoanCardStates(prev => ({ ...prev, [cardId]: open }));
+                      // Trigger grey box animation when card is opened (copied from Brand New Loan)
+                      if (open) {
+                        const animationKey = `purchase-card-${index}-`;
+                        setShowPurchaseLoanCardAnimation(prev => ({ ...prev, [animationKey]: true }));
+                        setTimeout(() => {
+                          setShowPurchaseLoanCardAnimation(prev => ({ ...prev, [animationKey]: false }));
+                        }, 800);
+                      }
+                    }}
+                    onRemove={() => {
+                      setDeletePurchaseLoanDialog({
+                        isOpen: true,
+                        cardId: cardId
+                      });
+                    }}
+                    onAutoCopyAddress={() => {
+                      // Auto-copy property address to Purchase Loan (similar to other loans)
+                      const properties = form.watch('property.properties') || [];
+                      const subjectProperty = properties.find(p => p.isSubject);
+                      if (subjectProperty?.address) {
+                        const address = subjectProperty.address;
+                        form.setValue('purchaseLoan.propertyAddress', {
                           street: address.street || '',
                           unit: address.unit || '',
                           city: address.city || '',
@@ -17234,6 +17565,33 @@ export default function AdminAddClient() {
             <AlertDialogAction 
               onClick={() => removeBrandNewLoanCard(deleteBrandNewLoanDialog.cardId)}
               data-testid="button-confirm-delete-brand-new-loan"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Purchase Loan Card Confirmation Dialog */}
+      <AlertDialog open={deletePurchaseLoanDialog.isOpen} onOpenChange={(open) => !open && setDeletePurchaseLoanDialog({ isOpen: false, cardId: '' })}>
+        <AlertDialogContent data-testid="dialog-delete-purchase-loan">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Purchase Loan</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove this Purchase Loan card? This will clear all entered data for this loan. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeletePurchaseLoanDialog({ isOpen: false, cardId: '' })}
+              data-testid="button-cancel-delete-purchase-loan"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => removePurchaseLoanCard(deletePurchaseLoanDialog.cardId)}
+              data-testid="button-confirm-delete-purchase-loan"
               className="bg-red-600 hover:bg-red-700"
             >
               Remove
