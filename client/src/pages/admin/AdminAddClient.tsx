@@ -546,6 +546,8 @@ export default function AdminAddClient() {
   const [showCurrentLoanCardAnimation, setShowCurrentLoanCardAnimation] = useState<{[key: string]: boolean}>({});
   // Animation state for second loan card grey box roll-up
   const [showSecondLoanCardAnimation, setShowSecondLoanCardAnimation] = useState<{[key: string]: boolean}>({});
+  // Animation state for third loan card grey box roll-up
+  const [showThirdLoanCardAnimation, setShowThirdLoanCardAnimation] = useState<{[key: string]: boolean}>({});
   // Animation state for revert icon rotation
   const [showRevertAnimation, setShowRevertAnimation] = useState(false);
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
