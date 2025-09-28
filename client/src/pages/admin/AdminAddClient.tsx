@@ -3169,11 +3169,10 @@ export default function AdminAddClient() {
         const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
         
         if (daysDiff > 0) {
-          // Calculate duration but don't auto-switch the toggle - keep in expiration mode
-          // Store calculated duration in temp state for potential future use
-          // Only auto-switch if user manually changes toggle later
-          // For now, keep the interface in expiration mode as requested
-          // Clear temp state after calculation
+          // Switch to duration mode and auto-fill the calculated days (keep existing behavior)
+          setBrandNewLoanExpirationDurationType('duration');
+          form.setValue('brandNewLoan.rateLockDuration', `${daysDiff} days`);
+          // Clear temp state after conversion
           setTempExpirationDate('');
         }
       } catch (error) {
