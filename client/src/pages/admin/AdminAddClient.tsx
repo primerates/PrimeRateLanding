@@ -14534,7 +14534,7 @@ export default function AdminAddClient() {
                           data-testid="checkbox-property-second-home-loan-tab"
                         />
                         <Label htmlFor="property-type-second-home-loan-tab" className="font-medium text-black">
-                          New Second Loan (HELOC)
+                          New Second Loan
                         </Label>
                       </div>
 
@@ -14546,7 +14546,7 @@ export default function AdminAddClient() {
                           data-testid="checkbox-property-investment-loan-tab"
                         />
                         <Label htmlFor="property-type-investment-loan-tab" className="font-medium text-black">
-                          New Second Loan (Fixed)
+                          New Builder Loan
                         </Label>
                       </div>
 
