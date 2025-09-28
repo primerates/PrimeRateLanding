@@ -1357,6 +1357,12 @@ export default function AdminAddClient() {
   // Current Second Loan escrow toggle state (3-state cycle)
   const [secondLoanEscrowType, setSecondLoanEscrowType] = useState<'tax-insurance' | 'insurance-only' | 'property-tax-only'>('tax-insurance');
 
+  // Brand New Loan toggle states
+  const [brandNewLoanEscrowType, setBrandNewLoanEscrowType] = useState<'tax-insurance' | 'insurance-only' | 'property-tax-only'>('tax-insurance');
+  const [brandNewLoanPaymentType, setBrandNewLoanPaymentType] = useState<'principal-interest' | 'interest-only'>('principal-interest');
+  const [brandNewLoanCashOutType, setBrandNewLoanCashOutType] = useState<'cash-out' | 'benefits-summary'>('cash-out');
+  const [brandNewLoanDebtPayOffType, setBrandNewLoanDebtPayOffType] = useState<'total-debt-payoff' | 'total-debt-payments'>('total-debt-payoff');
+
   // Helper function to get Current Primary Loan escrow label and handle toggle cycling
   const getCurrentLoanEscrowLabel = () => {
     switch (currentLoanEscrowType) {
@@ -1395,6 +1401,81 @@ export default function AdminAddClient() {
         case 'insurance-only': return 'property-tax-only';
         case 'property-tax-only': return 'tax-insurance';
         default: return 'tax-insurance';
+      }
+    });
+  };
+
+  // Brand New Loan toggle functions
+  const getBrandNewLoanEscrowLabel = () => {
+    switch (brandNewLoanEscrowType) {
+      case 'tax-insurance': return 'Tax & Insurance Payment';
+      case 'insurance-only': return 'Insurance Payment';
+      case 'property-tax-only': return 'Property Tax Payment';
+      default: return 'Tax & Insurance Payment';
+    }
+  };
+
+  const cycleBrandNewLoanEscrowType = () => {
+    setBrandNewLoanEscrowType(current => {
+      switch (current) {
+        case 'tax-insurance': return 'insurance-only';
+        case 'insurance-only': return 'property-tax-only';
+        case 'property-tax-only': return 'tax-insurance';
+        default: return 'tax-insurance';
+      }
+    });
+  };
+
+  const getBrandNewLoanPaymentLabel = () => {
+    switch (brandNewLoanPaymentType) {
+      case 'principal-interest': return 'Principal & Interest Payment';
+      case 'interest-only': return 'Interest Only Payment';
+      default: return 'Principal & Interest Payment';
+    }
+  };
+
+  const cycleBrandNewLoanPaymentType = () => {
+    setBrandNewLoanPaymentType(current => {
+      switch (current) {
+        case 'principal-interest': return 'interest-only';
+        case 'interest-only': return 'principal-interest';
+        default: return 'principal-interest';
+      }
+    });
+  };
+
+  const getBrandNewLoanCashOutLabel = () => {
+    switch (brandNewLoanCashOutType) {
+      case 'cash-out': return 'Cash Out Amount';
+      case 'benefits-summary': return 'Benefits Summary';
+      default: return 'Cash Out Amount';
+    }
+  };
+
+  const cycleBrandNewLoanCashOutType = () => {
+    setBrandNewLoanCashOutType(current => {
+      switch (current) {
+        case 'cash-out': return 'benefits-summary';
+        case 'benefits-summary': return 'cash-out';
+        default: return 'cash-out';
+      }
+    });
+  };
+
+  const getBrandNewLoanDebtPayOffLabel = () => {
+    switch (brandNewLoanDebtPayOffType) {
+      case 'total-debt-payoff': return 'Total Debt Pay Off';
+      case 'total-debt-payments': return 'Total Debt Pay Off Payments';
+      default: return 'Total Debt Pay Off';
+    }
+  };
+
+  const cycleBrandNewLoanDebtPayOffType = () => {
+    setBrandNewLoanDebtPayOffType(current => {
+      switch (current) {
+        case 'total-debt-payoff': return 'total-debt-payments';
+        case 'total-debt-payments': return 'total-debt-payoff';
+        default: return 'total-debt-payoff';
       }
     });
   };
@@ -3543,21 +3624,50 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor={`${idPrefix}brandNewLoan-loanTerm`}>Cash Out Amount</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
+                  <div className="flex items-center justify-between mb-2">
+                    <Label htmlFor={`${idPrefix}brandNewLoan-loanTerm`} className="text-sm">
+                      {getBrandNewLoanCashOutLabel()}
+                    </Label>
+                    <Switch
+                      checked={brandNewLoanCashOutType === 'cash-out'}
+                      onCheckedChange={cycleBrandNewLoanCashOutType}
+                      data-testid="toggle-brandNewLoan-cashOut-type"
+                      className="scale-[0.8]"
+                    />
+                  </div>
+                  {brandNewLoanCashOutType === 'cash-out' ? (
+                    <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                      <span className="text-muted-foreground text-sm">$</span>
+                      <Input
+                        id={`${idPrefix}brandNewLoan-loanTerm`}
+                        {...loanTermBinding.field}
+                        placeholder="0.00"
+                        className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                        data-testid={loanTermBinding['data-testid']}
+                      />
+                    </div>
+                  ) : (
                     <Input
                       id={`${idPrefix}brandNewLoan-loanTerm`}
                       {...loanTermBinding.field}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      placeholder="Enter benefits summary"
                       data-testid={loanTermBinding['data-testid']}
                     />
-                  </div>
+                  )}
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor={remainingTermBinding.id}>Total Debt Pay Off</Label>
+                  <div className="flex items-center justify-between mb-2">
+                    <Label htmlFor={remainingTermBinding.id} className="text-sm">
+                      {getBrandNewLoanDebtPayOffLabel()}
+                    </Label>
+                    <Switch
+                      checked={brandNewLoanDebtPayOffType === 'total-debt-payoff'}
+                      onCheckedChange={cycleBrandNewLoanDebtPayOffType}
+                      data-testid="toggle-brandNewLoan-debtPayOff-type"
+                      className="scale-[0.8]"
+                    />
+                  </div>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
@@ -3592,7 +3702,17 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="brandNewLoan-principalInterestPayment">Principal & Interest Payment</Label>
+                  <div className="flex items-center justify-between mb-2">
+                    <Label htmlFor="brandNewLoan-principalInterestPayment" className="text-sm">
+                      {getBrandNewLoanPaymentLabel()}
+                    </Label>
+                    <Switch
+                      checked={brandNewLoanPaymentType === 'principal-interest'}
+                      onCheckedChange={cycleBrandNewLoanPaymentType}
+                      data-testid="toggle-brandNewLoan-payment-type"
+                      className="scale-[0.8]"
+                    />
+                  </div>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
@@ -3608,8 +3728,14 @@ export default function AdminAddClient() {
                 <div className="space-y-2 md:col-span-2">
                   <div className="flex items-center justify-between mb-2">
                     <Label htmlFor="brandNewLoan-monthlyEscrow" className="text-sm">
-                      Tax & Insurance Payment
+                      {getBrandNewLoanEscrowLabel()}
                     </Label>
+                    <Switch
+                      checked={brandNewLoanEscrowType === 'tax-insurance'}
+                      onCheckedChange={cycleBrandNewLoanEscrowType}
+                      data-testid="toggle-brandNewLoan-escrow-type"
+                      className="scale-[0.8]"
+                    />
                   </div>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
