@@ -11842,7 +11842,7 @@ export default function AdminAddClient() {
                                             <span className="text-xs font-semibold text-white">S</span>
                                           </div>
                                           <div 
-                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer ${
+                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center ${
                                               isThirdLoanAttached
                                                 ? 'bg-orange-500 border-orange-500 hover:bg-orange-600'
                                                 : 'bg-gray-200 border-gray-300'
@@ -11858,7 +11858,9 @@ export default function AdminAddClient() {
                                             }}
                                             title={isThirdLoanAttached ? "View Current Third Loan Details" : ""}
                                             data-testid={`indicator-secured-loan-3-${propertyId}`}
-                                          />
+                                          >
+                                            <span className="text-xs font-semibold text-white">T</span>
+                                          </div>
                                         </div>
                                       );
                                     })()}
