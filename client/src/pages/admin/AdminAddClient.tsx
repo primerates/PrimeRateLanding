@@ -4169,73 +4169,73 @@ export default function AdminAddClient() {
           </CardHeader>
           <CollapsibleContent>
             <CardContent>
-              {/* Note: Using same field structure as BrandNewLoanCard but with 'purchaseLoan' prefix */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Row 1: Current Lender, Loan Number, Loan Purpose, Doc Type, Pre-Payment Penalty */}
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor={currentLenderBinding.id} className="text-sm">Current Lender</Label>
+                  <Label htmlFor={currentLenderBinding.id}>Lender Name</Label>
                   <Input
                     id={currentLenderBinding.id}
                     {...currentLenderBinding.field}
-                    placeholder="Enter lender name"
                     data-testid={currentLenderBinding['data-testid']}
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor={loanNumberBinding.id} className="text-sm">Loan Number</Label>
+                  <Label htmlFor="purchaseLoan-loanNumber">Loan Number</Label>
                   <Input
-                    id={loanNumberBinding.id}
-                    {...loanNumberBinding.field}
-                    placeholder="Enter loan number"
-                    data-testid={loanNumberBinding['data-testid']}
+                    id="purchaseLoan-loanNumber"
+                    {...targetForm.register('purchaseLoan.loanNumber')}
+                    data-testid="input-purchaseLoan-loanNumber"
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <Label className="text-sm">Attached to Property</Label>
-                  <Select {...attachedToPropertyBinding.field}>
-                    <SelectTrigger data-testid={attachedToPropertyBinding['data-testid']}>
-                      <SelectValue placeholder="Select property" />
+                  <Label htmlFor={`${idPrefix}purchaseLoan-loanPurpose`}>Loan Purpose</Label>
+                  <Select {...loanPurposeBinding}>
+                    <SelectTrigger data-testid={loanPurposeBinding['data-testid']}>
+                      <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="select">Select</SelectItem>
-                      {(() => {
-                        const properties = targetForm.watch('property.properties') || [];
-                        return properties
-                          .filter((property: any) => property.address?.street || property.use === 'primary')
-                          .map((property: any, index: number) => {
-                            const address = property.address;
-                            const streetAddress = address?.street;
-                            const city = address?.city;
-                            const state = address?.state;
-                            const zipCode = address?.zip;
-                            
-                            let displayText;
-                            
-                            if (property.use === 'primary' && !streetAddress) {
-                              displayText = 'Primary Residence';
-                            } else {
-                              displayText = streetAddress || 'Property';
-                              if (city && state) {
-                                displayText += `, ${city}, ${state}`;
-                              } else if (city) {
-                                displayText += `, ${city}`;
-                              } else if (state) {
-                                displayText += `, ${state}`;
-                              }
-                              if (zipCode) {
-                                displayText += ` ${zipCode}`;
-                              }
-                            }
-                            
-                            return (
-                              <SelectItem key={`property-${property.id}`} value={property.id}>
-                                {displayText}
-                              </SelectItem>
-                            );
-                          });
-                      })()}
-                      <SelectItem value="Other">Other</SelectItem>
+                      <SelectItem value="cash-out">Cash Out</SelectItem>
+                      <SelectItem value="rate-reduction">Rate Reduction</SelectItem>
+                      <SelectItem value="term-reduction">Term Reduction</SelectItem>
+                      <SelectItem value="purchase">Purchase</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}purchaseLoan-docType`}>Doc Type</Label>
+                  <Select {...docTypeBinding}>
+                    <SelectTrigger data-testid={docTypeBinding['data-testid']}>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      <SelectItem value="full-doc">Full Doc</SelectItem>
+                      <SelectItem value="streamline">Streamline</SelectItem>
+                      <SelectItem value="irrrl">IRRRL</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}purchaseLoan-prepaymentPenalty`}>Pre-Payment Penalty</Label>
+                  <Select {...prepaymentPenaltyBinding}>
+                    <SelectTrigger data-testid={prepaymentPenaltyBinding['data-testid']}>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      <SelectItem value="No">No</SelectItem>
+                      <SelectItem value="Yes - 6 Months">Yes - 6 Months</SelectItem>
+                      <SelectItem value="Yes - 1 Year">Yes - 1 Year</SelectItem>
+                      <SelectItem value="Yes - 2 Years">Yes - 2 Years</SelectItem>
+                      <SelectItem value="Yes - 3 Years">Yes - 3 Years</SelectItem>
+                      <SelectItem value="Yes - 4 Years">Yes - 4 Years</SelectItem>
+                      <SelectItem value="Yes - 5 Years">Yes - 5 Years</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
