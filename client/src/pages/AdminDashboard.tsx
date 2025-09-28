@@ -145,8 +145,10 @@ export default function AdminDashboard() {
       className="min-h-screen bg-background relative"
       style={getBackgroundStyle()}
     >
-      {/* Faded overlay to make background subtle */}
-      <div className="absolute inset-0 bg-background/85" />
+      {/* Faded overlay to make background subtle - only for animated backgrounds */}
+      {isAnimated() && (
+        <div className="absolute inset-0 bg-background/85" />
+      )}
       
       {/* Progressive focus overlay - only for animated backgrounds */}
       {isAnimated() && (
