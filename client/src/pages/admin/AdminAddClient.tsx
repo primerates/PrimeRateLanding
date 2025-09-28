@@ -3629,15 +3629,15 @@ export default function AdminAddClient() {
               {/* Row 2: New Loan Amount, Loan Category, Loan Term, Cash Out Amount, Total Debt Pay Off */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="brandNewLoan-currentBalance">New Loan Amount</Label>
+                  <Label htmlFor="newLoan-loanAmount">Loan Amount</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
-                      id="brandNewLoan-currentBalance"
-                      {...targetForm.register('brandNewLoan.statementBalance.amount')}
+                      id="newLoan-loanAmount"
+                      {...form.register('newLoan.loanAmount')}
                       placeholder="0.00"
                       className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-brandNewLoan-currentBalance"
+                      data-testid="input-newLoan-loanAmount"
                     />
                   </div>
                 </div>
@@ -15571,16 +15571,6 @@ export default function AdminAddClient() {
                   </CardHeader>
                   <CollapsibleContent>
                     <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-[1.7rem]">
-                      <div className="space-y-2">
-                        <Label htmlFor="newLoan-loanAmount">Loan Amount</Label>
-                        <Input
-                          id="newLoan-loanAmount"
-                          {...form.register('newLoan.loanAmount')}
-                          placeholder="$0.00"
-                          data-testid="input-newLoan-loanAmount"
-                        />
-                      </div>
-                      
                     </CardContent>
                   </CollapsibleContent>
                 </Collapsible>
