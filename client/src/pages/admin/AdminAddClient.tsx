@@ -1650,6 +1650,29 @@ export default function AdminAddClient() {
     });
   };
 
+  // Calculate Mid FICO value based on borrower and co-borrower scores
+  const getCalculatedMidFico = () => {
+    const borrowerMidFico = borrowerCreditScoresDialog.midFico;
+    const coBorrowerMidFico = coBorrowerCreditScoresDialog.midFico;
+
+    // If no Co-Borrower, return Borrower Mid FICO value or "Pending"
+    if (!hasCoBorrower) {
+      return borrowerMidFico || "Pending";
+    }
+
+    // If Co-Borrower exists, both scores must be present to calculate
+    if (borrowerMidFico && coBorrowerMidFico) {
+      const borrowerScore = parseInt(borrowerMidFico);
+      const coBorrowerScore = parseInt(coBorrowerMidFico);
+      
+      // Return the lower value
+      return Math.min(borrowerScore, coBorrowerScore).toString();
+    }
+
+    // If either score is missing, return "Pending"
+    return "Pending";
+  };
+
   const getBrandNewLoanLockDateLabel = () => {
     switch (brandNewLoanLockDateType) {
       case 'date': return 'Rate Lock Date';
@@ -4232,10 +4255,12 @@ export default function AdminAddClient() {
                       </div>
                       <Input
                         id="brandNewLoan-midFico"
-                        {...targetForm.register('brandNewLoan.midFico')}
+                        {...(brandNewLoanFicoType === 'mid-fico' ? {} : targetForm.register('brandNewLoan.midFico'))}
+                        value={brandNewLoanFicoType === 'mid-fico' ? getCalculatedMidFico() : undefined}
                         placeholder="Enter"
                         className="border border-input bg-background px-3 rounded-md"
                         data-testid="input-brandNewLoan-midFico"
+                        readOnly={brandNewLoanFicoType === 'mid-fico'}
                         onClick={() => {
                           // Open credit scores dialog when in borrower-scores mode
                           if (brandNewLoanFicoType === 'borrower-scores') {
