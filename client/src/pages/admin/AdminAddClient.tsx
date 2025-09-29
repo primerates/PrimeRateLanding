@@ -19474,7 +19474,9 @@ export default function AdminAddClient() {
                 id="experian-score"
                 value={borrowerCreditScoresDialog.experian}
                 onChange={(e) => {
-                  const newValue = e.target.value.slice(0, 3);
+                  // Only allow numeric characters
+                  const numericValue = e.target.value.replace(/[^0-9]/g, '');
+                  const newValue = numericValue.slice(0, 3);
                   setBorrowerCreditScoresDialog(prev => {
                     const updated = { ...prev, experian: newValue };
                     // Calculate middle value automatically
@@ -19509,7 +19511,9 @@ export default function AdminAddClient() {
                 id="equifax-score"
                 value={borrowerCreditScoresDialog.equifax}
                 onChange={(e) => {
-                  const newValue = e.target.value.slice(0, 3);
+                  // Only allow numeric characters
+                  const numericValue = e.target.value.replace(/[^0-9]/g, '');
+                  const newValue = numericValue.slice(0, 3);
                   setBorrowerCreditScoresDialog(prev => {
                     const updated = { ...prev, equifax: newValue };
                     // Calculate middle value automatically
@@ -19544,7 +19548,9 @@ export default function AdminAddClient() {
                 id="transunion-score"
                 value={borrowerCreditScoresDialog.transunion}
                 onChange={(e) => {
-                  const newValue = e.target.value.slice(0, 3);
+                  // Only allow numeric characters
+                  const numericValue = e.target.value.replace(/[^0-9]/g, '');
+                  const newValue = numericValue.slice(0, 3);
                   setBorrowerCreditScoresDialog(prev => {
                     const updated = { ...prev, transunion: newValue };
                     // Calculate middle value automatically
@@ -19617,7 +19623,9 @@ export default function AdminAddClient() {
                 id="co-experian-score"
                 value={coBorrowerCreditScoresDialog.experian}
                 onChange={(e) => {
-                  const newValue = e.target.value.slice(0, 3);
+                  // Only allow numeric characters
+                  const numericValue = e.target.value.replace(/[^0-9]/g, '');
+                  const newValue = numericValue.slice(0, 3);
                   setCoBorrowerCreditScoresDialog(prev => {
                     const updated = { ...prev, experian: newValue };
                     // Calculate middle value automatically
@@ -19652,7 +19660,9 @@ export default function AdminAddClient() {
                 id="co-equifax-score"
                 value={coBorrowerCreditScoresDialog.equifax}
                 onChange={(e) => {
-                  const newValue = e.target.value.slice(0, 3);
+                  // Only allow numeric characters
+                  const numericValue = e.target.value.replace(/[^0-9]/g, '');
+                  const newValue = numericValue.slice(0, 3);
                   setCoBorrowerCreditScoresDialog(prev => {
                     const updated = { ...prev, equifax: newValue };
                     // Calculate middle value automatically
@@ -19687,7 +19697,9 @@ export default function AdminAddClient() {
                 id="co-transunion-score"
                 value={coBorrowerCreditScoresDialog.transunion}
                 onChange={(e) => {
-                  const newValue = e.target.value.slice(0, 3);
+                  // Only allow numeric characters
+                  const numericValue = e.target.value.replace(/[^0-9]/g, '');
+                  const newValue = numericValue.slice(0, 3);
                   setCoBorrowerCreditScoresDialog(prev => {
                     const updated = { ...prev, transunion: newValue };
                     // Calculate middle value automatically
