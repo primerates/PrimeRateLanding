@@ -10285,10 +10285,10 @@ export default function AdminAddClient() {
                         <div className="space-y-2 md:col-span-2">
                           <div className="flex items-center justify-between mb-2">
                             <Label htmlFor="income-self-employment-endDate" className="text-sm">
-                              {employmentDates['self-employment']?.isPresent ? 'Present' : 'End Date'}
+                              {employmentDates['self-employment']?.isPresent ? 'End Date' : 'Present'}
                             </Label>
                             <Switch
-                              checked={employmentDates['self-employment']?.isPresent ?? true}
+                              checked={employmentDates['self-employment']?.isPresent ?? false}
                               onCheckedChange={(checked) => {
                                 const currentData = employmentDates['self-employment'] || { startDate: '', endDate: '', duration: '' };
                                 updateEmploymentDuration('self-employment', currentData.startDate, currentData.endDate, checked);
@@ -10299,18 +10299,18 @@ export default function AdminAddClient() {
                           </div>
                           <Input
                             id="income-self-employment-endDate"
-                            type={employmentDates['self-employment']?.isPresent ? 'text' : 'date'}
-                            value={employmentDates['self-employment']?.isPresent ? 'present' : (employmentDates['self-employment']?.endDate || '')}
+                            type={employmentDates['self-employment']?.isPresent ? 'date' : 'text'}
+                            value={employmentDates['self-employment']?.isPresent ? (employmentDates['self-employment']?.endDate || '') : 'present'}
                             onChange={(e) => {
-                              if (!employmentDates['self-employment']?.isPresent) {
+                              if (employmentDates['self-employment']?.isPresent) {
                                 const endDate = e.target.value;
-                                const currentData = employmentDates['self-employment'] || { startDate: '', isPresent: false, duration: '' };
+                                const currentData = employmentDates['self-employment'] || { startDate: '', isPresent: true, duration: '' };
                                 updateEmploymentDuration('self-employment', currentData.startDate, endDate, currentData.isPresent);
                               }
                             }}
-                            placeholder={employmentDates['self-employment']?.isPresent ? 'Present' : 'MM/DD/YYYY'}
-                            readOnly={employmentDates['self-employment']?.isPresent}
-                            className={employmentDates['self-employment']?.isPresent ? 'bg-muted' : ''}
+                            placeholder={employmentDates['self-employment']?.isPresent ? 'MM/DD/YYYY' : 'Present'}
+                            readOnly={!employmentDates['self-employment']?.isPresent}
+                            className={!employmentDates['self-employment']?.isPresent ? 'bg-muted' : ''}
                             data-testid="input-income-self-employment-endDate"
                           />
                         </div>
