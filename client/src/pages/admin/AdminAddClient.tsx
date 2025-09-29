@@ -13210,6 +13210,290 @@ export default function AdminAddClient() {
                 </CardContent>
               </Card>
 
+              {/* Home Purchase Cards - Moved to appear first after Properties card */}
+              {sortPropertiesByHierarchy(form.watch('property.properties') || [])
+                .filter(property => property.use === 'home-purchase') // Only show Home Purchase properties
+                .map((property, index) => {
+                const propertyId = property.id || `property-${index}`;
+                const isOpen = propertyCardStates[propertyId] ?? true;
+                
+                // Find the actual index in the full properties array using stable ID
+                const fullProperties = form.watch('property.properties') || [];
+                const actualPropertyIndex = fullProperties.findIndex(p => p.id === property.id);
+                
+                // Guard: Skip rendering if we can't find the property in the form state
+                if (actualPropertyIndex < 0) {
+                  console.warn(`Property ${propertyId} not found in form state, skipping render`);
+                  return null;
+                }
+                
+                const getPropertyTitle = () => {
+                  const typeLabels = {
+                    'home-purchase': 'Home Purchase',
+                    'primary': 'Primary Residence',
+                    'second-home': 'Second Home',
+                    'investment': 'Investment Property'
+                  };
+                  const baseTitle = typeLabels[property.use as keyof typeof typeLabels] || 'Property';
+                  const sameTypeCount = (form.watch('property.properties') || [])
+                    .filter(p => p.use === property.use)
+                    .findIndex(p => p.id === property.id) + 1;
+                  return (property.use === 'primary' || property.use === 'home-purchase' || property.use === 'second-home' || property.use === 'investment') ? baseTitle : `${baseTitle} ${sameTypeCount}`;
+                };
+
+                return (
+                  <Card key={propertyId} className={`border-l-4 transition-colors duration-200 ${
+                    property.use === 'home-purchase' ? 'border-l-cyan-500 hover:border-cyan-500 focus-within:border-cyan-500' :
+                    property.use === 'primary' ? 'border-l-green-500 hover:border-green-500 focus-within:border-green-500' : 
+                    property.use === 'second-home' ? 'border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500' : 
+                    property.use === 'investment' ? 'border-l-purple-500 hover:border-purple-500 focus-within:border-purple-500' : ''
+                  }`}>
+                    <Collapsible 
+                      open={isOpen} 
+                      onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
+                    >
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-8">
+                            <CardTitle className={`flex items-center gap-2 ${property.isSubject ? 'text-green-600' : ''}`}>
+                              {getPropertyTitle()}
+                              {property.isSubject && (
+                                <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
+                                  Subject Property
+                                </span>
+                              )}
+                            </CardTitle>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {/* Home Purchase Remove button - Primary Residence style */}
+                            {property.use === 'home-purchase' && (
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setDeleteHomePurchaseDialog({ isOpen: true, cardId: propertyId })}
+                                className="hover:bg-red-500 hover:text-white"
+                                data-testid="button-delete-home-purchase-property"
+                                title="Delete Home Purchase"
+                              >
+                                <Minus className="h-4 w-4 mr-2" />
+                                Remove
+                              </Button>
+                            )}
+                            <CollapsibleTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="hover:bg-orange-500 hover:text-white" 
+                                data-testid={`button-toggle-property-${propertyId}`}
+                                title={isOpen ? 'Minimize' : 'Expand'}
+                                key={`property-toggle-${propertyId}-${isOpen}`}
+                              >
+                                {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      
+                      <CollapsibleContent>
+                        <CardContent>
+                          <div className="space-y-6">
+                            {/* Subject Property Question - Moved to top */}
+                            <Card className={`bg-muted ${
+                              showSubjectPropertyAnimation[propertyId] ? 'animate-roll-down-subject-property' : ''
+                            }`}>
+                              <CardContent className="pt-6">
+                                <div className="space-y-3">
+                                  <div className="flex gap-4">
+                                    <div className="flex items-center space-x-2">
+                                      <input
+                                        type="radio"
+                                        id={`subject-property-yes-${propertyId}`}
+                                        name={`subject-property-${propertyId}`}
+                                        checked={property.isSubject === true}
+                                        onChange={() => handleSubjectPropertyChange(propertyId, true)}
+                                        data-testid={`radio-subject-property-yes-${propertyId}`}
+                                      />
+                                      <Label htmlFor={`subject-property-yes-${propertyId}`}>Yes</Label>
+                                    </div>
+                                    
+                                    <div className="flex items-center space-x-2">
+                                      <input
+                                        type="radio"
+                                        id={`subject-property-no-${propertyId}`}
+                                        name={`subject-property-${propertyId}`}
+                                        checked={property.isSubject === false}
+                                        onChange={() => handleSubjectPropertyChange(propertyId, false)}
+                                        data-testid={`radio-subject-property-no-${propertyId}`}
+                                      />
+                                      <Label htmlFor={`subject-property-no-${propertyId}`}>No</Label>
+                                    </div>
+                                  </div>
+                                  
+                                  <Label className="text-sm font-medium">Subject Property</Label>
+                                </div>
+                              </CardContent>
+                            </Card>
+
+                            {/* Property Details - Common Section */}
+                            <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
+                              {/* Property Address - Street */}
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor={`property-address-street-${propertyId}`}>Street Address *</Label>
+                                <Input
+                                  id={`property-address-street-${propertyId}`}
+                                  {...(actualPropertyIndex >= 0 ? form.register(`property.properties.${actualPropertyIndex}.address.street` as any) : {})}
+                                  data-testid={`input-property-street-${propertyId}`}
+                                />
+                              </div>
+                              
+                              {/* Unit/Apt */}
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`property-address-unit-${propertyId}`}>Unit/Apt</Label>
+                                <Input
+                                  id={`property-address-unit-${propertyId}`}
+                                  {...(actualPropertyIndex >= 0 ? form.register(`property.properties.${actualPropertyIndex}.address.unit` as any) : {})}
+                                  data-testid={`input-property-unit-${propertyId}`}
+                                />
+                              </div>
+                              
+                              {/* City */}
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`property-address-city-${propertyId}`}>City *</Label>
+                                <Input
+                                  id={`property-address-city-${propertyId}`}
+                                  {...(actualPropertyIndex >= 0 ? form.register(`property.properties.${actualPropertyIndex}.address.city` as any) : {})}
+                                  data-testid={`input-property-city-${propertyId}`}
+                                />
+                              </div>
+                              
+                              {/* State */}
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`property-address-state-${propertyId}`}>State *</Label>
+                                <Controller
+                                  control={form.control}
+                                  name={`property.properties.${actualPropertyIndex}.address.state` as any}
+                                  render={({ field }) => (
+                                    <Select 
+                                      value={field.value || ''} 
+                                      onValueChange={field.onChange}
+                                    >
+                                      <SelectTrigger data-testid={`select-property-state-${propertyId}`}>
+                                        <SelectValue placeholder="Select" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {US_STATES.map((state) => (
+                                          <SelectItem key={state.value} value={state.value}>
+                                            {state.label}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                  )}
+                                />
+                              </div>
+                              
+                              {/* ZIP Code */}
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`property-address-zip-${propertyId}`}>ZIP Code *</Label>
+                                <Input
+                                  id={`property-address-zip-${propertyId}`}
+                                  placeholder="94103"
+                                  {...(actualPropertyIndex >= 0 ? form.register(`property.properties.${actualPropertyIndex}.address.zip` as any) : {})}
+                                  data-testid={`input-property-zip-${propertyId}`}
+                                />
+                              </div>
+                              
+                              {/* County */}
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor={`property-address-county-${propertyId}`}>County</Label>
+                                <Input
+                                  id={`property-address-county-${propertyId}`}
+                                  {...(actualPropertyIndex >= 0 ? form.register(`property.properties.${actualPropertyIndex}.address.county` as any) : {})}
+                                  data-testid={`input-property-county-${propertyId}`}
+                                />
+                              </div>
+                            </div>
+
+                            {/* Property Type and Estimated/Appraised Value */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-type-${propertyId}`}>Property Type</Label>
+                                <Controller
+                                  control={form.control}
+                                  name={`property.properties.${actualPropertyIndex}.propertyType` as any}
+                                  render={({ field }) => (
+                                    <Select 
+                                      value={field.value || ''} 
+                                      onValueChange={field.onChange}
+                                    >
+                                      <SelectTrigger data-testid={`select-property-type-${propertyId}`}>
+                                        <SelectValue placeholder="Select" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="single-family">Single Family</SelectItem>
+                                        <SelectItem value="condo">Condo</SelectItem>
+                                        <SelectItem value="townhouse">Townhouse</SelectItem>
+                                        <SelectItem value="duplex">Duplex</SelectItem>
+                                        <SelectItem value="multi-family">Multi-Family</SelectItem>
+                                        <SelectItem value="mobile-home-sw">Mobile Home SW</SelectItem>
+                                        <SelectItem value="mobile-home-dw">Mobile Home DW</SelectItem>
+                                        <SelectItem value="other">Other</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  )}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-estimated-value-${propertyId}`}>Estimated Value</Label>
+                                <Controller
+                                  control={form.control}
+                                  name={`property.properties.${actualPropertyIndex}.estimatedValue` as any}
+                                  render={({ field }) => (
+                                    <Input
+                                      id={`property-estimated-value-${propertyId}`}
+                                      value={formatDollarDisplay(field.value)}
+                                      onChange={(e) => {
+                                        const rawValue = parseDollarInput(e.target.value);
+                                        field.onChange(rawValue);
+                                      }}
+                                      placeholder="$0.00"
+                                      data-testid={`input-property-estimated-value-${propertyId}`}
+                                    />
+                                  )}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`property-appraised-value-${propertyId}`}>Appraised Value</Label>
+                                <Controller
+                                  control={form.control}
+                                  name={`property.properties.${actualPropertyIndex}.appraisedValue` as any}
+                                  render={({ field }) => (
+                                    <Input
+                                      id={`property-appraised-value-${propertyId}`}
+                                      value={formatDollarDisplay(field.value)}
+                                      onChange={(e) => {
+                                        const rawValue = parseDollarInput(e.target.value);
+                                        field.onChange(rawValue);
+                                      }}
+                                      placeholder="$0.00"
+                                      data-testid={`input-property-appraised-value-${propertyId}`}
+                                    />
+                                  )}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  </Card>
+                );
+              })}
+
               {/* Primary Residence Cards */}
               {(primaryResidenceCards || []).length > 0 && (primaryResidenceCards || ['default']).map((cardId, index) => {
                 // Get the actual property from the properties array
@@ -15554,9 +15838,9 @@ export default function AdminAddClient() {
                 );
               })}
 
-              {/* Dynamic Property Cards */}
+              {/* Dynamic Property Cards - Remaining Types (excluding Home Purchase which is now handled above) */}
               {sortPropertiesByHierarchy(form.watch('property.properties') || [])
-                .filter(property => property.use !== 'primary' && property.use !== 'second-home' && property.use !== 'investment') // Exclude Primary Residence, Second Home, and Investment Property - now handled by new systems above
+                .filter(property => property.use !== 'primary' && property.use !== 'second-home' && property.use !== 'investment' && property.use !== 'home-purchase') // Exclude all handled property types
                 .map((property, index) => {
                 const propertyId = property.id || `property-${index}`;
                 const isOpen = propertyCardStates[propertyId] ?? true;
