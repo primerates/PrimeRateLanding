@@ -19408,18 +19408,18 @@ export default function AdminAddClient() {
           <DialogHeader>
             <DialogTitle>Borrower Credit Scores</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
+          <div className="space-y-6">
+            <div className="space-y-2 mt-6">
               <Label htmlFor="borrower-mid-fico">Borrower Mid Fico</Label>
               <div 
-                className="text-3xl font-bold text-blue-900 py-2"
+                className="text-4xl font-bold text-blue-900 py-2"
                 data-testid="display-borrower-mid-fico"
               >
                 {borrowerCreditScoresDialog.midFico || "000"}
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="experian-score" className="text-green-600 font-medium">Experian</Label>
+              <Label htmlFor="experian-score" className="text-green-600 font-medium text-lg">Experian</Label>
               <Input
                 id="experian-score"
                 value={borrowerCreditScoresDialog.experian}
@@ -19454,7 +19454,7 @@ export default function AdminAddClient() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="equifax-score" className="text-purple-600 font-medium">Equifax</Label>
+              <Label htmlFor="equifax-score" className="text-purple-600 font-medium text-lg">Equifax</Label>
               <Input
                 id="equifax-score"
                 value={borrowerCreditScoresDialog.equifax}
@@ -19489,7 +19489,7 @@ export default function AdminAddClient() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="transunion-score" className="text-orange-600 font-medium">Transunion</Label>
+              <Label htmlFor="transunion-score" className="text-orange-600 font-medium text-lg">Transunion</Label>
               <Input
                 id="transunion-score"
                 value={borrowerCreditScoresDialog.transunion}
