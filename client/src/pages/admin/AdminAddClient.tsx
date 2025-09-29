@@ -4590,7 +4590,7 @@ export default function AdminAddClient() {
                   <Label htmlFor={`${idPrefix}purchaseLoan-loanPurpose`}>Loan Purpose</Label>
                   <Select {...loanPurposeBinding} disabled>
                     <SelectTrigger data-testid={loanPurposeBinding['data-testid']} className="opacity-60 cursor-not-allowed" aria-disabled>
-                      <SelectValue placeholder="Purchase" />
+                      <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="purchase">Purchase</SelectItem>
