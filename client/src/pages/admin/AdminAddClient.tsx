@@ -10206,7 +10206,7 @@ export default function AdminAddClient() {
                                 </div>
                               </div>
                               
-                              <div className="flex gap-2 mr-8">
+                              <div className="flex gap-2 mr-4">
                                 <Button
                                   type="button"
                                   variant="outline"
