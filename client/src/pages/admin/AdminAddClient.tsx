@@ -10177,19 +10177,6 @@ export default function AdminAddClient() {
                                     data-testid="radio-self-employment-prior"
                                   />
                                   <Label htmlFor="self-employment-prior">Prior</Label>
-                                  <button
-                                    type="button"
-                                    onClick={() => openTaxPreparerDialog(cardId)}
-                                    className={`transition-colors ml-6 flex items-center justify-center w-4 h-4 rounded-full border ${
-                                      form.watch('income.taxesPreparedBy') 
-                                        ? 'bg-purple-500 border-purple-500 text-white hover:bg-purple-600' 
-                                        : 'text-blue-600 hover:text-blue-800 border-blue-600 hover:border-blue-800'
-                                    }`}
-                                    data-testid="button-tax-preparer-info"
-                                    title="Tax preparer information"
-                                  >
-                                    <span className="text-[10px] font-bold">T</span>
-                                  </button>
                                 </div>
                               </div>
                               
@@ -10210,6 +10197,7 @@ export default function AdminAddClient() {
                                   type="button"
                                   variant="outline"
                                   size="sm"
+                                  onClick={() => openTaxPreparerDialog(cardId)}
                                   className="bg-gray-300 text-gray-700 hover:bg-gray-400 min-w-[110px]"
                                   style={{ backgroundColor: '#d1d5db', borderColor: '#d1d5db', color: '#374151' }}
                                   data-testid="button-self-employment-filing"
