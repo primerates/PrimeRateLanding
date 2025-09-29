@@ -4945,14 +4945,14 @@ export default function AdminAddClient() {
                     }}
                   >
                     <SelectTrigger data-testid={attachedToPropertyBinding['data-testid']}>
-                      <SelectValue placeholder="Select" />
+                      <SelectValue placeholder="Associate this loan to home purchase property address" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="select">Select</SelectItem>
                       {(() => {
                         const properties = targetForm.watch('property.properties') || [];
                         return properties
-                          .filter((property: any) => property.address?.street || property.use === 'primary') // Show properties with street addresses OR primary residence properties
+                          .filter((property: any) => property.use === 'home-purchase') // Show only Home Purchase properties
                           .map((property: any, index: number) => {
                             const address = property.address;
                             const streetAddress = address?.street;
