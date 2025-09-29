@@ -13445,46 +13445,391 @@ export default function AdminAddClient() {
                               </div>
                             </div>
 
-                            {/* Estimated and Appraised Value */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div className="space-y-2">
-                                <Label htmlFor={`property-estimated-value-${propertyId}`}>Estimated Value</Label>
-                                <Controller
-                                  control={form.control}
-                                  name={`property.properties.${actualPropertyIndex}.estimatedValue` as any}
-                                  render={({ field }) => (
-                                    <Input
-                                      id={`property-estimated-value-${propertyId}`}
-                                      value={formatDollarDisplay(field.value)}
-                                      onChange={(e) => {
-                                        const rawValue = parseDollarInput(e.target.value);
-                                        field.onChange(rawValue);
-                                      }}
-                                      placeholder="$0.00"
-                                      data-testid={`input-property-estimated-value-${propertyId}`}
-                                    />
-                                  )}
+                            {/* Property Details - Row 2: Purchase Price, Owned Since, Title Held By, Estimated Property Value */}
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
+                              <div className="space-y-2 md:col-span-2">
+                                <div className="flex items-center gap-2">
+                                  <Label htmlFor={`property-purchase-price-${propertyId}`}>Purchase Price</Label>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="p-1 h-auto text-black hover:text-gray-600"
+                                    title="Purchase Property Value"
+                                    data-testid={`button-purchase-price-info-${propertyId}`}
+                                  >
+                                    <DollarSign className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                                <CurrencyInput
+                                  form={form}
+                                  name={`property.properties.${actualPropertyIndex >= 0 ? actualPropertyIndex : 0}.purchasePrice` as const}
+                                  id={`property-purchase-price-${propertyId}`}
+                                  placeholder="$0.00"
+                                  data-testid={`input-property-purchase-price-${propertyId}`}
                                 />
                               </div>
                               
-                              <div className="space-y-2">
-                                <Label htmlFor={`property-appraised-value-${propertyId}`}>Appraised Value</Label>
-                                <Controller
-                                  control={form.control}
-                                  name={`property.properties.${actualPropertyIndex}.appraisedValue` as any}
-                                  render={({ field }) => (
-                                    <Input
-                                      id={`property-appraised-value-${propertyId}`}
-                                      value={formatDollarDisplay(field.value)}
-                                      onChange={(e) => {
-                                        const rawValue = parseDollarInput(e.target.value);
-                                        field.onChange(rawValue);
-                                      }}
-                                      placeholder="$0.00"
-                                      data-testid={`input-property-appraised-value-${propertyId}`}
-                                    />
-                                  )}
+                              <div className="space-y-2 md:col-span-1">
+                                <div className="min-h-5 flex items-center gap-2">
+                                  <Label htmlFor={`property-owned-since-${propertyId}`}>Purchased</Label>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                        onClick={() => {
+                                          toast({
+                                            title: "Purchase Information",
+                                            description: "Please see purchase and record dates in title report located in vendor page.",
+                                            duration: 5000,
+                                          });
+                                        }}
+                                        data-testid={`button-purchased-info-${propertyId}`}
+                                      >
+                                        <Info className="h-4 w-4" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top" sideOffset={15} className="text-sm">
+                                      Purchase Information
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </div>
+                                <Input
+                                  id={`property-owned-since-${propertyId}`}
+                                  placeholder="MM/YYYY"
+                                  data-testid={`input-property-owned-since-${propertyId}`}
                                 />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <div className="min-h-5 flex items-center gap-2">
+                                  <Label htmlFor={`property-title-held-by-${propertyId}`}>Title Held By</Label>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                        onClick={() => {
+                                          toast({
+                                            title: "Title Information",
+                                            description: "Please see title report in vendor page.",
+                                            duration: 5000,
+                                          });
+                                        }}
+                                        data-testid={`button-title-held-info-${propertyId}`}
+                                      >
+                                        <Info className="h-4 w-4" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top" sideOffset={15} className="text-sm">
+                                      Title Information
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </div>
+                                <Select>
+                                  <SelectTrigger data-testid={`select-property-title-held-by-${propertyId}`}>
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="select">Select</SelectItem>
+                                    <SelectItem value="borrower">Borrower</SelectItem>
+                                    <SelectItem value="borrowers">Borrowers</SelectItem>
+                                    <SelectItem value="co-borrower">Co-Borrower</SelectItem>
+                                    <SelectItem value="other">Other</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-3">
+                                <div className="flex items-center gap-2">
+                                  <Label htmlFor={`property-estimated-value-${propertyId}`}>Estimated Value</Label>
+                                  <div className="flex items-center gap-1">
+                                    {/* Zillow */}
+                                    <div className="flex items-center gap-1">
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800 no-default-hover-elevate no-default-active-elevate"
+                                        onClick={() => {
+                                          openValuationDialog('zillow', actualPropertyIndex >= 0 ? actualPropertyIndex : 0);
+                                        }}
+                                        onMouseEnter={(e) => {
+                                          handleValuationHover('zillow', actualPropertyIndex >= 0 ? actualPropertyIndex : 0, e);
+                                        }}
+                                        onMouseLeave={handleValuationHoverLeave}
+                                        data-testid={`button-zillow-valuation-${propertyId}`}
+                                        title="Enter Zillow valuation manually"
+                                      >
+                                        <SiZillow className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                    {/* Realtor */}
+                                    <div className="flex items-center gap-1">
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-purple-600 hover:text-purple-800 no-default-hover-elevate no-default-active-elevate"
+                                        onClick={() => {
+                                          openValuationDialog('realtor', actualPropertyIndex >= 0 ? actualPropertyIndex : 0);
+                                        }}
+                                        onMouseEnter={(e) => {
+                                          handleValuationHover('realtor', actualPropertyIndex >= 0 ? actualPropertyIndex : 0, e);
+                                        }}
+                                        onMouseLeave={handleValuationHoverLeave}
+                                        data-testid={`button-realtor-valuation-${propertyId}`}
+                                        title="Enter Realtor.com valuation manually"
+                                      >
+                                        <MdRealEstateAgent className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                    {/* Redfin */}
+                                    <div className="flex items-center gap-1">
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-red-600 hover:text-red-800 no-default-hover-elevate no-default-active-elevate"
+                                        onClick={() => {
+                                          openValuationDialog('redfin', actualPropertyIndex >= 0 ? actualPropertyIndex : 0);
+                                        }}
+                                        onMouseEnter={(e) => {
+                                          handleValuationHover('redfin', actualPropertyIndex >= 0 ? actualPropertyIndex : 0, e);
+                                        }}
+                                        onMouseLeave={handleValuationHoverLeave}
+                                        data-testid={`button-redfin-valuation-${propertyId}`}
+                                        title="Enter Redfin valuation manually"
+                                      >
+                                        <FaHome className="h-4 w-4" />
+                                      </Button>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                        onClick={() => {
+                                          openValuationSummary(actualPropertyIndex >= 0 ? actualPropertyIndex : 0);
+                                        }}
+                                        data-testid={`button-valuation-info-${propertyId}`}
+                                        title="View all valuation estimates"
+                                      >
+                                        <Info className="h-3 w-3" />
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </div>
+                                <CurrencyInput
+                                  form={form}
+                                  name={`property.properties.${actualPropertyIndex >= 0 ? actualPropertyIndex : 0}.estimatedValue` as const}
+                                  id={`property-estimated-value-${propertyId}`}
+                                  placeholder="$0.00"
+                                  data-testid={`input-property-estimated-value-${propertyId}`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <div className="flex items-center gap-2 min-h-8">
+                                  <Label htmlFor={`property-appraised-value-${propertyId}`}>Appraised Value</Label>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="p-1 h-auto"
+                                    title="Appraised Property Value"
+                                    data-testid={`button-appraised-value-info-${propertyId}`}
+                                  >
+                                    <AppraisalIcon index={actualPropertyIndex >= 0 ? actualPropertyIndex : 0} control={form.control} />
+                                  </Button>
+                                </div>
+                                <CurrencyInput
+                                  form={form}
+                                  name={`property.properties.${actualPropertyIndex >= 0 ? actualPropertyIndex : 0}.appraisedValue` as const}
+                                  id={`property-appraised-value-${propertyId}`}
+                                  placeholder="$0.00"
+                                  data-testid={`input-property-appraised-value-${propertyId}`}
+                                  shadowColor={(() => {
+                                    const estimatedValue = form.watch(`property.properties.${actualPropertyIndex >= 0 ? actualPropertyIndex : 0}.estimatedValue` as const) || '';
+                                    const appraisedValue = form.watch(`property.properties.${actualPropertyIndex >= 0 ? actualPropertyIndex : 0}.appraisedValue` as const) || '';
+                                    return getValueComparisonColor(estimatedValue, appraisedValue).shadowColor;
+                                  })()}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <div className="flex items-center gap-2 min-h-8">
+                                  <div className="flex items-center gap-2">
+                                    <Label htmlFor={`property-active-secured-loan-${propertyId}`}>Secured Loan</Label>
+                                    {(() => {
+                                      // Check ALL loans for attachment to this property
+                                      const properties = form.watch('property.properties') || [];
+                                      const currentProperty = actualPropertyIndex >= 0 ? properties[actualPropertyIndex] : null;
+                                      
+                                      // Check current loan
+                                      const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                      const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                      
+                                      // Check second loan
+                                      const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                      const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                      
+                                      // Check third loan
+                                      const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
+                                      const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
+                                      
+                                      // Check other additional loans (loan4, loan5, etc.)
+                                      const additionalLoansData = additionalLoans || [];
+                                      const isOtherAdditionalLoanAttached = additionalLoansData.slice(1).some(loan => {
+                                        const attachedPropertyId = getDyn(`${loan.id}.attachedToProperty`);
+                                        return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                      });
+                                      
+                                      const hasAnyLoanAttached = isCurrentLoanAttached || isSecondLoanAttached || isThirdLoanAttached || isOtherAdditionalLoanAttached;
+                                      
+                                      return (
+                                        <div className="flex items-center gap-1">
+                                          <div 
+                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center ${
+                                              isCurrentLoanAttached
+                                                ? 'bg-blue-500 border-blue-500 hover:bg-blue-600'
+                                                : 'bg-gray-200 border-gray-300'
+                                            }`}
+                                            style={{
+                                              backgroundColor: isCurrentLoanAttached ? '#3b82f6' : '#e5e7eb',
+                                              borderColor: isCurrentLoanAttached ? '#3b82f6' : '#d1d5db'
+                                            }}
+                                            onClick={() => {
+                                              if (isCurrentLoanAttached) {
+                                                setIsCurrentLoanPreviewOpen(true);
+                                              }
+                                            }}
+                                            title={isCurrentLoanAttached ? "View Current Loan Details" : ""}
+                                            data-testid={`indicator-secured-loan-1-${propertyId}`}
+                                          >
+                                            {isCurrentLoanAttached && (
+                                              <span className="text-xs font-semibold text-white">P</span>
+                                            )}
+                                          </div>
+                                          <div 
+                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center ${
+                                              isSecondLoanAttached
+                                                ? 'bg-purple-500 border-purple-500 hover:bg-purple-600'
+                                                : 'bg-gray-200 border-gray-300'
+                                            }`}
+                                            style={{
+                                              backgroundColor: isSecondLoanAttached ? '#8b5cf6' : '#e5e7eb',
+                                              borderColor: isSecondLoanAttached ? '#8b5cf6' : '#d1d5db'
+                                            }}
+                                            onClick={() => {
+                                              if (isSecondLoanAttached) {
+                                                setIsCurrentSecondLoanPreviewOpen(true);
+                                              }
+                                            }}
+                                            title={isSecondLoanAttached ? "View Current Loan 2 Details" : ""}
+                                            data-testid={`indicator-secured-loan-2-${propertyId}`}
+                                          >
+                                            {isSecondLoanAttached && (
+                                              <span className="text-xs font-semibold text-white">S</span>
+                                            )}
+                                          </div>
+                                          <div 
+                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center ${
+                                              isThirdLoanAttached
+                                                ? 'bg-orange-500 border-orange-500 hover:bg-orange-600'
+                                                : 'bg-gray-200 border-gray-300'
+                                            }`}
+                                            style={{
+                                              backgroundColor: isThirdLoanAttached ? '#f97316' : '#e5e7eb',
+                                              borderColor: isThirdLoanAttached ? '#f97316' : '#d1d5db'
+                                            }}
+                                            onClick={() => {
+                                              if (isThirdLoanAttached) {
+                                                setIsCurrentThirdLoanPreviewOpen(true);
+                                              }
+                                            }}
+                                            title={isThirdLoanAttached ? "View Current Third Loan Details" : ""}
+                                            data-testid={`indicator-secured-loan-3-${propertyId}`}
+                                          >
+                                            {isThirdLoanAttached && (
+                                              <span className="text-xs font-semibold text-white">T</span>
+                                            )}
+                                          </div>
+                                        </div>
+                                      );
+                                    })()}
+                                  </div>
+                                </div>
+                                {(() => {
+                                  // Automatic loan detection logic
+                                  const properties = form.watch('property.properties') || [];
+                                  const currentProperty = actualPropertyIndex >= 0 ? properties[actualPropertyIndex] : null;
+                                  
+                                  if (!currentProperty?.id) return (
+                                    <div className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background cursor-default">
+                                      <span className="text-muted-foreground">Attach</span>
+                                    </div>
+                                  );
+                                  
+                                  // Check all loans for attachment to this property
+                                  const attachedLoans = [];
+                                  
+                                  // Check current loan
+                                  const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                  if (currentLoanAttached && currentLoanAttached === currentProperty.id) {
+                                    attachedLoans.push('Current Primary Loan');
+                                  }
+                                  
+                                  // Check second loan
+                                  const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                  if (secondLoanAttached && secondLoanAttached === currentProperty.id) {
+                                    attachedLoans.push('Current Second Loan');
+                                  }
+                                  
+                                  // Check third loan
+                                  const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
+                                  if (thirdLoanAttached && thirdLoanAttached === currentProperty.id) {
+                                    attachedLoans.push('Current Third Loan');
+                                  }
+                                  
+                                  // Check other additional loans
+                                  const additionalLoansData = additionalLoans || [];
+                                  additionalLoansData.slice(1).forEach((loan, index) => {
+                                    const attachedPropertyId = getDyn(`${loan.id}.attachedToProperty`);
+                                    if (attachedPropertyId && attachedPropertyId === currentProperty.id) {
+                                      attachedLoans.push(`Current Loan ${index + 4}`);
+                                    }
+                                  });
+                                  
+                                  // Determine display text
+                                  let displayText = 'Attach';
+                                  if (attachedLoans.length === 1) {
+                                    displayText = attachedLoans[0];
+                                  } else if (attachedLoans.length === 2) {
+                                    displayText = '1st & 2nd Loan';
+                                  } else if (attachedLoans.length === 3) {
+                                    displayText = 'Three Loans';
+                                  } else if (attachedLoans.length > 3) {
+                                    displayText = `${attachedLoans.length} Loans`;
+                                  }
+                                  
+                                  const hasLoansAttached = attachedLoans.length > 0;
+                                  
+                                  return (
+                                    <Select>
+                                      <SelectTrigger data-testid={`select-property-secured-loan-${propertyId}`}>
+                                        <SelectValue placeholder={displayText} />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="paid-off">Paid Off</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  );
+                                })()}
                               </div>
                             </div>
                           </div>
