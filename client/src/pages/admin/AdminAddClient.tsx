@@ -16673,7 +16673,7 @@ export default function AdminAddClient() {
                             (currentThirdLoanCards || []).length > 0 ? 'pointer-events-none opacity-75' : 'cursor-pointer'
                           }`}
                         >
-                          Current Third Loan
+                          Existing Third Loan
                         </Label>
                       </div>
 
