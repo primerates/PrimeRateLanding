@@ -10082,8 +10082,7 @@ export default function AdminAddClient() {
                 </CardContent>
               </Card>
 
-
-              {/* Borrower - Self-Employment Cards */
+              {/* Borrower - Self-Employment Cards */}
               {form.watch('income.incomeTypes.selfEmployment') && (borrowerSelfEmploymentCards || ['default']).map((cardId, index) => {
                 const propertyId = cardId === 'default' ? 'self-employment-template-card' : cardId;
                 const isOpen = propertyCardStates[propertyId] ?? true;
