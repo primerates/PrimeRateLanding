@@ -1440,6 +1440,27 @@ export default function AdminAddClient() {
   // Co-Borrower warning dialog state
   const [coBorrowerWarningDialog, setCoBorrowerWarningDialog] = useState(false);
 
+  // Purchase Loan - Borrower Credit Scores popup dialog state
+  const [purchaseBorrowerCreditScoresDialog, setPurchaseBorrowerCreditScoresDialog] = useState({
+    isOpen: false,
+    experian: '',
+    midFico: '',
+    equifax: '',
+    transunion: ''
+  });
+
+  // Purchase Loan - Co-Borrower Credit Scores popup dialog state
+  const [purchaseCoBorrowerCreditScoresDialog, setPurchaseCoBorrowerCreditScoresDialog] = useState({
+    isOpen: false,
+    experian: '',
+    midFico: '',
+    equifax: '',
+    transunion: ''
+  });
+
+  // Purchase Loan - Co-Borrower warning dialog state
+  const [purchaseCoBorrowerWarningDialog, setPurchaseCoBorrowerWarningDialog] = useState(false);
+
   // Purchase Loan toggle states
   const [purchaseLoanEscrowType, setPurchaseLoanEscrowType] = useState<'tax-insurance' | 'insurance-only' | 'property-tax-only'>('tax-insurance');
   const [purchaseLoanPaymentType, setPurchaseLoanPaymentType] = useState<'principal-interest' | 'interest-only'>('principal-interest');
@@ -1657,6 +1678,29 @@ export default function AdminAddClient() {
   const getCalculatedMidFico = () => {
     const borrowerMidFico = borrowerCreditScoresDialog.midFico;
     const coBorrowerMidFico = coBorrowerCreditScoresDialog.midFico;
+
+    // If no Co-Borrower, return Borrower Mid FICO value or "Pending"
+    if (!hasCoBorrower) {
+      return borrowerMidFico || "Pending";
+    }
+
+    // If Co-Borrower exists, both scores must be present to calculate
+    if (borrowerMidFico && coBorrowerMidFico) {
+      const borrowerScore = parseInt(borrowerMidFico);
+      const coBorrowerScore = parseInt(coBorrowerMidFico);
+      
+      // Return the lower value
+      return Math.min(borrowerScore, coBorrowerScore).toString();
+    }
+
+    // If either score is missing, return "Pending"
+    return "Pending";
+  };
+
+  // Calculate Mid FICO value for Purchase Loan based on borrower and co-borrower scores
+  const getPurchaseCalculatedMidFico = () => {
+    const borrowerMidFico = purchaseBorrowerCreditScoresDialog.midFico;
+    const coBorrowerMidFico = purchaseCoBorrowerCreditScoresDialog.midFico;
 
     // If no Co-Borrower, return Borrower Mid FICO value or "Pending"
     if (!hasCoBorrower) {
@@ -4845,10 +4889,37 @@ export default function AdminAddClient() {
                       </div>
                       <Input
                         id="purchaseLoan-midFico"
-                        {...targetForm.register('purchaseLoan.midFico')}
+                        {...(purchaseLoanFicoType === 'mid-fico' ? {} : targetForm.register('purchaseLoan.midFico'))}
+                        value={purchaseLoanFicoType === 'mid-fico' ? getPurchaseCalculatedMidFico() : undefined}
                         placeholder="Enter"
                         className="border border-input bg-background px-3 rounded-md"
                         data-testid="input-purchaseLoan-midFico"
+                        readOnly={purchaseLoanFicoType === 'mid-fico'}
+                        onClick={() => {
+                          // Open credit scores dialog when in borrower-scores mode
+                          if (purchaseLoanFicoType === 'borrower-scores') {
+                            setPurchaseBorrowerCreditScoresDialog(prev => ({
+                              ...prev,
+                              isOpen: true
+                            }));
+                          }
+                          // Open co-borrower credit scores dialog when in co-borrower-scores mode
+                          else if (purchaseLoanFicoType === 'co-borrower-scores') {
+                            // Check if co-borrower exists before opening dialog
+                            if (hasCoBorrower) {
+                              setPurchaseCoBorrowerCreditScoresDialog(prev => ({
+                                ...prev,
+                                isOpen: true
+                              }));
+                            } else {
+                              // Show warning dialog if no co-borrower
+                              setPurchaseCoBorrowerWarningDialog(true);
+                            }
+                          }
+                        }}
+                        style={{
+                          cursor: (purchaseLoanFicoType === 'borrower-scores' || purchaseLoanFicoType === 'co-borrower-scores') ? 'pointer' : 'text'
+                        }}
                       />
                     </div>
                     
@@ -19765,6 +19836,327 @@ export default function AdminAddClient() {
             <Button
               onClick={() => setCoBorrowerWarningDialog(false)}
               data-testid="button-close-co-borrower-warning"
+              className="w-full"
+            >
+              OK
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Purchase Loan - Borrower Credit Scores Dialog */}
+      <Dialog open={purchaseBorrowerCreditScoresDialog.isOpen} onOpenChange={(open) => setPurchaseBorrowerCreditScoresDialog(prev => ({ ...prev, isOpen: open }))}>
+        <DialogContent className="max-w-xs" data-testid="dialog-purchase-borrower-credit-scores">
+          <DialogHeader>
+            <DialogTitle>Borrower Credit Scores</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6">
+            <div className="space-y-2 mt-6">
+              <Label htmlFor="purchase-borrower-mid-fico" className="text-lg">Borrower Mid FICO</Label>
+              <div 
+                className="text-4xl font-bold text-blue-900 py-2"
+                data-testid="display-purchase-borrower-mid-fico"
+              >
+                {purchaseBorrowerCreditScoresDialog.midFico || "000"}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="purchase-experian-score" className="text-green-600 font-medium text-lg">Experian</Label>
+              <Input
+                id="purchase-experian-score"
+                value={purchaseBorrowerCreditScoresDialog.experian}
+                onChange={(e) => {
+                  // Only allow numeric characters
+                  const numericValue = e.target.value.replace(/[^0-9]/g, '');
+                  const newValue = numericValue.slice(0, 3);
+                  setPurchaseBorrowerCreditScoresDialog(prev => {
+                    const updated = { ...prev, experian: newValue };
+                    // Calculate middle value automatically
+                    const scores = [
+                      parseInt(newValue) || 0,
+                      parseInt(updated.equifax) || 0,
+                      parseInt(updated.transunion) || 0
+                    ].filter(score => score > 0).sort((a, b) => a - b);
+                    
+                    if (scores.length === 3) {
+                      updated.midFico = scores[1].toString(); // Middle value
+                    } else if (scores.length === 2) {
+                      updated.midFico = 'Pending'; // Show "Pending" when only 2 fields filled
+                    } else if (scores.length === 1) {
+                      updated.midFico = scores[0].toString(); // Only one score
+                    } else {
+                      updated.midFico = '';
+                    }
+                    
+                    return updated;
+                  });
+                }}
+                placeholder="000"
+                maxLength={3}
+                pattern="[0-9]{3}"
+                data-testid="input-purchase-experian-score"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="purchase-equifax-score" className="text-purple-600 font-medium text-lg">Equifax</Label>
+              <Input
+                id="purchase-equifax-score"
+                value={purchaseBorrowerCreditScoresDialog.equifax}
+                onChange={(e) => {
+                  // Only allow numeric characters
+                  const numericValue = e.target.value.replace(/[^0-9]/g, '');
+                  const newValue = numericValue.slice(0, 3);
+                  setPurchaseBorrowerCreditScoresDialog(prev => {
+                    const updated = { ...prev, equifax: newValue };
+                    // Calculate middle value automatically
+                    const scores = [
+                      parseInt(updated.experian) || 0,
+                      parseInt(newValue) || 0,
+                      parseInt(updated.transunion) || 0
+                    ].filter(score => score > 0).sort((a, b) => a - b);
+                    
+                    if (scores.length === 3) {
+                      updated.midFico = scores[1].toString(); // Middle value
+                    } else if (scores.length === 2) {
+                      updated.midFico = 'Pending'; // Show "Pending" when only 2 fields filled
+                    } else if (scores.length === 1) {
+                      updated.midFico = scores[0].toString(); // Only one score
+                    } else {
+                      updated.midFico = '';
+                    }
+                    
+                    return updated;
+                  });
+                }}
+                placeholder="000"
+                maxLength={3}
+                pattern="[0-9]{3}"
+                data-testid="input-purchase-equifax-score"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="purchase-transunion-score" className="text-orange-600 font-medium text-lg">Transunion</Label>
+              <Input
+                id="purchase-transunion-score"
+                value={purchaseBorrowerCreditScoresDialog.transunion}
+                onChange={(e) => {
+                  // Only allow numeric characters
+                  const numericValue = e.target.value.replace(/[^0-9]/g, '');
+                  const newValue = numericValue.slice(0, 3);
+                  setPurchaseBorrowerCreditScoresDialog(prev => {
+                    const updated = { ...prev, transunion: newValue };
+                    // Calculate middle value automatically
+                    const scores = [
+                      parseInt(updated.experian) || 0,
+                      parseInt(updated.equifax) || 0,
+                      parseInt(newValue) || 0
+                    ].filter(score => score > 0).sort((a, b) => a - b);
+                    
+                    if (scores.length === 3) {
+                      updated.midFico = scores[1].toString(); // Middle value
+                    } else if (scores.length === 2) {
+                      updated.midFico = 'Pending'; // Show "Pending" when only 2 fields filled
+                    } else if (scores.length === 1) {
+                      updated.midFico = scores[0].toString(); // Only one score
+                    } else {
+                      updated.midFico = '';
+                    }
+                    
+                    return updated;
+                  });
+                }}
+                placeholder="000"
+                maxLength={3}
+                pattern="[0-9]{3}"
+                data-testid="input-purchase-transunion-score"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setPurchaseBorrowerCreditScoresDialog(prev => ({ ...prev, isOpen: false }))}
+              data-testid="button-cancel-purchase-credit-scores"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                // Here you can handle saving the scores to the form or wherever needed
+                setPurchaseBorrowerCreditScoresDialog(prev => ({ ...prev, isOpen: false }));
+              }}
+              data-testid="button-save-purchase-credit-scores"
+            >
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Purchase Loan - Co-Borrower Credit Scores Dialog */}
+      <Dialog open={purchaseCoBorrowerCreditScoresDialog.isOpen} onOpenChange={(open) => setPurchaseCoBorrowerCreditScoresDialog(prev => ({ ...prev, isOpen: open }))}>
+        <DialogContent className="max-w-xs" data-testid="dialog-purchase-co-borrower-credit-scores">
+          <DialogHeader>
+            <DialogTitle>Co-Borrower Credit Scores</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6">
+            <div className="space-y-2 mt-6">
+              <Label htmlFor="purchase-co-borrower-mid-fico" className="text-lg">Co-Borrower Mid FICO</Label>
+              <div 
+                className="text-4xl font-bold text-blue-900 py-2"
+                data-testid="display-purchase-co-borrower-mid-fico"
+              >
+                {purchaseCoBorrowerCreditScoresDialog.midFico || "000"}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="purchase-co-experian-score" className="text-green-600 font-medium text-lg">Experian</Label>
+              <Input
+                id="purchase-co-experian-score"
+                value={purchaseCoBorrowerCreditScoresDialog.experian}
+                onChange={(e) => {
+                  // Only allow numeric characters
+                  const numericValue = e.target.value.replace(/[^0-9]/g, '');
+                  const newValue = numericValue.slice(0, 3);
+                  setPurchaseCoBorrowerCreditScoresDialog(prev => {
+                    const updated = { ...prev, experian: newValue };
+                    // Calculate middle value automatically
+                    const scores = [
+                      parseInt(newValue) || 0,
+                      parseInt(updated.equifax) || 0,
+                      parseInt(updated.transunion) || 0
+                    ].filter(score => score > 0).sort((a, b) => a - b);
+                    
+                    if (scores.length === 3) {
+                      updated.midFico = scores[1].toString(); // Middle value
+                    } else if (scores.length === 2) {
+                      updated.midFico = 'Pending'; // Show "Pending" when only 2 fields filled
+                    } else if (scores.length === 1) {
+                      updated.midFico = scores[0].toString(); // Only one score
+                    } else {
+                      updated.midFico = '';
+                    }
+                    
+                    return updated;
+                  });
+                }}
+                placeholder="000"
+                maxLength={3}
+                pattern="[0-9]{3}"
+                data-testid="input-purchase-co-experian-score"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="purchase-co-equifax-score" className="text-purple-600 font-medium text-lg">Equifax</Label>
+              <Input
+                id="purchase-co-equifax-score"
+                value={purchaseCoBorrowerCreditScoresDialog.equifax}
+                onChange={(e) => {
+                  // Only allow numeric characters
+                  const numericValue = e.target.value.replace(/[^0-9]/g, '');
+                  const newValue = numericValue.slice(0, 3);
+                  setPurchaseCoBorrowerCreditScoresDialog(prev => {
+                    const updated = { ...prev, equifax: newValue };
+                    // Calculate middle value automatically
+                    const scores = [
+                      parseInt(updated.experian) || 0,
+                      parseInt(newValue) || 0,
+                      parseInt(updated.transunion) || 0
+                    ].filter(score => score > 0).sort((a, b) => a - b);
+                    
+                    if (scores.length === 3) {
+                      updated.midFico = scores[1].toString(); // Middle value
+                    } else if (scores.length === 2) {
+                      updated.midFico = 'Pending'; // Show "Pending" when only 2 fields filled
+                    } else if (scores.length === 1) {
+                      updated.midFico = scores[0].toString(); // Only one score
+                    } else {
+                      updated.midFico = '';
+                    }
+                    
+                    return updated;
+                  });
+                }}
+                placeholder="000"
+                maxLength={3}
+                pattern="[0-9]{3}"
+                data-testid="input-purchase-co-equifax-score"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="purchase-co-transunion-score" className="text-orange-600 font-medium text-lg">Transunion</Label>
+              <Input
+                id="purchase-co-transunion-score"
+                value={purchaseCoBorrowerCreditScoresDialog.transunion}
+                onChange={(e) => {
+                  // Only allow numeric characters
+                  const numericValue = e.target.value.replace(/[^0-9]/g, '');
+                  const newValue = numericValue.slice(0, 3);
+                  setPurchaseCoBorrowerCreditScoresDialog(prev => {
+                    const updated = { ...prev, transunion: newValue };
+                    // Calculate middle value automatically
+                    const scores = [
+                      parseInt(updated.experian) || 0,
+                      parseInt(updated.equifax) || 0,
+                      parseInt(newValue) || 0
+                    ].filter(score => score > 0).sort((a, b) => a - b);
+                    
+                    if (scores.length === 3) {
+                      updated.midFico = scores[1].toString(); // Middle value
+                    } else if (scores.length === 2) {
+                      updated.midFico = 'Pending'; // Show "Pending" when only 2 fields filled
+                    } else if (scores.length === 1) {
+                      updated.midFico = scores[0].toString(); // Only one score
+                    } else {
+                      updated.midFico = '';
+                    }
+                    
+                    return updated;
+                  });
+                }}
+                placeholder="000"
+                maxLength={3}
+                pattern="[0-9]{3}"
+                data-testid="input-purchase-co-transunion-score"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setPurchaseCoBorrowerCreditScoresDialog(prev => ({ ...prev, isOpen: false }))}
+              data-testid="button-cancel-purchase-co-credit-scores"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                // Here you can handle saving the scores to the form or wherever needed
+                setPurchaseCoBorrowerCreditScoresDialog(prev => ({ ...prev, isOpen: false }));
+              }}
+              data-testid="button-save-purchase-co-credit-scores"
+            >
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Purchase Loan - Co-Borrower Warning Dialog */}
+      <Dialog open={purchaseCoBorrowerWarningDialog} onOpenChange={setPurchaseCoBorrowerWarningDialog}>
+        <DialogContent className="max-w-sm" data-testid="dialog-purchase-co-borrower-warning">
+          <DialogHeader>
+            <DialogTitle className="text-center">Co-Borrower Required</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-center text-gray-600">
+              Please add the Co-Borrower to the application first.
+            </p>
+          </div>
+          <DialogFooter className="flex justify-center">
+            <Button
+              onClick={() => setPurchaseCoBorrowerWarningDialog(false)}
+              data-testid="button-close-purchase-co-borrower-warning"
               className="w-full"
             >
               OK
