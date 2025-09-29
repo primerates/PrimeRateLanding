@@ -1437,6 +1437,9 @@ export default function AdminAddClient() {
     transunion: ''
   });
 
+  // Co-Borrower warning dialog state
+  const [coBorrowerWarningDialog, setCoBorrowerWarningDialog] = useState(false);
+
   // Purchase Loan toggle states
   const [purchaseLoanEscrowType, setPurchaseLoanEscrowType] = useState<'tax-insurance' | 'insurance-only' | 'property-tax-only'>('tax-insurance');
   const [purchaseLoanPaymentType, setPurchaseLoanPaymentType] = useState<'principal-interest' | 'interest-only'>('principal-interest');
@@ -4271,10 +4274,16 @@ export default function AdminAddClient() {
                           }
                           // Open co-borrower credit scores dialog when in co-borrower-scores mode
                           else if (brandNewLoanFicoType === 'co-borrower-scores') {
-                            setCoBorrowerCreditScoresDialog(prev => ({
-                              ...prev,
-                              isOpen: true
-                            }));
+                            // Check if co-borrower exists before opening dialog
+                            if (hasCoBorrower) {
+                              setCoBorrowerCreditScoresDialog(prev => ({
+                                ...prev,
+                                isOpen: true
+                              }));
+                            } else {
+                              // Show warning dialog if no co-borrower
+                              setCoBorrowerWarningDialog(true);
+                            }
                           }
                         }}
                         style={{
@@ -19724,6 +19733,29 @@ export default function AdminAddClient() {
               data-testid="button-save-co-credit-scores"
             >
               Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Co-Borrower Warning Dialog */}
+      <Dialog open={coBorrowerWarningDialog} onOpenChange={setCoBorrowerWarningDialog}>
+        <DialogContent className="max-w-sm" data-testid="dialog-co-borrower-warning">
+          <DialogHeader>
+            <DialogTitle className="text-center">Co-Borrower Required</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-center text-gray-600">
+              Please add the Co-Borrower to the application first.
+            </p>
+          </div>
+          <DialogFooter className="flex justify-center">
+            <Button
+              onClick={() => setCoBorrowerWarningDialog(false)}
+              data-testid="button-close-co-borrower-warning"
+              className="w-full"
+            >
+              OK
             </Button>
           </DialogFooter>
         </DialogContent>
