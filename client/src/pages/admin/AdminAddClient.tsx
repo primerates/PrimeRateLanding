@@ -1409,6 +1409,10 @@ export default function AdminAddClient() {
   const [originalExpirationDate, setOriginalExpirationDate] = useState<string>('');
   const [originalPurchaseExpirationDate, setOriginalPurchaseExpirationDate] = useState<string>('');
 
+  // New Loan conflict prevention state
+  const [currentNewLoanType, setCurrentNewLoanType] = useState<'refinance' | 'purchase' | null>(null);
+  const [showLoanConflictDialog, setShowLoanConflictDialog] = useState(false);
+
   // Purchase Loan toggle states
   const [purchaseLoanEscrowType, setPurchaseLoanEscrowType] = useState<'tax-insurance' | 'insurance-only' | 'property-tax-only'>('tax-insurance');
   const [purchaseLoanPaymentType, setPurchaseLoanPaymentType] = useState<'principal-interest' | 'interest-only'>('principal-interest');
