@@ -7134,12 +7134,20 @@ export default function AdminAddClient() {
         setBrandNewLoanData({});
         setBrandNewLoanCardStates({});
         setShowBrandNewLoan(false);
+        setCurrentNewLoanType(null);
         
         // Clear any Brand New Loan form data
         form.setValue('brandNewLoan', undefined);
         return;
       }
     } else {
+      // Check if Purchase loan is already open - show conflict dialog
+      const hasPurchaseCards = (purchaseLoanCards || []).length > 0;
+      if (hasPurchaseCards) {
+        setShowLoanConflictDialog(true);
+        return;
+      }
+      
       // When checking, auto-create default loan card
       const hasCards = (brandNewLoanCards || []).length > 0;
       
@@ -7162,6 +7170,9 @@ export default function AdminAddClient() {
         
         // Auto-expand the loan card
         setShowBrandNewLoan(true);
+        
+        // Set current loan type to refinance
+        setCurrentNewLoanType('refinance');
         
         // Auto-attach to subject property if one exists
         const properties = form.watch('property.properties') || [];
@@ -7221,12 +7232,20 @@ export default function AdminAddClient() {
         setPurchaseLoanData({});
         setPurchaseLoanCardStates({});
         setShowPurchaseLoan(false);
+        setCurrentNewLoanType(null);
         
         // Clear any Purchase Loan form data
         form.setValue('purchaseLoan', undefined);
         return;
       }
     } else {
+      // Check if Refinance loan is already open - show conflict dialog
+      const hasRefinanceCards = (brandNewLoanCards || []).length > 0;
+      if (hasRefinanceCards) {
+        setShowLoanConflictDialog(true);
+        return;
+      }
+      
       // When checking, auto-create default loan card
       const hasCards = (purchaseLoanCards || []).length > 0;
       
@@ -7249,6 +7268,9 @@ export default function AdminAddClient() {
         
         // Auto-expand the loan card
         setShowPurchaseLoan(true);
+        
+        // Set current loan type to purchase
+        setCurrentNewLoanType('purchase');
         
         // Auto-fill Purchase Loan specific values
         form.setValue('purchaseLoan.loanPurpose', 'purchase');
