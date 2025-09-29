@@ -19404,20 +19404,51 @@ export default function AdminAddClient() {
 
       {/* Borrower Credit Scores Dialog */}
       <Dialog open={borrowerCreditScoresDialog.isOpen} onOpenChange={(open) => setBorrowerCreditScoresDialog(prev => ({ ...prev, isOpen: open }))}>
-        <DialogContent className="max-w-md" data-testid="dialog-borrower-credit-scores">
+        <DialogContent className="max-w-xs" data-testid="dialog-borrower-credit-scores">
           <DialogHeader>
             <DialogTitle>Borrower Credit Scores</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
+              <Label htmlFor="borrower-mid-fico">Borrower Mid Fico</Label>
+              <Input
+                id="borrower-mid-fico"
+                value={borrowerCreditScoresDialog.midFico}
+                readOnly
+                placeholder="000"
+                className="bg-gray-50"
+                data-testid="input-borrower-mid-fico"
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="experian-score">Experian</Label>
               <Input
                 id="experian-score"
                 value={borrowerCreditScoresDialog.experian}
-                onChange={(e) => setBorrowerCreditScoresDialog(prev => ({
-                  ...prev,
-                  experian: e.target.value.slice(0, 3) // Limit to 3 digits
-                }))}
+                onChange={(e) => {
+                  const newValue = e.target.value.slice(0, 3);
+                  setBorrowerCreditScoresDialog(prev => {
+                    const updated = { ...prev, experian: newValue };
+                    // Calculate middle value automatically
+                    const scores = [
+                      parseInt(newValue) || 0,
+                      parseInt(updated.equifax) || 0,
+                      parseInt(updated.transunion) || 0
+                    ].filter(score => score > 0).sort((a, b) => a - b);
+                    
+                    if (scores.length === 3) {
+                      updated.midFico = scores[1].toString(); // Middle value
+                    } else if (scores.length === 2) {
+                      updated.midFico = Math.min(...scores).toString(); // Lower of two
+                    } else if (scores.length === 1) {
+                      updated.midFico = scores[0].toString(); // Only one score
+                    } else {
+                      updated.midFico = '';
+                    }
+                    
+                    return updated;
+                  });
+                }}
                 placeholder="000"
                 maxLength={3}
                 pattern="[0-9]{3}"
@@ -19425,29 +19456,34 @@ export default function AdminAddClient() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="borrower-mid-fico">Borrower Mid Fico</Label>
-              <Input
-                id="borrower-mid-fico"
-                value={borrowerCreditScoresDialog.midFico}
-                onChange={(e) => setBorrowerCreditScoresDialog(prev => ({
-                  ...prev,
-                  midFico: e.target.value.slice(0, 3) // Limit to 3 digits
-                }))}
-                placeholder="000"
-                maxLength={3}
-                pattern="[0-9]{3}"
-                data-testid="input-borrower-mid-fico"
-              />
-            </div>
-            <div className="space-y-2">
               <Label htmlFor="equifax-score">Equifax</Label>
               <Input
                 id="equifax-score"
                 value={borrowerCreditScoresDialog.equifax}
-                onChange={(e) => setBorrowerCreditScoresDialog(prev => ({
-                  ...prev,
-                  equifax: e.target.value.slice(0, 3) // Limit to 3 digits
-                }))}
+                onChange={(e) => {
+                  const newValue = e.target.value.slice(0, 3);
+                  setBorrowerCreditScoresDialog(prev => {
+                    const updated = { ...prev, equifax: newValue };
+                    // Calculate middle value automatically
+                    const scores = [
+                      parseInt(updated.experian) || 0,
+                      parseInt(newValue) || 0,
+                      parseInt(updated.transunion) || 0
+                    ].filter(score => score > 0).sort((a, b) => a - b);
+                    
+                    if (scores.length === 3) {
+                      updated.midFico = scores[1].toString(); // Middle value
+                    } else if (scores.length === 2) {
+                      updated.midFico = Math.min(...scores).toString(); // Lower of two
+                    } else if (scores.length === 1) {
+                      updated.midFico = scores[0].toString(); // Only one score
+                    } else {
+                      updated.midFico = '';
+                    }
+                    
+                    return updated;
+                  });
+                }}
                 placeholder="000"
                 maxLength={3}
                 pattern="[0-9]{3}"
@@ -19459,10 +19495,30 @@ export default function AdminAddClient() {
               <Input
                 id="transunion-score"
                 value={borrowerCreditScoresDialog.transunion}
-                onChange={(e) => setBorrowerCreditScoresDialog(prev => ({
-                  ...prev,
-                  transunion: e.target.value.slice(0, 3) // Limit to 3 digits
-                }))}
+                onChange={(e) => {
+                  const newValue = e.target.value.slice(0, 3);
+                  setBorrowerCreditScoresDialog(prev => {
+                    const updated = { ...prev, transunion: newValue };
+                    // Calculate middle value automatically
+                    const scores = [
+                      parseInt(updated.experian) || 0,
+                      parseInt(updated.equifax) || 0,
+                      parseInt(newValue) || 0
+                    ].filter(score => score > 0).sort((a, b) => a - b);
+                    
+                    if (scores.length === 3) {
+                      updated.midFico = scores[1].toString(); // Middle value
+                    } else if (scores.length === 2) {
+                      updated.midFico = Math.min(...scores).toString(); // Lower of two
+                    } else if (scores.length === 1) {
+                      updated.midFico = scores[0].toString(); // Only one score
+                    } else {
+                      updated.midFico = '';
+                    }
+                    
+                    return updated;
+                  });
+                }}
                 placeholder="000"
                 maxLength={3}
                 pattern="[0-9]{3}"
