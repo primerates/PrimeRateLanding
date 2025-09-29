@@ -2236,6 +2236,23 @@ export default function AdminAddClient() {
     }).format(numValue);
   };
 
+  // Ensure all properties have stable IDs
+  useEffect(() => {
+    const properties = form.watch('property.properties') || [];
+    let needsUpdate = false;
+    const updatedProperties = properties.map(property => {
+      if (!property.id) {
+        needsUpdate = true;
+        return { ...property, id: nanoid() };
+      }
+      return property;
+    });
+    
+    if (needsUpdate) {
+      form.setValue('property.properties', updatedProperties);
+    }
+  }, [form.watch('property.properties')]);
+
   // Auto-copy borrower residence address to primary residence property
   const autoCopyBorrowerAddressToPrimaryProperty = () => {
     const borrowerAddress = form.getValues('borrower.residenceAddress');
@@ -15492,6 +15509,16 @@ export default function AdminAddClient() {
                 const propertyId = property.id || `property-${index}`;
                 const isOpen = propertyCardStates[propertyId] ?? true;
                 
+                // Find the actual index in the full properties array using stable ID
+                const fullProperties = form.watch('property.properties') || [];
+                const actualPropertyIndex = fullProperties.findIndex(p => p.id === property.id);
+                
+                // Guard: Skip rendering if we can't find the property in the form state
+                if (actualPropertyIndex < 0) {
+                  console.warn(`Property ${propertyId} not found in form state, skipping render`);
+                  return null;
+                }
+                
                 const getPropertyTitle = () => {
                   const typeLabels = {
                     'home-purchase': 'Home Purchase',
@@ -15752,12 +15779,11 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-street-${propertyId}`}>Street Address *</Label>
                                 <Input
                                   id={`property-address-street-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.address.street` as const)}
-
+                                  {...form.register(`property.properties.${actualPropertyIndex}.address.street` as const)}
                                   data-testid={`input-property-street-${propertyId}`}
                                   onBlur={() => {
                                     // Trigger auto-fetch after a delay to allow other fields to be filled
-                                    setTimeout(() => handleAddressChange(index), 1000);
+                                    setTimeout(() => handleAddressChange(actualPropertyIndex), 1000);
                                   }}
                                 />
                               </div>
@@ -15766,7 +15792,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-unit-${propertyId}`}>Unit/Apt</Label>
                                 <Input
                                   id={`property-address-unit-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.address.unit` as const)}
+                                  {...form.register(`property.properties.${actualPropertyIndex}.address.unit` as const)}
                                   data-testid={`input-property-unit-${propertyId}`}
                                 />
                               </div>
@@ -15775,11 +15801,11 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-city-${propertyId}`}>City *</Label>
                                 <Input
                                   id={`property-address-city-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.address.city` as const)}
+                                  {...form.register(`property.properties.${actualPropertyIndex}.address.city` as const)}
                                   data-testid={`input-property-city-${propertyId}`}
                                   onBlur={() => {
                                     // Trigger auto-fetch after a delay
-                                    setTimeout(() => handleAddressChange(index), 1000);
+                                    setTimeout(() => handleAddressChange(actualPropertyIndex), 1000);
                                   }}
                                 />
                               </div>
@@ -15787,8 +15813,8 @@ export default function AdminAddClient() {
                               <div className="space-y-2 md:col-span-1">
                                 <Label htmlFor={`property-address-state-${propertyId}`}>State *</Label>
                                 <Select
-                                  value={form.watch(`property.properties.${index}.address.state` as const) || ''}
-                                  onValueChange={(value) => form.setValue(`property.properties.${index}.address.state` as const, value)}
+                                  value={form.watch(`property.properties.${actualPropertyIndex}.address.state` as const) || ''}
+                                  onValueChange={(value) => form.setValue(`property.properties.${actualPropertyIndex}.address.state` as const, value)}
                                 >
                                   <SelectTrigger data-testid={`select-property-state-${propertyId}`}>
                                     <SelectValue placeholder="Select" />
@@ -15807,7 +15833,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-zip-${propertyId}`}>ZIP Code *</Label>
                                 <Input
                                   id={`property-address-zip-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.address.zip` as const)}
+                                  {...form.register(`property.properties.${actualPropertyIndex}.address.zip` as const)}
                                   data-testid={`input-property-zip-${propertyId}`}
                                 />
                               </div>
@@ -15816,7 +15842,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-county-${propertyId}`}>County</Label>
                                 <Input
                                   id={`property-address-county-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.address.county` as const)}
+                                  {...form.register(`property.properties.${actualPropertyIndex}.address.county` as const)}
                                   data-testid={`input-property-county-${propertyId}`}
                                 />
                               </div>
