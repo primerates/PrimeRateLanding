@@ -10157,51 +10157,74 @@ export default function AdminAddClient() {
                       }`}>
                         <CardContent className="pt-6">
                           <div className="space-y-3">
-                            <div className="flex gap-4">
-                              <div className="flex items-center space-x-2">
-                                <input
-                                  type="radio"
-                                  id="self-employment-current"
-                                  name="self-employment-type"
-                                  data-testid="radio-self-employment-current"
-                                />
-                                <Label htmlFor="self-employment-current">Current</Label>
+                            <div className="flex gap-4 justify-between items-center">
+                              <div className="flex gap-4">
+                                <div className="flex items-center space-x-2">
+                                  <input
+                                    type="radio"
+                                    id="self-employment-current"
+                                    name="self-employment-type"
+                                    data-testid="radio-self-employment-current"
+                                  />
+                                  <Label htmlFor="self-employment-current">Current</Label>
+                                </div>
+                                
+                                <div className="flex items-center space-x-2">
+                                  <input
+                                    type="radio"
+                                    id="self-employment-prior"
+                                    name="self-employment-type"
+                                    data-testid="radio-self-employment-prior"
+                                  />
+                                  <Label htmlFor="self-employment-prior">Prior</Label>
+                                  <button
+                                    type="button"
+                                    onClick={() => openBusinessDescriptionDialog(cardId)}
+                                    className={`transition-colors ml-6 flex items-center justify-center w-4 h-4 rounded-full border ${
+                                      form.watch('income.businessDescription') 
+                                        ? 'bg-purple-500 border-purple-500 text-white hover:bg-purple-600' 
+                                        : 'text-blue-600 hover:text-blue-800 border-blue-600 hover:border-blue-800'
+                                    }`}
+                                    data-testid="button-business-description-info"
+                                    title="Add business description"
+                                  >
+                                    <span className="text-[10px] font-bold">D</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => openTaxPreparerDialog(cardId)}
+                                    className={`transition-colors ml-2 flex items-center justify-center w-4 h-4 rounded-full border ${
+                                      form.watch('income.taxesPreparedBy') 
+                                        ? 'bg-purple-500 border-purple-500 text-white hover:bg-purple-600' 
+                                        : 'text-blue-600 hover:text-blue-800 border-blue-600 hover:border-blue-800'
+                                    }`}
+                                    data-testid="button-tax-preparer-info"
+                                    title="Tax preparer information"
+                                  >
+                                    <span className="text-[10px] font-bold">T</span>
+                                  </button>
+                                </div>
                               </div>
                               
-                              <div className="flex items-center space-x-2">
-                                <input
-                                  type="radio"
-                                  id="self-employment-prior"
-                                  name="self-employment-type"
-                                  data-testid="radio-self-employment-prior"
-                                />
-                                <Label htmlFor="self-employment-prior">Prior</Label>
-                                <button
+                              <div className="flex gap-2">
+                                <Button
                                   type="button"
-                                  onClick={() => openBusinessDescriptionDialog(cardId)}
-                                  className={`transition-colors ml-6 flex items-center justify-center w-4 h-4 rounded-full border ${
-                                    form.watch('income.businessDescription') 
-                                      ? 'bg-purple-500 border-purple-500 text-white hover:bg-purple-600' 
-                                      : 'text-blue-600 hover:text-blue-800 border-blue-600 hover:border-blue-800'
-                                  }`}
-                                  data-testid="button-business-description-info"
-                                  title="Add business description"
+                                  variant="outline"
+                                  size="sm"
+                                  data-testid="button-self-employment-description"
+                                  title="Description"
                                 >
-                                  <span className="text-[10px] font-bold">D</span>
-                                </button>
-                                <button
+                                  Description
+                                </Button>
+                                <Button
                                   type="button"
-                                  onClick={() => openTaxPreparerDialog(cardId)}
-                                  className={`transition-colors ml-2 flex items-center justify-center w-4 h-4 rounded-full border ${
-                                    form.watch('income.taxesPreparedBy') 
-                                      ? 'bg-purple-500 border-purple-500 text-white hover:bg-purple-600' 
-                                      : 'text-blue-600 hover:text-blue-800 border-blue-600 hover:border-blue-800'
-                                  }`}
-                                  data-testid="button-tax-preparer-info"
-                                  title="Tax preparer information"
+                                  variant="outline"
+                                  size="sm"
+                                  data-testid="button-self-employment-filing"
+                                  title="Filing"
                                 >
-                                  <span className="text-[10px] font-bold">T</span>
-                                </button>
+                                  Filing
+                                </Button>
                               </div>
                             </div>
                           </div>
