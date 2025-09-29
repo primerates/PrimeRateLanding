@@ -13337,9 +13337,9 @@ export default function AdminAddClient() {
                             </Card>
 
                             {/* Property Details - Common Section */}
-                            <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                               {/* Property Address - Street */}
-                              <div className="space-y-2 md:col-span-2">
+                              <div className="space-y-2 md:col-span-3">
                                 <Label htmlFor={`property-address-street-${propertyId}`}>Street Address *</Label>
                                 <Input
                                   id={`property-address-street-${propertyId}`}
@@ -13359,7 +13359,7 @@ export default function AdminAddClient() {
                               </div>
                               
                               {/* City */}
-                              <div className="space-y-2 md:col-span-1">
+                              <div className="space-y-2 md:col-span-2">
                                 <Label htmlFor={`property-address-city-${propertyId}`}>City *</Label>
                                 <Input
                                   id={`property-address-city-${propertyId}`}
@@ -13406,7 +13406,7 @@ export default function AdminAddClient() {
                               </div>
                               
                               {/* County */}
-                              <div className="space-y-2 md:col-span-1">
+                              <div className="space-y-2 md:col-span-2">
                                 <Label htmlFor={`property-address-county-${propertyId}`}>County</Label>
                                 <Input
                                   id={`property-address-county-${propertyId}`}
@@ -13414,11 +13414,9 @@ export default function AdminAddClient() {
                                   data-testid={`input-property-county-${propertyId}`}
                                 />
                               </div>
-                            </div>
-
-                            {/* Property Type and Estimated/Appraised Value */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                              <div className="space-y-2">
+                              
+                              {/* Property Type */}
+                              <div className="space-y-2 md:col-span-2">
                                 <Label htmlFor={`property-type-${propertyId}`}>Property Type</Label>
                                 <Controller
                                   control={form.control}
@@ -13445,7 +13443,10 @@ export default function AdminAddClient() {
                                   )}
                                 />
                               </div>
-                              
+                            </div>
+
+                            {/* Estimated and Appraised Value */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <div className="space-y-2">
                                 <Label htmlFor={`property-estimated-value-${propertyId}`}>Estimated Value</Label>
                                 <Controller
