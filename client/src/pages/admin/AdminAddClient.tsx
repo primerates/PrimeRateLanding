@@ -16649,7 +16649,7 @@ export default function AdminAddClient() {
                             (currentSecondLoanCards || []).length > 0 ? 'pointer-events-none opacity-75' : 'cursor-pointer'
                           }`}
                         >
-                          Current Second Loan
+                          Existing Second Loan
                         </Label>
                       </div>
 
