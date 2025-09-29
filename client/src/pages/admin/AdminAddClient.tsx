@@ -1428,6 +1428,15 @@ export default function AdminAddClient() {
     transunion: ''
   });
 
+  // Co-Borrower Credit Scores popup dialog state
+  const [coBorrowerCreditScoresDialog, setCoBorrowerCreditScoresDialog] = useState({
+    isOpen: false,
+    experian: '',
+    midFico: '',
+    equifax: '',
+    transunion: ''
+  });
+
   // Purchase Loan toggle states
   const [purchaseLoanEscrowType, setPurchaseLoanEscrowType] = useState<'tax-insurance' | 'insurance-only' | 'property-tax-only'>('tax-insurance');
   const [purchaseLoanPaymentType, setPurchaseLoanPaymentType] = useState<'principal-interest' | 'interest-only'>('principal-interest');
@@ -4235,9 +4244,16 @@ export default function AdminAddClient() {
                               isOpen: true
                             }));
                           }
+                          // Open co-borrower credit scores dialog when in co-borrower-scores mode
+                          else if (brandNewLoanFicoType === 'co-borrower-scores') {
+                            setCoBorrowerCreditScoresDialog(prev => ({
+                              ...prev,
+                              isOpen: true
+                            }));
+                          }
                         }}
                         style={{
-                          cursor: brandNewLoanFicoType === 'borrower-scores' ? 'pointer' : 'text'
+                          cursor: (brandNewLoanFicoType === 'borrower-scores' || brandNewLoanFicoType === 'co-borrower-scores') ? 'pointer' : 'text'
                         }}
                       />
                     </div>
@@ -19538,6 +19554,149 @@ export default function AdminAddClient() {
                 setBorrowerCreditScoresDialog(prev => ({ ...prev, isOpen: false }));
               }}
               data-testid="button-save-credit-scores"
+            >
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Co-Borrower Credit Scores Dialog */}
+      <Dialog open={coBorrowerCreditScoresDialog.isOpen} onOpenChange={(open) => setCoBorrowerCreditScoresDialog(prev => ({ ...prev, isOpen: open }))}>
+        <DialogContent className="max-w-xs" data-testid="dialog-co-borrower-credit-scores">
+          <DialogHeader>
+            <DialogTitle>Co-Borrower Credit Scores</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6">
+            <div className="space-y-2 mt-6">
+              <Label htmlFor="co-borrower-mid-fico">Borrower Mid Fico</Label>
+              <div 
+                className="text-4xl font-bold text-blue-900 py-2"
+                data-testid="display-co-borrower-mid-fico"
+              >
+                {coBorrowerCreditScoresDialog.midFico || "000"}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="co-experian-score" className="text-green-600 font-medium text-lg">Experian</Label>
+              <Input
+                id="co-experian-score"
+                value={coBorrowerCreditScoresDialog.experian}
+                onChange={(e) => {
+                  const newValue = e.target.value.slice(0, 3);
+                  setCoBorrowerCreditScoresDialog(prev => {
+                    const updated = { ...prev, experian: newValue };
+                    // Calculate middle value automatically
+                    const scores = [
+                      parseInt(newValue) || 0,
+                      parseInt(updated.equifax) || 0,
+                      parseInt(updated.transunion) || 0
+                    ].filter(score => score > 0).sort((a, b) => a - b);
+                    
+                    if (scores.length === 3) {
+                      updated.midFico = scores[1].toString(); // Middle value
+                    } else if (scores.length === 2) {
+                      updated.midFico = 'Pending'; // Show "Pending" when only 2 fields filled
+                    } else if (scores.length === 1) {
+                      updated.midFico = scores[0].toString(); // Only one score
+                    } else {
+                      updated.midFico = '';
+                    }
+                    
+                    return updated;
+                  });
+                }}
+                placeholder="000"
+                maxLength={3}
+                pattern="[0-9]{3}"
+                data-testid="input-co-experian-score"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="co-equifax-score" className="text-purple-600 font-medium text-lg">Equifax</Label>
+              <Input
+                id="co-equifax-score"
+                value={coBorrowerCreditScoresDialog.equifax}
+                onChange={(e) => {
+                  const newValue = e.target.value.slice(0, 3);
+                  setCoBorrowerCreditScoresDialog(prev => {
+                    const updated = { ...prev, equifax: newValue };
+                    // Calculate middle value automatically
+                    const scores = [
+                      parseInt(updated.experian) || 0,
+                      parseInt(newValue) || 0,
+                      parseInt(updated.transunion) || 0
+                    ].filter(score => score > 0).sort((a, b) => a - b);
+                    
+                    if (scores.length === 3) {
+                      updated.midFico = scores[1].toString(); // Middle value
+                    } else if (scores.length === 2) {
+                      updated.midFico = 'Pending'; // Show "Pending" when only 2 fields filled
+                    } else if (scores.length === 1) {
+                      updated.midFico = scores[0].toString(); // Only one score
+                    } else {
+                      updated.midFico = '';
+                    }
+                    
+                    return updated;
+                  });
+                }}
+                placeholder="000"
+                maxLength={3}
+                pattern="[0-9]{3}"
+                data-testid="input-co-equifax-score"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="co-transunion-score" className="text-orange-600 font-medium text-lg">Transunion</Label>
+              <Input
+                id="co-transunion-score"
+                value={coBorrowerCreditScoresDialog.transunion}
+                onChange={(e) => {
+                  const newValue = e.target.value.slice(0, 3);
+                  setCoBorrowerCreditScoresDialog(prev => {
+                    const updated = { ...prev, transunion: newValue };
+                    // Calculate middle value automatically
+                    const scores = [
+                      parseInt(updated.experian) || 0,
+                      parseInt(updated.equifax) || 0,
+                      parseInt(newValue) || 0
+                    ].filter(score => score > 0).sort((a, b) => a - b);
+                    
+                    if (scores.length === 3) {
+                      updated.midFico = scores[1].toString(); // Middle value
+                    } else if (scores.length === 2) {
+                      updated.midFico = 'Pending'; // Show "Pending" when only 2 fields filled
+                    } else if (scores.length === 1) {
+                      updated.midFico = scores[0].toString(); // Only one score
+                    } else {
+                      updated.midFico = '';
+                    }
+                    
+                    return updated;
+                  });
+                }}
+                placeholder="000"
+                maxLength={3}
+                pattern="[0-9]{3}"
+                data-testid="input-co-transunion-score"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setCoBorrowerCreditScoresDialog(prev => ({ ...prev, isOpen: false }))}
+              data-testid="button-cancel-co-credit-scores"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                // Here you can handle saving the scores to the form or wherever needed
+                setCoBorrowerCreditScoresDialog(prev => ({ ...prev, isOpen: false }));
+              }}
+              data-testid="button-save-co-credit-scores"
             >
               Save
             </Button>
