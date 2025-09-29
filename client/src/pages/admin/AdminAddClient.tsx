@@ -4945,7 +4945,7 @@ export default function AdminAddClient() {
                     }}
                   >
                     <SelectTrigger data-testid={attachedToPropertyBinding['data-testid']}>
-                      <SelectValue placeholder="Associate this loan to home purchase property address" />
+                      <SelectValue placeholder="Associate this loan to home purchase address" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="select">Select</SelectItem>
@@ -13209,7 +13209,7 @@ export default function AdminAddClient() {
                               <CardContent className="pt-6">
                                 <div className="flex justify-between items-center">
                                   <div className="space-y-3 flex-1">
-                                    <Label className="text-base font-semibold">Is the loan transaction for this property?</Label>
+                                    <Label className="text-base font-semibold">Is this the subject property that will secure the new loan?</Label>
                                     <div className="flex gap-4">
                                       <div className="flex items-center space-x-2">
                                         <input
@@ -14006,7 +14006,7 @@ export default function AdminAddClient() {
                               <CardContent className="pt-6">
                                 <div className="flex justify-between items-center">
                                   <div className="space-y-3 flex-1">
-                                    <Label className="text-base font-semibold">Is the loan transaction for this property?</Label>
+                                    <Label className="text-base font-semibold">Is this the subject property that will secure the new loan?</Label>
                                     <div className="flex gap-4">
                                       <div className="flex items-center space-x-2">
                                         <input
@@ -14798,7 +14798,7 @@ export default function AdminAddClient() {
                               <CardContent className="pt-6">
                                 <div className="flex justify-between items-center">
                                   <div className="space-y-3 flex-1">
-                                    <Label className="text-base font-semibold">Is the loan transaction for this property?</Label>
+                                    <Label className="text-base font-semibold">Is this the subject property that will secure the new loan?</Label>
                                     <div className="flex gap-4">
                                       <div className="flex items-center space-x-2">
                                         <input
@@ -15597,7 +15597,7 @@ export default function AdminAddClient() {
                               <CardContent className="pt-6">
                                 <div className="flex justify-between items-center">
                                   <div className="space-y-3 flex-1">
-                                    <Label className="text-base font-semibold">Is the loan transaction for this property?</Label>
+                                    <Label className="text-base font-semibold">Is this the subject property that will secure the new loan?</Label>
                                     <div className="flex gap-4">
                                       <div className="flex items-center space-x-2">
                                         <input
