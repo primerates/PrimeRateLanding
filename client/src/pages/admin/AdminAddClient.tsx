@@ -1401,6 +1401,8 @@ export default function AdminAddClient() {
   const [brandNewLoanLockDateType, setBrandNewLoanLockDateType] = useState<'date' | 'bond-entry'>('date');
   const [brandNewLoanExpirationDurationType, setBrandNewLoanExpirationDurationType] = useState<'expiration' | 'duration'>('expiration');
   const [brandNewLoanCreditType, setBrandNewLoanCreditType] = useState<'lender' | 'broker'>('lender');
+  // Background calculation storage - calculated duration but don't auto-switch toggle
+  const [calculatedDuration, setCalculatedDuration] = useState<string>('');
 
   // Purchase Loan toggle states
   const [purchaseLoanEscrowType, setPurchaseLoanEscrowType] = useState<'tax-insurance' | 'insurance-only' | 'property-tax-only'>('tax-insurance');
@@ -3138,9 +3140,42 @@ export default function AdminAddClient() {
     }
   }, [form.watch('property.properties')]);
 
-  // DISABLED: Auto-calculate Rate Lock Duration - per user request to not auto-engage toggle
-  // Users want to manually control when the toggle switches between expiration and duration modes
-  // The Rate Lock Expiration field should remain as a date picker that allows free date selection
+  // Background calculation of Rate Lock Duration - calculate but don't auto-switch toggle
+  useEffect(() => {
+    const rateLockDate = form.watch('brandNewLoan.rateLockDate');
+    const rateLockExpiration = form.watch('brandNewLoan.rateLockDuration');
+    
+    // Only calculate if in expiration mode and both dates are provided
+    if (brandNewLoanExpirationDurationType === 'expiration' && rateLockDate && rateLockExpiration) {
+      try {
+        const startDate = new Date(rateLockDate);
+        const endDate = new Date(rateLockExpiration);
+        
+        // Check if both dates are valid
+        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+          setCalculatedDuration('');
+          return;
+        }
+        
+        // Calculate the difference in milliseconds
+        const timeDiff = endDate.getTime() - startDate.getTime();
+        const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        
+        if (daysDiff > 0) {
+          // Store calculated duration in background - don't auto-switch toggle
+          setCalculatedDuration(`${daysDiff} days`);
+        } else {
+          setCalculatedDuration('');
+        }
+      } catch (error) {
+        // Invalid date format, clear calculation
+        setCalculatedDuration('');
+      }
+    } else {
+      // Clear calculation if not in expiration mode or missing dates
+      setCalculatedDuration('');
+    }
+  }, [form.watch('brandNewLoan.rateLockDate'), form.watch('brandNewLoan.rateLockDuration'), brandNewLoanExpirationDurationType, form]);
 
   // Animation effect for first-time page entry
   useEffect(() => {
