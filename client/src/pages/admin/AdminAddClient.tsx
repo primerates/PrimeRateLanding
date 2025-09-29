@@ -2387,6 +2387,42 @@ export default function AdminAddClient() {
     );
   });
 
+  // Auto-Sum Payment Fields Component for Purchase Loan - isolated calculation without parent re-renders
+  const PurchaseLoanAutoSumPaymentFields = React.memo<{ control: any }>(({ control }) => {
+    // Watch specific fields for auto-sum calculation - isolated from parent component
+    const principalPayment = useWatch({ control, name: 'purchaseLoan.principalAndInterestPayment' }) || '';
+    const escrowPayment = useWatch({ control, name: 'purchaseLoan.escrowPayment' }) || '';
+    
+    // Calculate total with useMemo for performance
+    const totalPayment = useMemo(() => {
+      const principal = parseMonetaryValue(principalPayment);
+      const escrow = parseMonetaryValue(escrowPayment);
+      return principal + escrow;
+    }, [principalPayment, escrowPayment]);
+    
+    const totalPaymentFormatted = useMemo(() => 
+      totalPayment > 0 
+        ? `$${totalPayment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` 
+        : '$0.00',
+      [totalPayment]
+    );
+
+    return (
+      <div className="space-y-2 md:col-span-2">
+        <Label className="text-sm font-medium text-black">Total Monthly Payment</Label>
+        <div className="flex items-center border border-input bg-background px-3 rounded-md">
+          <span className="text-muted-foreground text-sm">$</span>
+          <Input
+            value={totalPaymentFormatted.replace('$', '')}
+            readOnly
+            className="border-0 bg-transparent px-2 focus-visible:ring-0"
+            data-testid="text-total-purchase-loan-payment"
+          />
+        </div>
+      </div>
+    );
+  });
+
   // Format percentage value for display only
   const formatPercentageDisplay = (value: string | number | undefined): string => {
     if (!value && value !== 0) return '';
