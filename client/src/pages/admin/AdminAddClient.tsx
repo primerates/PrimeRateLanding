@@ -3216,6 +3216,23 @@ export default function AdminAddClient() {
     }
   }, [form.watch('purchaseLoan.rateLockDate'), form.watch('purchaseLoan.rateLockDuration'), purchaseLoanExpirationDurationType, form]);
 
+  // Sync form values when toggling between expiration and duration modes
+  useEffect(() => {
+    // Handle Refinance loan toggle
+    if (brandNewLoanExpirationDurationType === 'duration' && calculatedDuration) {
+      // When switching to duration mode, set the calculated duration
+      form.setValue('brandNewLoan.rateLockDuration', calculatedDuration);
+    }
+  }, [brandNewLoanExpirationDurationType, calculatedDuration, form]);
+
+  useEffect(() => {
+    // Handle Purchase loan toggle
+    if (purchaseLoanExpirationDurationType === 'duration' && purchaseCalculatedDuration) {
+      // When switching to duration mode, set the calculated duration
+      form.setValue('purchaseLoan.rateLockDuration', purchaseCalculatedDuration);
+    }
+  }, [purchaseLoanExpirationDurationType, purchaseCalculatedDuration, form]);
+
   // Animation effect for first-time page entry
   useEffect(() => {
     // Trigger animation on initial component mount
@@ -4159,9 +4176,9 @@ export default function AdminAddClient() {
                       ) : (
                         <Input
                           id="brandNewLoan-rateLockDuration"
-                          value={calculatedDuration}
+                          {...targetForm.register('brandNewLoan.rateLockDuration')}
                           placeholder="Enter duration"
-                          className="border border-input bg-muted px-3 rounded-md"
+                          className={`border border-input px-3 rounded-md ${calculatedDuration ? 'bg-muted' : 'bg-background'}`}
                           data-testid="input-brandNewLoan-rateLockDuration"
                           disabled={!!calculatedDuration}
                           readOnly={!!calculatedDuration}
@@ -4730,9 +4747,9 @@ export default function AdminAddClient() {
                       ) : (
                         <Input
                           id="purchaseLoan-rateLockDuration"
-                          value={purchaseCalculatedDuration}
+                          {...targetForm.register('purchaseLoan.rateLockDuration')}
                           placeholder="Enter duration"
-                          className="border border-input bg-muted px-3 rounded-md"
+                          className={`border border-input px-3 rounded-md ${purchaseCalculatedDuration ? 'bg-muted' : 'bg-background'}`}
                           data-testid="input-purchaseLoan-rateLockDuration"
                           disabled={!!purchaseCalculatedDuration}
                           readOnly={!!purchaseCalculatedDuration}
