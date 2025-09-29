@@ -13304,34 +13304,167 @@ export default function AdminAddClient() {
                               showSubjectPropertyAnimation[propertyId] ? 'animate-roll-down-subject-property' : ''
                             }`}>
                               <CardContent className="pt-6">
-                                <div className="space-y-3">
-                                  <div className="flex gap-4">
-                                    <div className="flex items-center space-x-2">
-                                      <input
-                                        type="radio"
-                                        id={`subject-property-yes-${propertyId}`}
-                                        name={`subject-property-${propertyId}`}
-                                        checked={property.isSubject === true}
-                                        onChange={() => handleSubjectPropertyChange(propertyId, true)}
-                                        data-testid={`radio-subject-property-yes-${propertyId}`}
-                                      />
-                                      <Label htmlFor={`subject-property-yes-${propertyId}`}>Yes</Label>
-                                    </div>
-                                    
-                                    <div className="flex items-center space-x-2">
-                                      <input
-                                        type="radio"
-                                        id={`subject-property-no-${propertyId}`}
-                                        name={`subject-property-${propertyId}`}
-                                        checked={property.isSubject === false}
-                                        onChange={() => handleSubjectPropertyChange(propertyId, false)}
-                                        data-testid={`radio-subject-property-no-${propertyId}`}
-                                      />
-                                      <Label htmlFor={`subject-property-no-${propertyId}`}>No</Label>
+                                <div className="flex justify-between items-center">
+                                  <div className="space-y-3 flex-1">
+                                    <Label className="text-base font-semibold">Is this the subject property that will secure the new loan?</Label>
+                                    <div className="flex gap-4">
+                                      <div className="flex items-center space-x-2">
+                                        <input
+                                          type="radio"
+                                          id={`subject-yes-${propertyId}`}
+                                          name={`subject-${propertyId}`}
+                                          checked={property.isSubject === true}
+                                          onChange={() => {
+                                            // Update the property's isSubject status in the form
+                                            const properties = form.watch('property.properties') || [];
+                                            const updatedProperties = properties.map(p => 
+                                              p.id === propertyId ? { ...p, isSubject: true } : { ...p, isSubject: false }
+                                            );
+                                            form.setValue('property.properties', updatedProperties);
+                                            // Trigger same green animation as Primary Residence
+                                            setSubjectProperty(propertyId);
+                                          }}
+                                          data-testid={`radio-subject-yes-${propertyId}`}
+                                        />
+                                        <Label htmlFor={`subject-yes-${propertyId}`}>Yes</Label>
+                                      </div>
+                                      
+                                      <div className="flex items-center space-x-2">
+                                        <input
+                                          type="radio"
+                                          id={`subject-no-${propertyId}`}
+                                          name={`subject-${propertyId}`}
+                                          checked={property.isSubject === false}
+                                          onChange={() => {
+                                            // Update the property's isSubject status to false
+                                            const properties = form.watch('property.properties') || [];
+                                            const updatedProperties = properties.map(p => 
+                                              p.id === propertyId ? { ...p, isSubject: false } : p
+                                            );
+                                            form.setValue('property.properties', updatedProperties);
+                                          }}
+                                          data-testid={`radio-subject-no-${propertyId}`}
+                                        />
+                                        <Label htmlFor={`subject-no-${propertyId}`}>No</Label>
+                                      </div>
                                     </div>
                                   </div>
                                   
-                                  <Label className="text-sm font-medium">Subject Property</Label>
+                                  {/* New button positioned more to the left */}
+                                  <div className="flex items-center mr-8">
+                                    <Button
+                                      type="button"
+                                      variant={(() => {
+                                        const properties = form.watch('property.properties') || [];
+                                        const currentProperty = actualPropertyIndex >= 0 ? properties[actualPropertyIndex] : null;
+                                        
+                                        // Check which loans are attached to this property for counter
+                                        const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                        const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                        
+                                        const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                        const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                        
+                                        // Check third loan
+                                        const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
+                                        const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
+                                        
+                                        // Count active loans
+                                        let activeLoansCount = 0;
+                                        if (isCurrentLoanAttached) activeLoansCount++;
+                                        if (isSecondLoanAttached) activeLoansCount++;
+                                        if (isThirdLoanAttached) activeLoansCount++;
+                                        
+                                        return activeLoansCount > 0 ? "default" : "outline";
+                                      })()}
+                                      size="sm"
+                                      onClick={() => {
+                                        // Add your button functionality here
+                                        console.log('Home Purchase button clicked');
+                                      }}
+                                      style={(() => {
+                                        const properties = form.watch('property.properties') || [];
+                                        const currentProperty = actualPropertyIndex >= 0 ? properties[actualPropertyIndex] : null;
+                                        
+                                        // Check which loans are attached to this property for counter
+                                        const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                        const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                        
+                                        const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                        const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                        
+                                        // Check third loan
+                                        const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
+                                        const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
+                                        
+                                        // Count active loans
+                                        let activeLoansCount = 0;
+                                        if (isCurrentLoanAttached) activeLoansCount++;
+                                        if (isSecondLoanAttached) activeLoansCount++;
+                                        if (isThirdLoanAttached) activeLoansCount++;
+                                        
+                                        return activeLoansCount > 0 
+                                          ? { backgroundColor: '#d1d5db', borderColor: '#d1d5db', color: '#374151' } 
+                                          : {};
+                                      })()}
+                                      className={(() => {
+                                        const properties = form.watch('property.properties') || [];
+                                        const currentProperty = actualPropertyIndex >= 0 ? properties[actualPropertyIndex] : null;
+                                        
+                                        // Check which loans are attached to this property for counter
+                                        const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                        const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                        
+                                        const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                        const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                        
+                                        // Check third loan
+                                        const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
+                                        const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
+                                        
+                                        // Count active loans
+                                        let activeLoansCount = 0;
+                                        if (isCurrentLoanAttached) activeLoansCount++;
+                                        if (isSecondLoanAttached) activeLoansCount++;
+                                        if (isThirdLoanAttached) activeLoansCount++;
+                                        
+                                        return activeLoansCount > 0 
+                                          ? "w-24 text-white border-2" 
+                                          : "w-24 hover:bg-red-500 hover:text-white";
+                                      })()}
+                                      data-testid={`button-grey-box-action-${propertyId}`}
+                                      title="Loans"
+                                    >
+                                      {(() => {
+                                        const properties = form.watch('property.properties') || [];
+                                        const currentProperty = actualPropertyIndex >= 0 ? properties[actualPropertyIndex] : null;
+                                        
+                                        // Check which loans are attached to this property for counter
+                                        const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
+                                        const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                        
+                                        const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
+                                        const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                        
+                                        // Check third loan
+                                        const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
+                                        const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
+                                        
+                                        // Count active loans
+                                        let activeLoansCount = 0;
+                                        if (isCurrentLoanAttached) activeLoansCount++;
+                                        if (isSecondLoanAttached) activeLoansCount++;
+                                        if (isThirdLoanAttached) activeLoansCount++;
+                                        
+                                        return (
+                                          <span>
+                                            <span className="mr-3 font-semibold">{activeLoansCount}</span>
+                                            <span>{activeLoansCount === 1 ? 'Loan' : 'Loans'}</span>
+                                          </span>
+                                        );
+                                      })()}
+                                    </Button>
+                                  </div>
                                 </div>
                               </CardContent>
                             </Card>
