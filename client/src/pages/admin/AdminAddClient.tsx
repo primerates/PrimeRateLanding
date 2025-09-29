@@ -6781,6 +6781,14 @@ export default function AdminAddClient() {
           // Cards already exist, prevent unchecking - all removal must be done through card buttons
           return;
         }
+      } else if (type === 'home-purchase') {
+        const currentProperties = form.watch('property.properties') || [];
+        const hasHomePurchaseCards = currentProperties.some(p => p.use === 'home-purchase');
+        
+        if (hasHomePurchaseCards) {
+          // Cards already exist, prevent unchecking - all removal must be done through card buttons
+          return;
+        }
       }
       
       // For now, still allow unchecking other property types through the old system
@@ -6882,6 +6890,36 @@ export default function AdminAddClient() {
                 [newPropertyId]: { isSubjectProperty: null } 
               }));
               
+              // Auto-expand the property card
+              setPropertyCardStates(prev => ({ ...prev, [newPropertyId]: true }));
+              
+              // Trigger animation for newly created property card
+              setTimeout(() => {
+                setShowSubjectPropertyAnimation(prev => ({ ...prev, [newPropertyId]: true }));
+                setTimeout(() => {
+                  setShowSubjectPropertyAnimation(prev => ({ ...prev, [newPropertyId]: false }));
+                }, 800);
+              }, 200);
+            }
+          }, 50); // Small delay to ensure form state is updated
+        }
+      } else if (type === 'home-purchase') {
+        // Check if home-purchase cards already exist
+        const currentProperties = form.watch('property.properties') || [];
+        const hasHomePurchaseCards = currentProperties.some(p => p.use === 'home-purchase');
+        
+        // Only create default property card if none exist yet
+        if (!hasHomePurchaseCards) {
+          // Create entry in main form's property array
+          addProperty('home-purchase');
+          
+          // Get the ID of the newly created property
+          setTimeout(() => {
+            const currentProperties = form.watch('property.properties') || [];
+            const newProperty = currentProperties.find(p => p.use === 'home-purchase');
+            const newPropertyId = newProperty?.id;
+            
+            if (newPropertyId) {
               // Auto-expand the property card
               setPropertyCardStates(prev => ({ ...prev, [newPropertyId]: true }));
               
@@ -13140,13 +13178,8 @@ export default function AdminAddClient() {
                         <Checkbox
                           id="property-type-home-purchase"
                           checked={hasPropertyType('home-purchase')}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              addPropertyType('home-purchase');
-                            } else {
-                              removePropertyType('home-purchase');
-                            }
-                          }}
+                          onCheckedChange={(checked) => handlePropertyTypeChange(checked, 'home-purchase')}
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           data-testid="checkbox-property-home-purchase"
                         />
                         <Label htmlFor="property-type-home-purchase" className="font-medium">
@@ -15574,7 +15607,7 @@ export default function AdminAddClient() {
                           </div>
                           <div className="flex items-center gap-2">
                             {/* Add/Remove buttons for multi-property types */}
-                            {(property.use === 'second-home' || property.use === 'investment') && (
+                            {(property.use === 'second-home' || property.use === 'investment' || property.use === 'home-purchase') && (
                               <div className="flex gap-1">
                                 <Button
                                   type="button"
