@@ -13392,7 +13392,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-street-${propertyId}`}>Street Address *</Label>
                                 <Input
                                   id={`property-address-street-${propertyId}`}
-                                  {...form.register(`property.properties.${propertyIndex >= 0 ? propertyIndex : 0}.address.street` as any)}
+                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.street` as any) : {})}
                                   data-testid={`input-property-street-${propertyId}`}
                                 />
                               </div>
