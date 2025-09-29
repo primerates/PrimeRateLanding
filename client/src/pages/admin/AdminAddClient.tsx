@@ -1403,6 +1403,8 @@ export default function AdminAddClient() {
   const [brandNewLoanCreditType, setBrandNewLoanCreditType] = useState<'lender' | 'broker'>('lender');
   // Background calculation storage - calculated duration but don't auto-switch toggle
   const [calculatedDuration, setCalculatedDuration] = useState<string>('');
+  // Purchase loan calculated duration storage
+  const [purchaseCalculatedDuration, setPurchaseCalculatedDuration] = useState<string>('');
 
   // Purchase Loan toggle states
   const [purchaseLoanEscrowType, setPurchaseLoanEscrowType] = useState<'tax-insurance' | 'insurance-only' | 'property-tax-only'>('tax-insurance');
@@ -3177,6 +3179,43 @@ export default function AdminAddClient() {
     }
   }, [form.watch('brandNewLoan.rateLockDate'), form.watch('brandNewLoan.rateLockDuration'), brandNewLoanExpirationDurationType, form]);
 
+  // Background calculation for Purchase Loan Rate Lock Duration - calculate but don't auto-switch toggle
+  useEffect(() => {
+    const rateLockDate = form.watch('purchaseLoan.rateLockDate');
+    const rateLockExpiration = form.watch('purchaseLoan.rateLockDuration');
+    
+    // Only calculate if in expiration mode and both dates are provided
+    if (purchaseLoanExpirationDurationType === 'expiration' && rateLockDate && rateLockExpiration) {
+      try {
+        const startDate = new Date(rateLockDate);
+        const endDate = new Date(rateLockExpiration);
+        
+        // Check if both dates are valid
+        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+          setPurchaseCalculatedDuration('');
+          return;
+        }
+        
+        // Calculate the difference in milliseconds
+        const timeDiff = endDate.getTime() - startDate.getTime();
+        const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        
+        if (daysDiff > 0) {
+          // Store calculated duration in background - don't auto-switch toggle
+          setPurchaseCalculatedDuration(`${daysDiff} days`);
+        } else {
+          setPurchaseCalculatedDuration('');
+        }
+      } catch (error) {
+        // Invalid date format, clear calculation
+        setPurchaseCalculatedDuration('');
+      }
+    } else {
+      // Clear calculation if not in expiration mode or missing dates
+      setPurchaseCalculatedDuration('');
+    }
+  }, [form.watch('purchaseLoan.rateLockDate'), form.watch('purchaseLoan.rateLockDuration'), purchaseLoanExpirationDurationType, form]);
+
   // Animation effect for first-time page entry
   useEffect(() => {
     // Trigger animation on initial component mount
@@ -4120,11 +4159,12 @@ export default function AdminAddClient() {
                       ) : (
                         <Input
                           id="brandNewLoan-rateLockDuration"
-                          {...targetForm.register('brandNewLoan.rateLockDuration')}
+                          value={calculatedDuration}
                           placeholder="Enter duration"
-                          className="border border-input bg-background px-3 rounded-md"
+                          className="border border-input bg-muted px-3 rounded-md"
                           data-testid="input-brandNewLoan-rateLockDuration"
-                          disabled={targetForm.watch('brandNewLoan.rateLockDuration')?.endsWith(' days')}
+                          disabled={!!calculatedDuration}
+                          readOnly={!!calculatedDuration}
                         />
                       )}
                     </div>
@@ -4690,10 +4730,12 @@ export default function AdminAddClient() {
                       ) : (
                         <Input
                           id="purchaseLoan-rateLockDuration"
-                          {...targetForm.register('purchaseLoan.rateLockDuration')}
+                          value={purchaseCalculatedDuration}
                           placeholder="Enter duration"
-                          className="border border-input bg-background px-3 rounded-md"
+                          className="border border-input bg-muted px-3 rounded-md"
                           data-testid="input-purchaseLoan-rateLockDuration"
+                          disabled={!!purchaseCalculatedDuration}
+                          readOnly={!!purchaseCalculatedDuration}
                         />
                       )}
                     </div>
