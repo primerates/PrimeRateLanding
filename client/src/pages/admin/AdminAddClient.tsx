@@ -1405,6 +1405,9 @@ export default function AdminAddClient() {
   const [calculatedDuration, setCalculatedDuration] = useState<string>('');
   // Purchase loan calculated duration storage
   const [purchaseCalculatedDuration, setPurchaseCalculatedDuration] = useState<string>('');
+  // Store original expiration dates to restore when toggling back to expiration mode
+  const [originalExpirationDate, setOriginalExpirationDate] = useState<string>('');
+  const [originalPurchaseExpirationDate, setOriginalPurchaseExpirationDate] = useState<string>('');
 
   // Purchase Loan toggle states
   const [purchaseLoanEscrowType, setPurchaseLoanEscrowType] = useState<'tax-insurance' | 'insurance-only' | 'property-tax-only'>('tax-insurance');
@@ -3220,18 +3223,34 @@ export default function AdminAddClient() {
   useEffect(() => {
     // Handle Refinance loan toggle
     if (brandNewLoanExpirationDurationType === 'duration' && calculatedDuration) {
+      // Store the current expiration date before overwriting with duration
+      const currentExpirationDate = form.getValues('brandNewLoan.rateLockDuration');
+      if (currentExpirationDate && currentExpirationDate !== calculatedDuration) {
+        setOriginalExpirationDate(currentExpirationDate);
+      }
       // When switching to duration mode, set the calculated duration
       form.setValue('brandNewLoan.rateLockDuration', calculatedDuration);
+    } else if (brandNewLoanExpirationDurationType === 'expiration' && originalExpirationDate) {
+      // When switching back to expiration mode, restore the original date
+      form.setValue('brandNewLoan.rateLockDuration', originalExpirationDate);
     }
-  }, [brandNewLoanExpirationDurationType, calculatedDuration, form]);
+  }, [brandNewLoanExpirationDurationType, calculatedDuration, originalExpirationDate, form]);
 
   useEffect(() => {
     // Handle Purchase loan toggle
     if (purchaseLoanExpirationDurationType === 'duration' && purchaseCalculatedDuration) {
+      // Store the current expiration date before overwriting with duration
+      const currentExpirationDate = form.getValues('purchaseLoan.rateLockDuration');
+      if (currentExpirationDate && currentExpirationDate !== purchaseCalculatedDuration) {
+        setOriginalPurchaseExpirationDate(currentExpirationDate);
+      }
       // When switching to duration mode, set the calculated duration
       form.setValue('purchaseLoan.rateLockDuration', purchaseCalculatedDuration);
+    } else if (purchaseLoanExpirationDurationType === 'expiration' && originalPurchaseExpirationDate) {
+      // When switching back to expiration mode, restore the original date
+      form.setValue('purchaseLoan.rateLockDuration', originalPurchaseExpirationDate);
     }
-  }, [purchaseLoanExpirationDurationType, purchaseCalculatedDuration, form]);
+  }, [purchaseLoanExpirationDurationType, purchaseCalculatedDuration, originalPurchaseExpirationDate, form]);
 
   // Animation effect for first-time page entry
   useEffect(() => {
