@@ -3905,7 +3905,7 @@ export default function AdminAddClient() {
                       {getCurrentLoanEscrowLabel()}
                     </Label>
                     <Switch
-                      checked={currentLoanEscrowType === 'tax-insurance'} // On (blue) when Tax & Insurance is selected
+                      checked={form.watch('currentLoan.escrowPayment') ? true : false}
                       onCheckedChange={cycleCurrentLoanEscrowType}
                       data-testid="toggle-currentLoan-escrow-type"
                       className="scale-[0.8]"
@@ -4802,7 +4802,7 @@ export default function AdminAddClient() {
                       {getPurchaseLoanTermLabel()}
                     </Label>
                     <Switch
-                      checked={purchaseLoanTermType === 'dropdown'}
+                      checked={targetForm.watch('purchaseLoan.loanProgram') ? true : false}
                       onCheckedChange={cyclePurchaseLoanTermType}
                       data-testid="toggle-purchaseLoan-term-type"
                       className="scale-[0.8]"
@@ -4895,7 +4895,7 @@ export default function AdminAddClient() {
                           {getPurchaseLoanFicoLabel()}
                         </Label>
                         <Switch
-                          checked={purchaseLoanFicoType === 'mid-fico'}
+                          checked={purchaseBorrowerCreditScoresDialog.midFico || purchaseCoBorrowerCreditScoresDialog.midFico || targetForm.watch('purchaseLoan.midFico') ? true : false}
                           onCheckedChange={cyclePurchaseLoanFicoType}
                           data-testid="toggle-purchaseLoan-fico-type"
                           className="scale-[0.8]"
@@ -4975,7 +4975,7 @@ export default function AdminAddClient() {
                           {getPurchaseLoanLockDateLabel()}
                         </Label>
                         <Switch
-                          checked={purchaseLoanLockDateType === 'date'}
+                          checked={targetForm.watch('purchaseLoan.rateLockDate') || targetForm.watch('purchaseLoan.lockDate') ? true : false}
                           onCheckedChange={cyclePurchaseLoanLockDateType}
                           data-testid="toggle-purchaseLoan-lockDate-type"
                           className="scale-[0.8]"
@@ -5006,7 +5006,7 @@ export default function AdminAddClient() {
                           {getPurchaseLoanExpirationDurationLabel()}
                         </Label>
                         <Switch
-                          checked={purchaseLoanExpirationDurationType === 'expiration'}
+                          checked={targetForm.watch('purchaseLoan.rateLockDuration') || targetForm.watch('purchaseLoan.rateLockExpiration') ? true : false}
                           onCheckedChange={cyclePurchaseLoanExpirationDurationType}
                           data-testid="toggle-purchaseLoan-expiration-duration-type"
                           className="scale-[0.8]"
@@ -5039,7 +5039,7 @@ export default function AdminAddClient() {
                           {getPurchaseLoanCreditLabel()}
                         </Label>
                         <Switch
-                          checked={purchaseLoanCreditType === 'lender'}
+                          checked={targetForm.watch('purchaseLoan.lenderCredit') || targetForm.watch('purchaseLoan.brokerCredit') ? true : false}
                           onCheckedChange={cyclePurchaseLoanCreditType}
                           data-testid="toggle-purchaseLoan-credit-type"
                           className="scale-[0.8]"
@@ -5080,7 +5080,7 @@ export default function AdminAddClient() {
                       {getPurchaseLoanPaymentLabel()}
                     </Label>
                     <Switch
-                      checked={purchaseLoanPaymentType === 'principal-interest'}
+                      checked={targetForm.watch('purchaseLoan.principalAndInterestPayment') || targetForm.watch('purchaseLoan.interestOnlyPayment') ? true : false}
                       onCheckedChange={cyclePurchaseLoanPaymentType}
                       data-testid="toggle-purchaseLoan-payment-type"
                       className="scale-[0.8]"
@@ -5104,7 +5104,7 @@ export default function AdminAddClient() {
                       {getPurchaseLoanEscrowLabel()}
                     </Label>
                     <Switch
-                      checked={purchaseLoanEscrowType === 'tax-insurance'}
+                      checked={targetForm.watch('purchaseLoan.escrowPayment') ? true : false}
                       onCheckedChange={cyclePurchaseLoanEscrowType}
                       data-testid="toggle-purchaseLoan-escrow-type"
                       className="scale-[0.8]"
