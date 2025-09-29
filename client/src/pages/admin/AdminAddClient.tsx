@@ -1401,8 +1401,6 @@ export default function AdminAddClient() {
   const [brandNewLoanLockDateType, setBrandNewLoanLockDateType] = useState<'date' | 'bond-entry'>('date');
   const [brandNewLoanExpirationDurationType, setBrandNewLoanExpirationDurationType] = useState<'expiration' | 'duration'>('expiration');
   const [brandNewLoanCreditType, setBrandNewLoanCreditType] = useState<'lender' | 'broker'>('lender');
-  // State to temporarily store the expiration date before conversion to duration
-  const [tempExpirationDate, setTempExpirationDate] = useState<string>('');
 
   // Purchase Loan toggle states
   const [purchaseLoanEscrowType, setPurchaseLoanEscrowType] = useState<'tax-insurance' | 'insurance-only' | 'property-tax-only'>('tax-insurance');
@@ -3140,47 +3138,9 @@ export default function AdminAddClient() {
     }
   }, [form.watch('property.properties')]);
 
-  // Auto-calculate Rate Lock Duration when both Rate Lock Date and Rate Lock Expiration are provided
-  useEffect(() => {
-    const rateLockDate = form.watch('brandNewLoan.rateLockDate');
-    const rateLockDurationField = form.watch('brandNewLoan.rateLockDuration');
-    
-    // Store the expiration date when in expiration mode and field contains a valid date
-    if (brandNewLoanExpirationDurationType === 'expiration' && rateLockDurationField) {
-      const testDate = new Date(rateLockDurationField);
-      if (!isNaN(testDate.getTime()) && rateLockDurationField !== tempExpirationDate) {
-        setTempExpirationDate(rateLockDurationField);
-      }
-    }
-    
-    // Calculate duration if we have both dates
-    if (rateLockDate && tempExpirationDate && brandNewLoanExpirationDurationType === 'expiration') {
-      try {
-        const startDate = new Date(rateLockDate);
-        const endDate = new Date(tempExpirationDate);
-        
-        // Check if both dates are valid
-        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-          return;
-        }
-        
-        // Calculate the difference in milliseconds
-        const timeDiff = endDate.getTime() - startDate.getTime();
-        const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-        
-        if (daysDiff > 0) {
-          // Switch to duration mode and auto-fill the calculated days (keep existing behavior)
-          setBrandNewLoanExpirationDurationType('duration');
-          form.setValue('brandNewLoan.rateLockDuration', `${daysDiff} days`);
-          // Clear temp state after conversion
-          setTempExpirationDate('');
-        }
-      } catch (error) {
-        // Invalid date format, ignore
-        console.warn('Invalid date format for rate lock calculation');
-      }
-    }
-  }, [form.watch('brandNewLoan.rateLockDate'), form.watch('brandNewLoan.rateLockDuration'), brandNewLoanExpirationDurationType, tempExpirationDate, form]);
+  // DISABLED: Auto-calculate Rate Lock Duration - per user request to not auto-engage toggle
+  // Users want to manually control when the toggle switches between expiration and duration modes
+  // The Rate Lock Expiration field should remain as a date picker that allows free date selection
 
   // Animation effect for first-time page entry
   useEffect(() => {
