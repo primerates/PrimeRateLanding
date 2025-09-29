@@ -116,7 +116,7 @@ export function BackgroundProvider({ children }: BackgroundProviderProps) {
         backgroundColor: '#000000',
         backgroundImage: `url(${preset.assetPath})`,
         backgroundSize: '50%',
-        backgroundPosition: 'center 75%',
+        backgroundPosition: 'center 95%',
         backgroundRepeat: 'no-repeat'
       };
 
