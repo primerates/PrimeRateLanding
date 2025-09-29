@@ -2536,7 +2536,7 @@ export default function AdminAddClient() {
     );
 
     return (
-      <div className="space-y-2 md:col-span-1">
+      <div className="space-y-2 md:col-span-2">
         <Label className="text-sm font-medium text-black">Total Monthly Payment</Label>
         <div className="flex items-center border border-input bg-background px-3 rounded-md">
           <span className="text-muted-foreground text-sm">$</span>
