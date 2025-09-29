@@ -12462,51 +12462,54 @@ export default function AdminAddClient() {
                       }`}>
                         <CardContent className="pt-6">
                           <div className="space-y-3">
-                            <div className="flex gap-4">
-                              <div className="flex items-center space-x-2">
-                                <input
-                                  type="radio"
-                                  id={`co-borrower-self-employment-current-${cardId}`}
-                                  name={`co-borrower-self-employment-type-${cardId}`}
-                                  data-testid="radio-co-borrower-self-employment-current"
-                                />
-                                <Label htmlFor={`co-borrower-self-employment-current-${cardId}`}>Current</Label>
+                            <div className="flex gap-4 justify-between items-center">
+                              <div className="flex gap-4">
+                                <div className="flex items-center space-x-2">
+                                  <input
+                                    type="radio"
+                                    id={`co-borrower-self-employment-current-${cardId}`}
+                                    name={`co-borrower-self-employment-type-${cardId}`}
+                                    data-testid="radio-co-borrower-self-employment-current"
+                                  />
+                                  <Label htmlFor={`co-borrower-self-employment-current-${cardId}`}>Current</Label>
+                                </div>
+                                
+                                <div className="flex items-center space-x-2">
+                                  <input
+                                    type="radio"
+                                    id={`co-borrower-self-employment-prior-${cardId}`}
+                                    name={`co-borrower-self-employment-type-${cardId}`}
+                                    data-testid="radio-co-borrower-self-employment-prior"
+                                  />
+                                  <Label htmlFor={`co-borrower-self-employment-prior-${cardId}`}>Prior</Label>
+                                </div>
                               </div>
                               
-                              <div className="flex items-center space-x-2">
-                                <input
-                                  type="radio"
-                                  id={`co-borrower-self-employment-prior-${cardId}`}
-                                  name={`co-borrower-self-employment-type-${cardId}`}
-                                  data-testid="radio-co-borrower-self-employment-prior"
-                                />
-                                <Label htmlFor={`co-borrower-self-employment-prior-${cardId}`}>Prior</Label>
-                                <button
+                              <div className="flex gap-2 mr-4">
+                                <Button
                                   type="button"
+                                  variant="outline"
+                                  size="sm"
                                   onClick={() => openCoBorrowerBusinessDescriptionDialog(cardId)}
-                                  className={`transition-colors ml-6 flex items-center justify-center w-4 h-4 rounded-full border ${
-                                    form.watch('coBorrowerIncome.businessDescription') 
-                                      ? 'bg-purple-500 border-purple-500 text-white hover:bg-purple-600' 
-                                      : 'text-blue-600 hover:text-blue-800 border-blue-600 hover:border-blue-800'
-                                  }`}
-                                  data-testid="button-co-borrower-business-description-info"
-                                  title="Add business description"
+                                  className="bg-gray-300 text-gray-700 hover:bg-gray-400 min-w-[180px]"
+                                  style={{ backgroundColor: '#d1d5db', borderColor: '#d1d5db', color: '#374151' }}
+                                  data-testid="button-co-borrower-self-employment-description"
+                                  title="Description"
                                 >
-                                  <span className="text-[10px] font-bold">D</span>
-                                </button>
-                                <button
+                                  Description
+                                </Button>
+                                <Button
                                   type="button"
+                                  variant="outline"
+                                  size="sm"
                                   onClick={() => openCoBorrowerTaxPreparerDialog(cardId)}
-                                  className={`transition-colors ml-2 flex items-center justify-center w-4 h-4 rounded-full border ${
-                                    form.watch('coBorrowerIncome.taxesPreparedBy') 
-                                      ? 'bg-purple-500 border-purple-500 text-white hover:bg-purple-600' 
-                                      : 'text-blue-600 hover:text-blue-800 border-blue-600 hover:border-blue-800'
-                                  }`}
-                                  data-testid="button-co-borrower-tax-preparer-info"
-                                  title="Tax preparer information"
+                                  className="bg-gray-300 text-gray-700 hover:bg-gray-400 min-w-[110px]"
+                                  style={{ backgroundColor: '#d1d5db', borderColor: '#d1d5db', color: '#374151' }}
+                                  data-testid="button-co-borrower-self-employment-filing"
+                                  title="Filing"
                                 >
-                                  <span className="text-[10px] font-bold">T</span>
-                                </button>
+                                  Filing
+                                </Button>
                               </div>
                             </div>
                           </div>
