@@ -110,13 +110,30 @@ export function BackgroundProvider({ children }: BackgroundProviderProps) {
     const preset = getCurrentPreset();
     if (!preset) return {};
 
-    // Special positioning for jellyfish background to show main jellyfish toward bottom
-    const backgroundPosition = preset.id === 'jellyfish-abyss' ? 'center bottom' : 'center';
+    // Special styling for jellyfish background - 50% smaller and positioned below tiles
+    if (preset.id === 'jellyfish-abyss') {
+      const baseStyle = {
+        backgroundImage: `url(${preset.assetPath})`,
+        backgroundSize: '50%',
+        backgroundPosition: 'center 75%',
+        backgroundRepeat: 'no-repeat'
+      };
 
+      if (preset.type === 'pulsing') {
+        return {
+          ...baseStyle,
+          animation: 'pulse-glow 3s ease-in-out infinite'
+        };
+      }
+
+      return baseStyle;
+    }
+
+    // Default styling for other backgrounds
     const baseStyle = {
       backgroundImage: `url(${preset.assetPath})`,
       backgroundSize: 'cover',
-      backgroundPosition: backgroundPosition,
+      backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat'
     };
 
