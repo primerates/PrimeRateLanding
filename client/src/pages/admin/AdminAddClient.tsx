@@ -10179,21 +10179,8 @@ export default function AdminAddClient() {
                                   <Label htmlFor="self-employment-prior">Prior</Label>
                                   <button
                                     type="button"
-                                    onClick={() => openBusinessDescriptionDialog(cardId)}
-                                    className={`transition-colors ml-6 flex items-center justify-center w-4 h-4 rounded-full border ${
-                                      form.watch('income.businessDescription') 
-                                        ? 'bg-purple-500 border-purple-500 text-white hover:bg-purple-600' 
-                                        : 'text-blue-600 hover:text-blue-800 border-blue-600 hover:border-blue-800'
-                                    }`}
-                                    data-testid="button-business-description-info"
-                                    title="Add business description"
-                                  >
-                                    <span className="text-[10px] font-bold">D</span>
-                                  </button>
-                                  <button
-                                    type="button"
                                     onClick={() => openTaxPreparerDialog(cardId)}
-                                    className={`transition-colors ml-2 flex items-center justify-center w-4 h-4 rounded-full border ${
+                                    className={`transition-colors ml-6 flex items-center justify-center w-4 h-4 rounded-full border ${
                                       form.watch('income.taxesPreparedBy') 
                                         ? 'bg-purple-500 border-purple-500 text-white hover:bg-purple-600' 
                                         : 'text-blue-600 hover:text-blue-800 border-blue-600 hover:border-blue-800'
@@ -10211,6 +10198,7 @@ export default function AdminAddClient() {
                                   type="button"
                                   variant="outline"
                                   size="sm"
+                                  onClick={() => openBusinessDescriptionDialog(cardId)}
                                   className="bg-gray-300 text-gray-700 hover:bg-gray-400 min-w-[180px]"
                                   style={{ backgroundColor: '#d1d5db', borderColor: '#d1d5db', color: '#374151' }}
                                   data-testid="button-self-employment-description"
