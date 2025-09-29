@@ -5125,7 +5125,7 @@ export default function AdminAddClient() {
                   </div>
                 </div>
                 
-                <div className="space-y-2 md:col-span-3">
+                <div className="space-y-2 md:col-span-2">
                   <Label htmlFor={`${idPrefix}purchaseLoan-attachedToProperty`}>Attached to Property</Label>
                   <Select 
                     {...attachedToPropertyBinding}
