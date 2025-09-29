@@ -17136,6 +17136,27 @@ export default function AdminAddClient() {
         </DialogContent>
       </Dialog>
 
+      {/* New Loan Conflict Dialog */}
+      <Dialog open={showLoanConflictDialog} onOpenChange={(open) => !open && setShowLoanConflictDialog(false)}>
+        <DialogContent data-testid="dialog-loan-conflict" className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-orange-600">Loan Application Already Open</DialogTitle>
+            <DialogDescription className="text-gray-700 leading-relaxed">
+              A loan application is already open for this client. To proceed, please either close the existing loan application, or create a separate application for a different loan.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="pt-4">
+            <Button
+              onClick={() => setShowLoanConflictDialog(false)}
+              className="w-full"
+              data-testid="button-loan-conflict-ok"
+            >
+              OK
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Business Description Dialog */}
       <Dialog open={businessDescriptionDialog.isOpen} onOpenChange={(open) => !open && closeBusinessDescriptionDialog()}>
         <DialogContent data-testid="dialog-business-description">
