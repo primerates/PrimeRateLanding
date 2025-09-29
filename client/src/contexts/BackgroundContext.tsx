@@ -110,10 +110,13 @@ export function BackgroundProvider({ children }: BackgroundProviderProps) {
     const preset = getCurrentPreset();
     if (!preset) return {};
 
+    // Special positioning for jellyfish background to show main jellyfish toward bottom
+    const backgroundPosition = preset.id === 'jellyfish-abyss' ? 'center bottom' : 'center';
+
     const baseStyle = {
       backgroundImage: `url(${preset.assetPath})`,
       backgroundSize: 'cover',
-      backgroundPosition: 'center',
+      backgroundPosition: backgroundPosition,
       backgroundRepeat: 'no-repeat'
     };
 
