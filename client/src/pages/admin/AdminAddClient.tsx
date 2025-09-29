@@ -1419,6 +1419,15 @@ export default function AdminAddClient() {
   const [currentNewLoanType, setCurrentNewLoanType] = useState<'refinance' | 'purchase' | null>(null);
   const [showLoanConflictDialog, setShowLoanConflictDialog] = useState(false);
 
+  // Borrower Credit Scores popup dialog state
+  const [borrowerCreditScoresDialog, setBorrowerCreditScoresDialog] = useState({
+    isOpen: false,
+    experian: '',
+    midFico: '',
+    equifax: '',
+    transunion: ''
+  });
+
   // Purchase Loan toggle states
   const [purchaseLoanEscrowType, setPurchaseLoanEscrowType] = useState<'tax-insurance' | 'insurance-only' | 'property-tax-only'>('tax-insurance');
   const [purchaseLoanPaymentType, setPurchaseLoanPaymentType] = useState<'principal-interest' | 'interest-only'>('principal-interest');
@@ -4218,6 +4227,18 @@ export default function AdminAddClient() {
                         placeholder="Enter"
                         className="border border-input bg-background px-3 rounded-md"
                         data-testid="input-brandNewLoan-midFico"
+                        onClick={() => {
+                          // Open credit scores dialog when in borrower-scores mode
+                          if (brandNewLoanFicoType === 'borrower-scores') {
+                            setBorrowerCreditScoresDialog(prev => ({
+                              ...prev,
+                              isOpen: true
+                            }));
+                          }
+                        }}
+                        style={{
+                          cursor: brandNewLoanFicoType === 'borrower-scores' ? 'pointer' : 'text'
+                        }}
                       />
                     </div>
                     
@@ -19380,6 +19401,95 @@ export default function AdminAddClient() {
           </DialogContent>
         </Dialog>
       )}
+
+      {/* Borrower Credit Scores Dialog */}
+      <Dialog open={borrowerCreditScoresDialog.isOpen} onOpenChange={(open) => setBorrowerCreditScoresDialog(prev => ({ ...prev, isOpen: open }))}>
+        <DialogContent className="max-w-md" data-testid="dialog-borrower-credit-scores">
+          <DialogHeader>
+            <DialogTitle>Borrower Credit Scores</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="experian-score">Experian</Label>
+              <Input
+                id="experian-score"
+                value={borrowerCreditScoresDialog.experian}
+                onChange={(e) => setBorrowerCreditScoresDialog(prev => ({
+                  ...prev,
+                  experian: e.target.value.slice(0, 3) // Limit to 3 digits
+                }))}
+                placeholder="000"
+                maxLength={3}
+                pattern="[0-9]{3}"
+                data-testid="input-experian-score"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="borrower-mid-fico">Borrower Mid Fico</Label>
+              <Input
+                id="borrower-mid-fico"
+                value={borrowerCreditScoresDialog.midFico}
+                onChange={(e) => setBorrowerCreditScoresDialog(prev => ({
+                  ...prev,
+                  midFico: e.target.value.slice(0, 3) // Limit to 3 digits
+                }))}
+                placeholder="000"
+                maxLength={3}
+                pattern="[0-9]{3}"
+                data-testid="input-borrower-mid-fico"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="equifax-score">Equifax</Label>
+              <Input
+                id="equifax-score"
+                value={borrowerCreditScoresDialog.equifax}
+                onChange={(e) => setBorrowerCreditScoresDialog(prev => ({
+                  ...prev,
+                  equifax: e.target.value.slice(0, 3) // Limit to 3 digits
+                }))}
+                placeholder="000"
+                maxLength={3}
+                pattern="[0-9]{3}"
+                data-testid="input-equifax-score"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="transunion-score">Transunion</Label>
+              <Input
+                id="transunion-score"
+                value={borrowerCreditScoresDialog.transunion}
+                onChange={(e) => setBorrowerCreditScoresDialog(prev => ({
+                  ...prev,
+                  transunion: e.target.value.slice(0, 3) // Limit to 3 digits
+                }))}
+                placeholder="000"
+                maxLength={3}
+                pattern="[0-9]{3}"
+                data-testid="input-transunion-score"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setBorrowerCreditScoresDialog(prev => ({ ...prev, isOpen: false }))}
+              data-testid="button-cancel-credit-scores"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                // Here you can handle saving the scores to the form or wherever needed
+                setBorrowerCreditScoresDialog(prev => ({ ...prev, isOpen: false }));
+              }}
+              data-testid="button-save-credit-scores"
+            >
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       </div>
     </TooltipProvider>
