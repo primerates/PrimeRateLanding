@@ -4194,7 +4194,7 @@ export default function AdminAddClient() {
                       {getBrandNewLoanTermLabel()}
                     </Label>
                     <Switch
-                      checked={brandNewLoanTermType === 'dropdown'}
+                      checked={targetForm.watch('brandNewLoan.loanProgram') ? true : false}
                       onCheckedChange={cycleBrandNewLoanTermType}
                       data-testid="toggle-brandNewLoan-term-type"
                       className="scale-[0.8]"
@@ -4230,7 +4230,7 @@ export default function AdminAddClient() {
                       {getBrandNewLoanCashOutLabel()}
                     </Label>
                     <Switch
-                      checked={brandNewLoanCashOutType === 'cash-out'}
+                      checked={targetForm.watch('brandNewLoan.loanTerm') ? true : false}
                       onCheckedChange={cycleBrandNewLoanCashOutType}
                       data-testid="toggle-brandNewLoan-cashOut-type"
                       className="scale-[0.8]"
@@ -4263,7 +4263,7 @@ export default function AdminAddClient() {
                       {getBrandNewLoanDebtPayOffLabel()}
                     </Label>
                     <Switch
-                      checked={brandNewLoanDebtPayOffType === 'total-debt-payoff'}
+                      checked={targetForm.watch('brandNewLoan.remainingTermAfterPayoff') ? true : false}
                       onCheckedChange={cycleBrandNewLoanDebtPayOffType}
                       data-testid="toggle-brandNewLoan-debtPayOff-type"
                       className="scale-[0.8]"
@@ -4294,7 +4294,7 @@ export default function AdminAddClient() {
                           {getBrandNewLoanFicoLabel()}
                         </Label>
                         <Switch
-                          checked={brandNewLoanFicoType === 'mid-fico'}
+                          checked={borrowerCreditScoresDialog.midFico || coBorrowerCreditScoresDialog.midFico || targetForm.watch('brandNewLoan.midFico') ? true : false}
                           onCheckedChange={cycleBrandNewLoanFicoType}
                           data-testid="toggle-brandNewLoan-fico-type"
                           className="scale-[0.8]"
@@ -4374,7 +4374,7 @@ export default function AdminAddClient() {
                           {getBrandNewLoanLockDateLabel()}
                         </Label>
                         <Switch
-                          checked={brandNewLoanLockDateType === 'date'}
+                          checked={targetForm.watch('brandNewLoan.rateLockDate') || targetForm.watch('brandNewLoan.lockDate') ? true : false}
                           onCheckedChange={cycleBrandNewLoanLockDateType}
                           data-testid="toggle-brandNewLoan-lockDate-type"
                           className="scale-[0.8]"
@@ -4405,7 +4405,7 @@ export default function AdminAddClient() {
                           {getBrandNewLoanExpirationDurationLabel()}
                         </Label>
                         <Switch
-                          checked={brandNewLoanExpirationDurationType === 'expiration'}
+                          checked={targetForm.watch('brandNewLoan.rateLockDuration') || targetForm.watch('brandNewLoan.rateLockExpiration') ? true : false}
                           onCheckedChange={cycleBrandNewLoanExpirationDurationType}
                           data-testid="toggle-brandNewLoan-expiration-duration-type"
                           className="scale-[0.8]"
@@ -4438,7 +4438,7 @@ export default function AdminAddClient() {
                           {getBrandNewLoanCreditLabel()}
                         </Label>
                         <Switch
-                          checked={brandNewLoanCreditType === 'lender'}
+                          checked={targetForm.watch('brandNewLoan.lenderCredit') || targetForm.watch('brandNewLoan.brokerCredit') ? true : false}
                           onCheckedChange={cycleBrandNewLoanCreditType}
                           data-testid="toggle-brandNewLoan-credit-type"
                           className="scale-[0.8]"
@@ -4479,7 +4479,7 @@ export default function AdminAddClient() {
                       {getBrandNewLoanPaymentLabel()}
                     </Label>
                     <Switch
-                      checked={brandNewLoanPaymentType === 'principal-interest'}
+                      checked={targetForm.watch('brandNewLoan.principalAndInterestPayment') || targetForm.watch('brandNewLoan.interestOnlyPayment') ? true : false}
                       onCheckedChange={cycleBrandNewLoanPaymentType}
                       data-testid="toggle-brandNewLoan-payment-type"
                       className="scale-[0.8]"
@@ -4503,7 +4503,7 @@ export default function AdminAddClient() {
                       {getBrandNewLoanEscrowLabel()}
                     </Label>
                     <Switch
-                      checked={brandNewLoanEscrowType === 'tax-insurance'}
+                      checked={targetForm.watch('brandNewLoan.escrowPayment') ? true : false}
                       onCheckedChange={cycleBrandNewLoanEscrowType}
                       data-testid="toggle-brandNewLoan-escrow-type"
                       className="scale-[0.8]"
