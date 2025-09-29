@@ -10211,7 +10211,7 @@ export default function AdminAddClient() {
                                   type="button"
                                   variant="outline"
                                   size="sm"
-                                  className="hover:bg-blue-500 hover:text-white"
+                                  className="hover:bg-blue-500 hover:text-white min-w-[180px]"
                                   data-testid="button-self-employment-description"
                                   title="Description"
                                 >
