@@ -3561,7 +3561,7 @@ export default function AdminAddClient() {
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Current Primary Loan</CardTitle>
+              <CardTitle>Existing Primary Loan</CardTitle>
               <div className="flex items-center gap-2">
                 {/* Add Current Loan Button */}
                 <Button
@@ -5068,7 +5068,7 @@ export default function AdminAddClient() {
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Current Second Loan</CardTitle>
+              <CardTitle>Existing Second Loan</CardTitle>
               <div className="flex items-center gap-2">
                 {/* Add Current Second Loan Button */}
                 <Button
@@ -5381,7 +5381,7 @@ export default function AdminAddClient() {
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Current Third Loan</CardTitle>
+              <CardTitle>Existing Third Loan</CardTitle>
               <div className="flex items-center gap-2">
                 {/* Add Current Loan Button */}
                 <Button
