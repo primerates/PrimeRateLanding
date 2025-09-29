@@ -110,9 +110,10 @@ export function BackgroundProvider({ children }: BackgroundProviderProps) {
     const preset = getCurrentPreset();
     if (!preset) return {};
 
-    // Special styling for jellyfish background - 50% smaller and positioned below tiles
+    // Special styling for jellyfish background - black background with 50% smaller jellyfish below tiles
     if (preset.id === 'jellyfish-abyss') {
       const baseStyle = {
+        backgroundColor: '#000000',
         backgroundImage: `url(${preset.assetPath})`,
         backgroundSize: '50%',
         backgroundPosition: 'center 75%',
