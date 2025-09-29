@@ -19411,14 +19411,12 @@ export default function AdminAddClient() {
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="borrower-mid-fico">Borrower Mid Fico</Label>
-              <Input
-                id="borrower-mid-fico"
-                value={borrowerCreditScoresDialog.midFico}
-                readOnly
-                placeholder="000"
-                className="bg-gray-50"
-                data-testid="input-borrower-mid-fico"
-              />
+              <div 
+                className="text-3xl font-bold text-blue-600 py-2"
+                data-testid="display-borrower-mid-fico"
+              >
+                {borrowerCreditScoresDialog.midFico || "000"}
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="experian-score">Experian</Label>
