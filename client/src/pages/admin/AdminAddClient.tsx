@@ -10211,7 +10211,8 @@ export default function AdminAddClient() {
                                   type="button"
                                   variant="outline"
                                   size="sm"
-                                  className="bg-gray-700 text-white hover:bg-gray-800 min-w-[180px]"
+                                  className="bg-gray-300 text-gray-700 hover:bg-gray-400 min-w-[180px]"
+                                  style={{ backgroundColor: '#d1d5db', borderColor: '#d1d5db', color: '#374151' }}
                                   data-testid="button-self-employment-description"
                                   title="Description"
                                 >
@@ -10221,7 +10222,8 @@ export default function AdminAddClient() {
                                   type="button"
                                   variant="outline"
                                   size="sm"
-                                  className="bg-gray-700 text-white hover:bg-gray-800 min-w-[100px]"
+                                  className="bg-gray-300 text-gray-700 hover:bg-gray-400 min-w-[100px]"
+                                  style={{ backgroundColor: '#d1d5db', borderColor: '#d1d5db', color: '#374151' }}
                                   data-testid="button-self-employment-filing"
                                   title="Filing"
                                 >
