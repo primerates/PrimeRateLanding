@@ -4330,19 +4330,8 @@ export default function AdminAddClient() {
                   </div>
                 </div>
                 
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="brandNewLoan-totalMonthlyPayment">Total Monthly Payment</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="brandNewLoan-totalMonthlyPayment"
-                      {...totalMonthlyPaymentBinding.field}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-brandNewLoan-totalMonthlyPayment"
-                    />
-                  </div>
-                </div>
+                {/* Auto-calculated Total Monthly Payment */}
+                <BrandNewLoanAutoSumPaymentFields control={targetForm.control} />
                 
                 <div className="space-y-2 md:col-span-3">
                   <Label htmlFor={`${idPrefix}brandNewLoan-attachedToProperty`}>Attached to Property</Label>
