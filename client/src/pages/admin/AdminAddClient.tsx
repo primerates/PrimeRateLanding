@@ -4945,14 +4945,14 @@ export default function AdminAddClient() {
                     }}
                   >
                     <SelectTrigger data-testid={attachedToPropertyBinding['data-testid']}>
-                      <SelectValue placeholder="Associate this loan to home purchase address" />
+                      <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="select">Select</SelectItem>
                       {(() => {
                         const properties = targetForm.watch('property.properties') || [];
                         return properties
-                          .filter((property: any) => property.use === 'home-purchase') // Show only Home Purchase properties
+                          .filter((property: any) => property.address?.street || property.use === 'primary') // Show properties with street addresses OR primary residence properties
                           .map((property: any, index: number) => {
                             const address = property.address;
                             const streetAddress = address?.street;
@@ -13209,7 +13209,7 @@ export default function AdminAddClient() {
                               <CardContent className="pt-6">
                                 <div className="flex justify-between items-center">
                                   <div className="space-y-3 flex-1">
-                                    <Label className="text-base font-semibold">Is this the subject property that will secure the new loan?</Label>
+                                    <Label className="text-base font-semibold">Is the loan transaction for this property?</Label>
                                     <div className="flex gap-4">
                                       <div className="flex items-center space-x-2">
                                         <input
@@ -13392,7 +13392,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-street-${propertyId}`}>Street Address *</Label>
                                 <Input
                                   id={`property-address-street-${propertyId}`}
-                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.street` as any) : {})}
+                                  {...form.register(`property.properties.${propertyIndex >= 0 ? propertyIndex : 0}.address.street` as any)}
                                   data-testid={`input-property-street-${propertyId}`}
                                 />
                               </div>
@@ -13401,7 +13401,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-unit-${propertyId}`}>Unit/Apt</Label>
                                 <Input
                                   id={`property-address-unit-${propertyId}`}
-                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.unit` as any) : {})}
+                                  {...form.register(`property.properties.${propertyIndex >= 0 ? propertyIndex : 0}.address.unit` as any)}
                                   data-testid={`input-property-unit-${propertyId}`}
                                 />
                               </div>
@@ -13410,7 +13410,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-city-${propertyId}`}>City *</Label>
                                 <Input
                                   id={`property-address-city-${propertyId}`}
-                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.city` as any) : {})}
+                                  {...form.register(`property.properties.${propertyIndex >= 0 ? propertyIndex : 0}.address.city` as any)}
                                   data-testid={`input-property-city-${propertyId}`}
                                 />
                               </div>
@@ -13438,7 +13438,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-zip-${propertyId}`}>ZIP Code *</Label>
                                 <Input
                                   id={`property-address-zip-${propertyId}`}
-                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.zip` as any) : {})}
+                                  {...form.register(`property.properties.${propertyIndex >= 0 ? propertyIndex : 0}.address.zip` as any)}
                                   data-testid={`input-property-zip-${propertyId}`}
                                 />
                               </div>
@@ -13447,7 +13447,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-county-${propertyId}`}>County</Label>
                                 <Input
                                   id={`property-address-county-${propertyId}`}
-                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.county` as any) : {})}
+                                  {...form.register(`property.properties.${propertyIndex >= 0 ? propertyIndex : 0}.address.county` as any)}
                                   data-testid={`input-property-county-${propertyId}`}
                                 />
                               </div>
@@ -14006,7 +14006,7 @@ export default function AdminAddClient() {
                               <CardContent className="pt-6">
                                 <div className="flex justify-between items-center">
                                   <div className="space-y-3 flex-1">
-                                    <Label className="text-base font-semibold">Is this the subject property that will secure the new loan?</Label>
+                                    <Label className="text-base font-semibold">Is the loan transaction for this property?</Label>
                                     <div className="flex gap-4">
                                       <div className="flex items-center space-x-2">
                                         <input
@@ -14798,7 +14798,7 @@ export default function AdminAddClient() {
                               <CardContent className="pt-6">
                                 <div className="flex justify-between items-center">
                                   <div className="space-y-3 flex-1">
-                                    <Label className="text-base font-semibold">Is this the subject property that will secure the new loan?</Label>
+                                    <Label className="text-base font-semibold">Is the loan transaction for this property?</Label>
                                     <div className="flex gap-4">
                                       <div className="flex items-center space-x-2">
                                         <input
@@ -15487,10 +15487,9 @@ export default function AdminAddClient() {
 
               {/* Dynamic Property Cards */}
               {sortPropertiesByHierarchy(form.watch('property.properties') || [])
-                .map((property, originalIndex) => ({ property, originalIndex })) // Carry original index through operations
-                .filter(({ property }) => property.use !== 'primary' && property.use !== 'second-home' && property.use !== 'investment') // Exclude Primary Residence, Second Home, and Investment Property - now handled by new systems above
-                .map(({ property, originalIndex }, filterIndex) => {
-                const propertyId = property.id || `property-${filterIndex}`;
+                .filter(property => property.use !== 'primary' && property.use !== 'second-home' && property.use !== 'investment') // Exclude Primary Residence, Second Home, and Investment Property - now handled by new systems above
+                .map((property, index) => {
+                const propertyId = property.id || `property-${index}`;
                 const isOpen = propertyCardStates[propertyId] ?? true;
                 
                 const getPropertyTitle = () => {
@@ -15598,7 +15597,7 @@ export default function AdminAddClient() {
                               <CardContent className="pt-6">
                                 <div className="flex justify-between items-center">
                                   <div className="space-y-3 flex-1">
-                                    <Label className="text-base font-semibold">Is this the subject property that will secure the new loan?</Label>
+                                    <Label className="text-base font-semibold">Is the loan transaction for this property?</Label>
                                     <div className="flex gap-4">
                                       <div className="flex items-center space-x-2">
                                         <input
@@ -15753,12 +15752,12 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-street-${propertyId}`}>Street Address *</Label>
                                 <Input
                                   id={`property-address-street-${propertyId}`}
-                                  {...form.register(`property.properties.${originalIndex}.address.street` as const)}
+                                  {...form.register(`property.properties.${index}.address.street` as const)}
 
                                   data-testid={`input-property-street-${propertyId}`}
                                   onBlur={() => {
                                     // Trigger auto-fetch after a delay to allow other fields to be filled
-                                    setTimeout(() => handleAddressChange(originalIndex), 1000);
+                                    setTimeout(() => handleAddressChange(index), 1000);
                                   }}
                                 />
                               </div>
@@ -15767,7 +15766,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-unit-${propertyId}`}>Unit/Apt</Label>
                                 <Input
                                   id={`property-address-unit-${propertyId}`}
-                                  {...form.register(`property.properties.${originalIndex}.address.unit` as const)}
+                                  {...form.register(`property.properties.${index}.address.unit` as const)}
                                   data-testid={`input-property-unit-${propertyId}`}
                                 />
                               </div>
@@ -15776,11 +15775,11 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-city-${propertyId}`}>City *</Label>
                                 <Input
                                   id={`property-address-city-${propertyId}`}
-                                  {...form.register(`property.properties.${originalIndex}.address.city` as const)}
+                                  {...form.register(`property.properties.${index}.address.city` as const)}
                                   data-testid={`input-property-city-${propertyId}`}
                                   onBlur={() => {
                                     // Trigger auto-fetch after a delay
-                                    setTimeout(() => handleAddressChange(originalIndex), 1000);
+                                    setTimeout(() => handleAddressChange(index), 1000);
                                   }}
                                 />
                               </div>
@@ -15788,8 +15787,8 @@ export default function AdminAddClient() {
                               <div className="space-y-2 md:col-span-1">
                                 <Label htmlFor={`property-address-state-${propertyId}`}>State *</Label>
                                 <Select
-                                  value={form.watch(`property.properties.${originalIndex}.address.state` as const) || ''}
-                                  onValueChange={(value) => form.setValue(`property.properties.${originalIndex}.address.state` as const, value)}
+                                  value={form.watch(`property.properties.${index}.address.state` as const) || ''}
+                                  onValueChange={(value) => form.setValue(`property.properties.${index}.address.state` as const, value)}
                                 >
                                   <SelectTrigger data-testid={`select-property-state-${propertyId}`}>
                                     <SelectValue placeholder="Select" />
@@ -15808,7 +15807,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-zip-${propertyId}`}>ZIP Code *</Label>
                                 <Input
                                   id={`property-address-zip-${propertyId}`}
-                                  {...form.register(`property.properties.${originalIndex}.address.zip` as const)}
+                                  {...form.register(`property.properties.${index}.address.zip` as const)}
                                   data-testid={`input-property-zip-${propertyId}`}
                                 />
                               </div>
@@ -15817,7 +15816,7 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`property-address-county-${propertyId}`}>County</Label>
                                 <Input
                                   id={`property-address-county-${propertyId}`}
-                                  {...form.register(`property.properties.${originalIndex}.address.county` as const)}
+                                  {...form.register(`property.properties.${index}.address.county` as const)}
                                   data-testid={`input-property-county-${propertyId}`}
                                 />
                               </div>
@@ -15825,8 +15824,8 @@ export default function AdminAddClient() {
                               <div className="space-y-2 md:col-span-2">
                                 <Label htmlFor={`property-type-${propertyId}`}>Property Type</Label>
                                 <Select
-                                  value={form.watch(`property.properties.${originalIndex}.propertyType` as const) || ''}
-                                  onValueChange={(value) => form.setValue(`property.properties.${originalIndex}.propertyType` as const, value)}
+                                  value={form.watch(`property.properties.${index}.propertyType` as const) || ''}
+                                  onValueChange={(value) => form.setValue(`property.properties.${index}.propertyType` as const, value)}
                                 >
                                   <SelectTrigger data-testid={`select-property-type-${propertyId}`}>
                                     <SelectValue placeholder="Select" />
@@ -15863,7 +15862,7 @@ export default function AdminAddClient() {
                                 </div>
                                 <Input
                                   id={`property-purchase-price-${propertyId}`}
-                                  value={form.watch(`property.properties.${originalIndex}.purchasePrice` as const) || ''}
+                                  value={form.watch(`property.properties.${index}.purchasePrice` as const) || ''}
                                   onChange={(e) => {
                                     let value = e.target.value.replace(/[^\d.]/g, '');
                                     if (value) {
@@ -15872,7 +15871,7 @@ export default function AdminAddClient() {
                                         value = `$${numValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
                                       }
                                     }
-                                    form.setValue(`property.properties.${originalIndex}.purchasePrice` as const, value);
+                                    form.setValue(`property.properties.${index}.purchasePrice` as const, value);
                                   }}
                                   placeholder="$0.00"
                                   data-testid={`input-property-purchase-price-${propertyId}`}
@@ -15908,7 +15907,7 @@ export default function AdminAddClient() {
                                 </div>
                                 <Input
                                   id={`property-owned-since-${propertyId}`}
-                                  {...form.register(`property.properties.${originalIndex}.ownedSince` as const)}
+                                  {...form.register(`property.properties.${index}.ownedSince` as const)}
                                   placeholder="MM/YYYY"
                                   data-testid={`input-property-owned-since-${propertyId}`}
                                 />
@@ -15942,9 +15941,9 @@ export default function AdminAddClient() {
                                   </Tooltip>
                                 </div>
                                 <Select
-                                  value={form.watch(`property.properties.${originalIndex}.ownedHeldBy` as const) || ''}
+                                  value={form.watch(`property.properties.${index}.ownedHeldBy` as const) || ''}
                                   onValueChange={(value: string) => {
-                                    form.setValue(`property.properties.${originalIndex}.ownedHeldBy` as const, value as any);
+                                    form.setValue(`property.properties.${index}.ownedHeldBy` as const, value as any);
                                   }}
                                 >
                                   <SelectTrigger data-testid={`select-property-title-held-by-${propertyId}`}>
@@ -16003,8 +16002,8 @@ export default function AdminAddClient() {
                                         variant="ghost"
                                         size="sm"
                                         className="p-1 h-auto text-red-600 hover:text-red-800 no-default-hover-elevate no-default-active-elevate"
-                                        onClick={() => openValuationDialog('redfin', originalIndex)}
-                                        onMouseEnter={(e) => handleValuationHover('redfin', originalIndex, e)}
+                                        onClick={() => openValuationDialog('redfin', index)}
+                                        onMouseEnter={(e) => handleValuationHover('redfin', index, e)}
                                         onMouseLeave={handleValuationHoverLeave}
                                         data-testid={`button-redfin-valuation-${propertyId}`}
                                         title="Enter Redfin valuation manually"
@@ -16016,7 +16015,7 @@ export default function AdminAddClient() {
                                         variant="ghost"
                                         size="sm"
                                         className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                                        onClick={() => openValuationSummary(originalIndex)}
+                                        onClick={() => openValuationSummary(index)}
                                         data-testid={`button-valuation-info-${propertyId}`}
                                         title="View all valuation estimates"
                                       >
@@ -16027,7 +16026,7 @@ export default function AdminAddClient() {
                                 </div>
                                 <CurrencyInput
                                   form={form}
-                                  name={`property.properties.${originalIndex}.estimatedValue` as const}
+                                  name={`property.properties.${index}.estimatedValue` as const}
                                   id={`property-estimated-value-${propertyId}`}
                                   placeholder="$0.00"
                                   data-testid={`input-property-estimated-value-${propertyId}`}
@@ -16045,18 +16044,18 @@ export default function AdminAddClient() {
                                     title="Appraised Property Value"
                                     data-testid={`button-appraised-value-info-${propertyId}`}
                                   >
-                                    <AppraisalIcon index={originalIndex} control={form.control} />
+                                    <AppraisalIcon index={index} control={form.control} />
                                   </Button>
                                 </div>
                                 <CurrencyInput
                                   form={form}
-                                  name={`property.properties.${originalIndex}.appraisedValue` as const}
+                                  name={`property.properties.${index}.appraisedValue` as const}
                                   id={`property-appraised-value-${propertyId}`}
                                   placeholder="$0.00"
                                   data-testid={`input-property-appraised-value-${propertyId}`}
                                   shadowColor={(() => {
-                                    const estimatedValue = form.watch(`property.properties.${originalIndex}.estimatedValue` as const) || '';
-                                    const appraisedValue = form.watch(`property.properties.${originalIndex}.appraisedValue` as const) || '';
+                                    const estimatedValue = form.watch(`property.properties.${index}.estimatedValue` as const) || '';
+                                    const appraisedValue = form.watch(`property.properties.${index}.appraisedValue` as const) || '';
                                     return getValueComparisonColor(estimatedValue, appraisedValue).shadowColor;
                                   })()}
                                 />
@@ -16227,7 +16226,7 @@ export default function AdminAddClient() {
 
 
                             {/* Third Loan Details Box - Only show when activeThirdLoan is 'yes' and property is primary/second-home */}
-                            {(property.use === 'home-purchase' || property.use === 'primary' || property.use === 'second-home') && form.watch(`property.properties.${originalIndex}.activeThirdLoan` as const) === 'yes' && (
+                            {(property.use === 'home-purchase' || property.use === 'primary' || property.use === 'second-home') && form.watch(`property.properties.${index}.activeThirdLoan` as const) === 'yes' && (
                             <Card className="border-2 border-dashed border-gray-500">
                               <CardHeader className="flex flex-row items-center justify-between">
                                 <CardTitle className="text-lg">Third Loan Details</CardTitle>
@@ -16235,7 +16234,7 @@ export default function AdminAddClient() {
                                   type="button"
                                   variant="outline"
                                   size="sm"
-                                  onClick={() => removeThirdLoan(originalIndex)}
+                                  onClick={() => removeThirdLoan(index)}
                                   className="hover:bg-orange-500 hover:text-white"
                                   data-testid={`button-remove-third-loan-${propertyId}`}
                                 >
@@ -16249,7 +16248,7 @@ export default function AdminAddClient() {
                                     <Label htmlFor={`property-third-lender-name-${propertyId}`}>Lender Name</Label>
                                     <Input
                                       id={`property-third-lender-name-${propertyId}`}
-                                      {...form.register(`property.properties.${originalIndex}.thirdLoan.lenderName` as const)}
+                                      {...form.register(`property.properties.${index}.thirdLoan.lenderName` as const)}
                                       data-testid={`input-property-third-lender-name-${propertyId}`}
                                     />
                                   </div>
@@ -16258,7 +16257,7 @@ export default function AdminAddClient() {
                                     <Label htmlFor={`property-third-loan-number-${propertyId}`}>Loan Number</Label>
                                     <Input
                                       id={`property-third-loan-number-${propertyId}`}
-                                      {...form.register(`property.properties.${originalIndex}.thirdLoan.loanNumber` as const)}
+                                      {...form.register(`property.properties.${index}.thirdLoan.loanNumber` as const)}
                                       data-testid={`input-property-third-loan-number-${propertyId}`}
                                     />
                                   </div>
@@ -16267,7 +16266,7 @@ export default function AdminAddClient() {
                                     <Label htmlFor={`property-third-mortgage-balance-${propertyId}`}>Mortgage Balance</Label>
                                     <Input
                                       id={`property-third-mortgage-balance-${propertyId}`}
-                                      {...form.register(`property.properties.${originalIndex}.thirdLoan.mortgageBalance` as const)}
+                                      {...form.register(`property.properties.${index}.thirdLoan.mortgageBalance` as const)}
                                       placeholder="$0.00"
                                       data-testid={`input-property-third-mortgage-balance-${propertyId}`}
                                     />
@@ -16277,7 +16276,7 @@ export default function AdminAddClient() {
                                     <Label htmlFor={`property-third-pi-payment-${propertyId}`}>Principal & Interest Payment</Label>
                                     <Input
                                       id={`property-third-pi-payment-${propertyId}`}
-                                      {...form.register(`property.properties.${originalIndex}.thirdLoan.piPayment` as const)}
+                                      {...form.register(`property.properties.${index}.thirdLoan.piPayment` as const)}
                                       placeholder="$0.00"
                                       data-testid={`input-property-third-pi-payment-${propertyId}`}
                                     />
@@ -16287,7 +16286,7 @@ export default function AdminAddClient() {
                                     <Label htmlFor={`property-third-escrow-payment-${propertyId}`}>Other</Label>
                                     <Input
                                       id={`property-third-escrow-payment-${propertyId}`}
-                                      {...form.register(`property.properties.${originalIndex}.thirdLoan.escrowPayment` as const)}
+                                      {...form.register(`property.properties.${index}.thirdLoan.escrowPayment` as const)}
                                       placeholder="$0.00"
                                       data-testid={`input-property-third-escrow-payment-${propertyId}`}
                                     />
@@ -16297,7 +16296,7 @@ export default function AdminAddClient() {
                                     <Label htmlFor={`property-third-total-monthly-payment-${propertyId}`}>Total Monthly Payment</Label>
                                     <Input
                                       id={`property-third-total-monthly-payment-${propertyId}`}
-                                      {...form.register(`property.properties.${originalIndex}.thirdLoan.totalMonthlyPayment` as const)}
+                                      {...form.register(`property.properties.${index}.thirdLoan.totalMonthlyPayment` as const)}
                                       placeholder="$0.00"
                                       readOnly
                                       className="bg-muted"
