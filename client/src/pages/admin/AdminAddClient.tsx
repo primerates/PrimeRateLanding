@@ -7210,10 +7210,11 @@ export default function AdminAddClient() {
       return rest;
     });
     
-    // If no cards remain, hide the brand new loan section
+    // If no cards remain, hide the brand new loan section and clear loan type
     const remainingCards = brandNewLoanCards.filter(id => id !== cardId);
     if (remainingCards.length === 0) {
       setShowBrandNewLoan(false);
+      setCurrentNewLoanType(null);
     }
     
     // Close the dialog
@@ -7313,10 +7314,11 @@ export default function AdminAddClient() {
       return rest;
     });
     
-    // If no cards remain, hide the purchase loan section
+    // If no cards remain, hide the purchase loan section and clear loan type
     const remainingCards = purchaseLoanCards.filter(id => id !== cardId);
     if (remainingCards.length === 0) {
       setShowPurchaseLoan(false);
+      setCurrentNewLoanType(null);
     }
     
     // Close the dialog
