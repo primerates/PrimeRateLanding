@@ -44,14 +44,6 @@ export const backgroundPresets: BackgroundPreset[] = [
     isDark: true
   },
   {
-    id: 'glowing-cube-animated',
-    label: 'Glowing Cube (Focus Effect)',
-    type: 'animated',
-    assetPath: glowingCubeBackground,
-    description: 'Glowing cubes with progressive focus animation',
-    isDark: true
-  },
-  {
     id: 'jellyfish-abyss',
     label: 'Jellyfish of the Deep Abyss',
     type: 'static',
