@@ -2536,7 +2536,7 @@ export default function AdminAddClient() {
     );
 
     return (
-      <div className="space-y-2 md:col-span-2">
+      <div className="space-y-2 md:col-span-1">
         <Label className="text-sm font-medium text-black">Total Monthly Payment</Label>
         <div className="flex items-center border border-input bg-background px-3 rounded-md">
           <span className="text-muted-foreground text-sm">$</span>
@@ -5110,6 +5110,20 @@ export default function AdminAddClient() {
                 
                 {/* Auto-calculated Total Monthly Payment */}
                 <PurchaseLoanAutoSumPaymentFields control={targetForm.control} />
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}purchaseLoan-hoa`} className="text-sm">HOA</Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id={`${idPrefix}purchaseLoan-hoa`}
+                      {...targetForm.register('purchaseLoan.hoa')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid={`input-purchaseLoan-hoa`}
+                    />
+                  </div>
+                </div>
                 
                 <div className="space-y-2 md:col-span-3">
                   <Label htmlFor={`${idPrefix}purchaseLoan-attachedToProperty`}>Attached to Property</Label>
