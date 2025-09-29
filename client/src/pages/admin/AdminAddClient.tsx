@@ -2242,17 +2242,30 @@ export default function AdminAddClient() {
     }).format(numValue);
   };
 
-  // Ensure all properties have stable IDs
+  // Ensure all properties have stable IDs and valid use values
   useEffect(() => {
     const properties = form.watch('property.properties') || [];
+    const validUseValues = ['primary', 'home-purchase', 'second-home', 'investment'];
     let needsUpdate = false;
-    const updatedProperties = properties.map(property => {
-      if (!property.id) {
-        needsUpdate = true;
-        return { ...property, id: nanoid() };
-      }
-      return property;
-    });
+    
+    // Filter out orphaned properties and ensure all have IDs
+    const updatedProperties = properties
+      .filter(property => {
+        // Keep only properties with valid use values
+        if (!property.use || !validUseValues.includes(property.use)) {
+          console.warn(`Removing orphaned property with invalid use value:`, property.use);
+          needsUpdate = true;
+          return false;
+        }
+        return true;
+      })
+      .map(property => {
+        if (!property.id) {
+          needsUpdate = true;
+          return { ...property, id: nanoid() };
+        }
+        return property;
+      });
     
     if (needsUpdate) {
       form.setValue('property.properties', updatedProperties);
