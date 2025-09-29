@@ -1,0 +1,115 @@
+10080-                    </div>
+10081-                  </div>
+10082-                </CardContent>
+10083-              </Card>
+10084-
+10085:              {/* Borrower - Self-Employment Cards */}
+10086-              {form.watch('income.incomeTypes.selfEmployment') && (borrowerSelfEmploymentCards || ['default']).map((cardId, index) => {
+10087-                const propertyId = cardId === 'default' ? 'self-employment-template-card' : cardId;
+10088-                const isOpen = propertyCardStates[propertyId] ?? true;
+10089-                
+10090-                return (
+10091-                  <Card key={cardId} className="transition-colors duration-200">
+10092-                    <Collapsible 
+10093-                      open={isOpen} 
+10094-                      onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
+10095-                    >
+10096-                      <CardHeader>
+10097-                        <div className="flex items-center justify-between">
+10098-                          <div className="flex items-center gap-8">
+10099-                            <CardTitle className="flex items-center gap-2">
+10100:                              Borrower - Self-Employment
+10101-                            </CardTitle>
+10102-                          </div>
+10103-                          <div className="flex items-center gap-2">
+10104:                            {/* Add Self-Employment Button */}
+10105-                            <Button
+10106-                              type="button"
+10107-                              variant="outline"
+10108-                              size="sm"
+10109-                              onClick={() => {
+10110-                                const newId = `self-employment-${Date.now()}`;
+10111-                                setBorrowerSelfEmploymentCards(prev => [...(prev || ['default']), newId]);
+10112-                              }}
+10113-                              className="hover:bg-blue-500 hover:text-white"
+10114:                              data-testid="button-add-self-employment"
+10115-                              title="Add New Self-Employment"
+10116-                            >
+10117-                              <Plus className="h-4 w-4 mr-2" />
+10118:                              Add Self-Employment
+10119-                            </Button>
+10120-                            
+10121-                            {/* Delete Self-Employment Button - always show for default card, conditionally for additional cards */}
+10122-                            {(cardId === 'default' || (borrowerSelfEmploymentCards || []).length > 1) && (
+10123-                              <Button
+10124-                                type="button"
+10125-                                variant="outline"
+10126-                                size="sm"
+10127-                                onClick={() => setDeleteSelfEmploymentDialog({ isOpen: true, cardId: propertyId })}
+10128-                                className="hover:bg-red-500 hover:text-white"
+10129-                                data-testid={`button-delete-self-employment-${cardId}`}
+10130-                                title="Delete Self-Employment"
+10131-                              >
+10132-                                <Minus className="h-4 w-4 mr-2" />
+10133-                                Remove
+10134-                              </Button>
+10135-                            )}
+10136-                            
+10137-                            <CollapsibleTrigger asChild>
+10138-                              <Button 
+10139-                                variant="ghost" 
+10140-                                size="sm" 
+10141-                                className="hover:bg-orange-500 hover:text-white" 
+10142-                                data-testid={`button-toggle-self-employment-${propertyId}`}
+10143-                                title={isOpen ? 'Minimize' : 'Expand'}
+...
+18720-                  const currentCards = borrowerSelfEmploymentCards || ['default'];
+18721-                  currentCards.forEach(cardId => {
+18722-                    const cleanCardId = cardId === 'default' ? 'default' : cardId;
+18723-                    // Clear business info
+18724-                    form.setValue(`income.selfEmployment.${cleanCardId}.businessName` as any, '');
+18725-                    form.setValue(`income.selfEmployment.${cleanCardId}.businessType` as any, '');
+18726-                    form.setValue(`income.selfEmployment.${cleanCardId}.businessAddress` as any, '');
+18727-                    form.setValue(`income.selfEmployment.${cleanCardId}.yearEstablished` as any, '');
+18728-                    form.setValue(`income.selfEmployment.${cleanCardId}.netIncome` as any, '');
+--
+18751-            </AlertDialogAction>
+18752-          </AlertDialogFooter>
+18753-        </AlertDialogContent>
+18754-      </AlertDialog>
+18755-
+18756:      {/* Delete Co-Borrower - Self-Employment Confirmation Dialog */}
+18757-      <AlertDialog open={deleteCoBorrowerSelfEmploymentDialog.isOpen} onOpenChange={(open) => !open && setDeleteCoBorrowerSelfEmploymentDialog({ isOpen: false, cardId: '' })}>
+18758-        <AlertDialogContent data-testid="dialog-delete-co-borrower-self-employment">
+18759-          <AlertDialogHeader>
+18760:            <AlertDialogTitle>Delete Co-Borrower - Self-Employment Card</AlertDialogTitle>
+18761-            <AlertDialogDescription>
+18762-              Are you sure you want to delete this co-borrower self-employment card? This action cannot be undone.
+18763-            </AlertDialogDescription>
+18764-          </AlertDialogHeader>
+18765-          <AlertDialogFooter>
+18766-            <AlertDialogCancel 
+18767-              onClick={() => setDeleteCoBorrowerSelfEmploymentDialog({ isOpen: false, cardId: '' })}
+18768-              data-testid="button-cancel-delete-co-borrower-self-employment"
+18769-            >
+18770-              Cancel
+18771-            </AlertDialogCancel>
+18772-            <AlertDialogAction 
+18773-              onClick={() => {
+18774-                const cardToDelete = deleteCoBorrowerSelfEmploymentDialog.cardId;
+18775-                
+18776-                // If removing the default card, clear the checkbox and related fields
+18777-                if (cardToDelete === 'co-borrower-self-employment-template-card') {
+18778-                  form.setValue('coBorrowerIncome.incomeTypes.selfEmployment', false);
+18779-                  // Clear the self-employment card list (empty array removes all cards)
+18780-                  setCoBorrowerSelfEmploymentCards([]);
+18781-                  // Clear all self-employment form fields
+18782-                  const currentCards = coBorrowerSelfEmploymentCards || ['default'];
+18783-                  currentCards.forEach(cardId => {
+18784-                    const cleanCardId = cardId === 'default' ? 'default' : cardId;
+18785-                    // Clear business info
+18786-                    form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.businessName` as any, '');
+18787-                    form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.businessType` as any, '');
+18788-                    form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.businessAddress` as any, '');
+18789-                    form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.yearEstablished` as any, '');
+18790-                    form.setValue(`coBorrowerIncome.selfEmployment.${cleanCardId}.netIncome` as any, '');

@@ -10211,6 +10211,7 @@ export default function AdminAddClient() {
                                   type="button"
                                   variant="outline"
                                   size="sm"
+                                  className="hover:bg-blue-500 hover:text-white"
                                   data-testid="button-self-employment-description"
                                   title="Description"
                                 >
@@ -10220,6 +10221,7 @@ export default function AdminAddClient() {
                                   type="button"
                                   variant="outline"
                                   size="sm"
+                                  className="hover:bg-blue-500 hover:text-white"
                                   data-testid="button-self-employment-filing"
                                   title="Filing"
                                 >
