@@ -2,6 +2,7 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 import cubesBackground from '@assets/stock_images/abstract_geometric_c_b9135c5b.jpg';
 import infinityGridBackground from '@assets/Infinity_1759031666053.png';
 import glowingCubeBackground from '@assets/glowing cube_1759038202702.jpg';
+import jellyfishBackground from '@assets/Jelly Fish of the Deep Abyss_1759125741578.png';
 
 export type BackgroundType = 'animated' | 'static' | 'pulsing';
 
@@ -48,6 +49,14 @@ export const backgroundPresets: BackgroundPreset[] = [
     type: 'animated',
     assetPath: glowingCubeBackground,
     description: 'Glowing cubes with progressive focus animation',
+    isDark: true
+  },
+  {
+    id: 'jellyfish-abyss',
+    label: 'Jellyfish of the Deep Abyss',
+    type: 'static',
+    assetPath: jellyfishBackground,
+    description: 'Ethereal jellyfish floating in the deep ocean abyss with luminous tentacles',
     isDark: true
   },
 ];
