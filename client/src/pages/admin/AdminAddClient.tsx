@@ -15607,22 +15607,6 @@ export default function AdminAddClient() {
                                 </span>
                               )}
                             </CardTitle>
-                            <div className="flex items-center gap-2">
-                              <Label className="text-sm text-muted-foreground">Purpose:</Label>
-                              <Select
-                                value={property.use}
-                                onValueChange={(value) => requestPropertyUsageChange(propertyId, value as 'primary' | 'second-home' | 'investment')}
-                              >
-                                <SelectTrigger className="w-40" data-testid={`select-property-usage-${propertyId}`}>
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="primary">Primary Residence</SelectItem>
-                                  <SelectItem value="second-home">Second Home</SelectItem>
-                                  <SelectItem value="investment">Investment Property</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
                           </div>
                           <div className="flex items-center gap-2">
                             {/* Add/Remove buttons for multi-property types */}
