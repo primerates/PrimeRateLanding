@@ -19426,7 +19426,7 @@ export default function AdminAddClient() {
           </DialogHeader>
           <div className="space-y-6">
             <div className="space-y-2 mt-6">
-              <Label htmlFor="borrower-mid-fico">Borrower Mid Fico</Label>
+              <Label htmlFor="borrower-mid-fico" className="text-lg">Borrower Mid Fico</Label>
               <div 
                 className="text-4xl font-bold text-blue-900 py-2"
                 data-testid="display-borrower-mid-fico"
@@ -19569,7 +19569,7 @@ export default function AdminAddClient() {
           </DialogHeader>
           <div className="space-y-6">
             <div className="space-y-2 mt-6">
-              <Label htmlFor="co-borrower-mid-fico">Borrower Mid Fico</Label>
+              <Label htmlFor="co-borrower-mid-fico" className="text-lg">Co-Borrower Mid Fico</Label>
               <div 
                 className="text-4xl font-bold text-blue-900 py-2"
                 data-testid="display-co-borrower-mid-fico"
