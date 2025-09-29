@@ -10222,7 +10222,7 @@ export default function AdminAddClient() {
                                   type="button"
                                   variant="outline"
                                   size="sm"
-                                  className="bg-gray-300 text-gray-700 hover:bg-gray-400 min-w-[100px]"
+                                  className="bg-gray-300 text-gray-700 hover:bg-gray-400 min-w-[110px]"
                                   style={{ backgroundColor: '#d1d5db', borderColor: '#d1d5db', color: '#374151' }}
                                   data-testid="button-self-employment-filing"
                                   title="Filing"
