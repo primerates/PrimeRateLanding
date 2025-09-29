@@ -1122,6 +1122,12 @@ export default function AdminAddClient() {
     cardId: string;
   }>({ isOpen: false, cardId: '' });
 
+  // Delete confirmation dialog state for Home Purchase cards
+  const [deleteHomePurchaseDialog, setDeleteHomePurchaseDialog] = useState<{
+    isOpen: boolean;
+    cardId: string;
+  }>({ isOpen: false, cardId: '' });
+
   // Delete confirmation dialog state for Second Home cards
   const [deleteSecondHomeDialog, setDeleteSecondHomeDialog] = useState<{
     isOpen: boolean;
@@ -15607,7 +15613,7 @@ export default function AdminAddClient() {
                           </div>
                           <div className="flex items-center gap-2">
                             {/* Add/Remove buttons for multi-property types */}
-                            {(property.use === 'second-home' || property.use === 'investment' || property.use === 'home-purchase') && (
+                            {(property.use === 'second-home' || property.use === 'investment') && (
                               <div className="flex gap-1">
                                 <Button
                                   type="button"
@@ -15630,6 +15636,21 @@ export default function AdminAddClient() {
                                   <Minus className="h-3 w-3" />
                                 </Button>
                               </div>
+                            )}
+                            {/* Home Purchase Remove button - Primary Residence style */}
+                            {property.use === 'home-purchase' && (
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setDeleteHomePurchaseDialog({ isOpen: true, cardId: propertyId })}
+                                className="hover:bg-red-500 hover:text-white"
+                                data-testid="button-delete-home-purchase-property"
+                                title="Delete Home Purchase"
+                              >
+                                <Minus className="h-4 w-4 mr-2" />
+                                Remove
+                              </Button>
                             )}
                             <CollapsibleTrigger asChild>
                               <Button 
@@ -17975,6 +17996,48 @@ export default function AdminAddClient() {
                 setDeletePrimaryResidenceDialog({ isOpen: false, cardId: '' });
               }}
               data-testid="button-confirm-delete-primary-residence"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Home Purchase Confirmation Dialog */}
+      <AlertDialog open={deleteHomePurchaseDialog.isOpen} onOpenChange={(open) => !open && setDeleteHomePurchaseDialog({ isOpen: false, cardId: '' })}>
+        <AlertDialogContent data-testid="dialog-delete-home-purchase">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Home Purchase Card</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this home purchase card? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteHomePurchaseDialog({ isOpen: false, cardId: '' })}
+              data-testid="button-cancel-delete-home-purchase"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                const cardToDelete = deleteHomePurchaseDialog.cardId;
+                
+                // Remove from form data
+                const currentProperties = form.watch('property.properties') || [];
+                const updatedProperties = currentProperties.filter(property => property.id !== cardToDelete);
+                form.setValue('property.properties', updatedProperties);
+
+                // Remove collapsible state for removed property
+                setPropertyCardStates(prev => {
+                  const { [cardToDelete]: _, ...rest } = prev;
+                  return rest;
+                });
+                
+                setDeleteHomePurchaseDialog({ isOpen: false, cardId: '' });
+              }}
+              data-testid="button-confirm-delete-home-purchase"
               className="bg-red-600 hover:bg-red-700"
             >
               Delete
