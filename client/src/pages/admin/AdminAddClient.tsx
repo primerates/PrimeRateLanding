@@ -14648,7 +14648,7 @@ export default function AdminAddClient() {
                               
                               <div className="space-y-2 md:col-span-1">
                                 <div className="min-h-5 flex items-center gap-2">
-                                  <Label htmlFor={`property-owned-since-${propertyId}`}>Purchased</Label>
+                                  <Label htmlFor={`property-owned-since-${propertyId}`}>Purchase Date</Label>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <Button
@@ -14675,7 +14675,7 @@ export default function AdminAddClient() {
                                 </div>
                                 <Input
                                   id={`property-owned-since-${propertyId}`}
-                                  placeholder="MM/YYYY"
+                                  placeholder="MM/DD/YYYY"
                                   data-testid={`input-property-owned-since-${propertyId}`}
                                 />
                               </div>
@@ -14723,7 +14723,7 @@ export default function AdminAddClient() {
                               
                               <div className="space-y-2 md:col-span-3">
                                 <div className="flex items-center gap-2">
-                                  <Label htmlFor={`property-estimated-value-${propertyId}`}>Estimated Value</Label>
+                                  <Label htmlFor={`property-estimated-value-${propertyId}`}>Est. Value</Label>
                                   <div className="flex items-center gap-1">
                                     {/* Zillow */}
                                     <div className="flex items-center gap-1">
@@ -15439,7 +15439,7 @@ export default function AdminAddClient() {
                               
                               <div className="space-y-2 md:col-span-1">
                                 <div className="min-h-5 flex items-center gap-2">
-                                  <Label htmlFor={`second-home-owned-since-${propertyId}`}>Purchased</Label>
+                                  <Label htmlFor={`second-home-owned-since-${propertyId}`}>Purchase Date</Label>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <Button
@@ -15466,7 +15466,7 @@ export default function AdminAddClient() {
                                 </div>
                                 <Input
                                   id={`second-home-owned-since-${propertyId}`}
-                                  placeholder="MM/YYYY"
+                                  placeholder="MM/DD/YYYY"
                                   data-testid={`input-second-home-owned-since-${propertyId}`}
                                 />
                               </div>
@@ -15514,7 +15514,7 @@ export default function AdminAddClient() {
                               
                               <div className="space-y-2 md:col-span-3">
                                 <div className="flex items-center gap-2">
-                                  <Label htmlFor={`second-home-estimated-value-${propertyId}`}>Estimated Value</Label>
+                                  <Label htmlFor={`second-home-estimated-value-${propertyId}`}>Est. Value</Label>
                                   <div className="flex items-center gap-1">
                                     {/* Zillow */}
                                     <div className="flex items-center gap-1">
@@ -16228,7 +16228,7 @@ export default function AdminAddClient() {
                               
                               <div className="space-y-2 md:col-span-1">
                                 <div className="min-h-5 flex items-center gap-2">
-                                  <Label htmlFor={`investment-property-owned-since-${propertyId}`}>Purchased</Label>
+                                  <Label htmlFor={`investment-property-owned-since-${propertyId}`}>Purchase Date</Label>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <Button
@@ -16255,7 +16255,7 @@ export default function AdminAddClient() {
                                 </div>
                                 <Input
                                   id={`investment-property-owned-since-${propertyId}`}
-                                  placeholder="MM/YYYY"
+                                  placeholder="MM/DD/YYYY"
                                   data-testid={`input-investment-property-owned-since-${propertyId}`}
                                 />
                               </div>
@@ -16303,7 +16303,7 @@ export default function AdminAddClient() {
                               
                               <div className="space-y-2 md:col-span-3">
                                 <div className="flex items-center gap-2">
-                                  <Label htmlFor={`investment-property-estimated-value-${propertyId}`}>Estimated Value</Label>
+                                  <Label htmlFor={`investment-property-estimated-value-${propertyId}`}>Est. Value</Label>
                                   <div className="flex items-center gap-1">
                                     {/* Zillow */}
                                     <div className="flex items-center gap-1">
