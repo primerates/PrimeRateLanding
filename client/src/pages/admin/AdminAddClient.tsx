@@ -8675,40 +8675,40 @@ export default function AdminAddClient() {
                     <div className="space-y-2">
                       <Label htmlFor="borrower-firstName" className="text-xl">Current Residence</Label>
                     </div>
-                    <div className="flex items-center gap-6 ml-8">
+                    <div className="flex items-center gap-4 ml-4">
                       <button
                         type="button"
                         onClick={() => form.setValue('borrower.currentResidenceType', 'owned')}
-                        className="flex items-center gap-2 group"
+                        className="flex items-center gap-1.5 group"
                         data-testid="button-current-residence-owned"
                       >
-                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+                        <div className={`w-3 h-3 rounded-full border flex items-center justify-center transition-colors ${
                           form.watch('borrower.currentResidenceType') === 'owned' 
                             ? 'border-blue-500 bg-blue-500' 
                             : 'border-gray-400 bg-white hover:border-blue-400'
                         }`}>
                           {form.watch('borrower.currentResidenceType') === 'owned' && (
-                            <div className="w-3 h-3 rounded-full bg-white" />
+                            <div className="w-1.5 h-1.5 rounded-full bg-white" />
                           )}
                         </div>
-                        <span className="text-sm font-medium">Owned</span>
+                        <span className="text-xs font-medium">Owned</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => form.setValue('borrower.currentResidenceType', 'rental')}
-                        className="flex items-center gap-2 group"
+                        className="flex items-center gap-1.5 group"
                         data-testid="button-current-residence-rental"
                       >
-                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+                        <div className={`w-3 h-3 rounded-full border flex items-center justify-center transition-colors ${
                           form.watch('borrower.currentResidenceType') === 'rental' 
                             ? 'border-blue-500 bg-blue-500' 
                             : 'border-gray-400 bg-white hover:border-blue-400'
                         }`}>
                           {form.watch('borrower.currentResidenceType') === 'rental' && (
-                            <div className="w-3 h-3 rounded-full bg-white" />
+                            <div className="w-1.5 h-1.5 rounded-full bg-white" />
                           )}
                         </div>
-                        <span className="text-sm font-medium">Rental</span>
+                        <span className="text-xs font-medium">Rental</span>
                       </button>
                     </div>
                   </div>
