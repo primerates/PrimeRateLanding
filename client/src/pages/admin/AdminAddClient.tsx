@@ -9143,6 +9143,84 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="borrower-prior-residence-from">From</Label>
+                              <Input
+                                id="borrower-prior-residence-from"
+                                type="text"
+                                placeholder="mm/dd/yyyy"
+                                {...form.register('borrower.priorResidenceAddress.from')}
+                                onChange={(e) => {
+                                  const input = e.target.value;
+                                  const currentValue = form.getValues('borrower.priorResidenceAddress.from') || '';
+                                  
+                                  // If input is empty or being deleted, allow it
+                                  if (input.length === 0) {
+                                    form.setValue('borrower.priorResidenceAddress.from', '');
+                                    return;
+                                  }
+                                  
+                                  // If user is deleting (input shorter than current), just update without formatting
+                                  if (input.length < currentValue.length) {
+                                    form.setValue('borrower.priorResidenceAddress.from', input);
+                                    return;
+                                  }
+                                  
+                                  // Otherwise, apply formatting
+                                  let value = input.replace(/\D/g, ''); // Remove non-digits
+                                  if (value.length >= 2) {
+                                    value = value.slice(0, 2) + '/' + value.slice(2);
+                                  }
+                                  if (value.length >= 5) {
+                                    value = value.slice(0, 5) + '/' + value.slice(5);
+                                  }
+                                  value = value.slice(0, 10); // Limit to mm/dd/yyyy
+                                  form.setValue('borrower.priorResidenceAddress.from', value);
+                                }}
+                                data-testid="input-borrower-prior-residence-from"
+                                className="placeholder:text-[10px]"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="borrower-prior-residence-to">To</Label>
+                              <Input
+                                id="borrower-prior-residence-to"
+                                type="text"
+                                placeholder="mm/dd/yyyy"
+                                {...form.register('borrower.priorResidenceAddress.to')}
+                                onChange={(e) => {
+                                  const input = e.target.value;
+                                  const currentValue = form.getValues('borrower.priorResidenceAddress.to') || '';
+                                  
+                                  // If input is empty or being deleted, allow it
+                                  if (input.length === 0) {
+                                    form.setValue('borrower.priorResidenceAddress.to', '');
+                                    return;
+                                  }
+                                  
+                                  // If user is deleting (input shorter than current), just update without formatting
+                                  if (input.length < currentValue.length) {
+                                    form.setValue('borrower.priorResidenceAddress.to', input);
+                                    return;
+                                  }
+                                  
+                                  // Otherwise, apply formatting
+                                  let value = input.replace(/\D/g, ''); // Remove non-digits
+                                  if (value.length >= 2) {
+                                    value = value.slice(0, 2) + '/' + value.slice(2);
+                                  }
+                                  if (value.length >= 5) {
+                                    value = value.slice(0, 5) + '/' + value.slice(5);
+                                  }
+                                  value = value.slice(0, 10); // Limit to mm/dd/yyyy
+                                  form.setValue('borrower.priorResidenceAddress.to', value);
+                                }}
+                                data-testid="input-borrower-prior-residence-to"
+                                className="placeholder:text-[10px]"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="borrower-prior-time-address" className="text-sm">
                                 Duration
                               </Label>
@@ -9321,6 +9399,78 @@ export default function AdminAddClient() {
                                 id="borrower-residence-county-2"
                                 {...form.register('borrower.priorResidenceAddress2.county')}
                                 data-testid="input-borrower-residence-county-2"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="borrower-prior-residence-from-2">From</Label>
+                              <Input
+                                id="borrower-prior-residence-from-2"
+                                type="text"
+                                placeholder="mm/dd/yyyy"
+                                {...form.register('borrower.priorResidenceAddress2.from')}
+                                onChange={(e) => {
+                                  const input = e.target.value;
+                                  const currentValue = form.getValues('borrower.priorResidenceAddress2.from') || '';
+                                  
+                                  if (input.length === 0) {
+                                    form.setValue('borrower.priorResidenceAddress2.from', '');
+                                    return;
+                                  }
+                                  
+                                  if (input.length < currentValue.length) {
+                                    form.setValue('borrower.priorResidenceAddress2.from', input);
+                                    return;
+                                  }
+                                  
+                                  let value = input.replace(/\D/g, '');
+                                  if (value.length >= 2) {
+                                    value = value.slice(0, 2) + '/' + value.slice(2);
+                                  }
+                                  if (value.length >= 5) {
+                                    value = value.slice(0, 5) + '/' + value.slice(5);
+                                  }
+                                  value = value.slice(0, 10);
+                                  form.setValue('borrower.priorResidenceAddress2.from', value);
+                                }}
+                                data-testid="input-borrower-prior-residence-from-2"
+                                className="placeholder:text-[10px]"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="borrower-prior-residence-to-2">To</Label>
+                              <Input
+                                id="borrower-prior-residence-to-2"
+                                type="text"
+                                placeholder="mm/dd/yyyy"
+                                {...form.register('borrower.priorResidenceAddress2.to')}
+                                onChange={(e) => {
+                                  const input = e.target.value;
+                                  const currentValue = form.getValues('borrower.priorResidenceAddress2.to') || '';
+                                  
+                                  if (input.length === 0) {
+                                    form.setValue('borrower.priorResidenceAddress2.to', '');
+                                    return;
+                                  }
+                                  
+                                  if (input.length < currentValue.length) {
+                                    form.setValue('borrower.priorResidenceAddress2.to', input);
+                                    return;
+                                  }
+                                  
+                                  let value = input.replace(/\D/g, '');
+                                  if (value.length >= 2) {
+                                    value = value.slice(0, 2) + '/' + value.slice(2);
+                                  }
+                                  if (value.length >= 5) {
+                                    value = value.slice(0, 5) + '/' + value.slice(5);
+                                  }
+                                  value = value.slice(0, 10);
+                                  form.setValue('borrower.priorResidenceAddress2.to', value);
+                                }}
+                                data-testid="input-borrower-prior-residence-to-2"
+                                className="placeholder:text-[10px]"
                               />
                             </div>
                             
@@ -9927,6 +10077,78 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="coBorrower-prior-residence-from">From</Label>
+                              <Input
+                                id="coBorrower-prior-residence-from"
+                                type="text"
+                                placeholder="mm/dd/yyyy"
+                                {...form.register('coBorrower.priorResidenceAddress.from')}
+                                onChange={(e) => {
+                                  const input = e.target.value;
+                                  const currentValue = form.getValues('coBorrower.priorResidenceAddress.from') || '';
+                                  
+                                  if (input.length === 0) {
+                                    form.setValue('coBorrower.priorResidenceAddress.from', '');
+                                    return;
+                                  }
+                                  
+                                  if (input.length < currentValue.length) {
+                                    form.setValue('coBorrower.priorResidenceAddress.from', input);
+                                    return;
+                                  }
+                                  
+                                  let value = input.replace(/\D/g, '');
+                                  if (value.length >= 2) {
+                                    value = value.slice(0, 2) + '/' + value.slice(2);
+                                  }
+                                  if (value.length >= 5) {
+                                    value = value.slice(0, 5) + '/' + value.slice(5);
+                                  }
+                                  value = value.slice(0, 10);
+                                  form.setValue('coBorrower.priorResidenceAddress.from', value);
+                                }}
+                                data-testid="input-coborrower-prior-residence-from"
+                                className="placeholder:text-[10px]"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="coBorrower-prior-residence-to">To</Label>
+                              <Input
+                                id="coBorrower-prior-residence-to"
+                                type="text"
+                                placeholder="mm/dd/yyyy"
+                                {...form.register('coBorrower.priorResidenceAddress.to')}
+                                onChange={(e) => {
+                                  const input = e.target.value;
+                                  const currentValue = form.getValues('coBorrower.priorResidenceAddress.to') || '';
+                                  
+                                  if (input.length === 0) {
+                                    form.setValue('coBorrower.priorResidenceAddress.to', '');
+                                    return;
+                                  }
+                                  
+                                  if (input.length < currentValue.length) {
+                                    form.setValue('coBorrower.priorResidenceAddress.to', input);
+                                    return;
+                                  }
+                                  
+                                  let value = input.replace(/\D/g, '');
+                                  if (value.length >= 2) {
+                                    value = value.slice(0, 2) + '/' + value.slice(2);
+                                  }
+                                  if (value.length >= 5) {
+                                    value = value.slice(0, 5) + '/' + value.slice(5);
+                                  }
+                                  value = value.slice(0, 10);
+                                  form.setValue('coBorrower.priorResidenceAddress.to', value);
+                                }}
+                                data-testid="input-coborrower-prior-residence-to"
+                                className="placeholder:text-[10px]"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="coBorrower-prior-time-address" className="text-sm">
                                 Duration
                               </Label>
@@ -10105,6 +10327,78 @@ export default function AdminAddClient() {
                                 id="coBorrower-prior-residence-county-2"
                                 {...form.register('coBorrower.priorResidenceAddress2.county')}
                                 data-testid="input-coborrower-prior-residence-county-2"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="coBorrower-prior-residence-from-2">From</Label>
+                              <Input
+                                id="coBorrower-prior-residence-from-2"
+                                type="text"
+                                placeholder="mm/dd/yyyy"
+                                {...form.register('coBorrower.priorResidenceAddress2.from')}
+                                onChange={(e) => {
+                                  const input = e.target.value;
+                                  const currentValue = form.getValues('coBorrower.priorResidenceAddress2.from') || '';
+                                  
+                                  if (input.length === 0) {
+                                    form.setValue('coBorrower.priorResidenceAddress2.from', '');
+                                    return;
+                                  }
+                                  
+                                  if (input.length < currentValue.length) {
+                                    form.setValue('coBorrower.priorResidenceAddress2.from', input);
+                                    return;
+                                  }
+                                  
+                                  let value = input.replace(/\D/g, '');
+                                  if (value.length >= 2) {
+                                    value = value.slice(0, 2) + '/' + value.slice(2);
+                                  }
+                                  if (value.length >= 5) {
+                                    value = value.slice(0, 5) + '/' + value.slice(5);
+                                  }
+                                  value = value.slice(0, 10);
+                                  form.setValue('coBorrower.priorResidenceAddress2.from', value);
+                                }}
+                                data-testid="input-coborrower-prior-residence-from-2"
+                                className="placeholder:text-[10px]"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="coBorrower-prior-residence-to-2">To</Label>
+                              <Input
+                                id="coBorrower-prior-residence-to-2"
+                                type="text"
+                                placeholder="mm/dd/yyyy"
+                                {...form.register('coBorrower.priorResidenceAddress2.to')}
+                                onChange={(e) => {
+                                  const input = e.target.value;
+                                  const currentValue = form.getValues('coBorrower.priorResidenceAddress2.to') || '';
+                                  
+                                  if (input.length === 0) {
+                                    form.setValue('coBorrower.priorResidenceAddress2.to', '');
+                                    return;
+                                  }
+                                  
+                                  if (input.length < currentValue.length) {
+                                    form.setValue('coBorrower.priorResidenceAddress2.to', input);
+                                    return;
+                                  }
+                                  
+                                  let value = input.replace(/\D/g, '');
+                                  if (value.length >= 2) {
+                                    value = value.slice(0, 2) + '/' + value.slice(2);
+                                  }
+                                  if (value.length >= 5) {
+                                    value = value.slice(0, 5) + '/' + value.slice(5);
+                                  }
+                                  value = value.slice(0, 10);
+                                  form.setValue('coBorrower.priorResidenceAddress2.to', value);
+                                }}
+                                data-testid="input-coborrower-prior-residence-to-2"
+                                className="placeholder:text-[10px]"
                               />
                             </div>
                             
