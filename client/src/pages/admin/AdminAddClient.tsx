@@ -8684,8 +8684,8 @@ export default function AdminAddClient() {
                       >
                         <div className={`w-3 h-3 rounded-full transition-colors ${
                           form.watch('borrower.currentResidenceType') === 'owned' 
-                            ? 'bg-blue-500' 
-                            : 'border border-gray-400 bg-white hover:border-blue-400'
+                            ? 'bg-purple-500' 
+                            : 'border border-gray-400 bg-white hover:border-purple-400'
                         }`}>
                         </div>
                         <span className="text-sm font-medium">Owned</span>
@@ -8698,8 +8698,8 @@ export default function AdminAddClient() {
                       >
                         <div className={`w-3 h-3 rounded-full transition-colors ${
                           form.watch('borrower.currentResidenceType') === 'rental' 
-                            ? 'bg-blue-500' 
-                            : 'border border-gray-400 bg-white hover:border-blue-400'
+                            ? 'bg-purple-500' 
+                            : 'border border-gray-400 bg-white hover:border-purple-400'
                         }`}>
                         </div>
                         <span className="text-sm font-medium">Rental</span>
@@ -8878,8 +8878,8 @@ export default function AdminAddClient() {
                           >
                             <div className={`w-3 h-3 rounded-full transition-colors ${
                               form.watch('borrower.priorResidenceType') === 'owned' 
-                                ? 'bg-blue-500' 
-                                : 'border border-gray-400 bg-white hover:border-blue-400'
+                                ? 'bg-purple-500' 
+                                : 'border border-gray-400 bg-white hover:border-purple-400'
                             }`}>
                             </div>
                             <span className="text-sm font-medium">Owned</span>
@@ -8892,8 +8892,8 @@ export default function AdminAddClient() {
                           >
                             <div className={`w-3 h-3 rounded-full transition-colors ${
                               form.watch('borrower.priorResidenceType') === 'rental' 
-                                ? 'bg-blue-500' 
-                                : 'border border-gray-400 bg-white hover:border-blue-400'
+                                ? 'bg-purple-500' 
+                                : 'border border-gray-400 bg-white hover:border-purple-400'
                             }`}>
                             </div>
                             <span className="text-sm font-medium">Rental</span>
@@ -9096,8 +9096,8 @@ export default function AdminAddClient() {
                           >
                             <div className={`w-3 h-3 rounded-full transition-colors ${
                               form.watch('borrower.priorResidenceType2') === 'owned' 
-                                ? 'bg-blue-500' 
-                                : 'border border-gray-400 bg-white hover:border-blue-400'
+                                ? 'bg-purple-500' 
+                                : 'border border-gray-400 bg-white hover:border-purple-400'
                             }`}>
                             </div>
                             <span className="text-sm font-medium">Owned</span>
@@ -9110,8 +9110,8 @@ export default function AdminAddClient() {
                           >
                             <div className={`w-3 h-3 rounded-full transition-colors ${
                               form.watch('borrower.priorResidenceType2') === 'rental' 
-                                ? 'bg-blue-500' 
-                                : 'border border-gray-400 bg-white hover:border-blue-400'
+                                ? 'bg-purple-500' 
+                                : 'border border-gray-400 bg-white hover:border-purple-400'
                             }`}>
                             </div>
                             <span className="text-sm font-medium">Rental</span>
