@@ -17227,6 +17227,12 @@ export default function AdminAddClient() {
                             ? 'Cash Out'
                             : form.watch('brandNewLoan.loanPurpose') === 'purchase'
                             ? 'Purchase'
+                            : form.watch('brandNewLoan.loanPurpose') === 'rate-reduction'
+                            ? 'Rate Reduction'
+                            : form.watch('brandNewLoan.loanPurpose') === 'term-reduction'
+                            ? 'Term Reduction'
+                            : form.watch('brandNewLoan.loanPurpose') === 'other'
+                            ? 'Other'
                             : ''
                           : ''}
                       </span>
