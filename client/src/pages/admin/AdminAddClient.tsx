@@ -8817,6 +8817,13 @@ export default function AdminAddClient() {
                     </CardContent>
                   </Card>
 
+                  {/* Row for Prior Residence Title */}
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-10">
+                    <div className="space-y-2">
+                      <Label htmlFor="borrower-prior-residence" className="text-xl">Prior Residence</Label>
+                    </div>
+                  </div>
+
                   {/* Grey Background Box - Duplicate */}
                   <Card className={`bg-muted mt-8 ${
                     showIncomeCardAnimation['borrower-employment'] ? 'animate-roll-down-subject-property' : ''
