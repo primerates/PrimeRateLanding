@@ -9163,7 +9163,7 @@ export default function AdminAddClient() {
                               form.setValue('borrower.residenceAddress.from', value);
                             }}
                             data-testid="input-borrower-residence-from"
-                            className="text-xs placeholder:text-[10px]"
+                            className="text-[10px] placeholder:text-[10px]"
                           />
                         </div>
                         
@@ -9202,7 +9202,7 @@ export default function AdminAddClient() {
                               form.setValue('borrower.residenceAddress.to', value);
                             }}
                             data-testid="input-borrower-residence-to"
-                            className="text-xs placeholder:text-[10px]"
+                            className="text-[10px] placeholder:text-[10px]"
                           />
                         </div>
                         
