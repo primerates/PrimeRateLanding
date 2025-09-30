@@ -911,6 +911,7 @@ export default function AdminAddClient() {
 
   // Address box collapsible states
   const [isBorrowerOpen, setIsBorrowerOpen] = useState(true);
+  const [isCoBorrowerOpen, setIsCoBorrowerOpen] = useState(true);
   const [isBorrowerResidenceOpen, setIsBorrowerResidenceOpen] = useState(false);
   const [isBorrowerPriorResidenceOpen, setIsBorrowerPriorResidenceOpen] = useState(false);
   const [isShowingMonthsAtAddress, setIsShowingMonthsAtAddress] = useState(false);
@@ -9243,10 +9244,31 @@ export default function AdminAddClient() {
               {hasCoBorrower && (
                 <>
                 <Card className="mt-16 border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
-                  <CardHeader>
-                    <CardTitle>Co-Borrower</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+                  <Collapsible open={isCoBorrowerOpen} onOpenChange={setIsCoBorrowerOpen}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Co-Borrower</CardTitle>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <CollapsibleTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="hover:bg-orange-500 hover:text-black"
+                                data-testid="button-toggle-coborrower"
+                              >
+                                {isCoBorrowerOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{isCoBorrowerOpen ? 'Minimize' : 'Expand'}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                    </CardHeader>
+                    <CollapsibleContent>
+                      <CardContent className="space-y-4">
                     {/* Row 1: First Name, Middle Name, Last Name, Date of Birth, SSN */}
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                       <div className="space-y-2">
@@ -9530,45 +9552,26 @@ export default function AdminAddClient() {
                       </CardContent>
                     </Card>
                   </CardContent>
+                  </CollapsibleContent>
+                  </Collapsible>
                 </Card>
 
                 {/* Co-Borrower Residence Address */}
                 <Card>
-                  <Collapsible open={isCoBorrowerResidenceOpen} onOpenChange={setIsCoBorrowerResidenceOpen}>
-                    <CardHeader className="flex flex-row items-center justify-between">
-                      <CardTitle>Co-Borrower Residence</CardTitle>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={copyBorrowerToCoResidence}
-                          className="hover:bg-orange-500 hover:text-white"
-                          data-testid="button-copy-borrower-address"
-                        >
-                          Same as Borrower
-                        </Button>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <CollapsibleTrigger asChild>
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                className="hover:bg-orange-500 hover:text-black"
-                                data-testid="button-toggle-coborrower-residence"
-                              >
-                                {isCoBorrowerResidenceOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                              </Button>
-                            </CollapsibleTrigger>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>{isCoBorrowerResidenceOpen ? 'Minimize' : 'Expand'}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-                    </CardHeader>
-                    <CollapsibleContent>
-                      <CardContent className="space-y-4">
+                  <CardHeader className="flex flex-row items-center justify-between">
+                    <CardTitle>Co-Borrower Residence</CardTitle>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={copyBorrowerToCoResidence}
+                      className="hover:bg-orange-500 hover:text-white"
+                      data-testid="button-copy-borrower-address"
+                    >
+                      Same as Borrower
+                    </Button>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                       <div className="space-y-2 md:col-span-3">
                         <Label htmlFor="coBorrower-residence-street">Street Address *</Label>
@@ -9721,9 +9724,7 @@ export default function AdminAddClient() {
                     {form.formState.errors.coBorrower?.monthsAtAddress && isShowingCoBorrowerMonthsAtAddress && (
                       <p className="text-sm text-destructive">{form.formState.errors.coBorrower.monthsAtAddress.message}</p>
                     )}
-                      </CardContent>
-                    </CollapsibleContent>
-                  </Collapsible>
+                  </CardContent>
                 </Card>
 
                 {/* Prior Co-Borrower Residence Address - Show if less than 2 years at current address */}
