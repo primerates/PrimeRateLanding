@@ -8713,7 +8713,7 @@ export default function AdminAddClient() {
                   }`}>
                     <CardContent className="pt-6">
                       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                        <div className="space-y-2">
+                        <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="borrower-abc">ABC</Label>
                           <Input
                             id="borrower-abc"
