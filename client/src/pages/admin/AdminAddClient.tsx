@@ -4283,7 +4283,7 @@ export default function AdminAddClient() {
               </div>
               
               {/* Row 3: Mid FICO, Rate Lock Status, Rate Lock Date, Rate Lock Duration / Rate Lock Expiration, Lender Credit */}
-              <Card className={`bg-gray-100 dark:bg-gray-800 ${
+              <Card className={`bg-muted ${
                 showBrandNewLoanCardAnimation[idPrefix] ? 'animate-roll-up-grey-box' : ''
               }`}>
                 <CardContent className="pt-6">
@@ -4884,7 +4884,7 @@ export default function AdminAddClient() {
               </div>
               
               {/* Row 3: Mid FICO, Rate Lock Status, Rate Lock Date, Rate Lock Duration / Rate Lock Expiration, Lender Credit */}
-              <Card className={`bg-gray-100 dark:bg-gray-800 ${
+              <Card className={`bg-muted ${
                 showPurchaseLoanCardAnimation[idPrefix] ? 'animate-roll-up-grey-box' : ''
               }`}>
                 <CardContent className="pt-6">
