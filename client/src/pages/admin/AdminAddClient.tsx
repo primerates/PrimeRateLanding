@@ -155,6 +155,47 @@ const AppraisalIcon = React.memo<{ index: number; control: any }>(({ index, cont
   return <DollarSign className={`h-4 w-4 ${iconClass}`} />;
 });
 
+// Memoized BorrowerResidenceTimeCalculator component
+const BorrowerResidenceTimeCalculator = React.memo<{ control: any; setValue: any }>(({ control, setValue }) => {
+  const fromDate = useWatch({ control, name: 'borrower.residenceAddress.from' }) || '';
+  const toDate = useWatch({ control, name: 'borrower.residenceAddress.to' }) || '';
+
+  const calculatedYears = useMemo(() => {
+    if (!fromDate || !toDate) return '';
+
+    const from = new Date(fromDate);
+    const to = new Date(toDate);
+
+    if (isNaN(from.getTime()) || isNaN(to.getTime())) return '';
+
+    // Calculate difference in months
+    const yearsDiff = to.getFullYear() - from.getFullYear();
+    const monthsDiff = to.getMonth() - from.getMonth();
+    const totalMonths = yearsDiff * 12 + monthsDiff;
+
+    if (totalMonths < 0) return '';
+
+    const years = Math.floor(totalMonths / 12);
+    const months = totalMonths % 12;
+
+    // Update form values for existing logic
+    setValue('borrower.yearsAtAddress', years, { shouldDirty: false });
+    setValue('borrower.monthsAtAddress', months, { shouldDirty: false });
+
+    // Display as Years.Months format (e.g., 2.4 for 2 years 4 months)
+    if (months === 0) {
+      return years.toString();
+    }
+    return `${years}.${months}`;
+  }, [fromDate, toDate, setValue]);
+
+  return (
+    <div className="h-9 px-3 py-2 border border-input bg-background rounded-md flex items-center text-sm">
+      <span className="text-muted-foreground">{calculatedYears || '—'}</span>
+    </div>
+  );
+});
+
 // US States for dropdown
 const US_STATES = [
   { value: 'AL', label: 'Alabama' },
@@ -8849,15 +8890,7 @@ export default function AdminAddClient() {
                           <Label htmlFor="borrower-time-address" className="text-sm">
                             Years / Months
                           </Label>
-                          <Input
-                            id="borrower-time-address"
-                            type="number"
-                            min="0"
-                            max={isShowingMonthsAtAddress ? 11 : 99}
-                            placeholder={isShowingMonthsAtAddress ? "Enter months" : "Enter years"}
-                            {...form.register(isShowingMonthsAtAddress ? 'borrower.monthsAtAddress' : 'borrower.yearsAtAddress')}
-                            data-testid="input-borrower-time-address"
-                          />
+                          <BorrowerResidenceTimeCalculator control={form.control} setValue={form.setValue} />
                         </div>
                       </div>
                     </CardContent>
