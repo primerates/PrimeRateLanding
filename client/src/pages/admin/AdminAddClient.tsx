@@ -13883,41 +13883,24 @@ export default function AdminAddClient() {
                               
                               <div className="space-y-2 md:col-span-1">
                                 <div className="min-h-5 flex items-center gap-2">
-                                  <Label htmlFor={`property-owned-since-${propertyId}`}>Purchased</Label>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="sm"
-                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                                        onClick={() => {
-                                          toast({
-                                            title: "Purchase Information",
-                                            description: "Please see purchase and record dates in title report located in vendor page.",
-                                            duration: 5000,
-                                          });
-                                        }}
-                                        data-testid={`button-purchased-info-${propertyId}`}
-                                      >
-                                        <Info className="h-4 w-4" />
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="top" sideOffset={15} className="text-sm">
-                                      Purchase Information
-                                    </TooltipContent>
-                                  </Tooltip>
+                                  <Label htmlFor={`property-purpose-${propertyId}`}>Purpose</Label>
                                 </div>
-                                <Input
-                                  id={`property-owned-since-${propertyId}`}
-                                  placeholder="MM/YYYY"
-                                  data-testid={`input-property-owned-since-${propertyId}`}
-                                />
+                                <Select>
+                                  <SelectTrigger data-testid={`select-property-purpose-${propertyId}`}>
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="select">Select</SelectItem>
+                                    <SelectItem value="primary">Primary</SelectItem>
+                                    <SelectItem value="second">Second</SelectItem>
+                                    <SelectItem value="investment">Investment</SelectItem>
+                                  </SelectContent>
+                                </Select>
                               </div>
                               
                               <div className="space-y-2 md:col-span-2">
                                 <div className="min-h-5 flex items-center gap-2">
-                                  <Label htmlFor={`property-title-held-by-${propertyId}`}>Title Held By</Label>
+                                  <Label htmlFor={`property-title-held-by-${propertyId}`}>Title to be Held By</Label>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <Button
@@ -17024,42 +17007,24 @@ export default function AdminAddClient() {
                               
                               <div className="space-y-2 md:col-span-1">
                                 <div className="min-h-5 flex items-center gap-2">
-                                  <Label htmlFor={`property-owned-since-${propertyId}`}>Purchased</Label>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="sm"
-                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                                        onClick={() => {
-                                          toast({
-                                            title: "Purchase Information",
-                                            description: "Please see purchase and record dates in title report located in vendor page.",
-                                            duration: 5000,
-                                          });
-                                        }}
-                                        data-testid={`button-purchased-info-${propertyId}`}
-                                      >
-                                        <Info className="h-4 w-4" />
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="top" sideOffset={15} className="text-sm">
-                                      Purchase Information
-                                    </TooltipContent>
-                                  </Tooltip>
+                                  <Label htmlFor={`property-purpose-${propertyId}`}>Purpose</Label>
                                 </div>
-                                <Input
-                                  id={`property-owned-since-${propertyId}`}
-                                  {...form.register(`property.properties.${index}.ownedSince` as const)}
-                                  placeholder="MM/YYYY"
-                                  data-testid={`input-property-owned-since-${propertyId}`}
-                                />
+                                <Select>
+                                  <SelectTrigger data-testid={`select-property-purpose-${propertyId}`}>
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="select">Select</SelectItem>
+                                    <SelectItem value="primary">Primary</SelectItem>
+                                    <SelectItem value="second">Second</SelectItem>
+                                    <SelectItem value="investment">Investment</SelectItem>
+                                  </SelectContent>
+                                </Select>
                               </div>
                               
                               <div className="space-y-2 md:col-span-2">
                                 <div className="min-h-5 flex items-center gap-2">
-                                  <Label htmlFor={`property-title-held-by-${propertyId}`}>Title Held By</Label>
+                                  <Label htmlFor={`property-title-held-by-${propertyId}`}>Title to be Held By</Label>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <Button
