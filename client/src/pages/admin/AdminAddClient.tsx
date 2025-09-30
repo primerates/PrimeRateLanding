@@ -8666,6 +8666,10 @@ export default function AdminAddClient() {
                     </div>
                   </div>
 
+                  {/* Extra spacing row */}
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                  </div>
+
                   {/* Row 3 */}
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-10">
                     <div className="space-y-2">
