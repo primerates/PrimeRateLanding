@@ -13383,11 +13383,16 @@ export default function AdminAddClient() {
                                         const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
                                         const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
                                         
+                                        // Check purchase loan
+                                        const purchaseLoanAttached = form.watch('purchaseLoan.attachedToProperty');
+                                        const isPurchaseLoanAttached = Boolean(purchaseLoanAttached && currentProperty?.id && purchaseLoanAttached === currentProperty.id);
+                                        
                                         // Count active loans
                                         let activeLoansCount = 0;
                                         if (isCurrentLoanAttached) activeLoansCount++;
                                         if (isSecondLoanAttached) activeLoansCount++;
                                         if (isThirdLoanAttached) activeLoansCount++;
+                                        if (isPurchaseLoanAttached) activeLoansCount++;
                                         
                                         return activeLoansCount > 0 ? "default" : "outline";
                                       })()}
@@ -13411,11 +13416,16 @@ export default function AdminAddClient() {
                                         const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
                                         const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
                                         
+                                        // Check purchase loan
+                                        const purchaseLoanAttached = form.watch('purchaseLoan.attachedToProperty');
+                                        const isPurchaseLoanAttached = Boolean(purchaseLoanAttached && currentProperty?.id && purchaseLoanAttached === currentProperty.id);
+                                        
                                         // Count active loans
                                         let activeLoansCount = 0;
                                         if (isCurrentLoanAttached) activeLoansCount++;
                                         if (isSecondLoanAttached) activeLoansCount++;
                                         if (isThirdLoanAttached) activeLoansCount++;
+                                        if (isPurchaseLoanAttached) activeLoansCount++;
                                         
                                         return activeLoansCount > 0 
                                           ? { backgroundColor: '#d1d5db', borderColor: '#d1d5db', color: '#374151' } 
@@ -13436,11 +13446,16 @@ export default function AdminAddClient() {
                                         const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
                                         const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
                                         
+                                        // Check purchase loan
+                                        const purchaseLoanAttached = form.watch('purchaseLoan.attachedToProperty');
+                                        const isPurchaseLoanAttached = Boolean(purchaseLoanAttached && currentProperty?.id && purchaseLoanAttached === currentProperty.id);
+                                        
                                         // Count active loans
                                         let activeLoansCount = 0;
                                         if (isCurrentLoanAttached) activeLoansCount++;
                                         if (isSecondLoanAttached) activeLoansCount++;
                                         if (isThirdLoanAttached) activeLoansCount++;
+                                        if (isPurchaseLoanAttached) activeLoansCount++;
                                         
                                         return activeLoansCount > 0 
                                           ? "w-24 text-white border-2" 
@@ -13464,11 +13479,16 @@ export default function AdminAddClient() {
                                         const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
                                         const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
                                         
+                                        // Check purchase loan
+                                        const purchaseLoanAttached = form.watch('purchaseLoan.attachedToProperty');
+                                        const isPurchaseLoanAttached = Boolean(purchaseLoanAttached && currentProperty?.id && purchaseLoanAttached === currentProperty.id);
+                                        
                                         // Count active loans
                                         let activeLoansCount = 0;
                                         if (isCurrentLoanAttached) activeLoansCount++;
                                         if (isSecondLoanAttached) activeLoansCount++;
                                         if (isThirdLoanAttached) activeLoansCount++;
+                                        if (isPurchaseLoanAttached) activeLoansCount++;
                                         
                                         return (
                                           <span>
@@ -13817,6 +13837,10 @@ export default function AdminAddClient() {
                                       const properties = form.watch('property.properties') || [];
                                       const currentProperty = actualPropertyIndex >= 0 ? properties[actualPropertyIndex] : null;
                                       
+                                      // Check purchase loan
+                                      const purchaseLoanAttached = form.watch('purchaseLoan.attachedToProperty');
+                                      const isPurchaseLoanAttached = Boolean(purchaseLoanAttached && currentProperty?.id && purchaseLoanAttached === currentProperty.id);
+                                      
                                       // Check current loan
                                       const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
                                       const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
@@ -13836,10 +13860,32 @@ export default function AdminAddClient() {
                                         return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
                                       });
                                       
-                                      const hasAnyLoanAttached = isCurrentLoanAttached || isSecondLoanAttached || isThirdLoanAttached || isOtherAdditionalLoanAttached;
+                                      const hasAnyLoanAttached = isPurchaseLoanAttached || isCurrentLoanAttached || isSecondLoanAttached || isThirdLoanAttached || isOtherAdditionalLoanAttached;
                                       
                                       return (
                                         <div className="flex items-center gap-1">
+                                          <div 
+                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center ${
+                                              isPurchaseLoanAttached
+                                                ? 'bg-cyan-500 border-cyan-500 hover:bg-cyan-600'
+                                                : 'bg-gray-200 border-gray-300'
+                                            }`}
+                                            style={{
+                                              backgroundColor: isPurchaseLoanAttached ? '#06b6d4' : '#e5e7eb',
+                                              borderColor: isPurchaseLoanAttached ? '#06b6d4' : '#d1d5db'
+                                            }}
+                                            onClick={() => {
+                                              if (isPurchaseLoanAttached) {
+                                                console.log('View Purchase Loan Details');
+                                              }
+                                            }}
+                                            title={isPurchaseLoanAttached ? "View Purchase Loan Details" : ""}
+                                            data-testid={`indicator-secured-loan-purchase-${propertyId}`}
+                                          >
+                                            {isPurchaseLoanAttached && (
+                                              <span className="text-xs font-semibold text-white">P</span>
+                                            )}
+                                          </div>
                                           <div 
                                             className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center ${
                                               isCurrentLoanAttached
