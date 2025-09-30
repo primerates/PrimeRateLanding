@@ -8792,7 +8792,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2 md:col-span-1">
+                        <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="borrower-residence-city">City</Label>
                           <Input
                             id="borrower-residence-city"
@@ -8837,7 +8837,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2 md:col-span-2">
+                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="borrower-residence-county">County</Label>
                           {borrowerCountyOptions.length > 0 ? (
                             <Select
@@ -9101,7 +9101,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="borrower-residence-county">County</Label>
                               {borrowerCountyOptions.length > 0 ? (
                                 <Select
@@ -9315,7 +9315,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="borrower-residence-county-2">County</Label>
                               <Input
                                 id="borrower-residence-county-2"
@@ -9733,7 +9733,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2 md:col-span-2">
+                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="coBorrower-residence-county">County</Label>
                           {coBorrowerCountyOptions.length > 0 ? (
                             <Select
@@ -9917,7 +9917,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="coBorrower-prior-residence-county">County</Label>
                               <Input
                                 id="coBorrower-prior-residence-county"
@@ -10099,7 +10099,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="coBorrower-prior-residence-county-2">County</Label>
                               <Input
                                 id="coBorrower-prior-residence-county-2"
