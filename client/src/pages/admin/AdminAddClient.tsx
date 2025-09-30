@@ -21418,9 +21418,6 @@ export default function AdminAddClient() {
         <DialogContent className="max-w-lg" data-testid="dialog-rental-info">
           <DialogHeader>
             <DialogTitle>Rental Residence Information</DialogTitle>
-            <DialogDescription>
-              Enter rental property details and landlord contact information.
-            </DialogDescription>
           </DialogHeader>
           <div className="py-4 space-y-4">
             <div className="space-y-2">
@@ -21449,27 +21446,64 @@ export default function AdminAddClient() {
               <Input
                 id="rental-phone"
                 value={rentalInfoData.phone}
-                onChange={(e) => setRentalInfoData(prev => ({ ...prev, phone: e.target.value }))}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                  let formatted = '';
+                  if (value.length > 0) {
+                    formatted = value.substring(0, 3);
+                    if (value.length > 3) {
+                      formatted += '-' + value.substring(3, 6);
+                      if (value.length > 6) {
+                        formatted += '-' + value.substring(6, 10);
+                      }
+                    }
+                  }
+                  setRentalInfoData(prev => ({ ...prev, phone: formatted }));
+                }}
                 placeholder=""
+                maxLength={12}
                 data-testid="input-rental-phone"
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="rental-property-type">Property Type</Label>
-              <Input
-                id="rental-property-type"
-                value={rentalInfoData.propertyType}
-                onChange={(e) => setRentalInfoData(prev => ({ ...prev, propertyType: e.target.value }))}
-                placeholder=""
-                data-testid="input-rental-property-type"
-              />
+              <Select
+                value={rentalInfoData.propertyType || 'Select'}
+                onValueChange={(value) => setRentalInfoData(prev => ({ ...prev, propertyType: value }))}
+              >
+                <SelectTrigger data-testid="select-rental-property-type">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Select">Select</SelectItem>
+                  <SelectItem value="Apartment">Apartment</SelectItem>
+                  <SelectItem value="Townhouse">Townhouse</SelectItem>
+                  <SelectItem value="Condo">Condo</SelectItem>
+                  <SelectItem value="Single Family">Single Family</SelectItem>
+                  <SelectItem value="Duplex">Duplex</SelectItem>
+                  <SelectItem value="Multi-Family Unit">Multi-Family Unit</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="rental-monthly-rent">Monthly Rent Amount</Label>
               <Input
                 id="rental-monthly-rent"
                 value={rentalInfoData.monthlyRent}
-                onChange={(e) => setRentalInfoData(prev => ({ ...prev, monthlyRent: e.target.value }))}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^\d.]/g, ''); // Only allow digits and decimal
+                  setRentalInfoData(prev => ({ ...prev, monthlyRent: value }));
+                }}
+                onBlur={(e) => {
+                  const num = parseFloat(rentalInfoData.monthlyRent) || 0;
+                  const formatted = num > 0 ? `$${num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` : '';
+                  setRentalInfoData(prev => ({ ...prev, monthlyRent: formatted }));
+                }}
+                onFocus={(e) => {
+                  const raw = rentalInfoData.monthlyRent.replace(/[^\d.]/g, '');
+                  setRentalInfoData(prev => ({ ...prev, monthlyRent: raw }));
+                }}
                 placeholder=""
                 data-testid="input-rental-monthly-rent"
               />
