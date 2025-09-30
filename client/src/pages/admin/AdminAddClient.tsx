@@ -9486,256 +9486,283 @@ export default function AdminAddClient() {
                       </div>
                     </div>
 
-                    {/* Grey Background Box - Complete Address Row from Co-Borrower Residence */}
-                    <Card className={`bg-muted ${
-                      showIncomeCardAnimation['borrower-employment'] ? 'animate-roll-down-subject-property' : ''
-                    }`}>
-                      <CardContent className="pt-6">
-                        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                          <div className="space-y-2 md:col-span-3">
-                            <Label htmlFor="coBorrower-residence-street">Street Address *</Label>
-                            <Input
-                              id="coBorrower-residence-street"
-                              {...form.register('coBorrower.residenceAddress.street', {
-                                onChange: () => setTimeout(() => autoCopyCoBorrowerAddressToProperty(), 100)
-                              })}
-                              data-testid="input-coborrower-residence-street"
-                            />
-                            {form.formState.errors.coBorrower?.residenceAddress?.street && (
-                              <p className="text-sm text-destructive">{form.formState.errors.coBorrower.residenceAddress.street.message}</p>
-                            )}
-                          </div>
-                          
-                          <div className="space-y-2 md:col-span-1">
-                            <Label htmlFor="coBorrower-residence-unit">Unit/Apt</Label>
-                            <Input
-                              id="coBorrower-residence-unit"
-                              {...form.register('coBorrower.residenceAddress.unit', {
-                                onChange: () => setTimeout(() => autoCopyCoBorrowerAddressToProperty(), 100)
-                              })}
-                              data-testid="input-coborrower-residence-unit"
-                            />
-                          </div>
-                          
-                          <div className="space-y-2 md:col-span-2">
-                            <Label htmlFor="coBorrower-residence-city">City *</Label>
-                            <Input
-                              id="coBorrower-residence-city"
-                              {...form.register('coBorrower.residenceAddress.city', {
-                                onChange: () => setTimeout(() => autoCopyCoBorrowerAddressToProperty(), 100)
-                              })}
-                              data-testid="input-coborrower-residence-city"
-                            />
-                            {form.formState.errors.coBorrower?.residenceAddress?.city && (
-                              <p className="text-sm text-destructive">{form.formState.errors.coBorrower.residenceAddress.city.message}</p>
-                            )}
-                          </div>
-                          
-                          <div className="space-y-2 md:col-span-1">
-                            <Label htmlFor="coBorrower-residence-state">State *</Label>
+                  {/* Extra spacing row */}
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                  </div>
+
+                  {/* Row 3 */}
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-10">
+                    <div className="space-y-2">
+                      <Label htmlFor="coBorrower-firstName" className="text-xl">Current Residence</Label>
+                    </div>
+                    <div className="flex items-center gap-4 ml-1">
+                      <button
+                        type="button"
+                        onClick={() => form.setValue('coBorrower.currentResidenceType', 'owned')}
+                        className="flex items-center gap-1.5 group"
+                        data-testid="button-current-residence-owned-coborrower"
+                      >
+                        <div className={`w-3 h-3 rounded-full transition-colors ${
+                          form.watch('coBorrower.currentResidenceType') === 'owned' 
+                            ? 'bg-purple-500' 
+                            : 'border border-gray-400 bg-white hover:border-purple-400'
+                        }`}>
+                        </div>
+                        <span className="text-sm font-medium">Owned</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => form.setValue('coBorrower.currentResidenceType', 'rental')}
+                        className="flex items-center gap-1.5 group"
+                        data-testid="button-current-residence-rental-coborrower"
+                      >
+                        <div className={`w-3 h-3 rounded-full transition-colors ${
+                          form.watch('coBorrower.currentResidenceType') === 'rental' 
+                            ? 'bg-purple-500' 
+                            : 'border border-gray-400 bg-white hover:border-purple-400'
+                        }`}>
+                        </div>
+                        <span className="text-sm font-medium">Rental</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Grey Background Box - Complete Address Row from Co-Borrower Residence */}
+                  <Card className={`bg-muted mt-8 ${
+                    showIncomeCardAnimation['borrower-employment'] ? 'animate-roll-down-subject-property' : ''
+                  }`}>
+                    <CardContent className="pt-6">
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                        <div className="space-y-2 md:col-span-3">
+                          <Label htmlFor="coBorrower-residence-street">Street Address</Label>
+                          <Input
+                            id="coBorrower-residence-street"
+                            {...form.register('coBorrower.residenceAddress.street', {
+                              onChange: () => setTimeout(() => autoCopyCoBorrowerAddressToProperty(), 100)
+                            })}
+                            data-testid="input-coborrower-residence-street"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2 md:col-span-1">
+                          <Label htmlFor="coBorrower-residence-unit">Unit/Apt</Label>
+                          <Input
+                            id="coBorrower-residence-unit"
+                            {...form.register('coBorrower.residenceAddress.unit', {
+                              onChange: () => setTimeout(() => autoCopyCoBorrowerAddressToProperty(), 100)
+                            })}
+                            data-testid="input-coborrower-residence-unit"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2 md:col-span-2">
+                          <Label htmlFor="coBorrower-residence-city">City</Label>
+                          <Input
+                            id="coBorrower-residence-city"
+                            {...form.register('coBorrower.residenceAddress.city', {
+                              onChange: () => setTimeout(() => autoCopyCoBorrowerAddressToProperty(), 100)
+                            })}
+                            data-testid="input-coborrower-residence-city"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2 md:col-span-1">
+                          <Label htmlFor="coBorrower-residence-state">State</Label>
+                          <Select
+                            value={form.watch('coBorrower.residenceAddress.state') || ''}
+                            onValueChange={(value) => {
+                              form.setValue('coBorrower.residenceAddress.state', value);
+                              setTimeout(() => autoCopyCoBorrowerAddressToProperty(), 100);
+                            }}
+                          >
+                            <SelectTrigger data-testid="select-coborrower-residence-state">
+                              <SelectValue placeholder="State" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {US_STATES.map((state) => (
+                                <SelectItem key={state.value} value={state.value}>
+                                  {state.value}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div className="space-y-2 md:col-span-1">
+                          <Label htmlFor="coBorrower-residence-zip">ZIP Code</Label>
+                          <Input
+                            id="coBorrower-residence-zip"
+                            {...form.register('coBorrower.residenceAddress.zip', {
+                              onChange: () => setTimeout(() => autoCopyCoBorrowerAddressToProperty(), 100)
+                            })}
+                            onBlur={(e) => handleCoBorrowerZipCodeLookup(e.target.value)}
+                            data-testid="input-coborrower-residence-zip"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2 md:col-span-2">
+                          <Label htmlFor="coBorrower-residence-county">County</Label>
+                          {coBorrowerCountyOptions.length > 0 ? (
                             <Select
-                              value={form.watch('coBorrower.residenceAddress.state') || ''}
+                              value={form.watch('coBorrower.residenceAddress.county') || ''}
                               onValueChange={(value) => {
-                                form.setValue('coBorrower.residenceAddress.state', value);
-                                setTimeout(() => autoCopyCoBorrowerAddressToProperty(), 100);
+                                if (value === 'manual-entry') {
+                                  form.setValue('coBorrower.residenceAddress.county', '');
+                                  setCoBorrowerCountyOptions([]);
+                                } else {
+                                  // Find the selected county to get its label for display
+                                  const selectedCounty = coBorrowerCountyOptions.find(county => county.value === value);
+                                  form.setValue('coBorrower.residenceAddress.county', selectedCounty?.label || value, { shouldDirty: true });
+                                }
                               }}
                             >
-                              <SelectTrigger data-testid="select-coborrower-residence-state">
-                                <SelectValue placeholder="State" />
+                              <SelectTrigger data-testid="select-coborrower-residence-county">
+                                <SelectValue placeholder={countyLookupLoading.coBorrower ? "Looking up counties..." : "Select county"} />
                               </SelectTrigger>
                               <SelectContent>
-                                {US_STATES.map((state) => (
-                                  <SelectItem key={state.value} value={state.value}>
-                                    {state.value}
+                                {coBorrowerCountyOptions.map((county) => (
+                                  <SelectItem key={county.value} value={county.value}>
+                                    {county.label}
                                   </SelectItem>
                                 ))}
+                                <SelectItem value="manual-entry" className="text-muted-foreground border-t">
+                                  Enter county manually
+                                </SelectItem>
                               </SelectContent>
                             </Select>
-                            {form.formState.errors.coBorrower?.residenceAddress?.state && (
-                              <p className="text-sm text-destructive">{form.formState.errors.coBorrower.residenceAddress.state.message}</p>
-                            )}
-                          </div>
-                          
-                          <div className="space-y-2 md:col-span-1">
-                            <Label htmlFor="coBorrower-residence-zip">ZIP Code *</Label>
+                          ) : (
                             <Input
-                              id="coBorrower-residence-zip"
-                              {...form.register('coBorrower.residenceAddress.zip', {
-                                onChange: () => setTimeout(() => autoCopyCoBorrowerAddressToProperty(), 100)
-                              })}
-                              onBlur={(e) => handleCoBorrowerZipCodeLookup(e.target.value)}
-                              data-testid="input-coborrower-residence-zip"
+                              id="coBorrower-residence-county"
+                              {...form.register('coBorrower.residenceAddress.county')}
+                              placeholder={countyLookupLoading.coBorrower ? "Looking up counties..." : ""}
+                              disabled={countyLookupLoading.coBorrower}
+                              data-testid="input-coborrower-residence-county"
                             />
-                            {form.formState.errors.coBorrower?.residenceAddress?.zip && (
-                              <p className="text-sm text-destructive">{form.formState.errors.coBorrower.residenceAddress.zip.message}</p>
-                            )}
-                          </div>
-                          
-                          <div className="space-y-2 md:col-span-2">
-                            <Label htmlFor="coBorrower-residence-county">County</Label>
-                            {coBorrowerCountyOptions.length > 0 ? (
-                              <Select
-                                value={form.watch('coBorrower.residenceAddress.county') || ''}
-                                onValueChange={(value) => {
-                                  if (value === 'manual-entry') {
-                                    form.setValue('coBorrower.residenceAddress.county', '');
-                                    setCoBorrowerCountyOptions([]);
-                                  } else {
-                                    // Find the selected county to get its label for display
-                                    const selectedCounty = coBorrowerCountyOptions.find(county => county.value === value);
-                                    form.setValue('coBorrower.residenceAddress.county', selectedCounty?.label || value, { shouldDirty: true });
-                                  }
-                                }}
-                              >
-                                <SelectTrigger data-testid="select-coborrower-residence-county">
-                                  <SelectValue placeholder={countyLookupLoading.coBorrower ? "Looking up counties..." : "Select county"} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {coBorrowerCountyOptions.map((county) => (
-                                    <SelectItem key={county.value} value={county.value}>
-                                      {county.label}
-                                    </SelectItem>
-                                  ))}
-                                  <SelectItem value="manual-entry" className="text-muted-foreground border-t">
-                                    Enter county manually
-                                  </SelectItem>
-                                </SelectContent>
-                              </Select>
-                            ) : (
-                              <Input
-                                id="coBorrower-residence-county"
-                                {...form.register('coBorrower.residenceAddress.county')}
-                                placeholder={countyLookupLoading.coBorrower ? "Looking up counties..." : ""}
-                                disabled={countyLookupLoading.coBorrower}
-                                data-testid="input-coborrower-residence-county"
-                              />
-                            )}
-                          </div>
-                          
-                          <div className="space-y-2 md:col-span-2">
-                            <div className="flex items-center justify-between mb-2">
-                              <Label htmlFor="coBorrower-time-address" className="text-sm">
-                                {isShowingCoBorrowerMonthsAtAddress ? 'Months at this Address' : 'Years at this Address'}
-                              </Label>
-                              <Switch
-                                checked={isShowingCoBorrowerMonthsAtAddress}
-                                onCheckedChange={setIsShowingCoBorrowerMonthsAtAddress}
-                                data-testid="toggle-coborrower-time-address"
-                                className="scale-[0.8]"
-                              />
-                            </div>
-                            <Input
-                              id="coBorrower-time-address"
-                              type="number"
-                              min="0"
-                              max={isShowingCoBorrowerMonthsAtAddress ? 11 : 99}
-                              placeholder={isShowingCoBorrowerMonthsAtAddress ? "Enter months" : "Enter years"}
-                              {...form.register(isShowingCoBorrowerMonthsAtAddress ? 'coBorrower.monthsAtAddress' : 'coBorrower.yearsAtAddress')}
-                              data-testid="input-coborrower-time-address"
-                            />
-                          </div>
+                          )}
                         </div>
-                      </CardContent>
-                    </Card>
-                  </CardContent>
-                  </CollapsibleContent>
-                  </Collapsible>
-                </Card>
+                        
+                        <div className="space-y-2 md:col-span-2">
+                          <Label htmlFor="coBorrower-time-address" className="text-sm">
+                            Years / Months
+                          </Label>
+                          <Input
+                            id="coBorrower-time-address"
+                            type="number"
+                            min="0"
+                            max={isShowingCoBorrowerMonthsAtAddress ? 11 : 99}
+                            placeholder={isShowingCoBorrowerMonthsAtAddress ? "Enter months" : "Enter years"}
+                            {...form.register(isShowingCoBorrowerMonthsAtAddress ? 'coBorrower.monthsAtAddress' : 'coBorrower.yearsAtAddress')}
+                            data-testid="input-coborrower-time-address"
+                          />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
 
-                {/* Prior Co-Borrower Residence Address - Show if less than 2 years at current address */}
-                {(() => {
-                  // Make sure co-borrower object exists before checking time values
-                  const coBorrower = form.watch('coBorrower');
-                  if (!coBorrower) {
-                    return false; // No co-borrower object, hide card
-                  }
-                  
-                  const yearsValue = coBorrower.yearsAtAddress;
-                  const monthsValue = coBorrower.monthsAtAddress;
-                  
-                  // Check if any time value has been entered (handle numeric zero properly)
-                  const hasYears = yearsValue !== undefined && yearsValue !== null && String(yearsValue).trim() !== '';
-                  const hasMonths = monthsValue !== undefined && monthsValue !== null && String(monthsValue).trim() !== '';
-                  
-                  if (!hasYears && !hasMonths) {
-                    return false; // No time values entered, hide card
-                  }
-                  
-                  // Calculate total months at current address
-                  const years = hasYears ? parseInt(String(yearsValue)) : 0;
-                  const months = hasMonths ? parseInt(String(monthsValue)) : 0;
-                  const totalMonths = (isNaN(years) ? 0 : years) * 12 + (isNaN(months) ? 0 : months);
-                  
-                  return totalMonths < 24; // Show if less than 2 years (24 months) total
-                })() && (
-                  <>
-                    <Card>
-                      <Collapsible open={isCoBorrowerPriorResidenceOpen} onOpenChange={setIsCoBorrowerPriorResidenceOpen}>
-                        <CardHeader>
-                          <div className="flex items-center justify-between">
-                            <CardTitle>Co-Borrower - Prior Residence</CardTitle>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <CollapsibleTrigger asChild>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="hover:bg-orange-500 hover:text-black"
-                                    data-testid="button-toggle-coborrower-prior-residence"
-                                  >
-                                    {isCoBorrowerPriorResidenceOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                                  </Button>
-                                </CollapsibleTrigger>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>{isCoBorrowerPriorResidenceOpen ? 'Minimize' : 'Expand'}</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </div>
-                        </CardHeader>
-                        <CollapsibleContent>
-                          <CardContent className="space-y-4">
+                  {/* Prior Residence - Show if less than 2 years at current address */}
+                  {(() => {
+                    const yearsValue = form.watch('coBorrower.yearsAtAddress');
+                    const monthsValue = form.watch('coBorrower.monthsAtAddress');
+                    
+                    // Check if any time value has been entered
+                    const hasYears = yearsValue && String(yearsValue).trim() !== '';
+                    const hasMonths = monthsValue && String(monthsValue).trim() !== '';
+                    
+                    if (!hasYears && !hasMonths) {
+                      return false; // No time values entered, hide section
+                    }
+                    
+                    // Calculate total months at current address
+                    const years = hasYears ? parseInt(String(yearsValue)) : 0;
+                    const months = hasMonths ? parseInt(String(monthsValue)) : 0;
+                    const totalMonths = (isNaN(years) ? 0 : years) * 12 + (isNaN(months) ? 0 : months);
+                    
+                    return totalMonths < 24; // Show if less than 2 years (24 months) total
+                  })() && (
+                    <>
+                      {/* Extra spacing row */}
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                      </div>
+
+                      {/* Row for Prior Residence Title */}
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-10">
+                        <div className="space-y-2">
+                          <Label htmlFor="coBorrower-prior-residence" className="text-xl">Prior Residence</Label>
+                        </div>
+                        <div className="flex items-center gap-4 ml-1">
+                          <button
+                            type="button"
+                            onClick={() => form.setValue('coBorrower.priorResidenceType', 'owned')}
+                            className="flex items-center gap-1.5 group"
+                            data-testid="button-prior-residence-owned-coborrower"
+                          >
+                            <div className={`w-3 h-3 rounded-full transition-colors ${
+                              form.watch('coBorrower.priorResidenceType') === 'owned' 
+                                ? 'bg-purple-500' 
+                                : 'border border-gray-400 bg-white hover:border-purple-400'
+                            }`}>
+                            </div>
+                            <span className="text-sm font-medium">Owned</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => form.setValue('coBorrower.priorResidenceType', 'rental')}
+                            className="flex items-center gap-1.5 group"
+                            data-testid="button-prior-residence-rental-coborrower"
+                          >
+                            <div className={`w-3 h-3 rounded-full transition-colors ${
+                              form.watch('coBorrower.priorResidenceType') === 'rental' 
+                                ? 'bg-purple-500' 
+                                : 'border border-gray-400 bg-white hover:border-purple-400'
+                            }`}>
+                            </div>
+                            <span className="text-sm font-medium">Rental</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Grey Background Box - Prior Residence */}
+                      <Card className={`bg-muted mt-8 ${
+                        showIncomeCardAnimation['borrower-employment'] ? 'animate-roll-down-subject-property' : ''
+                      }`}>
+                        <CardContent className="pt-6">
                           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                             <div className="space-y-2 md:col-span-3">
-                              <Label htmlFor="coBorrower-prior-street">Street Address *</Label>
+                              <Label htmlFor="coBorrower-prior-residence-street">Street Address</Label>
                               <Input
-                                id="coBorrower-prior-street"
+                                id="coBorrower-prior-residence-street"
                                 {...form.register('coBorrower.priorResidenceAddress.street')}
-                                data-testid="input-coborrower-prior-street"
+                                data-testid="input-coborrower-prior-residence-street"
                               />
-                              {form.formState.errors.coBorrower?.priorResidenceAddress?.street && (
-                                <p className="text-sm text-destructive">{form.formState.errors.coBorrower.priorResidenceAddress.street.message}</p>
-                              )}
                             </div>
                             
                             <div className="space-y-2 md:col-span-1">
-                              <Label htmlFor="coBorrower-prior-unit">Unit/Apt</Label>
+                              <Label htmlFor="coBorrower-prior-residence-unit">Unit/Apt</Label>
                               <Input
-                                id="coBorrower-prior-unit"
+                                id="coBorrower-prior-residence-unit"
                                 {...form.register('coBorrower.priorResidenceAddress.unit')}
-                                data-testid="input-coborrower-prior-unit"
+                                data-testid="input-coborrower-prior-residence-unit"
                               />
                             </div>
                             
                             <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="coBorrower-prior-city">City *</Label>
+                              <Label htmlFor="coBorrower-prior-residence-city">City</Label>
                               <Input
-                                id="coBorrower-prior-city"
+                                id="coBorrower-prior-residence-city"
                                 {...form.register('coBorrower.priorResidenceAddress.city')}
-                                data-testid="input-coborrower-prior-city"
+                                data-testid="input-coborrower-prior-residence-city"
                               />
-                              {form.formState.errors.coBorrower?.priorResidenceAddress?.city && (
-                                <p className="text-sm text-destructive">{form.formState.errors.coBorrower.priorResidenceAddress.city.message}</p>
-                              )}
                             </div>
                             
                             <div className="space-y-2 md:col-span-1">
-                              <Label htmlFor="coBorrower-prior-state">State *</Label>
+                              <Label htmlFor="coBorrower-prior-residence-state">State</Label>
                               <Select
                                 value={form.watch('coBorrower.priorResidenceAddress.state') || ''}
-                                onValueChange={(value) => form.setValue('coBorrower.priorResidenceAddress.state', value, { shouldDirty: true })}
+                                onValueChange={(value) => {
+                                  form.setValue('coBorrower.priorResidenceAddress.state', value);
+                                }}
                               >
-                                <SelectTrigger data-testid="select-coborrower-prior-state">
+                                <SelectTrigger data-testid="select-coborrower-prior-residence-state">
                                   <SelectValue placeholder="State" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -9746,216 +9773,225 @@ export default function AdminAddClient() {
                                   ))}
                                 </SelectContent>
                               </Select>
-                              {form.formState.errors.coBorrower?.priorResidenceAddress?.state && (
-                                <p className="text-sm text-destructive">{form.formState.errors.coBorrower.priorResidenceAddress.state.message}</p>
-                              )}
                             </div>
                             
                             <div className="space-y-2 md:col-span-1">
-                              <Label htmlFor="coBorrower-prior-zip">ZIP Code *</Label>
+                              <Label htmlFor="coBorrower-prior-residence-zip">ZIP Code</Label>
                               <Input
-                                id="coBorrower-prior-zip"
+                                id="coBorrower-prior-residence-zip"
                                 {...form.register('coBorrower.priorResidenceAddress.zip')}
-                                onBlur={(e) => handleCoBorrowerPriorZipCodeLookup(e.target.value)}
-                                data-testid="input-coborrower-prior-zip"
+                                data-testid="input-coborrower-prior-residence-zip"
                               />
-                              {form.formState.errors.coBorrower?.priorResidenceAddress?.zip && (
-                                <p className="text-sm text-destructive">{form.formState.errors.coBorrower.priorResidenceAddress.zip.message}</p>
-                              )}
                             </div>
                             
                             <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="coBorrower-prior-county">County</Label>
-                              {coBorrowerPriorCountyOptions.length > 0 ? (
-                                <Select
-                                  value={form.watch('coBorrower.priorResidenceAddress.county') || ''}
-                                  onValueChange={(value) => {
-                                    if (value === 'manual-entry') {
-                                      form.setValue('coBorrower.priorResidenceAddress.county', '');
-                                      setCoBorrowerPriorCountyOptions([]);
-                                    } else {
-                                      // Find the selected county to get its label for display
-                                      const selectedCounty = coBorrowerPriorCountyOptions.find(county => county.value === value);
-                                      form.setValue('coBorrower.priorResidenceAddress.county', selectedCounty?.label || value, { shouldDirty: true });
-                                    }
-                                  }}
-                                >
-                                  <SelectTrigger data-testid="select-coborrower-prior-county">
-                                    <SelectValue placeholder={countyLookupLoading.coBorrowerPrior ? "Looking up counties..." : "Select county"} />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {coBorrowerPriorCountyOptions.map((county) => (
-                                      <SelectItem key={county.value} value={county.value}>
-                                        {county.label}
-                                      </SelectItem>
-                                    ))}
-                                    <SelectItem value="manual-entry" className="text-muted-foreground border-t">
-                                      Enter county manually
-                                    </SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              ) : (
-                                <Input
-                                  id="coBorrower-prior-county"
-                                  {...form.register('coBorrower.priorResidenceAddress.county')}
-                                  placeholder={countyLookupLoading.coBorrowerPrior ? "Looking up counties..." : ""}
-                                  disabled={countyLookupLoading.coBorrowerPrior}
-                                  data-testid="input-coborrower-prior-county"
-                                />
-                              )}
+                              <Label htmlFor="coBorrower-prior-residence-county">County</Label>
+                              <Input
+                                id="coBorrower-prior-residence-county"
+                                {...form.register('coBorrower.priorResidenceAddress.county')}
+                                data-testid="input-coborrower-prior-residence-county"
+                              />
                             </div>
                             
                             <div className="space-y-2 md:col-span-2">
-                              <div className="flex items-center justify-between mb-2">
-                                <Label htmlFor="coBorrower-prior-time-address" className="text-sm">
-                                  {isShowingCoBorrowerMonthsAtPriorAddress ? 'Months at this Address' : 'Years at this Address'}
-                                </Label>
-                                <Switch
-                                  checked={isShowingCoBorrowerMonthsAtPriorAddress}
-                                  onCheckedChange={setIsShowingCoBorrowerMonthsAtPriorAddress}
-                                  data-testid="toggle-coborrower-prior-time-address"
-                                  className="scale-[0.8]"
-                                />
-                              </div>
+                              <Label htmlFor="coBorrower-prior-time-address" className="text-sm">
+                                Years / Months
+                              </Label>
                               <Input
                                 id="coBorrower-prior-time-address"
                                 type="number"
                                 min="0"
                                 max={isShowingCoBorrowerMonthsAtPriorAddress ? 11 : 99}
-                                placeholder="0"
+                                placeholder={isShowingCoBorrowerMonthsAtPriorAddress ? "Enter months" : "Enter years"}
                                 {...form.register(isShowingCoBorrowerMonthsAtPriorAddress ? 'coBorrower.priorMonthsAtAddress' : 'coBorrower.priorYearsAtAddress')}
                                 data-testid="input-coborrower-prior-time-address"
                               />
                             </div>
                           </div>
-                          
-                          {/* Error handling for time at address field */}
-                          {form.formState.errors.coBorrower?.priorYearsAtAddress && !isShowingCoBorrowerMonthsAtPriorAddress && (
-                            <p className="text-sm text-destructive">{form.formState.errors.coBorrower.priorYearsAtAddress.message}</p>
-                          )}
-                          {form.formState.errors.coBorrower?.priorMonthsAtAddress && isShowingCoBorrowerMonthsAtPriorAddress && (
-                            <p className="text-sm text-destructive">{form.formState.errors.coBorrower.priorMonthsAtAddress.message}</p>
-                          )}
-                          
-                          <div className="md:col-span-2 lg:col-span-3 flex justify-end mt-4">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={addCoBorrowerPriorAddress}
-                              className="hover:bg-blue-500 hover:text-white"
-                              data-testid="button-add-coborrower-prior-address"
-                            >
-                              <Plus className="h-4 w-4 mr-2" />
-                              Add Prior Address
-                            </Button>
-                          </div>
-                          </CardContent>
-                        </CollapsibleContent>
-                      </Collapsible>
-                    </Card>
+                        </CardContent>
+                      </Card>
+                    </>
+                  )}
 
-                  {/* Additional Co-Borrower Prior Addresses */}
-                  {coBorrowerPriorAddresses.map((address, index) => (
-                    <Card key={address.id}>
-                      <CardHeader className="flex flex-row items-center justify-between">
-                        <CardTitle>Co-Borrower - Prior Residence {index + 2}</CardTitle>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => removeCoBorrowerPriorAddress(address.id)}
-                          className="hover:bg-orange-500 hover:text-white"
-                          data-testid={`button-remove-coborrower-prior-address-${address.id}`}
-                        >
-                          <Minus className="h-4 w-4 mr-2" />
-                          Remove
-                        </Button>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                          <div className="space-y-2 md:col-span-3">
-                            <Label htmlFor={`coBorrower-prior-street-${address.id}`}>Street Address *</Label>
-                            <Input
-                              id={`coBorrower-prior-street-${address.id}`}
-                              placeholder="Street Address"
-                              data-testid={`input-coborrower-prior-street-${address.id}`}
-                            />
-                          </div>
-                          
-                          <div className="space-y-2 md:col-span-1">
-                            <Label htmlFor={`coBorrower-prior-unit-${address.id}`}>Unit/Apt</Label>
-                            <Input
-                              id={`coBorrower-prior-unit-${address.id}`}
-                              placeholder="Unit/Apt"
-                              data-testid={`input-coborrower-prior-unit-${address.id}`}
-                            />
-                          </div>
-                          
-                          <div className="space-y-2 md:col-span-2">
-                            <Label htmlFor={`coBorrower-prior-city-${address.id}`}>City *</Label>
-                            <Input
-                              id={`coBorrower-prior-city-${address.id}`}
-                              placeholder="City"
-                              data-testid={`input-coborrower-prior-city-${address.id}`}
-                            />
-                          </div>
-                          
-                          <div className="space-y-2 md:col-span-1">
-                            <Label htmlFor={`coBorrower-prior-state-${address.id}`}>State *</Label>
-                            <Select defaultValue="">
-                              <SelectTrigger data-testid={`select-coborrower-prior-state-${address.id}`}>
-                                <SelectValue placeholder="State" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {US_STATES.map((state) => (
-                                  <SelectItem key={state.value} value={state.value}>
-                                    {state.value}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          
-                          <div className="space-y-2 md:col-span-1">
-                            <Label htmlFor={`coBorrower-prior-zip-${address.id}`}>ZIP Code *</Label>
-                            <Input
-                              id={`coBorrower-prior-zip-${address.id}`}
-                              placeholder="ZIP Code"
-                              data-testid={`input-coborrower-prior-zip-${address.id}`}
-                            />
-                          </div>
-                          
-                          <div className="space-y-2 md:col-span-2">
-                            <Label htmlFor={`coBorrower-prior-county-${address.id}`}>County</Label>
-                            <Input
-                              id={`coBorrower-prior-county-${address.id}`}
-                              placeholder=""
-                              data-testid={`input-coborrower-prior-county-${address.id}`}
-                            />
-                          </div>
-                          
-                          <div className="space-y-2 md:col-span-2">
-                            <div className="flex items-center justify-between mb-2">
-                              <Label htmlFor={`coBorrower-prior-time-address-${address.id}`} className="text-sm">
-                                Years at this Address
-                              </Label>
-                            </div>
-                            <Input
-                              id={`coBorrower-prior-time-address-${address.id}`}
-                              type="number"
-                              min="0"
-                              max="99"
-                              placeholder="0"
-                              data-testid={`input-coborrower-prior-time-address-${address.id}`}
-                            />
-                          </div>
+                  {/* Second Prior Residence - Show if combined current + first prior is less than 2 years */}
+                  {(() => {
+                    const currentYearsValue = form.watch('coBorrower.yearsAtAddress');
+                    const currentMonthsValue = form.watch('coBorrower.monthsAtAddress');
+                    const priorYearsValue = form.watch('coBorrower.priorYearsAtAddress');
+                    const priorMonthsValue = form.watch('coBorrower.priorMonthsAtAddress');
+                    
+                    // Check if any time value has been entered in current residence
+                    const hasCurrentYears = currentYearsValue && String(currentYearsValue).trim() !== '';
+                    const hasCurrentMonths = currentMonthsValue && String(currentMonthsValue).trim() !== '';
+                    
+                    if (!hasCurrentYears && !hasCurrentMonths) {
+                      return false; // No time values entered in current, hide section
+                    }
+                    
+                    // Calculate total months from current address (use parseFloat to handle decimals)
+                    let currentTotalMonths = 0;
+                    if (hasCurrentYears) {
+                      const currentYears = parseFloat(String(currentYearsValue));
+                      currentTotalMonths = (isNaN(currentYears) ? 0 : currentYears) * 12;
+                    } else if (hasCurrentMonths) {
+                      const currentMonths = parseFloat(String(currentMonthsValue));
+                      currentTotalMonths = isNaN(currentMonths) ? 0 : currentMonths;
+                    }
+                    
+                    // Calculate total months from first prior address (use parseFloat to handle decimals)
+                    let priorTotalMonths = 0;
+                    const hasPriorYears = priorYearsValue && String(priorYearsValue).trim() !== '';
+                    const hasPriorMonths = priorMonthsValue && String(priorMonthsValue).trim() !== '';
+                    if (hasPriorYears) {
+                      const priorYears = parseFloat(String(priorYearsValue));
+                      priorTotalMonths = (isNaN(priorYears) ? 0 : priorYears) * 12;
+                    } else if (hasPriorMonths) {
+                      const priorMonths = parseFloat(String(priorMonthsValue));
+                      priorTotalMonths = isNaN(priorMonths) ? 0 : priorMonths;
+                    }
+                    
+                    // Combined total
+                    const combinedTotalMonths = currentTotalMonths + priorTotalMonths;
+                    
+                    return combinedTotalMonths < 24; // Show if combined is less than 2 years (24 months) total
+                  })() && (
+                    <>
+                      {/* Extra spacing row */}
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                      </div>
+
+                      {/* Row for Second Prior Residence Title */}
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-10">
+                        <div className="space-y-2">
+                          <Label htmlFor="coBorrower-prior-residence-2" className="text-xl">Prior Residence</Label>
                         </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                  </>
-                )}
+                        <div className="flex items-center gap-4 ml-1">
+                          <button
+                            type="button"
+                            onClick={() => form.setValue('coBorrower.priorResidenceType2', 'owned')}
+                            className="flex items-center gap-1.5 group"
+                            data-testid="button-prior-residence-2-owned-coborrower"
+                          >
+                            <div className={`w-3 h-3 rounded-full transition-colors ${
+                              form.watch('coBorrower.priorResidenceType2') === 'owned' 
+                                ? 'bg-purple-500' 
+                                : 'border border-gray-400 bg-white hover:border-purple-400'
+                            }`}>
+                            </div>
+                            <span className="text-sm font-medium">Owned</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => form.setValue('coBorrower.priorResidenceType2', 'rental')}
+                            className="flex items-center gap-1.5 group"
+                            data-testid="button-prior-residence-2-rental-coborrower"
+                          >
+                            <div className={`w-3 h-3 rounded-full transition-colors ${
+                              form.watch('coBorrower.priorResidenceType2') === 'rental' 
+                                ? 'bg-purple-500' 
+                                : 'border border-gray-400 bg-white hover:border-purple-400'
+                            }`}>
+                            </div>
+                            <span className="text-sm font-medium">Rental</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Grey Background Box - Second Prior Residence */}
+                      <Card className={`bg-muted mt-8 ${
+                        showIncomeCardAnimation['borrower-employment'] ? 'animate-roll-down-subject-property' : ''
+                      }`}>
+                        <CardContent className="pt-6">
+                          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                            <div className="space-y-2 md:col-span-3">
+                              <Label htmlFor="coBorrower-prior-residence-street-2">Street Address</Label>
+                              <Input
+                                id="coBorrower-prior-residence-street-2"
+                                {...form.register('coBorrower.priorResidenceAddress2.street')}
+                                data-testid="input-coborrower-prior-residence-street-2"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="coBorrower-prior-residence-unit-2">Unit/Apt</Label>
+                              <Input
+                                id="coBorrower-prior-residence-unit-2"
+                                {...form.register('coBorrower.priorResidenceAddress2.unit')}
+                                data-testid="input-coborrower-prior-residence-unit-2"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="coBorrower-prior-residence-city-2">City</Label>
+                              <Input
+                                id="coBorrower-prior-residence-city-2"
+                                {...form.register('coBorrower.priorResidenceAddress2.city')}
+                                data-testid="input-coborrower-prior-residence-city-2"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="coBorrower-prior-residence-state-2">State</Label>
+                              <Select
+                                value={form.watch('coBorrower.priorResidenceAddress2.state') || ''}
+                                onValueChange={(value) => {
+                                  form.setValue('coBorrower.priorResidenceAddress2.state', value);
+                                }}
+                              >
+                                <SelectTrigger data-testid="select-coborrower-prior-residence-state-2">
+                                  <SelectValue placeholder="State" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {US_STATES.map((state) => (
+                                    <SelectItem key={state.value} value={state.value}>
+                                      {state.value}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="coBorrower-prior-residence-zip-2">ZIP Code</Label>
+                              <Input
+                                id="coBorrower-prior-residence-zip-2"
+                                {...form.register('coBorrower.priorResidenceAddress2.zip')}
+                                data-testid="input-coborrower-prior-residence-zip-2"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="coBorrower-prior-residence-county-2">County</Label>
+                              <Input
+                                id="coBorrower-prior-residence-county-2"
+                                {...form.register('coBorrower.priorResidenceAddress2.county')}
+                                data-testid="input-coborrower-prior-residence-county-2"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="coBorrower-prior-time-address-2" className="text-sm">
+                                Years / Months
+                              </Label>
+                              <Input
+                                id="coBorrower-prior-time-address-2"
+                                type="number"
+                                min="0"
+                                placeholder="Enter years or months"
+                                {...form.register('coBorrower.priorYearsAtAddress2')}
+                                data-testid="input-coborrower-prior-time-address-2"
+                              />
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </>
+                  )}
+                  </CardContent>
+                  </CollapsibleContent>
+                  </Collapsible>
+                </Card>
+
                 </>
               )}
             </TabsContent>
