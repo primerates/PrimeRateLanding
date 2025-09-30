@@ -9427,7 +9427,7 @@ export default function AdminAddClient() {
                                   form.setValue('borrower.priorResidenceAddress.from', value);
                                 }}
                                 data-testid="input-borrower-prior-residence-from"
-                                className="placeholder:text-[10px]"
+                                className="!text-[13px] placeholder:text-[10px]"
                               />
                             </div>
                             
@@ -9466,7 +9466,7 @@ export default function AdminAddClient() {
                                   form.setValue('borrower.priorResidenceAddress.to', value);
                                 }}
                                 data-testid="input-borrower-prior-residence-to"
-                                className="placeholder:text-[10px]"
+                                className="!text-[13px] placeholder:text-[10px]"
                               />
                             </div>
                             
@@ -9676,7 +9676,7 @@ export default function AdminAddClient() {
                                   form.setValue('borrower.priorResidenceAddress2.from', value);
                                 }}
                                 data-testid="input-borrower-prior-residence-from-2"
-                                className="placeholder:text-[10px]"
+                                className="!text-[13px] placeholder:text-[10px]"
                               />
                             </div>
                             
@@ -9712,7 +9712,7 @@ export default function AdminAddClient() {
                                   form.setValue('borrower.priorResidenceAddress2.to', value);
                                 }}
                                 data-testid="input-borrower-prior-residence-to-2"
-                                className="placeholder:text-[10px]"
+                                className="!text-[13px] placeholder:text-[10px]"
                               />
                             </div>
                             
@@ -10194,7 +10194,7 @@ export default function AdminAddClient() {
                               form.setValue('coBorrower.residenceAddress.from', value);
                             }}
                             data-testid="input-coborrower-residence-from"
-                            className="placeholder:text-[10px]"
+                            className="!text-[13px] placeholder:text-[10px]"
                           />
                         </div>
                         
@@ -10233,7 +10233,7 @@ export default function AdminAddClient() {
                               form.setValue('coBorrower.residenceAddress.to', value);
                             }}
                             data-testid="input-coborrower-residence-to"
-                            className="placeholder:text-[10px]"
+                            className="!text-[13px] placeholder:text-[10px]"
                           />
                         </div>
                         
@@ -10413,7 +10413,7 @@ export default function AdminAddClient() {
                                   form.setValue('coBorrower.priorResidenceAddress.from', value);
                                 }}
                                 data-testid="input-coborrower-prior-residence-from"
-                                className="placeholder:text-[10px]"
+                                className="!text-[13px] placeholder:text-[10px]"
                               />
                             </div>
                             
@@ -10449,7 +10449,7 @@ export default function AdminAddClient() {
                                   form.setValue('coBorrower.priorResidenceAddress.to', value);
                                 }}
                                 data-testid="input-coborrower-prior-residence-to"
-                                className="placeholder:text-[10px]"
+                                className="!text-[13px] placeholder:text-[10px]"
                               />
                             </div>
                             
@@ -10659,7 +10659,7 @@ export default function AdminAddClient() {
                                   form.setValue('coBorrower.priorResidenceAddress2.from', value);
                                 }}
                                 data-testid="input-coborrower-prior-residence-from-2"
-                                className="placeholder:text-[10px]"
+                                className="!text-[13px] placeholder:text-[10px]"
                               />
                             </div>
                             
@@ -10695,7 +10695,7 @@ export default function AdminAddClient() {
                                   form.setValue('coBorrower.priorResidenceAddress2.to', value);
                                 }}
                                 data-testid="input-coborrower-prior-residence-to-2"
-                                className="placeholder:text-[10px]"
+                                className="!text-[13px] placeholder:text-[10px]"
                               />
                             </div>
                             
