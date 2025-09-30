@@ -8481,23 +8481,49 @@ export default function AdminAddClient() {
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <CardTitle>Borrower</CardTitle>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <CollapsibleTrigger asChild>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="hover:bg-orange-500 hover:text-black"
-                              data-testid="button-toggle-borrower"
-                            >
-                              {isBorrowerOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                            </Button>
-                          </CollapsibleTrigger>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>{isBorrowerOpen ? 'Minimize' : 'Expand'}</p>
-                        </TooltipContent>
-                      </Tooltip>
+                      <div className="flex items-center gap-2">
+                        {!hasCoBorrower ? (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={addCoBorrower}
+                            className="hover:bg-orange-500 hover:text-white"
+                            data-testid="button-add-coborrower-from-borrower"
+                          >
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Co-Borrower
+                          </Button>
+                        ) : (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={removeCoBorrower}
+                            className="hover:bg-orange-500 hover:text-white"
+                            data-testid="button-remove-coborrower-from-borrower"
+                          >
+                            Remove Co-Borrower
+                          </Button>
+                        )}
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <CollapsibleTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="hover:bg-orange-500 hover:text-black"
+                                data-testid="button-toggle-borrower"
+                              >
+                                {isBorrowerOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{isBorrowerOpen ? 'Minimize' : 'Expand'}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
                     </div>
                   </CardHeader>
                   <CollapsibleContent>
@@ -8781,32 +8807,6 @@ export default function AdminAddClient() {
                   </Card>
                   </CardContent>
                   </CollapsibleContent>
-                <div className="flex justify-end p-4 pt-0">
-                  {!hasCoBorrower ? (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={addCoBorrower}
-                      className="hover:bg-orange-500 hover:text-white"
-                      data-testid="button-add-coborrower-from-borrower"
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Co-Borrower
-                    </Button>
-                  ) : (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={removeCoBorrower}
-                      className="hover:bg-orange-500 hover:text-white"
-                      data-testid="button-remove-coborrower-from-borrower"
-                    >
-                      Remove Co-Borrower
-                    </Button>
-                  )}
-                </div>
                 </Collapsible>
               </Card>
 
