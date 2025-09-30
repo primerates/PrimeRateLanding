@@ -4082,7 +4082,7 @@ export default function AdminAddClient() {
           </CardHeader>
           <CollapsibleContent>
             <CardContent className="space-y-6 pt-[1.7rem]">
-              {/* Row 1: Current Lender, Loan Number, Loan Purpose, Doc Type, Pre-Payment Penalty */}
+              {/* Row 1: Current Lender, Loan Number, Loan Category, Loan Purpose, Doc Type */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor={currentLenderBinding.id}>Lender Name</Label>
@@ -4100,6 +4100,24 @@ export default function AdminAddClient() {
                     {...targetForm.register('brandNewLoan.loanNumber')}
                     data-testid="input-brandNewLoan-loanNumber"
                   />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}brandNewLoan-loanCategory`}>Loan Category</Label>
+                  <Select {...loanCategoryBinding}>
+                    <SelectTrigger data-testid={loanCategoryBinding['data-testid']}>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      <SelectItem value="conventional">Conventional</SelectItem>
+                      <SelectItem value="conventional-jumbo">Conventional Jumbo</SelectItem>
+                      <SelectItem value="fha">FHA</SelectItem>
+                      <SelectItem value="va">VA</SelectItem>
+                      <SelectItem value="va-jumbo">VA Jumbo</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 
                 <div className="space-y-2">
@@ -4133,28 +4151,9 @@ export default function AdminAddClient() {
                     </SelectContent>
                   </Select>
                 </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor={`${idPrefix}brandNewLoan-prepaymentPenalty`}>Pre-Payment Penalty</Label>
-                  <Select {...prepaymentPenaltyBinding}>
-                    <SelectTrigger data-testid={prepaymentPenaltyBinding['data-testid']}>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="No">No</SelectItem>
-                      <SelectItem value="Yes - 6 Months">Yes - 6 Months</SelectItem>
-                      <SelectItem value="Yes - 1 Year">Yes - 1 Year</SelectItem>
-                      <SelectItem value="Yes - 2 Years">Yes - 2 Years</SelectItem>
-                      <SelectItem value="Yes - 3 Years">Yes - 3 Years</SelectItem>
-                      <SelectItem value="Yes - 4 Years">Yes - 4 Years</SelectItem>
-                      <SelectItem value="Yes - 5 Years">Yes - 5 Years</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
               </div>
               
-              {/* Row 2: New Loan Amount, Loan Category, Loan Term, Cash Out Amount, Total Debt Pay Off */}
+              {/* Row 2: New Loan Amount, Pre-Payment Penalty, Loan Term, Cash Out Amount, Total Debt Pay Off */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="newLoan-loanAmount">New Loan Amount</Label>
@@ -4171,19 +4170,20 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor={`${idPrefix}brandNewLoan-loanCategory`}>Loan Category</Label>
-                  <Select {...loanCategoryBinding}>
-                    <SelectTrigger data-testid={loanCategoryBinding['data-testid']}>
+                  <Label htmlFor={`${idPrefix}brandNewLoan-prepaymentPenalty`}>Pre-Payment Penalty</Label>
+                  <Select {...prepaymentPenaltyBinding}>
+                    <SelectTrigger data-testid={prepaymentPenaltyBinding['data-testid']}>
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="conventional">Conventional</SelectItem>
-                      <SelectItem value="conventional-jumbo">Conventional Jumbo</SelectItem>
-                      <SelectItem value="fha">FHA</SelectItem>
-                      <SelectItem value="va">VA</SelectItem>
-                      <SelectItem value="va-jumbo">VA Jumbo</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
+                      <SelectItem value="No">No</SelectItem>
+                      <SelectItem value="Yes - 6 Months">Yes - 6 Months</SelectItem>
+                      <SelectItem value="Yes - 1 Year">Yes - 1 Year</SelectItem>
+                      <SelectItem value="Yes - 2 Years">Yes - 2 Years</SelectItem>
+                      <SelectItem value="Yes - 3 Years">Yes - 3 Years</SelectItem>
+                      <SelectItem value="Yes - 4 Years">Yes - 4 Years</SelectItem>
+                      <SelectItem value="Yes - 5 Years">Yes - 5 Years</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
