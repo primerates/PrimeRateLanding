@@ -8990,17 +8990,27 @@ export default function AdminAddClient() {
                       return false; // No time values entered in current, hide section
                     }
                     
-                    // Calculate total months from current address
-                    const currentYears = hasCurrentYears ? parseInt(String(currentYearsValue)) : 0;
-                    const currentMonths = hasCurrentMonths ? parseInt(String(currentMonthsValue)) : 0;
-                    const currentTotalMonths = (isNaN(currentYears) ? 0 : currentYears) * 12 + (isNaN(currentMonths) ? 0 : currentMonths);
+                    // Calculate total months from current address (use parseFloat to handle decimals)
+                    let currentTotalMonths = 0;
+                    if (hasCurrentYears) {
+                      const currentYears = parseFloat(String(currentYearsValue));
+                      currentTotalMonths = (isNaN(currentYears) ? 0 : currentYears) * 12;
+                    } else if (hasCurrentMonths) {
+                      const currentMonths = parseFloat(String(currentMonthsValue));
+                      currentTotalMonths = isNaN(currentMonths) ? 0 : currentMonths;
+                    }
                     
-                    // Calculate total months from first prior address
+                    // Calculate total months from first prior address (use parseFloat to handle decimals)
+                    let priorTotalMonths = 0;
                     const hasPriorYears = priorYearsValue && String(priorYearsValue).trim() !== '';
                     const hasPriorMonths = priorMonthsValue && String(priorMonthsValue).trim() !== '';
-                    const priorYears = hasPriorYears ? parseInt(String(priorYearsValue)) : 0;
-                    const priorMonths = hasPriorMonths ? parseInt(String(priorMonthsValue)) : 0;
-                    const priorTotalMonths = (isNaN(priorYears) ? 0 : priorYears) * 12 + (isNaN(priorMonths) ? 0 : priorMonths);
+                    if (hasPriorYears) {
+                      const priorYears = parseFloat(String(priorYearsValue));
+                      priorTotalMonths = (isNaN(priorYears) ? 0 : priorYears) * 12;
+                    } else if (hasPriorMonths) {
+                      const priorMonths = parseFloat(String(priorMonthsValue));
+                      priorTotalMonths = isNaN(priorMonths) ? 0 : priorMonths;
+                    }
                     
                     // Combined total
                     const combinedTotalMonths = currentTotalMonths + priorTotalMonths;
