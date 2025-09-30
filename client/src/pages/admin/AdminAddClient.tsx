@@ -1243,6 +1243,18 @@ export default function AdminAddClient() {
   const [activeResidenceSection, setActiveResidenceSection] = useState<string | null>(null);
   const [residenceInfoText, setResidenceInfoText] = useState('');
 
+  // Rental Residence Information Dialog states
+  const [isRentalInfoDialogOpen, setIsRentalInfoDialogOpen] = useState(false);
+  const [activeRentalSection, setActiveRentalSection] = useState<string | null>(null);
+  const [rentalInfoData, setRentalInfoData] = useState({
+    landlordName: '',
+    email: '',
+    phone: '',
+    propertyType: '',
+    monthlyRent: '',
+    notes: ''
+  });
+
   // Employment toggle states - Years/Months Employed
   const [isShowingMonthsEmployed, setIsShowingMonthsEmployed] = useState(false);
   const [isCoBorrowerShowingMonthsEmployed, setIsCoBorrowerShowingMonthsEmployed] = useState(false);
@@ -8998,9 +9010,24 @@ export default function AdminAddClient() {
                           className="w-4 h-4 text-blue-500 cursor-pointer hover:text-blue-600 transition-colors" 
                           data-testid="icon-current-residence-info"
                           onClick={() => {
-                            setActiveResidenceSection('borrower-current');
-                            setResidenceInfoText(form.getValues('borrower.residenceAddress.additionalInfo') || '');
-                            setIsResidenceInfoDialogOpen(true);
+                            const residenceType = form.watch('borrower.currentResidenceType');
+                            if (residenceType === 'rental') {
+                              setActiveRentalSection('borrower-current');
+                              const savedData = form.getValues('borrower.residenceAddress.rentalInfo') || {};
+                              setRentalInfoData({
+                                landlordName: savedData.landlordName || '',
+                                email: savedData.email || '',
+                                phone: savedData.phone || '',
+                                propertyType: savedData.propertyType || '',
+                                monthlyRent: savedData.monthlyRent || '',
+                                notes: savedData.notes || ''
+                              });
+                              setIsRentalInfoDialogOpen(true);
+                            } else {
+                              setActiveResidenceSection('borrower-current');
+                              setResidenceInfoText(form.getValues('borrower.residenceAddress.additionalInfo') || '');
+                              setIsResidenceInfoDialogOpen(true);
+                            }
                           }}
                         />
                       )}
@@ -9309,9 +9336,24 @@ export default function AdminAddClient() {
                               className="w-4 h-4 text-blue-500 cursor-pointer hover:text-blue-600 transition-colors" 
                               data-testid="icon-prior-residence-info"
                               onClick={() => {
-                                setActiveResidenceSection('borrower-prior');
-                                setResidenceInfoText(form.getValues('borrower.priorResidenceAddress.additionalInfo') || '');
-                                setIsResidenceInfoDialogOpen(true);
+                                const residenceType = form.watch('borrower.priorResidenceType');
+                                if (residenceType === 'rental') {
+                                  setActiveRentalSection('borrower-prior');
+                                  const savedData = form.getValues('borrower.priorResidenceAddress.rentalInfo') || {};
+                                  setRentalInfoData({
+                                    landlordName: savedData.landlordName || '',
+                                    email: savedData.email || '',
+                                    phone: savedData.phone || '',
+                                    propertyType: savedData.propertyType || '',
+                                    monthlyRent: savedData.monthlyRent || '',
+                                    notes: savedData.notes || ''
+                                  });
+                                  setIsRentalInfoDialogOpen(true);
+                                } else {
+                                  setActiveResidenceSection('borrower-prior');
+                                  setResidenceInfoText(form.getValues('borrower.priorResidenceAddress.additionalInfo') || '');
+                                  setIsResidenceInfoDialogOpen(true);
+                                }
                               }}
                             />
                           )}
@@ -9628,9 +9670,24 @@ export default function AdminAddClient() {
                               className="w-4 h-4 text-blue-500 cursor-pointer hover:text-blue-600 transition-colors" 
                               data-testid="icon-prior-residence-2-info"
                               onClick={() => {
-                                setActiveResidenceSection('borrower-prior-2');
-                                setResidenceInfoText(form.getValues('borrower.priorResidenceAddress2.additionalInfo') || '');
-                                setIsResidenceInfoDialogOpen(true);
+                                const residenceType = form.watch('borrower.priorResidenceType2');
+                                if (residenceType === 'rental') {
+                                  setActiveRentalSection('borrower-prior-2');
+                                  const savedData = form.getValues('borrower.priorResidenceAddress2.rentalInfo') || {};
+                                  setRentalInfoData({
+                                    landlordName: savedData.landlordName || '',
+                                    email: savedData.email || '',
+                                    phone: savedData.phone || '',
+                                    propertyType: savedData.propertyType || '',
+                                    monthlyRent: savedData.monthlyRent || '',
+                                    notes: savedData.notes || ''
+                                  });
+                                  setIsRentalInfoDialogOpen(true);
+                                } else {
+                                  setActiveResidenceSection('borrower-prior-2');
+                                  setResidenceInfoText(form.getValues('borrower.priorResidenceAddress2.additionalInfo') || '');
+                                  setIsResidenceInfoDialogOpen(true);
+                                }
                               }}
                             />
                           )}
@@ -10126,9 +10183,24 @@ export default function AdminAddClient() {
                           className="w-4 h-4 text-blue-500 cursor-pointer hover:text-blue-600 transition-colors" 
                           data-testid="icon-current-residence-info-coborrower"
                           onClick={() => {
-                            setActiveResidenceSection('coborrower-current');
-                            setResidenceInfoText(form.getValues('coBorrower.residenceAddress.additionalInfo') || '');
-                            setIsResidenceInfoDialogOpen(true);
+                            const residenceType = form.watch('coBorrower.currentResidenceType');
+                            if (residenceType === 'rental') {
+                              setActiveRentalSection('coborrower-current');
+                              const savedData = form.getValues('coBorrower.residenceAddress.rentalInfo') || {};
+                              setRentalInfoData({
+                                landlordName: savedData.landlordName || '',
+                                email: savedData.email || '',
+                                phone: savedData.phone || '',
+                                propertyType: savedData.propertyType || '',
+                                monthlyRent: savedData.monthlyRent || '',
+                                notes: savedData.notes || ''
+                              });
+                              setIsRentalInfoDialogOpen(true);
+                            } else {
+                              setActiveResidenceSection('coborrower-current');
+                              setResidenceInfoText(form.getValues('coBorrower.residenceAddress.additionalInfo') || '');
+                              setIsResidenceInfoDialogOpen(true);
+                            }
                           }}
                         />
                       )}
@@ -10437,9 +10509,24 @@ export default function AdminAddClient() {
                               className="w-4 h-4 text-blue-500 cursor-pointer hover:text-blue-600 transition-colors" 
                               data-testid="icon-prior-residence-info-coborrower"
                               onClick={() => {
-                                setActiveResidenceSection('coborrower-prior');
-                                setResidenceInfoText(form.getValues('coBorrower.priorResidenceAddress.additionalInfo') || '');
-                                setIsResidenceInfoDialogOpen(true);
+                                const residenceType = form.watch('coBorrower.priorResidenceType');
+                                if (residenceType === 'rental') {
+                                  setActiveRentalSection('coborrower-prior');
+                                  const savedData = form.getValues('coBorrower.priorResidenceAddress.rentalInfo') || {};
+                                  setRentalInfoData({
+                                    landlordName: savedData.landlordName || '',
+                                    email: savedData.email || '',
+                                    phone: savedData.phone || '',
+                                    propertyType: savedData.propertyType || '',
+                                    monthlyRent: savedData.monthlyRent || '',
+                                    notes: savedData.notes || ''
+                                  });
+                                  setIsRentalInfoDialogOpen(true);
+                                } else {
+                                  setActiveResidenceSection('coborrower-prior');
+                                  setResidenceInfoText(form.getValues('coBorrower.priorResidenceAddress.additionalInfo') || '');
+                                  setIsResidenceInfoDialogOpen(true);
+                                }
                               }}
                             />
                           )}
@@ -21274,6 +21361,9 @@ export default function AdminAddClient() {
         <DialogContent className="max-w-md" data-testid="dialog-residence-info">
           <DialogHeader>
             <DialogTitle>Residence Information</DialogTitle>
+            <DialogDescription>
+              Enter additional information about this residence.
+            </DialogDescription>
           </DialogHeader>
           <div className="py-4">
             <Textarea
@@ -21316,6 +21406,125 @@ export default function AdminAddClient() {
                 setActiveResidenceSection(null);
               }}
               data-testid="button-save-residence-info"
+            >
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Rental Residence Information Dialog */}
+      <Dialog open={isRentalInfoDialogOpen} onOpenChange={setIsRentalInfoDialogOpen}>
+        <DialogContent className="max-w-lg" data-testid="dialog-rental-info">
+          <DialogHeader>
+            <DialogTitle>Rental Residence Information</DialogTitle>
+            <DialogDescription>
+              Enter rental property details and landlord contact information.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="rental-landlord-name">Landlord / Company Name</Label>
+              <Input
+                id="rental-landlord-name"
+                value={rentalInfoData.landlordName}
+                onChange={(e) => setRentalInfoData(prev => ({ ...prev, landlordName: e.target.value }))}
+                placeholder=""
+                data-testid="input-rental-landlord-name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="rental-email">Email</Label>
+              <Input
+                id="rental-email"
+                type="email"
+                value={rentalInfoData.email}
+                onChange={(e) => setRentalInfoData(prev => ({ ...prev, email: e.target.value }))}
+                placeholder=""
+                data-testid="input-rental-email"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="rental-phone">Phone</Label>
+              <Input
+                id="rental-phone"
+                value={rentalInfoData.phone}
+                onChange={(e) => setRentalInfoData(prev => ({ ...prev, phone: e.target.value }))}
+                placeholder=""
+                data-testid="input-rental-phone"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="rental-property-type">Property Type</Label>
+              <Input
+                id="rental-property-type"
+                value={rentalInfoData.propertyType}
+                onChange={(e) => setRentalInfoData(prev => ({ ...prev, propertyType: e.target.value }))}
+                placeholder=""
+                data-testid="input-rental-property-type"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="rental-monthly-rent">Monthly Rent Amount</Label>
+              <Input
+                id="rental-monthly-rent"
+                value={rentalInfoData.monthlyRent}
+                onChange={(e) => setRentalInfoData(prev => ({ ...prev, monthlyRent: e.target.value }))}
+                placeholder=""
+                data-testid="input-rental-monthly-rent"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="rental-notes">Notes</Label>
+              <Textarea
+                id="rental-notes"
+                value={rentalInfoData.notes}
+                onChange={(e) => setRentalInfoData(prev => ({ ...prev, notes: e.target.value }))}
+                placeholder=""
+                className="min-h-[100px] resize-none"
+                data-testid="textarea-rental-notes"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsRentalInfoDialogOpen(false);
+                setRentalInfoData({
+                  landlordName: '',
+                  email: '',
+                  phone: '',
+                  propertyType: '',
+                  monthlyRent: '',
+                  notes: ''
+                });
+                setActiveRentalSection(null);
+              }}
+              data-testid="button-cancel-rental-info"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                // Save the rental info to the appropriate form field based on activeRentalSection
+                if (activeRentalSection === 'borrower-current') {
+                  form.setValue('borrower.residenceAddress.rentalInfo', rentalInfoData);
+                } else if (activeRentalSection === 'borrower-prior') {
+                  form.setValue('borrower.priorResidenceAddress.rentalInfo', rentalInfoData);
+                } else if (activeRentalSection === 'borrower-prior-2') {
+                  form.setValue('borrower.priorResidenceAddress2.rentalInfo', rentalInfoData);
+                } else if (activeRentalSection === 'coborrower-current') {
+                  form.setValue('coBorrower.residenceAddress.rentalInfo', rentalInfoData);
+                } else if (activeRentalSection === 'coborrower-prior') {
+                  form.setValue('coBorrower.priorResidenceAddress.rentalInfo', rentalInfoData);
+                } else if (activeRentalSection === 'coborrower-prior-2') {
+                  form.setValue('coBorrower.priorResidenceAddress2.rentalInfo', rentalInfoData);
+                }
+                setIsRentalInfoDialogOpen(false);
+                setActiveRentalSection(null);
+              }}
+              data-testid="button-save-rental-info"
             >
               Save
             </Button>
