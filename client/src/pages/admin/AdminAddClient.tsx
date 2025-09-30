@@ -10082,6 +10082,277 @@ export default function AdminAddClient() {
                 </CardContent>
               </Card>
 
+              {/* Borrower Employer Cards */}
+              {form.watch('income.incomeTypes.employment') && (borrowerEmployerCards || ['default']).map((cardId, index) => {
+                const propertyId = cardId === 'default' ? 'template-card' : cardId;
+                const isOpen = propertyCardStates[propertyId] ?? true;
+                
+                return (
+                  <Card key={cardId} className="transition-colors duration-200">
+                    <Collapsible 
+                      open={isOpen} 
+                      onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
+                    >
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-8">
+                            <CardTitle className="flex items-center gap-2">
+                              Borrower Employer
+                            </CardTitle>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {/* Add Employer Button */}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                const newId = `employer-${Date.now()}`;
+                                setBorrowerEmployerCards(prev => [...(prev || ['default']), newId]);
+                              }}
+                              className="hover:bg-blue-500 hover:text-white"
+                              data-testid="button-add-employer"
+                              title="Add New Employer"
+                            >
+                              <Plus className="h-4 w-4 mr-2" />
+                              Add Employer
+                            </Button>
+                            
+                            {/* Delete Employer Button */}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setDeleteEmployerDialog({ isOpen: true, cardId: propertyId })}
+                              className="hover:bg-red-500 hover:text-white"
+                              data-testid="button-delete-employer"
+                              title="Delete Employer"
+                            >
+                              <Minus className="h-4 w-4 mr-2" />
+                              Remove
+                            </Button>
+                            
+                            <CollapsibleTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="hover:bg-orange-500 hover:text-white" 
+                                data-testid={`button-toggle-income-${propertyId}`}
+                                title={isOpen ? 'Minimize' : 'Expand'}
+                                key={`employment-income-${propertyId}-${isOpen}`}
+                              >
+                                {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </div>
+                        </div>
+                      </CardHeader>
+                    
+                      <CollapsibleContent>
+                        <CardContent>
+                          <div className="space-y-6">
+                            {/* Employment Type Selection */}
+                            <Card className={`bg-muted ${
+                              showIncomeCardAnimation['borrower-employment'] ? 'animate-roll-down-subject-property' : ''
+                            }`}>
+                              <CardContent className="pt-6">
+                                <div className="space-y-3">
+                                  <div className="flex gap-4">
+                                    <div className="flex items-center space-x-2">
+                                      <input
+                                        type="radio"
+                                        id="employment-current"
+                                        name="employment-type"
+                                        data-testid="radio-employment-current"
+                                      />
+                                      <Label htmlFor="employment-current">Current Employer</Label>
+                                    </div>
+                                    
+                                    <div className="flex items-center space-x-2">
+                                      <input
+                                        type="radio"
+                                        id="employment-prior"
+                                        name="employment-type"
+                                        data-testid="radio-employment-prior"
+                                      />
+                                      <Label htmlFor="employment-prior">Prior Employer</Label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+
+                            {/* Employment Information - Single Row */}
+                            <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
+                              <div className="space-y-2">
+                                <Label htmlFor="template-employer-name">Employer Name</Label>
+                                <Input
+                                  id="template-employer-name"
+                                  data-testid="input-template-employer-name"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between mb-2">
+                                  <Label htmlFor="template-employer-phone" className="text-xs">
+                                    Employer Phone
+                                  </Label>
+                                  <Switch
+                                    data-testid="toggle-template-employment-verification"
+                                    className="scale-[0.8]"
+                                  />
+                                </div>
+                                <Input
+                                  id="template-employer-phone"
+                                  placeholder="(XXX) XXX-XXXX"
+                                  data-testid="input-template-employer-phone"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor="template-job-title">Job Title</Label>
+                                <Input
+                                  id="template-job-title"
+                                  data-testid="input-template-job-title"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor="template-monthly-income">Gross Monthly Income</Label>
+                                <Input
+                                  id="template-monthly-income"
+                                  placeholder="$0.00"
+                                  data-testid="input-template-monthly-income"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor="template-start-date">Start Date</Label>
+                                <Input
+                                  id="template-start-date"
+                                  type="date"
+                                  placeholder="MM/DD/YYYY"
+                                  data-testid="input-template-start-date"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between mb-2">
+                                  <Label htmlFor="template-end-date" className="text-sm">
+                                    Present
+                                  </Label>
+                                  <Switch
+                                    data-testid="toggle-template-employment-present"
+                                    className="scale-[0.8]"
+                                  />
+                                </div>
+                                <Input
+                                  id="template-end-date"
+                                  type="text"
+                                  value="present"
+                                  placeholder="Enter"
+                                  readOnly
+                                  className="bg-muted"
+                                  data-testid="input-template-end-date"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor="template-employment-duration">Employment Duration</Label>
+                                <Input
+                                  id="template-employment-duration"
+                                  placeholder="Enter"
+                                  data-testid="input-template-employment-duration"
+                                />
+                              </div>
+                            </div>
+
+                            {/* Employer Address Row */}
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                              <div className="space-y-2 md:col-span-3">
+                                <Label htmlFor="template-employer-street">Street Address</Label>
+                                <Input
+                                  id="template-employer-street"
+                                  data-testid="input-template-employer-street"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor="template-employer-unit">Unit/Suite</Label>
+                                <Input
+                                  id="template-employer-unit"
+                                  data-testid="input-template-employer-unit"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor="template-employer-city">City</Label>
+                                <Input
+                                  id="template-employer-city"
+                                  data-testid="input-template-employer-city"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor="template-employer-state">State</Label>
+                                <Select
+                                  value=""
+                                  onValueChange={() => {}}
+                                >
+                                  <SelectTrigger data-testid="select-template-employer-state">
+                                    <SelectValue placeholder="State" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {US_STATES.map((state) => (
+                                      <SelectItem key={state.value} value={state.value}>
+                                        {state.value}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor="template-employer-zip">ZIP Code</Label>
+                                <Input
+                                  id="template-employer-zip"
+                                  data-testid="input-template-employer-zip"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor="template-employer-county">County</Label>
+                                <Input
+                                  id="template-employer-county"
+                                  data-testid="input-template-employer-county"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor="template-employer-employment-type">Full-Time / Part-Time</Label>
+                                <Select
+                                  value=""
+                                  onValueChange={() => {}}
+                                >
+                                  <SelectTrigger data-testid="select-template-employer-employment-type">
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="Full-Time">Full-Time</SelectItem>
+                                    <SelectItem value="Part-Time">Part-Time</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+
+                          </div>
+                        </CardContent>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  </Card>
+                );
+              })}
+
               {/* Borrower Second Employment Cards */}
               {form.watch('income.incomeTypes.secondEmployment') && (borrowerSecondEmployerCards || ['default']).map((cardId, index) => {
                 const propertyId = cardId === 'default' ? 'second-template-card' : cardId;
@@ -11141,9 +11412,125 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
-              {/* Borrower Employer Cards */}
-              {form.watch('income.incomeTypes.employment') && (borrowerEmployerCards || ['default']).map((cardId, index) => {
-                const propertyId = cardId === 'default' ? 'template-card' : cardId;
+              {/* Co-Borrower Income */}
+              {hasCoBorrower && (
+                <Card className="border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-3">
+                      Co-Borrower Income
+                      <span className="text-lg font-semibold" data-testid="text-total-coborrower-income">
+                        {totalCoBorrowerIncomeFormatted}
+                      </span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="coBorrowerIncome-type-employment"
+                            checked={form.watch('coBorrowerIncome.incomeTypes.employment') || false}
+                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.employment', !!checked, 'Employment', true)}
+                            data-testid="checkbox-coborrower-employment"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="coBorrowerIncome-type-employment">Employment</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="coBorrowerIncome-type-secondEmployment"
+                            checked={form.watch('coBorrowerIncome.incomeTypes.secondEmployment') || false}
+                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.secondEmployment', !!checked, 'Second Employment', true)}
+                            data-testid="checkbox-coborrower-secondEmployment"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="coBorrowerIncome-type-secondEmployment">Second Employment</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="coBorrowerIncome-type-selfEmployment"
+                            checked={form.watch('coBorrowerIncome.incomeTypes.selfEmployment') || false}
+                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.selfEmployment', !!checked, 'Self Employment', true)}
+                            data-testid="checkbox-coborrower-selfEmployment"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="coBorrowerIncome-type-selfEmployment">Self Employment</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="coBorrowerIncome-type-alimony"
+                            checked={form.watch('coBorrowerIncome.incomeTypes.alimony') || false}
+                            onCheckedChange={(checked) => {
+                              handleIncomeTypeChange('coBorrowerIncome.incomeTypes.alimony', !!checked, 'Alimony', true);
+                            }}
+                            data-testid="checkbox-coborrower-alimony"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="coBorrowerIncome-type-alimony">Alimony</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="coBorrowerIncome-type-childSupport"
+                            checked={form.watch('coBorrowerIncome.incomeTypes.childSupport') || false}
+                            onCheckedChange={(checked) => {
+                              handleIncomeTypeChange('coBorrowerIncome.incomeTypes.childSupport', !!checked, 'Child Support', true);
+                            }}
+                            data-testid="checkbox-coborrower-childSupport"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="coBorrowerIncome-type-childSupport">Child Support</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="coBorrowerIncome-type-socialSecurity"
+                            checked={form.watch('coBorrowerIncome.incomeTypes.socialSecurity') || false}
+                            onCheckedChange={(checked) => {
+                              handleIncomeTypeChange('coBorrowerIncome.incomeTypes.socialSecurity', !!checked, 'Social Security', true);
+                            }}
+                            data-testid="checkbox-coborrower-socialSecurity"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="coBorrowerIncome-type-socialSecurity">Social Security</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="coBorrowerIncome-type-disability"
+                            checked={form.watch('coBorrowerIncome.incomeTypes.disability') || false}
+                            onCheckedChange={(checked) => {
+                              handleIncomeTypeChange('coBorrowerIncome.incomeTypes.disability', !!checked, 'Disability', true);
+                            }}
+                            data-testid="checkbox-coborrower-disability"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="coBorrowerIncome-type-disability">Disability</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="coBorrowerIncome-type-other"
+                            checked={form.watch('coBorrowerIncome.incomeTypes.other') || false}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                // Show popup for adding property rental
+                                setPropertyRentalDialog({ isOpen: true, type: 'add', borrowerType: 'coBorrower' });
+                              } else {
+                                // Show popup for removing property rental
+                                setPropertyRentalDialog({ isOpen: true, type: 'remove', borrowerType: 'coBorrower' });
+                              }
+                            }}
+                            data-testid="checkbox-coborrower-other"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="coBorrowerIncome-type-other">Rental Property</Label>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Co-Borrower Employer Cards */}
+              {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.employment') && (coBorrowerEmployerCards || ['default']).map((cardId, index) => {
+                const propertyId = cardId === 'default' ? 'coborrower-template-card' : cardId;
                 const isOpen = propertyCardStates[propertyId] ?? true;
                 
                 return (
@@ -11156,7 +11543,7 @@ export default function AdminAddClient() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-8">
                             <CardTitle className="flex items-center gap-2">
-                              Borrower Employer
+                              Co-Borrower Employer
                             </CardTitle>
                           </div>
                           <div className="flex items-center gap-2">
@@ -11166,11 +11553,11 @@ export default function AdminAddClient() {
                               variant="outline"
                               size="sm"
                               onClick={() => {
-                                const newId = `employer-${Date.now()}`;
-                                setBorrowerEmployerCards(prev => [...(prev || ['default']), newId]);
+                                const newId = `coborrower-employer-${Date.now()}`;
+                                setCoBorrowerEmployerCards(prev => [...(prev || ['default']), newId]);
                               }}
                               className="hover:bg-blue-500 hover:text-white"
-                              data-testid="button-add-employer"
+                              data-testid="button-add-coborrower-employer"
                               title="Add New Employer"
                             >
                               <Plus className="h-4 w-4 mr-2" />
@@ -11182,9 +11569,9 @@ export default function AdminAddClient() {
                               type="button"
                               variant="outline"
                               size="sm"
-                              onClick={() => setDeleteEmployerDialog({ isOpen: true, cardId: propertyId })}
+                              onClick={() => setDeleteCoBorrowerEmployerDialog({ isOpen: true, cardId: propertyId })}
                               className="hover:bg-red-500 hover:text-white"
-                              data-testid="button-delete-employer"
+                              data-testid="button-delete-coborrower-employer"
                               title="Delete Employer"
                             >
                               <Minus className="h-4 w-4 mr-2" />
