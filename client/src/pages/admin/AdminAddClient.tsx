@@ -8826,8 +8826,10 @@ export default function AdminAddClient() {
                           <Input
                             id="borrower-residence-from"
                             type="date"
+                            placeholder="mm/dd/yyyy"
                             {...form.register('borrower.residenceAddress.from')}
                             data-testid="input-borrower-residence-from"
+                            className="text-sm"
                           />
                         </div>
                         
@@ -8836,8 +8838,10 @@ export default function AdminAddClient() {
                           <Input
                             id="borrower-residence-to"
                             type="date"
+                            placeholder="mm/dd/yyyy"
                             {...form.register('borrower.residenceAddress.to')}
                             data-testid="input-borrower-residence-to"
+                            className="text-sm"
                           />
                         </div>
                         
