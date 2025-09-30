@@ -8616,6 +8616,37 @@ export default function AdminAddClient() {
                       </Select>
                     </div>
                   </div>
+
+                  {/* Grey Background Box - copied from Borrower Employer */}
+                  <Card className={`bg-muted ${
+                    showIncomeCardAnimation['borrower-employment'] ? 'animate-roll-down-subject-property' : ''
+                  }`}>
+                    <CardContent className="pt-6">
+                      <div className="space-y-3">
+                        <div className="flex gap-4">
+                          <div className="flex items-center space-x-2">
+                            <input
+                              type="radio"
+                              id="employment-current"
+                              name="employment-type"
+                              data-testid="radio-employment-current"
+                            />
+                            <Label htmlFor="employment-current">Current Employer</Label>
+                          </div>
+                          
+                          <div className="flex items-center space-x-2">
+                            <input
+                              type="radio"
+                              id="employment-prior"
+                              name="employment-type"
+                              data-testid="radio-employment-prior"
+                            />
+                            <Label htmlFor="employment-prior">Prior Employer</Label>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </CardContent>
                 <div className="flex justify-end p-4 pt-0">
                   {!hasCoBorrower ? (
