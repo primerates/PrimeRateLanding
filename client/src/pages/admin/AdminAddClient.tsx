@@ -13883,7 +13883,30 @@ export default function AdminAddClient() {
                               
                               <div className="space-y-2 md:col-span-2">
                                 <div className="min-h-5 flex items-center gap-2">
-                                  <Label htmlFor={`property-purpose-${propertyId}`}>Purpose</Label>
+                                  <Label htmlFor={`property-purpose-${propertyId}`}>Property Purpose</Label>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                        onClick={() => {
+                                          toast({
+                                            title: "Purchase Information",
+                                            description: "Please see purchase and record dates in title report located in vendor page.",
+                                            duration: 5000,
+                                          });
+                                        }}
+                                        data-testid={`button-property-purpose-info-${propertyId}`}
+                                      >
+                                        <Info className="h-4 w-4" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top" sideOffset={15} className="text-sm">
+                                      Purchase Information
+                                    </TooltipContent>
+                                  </Tooltip>
                                 </div>
                                 <Select>
                                   <SelectTrigger data-testid={`select-property-purpose-${propertyId}`}>
@@ -17005,9 +17028,32 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
-                              <div className="space-y-2 md:col-span-1">
+                              <div className="space-y-2 md:col-span-2">
                                 <div className="min-h-5 flex items-center gap-2">
-                                  <Label htmlFor={`property-purpose-${propertyId}`}>Purpose</Label>
+                                  <Label htmlFor={`property-purpose-${propertyId}`}>Property Purpose</Label>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                                        onClick={() => {
+                                          toast({
+                                            title: "Purchase Information",
+                                            description: "Please see purchase and record dates in title report located in vendor page.",
+                                            duration: 5000,
+                                          });
+                                        }}
+                                        data-testid={`button-property-purpose-info-${propertyId}`}
+                                      >
+                                        <Info className="h-4 w-4" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top" sideOffset={15} className="text-sm">
+                                      Purchase Information
+                                    </TooltipContent>
+                                  </Tooltip>
                                 </div>
                                 <Select>
                                   <SelectTrigger data-testid={`select-property-purpose-${propertyId}`}>
