@@ -16226,7 +16226,7 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
-                              <div className="space-y-2 md:col-span-1">
+                              <div className="space-y-2 md:col-span-2">
                                 <div className="min-h-5 flex items-center gap-2">
                                   <Label htmlFor={`investment-property-owned-since-${propertyId}`}>Purchase Date</Label>
                                   <Tooltip>
@@ -16301,7 +16301,7 @@ export default function AdminAddClient() {
                                 </Select>
                               </div>
                               
-                              <div className="space-y-2 md:col-span-3">
+                              <div className="space-y-2 md:col-span-2">
                                 <div className="flex items-center gap-2">
                                   <Label htmlFor={`investment-property-estimated-value-${propertyId}`}>Est. Value</Label>
                                   <div className="flex items-center gap-1">
