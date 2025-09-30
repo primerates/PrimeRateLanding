@@ -4153,7 +4153,7 @@ export default function AdminAddClient() {
                 </div>
               </div>
               
-              {/* Row 2: New Loan Amount, Pre-Payment Penalty, Loan Term, Cash Out Amount, Total Debt Pay Off */}
+              {/* Row 2: New Loan Amount, Loan Term, Pre-Payment Penalty, Cash Out Amount, Total Debt Pay Off */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="newLoan-loanAmount">New Loan Amount</Label>
@@ -4167,25 +4167,6 @@ export default function AdminAddClient() {
                       data-testid="input-newLoan-loanAmount"
                     />
                   </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor={`${idPrefix}brandNewLoan-prepaymentPenalty`}>Pre-Payment Penalty</Label>
-                  <Select {...prepaymentPenaltyBinding}>
-                    <SelectTrigger data-testid={prepaymentPenaltyBinding['data-testid']}>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="No">No</SelectItem>
-                      <SelectItem value="Yes - 6 Months">Yes - 6 Months</SelectItem>
-                      <SelectItem value="Yes - 1 Year">Yes - 1 Year</SelectItem>
-                      <SelectItem value="Yes - 2 Years">Yes - 2 Years</SelectItem>
-                      <SelectItem value="Yes - 3 Years">Yes - 3 Years</SelectItem>
-                      <SelectItem value="Yes - 4 Years">Yes - 4 Years</SelectItem>
-                      <SelectItem value="Yes - 5 Years">Yes - 5 Years</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
                 
                 <div className="space-y-2">
@@ -4222,6 +4203,25 @@ export default function AdminAddClient() {
                       data-testid={loanProgramBinding['data-testid']}
                     />
                   )}
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}brandNewLoan-prepaymentPenalty`}>Pre-Payment Penalty</Label>
+                  <Select {...prepaymentPenaltyBinding}>
+                    <SelectTrigger data-testid={prepaymentPenaltyBinding['data-testid']}>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      <SelectItem value="No">No</SelectItem>
+                      <SelectItem value="Yes - 6 Months">Yes - 6 Months</SelectItem>
+                      <SelectItem value="Yes - 1 Year">Yes - 1 Year</SelectItem>
+                      <SelectItem value="Yes - 2 Years">Yes - 2 Years</SelectItem>
+                      <SelectItem value="Yes - 3 Years">Yes - 3 Years</SelectItem>
+                      <SelectItem value="Yes - 4 Years">Yes - 4 Years</SelectItem>
+                      <SelectItem value="Yes - 5 Years">Yes - 5 Years</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 
                 <div className="space-y-2">
@@ -4761,7 +4761,7 @@ export default function AdminAddClient() {
                 </div>
               </div>
               
-              {/* Row 2: New Loan Amount, Pre-Payment Penalty, Loan Term, Cash Out Amount, Total Debt Pay Off */}
+              {/* Row 2: New Loan Amount, Loan Term, Pre-Payment Penalty, Cash Out Amount, Total Debt Pay Off */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="newLoan-loanAmount">New Loan Amount</Label>
@@ -4775,25 +4775,6 @@ export default function AdminAddClient() {
                       data-testid="input-newLoan-loanAmount"
                     />
                   </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor={`${idPrefix}purchaseLoan-prepaymentPenalty`}>Pre-Payment Penalty</Label>
-                  <Select {...prepaymentPenaltyBinding}>
-                    <SelectTrigger data-testid={prepaymentPenaltyBinding['data-testid']}>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="No">No</SelectItem>
-                      <SelectItem value="Yes - 6 Months">Yes - 6 Months</SelectItem>
-                      <SelectItem value="Yes - 1 Year">Yes - 1 Year</SelectItem>
-                      <SelectItem value="Yes - 2 Years">Yes - 2 Years</SelectItem>
-                      <SelectItem value="Yes - 3 Years">Yes - 3 Years</SelectItem>
-                      <SelectItem value="Yes - 4 Years">Yes - 4 Years</SelectItem>
-                      <SelectItem value="Yes - 5 Years">Yes - 5 Years</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
                 
                 <div className="space-y-2">
@@ -4830,6 +4811,25 @@ export default function AdminAddClient() {
                       data-testid={loanProgramBinding['data-testid']}
                     />
                   )}
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}purchaseLoan-prepaymentPenalty`}>Pre-Payment Penalty</Label>
+                  <Select {...prepaymentPenaltyBinding}>
+                    <SelectTrigger data-testid={prepaymentPenaltyBinding['data-testid']}>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      <SelectItem value="No">No</SelectItem>
+                      <SelectItem value="Yes - 6 Months">Yes - 6 Months</SelectItem>
+                      <SelectItem value="Yes - 1 Year">Yes - 1 Year</SelectItem>
+                      <SelectItem value="Yes - 2 Years">Yes - 2 Years</SelectItem>
+                      <SelectItem value="Yes - 3 Years">Yes - 3 Years</SelectItem>
+                      <SelectItem value="Yes - 4 Years">Yes - 4 Years</SelectItem>
+                      <SelectItem value="Yes - 5 Years">Yes - 5 Years</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 
                 <div className="space-y-2">
