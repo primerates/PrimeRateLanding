@@ -6,6 +6,23 @@ This is a professional mortgage lending landing page for Prime Rate Home Loans, 
 
 ## Recent Changes
 
+### Completed Co-Borrower Residence Section Restructure (September 30, 2025)
+
+Successfully restructured the Co-Borrower residence sections to match the Borrower design with:
+
+- **Unified Structure**: Co-Borrower residence sections now mirror the Borrower card layout exactly, ensuring consistency across the application
+- **Purple Circle Design**: Added purple "Owned" and "Rental" clickable circles to Current Residence, First Prior Residence, and Second Prior Residence sections
+- **Simplified Time Input**: Replaced toggle switches with simple "Years / Months" labels for cleaner user interface
+- **Cascading Residence Logic**: Implemented conditional display of Prior Residence sections based on time calculations:
+  - First Prior Residence appears when current residence < 2 years
+  - Second Prior Residence appears when combined current + first prior < 2 years
+- **Decimal Time Support**: Enhanced time calculations to properly handle fractional years (e.g., 1.6 years = 19.2 months) using parseFloat
+- **Consistent Field Structure**: All address fields (street, unit, city, state, ZIP, county) follow the same pattern in all three residence sections
+- **Form Path Integrity**: All form bindings updated to use `coBorrower` paths (`coBorrower.residenceAddress`, `coBorrower.priorResidenceAddress`, `coBorrower.priorResidenceAddress2`)
+- **County Lookup Integration**: ZIP code county lookup functionality properly integrated with Co-Borrower specific state handlers
+
+The Co-Borrower residence workflow now provides the same user experience as the Borrower section, with matching visual design, conditional logic, and form validation patterns.
+
 ### Completed Second Home Card System Duplication (September 26, 2025)
 
 Successfully implemented a complete Second Home card system that mirrors Primary Residence functionality with:
