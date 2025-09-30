@@ -8667,7 +8667,7 @@ export default function AdminAddClient() {
                   </div>
 
                   {/* Grey Background Box - Complete Address Row from Borrower Residence */}
-                  <Card className={`bg-muted ${
+                  <Card className={`bg-muted mt-8 ${
                     showIncomeCardAnimation['borrower-employment'] ? 'animate-roll-down-subject-property' : ''
                   }`}>
                     <CardContent className="pt-6">
