@@ -8974,6 +8974,141 @@ export default function AdminAddClient() {
                       </Card>
                     </>
                   )}
+
+                  {/* Second Prior Residence - Show if combined current + first prior is less than 2 years */}
+                  {(() => {
+                    const currentYearsValue = form.watch('borrower.yearsAtAddress');
+                    const currentMonthsValue = form.watch('borrower.monthsAtAddress');
+                    const priorYearsValue = form.watch('borrower.priorYearsAtAddress');
+                    const priorMonthsValue = form.watch('borrower.priorMonthsAtAddress');
+                    
+                    // Check if any time value has been entered in current residence
+                    const hasCurrentYears = currentYearsValue && String(currentYearsValue).trim() !== '';
+                    const hasCurrentMonths = currentMonthsValue && String(currentMonthsValue).trim() !== '';
+                    
+                    if (!hasCurrentYears && !hasCurrentMonths) {
+                      return false; // No time values entered in current, hide section
+                    }
+                    
+                    // Calculate total months from current address
+                    const currentYears = hasCurrentYears ? parseInt(String(currentYearsValue)) : 0;
+                    const currentMonths = hasCurrentMonths ? parseInt(String(currentMonthsValue)) : 0;
+                    const currentTotalMonths = (isNaN(currentYears) ? 0 : currentYears) * 12 + (isNaN(currentMonths) ? 0 : currentMonths);
+                    
+                    // Calculate total months from first prior address
+                    const hasPriorYears = priorYearsValue && String(priorYearsValue).trim() !== '';
+                    const hasPriorMonths = priorMonthsValue && String(priorMonthsValue).trim() !== '';
+                    const priorYears = hasPriorYears ? parseInt(String(priorYearsValue)) : 0;
+                    const priorMonths = hasPriorMonths ? parseInt(String(priorMonthsValue)) : 0;
+                    const priorTotalMonths = (isNaN(priorYears) ? 0 : priorYears) * 12 + (isNaN(priorMonths) ? 0 : priorMonths);
+                    
+                    // Combined total
+                    const combinedTotalMonths = currentTotalMonths + priorTotalMonths;
+                    
+                    return combinedTotalMonths < 24; // Show if combined is less than 2 years (24 months) total
+                  })() && (
+                    <>
+                      {/* Extra spacing row */}
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                      </div>
+
+                      {/* Row for Second Prior Residence Title */}
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-10">
+                        <div className="space-y-2">
+                          <Label htmlFor="borrower-prior-residence-2" className="text-xl">Prior Residence</Label>
+                        </div>
+                      </div>
+
+                      {/* Grey Background Box - Second Prior Residence */}
+                      <Card className={`bg-muted mt-8 ${
+                        showIncomeCardAnimation['borrower-employment'] ? 'animate-roll-down-subject-property' : ''
+                      }`}>
+                        <CardContent className="pt-6">
+                          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                            <div className="space-y-2 md:col-span-3">
+                              <Label htmlFor="borrower-residence-street-2">Street Address</Label>
+                              <Input
+                                id="borrower-residence-street-2"
+                                {...form.register('borrower.priorResidenceAddress2.street')}
+                                data-testid="input-borrower-residence-street-2"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="borrower-residence-unit-2">Unit/Apt</Label>
+                              <Input
+                                id="borrower-residence-unit-2"
+                                {...form.register('borrower.priorResidenceAddress2.unit')}
+                                data-testid="input-borrower-residence-unit-2"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="borrower-residence-city-2">City</Label>
+                              <Input
+                                id="borrower-residence-city-2"
+                                {...form.register('borrower.priorResidenceAddress2.city')}
+                                data-testid="input-borrower-residence-city-2"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="borrower-residence-state-2">State</Label>
+                              <Select
+                                value={form.watch('borrower.priorResidenceAddress2.state') || ''}
+                                onValueChange={(value) => {
+                                  form.setValue('borrower.priorResidenceAddress2.state', value);
+                                }}
+                              >
+                                <SelectTrigger data-testid="select-borrower-residence-state-2">
+                                  <SelectValue placeholder="State" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {US_STATES.map((state) => (
+                                    <SelectItem key={state.value} value={state.value}>
+                                      {state.value}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor="borrower-residence-zip-2">ZIP Code</Label>
+                              <Input
+                                id="borrower-residence-zip-2"
+                                {...form.register('borrower.priorResidenceAddress2.zip')}
+                                data-testid="input-borrower-residence-zip-2"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="borrower-residence-county-2">County</Label>
+                              <Input
+                                id="borrower-residence-county-2"
+                                {...form.register('borrower.priorResidenceAddress2.county')}
+                                data-testid="input-borrower-residence-county-2"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2 md:col-span-2">
+                              <Label htmlFor="borrower-prior-time-address-2" className="text-sm">
+                                Years / Months
+                              </Label>
+                              <Input
+                                id="borrower-prior-time-address-2"
+                                type="number"
+                                min="0"
+                                placeholder="Enter years or months"
+                                {...form.register('borrower.priorYearsAtAddress2')}
+                                data-testid="input-borrower-prior-time-address-2"
+                              />
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </>
+                  )}
                   </CardContent>
                   </CollapsibleContent>
                 </Collapsible>
