@@ -8713,7 +8713,7 @@ export default function AdminAddClient() {
                   }`}>
                     <CardContent className="pt-6">
                       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                        <div className="space-y-2 md:col-span-3">
+                        <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="borrower-residence-street">Street Address</Label>
                           <Input
                             id="borrower-residence-street"
@@ -8780,7 +8780,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2 md:col-span-2">
+                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="borrower-residence-county">County</Label>
                           {borrowerCountyOptions.length > 0 ? (
                             <Select
