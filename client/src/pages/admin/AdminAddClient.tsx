@@ -13516,7 +13516,7 @@ export default function AdminAddClient() {
                             <CardTitle className="flex items-center gap-2">
                               {getPropertyTitle()}
                               {property.isSubject && (
-                                <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
+                                <span className="text-white px-2 py-1 rounded text-xs font-medium" style={{ backgroundColor: '#1a3373' }}>
                                   Subject Property
                                 </span>
                               )}
@@ -14304,7 +14304,7 @@ export default function AdminAddClient() {
                             <CardTitle className="flex items-center gap-2">
                               Primary Residence
                               {property?.isSubject && (
-                                <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
+                                <span className="text-white px-2 py-1 rounded text-xs font-medium" style={{ backgroundColor: '#1a3373' }}>
                                   Subject Property
                                 </span>
                               )}
@@ -15067,7 +15067,7 @@ export default function AdminAddClient() {
                             <CardTitle className="flex items-center gap-2">
                               Second Home
                               {property?.isSubject && (
-                                <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
+                                <span className="text-white px-2 py-1 rounded text-xs font-medium" style={{ backgroundColor: '#1a3373' }}>
                                   Subject Property
                                 </span>
                               )}
@@ -15859,7 +15859,7 @@ export default function AdminAddClient() {
                             <CardTitle className="flex items-center gap-2">
                               Investment Property
                               {property?.isSubject && (
-                                <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
+                                <span className="text-white px-2 py-1 rounded text-xs font-medium" style={{ backgroundColor: '#1a3373' }}>
                                   Subject Property
                                 </span>
                               )}
@@ -16675,7 +16675,7 @@ export default function AdminAddClient() {
                             <CardTitle className="flex items-center gap-2">
                               {getPropertyTitle()}
                               {property.isSubject && (
-                                <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
+                                <span className="text-white px-2 py-1 rounded text-xs font-medium" style={{ backgroundColor: '#1a3373' }}>
                                   Subject Property
                                 </span>
                               )}
