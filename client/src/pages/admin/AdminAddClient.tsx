@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -1236,6 +1237,11 @@ export default function AdminAddClient() {
   // Current Residence "Present" toggle states
   const [isBorrowerCurrentResidencePresent, setIsBorrowerCurrentResidencePresent] = useState(false);
   const [isCoBorrowerCurrentResidencePresent, setIsCoBorrowerCurrentResidencePresent] = useState(false);
+
+  // Residence Information dialog states
+  const [isResidenceInfoDialogOpen, setIsResidenceInfoDialogOpen] = useState(false);
+  const [activeResidenceSection, setActiveResidenceSection] = useState<string | null>(null);
+  const [residenceInfoText, setResidenceInfoText] = useState('');
 
   // Employment toggle states - Years/Months Employed
   const [isShowingMonthsEmployed, setIsShowingMonthsEmployed] = useState(false);
@@ -8988,7 +8994,15 @@ export default function AdminAddClient() {
                     <div className="space-y-2 flex items-center gap-2">
                       <Label htmlFor="borrower-firstName" className="text-xl">Current Residence</Label>
                       {(form.watch('borrower.currentResidenceType') === 'rental' || form.watch('borrower.currentResidenceType') === 'other') && (
-                        <Info className="w-4 h-4 text-blue-500" data-testid="icon-current-residence-info" />
+                        <Info 
+                          className="w-4 h-4 text-blue-500 cursor-pointer hover:text-blue-600 transition-colors" 
+                          data-testid="icon-current-residence-info"
+                          onClick={() => {
+                            setActiveResidenceSection('borrower-current');
+                            setResidenceInfoText(form.getValues('borrower.residenceAddress.additionalInfo') || '');
+                            setIsResidenceInfoDialogOpen(true);
+                          }}
+                        />
                       )}
                     </div>
                     <div className="flex items-center gap-4 ml-1">
@@ -9291,7 +9305,15 @@ export default function AdminAddClient() {
                         <div className="space-y-2 flex items-center gap-2">
                           <Label htmlFor="borrower-prior-residence" className="text-xl">Prior Residence</Label>
                           {(form.watch('borrower.priorResidenceType') === 'rental' || form.watch('borrower.priorResidenceType') === 'other') && (
-                            <Info className="w-4 h-4 text-blue-500" data-testid="icon-prior-residence-info" />
+                            <Info 
+                              className="w-4 h-4 text-blue-500 cursor-pointer hover:text-blue-600 transition-colors" 
+                              data-testid="icon-prior-residence-info"
+                              onClick={() => {
+                                setActiveResidenceSection('borrower-prior');
+                                setResidenceInfoText(form.getValues('borrower.priorResidenceAddress.additionalInfo') || '');
+                                setIsResidenceInfoDialogOpen(true);
+                              }}
+                            />
                           )}
                         </div>
                         <div className="flex items-center gap-4 ml-1">
@@ -9602,7 +9624,15 @@ export default function AdminAddClient() {
                         <div className="space-y-2 flex items-center gap-2">
                           <Label htmlFor="borrower-prior-residence-2" className="text-xl">Prior Residence</Label>
                           {(form.watch('borrower.priorResidenceType2') === 'rental' || form.watch('borrower.priorResidenceType2') === 'other') && (
-                            <Info className="w-4 h-4 text-blue-500" data-testid="icon-prior-residence-2-info" />
+                            <Info 
+                              className="w-4 h-4 text-blue-500 cursor-pointer hover:text-blue-600 transition-colors" 
+                              data-testid="icon-prior-residence-2-info"
+                              onClick={() => {
+                                setActiveResidenceSection('borrower-prior-2');
+                                setResidenceInfoText(form.getValues('borrower.priorResidenceAddress2.additionalInfo') || '');
+                                setIsResidenceInfoDialogOpen(true);
+                              }}
+                            />
                           )}
                         </div>
                         <div className="flex items-center gap-4 ml-1">
@@ -10092,7 +10122,15 @@ export default function AdminAddClient() {
                     <div className="space-y-2 flex items-center gap-2">
                       <Label htmlFor="coBorrower-firstName" className="text-xl">Current Residence</Label>
                       {(form.watch('coBorrower.currentResidenceType') === 'rental' || form.watch('coBorrower.currentResidenceType') === 'other') && (
-                        <Info className="w-4 h-4 text-blue-500" data-testid="icon-current-residence-info-coborrower" />
+                        <Info 
+                          className="w-4 h-4 text-blue-500 cursor-pointer hover:text-blue-600 transition-colors" 
+                          data-testid="icon-current-residence-info-coborrower"
+                          onClick={() => {
+                            setActiveResidenceSection('coborrower-current');
+                            setResidenceInfoText(form.getValues('coBorrower.residenceAddress.additionalInfo') || '');
+                            setIsResidenceInfoDialogOpen(true);
+                          }}
+                        />
                       )}
                     </div>
                     <div className="flex items-center gap-4 ml-1">
@@ -10395,7 +10433,15 @@ export default function AdminAddClient() {
                         <div className="space-y-2 flex items-center gap-2">
                           <Label htmlFor="coBorrower-prior-residence" className="text-xl">Prior Residence</Label>
                           {(form.watch('coBorrower.priorResidenceType') === 'rental' || form.watch('coBorrower.priorResidenceType') === 'other') && (
-                            <Info className="w-4 h-4 text-blue-500" data-testid="icon-prior-residence-info-coborrower" />
+                            <Info 
+                              className="w-4 h-4 text-blue-500 cursor-pointer hover:text-blue-600 transition-colors" 
+                              data-testid="icon-prior-residence-info-coborrower"
+                              onClick={() => {
+                                setActiveResidenceSection('coborrower-prior');
+                                setResidenceInfoText(form.getValues('coBorrower.priorResidenceAddress.additionalInfo') || '');
+                                setIsResidenceInfoDialogOpen(true);
+                              }}
+                            />
                           )}
                         </div>
                         <div className="flex items-center gap-4 ml-1">
@@ -10658,7 +10704,15 @@ export default function AdminAddClient() {
                         <div className="space-y-2 flex items-center gap-2">
                           <Label htmlFor="coBorrower-prior-residence-2" className="text-xl">Prior Residence</Label>
                           {(form.watch('coBorrower.priorResidenceType2') === 'rental' || form.watch('coBorrower.priorResidenceType2') === 'other') && (
-                            <Info className="w-4 h-4 text-blue-500" data-testid="icon-prior-residence-2-info-coborrower" />
+                            <Info 
+                              className="w-4 h-4 text-blue-500 cursor-pointer hover:text-blue-600 transition-colors" 
+                              data-testid="icon-prior-residence-2-info-coborrower"
+                              onClick={() => {
+                                setActiveResidenceSection('coborrower-prior-2');
+                                setResidenceInfoText(form.getValues('coBorrower.priorResidenceAddress2.additionalInfo') || '');
+                                setIsResidenceInfoDialogOpen(true);
+                              }}
+                            />
                           )}
                         </div>
                         <div className="flex items-center gap-4 ml-1">
@@ -21210,6 +21264,60 @@ export default function AdminAddClient() {
               className="w-full"
             >
               OK
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Residence Information Dialog */}
+      <Dialog open={isResidenceInfoDialogOpen} onOpenChange={setIsResidenceInfoDialogOpen}>
+        <DialogContent className="max-w-md" data-testid="dialog-residence-info">
+          <DialogHeader>
+            <DialogTitle>Residence Information</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <Textarea
+              value={residenceInfoText}
+              onChange={(e) => setResidenceInfoText(e.target.value)}
+              placeholder=""
+              className="min-h-[150px] resize-none"
+              data-testid="textarea-residence-info"
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsResidenceInfoDialogOpen(false);
+                setResidenceInfoText('');
+                setActiveResidenceSection(null);
+              }}
+              data-testid="button-cancel-residence-info"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                // Save the text to the appropriate form field based on activeResidenceSection
+                if (activeResidenceSection === 'borrower-current') {
+                  form.setValue('borrower.residenceAddress.additionalInfo', residenceInfoText);
+                } else if (activeResidenceSection === 'borrower-prior') {
+                  form.setValue('borrower.priorResidenceAddress.additionalInfo', residenceInfoText);
+                } else if (activeResidenceSection === 'borrower-prior-2') {
+                  form.setValue('borrower.priorResidenceAddress2.additionalInfo', residenceInfoText);
+                } else if (activeResidenceSection === 'coborrower-current') {
+                  form.setValue('coBorrower.residenceAddress.additionalInfo', residenceInfoText);
+                } else if (activeResidenceSection === 'coborrower-prior') {
+                  form.setValue('coBorrower.priorResidenceAddress.additionalInfo', residenceInfoText);
+                } else if (activeResidenceSection === 'coborrower-prior-2') {
+                  form.setValue('coBorrower.priorResidenceAddress2.additionalInfo', residenceInfoText);
+                }
+                setIsResidenceInfoDialogOpen(false);
+                setActiveResidenceSection(null);
+              }}
+              data-testid="button-save-residence-info"
+            >
+              Save
             </Button>
           </DialogFooter>
         </DialogContent>
