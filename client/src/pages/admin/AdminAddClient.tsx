@@ -8956,17 +8956,17 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2 md:col-span-2">
-                              <Label htmlFor="borrower-time-address" className="text-sm">
+                              <Label htmlFor="borrower-prior-time-address" className="text-sm">
                                 Years / Months
                               </Label>
                               <Input
-                                id="borrower-time-address"
+                                id="borrower-prior-time-address"
                                 type="number"
                                 min="0"
-                                max={isShowingMonthsAtAddress ? 11 : 99}
-                                placeholder={isShowingMonthsAtAddress ? "Enter months" : "Enter years"}
-                                {...form.register(isShowingMonthsAtAddress ? 'borrower.monthsAtAddress' : 'borrower.yearsAtAddress')}
-                                data-testid="input-borrower-time-address"
+                                max={isShowingMonthsAtPriorAddress ? 11 : 99}
+                                placeholder={isShowingMonthsAtPriorAddress ? "Enter months" : "Enter years"}
+                                {...form.register(isShowingMonthsAtPriorAddress ? 'borrower.priorMonthsAtAddress' : 'borrower.priorYearsAtAddress')}
+                                data-testid="input-borrower-prior-time-address"
                               />
                             </div>
                           </div>
