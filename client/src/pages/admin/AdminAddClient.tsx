@@ -8869,6 +8869,36 @@ export default function AdminAddClient() {
                         <div className="space-y-2">
                           <Label htmlFor="borrower-prior-residence" className="text-xl">Prior Residence</Label>
                         </div>
+                        <div className="flex items-center gap-4 ml-1">
+                          <button
+                            type="button"
+                            onClick={() => form.setValue('borrower.priorResidenceType', 'owned')}
+                            className="flex items-center gap-1.5 group"
+                            data-testid="button-prior-residence-owned"
+                          >
+                            <div className={`w-3 h-3 rounded-full transition-colors ${
+                              form.watch('borrower.priorResidenceType') === 'owned' 
+                                ? 'bg-blue-500' 
+                                : 'border border-gray-400 bg-white hover:border-blue-400'
+                            }`}>
+                            </div>
+                            <span className="text-sm font-medium">Owned</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => form.setValue('borrower.priorResidenceType', 'rental')}
+                            className="flex items-center gap-1.5 group"
+                            data-testid="button-prior-residence-rental"
+                          >
+                            <div className={`w-3 h-3 rounded-full transition-colors ${
+                              form.watch('borrower.priorResidenceType') === 'rental' 
+                                ? 'bg-blue-500' 
+                                : 'border border-gray-400 bg-white hover:border-blue-400'
+                            }`}>
+                            </div>
+                            <span className="text-sm font-medium">Rental</span>
+                          </button>
+                        </div>
                       </div>
 
                       {/* Grey Background Box - Prior Residence */}
@@ -9056,6 +9086,36 @@ export default function AdminAddClient() {
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-10">
                         <div className="space-y-2">
                           <Label htmlFor="borrower-prior-residence-2" className="text-xl">Prior Residence</Label>
+                        </div>
+                        <div className="flex items-center gap-4 ml-1">
+                          <button
+                            type="button"
+                            onClick={() => form.setValue('borrower.priorResidenceType2', 'owned')}
+                            className="flex items-center gap-1.5 group"
+                            data-testid="button-prior-residence-2-owned"
+                          >
+                            <div className={`w-3 h-3 rounded-full transition-colors ${
+                              form.watch('borrower.priorResidenceType2') === 'owned' 
+                                ? 'bg-blue-500' 
+                                : 'border border-gray-400 bg-white hover:border-blue-400'
+                            }`}>
+                            </div>
+                            <span className="text-sm font-medium">Owned</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => form.setValue('borrower.priorResidenceType2', 'rental')}
+                            className="flex items-center gap-1.5 group"
+                            data-testid="button-prior-residence-2-rental"
+                          >
+                            <div className={`w-3 h-3 rounded-full transition-colors ${
+                              form.watch('borrower.priorResidenceType2') === 'rental' 
+                                ? 'bg-blue-500' 
+                                : 'border border-gray-400 bg-white hover:border-blue-400'
+                            }`}>
+                            </div>
+                            <span className="text-sm font-medium">Rental</span>
+                          </button>
                         </div>
                       </div>
 
