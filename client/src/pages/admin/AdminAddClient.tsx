@@ -14646,7 +14646,7 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
-                              <div className="space-y-2 md:col-span-1">
+                              <div className="space-y-2 md:col-span-2">
                                 <div className="min-h-5 flex items-center gap-2">
                                   <Label htmlFor={`property-owned-since-${propertyId}`}>Purchase Date</Label>
                                   <Tooltip>
@@ -14721,7 +14721,7 @@ export default function AdminAddClient() {
                                 </Select>
                               </div>
                               
-                              <div className="space-y-2 md:col-span-3">
+                              <div className="space-y-2 md:col-span-2">
                                 <div className="flex items-center gap-2">
                                   <Label htmlFor={`property-estimated-value-${propertyId}`}>Est. Value</Label>
                                   <div className="flex items-center gap-1">
@@ -15437,7 +15437,7 @@ export default function AdminAddClient() {
                                 />
                               </div>
                               
-                              <div className="space-y-2 md:col-span-1">
+                              <div className="space-y-2 md:col-span-2">
                                 <div className="min-h-5 flex items-center gap-2">
                                   <Label htmlFor={`second-home-owned-since-${propertyId}`}>Purchase Date</Label>
                                   <Tooltip>
@@ -15512,7 +15512,7 @@ export default function AdminAddClient() {
                                 </Select>
                               </div>
                               
-                              <div className="space-y-2 md:col-span-3">
+                              <div className="space-y-2 md:col-span-2">
                                 <div className="flex items-center gap-2">
                                   <Label htmlFor={`second-home-estimated-value-${propertyId}`}>Est. Value</Label>
                                   <div className="flex items-center gap-1">
