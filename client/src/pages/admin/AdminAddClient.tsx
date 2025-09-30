@@ -14532,66 +14532,62 @@ export default function AdminAddClient() {
                             <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                               <div className="space-y-2 md:col-span-3">
                                 <Label htmlFor={`property-address-street-${propertyId}`}>Street Address *</Label>
-                                <Input
-                                  id={`property-address-street-${propertyId}`}
-                                  {...(propertyIndex >= 0 ? form.register(`property.properties.${propertyIndex}.address.street` as any) : {})}
-                                  data-testid={`input-property-street-${propertyId}`}
-                                />
+                                <div 
+                                  className="flex h-9 w-full rounded-md border border-input bg-gray-50 px-3 py-1 text-sm shadow-sm items-center"
+                                  data-testid={`display-property-street-${propertyId}`}
+                                >
+                                  {form.watch('borrower.residenceAddress.street') || ''}
+                                </div>
                               </div>
                               
                               <div className="space-y-2 md:col-span-1">
                                 <Label htmlFor={`property-address-unit-${propertyId}`}>Unit/Apt</Label>
-                                <Input
-                                  id={`property-address-unit-${propertyId}`}
-                                  {...form.register(`property.properties.${propertyIndex >= 0 ? propertyIndex : 0}.address.unit` as any)}
-                                  data-testid={`input-property-unit-${propertyId}`}
-                                />
+                                <div 
+                                  className="flex h-9 w-full rounded-md border border-input bg-gray-50 px-3 py-1 text-sm shadow-sm items-center"
+                                  data-testid={`display-property-unit-${propertyId}`}
+                                >
+                                  {form.watch('borrower.residenceAddress.unit') || ''}
+                                </div>
                               </div>
                               
                               <div className="space-y-2 md:col-span-2">
                                 <Label htmlFor={`property-address-city-${propertyId}`}>City *</Label>
-                                <Input
-                                  id={`property-address-city-${propertyId}`}
-                                  {...form.register(`property.properties.${propertyIndex >= 0 ? propertyIndex : 0}.address.city` as any)}
-                                  data-testid={`input-property-city-${propertyId}`}
-                                />
+                                <div 
+                                  className="flex h-9 w-full rounded-md border border-input bg-gray-50 px-3 py-1 text-sm shadow-sm items-center"
+                                  data-testid={`display-property-city-${propertyId}`}
+                                >
+                                  {form.watch('borrower.residenceAddress.city') || ''}
+                                </div>
                               </div>
                               
                               <div className="space-y-2 md:col-span-1">
                                 <Label htmlFor={`property-address-state-${propertyId}`}>State *</Label>
-                                <Select 
-                                  value={propertyIndex >= 0 ? form.watch(`property.properties.${propertyIndex}.address.state`) : ''}
-                                  onValueChange={(value) => propertyIndex >= 0 && form.setValue(`property.properties.${propertyIndex}.address.state` as any, value)}
+                                <div 
+                                  className="flex h-9 w-full rounded-md border border-input bg-gray-50 px-3 py-1 text-sm shadow-sm items-center"
+                                  data-testid={`display-property-state-${propertyId}`}
                                 >
-                                  <SelectTrigger data-testid={`select-property-state-${propertyId}`}>
-                                    <SelectValue placeholder="Select" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {US_STATES.map((state) => (
-                                      <SelectItem key={state.value} value={state.value}>
-                                        {state.value}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
+                                  {form.watch('borrower.residenceAddress.state') || ''}
+                                </div>
                               </div>
                               
                               <div className="space-y-2 md:col-span-1">
                                 <Label htmlFor={`property-address-zip-${propertyId}`}>ZIP Code *</Label>
-                                <Input
-                                  id={`property-address-zip-${propertyId}`}
-                                  {...form.register(`property.properties.${propertyIndex >= 0 ? propertyIndex : 0}.address.zip` as any)}
-                                  data-testid={`input-property-zip-${propertyId}`}
-                                />
+                                <div 
+                                  className="flex h-9 w-full rounded-md border border-input bg-gray-50 px-3 py-1 text-sm shadow-sm items-center"
+                                  data-testid={`display-property-zip-${propertyId}`}
+                                >
+                                  {form.watch('borrower.residenceAddress.zip') || ''}
+                                </div>
                               </div>
                               
                               <div className="space-y-2 md:col-span-2">
                                 <Label htmlFor={`property-address-county-${propertyId}`}>County</Label>
-                                <Input
-                                  id={`property-address-county-${propertyId}`}
-                                  {...form.register(`property.properties.${propertyIndex >= 0 ? propertyIndex : 0}.address.county` as any)}
-                                  data-testid={`input-property-county-${propertyId}`}
-                                />
+                                <div 
+                                  className="flex h-9 w-full rounded-md border border-input bg-gray-50 px-3 py-1 text-sm shadow-sm items-center"
+                                  data-testid={`display-property-county-${propertyId}`}
+                                >
+                                  {form.watch('borrower.residenceAddress.county') || ''}
+                                </div>
                               </div>
                               
                               <div className="space-y-2 md:col-span-2">
