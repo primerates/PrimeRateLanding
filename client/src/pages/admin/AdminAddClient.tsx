@@ -8877,19 +8877,34 @@ export default function AdminAddClient() {
                             id="borrower-residence-from"
                             type="text"
                             placeholder="mm/dd/yyyy"
-                            {...form.register('borrower.residenceAddress.from', {
-                              onChange: (e) => {
-                                let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
-                                if (value.length >= 2) {
-                                  value = value.slice(0, 2) + '/' + value.slice(2);
-                                }
-                                if (value.length >= 5) {
-                                  value = value.slice(0, 5) + '/' + value.slice(5);
-                                }
-                                value = value.slice(0, 10); // Limit to mm/dd/yyyy
-                                form.setValue('borrower.residenceAddress.from', value);
+                            {...form.register('borrower.residenceAddress.from')}
+                            onChange={(e) => {
+                              const input = e.target.value;
+                              const currentValue = form.getValues('borrower.residenceAddress.from') || '';
+                              
+                              // If input is empty or being deleted, allow it
+                              if (input.length === 0) {
+                                form.setValue('borrower.residenceAddress.from', '');
+                                return;
                               }
-                            })}
+                              
+                              // If user is deleting (input shorter than current), just update without formatting
+                              if (input.length < currentValue.length) {
+                                form.setValue('borrower.residenceAddress.from', input);
+                                return;
+                              }
+                              
+                              // Otherwise, apply formatting
+                              let value = input.replace(/\D/g, ''); // Remove non-digits
+                              if (value.length >= 2) {
+                                value = value.slice(0, 2) + '/' + value.slice(2);
+                              }
+                              if (value.length >= 5) {
+                                value = value.slice(0, 5) + '/' + value.slice(5);
+                              }
+                              value = value.slice(0, 10); // Limit to mm/dd/yyyy
+                              form.setValue('borrower.residenceAddress.from', value);
+                            }}
                             data-testid="input-borrower-residence-from"
                             className="placeholder:text-[10px]"
                           />
@@ -8901,19 +8916,34 @@ export default function AdminAddClient() {
                             id="borrower-residence-to"
                             type="text"
                             placeholder="mm/dd/yyyy"
-                            {...form.register('borrower.residenceAddress.to', {
-                              onChange: (e) => {
-                                let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
-                                if (value.length >= 2) {
-                                  value = value.slice(0, 2) + '/' + value.slice(2);
-                                }
-                                if (value.length >= 5) {
-                                  value = value.slice(0, 5) + '/' + value.slice(5);
-                                }
-                                value = value.slice(0, 10); // Limit to mm/dd/yyyy
-                                form.setValue('borrower.residenceAddress.to', value);
+                            {...form.register('borrower.residenceAddress.to')}
+                            onChange={(e) => {
+                              const input = e.target.value;
+                              const currentValue = form.getValues('borrower.residenceAddress.to') || '';
+                              
+                              // If input is empty or being deleted, allow it
+                              if (input.length === 0) {
+                                form.setValue('borrower.residenceAddress.to', '');
+                                return;
                               }
-                            })}
+                              
+                              // If user is deleting (input shorter than current), just update without formatting
+                              if (input.length < currentValue.length) {
+                                form.setValue('borrower.residenceAddress.to', input);
+                                return;
+                              }
+                              
+                              // Otherwise, apply formatting
+                              let value = input.replace(/\D/g, ''); // Remove non-digits
+                              if (value.length >= 2) {
+                                value = value.slice(0, 2) + '/' + value.slice(2);
+                              }
+                              if (value.length >= 5) {
+                                value = value.slice(0, 5) + '/' + value.slice(5);
+                              }
+                              value = value.slice(0, 10); // Limit to mm/dd/yyyy
+                              form.setValue('borrower.residenceAddress.to', value);
+                            }}
                             data-testid="input-borrower-residence-to"
                             className="placeholder:text-[10px]"
                           />
