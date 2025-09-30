@@ -178,8 +178,16 @@ const BorrowerResidenceTimeCalculator = React.memo<{ control: any; setValue: any
     const calcYears = Math.floor(totalMonths / 12);
     const calcMonths = totalMonths % 12;
 
-    // Display as Years.Months format (e.g., 2.4 for 2 years 4 months)
-    const display = calcMonths === 0 ? calcYears.toString() : `${calcYears}.${calcMonths}`;
+    // Display with Years or Months suffix based on value
+    let display = '';
+    if (calcYears >= 1) {
+      // Show as Years (e.g., "1.6 Years" or "2 Years")
+      const yearValue = calcMonths === 0 ? calcYears.toString() : `${calcYears}.${calcMonths}`;
+      display = `${yearValue} Years`;
+    } else if (calcMonths > 0) {
+      // Show as Months (e.g., "0.4 Months")
+      display = `0.${calcMonths} Months`;
+    }
     
     return { displayValue: display, years: calcYears, months: calcMonths };
   }, [fromDate, toDate]);
@@ -8913,7 +8921,7 @@ export default function AdminAddClient() {
                         
                         <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="borrower-time-address" className="text-sm">
-                            Years / Months
+                            Duration
                           </Label>
                           <BorrowerResidenceTimeCalculator control={form.control} setValue={form.setValue} />
                         </div>
@@ -9099,7 +9107,7 @@ export default function AdminAddClient() {
                             
                             <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="borrower-prior-time-address" className="text-sm">
-                                Years / Months
+                                Duration
                               </Label>
                               <Input
                                 id="borrower-prior-time-address"
@@ -9281,7 +9289,7 @@ export default function AdminAddClient() {
                             
                             <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="borrower-prior-time-address-2" className="text-sm">
-                                Years / Months
+                                Duration
                               </Label>
                               <Input
                                 id="borrower-prior-time-address-2"
@@ -9731,7 +9739,7 @@ export default function AdminAddClient() {
                         
                         <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="coBorrower-time-address" className="text-sm">
-                            Years / Months
+                            Duration
                           </Label>
                           <Input
                             id="coBorrower-time-address"
@@ -9883,7 +9891,7 @@ export default function AdminAddClient() {
                             
                             <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="coBorrower-prior-time-address" className="text-sm">
-                                Years / Months
+                                Duration
                               </Label>
                               <Input
                                 id="coBorrower-prior-time-address"
@@ -10065,7 +10073,7 @@ export default function AdminAddClient() {
                             
                             <div className="space-y-2 md:col-span-2">
                               <Label htmlFor="coBorrower-prior-time-address-2" className="text-sm">
-                                Years / Months
+                                Duration
                               </Label>
                               <Input
                                 id="coBorrower-prior-time-address-2"
