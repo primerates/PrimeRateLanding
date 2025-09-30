@@ -8735,7 +8735,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2 md:col-span-2">
+                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="borrower-residence-city">City</Label>
                           <Input
                             id="borrower-residence-city"
