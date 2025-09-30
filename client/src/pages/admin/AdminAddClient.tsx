@@ -412,6 +412,56 @@ const CoBorrowerPriorResidence2TimeCalculator = React.memo<{ control: any; setVa
   );
 });
 
+const CoBorrowerResidenceTimeCalculator = React.memo<{ control: any; setValue: any }>(({ control, setValue }) => {
+  const fromDate = useWatch({ control, name: 'coBorrower.residenceAddress.from' }) || '';
+  const toDate = useWatch({ control, name: 'coBorrower.residenceAddress.to' }) || '';
+
+  const { displayValue, years, months } = useMemo(() => {
+    if (!fromDate || !toDate) return { displayValue: '', years: 0, months: 0 };
+
+    const from = new Date(fromDate);
+    const to = new Date(toDate);
+
+    if (isNaN(from.getTime()) || isNaN(to.getTime())) return { displayValue: '', years: 0, months: 0 };
+
+    let yearsDiff = to.getFullYear() - from.getFullYear();
+    let monthsDiff = to.getMonth() - from.getMonth();
+    let daysDiff = to.getDate() - from.getDate();
+    
+    if (daysDiff >= 0) {
+      monthsDiff += 1;
+    }
+    
+    let totalMonths = yearsDiff * 12 + monthsDiff;
+
+    if (totalMonths < 0) return { displayValue: '', years: 0, months: 0 };
+
+    const calcYears = Math.floor(totalMonths / 12);
+    const calcMonths = totalMonths % 12;
+
+    let display = '';
+    if (calcYears >= 1) {
+      const yearValue = calcMonths === 0 ? calcYears.toString() : `${calcYears}.${calcMonths}`;
+      display = `${yearValue} Years`;
+    } else if (calcMonths > 0) {
+      display = `0.${calcMonths} Months`;
+    }
+    
+    return { displayValue: display, years: calcYears, months: calcMonths };
+  }, [fromDate, toDate]);
+
+  React.useEffect(() => {
+    setValue('coBorrower.yearsAtAddress', years, { shouldDirty: false });
+    setValue('coBorrower.monthsAtAddress', months, { shouldDirty: false });
+  }, [years, months, setValue]);
+
+  return (
+    <div className="h-9 px-3 py-2 border border-input bg-background rounded-md flex items-center text-sm">
+      <span className="text-muted-foreground">{displayValue || '—'}</span>
+    </div>
+  );
+});
+
 // US States for dropdown
 const US_STATES = [
   { value: 'AL', label: 'Alabama' },
@@ -10110,18 +10160,88 @@ export default function AdminAddClient() {
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
+                          <Label htmlFor="coBorrower-residence-from">From</Label>
+                          <Input
+                            id="coBorrower-residence-from"
+                            type="text"
+                            placeholder="mm/dd/yyyy"
+                            {...form.register('coBorrower.residenceAddress.from')}
+                            onChange={(e) => {
+                              const input = e.target.value;
+                              const currentValue = form.getValues('coBorrower.residenceAddress.from') || '';
+                              
+                              // If input is empty or being deleted, allow it
+                              if (input.length === 0) {
+                                form.setValue('coBorrower.residenceAddress.from', '');
+                                return;
+                              }
+                              
+                              // If user is deleting (input shorter than current), just update without formatting
+                              if (input.length < currentValue.length) {
+                                form.setValue('coBorrower.residenceAddress.from', input);
+                                return;
+                              }
+                              
+                              // Otherwise, apply formatting
+                              let value = input.replace(/\D/g, ''); // Remove non-digits
+                              if (value.length >= 2) {
+                                value = value.slice(0, 2) + '/' + value.slice(2);
+                              }
+                              if (value.length >= 5) {
+                                value = value.slice(0, 5) + '/' + value.slice(5);
+                              }
+                              value = value.slice(0, 10); // Limit to mm/dd/yyyy
+                              form.setValue('coBorrower.residenceAddress.from', value);
+                            }}
+                            data-testid="input-coborrower-residence-from"
+                            className="placeholder:text-[10px]"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2 md:col-span-1">
+                          <Label htmlFor="coBorrower-residence-to">To</Label>
+                          <Input
+                            id="coBorrower-residence-to"
+                            type="text"
+                            placeholder="mm/dd/yyyy"
+                            {...form.register('coBorrower.residenceAddress.to')}
+                            onChange={(e) => {
+                              const input = e.target.value;
+                              const currentValue = form.getValues('coBorrower.residenceAddress.to') || '';
+                              
+                              // If input is empty or being deleted, allow it
+                              if (input.length === 0) {
+                                form.setValue('coBorrower.residenceAddress.to', '');
+                                return;
+                              }
+                              
+                              // If user is deleting (input shorter than current), just update without formatting
+                              if (input.length < currentValue.length) {
+                                form.setValue('coBorrower.residenceAddress.to', input);
+                                return;
+                              }
+                              
+                              // Otherwise, apply formatting
+                              let value = input.replace(/\D/g, ''); // Remove non-digits
+                              if (value.length >= 2) {
+                                value = value.slice(0, 2) + '/' + value.slice(2);
+                              }
+                              if (value.length >= 5) {
+                                value = value.slice(0, 5) + '/' + value.slice(5);
+                              }
+                              value = value.slice(0, 10); // Limit to mm/dd/yyyy
+                              form.setValue('coBorrower.residenceAddress.to', value);
+                            }}
+                            data-testid="input-coborrower-residence-to"
+                            className="placeholder:text-[10px]"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="coBorrower-time-address" className="text-sm">
                             Duration
                           </Label>
-                          <Input
-                            id="coBorrower-time-address"
-                            type="number"
-                            min="0"
-                            max={isShowingCoBorrowerMonthsAtAddress ? 11 : 99}
-                            placeholder={isShowingCoBorrowerMonthsAtAddress ? "Enter months" : "Enter years"}
-                            {...form.register(isShowingCoBorrowerMonthsAtAddress ? 'coBorrower.monthsAtAddress' : 'coBorrower.yearsAtAddress')}
-                            data-testid="input-coborrower-time-address"
-                          />
+                          <CoBorrowerResidenceTimeCalculator control={form.control} setValue={form.setValue} />
                         </div>
                       </div>
                     </CardContent>
