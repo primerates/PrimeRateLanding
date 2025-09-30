@@ -8675,7 +8675,7 @@ export default function AdminAddClient() {
                     <div className="space-y-2">
                       <Label htmlFor="borrower-firstName" className="text-xl">Current Residence</Label>
                     </div>
-                    <div className="flex items-center gap-4 ml-4">
+                    <div className="flex items-center gap-4 ml-1">
                       <button
                         type="button"
                         onClick={() => form.setValue('borrower.currentResidenceType', 'owned')}
@@ -8691,7 +8691,7 @@ export default function AdminAddClient() {
                             <div className="w-1.5 h-1.5 rounded-full bg-white" />
                           )}
                         </div>
-                        <span className="text-xs font-medium">Owned</span>
+                        <span className="text-sm font-medium">Owned</span>
                       </button>
                       <button
                         type="button"
@@ -8708,7 +8708,7 @@ export default function AdminAddClient() {
                             <div className="w-1.5 h-1.5 rounded-full bg-white" />
                           )}
                         </div>
-                        <span className="text-xs font-medium">Rental</span>
+                        <span className="text-sm font-medium">Rental</span>
                       </button>
                     </div>
                   </div>
