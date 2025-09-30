@@ -13513,7 +13513,7 @@ export default function AdminAddClient() {
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-8">
-                            <CardTitle className={`flex items-center gap-2 ${property.isSubject ? 'text-green-600' : ''}`}>
+                            <CardTitle className="flex items-center gap-2">
                               {getPropertyTitle()}
                               {property.isSubject && (
                                 <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
@@ -14301,7 +14301,7 @@ export default function AdminAddClient() {
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-8">
-                            <CardTitle className={`flex items-center gap-2 ${property?.isSubject ? 'text-green-600' : ''}`}>
+                            <CardTitle className="flex items-center gap-2">
                               Primary Residence
                               {property?.isSubject && (
                                 <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
@@ -15064,7 +15064,7 @@ export default function AdminAddClient() {
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-8">
-                            <CardTitle className={`flex items-center gap-2 ${property?.isSubject ? 'text-green-600' : ''}`}>
+                            <CardTitle className="flex items-center gap-2">
                               Second Home
                               {property?.isSubject && (
                                 <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
@@ -15856,7 +15856,7 @@ export default function AdminAddClient() {
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-8">
-                            <CardTitle className={`flex items-center gap-2 ${property?.isSubject ? 'text-green-600' : ''}`}>
+                            <CardTitle className="flex items-center gap-2">
                               Investment Property
                               {property?.isSubject && (
                                 <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
@@ -16672,7 +16672,7 @@ export default function AdminAddClient() {
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-8">
-                            <CardTitle className={`flex items-center gap-2 ${property.isSubject ? 'text-green-600' : ''}`}>
+                            <CardTitle className="flex items-center gap-2">
                               {getPropertyTitle()}
                               {property.isSubject && (
                                 <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
