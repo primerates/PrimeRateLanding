@@ -212,6 +212,206 @@ const BorrowerResidenceTimeCalculator = React.memo<{ control: any; setValue: any
   );
 });
 
+const BorrowerPriorResidenceTimeCalculator = React.memo<{ control: any; setValue: any }>(({ control, setValue }) => {
+  const fromDate = useWatch({ control, name: 'borrower.priorResidenceAddress.from' }) || '';
+  const toDate = useWatch({ control, name: 'borrower.priorResidenceAddress.to' }) || '';
+
+  const { displayValue, years, months } = useMemo(() => {
+    if (!fromDate || !toDate) return { displayValue: '', years: 0, months: 0 };
+
+    const from = new Date(fromDate);
+    const to = new Date(toDate);
+
+    if (isNaN(from.getTime()) || isNaN(to.getTime())) return { displayValue: '', years: 0, months: 0 };
+
+    let yearsDiff = to.getFullYear() - from.getFullYear();
+    let monthsDiff = to.getMonth() - from.getMonth();
+    let daysDiff = to.getDate() - from.getDate();
+    
+    if (daysDiff >= 0) {
+      monthsDiff += 1;
+    }
+    
+    let totalMonths = yearsDiff * 12 + monthsDiff;
+
+    if (totalMonths < 0) return { displayValue: '', years: 0, months: 0 };
+
+    const calcYears = Math.floor(totalMonths / 12);
+    const calcMonths = totalMonths % 12;
+
+    let display = '';
+    if (calcYears >= 1) {
+      const yearValue = calcMonths === 0 ? calcYears.toString() : `${calcYears}.${calcMonths}`;
+      display = `${yearValue} Years`;
+    } else if (calcMonths > 0) {
+      display = `0.${calcMonths} Months`;
+    }
+    
+    return { displayValue: display, years: calcYears, months: calcMonths };
+  }, [fromDate, toDate]);
+
+  React.useEffect(() => {
+    setValue('borrower.priorYearsAtAddress', years, { shouldDirty: false });
+    setValue('borrower.priorMonthsAtAddress', months, { shouldDirty: false });
+  }, [years, months, setValue]);
+
+  return (
+    <div className="h-9 px-3 py-2 border border-input bg-background rounded-md flex items-center text-sm">
+      <span className="text-muted-foreground">{displayValue || '—'}</span>
+    </div>
+  );
+});
+
+const BorrowerPriorResidence2TimeCalculator = React.memo<{ control: any; setValue: any }>(({ control, setValue }) => {
+  const fromDate = useWatch({ control, name: 'borrower.priorResidenceAddress2.from' }) || '';
+  const toDate = useWatch({ control, name: 'borrower.priorResidenceAddress2.to' }) || '';
+
+  const { displayValue, years, months } = useMemo(() => {
+    if (!fromDate || !toDate) return { displayValue: '', years: 0, months: 0 };
+
+    const from = new Date(fromDate);
+    const to = new Date(toDate);
+
+    if (isNaN(from.getTime()) || isNaN(to.getTime())) return { displayValue: '', years: 0, months: 0 };
+
+    let yearsDiff = to.getFullYear() - from.getFullYear();
+    let monthsDiff = to.getMonth() - from.getMonth();
+    let daysDiff = to.getDate() - from.getDate();
+    
+    if (daysDiff >= 0) {
+      monthsDiff += 1;
+    }
+    
+    let totalMonths = yearsDiff * 12 + monthsDiff;
+
+    if (totalMonths < 0) return { displayValue: '', years: 0, months: 0 };
+
+    const calcYears = Math.floor(totalMonths / 12);
+    const calcMonths = totalMonths % 12;
+
+    let display = '';
+    if (calcYears >= 1) {
+      const yearValue = calcMonths === 0 ? calcYears.toString() : `${calcYears}.${calcMonths}`;
+      display = `${yearValue} Years`;
+    } else if (calcMonths > 0) {
+      display = `0.${calcMonths} Months`;
+    }
+    
+    return { displayValue: display, years: calcYears, months: calcMonths };
+  }, [fromDate, toDate]);
+
+  React.useEffect(() => {
+    setValue('borrower.priorYearsAtAddress2', years, { shouldDirty: false });
+    setValue('borrower.priorMonthsAtAddress2', months, { shouldDirty: false });
+  }, [years, months, setValue]);
+
+  return (
+    <div className="h-9 px-3 py-2 border border-input bg-background rounded-md flex items-center text-sm">
+      <span className="text-muted-foreground">{displayValue || '—'}</span>
+    </div>
+  );
+});
+
+const CoBorrowerPriorResidenceTimeCalculator = React.memo<{ control: any; setValue: any }>(({ control, setValue }) => {
+  const fromDate = useWatch({ control, name: 'coBorrower.priorResidenceAddress.from' }) || '';
+  const toDate = useWatch({ control, name: 'coBorrower.priorResidenceAddress.to' }) || '';
+
+  const { displayValue, years, months } = useMemo(() => {
+    if (!fromDate || !toDate) return { displayValue: '', years: 0, months: 0 };
+
+    const from = new Date(fromDate);
+    const to = new Date(toDate);
+
+    if (isNaN(from.getTime()) || isNaN(to.getTime())) return { displayValue: '', years: 0, months: 0 };
+
+    let yearsDiff = to.getFullYear() - from.getFullYear();
+    let monthsDiff = to.getMonth() - from.getMonth();
+    let daysDiff = to.getDate() - from.getDate();
+    
+    if (daysDiff >= 0) {
+      monthsDiff += 1;
+    }
+    
+    let totalMonths = yearsDiff * 12 + monthsDiff;
+
+    if (totalMonths < 0) return { displayValue: '', years: 0, months: 0 };
+
+    const calcYears = Math.floor(totalMonths / 12);
+    const calcMonths = totalMonths % 12;
+
+    let display = '';
+    if (calcYears >= 1) {
+      const yearValue = calcMonths === 0 ? calcYears.toString() : `${calcYears}.${calcMonths}`;
+      display = `${yearValue} Years`;
+    } else if (calcMonths > 0) {
+      display = `0.${calcMonths} Months`;
+    }
+    
+    return { displayValue: display, years: calcYears, months: calcMonths };
+  }, [fromDate, toDate]);
+
+  React.useEffect(() => {
+    setValue('coBorrower.priorYearsAtAddress', years, { shouldDirty: false });
+    setValue('coBorrower.priorMonthsAtAddress', months, { shouldDirty: false });
+  }, [years, months, setValue]);
+
+  return (
+    <div className="h-9 px-3 py-2 border border-input bg-background rounded-md flex items-center text-sm">
+      <span className="text-muted-foreground">{displayValue || '—'}</span>
+    </div>
+  );
+});
+
+const CoBorrowerPriorResidence2TimeCalculator = React.memo<{ control: any; setValue: any }>(({ control, setValue }) => {
+  const fromDate = useWatch({ control, name: 'coBorrower.priorResidenceAddress2.from' }) || '';
+  const toDate = useWatch({ control, name: 'coBorrower.priorResidenceAddress2.to' }) || '';
+
+  const { displayValue, years, months } = useMemo(() => {
+    if (!fromDate || !toDate) return { displayValue: '', years: 0, months: 0 };
+
+    const from = new Date(fromDate);
+    const to = new Date(toDate);
+
+    if (isNaN(from.getTime()) || isNaN(to.getTime())) return { displayValue: '', years: 0, months: 0 };
+
+    let yearsDiff = to.getFullYear() - from.getFullYear();
+    let monthsDiff = to.getMonth() - from.getMonth();
+    let daysDiff = to.getDate() - from.getDate();
+    
+    if (daysDiff >= 0) {
+      monthsDiff += 1;
+    }
+    
+    let totalMonths = yearsDiff * 12 + monthsDiff;
+
+    if (totalMonths < 0) return { displayValue: '', years: 0, months: 0 };
+
+    const calcYears = Math.floor(totalMonths / 12);
+    const calcMonths = totalMonths % 12;
+
+    let display = '';
+    if (calcYears >= 1) {
+      const yearValue = calcMonths === 0 ? calcYears.toString() : `${calcYears}.${calcMonths}`;
+      display = `${yearValue} Years`;
+    } else if (calcMonths > 0) {
+      display = `0.${calcMonths} Months`;
+    }
+    
+    return { displayValue: display, years: calcYears, months: calcMonths };
+  }, [fromDate, toDate]);
+
+  React.useEffect(() => {
+    setValue('coBorrower.priorYearsAtAddress2', years, { shouldDirty: false });
+    setValue('coBorrower.priorMonthsAtAddress2', months, { shouldDirty: false });
+  }, [years, months, setValue]);
+
+  return (
+    <div className="h-9 px-3 py-2 border border-input bg-background rounded-md flex items-center text-sm">
+      <span className="text-muted-foreground">{displayValue || '—'}</span>
+    </div>
+  );
+});
+
 // US States for dropdown
 const US_STATES = [
   { value: 'AL', label: 'Alabama' },
@@ -9224,15 +9424,7 @@ export default function AdminAddClient() {
                               <Label htmlFor="borrower-prior-time-address" className="text-sm">
                                 Duration
                               </Label>
-                              <Input
-                                id="borrower-prior-time-address"
-                                type="number"
-                                min="0"
-                                max={isShowingMonthsAtPriorAddress ? 11 : 99}
-                                placeholder={isShowingMonthsAtPriorAddress ? "Enter months" : "Enter years"}
-                                {...form.register(isShowingMonthsAtPriorAddress ? 'borrower.priorMonthsAtAddress' : 'borrower.priorYearsAtAddress')}
-                                data-testid="input-borrower-prior-time-address"
-                              />
+                              <BorrowerPriorResidenceTimeCalculator control={form.control} setValue={form.setValue} />
                             </div>
                           </div>
                         </CardContent>
@@ -9478,14 +9670,7 @@ export default function AdminAddClient() {
                               <Label htmlFor="borrower-prior-time-address-2" className="text-sm">
                                 Duration
                               </Label>
-                              <Input
-                                id="borrower-prior-time-address-2"
-                                type="number"
-                                min="0"
-                                placeholder="Enter years or months"
-                                {...form.register('borrower.priorYearsAtAddress2')}
-                                data-testid="input-borrower-prior-time-address-2"
-                              />
+                              <BorrowerPriorResidence2TimeCalculator control={form.control} setValue={form.setValue} />
                             </div>
                           </div>
                         </CardContent>
@@ -10152,15 +10337,7 @@ export default function AdminAddClient() {
                               <Label htmlFor="coBorrower-prior-time-address" className="text-sm">
                                 Duration
                               </Label>
-                              <Input
-                                id="coBorrower-prior-time-address"
-                                type="number"
-                                min="0"
-                                max={isShowingCoBorrowerMonthsAtPriorAddress ? 11 : 99}
-                                placeholder={isShowingCoBorrowerMonthsAtPriorAddress ? "Enter months" : "Enter years"}
-                                {...form.register(isShowingCoBorrowerMonthsAtPriorAddress ? 'coBorrower.priorMonthsAtAddress' : 'coBorrower.priorYearsAtAddress')}
-                                data-testid="input-coborrower-prior-time-address"
-                              />
+                              <CoBorrowerPriorResidenceTimeCalculator control={form.control} setValue={form.setValue} />
                             </div>
                           </div>
                         </CardContent>
@@ -10406,14 +10583,7 @@ export default function AdminAddClient() {
                               <Label htmlFor="coBorrower-prior-time-address-2" className="text-sm">
                                 Duration
                               </Label>
-                              <Input
-                                id="coBorrower-prior-time-address-2"
-                                type="number"
-                                min="0"
-                                placeholder="Enter years or months"
-                                {...form.register('coBorrower.priorYearsAtAddress2')}
-                                data-testid="input-coborrower-prior-time-address-2"
-                              />
+                              <CoBorrowerPriorResidence2TimeCalculator control={form.control} setValue={form.setValue} />
                             </div>
                           </div>
                         </CardContent>
