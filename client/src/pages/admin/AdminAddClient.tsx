@@ -8821,6 +8821,28 @@ export default function AdminAddClient() {
                           )}
                         </div>
                         
+                        <div className="space-y-2 md:col-span-1">
+                          <Label htmlFor="borrower-residence-from">From</Label>
+                          <Input
+                            id="borrower-residence-from"
+                            type="date"
+                            {...form.register('borrower.residenceAddress.from')}
+                            data-testid="input-borrower-residence-from"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2 md:col-span-1">
+                          <Label htmlFor="borrower-residence-to">To</Label>
+                          <Input
+                            id="borrower-residence-to"
+                            type="date"
+                            {...form.register('borrower.residenceAddress.to')}
+                            data-testid="input-borrower-residence-to"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
                         <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="borrower-time-address" className="text-sm">
                             Years / Months
