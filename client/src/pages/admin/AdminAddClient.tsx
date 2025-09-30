@@ -168,10 +168,17 @@ const BorrowerResidenceTimeCalculator = React.memo<{ control: any; setValue: any
 
     if (isNaN(from.getTime()) || isNaN(to.getTime())) return { displayValue: '', years: 0, months: 0 };
 
-    // Calculate difference in months
-    const yearsDiff = to.getFullYear() - from.getFullYear();
-    const monthsDiff = to.getMonth() - from.getMonth();
-    const totalMonths = yearsDiff * 12 + monthsDiff;
+    // Calculate difference in months accounting for days
+    let yearsDiff = to.getFullYear() - from.getFullYear();
+    let monthsDiff = to.getMonth() - from.getMonth();
+    let daysDiff = to.getDate() - from.getDate();
+    
+    // If the TO day is greater than or equal to FROM day, we're into the next month period
+    if (daysDiff >= 0) {
+      monthsDiff += 1;
+    }
+    
+    let totalMonths = yearsDiff * 12 + monthsDiff;
 
     if (totalMonths < 0) return { displayValue: '', years: 0, months: 0 };
 
