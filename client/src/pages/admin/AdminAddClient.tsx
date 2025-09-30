@@ -8669,7 +8669,7 @@ export default function AdminAddClient() {
                   {/* Row 3 */}
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="borrower-firstName">First Name</Label>
+                      <Label htmlFor="borrower-firstName" className="text-2xl">Current Residence</Label>
                     </div>
                   </div>
 
