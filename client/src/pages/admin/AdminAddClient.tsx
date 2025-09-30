@@ -4653,7 +4653,7 @@ export default function AdminAddClient() {
     const propertyZipBinding = useFieldBinding('purchaseLoan.propertyAddress.zipCode', idPrefix, targetForm);
     const propertyCountyBinding = useFieldBinding('purchaseLoan.propertyAddress.county', idPrefix, targetForm);
     
-    const cardClassName = borderVariant === 'blue' ? 'border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200' : '';
+    const cardClassName = borderVariant === 'blue' ? 'border-l-4 border-l-cyan-500 hover:border-cyan-500 focus-within:border-cyan-500 transition-colors duration-200' : '';
     
     return (
       <Card className={cardClassName}>
