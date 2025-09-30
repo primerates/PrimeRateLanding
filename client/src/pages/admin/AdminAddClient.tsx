@@ -8868,7 +8868,19 @@ export default function AdminAddClient() {
                             id="borrower-residence-from"
                             type="text"
                             placeholder="mm/dd/yyyy"
-                            {...form.register('borrower.residenceAddress.from')}
+                            {...form.register('borrower.residenceAddress.from', {
+                              onChange: (e) => {
+                                let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                                if (value.length >= 2) {
+                                  value = value.slice(0, 2) + '/' + value.slice(2);
+                                }
+                                if (value.length >= 5) {
+                                  value = value.slice(0, 5) + '/' + value.slice(5);
+                                }
+                                value = value.slice(0, 10); // Limit to mm/dd/yyyy
+                                form.setValue('borrower.residenceAddress.from', value);
+                              }
+                            })}
                             data-testid="input-borrower-residence-from"
                             className="placeholder:text-[10px]"
                           />
@@ -8880,7 +8892,19 @@ export default function AdminAddClient() {
                             id="borrower-residence-to"
                             type="text"
                             placeholder="mm/dd/yyyy"
-                            {...form.register('borrower.residenceAddress.to')}
+                            {...form.register('borrower.residenceAddress.to', {
+                              onChange: (e) => {
+                                let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                                if (value.length >= 2) {
+                                  value = value.slice(0, 2) + '/' + value.slice(2);
+                                }
+                                if (value.length >= 5) {
+                                  value = value.slice(0, 5) + '/' + value.slice(5);
+                                }
+                                value = value.slice(0, 10); // Limit to mm/dd/yyyy
+                                form.setValue('borrower.residenceAddress.to', value);
+                              }
+                            })}
                             data-testid="input-borrower-residence-to"
                             className="placeholder:text-[10px]"
                           />
