@@ -8829,7 +8829,7 @@ export default function AdminAddClient() {
                             placeholder="mm/dd/yyyy"
                             {...form.register('borrower.residenceAddress.from')}
                             data-testid="input-borrower-residence-from"
-                            className="text-xs"
+                            className="text-xs placeholder:text-[10px]"
                           />
                         </div>
                         
@@ -8841,7 +8841,7 @@ export default function AdminAddClient() {
                             placeholder="mm/dd/yyyy"
                             {...form.register('borrower.residenceAddress.to')}
                             data-testid="input-borrower-residence-to"
-                            className="text-xs"
+                            className="text-xs placeholder:text-[10px]"
                           />
                         </div>
                         
