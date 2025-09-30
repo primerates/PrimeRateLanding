@@ -9378,32 +9378,153 @@ export default function AdminAddClient() {
                       </div>
                     </div>
 
-                    {/* Grey Background Box - copied from Borrower Employer */}
+                    {/* Grey Background Box - Complete Address Row from Co-Borrower Residence */}
                     <Card className={`bg-muted ${
                       showIncomeCardAnimation['borrower-employment'] ? 'animate-roll-down-subject-property' : ''
                     }`}>
                       <CardContent className="pt-6">
-                        <div className="space-y-3">
-                          <div className="flex gap-4">
-                            <div className="flex items-center space-x-2">
-                              <input
-                                type="radio"
-                                id="coborrower-employment-current"
-                                name="coborrower-employment-type"
-                                data-testid="radio-coborrower-employment-current"
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                          <div className="space-y-2 md:col-span-3">
+                            <Label htmlFor="coBorrower-residence-street">Street Address *</Label>
+                            <Input
+                              id="coBorrower-residence-street"
+                              {...form.register('coBorrower.residenceAddress.street', {
+                                onChange: () => setTimeout(() => autoCopyCoBorrowerAddressToProperty(), 100)
+                              })}
+                              data-testid="input-coborrower-residence-street"
+                            />
+                            {form.formState.errors.coBorrower?.residenceAddress?.street && (
+                              <p className="text-sm text-destructive">{form.formState.errors.coBorrower.residenceAddress.street.message}</p>
+                            )}
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-1">
+                            <Label htmlFor="coBorrower-residence-unit">Unit/Apt</Label>
+                            <Input
+                              id="coBorrower-residence-unit"
+                              {...form.register('coBorrower.residenceAddress.unit', {
+                                onChange: () => setTimeout(() => autoCopyCoBorrowerAddressToProperty(), 100)
+                              })}
+                              data-testid="input-coborrower-residence-unit"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="coBorrower-residence-city">City *</Label>
+                            <Input
+                              id="coBorrower-residence-city"
+                              {...form.register('coBorrower.residenceAddress.city', {
+                                onChange: () => setTimeout(() => autoCopyCoBorrowerAddressToProperty(), 100)
+                              })}
+                              data-testid="input-coborrower-residence-city"
+                            />
+                            {form.formState.errors.coBorrower?.residenceAddress?.city && (
+                              <p className="text-sm text-destructive">{form.formState.errors.coBorrower.residenceAddress.city.message}</p>
+                            )}
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-1">
+                            <Label htmlFor="coBorrower-residence-state">State *</Label>
+                            <Select
+                              value={form.watch('coBorrower.residenceAddress.state') || ''}
+                              onValueChange={(value) => {
+                                form.setValue('coBorrower.residenceAddress.state', value);
+                                setTimeout(() => autoCopyCoBorrowerAddressToProperty(), 100);
+                              }}
+                            >
+                              <SelectTrigger data-testid="select-coborrower-residence-state">
+                                <SelectValue placeholder="State" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {US_STATES.map((state) => (
+                                  <SelectItem key={state.value} value={state.value}>
+                                    {state.value}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {form.formState.errors.coBorrower?.residenceAddress?.state && (
+                              <p className="text-sm text-destructive">{form.formState.errors.coBorrower.residenceAddress.state.message}</p>
+                            )}
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-1">
+                            <Label htmlFor="coBorrower-residence-zip">ZIP Code *</Label>
+                            <Input
+                              id="coBorrower-residence-zip"
+                              {...form.register('coBorrower.residenceAddress.zip', {
+                                onChange: () => setTimeout(() => autoCopyCoBorrowerAddressToProperty(), 100)
+                              })}
+                              onBlur={(e) => handleCoBorrowerZipCodeLookup(e.target.value)}
+                              data-testid="input-coborrower-residence-zip"
+                            />
+                            {form.formState.errors.coBorrower?.residenceAddress?.zip && (
+                              <p className="text-sm text-destructive">{form.formState.errors.coBorrower.residenceAddress.zip.message}</p>
+                            )}
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="coBorrower-residence-county">County</Label>
+                            {coBorrowerCountyOptions.length > 0 ? (
+                              <Select
+                                value={form.watch('coBorrower.residenceAddress.county') || ''}
+                                onValueChange={(value) => {
+                                  if (value === 'manual-entry') {
+                                    form.setValue('coBorrower.residenceAddress.county', '');
+                                    setCoBorrowerCountyOptions([]);
+                                  } else {
+                                    // Find the selected county to get its label for display
+                                    const selectedCounty = coBorrowerCountyOptions.find(county => county.value === value);
+                                    form.setValue('coBorrower.residenceAddress.county', selectedCounty?.label || value, { shouldDirty: true });
+                                  }
+                                }}
+                              >
+                                <SelectTrigger data-testid="select-coborrower-residence-county">
+                                  <SelectValue placeholder={countyLookupLoading.coBorrower ? "Looking up counties..." : "Select county"} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {coBorrowerCountyOptions.map((county) => (
+                                    <SelectItem key={county.value} value={county.value}>
+                                      {county.label}
+                                    </SelectItem>
+                                  ))}
+                                  <SelectItem value="manual-entry" className="text-muted-foreground border-t">
+                                    Enter county manually
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                            ) : (
+                              <Input
+                                id="coBorrower-residence-county"
+                                {...form.register('coBorrower.residenceAddress.county')}
+                                placeholder={countyLookupLoading.coBorrower ? "Looking up counties..." : ""}
+                                disabled={countyLookupLoading.coBorrower}
+                                data-testid="input-coborrower-residence-county"
                               />
-                              <Label htmlFor="coborrower-employment-current">Current Employer</Label>
-                            </div>
-                            
-                            <div className="flex items-center space-x-2">
-                              <input
-                                type="radio"
-                                id="coborrower-employment-prior"
-                                name="coborrower-employment-type"
-                                data-testid="radio-coborrower-employment-prior"
+                            )}
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-2">
+                            <div className="flex items-center justify-between mb-2">
+                              <Label htmlFor="coBorrower-time-address" className="text-sm">
+                                {isShowingCoBorrowerMonthsAtAddress ? 'Months at this Address' : 'Years at this Address'}
+                              </Label>
+                              <Switch
+                                checked={isShowingCoBorrowerMonthsAtAddress}
+                                onCheckedChange={setIsShowingCoBorrowerMonthsAtAddress}
+                                data-testid="toggle-coborrower-time-address"
+                                className="scale-[0.8]"
                               />
-                              <Label htmlFor="coborrower-employment-prior">Prior Employer</Label>
                             </div>
+                            <Input
+                              id="coBorrower-time-address"
+                              type="number"
+                              min="0"
+                              max={isShowingCoBorrowerMonthsAtAddress ? 11 : 99}
+                              placeholder={isShowingCoBorrowerMonthsAtAddress ? "Enter months" : "Enter years"}
+                              {...form.register(isShowingCoBorrowerMonthsAtAddress ? 'coBorrower.monthsAtAddress' : 'coBorrower.yearsAtAddress')}
+                              data-testid="input-coborrower-time-address"
+                            />
                           </div>
                         </div>
                       </CardContent>
