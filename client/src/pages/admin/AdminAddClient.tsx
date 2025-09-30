@@ -8488,7 +8488,7 @@ export default function AdminAddClient() {
                             variant="outline"
                             size="sm"
                             onClick={addCoBorrower}
-                            className="hover:bg-orange-500 hover:text-white"
+                            className="hover:bg-blue-500 hover:text-white"
                             data-testid="button-add-coborrower-from-borrower"
                           >
                             <Plus className="h-4 w-4 mr-2" />
@@ -8500,7 +8500,7 @@ export default function AdminAddClient() {
                             variant="outline"
                             size="sm"
                             onClick={removeCoBorrower}
-                            className="hover:bg-orange-500 hover:text-white"
+                            className="hover:bg-red-500 hover:text-white"
                             data-testid="button-remove-coborrower-from-borrower"
                           >
                             Remove Co-Borrower
@@ -9328,7 +9328,7 @@ export default function AdminAddClient() {
                             variant="outline"
                             size="sm"
                             onClick={copyBorrowerToCoResidence}
-                            className="hover:bg-orange-500 hover:text-white"
+                            className="hover:bg-green-500 hover:text-white"
                             data-testid="button-copy-borrower-address"
                           >
                             Same as Borrower
