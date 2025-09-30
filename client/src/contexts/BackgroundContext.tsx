@@ -131,13 +131,13 @@ export function BackgroundProvider({ children }: BackgroundProviderProps) {
       return baseStyle;
     }
 
-    // Special styling for cubes background - black background with 50% smaller cubes
+    // Special styling for cubes background - black background with 50% smaller cubes positioned below tiles
     if (preset.id === 'cubes') {
       const baseStyle = {
         backgroundColor: '#000000',
         backgroundImage: `url(${preset.assetPath})`,
         backgroundSize: '50%',
-        backgroundPosition: 'center',
+        backgroundPosition: 'center 65%',
         backgroundRepeat: 'no-repeat'
       };
 
