@@ -8838,6 +8838,10 @@ export default function AdminAddClient() {
                     return totalMonths < 24; // Show if less than 2 years (24 months) total
                   })() && (
                     <>
+                      {/* Extra spacing row */}
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                      </div>
+
                       {/* Row for Prior Residence Title */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-10">
                         <div className="space-y-2">
