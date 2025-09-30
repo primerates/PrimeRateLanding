@@ -164,7 +164,8 @@ const BorrowerResidenceTimeCalculator = React.memo<{ control: any; setValue: any
     if (!fromDate || !toDate) return { displayValue: '', years: 0, months: 0 };
 
     const from = new Date(fromDate);
-    const to = new Date(toDate);
+    // If toDate is "Present", use current date for calculations
+    const to = toDate === 'Present' ? new Date() : new Date(toDate);
 
     if (isNaN(from.getTime()) || isNaN(to.getTime())) return { displayValue: '', years: 0, months: 0 };
 
@@ -420,7 +421,8 @@ const CoBorrowerResidenceTimeCalculator = React.memo<{ control: any; setValue: a
     if (!fromDate || !toDate) return { displayValue: '', years: 0, months: 0 };
 
     const from = new Date(fromDate);
-    const to = new Date(toDate);
+    // If toDate is "Present", use current date for calculations
+    const to = toDate === 'Present' ? new Date() : new Date(toDate);
 
     if (isNaN(from.getTime()) || isNaN(to.getTime())) return { displayValue: '', years: 0, months: 0 };
 
@@ -1230,6 +1232,10 @@ export default function AdminAddClient() {
   const [isShowingDMBatch, setIsShowingDMBatch] = useState(false);
   const [isCoBorrowerResidenceOpen, setIsCoBorrowerResidenceOpen] = useState(false);
   const [isCoBorrowerPriorResidenceOpen, setIsCoBorrowerPriorResidenceOpen] = useState(false);
+  
+  // Current Residence "Present" toggle states
+  const [isBorrowerCurrentResidencePresent, setIsBorrowerCurrentResidencePresent] = useState(false);
+  const [isCoBorrowerCurrentResidencePresent, setIsCoBorrowerCurrentResidencePresent] = useState(false);
 
   // Employment toggle states - Years/Months Employed
   const [isShowingMonthsEmployed, setIsShowingMonthsEmployed] = useState(false);
@@ -9185,13 +9191,34 @@ export default function AdminAddClient() {
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="borrower-residence-to">To</Label>
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="borrower-residence-to" className="text-sm">
+                              {isBorrowerCurrentResidencePresent ? 'Present' : 'To'}
+                            </Label>
+                            <Switch
+                              checked={isBorrowerCurrentResidencePresent}
+                              onCheckedChange={(checked) => {
+                                setIsBorrowerCurrentResidencePresent(checked);
+                                if (checked) {
+                                  // Set to "Present" and store current date for calculations
+                                  form.setValue('borrower.residenceAddress.to', 'Present');
+                                } else {
+                                  // Clear the field when toggled off
+                                  form.setValue('borrower.residenceAddress.to', '');
+                                }
+                              }}
+                              data-testid="toggle-borrower-residence-present"
+                              className="scale-[0.8]"
+                            />
+                          </div>
                           <Input
                             id="borrower-residence-to"
                             type="text"
                             placeholder="mm/dd/yyyy"
-                            {...form.register('borrower.residenceAddress.to')}
+                            value={isBorrowerCurrentResidencePresent ? 'Present' : form.watch('borrower.residenceAddress.to') || ''}
                             onChange={(e) => {
+                              if (isBorrowerCurrentResidencePresent) return; // Disable editing when Present
+                              
                               const input = e.target.value;
                               const currentValue = form.getValues('borrower.residenceAddress.to') || '';
                               
@@ -9220,6 +9247,7 @@ export default function AdminAddClient() {
                             }}
                             data-testid="input-borrower-residence-to"
                             className="!text-[13px] placeholder:text-[10px]"
+                            readOnly={isBorrowerCurrentResidencePresent}
                           />
                         </div>
                         
@@ -10266,44 +10294,6 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="coBorrower-residence-to">To</Label>
-                          <Input
-                            id="coBorrower-residence-to"
-                            type="text"
-                            placeholder="mm/dd/yyyy"
-                            {...form.register('coBorrower.residenceAddress.to')}
-                            onChange={(e) => {
-                              const input = e.target.value;
-                              const currentValue = form.getValues('coBorrower.residenceAddress.to') || '';
-                              
-                              // If input is empty or being deleted, allow it
-                              if (input.length === 0) {
-                                form.setValue('coBorrower.residenceAddress.to', '');
-                                return;
-                              }
-                              
-                              // If user is deleting (input shorter than current), just update without formatting
-                              if (input.length < currentValue.length) {
-                                form.setValue('coBorrower.residenceAddress.to', input);
-                                return;
-                              }
-                              
-                              // Otherwise, apply formatting
-                              let value = input.replace(/\D/g, ''); // Remove non-digits
-                              if (value.length >= 2) {
-                                value = value.slice(0, 2) + '/' + value.slice(2);
-                              }
-                              if (value.length >= 5) {
-                                value = value.slice(0, 5) + '/' + value.slice(5);
-                              }
-                              value = value.slice(0, 10); // Limit to mm/dd/yyyy
-                              form.setValue('coBorrower.residenceAddress.to', value);
-                            }}
-                            data-testid="input-coborrower-residence-to"
-                            className="!text-[13px] placeholder:text-[10px]"
-                          />
-                        </div>
                         
                         <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="coBorrower-time-address" className="text-sm">
