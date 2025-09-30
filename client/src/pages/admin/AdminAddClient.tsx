@@ -8840,9 +8840,7 @@ export default function AdminAddClient() {
                             data-testid="input-borrower-residence-to"
                           />
                         </div>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4">
+                        
                         <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="borrower-time-address" className="text-sm">
                             Years / Months
