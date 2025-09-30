@@ -9011,6 +9011,20 @@ export default function AdminAddClient() {
                         </div>
                         <span className="text-sm font-medium">Rental</span>
                       </button>
+                      <button
+                        type="button"
+                        onClick={() => form.setValue('borrower.currentResidenceType', 'other')}
+                        className="flex items-center gap-1.5 group"
+                        data-testid="button-current-residence-other"
+                      >
+                        <div className={`w-3 h-3 rounded-full transition-colors ${
+                          form.watch('borrower.currentResidenceType') === 'other' 
+                            ? 'bg-purple-500' 
+                            : 'border border-gray-400 bg-white hover:border-purple-400'
+                        }`}>
+                        </div>
+                        <span className="text-sm font-medium">Other</span>
+                      </button>
                     </div>
                   </div>
 
@@ -9274,6 +9288,20 @@ export default function AdminAddClient() {
                             }`}>
                             </div>
                             <span className="text-sm font-medium">Rental</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => form.setValue('borrower.priorResidenceType', 'other')}
+                            className="flex items-center gap-1.5 group"
+                            data-testid="button-prior-residence-other"
+                          >
+                            <div className={`w-3 h-3 rounded-full transition-colors ${
+                              form.watch('borrower.priorResidenceType') === 'other' 
+                                ? 'bg-purple-500' 
+                                : 'border border-gray-400 bg-white hover:border-purple-400'
+                            }`}>
+                            </div>
+                            <span className="text-sm font-medium">Other</span>
                           </button>
                         </div>
                       </div>
@@ -9568,6 +9596,20 @@ export default function AdminAddClient() {
                             }`}>
                             </div>
                             <span className="text-sm font-medium">Rental</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => form.setValue('borrower.priorResidenceType2', 'other')}
+                            className="flex items-center gap-1.5 group"
+                            data-testid="button-prior-residence-2-other"
+                          >
+                            <div className={`w-3 h-3 rounded-full transition-colors ${
+                              form.watch('borrower.priorResidenceType2') === 'other' 
+                                ? 'bg-purple-500' 
+                                : 'border border-gray-400 bg-white hover:border-purple-400'
+                            }`}>
+                            </div>
+                            <span className="text-sm font-medium">Other</span>
                           </button>
                         </div>
                       </div>
@@ -10042,6 +10084,20 @@ export default function AdminAddClient() {
                         </div>
                         <span className="text-sm font-medium">Rental</span>
                       </button>
+                      <button
+                        type="button"
+                        onClick={() => form.setValue('coBorrower.currentResidenceType', 'other')}
+                        className="flex items-center gap-1.5 group"
+                        data-testid="button-current-residence-other-coborrower"
+                      >
+                        <div className={`w-3 h-3 rounded-full transition-colors ${
+                          form.watch('coBorrower.currentResidenceType') === 'other' 
+                            ? 'bg-purple-500' 
+                            : 'border border-gray-400 bg-white hover:border-purple-400'
+                        }`}>
+                        </div>
+                        <span className="text-sm font-medium">Other</span>
+                      </button>
                     </div>
                   </div>
 
@@ -10306,6 +10362,20 @@ export default function AdminAddClient() {
                             </div>
                             <span className="text-sm font-medium">Rental</span>
                           </button>
+                          <button
+                            type="button"
+                            onClick={() => form.setValue('coBorrower.priorResidenceType', 'other')}
+                            className="flex items-center gap-1.5 group"
+                            data-testid="button-prior-residence-other-coborrower"
+                          >
+                            <div className={`w-3 h-3 rounded-full transition-colors ${
+                              form.watch('coBorrower.priorResidenceType') === 'other' 
+                                ? 'bg-purple-500' 
+                                : 'border border-gray-400 bg-white hover:border-purple-400'
+                            }`}>
+                            </div>
+                            <span className="text-sm font-medium">Other</span>
+                          </button>
                         </div>
                       </div>
 
@@ -10551,6 +10621,20 @@ export default function AdminAddClient() {
                             }`}>
                             </div>
                             <span className="text-sm font-medium">Rental</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => form.setValue('coBorrower.priorResidenceType2', 'other')}
+                            className="flex items-center gap-1.5 group"
+                            data-testid="button-prior-residence-2-other-coborrower"
+                          >
+                            <div className={`w-3 h-3 rounded-full transition-colors ${
+                              form.watch('coBorrower.priorResidenceType2') === 'other' 
+                                ? 'bg-purple-500' 
+                                : 'border border-gray-400 bg-white hover:border-purple-400'
+                            }`}>
+                            </div>
+                            <span className="text-sm font-medium">Other</span>
                           </button>
                         </div>
                       </div>
