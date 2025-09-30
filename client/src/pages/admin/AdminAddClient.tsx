@@ -8821,59 +8821,19 @@ export default function AdminAddClient() {
                           )}
                         </div>
                         
-                      </div>
-                      
-                      {/* Residency Period - From Date, To Date, Years, Months */}
-                      <div className="mt-4">
-                        <Label className="text-sm font-medium mb-2 block">Residency Period</Label>
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="borrower-residence-from-date" className="text-sm">From Date</Label>
-                            <Input
-                              id="borrower-residence-from-date"
-                              type="text"
-                              placeholder="MM/DD/YYYY"
-                              {...form.register('borrower.residenceFromDate')}
-                              data-testid="input-borrower-residence-from-date"
-                            />
-                          </div>
-                          
-                          <div className="space-y-2">
-                            <Label htmlFor="borrower-residence-to-date" className="text-sm">To Date</Label>
-                            <Input
-                              id="borrower-residence-to-date"
-                              type="text"
-                              placeholder="MM/DD/YYYY"
-                              {...form.register('borrower.residenceToDate')}
-                              data-testid="input-borrower-residence-to-date"
-                            />
-                          </div>
-                          
-                          <div className="space-y-2">
-                            <Label htmlFor="borrower-years-address" className="text-sm">Years</Label>
-                            <Input
-                              id="borrower-years-address"
-                              type="number"
-                              min="0"
-                              max="99"
-                              placeholder="Years"
-                              {...form.register('borrower.yearsAtAddress')}
-                              data-testid="input-borrower-years-address"
-                            />
-                          </div>
-                          
-                          <div className="space-y-2">
-                            <Label htmlFor="borrower-months-address" className="text-sm">Months</Label>
-                            <Input
-                              id="borrower-months-address"
-                              type="number"
-                              min="0"
-                              max="11"
-                              placeholder="Months"
-                              {...form.register('borrower.monthsAtAddress')}
-                              data-testid="input-borrower-months-address"
-                            />
-                          </div>
+                        <div className="space-y-2 md:col-span-2">
+                          <Label htmlFor="borrower-time-address" className="text-sm">
+                            Years / Months
+                          </Label>
+                          <Input
+                            id="borrower-time-address"
+                            type="number"
+                            min="0"
+                            max={isShowingMonthsAtAddress ? 11 : 99}
+                            placeholder={isShowingMonthsAtAddress ? "Enter months" : "Enter years"}
+                            {...form.register(isShowingMonthsAtAddress ? 'borrower.monthsAtAddress' : 'borrower.yearsAtAddress')}
+                            data-testid="input-borrower-time-address"
+                          />
                         </div>
                       </div>
                     </CardContent>
