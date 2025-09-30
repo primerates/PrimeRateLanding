@@ -3783,7 +3783,7 @@ export default function AdminAddClient() {
                 </div>
               </div>
               
-              {/* Row 2: Loan Category, Loan Term, Loan Duration, Loan Balance, Loan Rate */}
+              {/* Row 2: Loan Category, Loan Balance, Loan Term, Loan Duration, Pre-Payment Penalty */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor={`${idPrefix}currentLoan-loanCategory`}>Loan Category</Label>
@@ -3801,6 +3801,20 @@ export default function AdminAddClient() {
                       <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="currentLoan-currentBalance">Loan Balance</Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="currentLoan-currentBalance"
+                      {...form.register('currentLoan.statementBalance.amount')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-currentLoan-currentBalance"
+                    />
+                  </div>
                 </div>
                 
                 <div className="space-y-2">
@@ -3848,20 +3862,6 @@ export default function AdminAddClient() {
                       <SelectItem value="No">No</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="currentLoan-currentBalance">Loan Balance</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="currentLoan-currentBalance"
-                      {...form.register('currentLoan.statementBalance.amount')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-currentLoan-currentBalance"
-                    />
-                  </div>
                 </div>
               </div>
               
