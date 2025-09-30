@@ -1,7 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import cubesBackground from '@assets/stock_images/abstract_geometric_c_b9135c5b.jpg';
 import infinityGridBackground from '@assets/Infinity_1759031666053.png';
-import glowingCubeBackground from '@assets/glowing cube_1759038202702.jpg';
 import jellyfishBackground from '@assets/Jelly Fish of the Deep Abyss_1759125741578.png';
 import threeGlowingCubesBackground from '@assets/Three Glowing Cubes_1759260151137.png';
 
@@ -34,14 +33,6 @@ export const backgroundPresets: BackgroundPreset[] = [
     type: 'static',
     assetPath: infinityGridBackground,
     description: 'Futuristic infinity grid with deep blue tones',
-    isDark: true
-  },
-  {
-    id: 'glowing-cube-static',
-    label: 'Glowing Cube (Static)',
-    type: 'static',
-    assetPath: glowingCubeBackground,
-    description: 'Vibrant glowing cubes floating in dark space',
     isDark: true
   },
   {
