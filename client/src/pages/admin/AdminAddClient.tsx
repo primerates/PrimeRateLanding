@@ -8979,8 +8979,11 @@ export default function AdminAddClient() {
 
                   {/* Row 3 */}
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-10">
-                    <div className="space-y-2">
+                    <div className="space-y-2 flex items-center gap-2">
                       <Label htmlFor="borrower-firstName" className="text-xl">Current Residence</Label>
+                      {(form.watch('borrower.currentResidenceType') === 'rental' || form.watch('borrower.currentResidenceType') === 'other') && (
+                        <Info className="w-4 h-4 text-blue-500" data-testid="icon-current-residence-info" />
+                      )}
                     </div>
                     <div className="flex items-center gap-4 ml-1">
                       <button
@@ -9257,8 +9260,11 @@ export default function AdminAddClient() {
 
                       {/* Row for Prior Residence Title */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-10">
-                        <div className="space-y-2">
+                        <div className="space-y-2 flex items-center gap-2">
                           <Label htmlFor="borrower-prior-residence" className="text-xl">Prior Residence</Label>
+                          {(form.watch('borrower.priorResidenceType') === 'rental' || form.watch('borrower.priorResidenceType') === 'other') && (
+                            <Info className="w-4 h-4 text-blue-500" data-testid="icon-prior-residence-info" />
+                          )}
                         </div>
                         <div className="flex items-center gap-4 ml-1">
                           <button
@@ -9565,8 +9571,11 @@ export default function AdminAddClient() {
 
                       {/* Row for Second Prior Residence Title */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-10">
-                        <div className="space-y-2">
+                        <div className="space-y-2 flex items-center gap-2">
                           <Label htmlFor="borrower-prior-residence-2" className="text-xl">Prior Residence</Label>
+                          {(form.watch('borrower.priorResidenceType2') === 'rental' || form.watch('borrower.priorResidenceType2') === 'other') && (
+                            <Info className="w-4 h-4 text-blue-500" data-testid="icon-prior-residence-2-info" />
+                          )}
                         </div>
                         <div className="flex items-center gap-4 ml-1">
                           <button
@@ -10052,8 +10061,11 @@ export default function AdminAddClient() {
 
                   {/* Row 3 */}
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-10">
-                    <div className="space-y-2">
+                    <div className="space-y-2 flex items-center gap-2">
                       <Label htmlFor="coBorrower-firstName" className="text-xl">Current Residence</Label>
+                      {(form.watch('coBorrower.currentResidenceType') === 'rental' || form.watch('coBorrower.currentResidenceType') === 'other') && (
+                        <Info className="w-4 h-4 text-blue-500" data-testid="icon-current-residence-info-coborrower" />
+                      )}
                     </div>
                     <div className="flex items-center gap-4 ml-1">
                       <button
@@ -10330,8 +10342,11 @@ export default function AdminAddClient() {
 
                       {/* Row for Prior Residence Title */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-10">
-                        <div className="space-y-2">
+                        <div className="space-y-2 flex items-center gap-2">
                           <Label htmlFor="coBorrower-prior-residence" className="text-xl">Prior Residence</Label>
+                          {(form.watch('coBorrower.priorResidenceType') === 'rental' || form.watch('coBorrower.priorResidenceType') === 'other') && (
+                            <Info className="w-4 h-4 text-blue-500" data-testid="icon-prior-residence-info-coborrower" />
+                          )}
                         </div>
                         <div className="flex items-center gap-4 ml-1">
                           <button
@@ -10590,8 +10605,11 @@ export default function AdminAddClient() {
 
                       {/* Row for Second Prior Residence Title */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-10">
-                        <div className="space-y-2">
+                        <div className="space-y-2 flex items-center gap-2">
                           <Label htmlFor="coBorrower-prior-residence-2" className="text-xl">Prior Residence</Label>
+                          {(form.watch('coBorrower.priorResidenceType2') === 'rental' || form.watch('coBorrower.priorResidenceType2') === 'other') && (
+                            <Info className="w-4 h-4 text-blue-500" data-testid="icon-prior-residence-2-info-coborrower" />
+                          )}
                         </div>
                         <div className="flex items-center gap-4 ml-1">
                           <button
