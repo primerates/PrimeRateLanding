@@ -10294,6 +10294,66 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
+                        <div className="space-y-2 md:col-span-1">
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="coBorrower-residence-to" className="text-sm">
+                              {isCoBorrowerCurrentResidencePresent ? 'Present' : 'To'}
+                            </Label>
+                            <Switch
+                              checked={isCoBorrowerCurrentResidencePresent}
+                              onCheckedChange={(checked) => {
+                                setIsCoBorrowerCurrentResidencePresent(checked);
+                                if (checked) {
+                                  // Set to "Present" and store current date for calculations
+                                  form.setValue('coBorrower.residenceAddress.to', 'Present');
+                                } else {
+                                  // Clear the field when toggled off
+                                  form.setValue('coBorrower.residenceAddress.to', '');
+                                }
+                              }}
+                              data-testid="toggle-coborrower-residence-present"
+                              className="scale-[0.8]"
+                            />
+                          </div>
+                          <Input
+                            id="coBorrower-residence-to"
+                            type="text"
+                            placeholder="mm/dd/yyyy"
+                            value={isCoBorrowerCurrentResidencePresent ? 'Present' : form.watch('coBorrower.residenceAddress.to') || ''}
+                            onChange={(e) => {
+                              if (isCoBorrowerCurrentResidencePresent) return; // Disable editing when Present
+                              
+                              const input = e.target.value;
+                              const currentValue = form.getValues('coBorrower.residenceAddress.to') || '';
+                              
+                              // If input is empty or being deleted, allow it
+                              if (input.length === 0) {
+                                form.setValue('coBorrower.residenceAddress.to', '');
+                                return;
+                              }
+                              
+                              // If user is deleting (input shorter than current), just update without formatting
+                              if (input.length < currentValue.length) {
+                                form.setValue('coBorrower.residenceAddress.to', input);
+                                return;
+                              }
+                              
+                              // Otherwise, apply formatting
+                              let value = input.replace(/\D/g, ''); // Remove non-digits
+                              if (value.length >= 2) {
+                                value = value.slice(0, 2) + '/' + value.slice(2);
+                              }
+                              if (value.length >= 5) {
+                                value = value.slice(0, 5) + '/' + value.slice(5);
+                              }
+                              value = value.slice(0, 10); // Limit to mm/dd/yyyy
+                              form.setValue('coBorrower.residenceAddress.to', value);
+                            }}
+                            data-testid="input-coborrower-residence-to"
+                            className="!text-[13px] placeholder:text-[10px]"
+                            readOnly={isCoBorrowerCurrentResidencePresent}
+                          />
+                        </div>
                         
                         <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="coBorrower-time-address" className="text-sm">
