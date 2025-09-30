@@ -8617,33 +8617,32 @@ export default function AdminAddClient() {
                     </div>
                   </div>
 
-                  {/* Grey Background Box - copied from Borrower Employer */}
+                  {/* Grey Background Box - Years/Months at Address Toggle */}
                   <Card className={`bg-muted ${
                     showIncomeCardAnimation['borrower-employment'] ? 'animate-roll-down-subject-property' : ''
                   }`}>
                     <CardContent className="pt-6">
-                      <div className="space-y-3">
-                        <div className="flex gap-4">
-                          <div className="flex items-center space-x-2">
-                            <input
-                              type="radio"
-                              id="employment-current"
-                              name="employment-type"
-                              data-testid="radio-employment-current"
-                            />
-                            <Label htmlFor="employment-current">Current Employer</Label>
-                          </div>
-                          
-                          <div className="flex items-center space-x-2">
-                            <input
-                              type="radio"
-                              id="employment-prior"
-                              name="employment-type"
-                              data-testid="radio-employment-prior"
-                            />
-                            <Label htmlFor="employment-prior">Prior Employer</Label>
-                          </div>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between mb-2">
+                          <Label htmlFor="borrower-time-address" className="text-sm">
+                            {isShowingMonthsAtAddress ? 'Months at this Address' : 'Years at this Address'}
+                          </Label>
+                          <Switch
+                            checked={isShowingMonthsAtAddress}
+                            onCheckedChange={setIsShowingMonthsAtAddress}
+                            data-testid="toggle-borrower-time-address"
+                            className="scale-[0.8]"
+                          />
                         </div>
+                        <Input
+                          id="borrower-time-address"
+                          type="number"
+                          min="0"
+                          max={isShowingMonthsAtAddress ? 11 : 99}
+                          placeholder={isShowingMonthsAtAddress ? "Enter months" : "Enter years"}
+                          {...form.register(isShowingMonthsAtAddress ? 'borrower.monthsAtAddress' : 'borrower.yearsAtAddress')}
+                          data-testid="input-borrower-time-address"
+                        />
                       </div>
                     </CardContent>
                   </Card>
