@@ -8792,17 +8792,9 @@ export default function AdminAddClient() {
                         </div>
                         
                         <div className="space-y-2 md:col-span-2">
-                          <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor="borrower-time-address" className="text-sm">
-                              {isShowingMonthsAtAddress ? 'Months at this Address' : 'Years at this Address'}
-                            </Label>
-                            <Switch
-                              checked={isShowingMonthsAtAddress}
-                              onCheckedChange={setIsShowingMonthsAtAddress}
-                              data-testid="toggle-borrower-time-address"
-                              className="scale-[0.8]"
-                            />
-                          </div>
+                          <Label htmlFor="borrower-time-address" className="text-sm">
+                            Years / Months
+                          </Label>
                           <Input
                             id="borrower-time-address"
                             type="number"
@@ -8964,17 +8956,9 @@ export default function AdminAddClient() {
                             </div>
                             
                             <div className="space-y-2 md:col-span-2">
-                              <div className="flex items-center justify-between mb-2">
-                                <Label htmlFor="borrower-time-address" className="text-sm">
-                                  {isShowingMonthsAtAddress ? 'Months at this Address' : 'Years at this Address'}
-                                </Label>
-                                <Switch
-                                  checked={isShowingMonthsAtAddress}
-                                  onCheckedChange={setIsShowingMonthsAtAddress}
-                                  data-testid="toggle-borrower-time-address"
-                                  className="scale-[0.8]"
-                                />
-                              </div>
+                              <Label htmlFor="borrower-time-address" className="text-sm">
+                                Years / Months
+                              </Label>
                               <Input
                                 id="borrower-time-address"
                                 type="number"
