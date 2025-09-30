@@ -8825,11 +8825,11 @@ export default function AdminAddClient() {
                           <Label htmlFor="borrower-residence-from">From</Label>
                           <Input
                             id="borrower-residence-from"
-                            type="date"
+                            type="text"
                             placeholder="mm/dd/yyyy"
                             {...form.register('borrower.residenceAddress.from')}
                             data-testid="input-borrower-residence-from"
-                            className="text-xs placeholder:text-[10px]"
+                            className="placeholder:text-[9px]"
                           />
                         </div>
                         
@@ -8837,11 +8837,11 @@ export default function AdminAddClient() {
                           <Label htmlFor="borrower-residence-to">To</Label>
                           <Input
                             id="borrower-residence-to"
-                            type="date"
+                            type="text"
                             placeholder="mm/dd/yyyy"
                             {...form.register('borrower.residenceAddress.to')}
                             data-testid="input-borrower-residence-to"
-                            className="text-xs placeholder:text-[10px]"
+                            className="placeholder:text-[9px]"
                           />
                         </div>
                         
