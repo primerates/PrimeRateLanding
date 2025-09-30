@@ -9248,23 +9248,35 @@ export default function AdminAddClient() {
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Co-Borrower</CardTitle>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <CollapsibleTrigger asChild>
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                className="hover:bg-orange-500 hover:text-black"
-                                data-testid="button-toggle-coborrower"
-                              >
-                                {isCoBorrowerOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                              </Button>
-                            </CollapsibleTrigger>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>{isCoBorrowerOpen ? 'Minimize' : 'Expand'}</p>
-                          </TooltipContent>
-                        </Tooltip>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={copyBorrowerToCoResidence}
+                            className="hover:bg-orange-500 hover:text-white"
+                            data-testid="button-copy-borrower-address"
+                          >
+                            Same as Borrower
+                          </Button>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <CollapsibleTrigger asChild>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm" 
+                                  className="hover:bg-orange-500 hover:text-black"
+                                  data-testid="button-toggle-coborrower"
+                                >
+                                  {isCoBorrowerOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                                </Button>
+                              </CollapsibleTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>{isCoBorrowerOpen ? 'Minimize' : 'Expand'}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
                       </div>
                     </CardHeader>
                     <CollapsibleContent>
@@ -9558,18 +9570,8 @@ export default function AdminAddClient() {
 
                 {/* Co-Borrower Residence Address */}
                 <Card>
-                  <CardHeader className="flex flex-row items-center justify-between">
+                  <CardHeader>
                     <CardTitle>Co-Borrower Residence</CardTitle>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={copyBorrowerToCoResidence}
-                      className="hover:bg-orange-500 hover:text-white"
-                      data-testid="button-copy-borrower-address"
-                    >
-                      Same as Borrower
-                    </Button>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
