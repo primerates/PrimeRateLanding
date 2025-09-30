@@ -8830,7 +8830,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2 md:col-span-1">
+                        <div className="space-y-2 md:col-span-2">
                           <Label htmlFor="borrower-residence-county">County</Label>
                           {borrowerCountyOptions.length > 0 ? (
                             <Select
@@ -8949,7 +8949,7 @@ export default function AdminAddClient() {
                           />
                         </div>
                         
-                        <div className="space-y-2 md:col-span-2">
+                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="borrower-time-address" className="text-sm">
                             Duration
                           </Label>
@@ -9135,7 +9135,7 @@ export default function AdminAddClient() {
                               )}
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="borrower-prior-time-address" className="text-sm">
                                 Duration
                               </Label>
@@ -9317,7 +9317,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="borrower-prior-time-address-2" className="text-sm">
                                 Duration
                               </Label>
@@ -9767,7 +9767,7 @@ export default function AdminAddClient() {
                           )}
                         </div>
                         
-                        <div className="space-y-2 md:col-span-2">
+                        <div className="space-y-2 md:col-span-1">
                           <Label htmlFor="coBorrower-time-address" className="text-sm">
                             Duration
                           </Label>
@@ -9919,7 +9919,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="coBorrower-prior-time-address" className="text-sm">
                                 Duration
                               </Label>
@@ -10101,7 +10101,7 @@ export default function AdminAddClient() {
                               />
                             </div>
                             
-                            <div className="space-y-2 md:col-span-2">
+                            <div className="space-y-2 md:col-span-1">
                               <Label htmlFor="coBorrower-prior-time-address-2" className="text-sm">
                                 Duration
                               </Label>
