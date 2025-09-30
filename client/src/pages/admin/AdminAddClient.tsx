@@ -160,38 +160,39 @@ const BorrowerResidenceTimeCalculator = React.memo<{ control: any; setValue: any
   const fromDate = useWatch({ control, name: 'borrower.residenceAddress.from' }) || '';
   const toDate = useWatch({ control, name: 'borrower.residenceAddress.to' }) || '';
 
-  const calculatedYears = useMemo(() => {
-    if (!fromDate || !toDate) return '';
+  const { displayValue, years, months } = useMemo(() => {
+    if (!fromDate || !toDate) return { displayValue: '', years: 0, months: 0 };
 
     const from = new Date(fromDate);
     const to = new Date(toDate);
 
-    if (isNaN(from.getTime()) || isNaN(to.getTime())) return '';
+    if (isNaN(from.getTime()) || isNaN(to.getTime())) return { displayValue: '', years: 0, months: 0 };
 
     // Calculate difference in months
     const yearsDiff = to.getFullYear() - from.getFullYear();
     const monthsDiff = to.getMonth() - from.getMonth();
     const totalMonths = yearsDiff * 12 + monthsDiff;
 
-    if (totalMonths < 0) return '';
+    if (totalMonths < 0) return { displayValue: '', years: 0, months: 0 };
 
-    const years = Math.floor(totalMonths / 12);
-    const months = totalMonths % 12;
-
-    // Update form values for existing logic
-    setValue('borrower.yearsAtAddress', years, { shouldDirty: false });
-    setValue('borrower.monthsAtAddress', months, { shouldDirty: false });
+    const calcYears = Math.floor(totalMonths / 12);
+    const calcMonths = totalMonths % 12;
 
     // Display as Years.Months format (e.g., 2.4 for 2 years 4 months)
-    if (months === 0) {
-      return years.toString();
-    }
-    return `${years}.${months}`;
-  }, [fromDate, toDate, setValue]);
+    const display = calcMonths === 0 ? calcYears.toString() : `${calcYears}.${calcMonths}`;
+    
+    return { displayValue: display, years: calcYears, months: calcMonths };
+  }, [fromDate, toDate]);
+
+  // Update form values in useEffect to avoid setState during render
+  React.useEffect(() => {
+    setValue('borrower.yearsAtAddress', years, { shouldDirty: false });
+    setValue('borrower.monthsAtAddress', months, { shouldDirty: false });
+  }, [years, months, setValue]);
 
   return (
     <div className="h-9 px-3 py-2 border border-input bg-background rounded-md flex items-center text-sm">
-      <span className="text-muted-foreground">{calculatedYears || '—'}</span>
+      <span className="text-muted-foreground">{displayValue || '—'}</span>
     </div>
   );
 });
@@ -9131,6 +9132,14 @@ export default function AdminAddClient() {
                       return false; // No time values entered in current, hide section
                     }
                     
+                    // Check if any time value has been entered in first prior residence
+                    const hasPriorYears = priorYearsValue && String(priorYearsValue).trim() !== '';
+                    const hasPriorMonths = priorMonthsValue && String(priorMonthsValue).trim() !== '';
+                    
+                    if (!hasPriorYears && !hasPriorMonths) {
+                      return false; // No time values entered in first prior, hide second prior
+                    }
+                    
                     // Calculate total months from current address (use parseFloat to handle decimals)
                     let currentTotalMonths = 0;
                     if (hasCurrentYears) {
@@ -9143,8 +9152,6 @@ export default function AdminAddClient() {
                     
                     // Calculate total months from first prior address (use parseFloat to handle decimals)
                     let priorTotalMonths = 0;
-                    const hasPriorYears = priorYearsValue && String(priorYearsValue).trim() !== '';
-                    const hasPriorMonths = priorMonthsValue && String(priorMonthsValue).trim() !== '';
                     if (hasPriorYears) {
                       const priorYears = parseFloat(String(priorYearsValue));
                       priorTotalMonths = (isNaN(priorYears) ? 0 : priorYears) * 12;
@@ -9909,6 +9916,14 @@ export default function AdminAddClient() {
                       return false; // No time values entered in current, hide section
                     }
                     
+                    // Check if any time value has been entered in first prior residence
+                    const hasPriorYears = priorYearsValue && String(priorYearsValue).trim() !== '';
+                    const hasPriorMonths = priorMonthsValue && String(priorMonthsValue).trim() !== '';
+                    
+                    if (!hasPriorYears && !hasPriorMonths) {
+                      return false; // No time values entered in first prior, hide second prior
+                    }
+                    
                     // Calculate total months from current address (use parseFloat to handle decimals)
                     let currentTotalMonths = 0;
                     if (hasCurrentYears) {
@@ -9921,8 +9936,6 @@ export default function AdminAddClient() {
                     
                     // Calculate total months from first prior address (use parseFloat to handle decimals)
                     let priorTotalMonths = 0;
-                    const hasPriorYears = priorYearsValue && String(priorYearsValue).trim() !== '';
-                    const hasPriorMonths = priorMonthsValue && String(priorMonthsValue).trim() !== '';
                     if (hasPriorYears) {
                       const priorYears = parseFloat(String(priorYearsValue));
                       priorTotalMonths = (isNaN(priorYears) ? 0 : priorYears) * 12;
