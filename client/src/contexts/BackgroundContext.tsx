@@ -131,6 +131,26 @@ export function BackgroundProvider({ children }: BackgroundProviderProps) {
       return baseStyle;
     }
 
+    // Special styling for cubes background - black background with 50% smaller cubes
+    if (preset.id === 'cubes') {
+      const baseStyle = {
+        backgroundColor: '#000000',
+        backgroundImage: `url(${preset.assetPath})`,
+        backgroundSize: '50%',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      };
+
+      if (preset.type === 'pulsing') {
+        return {
+          ...baseStyle,
+          animation: 'pulse-glow 3s ease-in-out infinite'
+        };
+      }
+
+      return baseStyle;
+    }
+
     // Default styling for other backgrounds
     const baseStyle = {
       backgroundImage: `url(${preset.assetPath})`,
