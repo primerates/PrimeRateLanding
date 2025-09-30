@@ -8670,11 +8670,6 @@ export default function AdminAddClient() {
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="borrower-firstName">First Name</Label>
-                      <Input
-                        id="borrower-firstName"
-                        {...form.register('borrower.firstName')}
-                        data-testid="input-borrower-firstName"
-                      />
                     </div>
                   </div>
 
