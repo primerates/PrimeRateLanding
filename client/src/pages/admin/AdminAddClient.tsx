@@ -12517,7 +12517,7 @@ export default function AdminAddClient() {
                   <Collapsible open={isVaBenefitsIncomeOpen} onOpenChange={setIsVaBenefitsIncomeOpen}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Borrower - VA Disability</CardTitle>
+                        <CardTitle>Borrower - Disability</CardTitle>
                         <div className="flex items-center gap-2">
                           <Button
                             type="button"
