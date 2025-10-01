@@ -13092,12 +13092,97 @@ export default function AdminAddClient() {
               {hasCoBorrower && (
                 <Card className="border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-3">
-                      Co-Borrower Income
-                      <span className="text-lg font-semibold" data-testid="text-total-coborrower-income">
-                        {totalCoBorrowerIncomeFormatted}
-                      </span>
-                    </CardTitle>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="flex items-center gap-3">
+                        Co-Borrower Income
+                        <span className="text-lg font-semibold" data-testid="text-total-coborrower-income">
+                          {totalCoBorrowerIncomeFormatted}
+                        </span>
+                      </CardTitle>
+                      <div className="flex items-center gap-2">
+                        {/* Expand All Button */}
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            const updates: Record<string, boolean> = {};
+                            
+                            // Co-Borrower Employment cards
+                            if (form.watch('coBorrowerIncome.incomeTypes.employment')) {
+                              (coBorrowerEmployerCards || ['default']).forEach(cardId => {
+                                const propertyId = cardId === 'default' ? 'coborrower-template-card' : cardId;
+                                updates[propertyId] = true;
+                              });
+                            }
+                            
+                            // Co-Borrower Second Employment cards
+                            if (form.watch('coBorrowerIncome.incomeTypes.secondEmployment')) {
+                              (coBorrowerSecondEmployerCards || ['default']).forEach(cardId => {
+                                const propertyId = cardId === 'default' ? 'coborrower-second-template-card' : cardId;
+                                updates[propertyId] = true;
+                              });
+                            }
+                            
+                            // Co-Borrower Self-Employment cards
+                            if (form.watch('coBorrowerIncome.incomeTypes.selfEmployment')) {
+                              (coBorrowerSelfEmploymentCards || ['default']).forEach(cardId => {
+                                const propertyId = cardId === 'default' ? 'co-borrower-self-employment-template-card' : cardId;
+                                updates[propertyId] = true;
+                              });
+                            }
+                            
+                            setPropertyCardStates(prev => ({ ...prev, ...updates }));
+                          }}
+                          className="hover:bg-blue-500 hover:text-white"
+                          title="Expand All Income Tiles"
+                          data-testid="button-expand-all-coborrower-income"
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                        
+                        {/* Minimize All Button */}
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            const updates: Record<string, boolean> = {};
+                            
+                            // Co-Borrower Employment cards
+                            if (form.watch('coBorrowerIncome.incomeTypes.employment')) {
+                              (coBorrowerEmployerCards || ['default']).forEach(cardId => {
+                                const propertyId = cardId === 'default' ? 'coborrower-template-card' : cardId;
+                                updates[propertyId] = false;
+                              });
+                            }
+                            
+                            // Co-Borrower Second Employment cards
+                            if (form.watch('coBorrowerIncome.incomeTypes.secondEmployment')) {
+                              (coBorrowerSecondEmployerCards || ['default']).forEach(cardId => {
+                                const propertyId = cardId === 'default' ? 'coborrower-second-template-card' : cardId;
+                                updates[propertyId] = false;
+                              });
+                            }
+                            
+                            // Co-Borrower Self-Employment cards
+                            if (form.watch('coBorrowerIncome.incomeTypes.selfEmployment')) {
+                              (coBorrowerSelfEmploymentCards || ['default']).forEach(cardId => {
+                                const propertyId = cardId === 'default' ? 'co-borrower-self-employment-template-card' : cardId;
+                                updates[propertyId] = false;
+                              });
+                            }
+                            
+                            setPropertyCardStates(prev => ({ ...prev, ...updates }));
+                          }}
+                          className="hover:bg-orange-500 hover:text-white"
+                          title="Minimize All Income Tiles"
+                          data-testid="button-minimize-all-coborrower-income"
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
