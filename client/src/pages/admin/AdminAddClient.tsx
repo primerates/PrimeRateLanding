@@ -4143,7 +4143,7 @@ export default function AdminAddClient() {
                     id={`${idPrefix}currentLoan-prepaymentPenalty-text`}
                     value={targetForm.watch('currentLoan.prepaymentPenaltyText') || ''}
                     onChange={(e) => {
-                      const value = e.target.value.replace(/\D/g, '');
+                      const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
                       let formatted = '';
                       if (value.length > 0) {
                         formatted = value.substring(0, 2);
