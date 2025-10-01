@@ -414,183 +414,6 @@ const CoBorrowerPriorResidence2TimeCalculator = React.memo<{ control: any; setVa
   );
 });
 
-// Helper function to check if a date string is within 5 days of today
-const isDateWithinFiveDaysHelper = (dateString: string) => {
-  if (!dateString) return false;
-  
-  const targetDate = new Date(dateString);
-  const today = new Date();
-  
-  // Reset time to midnight for accurate day comparison
-  today.setHours(0, 0, 0, 0);
-  targetDate.setHours(0, 0, 0, 0);
-  
-  // Calculate difference in days
-  const diffTime = targetDate.getTime() - today.getTime();
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  
-  // Return true if within 5 days (0-5 days from now)
-  return diffDays >= 0 && diffDays <= 5;
-};
-
-// Isolated component for Purchase Loan Rate Lock Expiration label
-const PurchaseLoanRateLockExpirationLabel = React.memo<{
-  control: any;
-  labelText: string;
-  isExpirationMode: boolean;
-}>(({ control, labelText, isExpirationMode }) => {
-  const fieldValue = useWatch({ control, name: 'purchaseLoan.rateLockDuration' }) || '';
-  
-  const isExpiring = useMemo(() => {
-    return isExpirationMode && isDateWithinFiveDaysHelper(fieldValue);
-  }, [fieldValue, isExpirationMode]);
-
-  return (
-    <Label 
-      htmlFor="purchaseLoan-rateLockDuration" 
-      className={`text-sm ${isExpiring ? 'text-red-500' : ''}`}
-    >
-      {labelText}
-    </Label>
-  );
-});
-
-// Isolated component for Purchase Loan Mid FICO Switch
-const PurchaseLoanMidFicoSwitch = React.memo<{
-  control: any;
-  onCheckedChange: () => void;
-  purchaseBorrowerMidFico: string;
-  purchaseCoBorrowerMidFico: string;
-}>(({ control, onCheckedChange, purchaseBorrowerMidFico, purchaseCoBorrowerMidFico }) => {
-  const midFico = useWatch({ control, name: 'purchaseLoan.midFico' }) || '';
-  
-  const isChecked = useMemo(() => {
-    return !!(purchaseBorrowerMidFico || purchaseCoBorrowerMidFico || midFico);
-  }, [purchaseBorrowerMidFico, purchaseCoBorrowerMidFico, midFico]);
-
-  return (
-    <Switch
-      checked={isChecked}
-      onCheckedChange={onCheckedChange}
-      data-testid="toggle-purchaseLoan-fico-type"
-      className="scale-[0.8]"
-    />
-  );
-});
-
-// Isolated component for Purchase Loan Rate Lock Status Label
-const PurchaseLoanRateLockStatusLabel = React.memo<{
-  control: any;
-}>(({ control }) => {
-  const rateLockStatus = useWatch({ control, name: 'purchaseLoan.rateLockStatus' }) || '';
-  
-  const isRed = useMemo(() => {
-    return rateLockStatus === 'not-locked' || rateLockStatus === 'expired' || !rateLockStatus;
-  }, [rateLockStatus]);
-
-  return (
-    <Label 
-      htmlFor="purchaseLoan-rateLockStatus"
-      className={isRed ? 'text-red-500' : ''}
-    >
-      Rate Lock Status
-    </Label>
-  );
-});
-
-// Isolated component for Purchase Loan Rate Lock Expiration Switch
-const PurchaseLoanRateLockExpirationSwitch = React.memo<{
-  control: any;
-  onCheckedChange: () => void;
-}>(({ control, onCheckedChange }) => {
-  const rateLockDuration = useWatch({ control, name: 'purchaseLoan.rateLockDuration' }) || '';
-  const rateLockExpiration = useWatch({ control, name: 'purchaseLoan.rateLockExpiration' }) || '';
-  
-  const isChecked = useMemo(() => {
-    return !!(rateLockDuration || rateLockExpiration);
-  }, [rateLockDuration, rateLockExpiration]);
-
-  return (
-    <Switch
-      checked={isChecked}
-      onCheckedChange={onCheckedChange}
-      data-testid="toggle-purchaseLoan-expiration-duration-type"
-      className="scale-[0.8]"
-    />
-  );
-});
-
-// Isolated component for Purchase Loan Rate Lock Expiration field
-const PurchaseLoanRateLockExpirationField = React.memo<{
-  control: any;
-  register: any;
-  isExpirationMode: boolean;
-}>(({ control, register, isExpirationMode }) => {
-  const fieldValue = useWatch({ control, name: 'purchaseLoan.rateLockDuration' }) || '';
-  
-  const isExpiring = useMemo(() => {
-    return isExpirationMode && isDateWithinFiveDaysHelper(fieldValue);
-  }, [fieldValue, isExpirationMode]);
-
-  return (
-    <Input
-      id="purchaseLoan-rateLockDuration"
-      type="text"
-      placeholder="MM/DD/YYYY"
-      {...register('purchaseLoan.rateLockDuration')}
-      className={`border border-input px-3 rounded-md ${
-        isExpiring
-          ? 'bg-red-500 text-white placeholder:text-white/70'
-          : 'bg-background'
-      }`}
-      data-testid="input-purchaseLoan-rateLockDuration"
-    />
-  );
-});
-
-// Complete isolated wrapper for the entire Rate Lock Expiration/Duration section
-const PurchaseLoanRateLockExpirationSection = React.memo<{
-  control: any;
-  register: any;
-  purchaseLoanExpirationDurationType: string;
-  purchaseCalculatedDuration: string;
-  getLabelText: () => string;
-  onSwitchChange: () => void;
-}>(({ control, register, purchaseLoanExpirationDurationType, purchaseCalculatedDuration, getLabelText, onSwitchChange }) => {
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between mb-2">
-        <PurchaseLoanRateLockExpirationLabel
-          control={control}
-          labelText={getLabelText()}
-          isExpirationMode={purchaseLoanExpirationDurationType === 'expiration'}
-        />
-        <PurchaseLoanRateLockExpirationSwitch
-          control={control}
-          onCheckedChange={onSwitchChange}
-        />
-      </div>
-      {purchaseLoanExpirationDurationType === 'expiration' ? (
-        <PurchaseLoanRateLockExpirationField
-          control={control}
-          register={register}
-          isExpirationMode={true}
-        />
-      ) : (
-        <Input
-          id="purchaseLoan-rateLockDuration"
-          {...register('purchaseLoan.rateLockDuration')}
-          placeholder="Enter duration"
-          className={`border border-input px-3 rounded-md ${purchaseCalculatedDuration ? 'bg-muted' : 'bg-background'}`}
-          data-testid="input-purchaseLoan-rateLockDuration"
-          disabled={!!purchaseCalculatedDuration}
-          readOnly={!!purchaseCalculatedDuration}
-        />
-      )}
-    </div>
-  );
-});
-
 const CoBorrowerResidenceTimeCalculator = React.memo<{ control: any; setValue: any }>(({ control, setValue }) => {
   const fromDate = useWatch({ control, name: 'coBorrower.residenceAddress.from' }) || '';
   const toDate = useWatch({ control, name: 'coBorrower.residenceAddress.to' }) || '';
@@ -3899,15 +3722,15 @@ export default function AdminAddClient() {
   }, [form.watch('property.properties')]);
 
   // Background calculation of Rate Lock Duration - calculate but don't auto-switch toggle
-  const brandNewRateLockDate = useWatch({ control: form.control, name: 'brandNewLoan.rateLockDate' });
-  const brandNewRateLockExpiration = useWatch({ control: form.control, name: 'brandNewLoan.rateLockDuration' });
-  
   useEffect(() => {
+    const rateLockDate = form.watch('brandNewLoan.rateLockDate');
+    const rateLockExpiration = form.watch('brandNewLoan.rateLockDuration');
+    
     // Only calculate if in expiration mode and both dates are provided
-    if (brandNewLoanExpirationDurationType === 'expiration' && brandNewRateLockDate && brandNewRateLockExpiration) {
+    if (brandNewLoanExpirationDurationType === 'expiration' && rateLockDate && rateLockExpiration) {
       try {
-        const startDate = new Date(brandNewRateLockDate);
-        const endDate = new Date(brandNewRateLockExpiration);
+        const startDate = new Date(rateLockDate);
+        const endDate = new Date(rateLockExpiration);
         
         // Check if both dates are valid
         if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
@@ -3933,18 +3756,18 @@ export default function AdminAddClient() {
       // Clear calculation if not in expiration mode or missing dates
       setCalculatedDuration('');
     }
-  }, [brandNewRateLockDate, brandNewRateLockExpiration, brandNewLoanExpirationDurationType]);
+  }, [form.watch('brandNewLoan.rateLockDate'), form.watch('brandNewLoan.rateLockDuration'), brandNewLoanExpirationDurationType, form]);
 
   // Background calculation for Purchase Loan Rate Lock Duration - calculate but don't auto-switch toggle
-  const purchaseRateLockDate = useWatch({ control: form.control, name: 'purchaseLoan.rateLockDate' });
-  const purchaseRateLockExpiration = useWatch({ control: form.control, name: 'purchaseLoan.rateLockDuration' });
-  
   useEffect(() => {
+    const rateLockDate = form.watch('purchaseLoan.rateLockDate');
+    const rateLockExpiration = form.watch('purchaseLoan.rateLockDuration');
+    
     // Only calculate if in expiration mode and both dates are provided
-    if (purchaseLoanExpirationDurationType === 'expiration' && purchaseRateLockDate && purchaseRateLockExpiration) {
+    if (purchaseLoanExpirationDurationType === 'expiration' && rateLockDate && rateLockExpiration) {
       try {
-        const startDate = new Date(purchaseRateLockDate);
-        const endDate = new Date(purchaseRateLockExpiration);
+        const startDate = new Date(rateLockDate);
+        const endDate = new Date(rateLockExpiration);
         
         // Check if both dates are valid
         if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
@@ -3970,7 +3793,7 @@ export default function AdminAddClient() {
       // Clear calculation if not in expiration mode or missing dates
       setPurchaseCalculatedDuration('');
     }
-  }, [purchaseRateLockDate, purchaseRateLockExpiration, purchaseLoanExpirationDurationType]);
+  }, [form.watch('purchaseLoan.rateLockDate'), form.watch('purchaseLoan.rateLockDuration'), purchaseLoanExpirationDurationType, form]);
 
   // Sync form values when toggling between expiration and duration modes
   useEffect(() => {
@@ -4922,31 +4745,67 @@ export default function AdminAddClient() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="brandNewLoan-rateLockDate" className="text-sm">
-                        Rate Lock Date
-                      </Label>
-                      <Input
-                        id="brandNewLoan-rateLockDate"
-                        type="text"
-                        {...targetForm.register('brandNewLoan.rateLockDate')}
-                        placeholder="MM/DD/YYYY"
-                        className="border border-input bg-background px-3 rounded-md"
-                        data-testid="input-brandNewLoan-rateLockDate"
-                      />
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="brandNewLoan-rateLockDate" className="text-sm">
+                          {getBrandNewLoanLockDateLabel()}
+                        </Label>
+                        <Switch
+                          checked={targetForm.watch('brandNewLoan.rateLockDate') || targetForm.watch('brandNewLoan.lockDate') ? true : false}
+                          onCheckedChange={cycleBrandNewLoanLockDateType}
+                          data-testid="toggle-brandNewLoan-lockDate-type"
+                          className="scale-[0.8]"
+                        />
+                      </div>
+                      {brandNewLoanLockDateType === 'date' ? (
+                        <Input
+                          id="brandNewLoan-rateLockDate"
+                          type="date"
+                          {...targetForm.register('brandNewLoan.rateLockDate')}
+                          className="border border-input bg-background px-3 rounded-md"
+                          data-testid="input-brandNewLoan-rateLockDate"
+                        />
+                      ) : (
+                        <Input
+                          id="brandNewLoan-rateLockDate"
+                          {...targetForm.register('brandNewLoan.rateLockDate')}
+                          placeholder="Enter"
+                          className="border border-input bg-background px-3 rounded-md"
+                          data-testid="input-brandNewLoan-rateLockDate"
+                        />
+                      )}
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="brandNewLoan-rateLockDuration" className="text-sm">
-                        Rate Lock Expiration
-                      </Label>
-                      <Input
-                        id="brandNewLoan-rateLockDuration"
-                        type="text"
-                        {...targetForm.register('brandNewLoan.rateLockDuration')}
-                        placeholder="MM/DD/YYYY"
-                        className="border border-input bg-background px-3 rounded-md"
-                        data-testid="input-brandNewLoan-rateLockDuration"
-                      />
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="brandNewLoan-rateLockDuration" className="text-sm">
+                          {getBrandNewLoanExpirationDurationLabel()}
+                        </Label>
+                        <Switch
+                          checked={targetForm.watch('brandNewLoan.rateLockDuration') || targetForm.watch('brandNewLoan.rateLockExpiration') ? true : false}
+                          onCheckedChange={cycleBrandNewLoanExpirationDurationType}
+                          data-testid="toggle-brandNewLoan-expiration-duration-type"
+                          className="scale-[0.8]"
+                        />
+                      </div>
+                      {brandNewLoanExpirationDurationType === 'expiration' ? (
+                        <Input
+                          id="brandNewLoan-rateLockDuration"
+                          type="date"
+                          {...targetForm.register('brandNewLoan.rateLockDuration')}
+                          className="border border-input bg-background px-3 rounded-md"
+                          data-testid="input-brandNewLoan-rateLockDuration"
+                        />
+                      ) : (
+                        <Input
+                          id="brandNewLoan-rateLockDuration"
+                          {...targetForm.register('brandNewLoan.rateLockDuration')}
+                          placeholder="Enter duration"
+                          className={`border border-input px-3 rounded-md ${calculatedDuration ? 'bg-muted' : 'bg-background'}`}
+                          data-testid="input-brandNewLoan-rateLockDuration"
+                          disabled={!!calculatedDuration}
+                          readOnly={!!calculatedDuration}
+                        />
+                      )}
                     </div>
                     
                     <div className="space-y-2">
@@ -5411,11 +5270,11 @@ export default function AdminAddClient() {
                         <Label htmlFor="purchaseLoan-midFico" className="text-sm">
                           {getPurchaseLoanFicoLabel()}
                         </Label>
-                        <PurchaseLoanMidFicoSwitch
-                          control={targetForm.control}
+                        <Switch
+                          checked={purchaseBorrowerCreditScoresDialog.midFico || purchaseCoBorrowerCreditScoresDialog.midFico || targetForm.watch('purchaseLoan.midFico') ? true : false}
                           onCheckedChange={cyclePurchaseLoanFicoType}
-                          purchaseBorrowerMidFico={purchaseBorrowerCreditScoresDialog.midFico}
-                          purchaseCoBorrowerMidFico={purchaseCoBorrowerCreditScoresDialog.midFico}
+                          data-testid="toggle-purchaseLoan-fico-type"
+                          className="scale-[0.8]"
                         />
                       </div>
                       <Input
@@ -5455,9 +5314,15 @@ export default function AdminAddClient() {
                     </div>
                     
                     <div className="space-y-2">
-                      <PurchaseLoanRateLockStatusLabel
-                        control={targetForm.control}
-                      />
+                      <Label 
+                        htmlFor="purchaseLoan-rateLockStatus"
+                        className={(() => {
+                          const value = targetForm.watch('purchaseLoan.rateLockStatus');
+                          return (value === 'not-locked' || value === 'expired' || !value) ? 'text-red-500' : '';
+                        })()}
+                      >
+                        Rate Lock Status
+                      </Label>
                       <Controller
                         name="purchaseLoan.rateLockStatus"
                         control={targetForm.control}
@@ -5511,14 +5376,38 @@ export default function AdminAddClient() {
                       )}
                     </div>
                     
-                    <PurchaseLoanRateLockExpirationSection
-                      control={targetForm.control}
-                      register={targetForm.register}
-                      purchaseLoanExpirationDurationType={purchaseLoanExpirationDurationType}
-                      purchaseCalculatedDuration={purchaseCalculatedDuration}
-                      getLabelText={getPurchaseLoanExpirationDurationLabel}
-                      onSwitchChange={cyclePurchaseLoanExpirationDurationType}
-                    />
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="purchaseLoan-rateLockDuration" className="text-sm">
+                          {getPurchaseLoanExpirationDurationLabel()}
+                        </Label>
+                        <Switch
+                          checked={targetForm.watch('purchaseLoan.rateLockDuration') || targetForm.watch('purchaseLoan.rateLockExpiration') ? true : false}
+                          onCheckedChange={cyclePurchaseLoanExpirationDurationType}
+                          data-testid="toggle-purchaseLoan-expiration-duration-type"
+                          className="scale-[0.8]"
+                        />
+                      </div>
+                      {purchaseLoanExpirationDurationType === 'expiration' ? (
+                        <Input
+                          id="purchaseLoan-rateLockDuration"
+                          type="date"
+                          {...targetForm.register('purchaseLoan.rateLockDuration')}
+                          className="border border-input bg-background px-3 rounded-md"
+                          data-testid="input-purchaseLoan-rateLockDuration"
+                        />
+                      ) : (
+                        <Input
+                          id="purchaseLoan-rateLockDuration"
+                          {...targetForm.register('purchaseLoan.rateLockDuration')}
+                          placeholder="Enter duration"
+                          className={`border border-input px-3 rounded-md ${purchaseCalculatedDuration ? 'bg-muted' : 'bg-background'}`}
+                          data-testid="input-purchaseLoan-rateLockDuration"
+                          disabled={!!purchaseCalculatedDuration}
+                          readOnly={!!purchaseCalculatedDuration}
+                        />
+                      )}
+                    </div>
                     
                     <div className="space-y-2">
                       <div className="flex items-center justify-between mb-2">
