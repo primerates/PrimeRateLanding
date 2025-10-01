@@ -1558,6 +1558,19 @@ export default function AdminAddClient() {
     isOpen: boolean;
   }>({ isOpen: false });
 
+  // State for Co-Borrower VA Disability and Other Disability selections
+  const [coBorrowerVaDisabilitySelected, setCoBorrowerVaDisabilitySelected] = useState(false);
+  const [coBorrowerOtherDisabilitySelected, setCoBorrowerOtherDisabilitySelected] = useState(false);
+
+  // Delete confirmation dialogs for Co-Borrower individual disability types
+  const [deleteCoBorrowerVaDisabilityTypeDialog, setDeleteCoBorrowerVaDisabilityTypeDialog] = useState<{
+    isOpen: boolean;
+  }>({ isOpen: false });
+
+  const [deleteCoBorrowerOtherDisabilityTypeDialog, setDeleteCoBorrowerOtherDisabilityTypeDialog] = useState<{
+    isOpen: boolean;
+  }>({ isOpen: false });
+
   // Delete confirmation dialog state for Co-Borrower Other Income
   const [deleteCoBorrowerOtherDialog, setDeleteCoBorrowerOtherDialog] = useState<{
     isOpen: boolean;
@@ -14116,6 +14129,167 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
+              {/* Co-Borrower Disability Card (VA Benefits trigger) */}
+              {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.vaBenefits') && (
+                <Card>
+                  <Collapsible open={isCoBorrowerVaBenefitsIncomeOpen} onOpenChange={setIsCoBorrowerVaBenefitsIncomeOpen}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Co-Borrower - Disability</CardTitle>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setDeleteCoBorrowerVaBenefitsDialog({ isOpen: true })}
+                            className="hover:bg-red-500 hover:text-white"
+                            data-testid="button-delete-coborrower-va-benefits"
+                            title="Delete Co-Borrower VA Disability Income"
+                          >
+                            <Minus className="h-4 w-4 mr-2" />
+                            Remove
+                          </Button>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-coborrower-va-benefits-income"
+                              title={isCoBorrowerVaBenefitsIncomeOpen ? 'Minimize' : 'Expand'}
+                              key={`coborrower-va-benefits-income-${isCoBorrowerVaBenefitsIncomeOpen}`}
+                            >
+                              {isCoBorrowerVaBenefitsIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CollapsibleContent>
+                      <CardContent className="space-y-4">
+                      {/* Disability Type Selection */}
+                      <Card className="bg-muted">
+                        <CardContent className="pt-6">
+                          <div className="space-y-3">
+                            <div className="flex gap-4">
+                              <div className="flex items-center space-x-2">
+                                <div
+                                  onClick={() => {
+                                    if (coBorrowerVaDisabilitySelected) {
+                                      setDeleteCoBorrowerVaDisabilityTypeDialog({ isOpen: true });
+                                    } else {
+                                      setCoBorrowerVaDisabilitySelected(true);
+                                    }
+                                  }}
+                                  className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center transition-colors ${
+                                    coBorrowerVaDisabilitySelected ? 'bg-blue-500 border-blue-500' : 'bg-white border-gray-300'
+                                  }`}
+                                  data-testid="circle-coborrower-disability-va"
+                                >
+                                  {coBorrowerVaDisabilitySelected && <div className="w-2 h-2 rounded-full bg-white"></div>}
+                                </div>
+                                <Label 
+                                  htmlFor="coborrower-disability-va"
+                                  className="cursor-pointer"
+                                  onClick={() => {
+                                    if (coBorrowerVaDisabilitySelected) {
+                                      setDeleteCoBorrowerVaDisabilityTypeDialog({ isOpen: true });
+                                    } else {
+                                      setCoBorrowerVaDisabilitySelected(true);
+                                    }
+                                  }}
+                                >
+                                  VA Disability
+                                </Label>
+                              </div>
+                              
+                              <div className="flex items-center space-x-2">
+                                <div
+                                  onClick={() => {
+                                    if (coBorrowerOtherDisabilitySelected) {
+                                      setDeleteCoBorrowerOtherDisabilityTypeDialog({ isOpen: true });
+                                    } else {
+                                      setCoBorrowerOtherDisabilitySelected(true);
+                                    }
+                                  }}
+                                  className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center transition-colors ${
+                                    coBorrowerOtherDisabilitySelected ? 'bg-blue-500 border-blue-500' : 'bg-white border-gray-300'
+                                  }`}
+                                  data-testid="circle-coborrower-disability-other"
+                                >
+                                  {coBorrowerOtherDisabilitySelected && <div className="w-2 h-2 rounded-full bg-white"></div>}
+                                </div>
+                                <Label 
+                                  htmlFor="coborrower-disability-other"
+                                  className="cursor-pointer"
+                                  onClick={() => {
+                                    if (coBorrowerOtherDisabilitySelected) {
+                                      setDeleteCoBorrowerOtherDisabilityTypeDialog({ isOpen: true });
+                                    } else {
+                                      setCoBorrowerOtherDisabilitySelected(true);
+                                    }
+                                  }}
+                                >
+                                  Other Disability
+                                </Label>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* VA Disability Benefits Row - Only show when VA Disability is selected */}
+                      {coBorrowerVaDisabilitySelected && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="coBorrowerIncome-vaBenefitsMonthlyAmount">VA Disability Benefits - Gross Monthly Income</Label>
+                            <Input
+                              id="coBorrowerIncome-vaBenefitsMonthlyAmount"
+                              {...form.register('coBorrowerIncome.vaBenefitsMonthlyAmount')}
+                              placeholder="$0.00"
+                              data-testid="input-coBorrowerIncome-vaBenefitsMonthlyAmount"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="coBorrowerIncome-vaBenefitsStartDate">Start Date</Label>
+                            <Input
+                              id="coBorrowerIncome-vaBenefitsStartDate"
+                              {...form.register('coBorrowerIncome.vaBenefitsStartDate')}
+                              placeholder="MM/YYYY"
+                              data-testid="input-coBorrowerIncome-vaBenefitsStartDate"
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Other Disability Row - Only show when Other Disability is selected */}
+                      {coBorrowerOtherDisabilitySelected && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="coBorrowerIncome-otherDisabilityMonthlyAmount">Disability - Gross Monthly Income</Label>
+                            <Input
+                              id="coBorrowerIncome-otherDisabilityMonthlyAmount"
+                              {...form.register('coBorrowerIncome.otherDisabilityMonthlyAmount')}
+                              placeholder="$0.00"
+                              data-testid="input-coBorrowerIncome-otherDisabilityMonthlyAmount"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="coBorrowerIncome-otherDisabilityStartDate">Start Date</Label>
+                            <Input
+                              id="coBorrowerIncome-otherDisabilityStartDate"
+                              {...form.register('coBorrowerIncome.otherDisabilityStartDate')}
+                              placeholder="MM/YYYY"
+                              data-testid="input-coBorrowerIncome-otherDisabilityStartDate"
+                            />
+                          </div>
+                        </div>
+                      )}
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </Card>
+              )}
+
               {/* Co-Borrower Social Security Card */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.socialSecurity') && (
                 <Card>
@@ -20639,6 +20813,72 @@ export default function AdminAddClient() {
                 setDeleteOtherDisabilityTypeDialog({ isOpen: false });
               }}
               data-testid="button-confirm-delete-other-disability-type"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Co-Borrower VA Disability Type Confirmation Dialog */}
+      <AlertDialog open={deleteCoBorrowerVaDisabilityTypeDialog.isOpen} onOpenChange={(open) => !open && setDeleteCoBorrowerVaDisabilityTypeDialog({ isOpen: false })}>
+        <AlertDialogContent data-testid="dialog-delete-coborrower-va-disability-type">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Co-Borrower VA Disability</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove Co-Borrower VA Disability? This will clear all entered data for this income type. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteCoBorrowerVaDisabilityTypeDialog({ isOpen: false })}
+              data-testid="button-cancel-delete-coborrower-va-disability-type"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                // Deselect Co-Borrower VA Disability and clear its data
+                setCoBorrowerVaDisabilitySelected(false);
+                form.setValue('coBorrowerIncome.vaBenefitsMonthlyAmount', '');
+                form.setValue('coBorrowerIncome.vaBenefitsStartDate', '');
+                setDeleteCoBorrowerVaDisabilityTypeDialog({ isOpen: false });
+              }}
+              data-testid="button-confirm-delete-coborrower-va-disability-type"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Co-Borrower Other Disability Type Confirmation Dialog */}
+      <AlertDialog open={deleteCoBorrowerOtherDisabilityTypeDialog.isOpen} onOpenChange={(open) => !open && setDeleteCoBorrowerOtherDisabilityTypeDialog({ isOpen: false })}>
+        <AlertDialogContent data-testid="dialog-delete-coborrower-other-disability-type">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Co-Borrower Other Disability</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove Co-Borrower Other Disability? This will clear all entered data for this income type. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteCoBorrowerOtherDisabilityTypeDialog({ isOpen: false })}
+              data-testid="button-cancel-delete-coborrower-other-disability-type"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                // Deselect Co-Borrower Other Disability and clear its data
+                setCoBorrowerOtherDisabilitySelected(false);
+                form.setValue('coBorrowerIncome.otherDisabilityMonthlyAmount', '');
+                form.setValue('coBorrowerIncome.otherDisabilityStartDate', '');
+                setDeleteCoBorrowerOtherDisabilityTypeDialog({ isOpen: false });
+              }}
+              data-testid="button-confirm-delete-coborrower-other-disability-type"
               className="bg-red-600 hover:bg-red-700"
             >
               Remove
