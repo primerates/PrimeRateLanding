@@ -82,13 +82,6 @@ export default function AdminLogin() {
       {/* Left Side - Login Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-16 bg-background">
         <div className="w-full max-w-md space-y-8">
-          {/* Logo/Title */}
-          <div className="space-y-2">
-            <h1 className="text-3xl font-black italic tracking-tight" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }}>
-              PRIME RATE
-            </h1>
-          </div>
-
           {/* Login Form */}
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
@@ -149,46 +142,41 @@ export default function AdminLogin() {
               </div>
             </div>
 
-            <div>
-              <Button
-                type="button"
-                variant="ghost"
-                className="px-0 h-auto text-primary hover:bg-transparent"
-                onClick={handleForgotPassword}
-                data-testid="button-forgot-password"
-              >
-                Forgot Password?
-              </Button>
-            </div>
-
-            <Button
+            <button
               type="submit"
-              className="w-full h-12 text-base bg-primary hover:bg-primary/90"
+              className="text-lg font-medium text-foreground hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isSubmitting}
               data-testid="button-admin-login"
             >
               {isSubmitting ? (
-                <>
+                <span className="flex items-center">
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                   Signing in...
-                </>
+                </span>
               ) : (
                 'Sign In'
               )}
-            </Button>
+            </button>
           </form>
 
-          {/* Back to Home */}
-          <div className="pt-4">
-            <Button
-              variant="ghost"
+          {/* Forgot Password and Back to Home on same line */}
+          <div className="flex items-center justify-between">
+            <button
+              type="button"
+              className="text-sm text-primary hover:underline"
+              onClick={handleForgotPassword}
+              data-testid="button-forgot-password"
+            >
+              Forgot Password
+            </button>
+            <button
               onClick={() => setLocation('/')}
-              className="text-muted-foreground px-0 hover:bg-transparent"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
               data-testid="button-back-to-home"
             >
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ArrowLeft className="h-3 w-3" />
               Back to Home
-            </Button>
+            </button>
           </div>
         </div>
       </div>
@@ -198,13 +186,19 @@ export default function AdminLogin() {
         className="hidden lg:block lg:w-1/2 relative bg-white"
       >
         <div 
-          className="absolute inset-0 flex items-center justify-center"
+          className="absolute inset-0 flex flex-col items-center justify-center"
         >
           <img 
             src={primeRateLogo} 
             alt="Prime Rate Logo" 
             className="w-1/2 h-auto object-contain"
           />
+          <h1 
+            className="mt-24 text-4xl font-black italic tracking-tight" 
+            style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }}
+          >
+            PRIME RATE
+          </h1>
         </div>
       </div>
     </div>
