@@ -3903,6 +3903,23 @@ export default function AdminAddClient() {
     const propertyZipBinding = useFieldBinding('currentLoan.propertyAddress.zipCode', idPrefix, targetForm);
     const propertyCountyBinding = useFieldBinding('currentLoan.propertyAddress.county', idPrefix, targetForm);
     
+    // Calculate Total Monthly Payment
+    const principalAndInterest = targetForm.watch('currentLoan.principalAndInterestPayment') || '';
+    const taxAndInsurance = targetForm.watch('currentLoan.newField1') || '';
+    
+    const totalMonthlyPayment = useMemo(() => {
+      const piValue = parseFloat(principalAndInterest.replace(/[^\d]/g, '')) || 0;
+      const taxValue = parseFloat(taxAndInsurance.replace(/[^\d]/g, '')) || 0;
+      return piValue + taxValue;
+    }, [principalAndInterest, taxAndInsurance]);
+    
+    const totalMonthlyPaymentFormatted = useMemo(() => 
+      totalMonthlyPayment > 0 
+        ? `$${totalMonthlyPayment.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+        : '$0',
+      [totalMonthlyPayment]
+    );
+    
     const cardClassName = borderVariant === 'blue' ? 'border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200' : '';
     
     return (
@@ -4242,34 +4259,12 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="currentLoan-newField2">Total Monthly Payment</Label>
-                  <Controller
-                    control={form.control}
-                    name="currentLoan.newField2"
-                    defaultValue=""
-                    render={({ field }) => {
-                      const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
-                      const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                      
-                      return (
-                        <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                          <span className="text-muted-foreground text-sm">$</span>
-                          <Input
-                            id="currentLoan-newField2"
-                            type="text"
-                            placeholder="0"
-                            value={displayValue}
-                            onChange={(e) => {
-                              const value = e.target.value.replace(/[^\d]/g, '');
-                              field.onChange(value);
-                            }}
-                            className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                            data-testid="input-currentLoan-newField2"
-                          />
-                        </div>
-                      );
-                    }}
-                  />
+                  <Label htmlFor="currentLoan-totalMonthlyPayment">Total Monthly Payment</Label>
+                  <div className="flex items-center border border-input bg-muted px-3 rounded-md h-9">
+                    <span className="text-lg font-semibold" data-testid="text-total-monthly-payment">
+                      {totalMonthlyPaymentFormatted}
+                    </span>
+                  </div>
                 </div>
                 
                 <div className="space-y-2 md:col-span-3">
