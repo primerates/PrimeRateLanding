@@ -3804,7 +3804,6 @@ export default function AdminAddClient() {
   const useSelectFieldBinding = (name: string, idPrefix: string = '', formInstance: any = null) => {
     const contextForm = useFormContext();
     const targetForm = formInstance || contextForm;
-    const watchedValue = useWatch({ name: name as any, control: targetForm?.control });
     
     // Safety check for form availability
     if (!targetForm) {
@@ -3817,7 +3816,7 @@ export default function AdminAddClient() {
     }
     
     return {
-      value: watchedValue || '',
+      value: targetForm.watch(name as any) || '',
       onValueChange: (value: string) => {
         targetForm.setValue(name as any, value, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
       },
