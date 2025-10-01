@@ -11317,7 +11317,7 @@ export default function AdminAddClient() {
                           data-testid="checkbox-disability"
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         />
-                        <Label htmlFor="income-type-disability">Disability</Label>
+                        <Label htmlFor="income-type-disability">Other</Label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Checkbox
