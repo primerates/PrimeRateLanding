@@ -11810,16 +11810,28 @@ export default function AdminAddClient() {
                               </div>
                               <Input
                                 id={`income-second-employer-phone-${cardId}`}
-                                placeholder="(XXX) XXX-XXXX"
+                                placeholder=""
                                 value={form.watch(getSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) 
                                   ? (form.watch(getSecondEmployerFieldPath(cardId, 'employmentVerificationPhone')) || '')
                                   : (form.watch(getSecondEmployerFieldPath(cardId, 'employerPhone')) || '')}
                                 onChange={(e) => {
+                                  const value = e.target.value.replace(/\D/g, '');
+                                  let formatted = '';
+                                  if (value.length > 0) {
+                                    formatted = value.substring(0, 3);
+                                    if (value.length > 3) {
+                                      formatted += '-' + value.substring(3, 6);
+                                      if (value.length > 6) {
+                                        formatted += '-' + value.substring(6, 10);
+                                      }
+                                    }
+                                  }
                                   const fieldName = form.watch(getSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) 
                                     ? getSecondEmployerFieldPath(cardId, 'employmentVerificationPhone')
                                     : getSecondEmployerFieldPath(cardId, 'employerPhone');
-                                  handlePhoneChange(fieldName, e.target.value);
+                                  form.setValue(fieldName as any, formatted);
                                 }}
+                                maxLength={12}
                                 data-testid={`input-income-second-employer-phone-${cardId}`}
                               />
                             </div>
@@ -12172,9 +12184,23 @@ export default function AdminAddClient() {
                           <Label htmlFor="income-businessPhone">Phone</Label>
                           <Input
                             id="income-businessPhone"
-                            placeholder="(XXX) XXX-XXXX"
+                            placeholder=""
                             value={form.watch('income.businessPhone') || ''}
-                            onChange={(e) => handlePhoneChange('income.businessPhone', e.target.value)}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/\D/g, '');
+                              let formatted = '';
+                              if (value.length > 0) {
+                                formatted = value.substring(0, 3);
+                                if (value.length > 3) {
+                                  formatted += '-' + value.substring(3, 6);
+                                  if (value.length > 6) {
+                                    formatted += '-' + value.substring(6, 10);
+                                  }
+                                }
+                              }
+                              form.setValue('income.businessPhone', formatted);
+                            }}
+                            maxLength={12}
                             data-testid="input-income-businessPhone"
                           />
                         </div>
@@ -13111,16 +13137,28 @@ export default function AdminAddClient() {
                                 </div>
                                 <Input
                                   id={`${propertyId}-employer-phone`}
-                                  placeholder="(XXX) XXX-XXXX"
+                                  placeholder=""
                                   value={form.watch('income.isShowingEmploymentVerification') 
                                     ? (form.watch('income.employmentVerificationPhone') || '')
                                     : (form.watch('income.employerPhone') || '')}
                                   onChange={(e) => {
+                                    const value = e.target.value.replace(/\D/g, '');
+                                    let formatted = '';
+                                    if (value.length > 0) {
+                                      formatted = value.substring(0, 3);
+                                      if (value.length > 3) {
+                                        formatted += '-' + value.substring(3, 6);
+                                        if (value.length > 6) {
+                                          formatted += '-' + value.substring(6, 10);
+                                        }
+                                      }
+                                    }
                                     const fieldName = form.watch('income.isShowingEmploymentVerification') 
                                       ? 'income.employmentVerificationPhone'
                                       : 'income.employerPhone';
-                                    handlePhoneChange(fieldName, e.target.value);
+                                    form.setValue(fieldName, formatted);
                                   }}
+                                  maxLength={12}
                                   data-testid={`input-${propertyId}-employer-phone`}
                                 />
                               </div>
@@ -13457,16 +13495,28 @@ export default function AdminAddClient() {
                               </div>
                               <Input
                                 id={`coBorrowerIncome-second-employer-phone-${cardId}`}
-                                placeholder="(XXX) XXX-XXXX"
+                                placeholder=""
                                 value={form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) 
                                   ? (form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'employmentVerificationPhone')) || '')
                                   : (form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'employerPhone')) || '')}
                                 onChange={(e) => {
+                                  const value = e.target.value.replace(/\D/g, '');
+                                  let formatted = '';
+                                  if (value.length > 0) {
+                                    formatted = value.substring(0, 3);
+                                    if (value.length > 3) {
+                                      formatted += '-' + value.substring(3, 6);
+                                      if (value.length > 6) {
+                                        formatted += '-' + value.substring(6, 10);
+                                      }
+                                    }
+                                  }
                                   const fieldName = form.watch(getCoBorrowerSecondEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) 
                                     ? getCoBorrowerSecondEmployerFieldPath(cardId, 'employmentVerificationPhone')
                                     : getCoBorrowerSecondEmployerFieldPath(cardId, 'employerPhone');
-                                  handlePhoneChange(fieldName, e.target.value);
+                                  form.setValue(fieldName as any, formatted);
                                 }}
+                                maxLength={12}
                                 data-testid={`input-coBorrowerIncome-second-employer-phone-${cardId}`}
                               />
                             </div>
@@ -13831,9 +13881,23 @@ export default function AdminAddClient() {
                           <Label htmlFor={`coBorrowerIncome-businessPhone-${cardId}`}>Phone</Label>
                           <Input
                             id={`coBorrowerIncome-businessPhone-${cardId}`}
-                            placeholder="(XXX) XXX-XXXX"
+                            placeholder=""
                             value={form.watch(getCoBorrowerSelfEmploymentFieldPath(cardId, 'businessPhone') as any) || ''}
-                            onChange={(e) => handlePhoneChange(getCoBorrowerSelfEmploymentFieldPath(cardId, 'businessPhone') as any, e.target.value)}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/\D/g, '');
+                              let formatted = '';
+                              if (value.length > 0) {
+                                formatted = value.substring(0, 3);
+                                if (value.length > 3) {
+                                  formatted += '-' + value.substring(3, 6);
+                                  if (value.length > 6) {
+                                    formatted += '-' + value.substring(6, 10);
+                                  }
+                                }
+                              }
+                              form.setValue(getCoBorrowerSelfEmploymentFieldPath(cardId, 'businessPhone') as any, formatted);
+                            }}
+                            maxLength={12}
                             data-testid={`input-coBorrowerIncome-businessPhone-${cardId}`}
                           />
                         </div>
