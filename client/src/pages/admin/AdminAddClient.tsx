@@ -13629,14 +13629,24 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`${propertyId}-startDate`}>Start Date</Label>
                                 <Input
                                   id={`${propertyId}-startDate`}
-                                  type="date"
                                   value={employmentDates[propertyId]?.startDate || ''}
                                   onChange={(e) => {
-                                    const startDate = e.target.value;
+                                    const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                                    let formatted = '';
+                                    if (value.length > 0) {
+                                      formatted = value.substring(0, 2);
+                                      if (value.length > 2) {
+                                        formatted += '/' + value.substring(2, 4);
+                                        if (value.length > 4) {
+                                          formatted += '/' + value.substring(4, 8);
+                                        }
+                                      }
+                                    }
                                     const currentData = employmentDates[propertyId] || { endDate: '', isPresent: false, duration: '' };
-                                    updateEmploymentDuration(propertyId, startDate, currentData.endDate, currentData.isPresent);
+                                    updateEmploymentDuration(propertyId, formatted, currentData.endDate, currentData.isPresent);
                                   }}
                                   placeholder="MM/DD/YYYY"
+                                  maxLength={10}
                                   data-testid={`input-${propertyId}-startDate`}
                                 />
                               </div>
@@ -13658,16 +13668,26 @@ export default function AdminAddClient() {
                                 </div>
                                 <Input
                                   id={`${propertyId}-endDate`}
-                                  type={employmentDates[propertyId]?.isPresent ? 'text' : 'date'}
                                   value={employmentDates[propertyId]?.isPresent ? 'present' : (employmentDates[propertyId]?.endDate || '')}
                                   onChange={(e) => {
                                     if (!employmentDates[propertyId]?.isPresent) {
-                                      const endDate = e.target.value;
+                                      const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                                      let formatted = '';
+                                      if (value.length > 0) {
+                                        formatted = value.substring(0, 2);
+                                        if (value.length > 2) {
+                                          formatted += '/' + value.substring(2, 4);
+                                          if (value.length > 4) {
+                                            formatted += '/' + value.substring(4, 8);
+                                          }
+                                        }
+                                      }
                                       const currentData = employmentDates[propertyId] || { startDate: '', isPresent: false, duration: '' };
-                                      updateEmploymentDuration(propertyId, currentData.startDate, endDate, currentData.isPresent);
+                                      updateEmploymentDuration(propertyId, currentData.startDate, formatted, currentData.isPresent);
                                     }
                                   }}
                                   placeholder={employmentDates[propertyId]?.isPresent ? 'Present' : 'MM/DD/YYYY'}
+                                  maxLength={10}
                                   readOnly={employmentDates[propertyId]?.isPresent}
                                   className={employmentDates[propertyId]?.isPresent ? 'bg-muted' : ''}
                                   data-testid={`input-${propertyId}-endDate`}
@@ -13980,14 +14000,24 @@ export default function AdminAddClient() {
                               <Label htmlFor={`coBorrowerIncome-second-startDate-${cardId}`}>Start Date</Label>
                               <Input
                                 id={`coBorrowerIncome-second-startDate-${cardId}`}
-                                type="date"
                                 value={employmentDates[`coborrower-second-employment-${cardId}`]?.startDate || ''}
                                 onChange={(e) => {
-                                  const startDate = e.target.value;
+                                  const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                                  let formatted = '';
+                                  if (value.length > 0) {
+                                    formatted = value.substring(0, 2);
+                                    if (value.length > 2) {
+                                      formatted += '/' + value.substring(2, 4);
+                                      if (value.length > 4) {
+                                        formatted += '/' + value.substring(4, 8);
+                                      }
+                                    }
+                                  }
                                   const currentData = employmentDates[`coborrower-second-employment-${cardId}`] || { endDate: '', isPresent: false, duration: '' };
-                                  updateEmploymentDuration(`coborrower-second-employment-${cardId}`, startDate, currentData.endDate, currentData.isPresent);
+                                  updateEmploymentDuration(`coborrower-second-employment-${cardId}`, formatted, currentData.endDate, currentData.isPresent);
                                 }}
                                 placeholder="MM/DD/YYYY"
+                                maxLength={10}
                                 data-testid={`input-coBorrowerIncome-second-startDate-${cardId}`}
                               />
                             </div>
@@ -14009,16 +14039,26 @@ export default function AdminAddClient() {
                               </div>
                               <Input
                                 id={`coBorrowerIncome-second-endDate-${cardId}`}
-                                type={employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent ? 'text' : 'date'}
                                 value={employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent ? 'present' : (employmentDates[`coborrower-second-employment-${cardId}`]?.endDate || '')}
                                 onChange={(e) => {
                                   if (!employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent) {
-                                    const endDate = e.target.value;
+                                    const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                                    let formatted = '';
+                                    if (value.length > 0) {
+                                      formatted = value.substring(0, 2);
+                                      if (value.length > 2) {
+                                        formatted += '/' + value.substring(2, 4);
+                                        if (value.length > 4) {
+                                          formatted += '/' + value.substring(4, 8);
+                                        }
+                                      }
+                                    }
                                     const currentData = employmentDates[`coborrower-second-employment-${cardId}`] || { startDate: '', isPresent: false, duration: '' };
-                                    updateEmploymentDuration(`coborrower-second-employment-${cardId}`, currentData.startDate, endDate, currentData.isPresent);
+                                    updateEmploymentDuration(`coborrower-second-employment-${cardId}`, currentData.startDate, formatted, currentData.isPresent);
                                   }
                                 }}
                                 placeholder={employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent ? 'Enter' : 'MM/DD/YYYY'}
+                                maxLength={10}
                                 readOnly={employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent}
                                 className={employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent ? 'bg-muted' : ''}
                                 data-testid={`input-coBorrowerIncome-second-endDate-${cardId}`}
@@ -14375,14 +14415,24 @@ export default function AdminAddClient() {
                           <Label htmlFor={`coBorrowerIncome-self-employment-startDate-${cardId}`}>Start Date</Label>
                           <Input
                             id={`coBorrowerIncome-self-employment-startDate-${cardId}`}
-                            type="date"
                             value={employmentDates[`co-borrower-self-employment-${cardId}`]?.startDate || ''}
                             onChange={(e) => {
-                              const startDate = e.target.value;
+                              const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                              let formatted = '';
+                              if (value.length > 0) {
+                                formatted = value.substring(0, 2);
+                                if (value.length > 2) {
+                                  formatted += '/' + value.substring(2, 4);
+                                  if (value.length > 4) {
+                                    formatted += '/' + value.substring(4, 8);
+                                  }
+                                }
+                              }
                               const currentData = employmentDates[`co-borrower-self-employment-${cardId}`] || { endDate: '', isPresent: false, duration: '' };
-                              updateEmploymentDuration(`co-borrower-self-employment-${cardId}`, startDate, currentData.endDate, currentData.isPresent);
+                              updateEmploymentDuration(`co-borrower-self-employment-${cardId}`, formatted, currentData.endDate, currentData.isPresent);
                             }}
                             placeholder="MM/DD/YYYY"
+                            maxLength={10}
                             data-testid={`input-coBorrowerIncome-self-employment-startDate-${cardId}`}
                           />
                         </div>
@@ -14404,16 +14454,26 @@ export default function AdminAddClient() {
                           </div>
                           <Input
                             id={`coBorrowerIncome-self-employment-endDate-${cardId}`}
-                            type={employmentDates[`co-borrower-self-employment-${cardId}`]?.isPresent ? 'text' : 'date'}
                             value={employmentDates[`co-borrower-self-employment-${cardId}`]?.isPresent ? 'present' : (employmentDates[`co-borrower-self-employment-${cardId}`]?.endDate || '')}
                             onChange={(e) => {
                               if (!employmentDates[`co-borrower-self-employment-${cardId}`]?.isPresent) {
-                                const endDate = e.target.value;
+                                const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                                let formatted = '';
+                                if (value.length > 0) {
+                                  formatted = value.substring(0, 2);
+                                  if (value.length > 2) {
+                                    formatted += '/' + value.substring(2, 4);
+                                    if (value.length > 4) {
+                                      formatted += '/' + value.substring(4, 8);
+                                    }
+                                  }
+                                }
                                 const currentData = employmentDates[`co-borrower-self-employment-${cardId}`] || { startDate: '', isPresent: false, duration: '' };
-                                updateEmploymentDuration(`co-borrower-self-employment-${cardId}`, currentData.startDate, endDate, currentData.isPresent);
+                                updateEmploymentDuration(`co-borrower-self-employment-${cardId}`, currentData.startDate, formatted, currentData.isPresent);
                               }
                             }}
                             placeholder={employmentDates[`co-borrower-self-employment-${cardId}`]?.isPresent ? 'Present' : 'MM/DD/YYYY'}
+                            maxLength={10}
                             readOnly={employmentDates[`co-borrower-self-employment-${cardId}`]?.isPresent}
                             className={employmentDates[`co-borrower-self-employment-${cardId}`]?.isPresent ? 'bg-muted' : ''}
                             data-testid={`input-coBorrowerIncome-self-employment-endDate-${cardId}`}
