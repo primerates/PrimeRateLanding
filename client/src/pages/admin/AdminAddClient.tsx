@@ -4143,16 +4143,40 @@ export default function AdminAddClient() {
                   <div className="grid grid-cols-1 md:grid-cols-10 gap-4">
                 <div className="space-y-2 md:col-span-1">
                   <Label htmlFor="currentLoan-currentRate">Interest Rate</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <Input
-                      id="currentLoan-currentRate"
-                      {...form.register('currentLoan.currentRate')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-currentLoan-currentRate"
-                    />
-                    <span className="text-muted-foreground text-sm">%</span>
-                  </div>
+                  <Controller
+                    control={form.control}
+                    name="currentLoan.currentRate"
+                    defaultValue=""
+                    render={({ field }) => {
+                      const numVal = field.value ? field.value.replace(/[^\d.]/g, '') : '';
+                      const parts = numVal.split('.');
+                      let displayValue = parts[0];
+                      if (parts.length > 1) {
+                        displayValue += '.' + parts[1].substring(0, 3);
+                      }
+                      
+                      return (
+                        <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                          <Input
+                            id="currentLoan-currentRate"
+                            type="text"
+                            placeholder="0.000"
+                            value={displayValue}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/[^\d.]/g, '');
+                              const parts = value.split('.');
+                              if (parts.length > 2) return;
+                              if (parts.length === 2 && parts[1].length > 3) return;
+                              field.onChange(value);
+                            }}
+                            className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                            data-testid="input-currentLoan-currentRate"
+                          />
+                          <span className="text-muted-foreground text-sm">%</span>
+                        </div>
+                      );
+                    }}
+                  />
                 </div>
                 
                 <div className="space-y-2 md:col-span-2">
