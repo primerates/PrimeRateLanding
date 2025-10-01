@@ -117,6 +117,43 @@ const AutoSumComponent = React.memo<{ control: any }>(({ control }) => {
 **Troubleshooting Typing Lag:**
 If typing lag occurs: "Extract calculation into isolated React.memo component with useWatch + useMemo pattern like Income tab"
 
+#### Phone Number Auto-Format Pattern (xxx-xxx-xxxx)
+For phone number fields that need natural typing with automatic formatting and complete backspace deletion:
+
+```typescript
+<Input
+  id="phone-field-id"
+  value={form.watch('fieldPath.phone') || ''}
+  onChange={(e) => {
+    const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+    let formatted = '';
+    if (value.length > 0) {
+      formatted = value.substring(0, 3);
+      if (value.length > 3) {
+        formatted += '-' + value.substring(3, 6);
+        if (value.length > 6) {
+          formatted += '-' + value.substring(6, 10);
+        }
+      }
+    }
+    form.setValue('fieldPath.phone', formatted);
+  }}
+  placeholder=""
+  maxLength={12}
+  data-testid="input-phone-field-id"
+/>
+```
+
+**How it works:**
+- Strips all non-digit characters with `replace(/\D/g, '')`
+- Builds formatted string by adding hyphens at positions 3 and 6
+- Limits to 10 digits max (displayed as 12 characters with hyphens)
+- Allows free backspace/delete since it rebuilds the format on each keystroke
+
+**Implementation locations:**
+- Borrower phone field
+- Co-Borrower phone field
+
 ### Development Infrastructure
 - **TypeScript** configuration with path aliases for clean imports
 - **Replit integration** with development banner and error overlay
