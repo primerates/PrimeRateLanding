@@ -3995,7 +3995,6 @@ export default function AdminAddClient() {
     const [isPropertyAddressOpen, setIsPropertyAddressOpen] = useState(true);
     const currentLenderBinding = useFieldBinding('currentLoan.currentLender', idPrefix, targetForm);
     const loanNumberBinding = useFieldBinding('currentLoan.loanNumber', idPrefix, targetForm);
-    const loanStartDateBinding = useFieldBinding('currentLoan.loanStartDate', idPrefix, targetForm);
     const remainingTermBinding = useFieldBinding('currentLoan.remainingTermPerCreditReport', idPrefix, targetForm);
     const loanCategoryBinding = useSelectFieldBinding('currentLoan.loanCategory', idPrefix, targetForm);
     const loanProgramBinding = useSelectFieldBinding('currentLoan.loanProgram', idPrefix, targetForm);
@@ -4101,8 +4100,8 @@ export default function AdminAddClient() {
           </CardHeader>
           <CollapsibleContent>
             <CardContent className="space-y-6 pt-[1.7rem]">
-              {/* Row 1: Current Lender, Loan Number, Loan Purpose, Loan Start Date, Remaining Term On Credit Report */}
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              {/* Row 1: Current Lender, Loan Number, Loan Purpose, Remaining Term On Credit Report */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor={currentLenderBinding.id}>Lender Name</Label>
                   <Input
@@ -4136,31 +4135,6 @@ export default function AdminAddClient() {
                       <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor={loanStartDateBinding.id}>Loan Start Date</Label>
-                  <Input
-                    id={loanStartDateBinding.id}
-                    value={targetForm.watch('currentLoan.loanStartDate') || ''}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
-                      let formatted = '';
-                      if (value.length > 0) {
-                        formatted = value.substring(0, 2);
-                        if (value.length > 2) {
-                          formatted += '/' + value.substring(2, 4);
-                          if (value.length > 4) {
-                            formatted += '/' + value.substring(4, 8);
-                          }
-                        }
-                      }
-                      targetForm.setValue('currentLoan.loanStartDate', formatted);
-                    }}
-                    placeholder="MM/DD/YYYY"
-                    maxLength={10}
-                    data-testid={loanStartDateBinding['data-testid']}
-                  />
                 </div>
                 
                 <div className="space-y-2">
