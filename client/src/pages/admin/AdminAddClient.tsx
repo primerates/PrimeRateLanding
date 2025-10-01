@@ -4985,6 +4985,19 @@ export default function AdminAddClient() {
     const contextForm = useFormContext();
     const targetForm = formInstance || contextForm;
     
+    // Local state for monetary fields to prevent keystroke lag
+    const [newLoanAmount, setNewLoanAmount] = useState('');
+    const [lenderCredit, setLenderCredit] = useState('');
+    
+    // Initialize local state from form values on mount
+    useEffect(() => {
+      const loanAmountValue = targetForm.getValues('newLoan.loanAmount');
+      if (loanAmountValue) setNewLoanAmount(loanAmountValue);
+      
+      const creditValue = targetForm.getValues('purchaseLoan.lenderCredit');
+      if (creditValue) setLenderCredit(creditValue);
+    }, []);
+    
     // State for property address collapse
     const [isPropertyAddressOpen, setIsPropertyAddressOpen] = useState(true);
     const currentLenderBinding = useFieldBinding('purchaseLoan.currentLender', idPrefix, targetForm);
@@ -5127,7 +5140,21 @@ export default function AdminAddClient() {
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
                       id="newLoan-loanAmount"
-                      {...form.register('newLoan.loanAmount')}
+                      value={newLoanAmount}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^\d.]/g, '');
+                        setNewLoanAmount(value);
+                      }}
+                      onBlur={(e) => {
+                        const num = parseFloat(newLoanAmount) || 0;
+                        const formatted = num > 0 ? `$${num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` : '';
+                        setNewLoanAmount(formatted);
+                        targetForm.setValue('newLoan.loanAmount', formatted);
+                      }}
+                      onFocus={(e) => {
+                        const raw = newLoanAmount.replace(/[^\d.]/g, '');
+                        setNewLoanAmount(raw);
+                      }}
                       placeholder="0.00"
                       className="border-0 bg-transparent px-2 focus-visible:ring-0"
                       data-testid="input-newLoan-loanAmount"
