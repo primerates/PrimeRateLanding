@@ -12809,7 +12809,7 @@ export default function AdminAddClient() {
                             data-testid="checkbox-coborrower-childSupport"
                             className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           />
-                          <Label htmlFor="coBorrowerIncome-type-childSupport">Child Support</Label>
+                          <Label htmlFor="coBorrowerIncome-type-childSupport">Disability</Label>
                         </div>
                         <div className="flex items-center space-x-2" title="Alimony / Child Support">
                           <Checkbox
