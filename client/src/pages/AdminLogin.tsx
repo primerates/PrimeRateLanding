@@ -158,7 +158,7 @@ export default function AdminLogin() {
             <button
               type="submit"
               onClick={handleLogin}
-              className="text-sm font-medium text-foreground hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="text-base font-medium text-foreground hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isSubmitting}
               data-testid="button-admin-login"
             >
