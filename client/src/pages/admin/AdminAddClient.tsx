@@ -3949,10 +3949,10 @@ export default function AdminAddClient() {
                   }}
                   className="hover:bg-blue-500 hover:text-white"
                   data-testid="button-add-current-loan"
-                  title="Add Current Loan"
+                  title="Add Another Existing Primary Loan"
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Current Primary Loan
+                  Add Another Existing Primary Loan
                 </Button>
                 
                 {/* Remove Button */}
