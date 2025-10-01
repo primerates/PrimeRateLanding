@@ -12780,17 +12780,19 @@ export default function AdminAddClient() {
                           />
                           <Label htmlFor="coBorrowerIncome-type-childSupport">Child Support</Label>
                         </div>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-2" title="Alimony / Child Support">
                           <Checkbox
                             id="coBorrowerIncome-type-disability"
                             checked={form.watch('coBorrowerIncome.incomeTypes.disability') || false}
-                            onCheckedChange={(checked) => {
-                              handleIncomeTypeChange('coBorrowerIncome.incomeTypes.disability', !!checked, 'Disability', true);
+                            onCheckedChange={() => {
+                              // Disabled - will be designed later
+                              return;
                             }}
+                            disabled
                             data-testid="checkbox-coborrower-disability"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] cursor-not-allowed opacity-50"
                           />
-                          <Label htmlFor="coBorrowerIncome-type-disability">Other</Label>
+                          <Label htmlFor="coBorrowerIncome-type-disability" className="cursor-not-allowed opacity-50">Other</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <Checkbox
