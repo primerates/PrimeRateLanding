@@ -100,7 +100,7 @@ export default function AdminLogin() {
         </div>
         
         {/* Even smaller greyed out logo - 7:30 position from top left logo */}
-        <div className="absolute top-28 left-4 opacity-[0.15]">
+        <div className="absolute top-28 left-8 opacity-[0.15]">
           <img 
             src={primeRateLogo} 
             alt="" 
