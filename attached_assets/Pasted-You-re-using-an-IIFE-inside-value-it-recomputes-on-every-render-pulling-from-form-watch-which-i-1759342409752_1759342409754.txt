@@ -1,0 +1,75 @@
+You’re using an IIFE inside value → it recomputes on every render, pulling from form.watch() which itself triggers rerenders.
+
+form.setValue is firing on every keystroke and forcing the input to re-render in full.
+
+Controlled formatting + rerenders = input lag.
+
+The fix:
+
+Don’t use form.watch() directly inside the value prop. Instead, use useState (for immediate responsiveness) and sync with form only when needed.
+
+Format only on input, not every re-render.
+
+Here’s a much smoother version ⬇️
+
+import { useState, useEffect } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+function DateInput({ idPrefix, form }) {
+  const fieldName = "currentLoan.prepaymentPenaltyText";
+
+  // local state for fast typing
+  const [localValue, setLocalValue] = useState(
+    form.getValues(fieldName) || ""
+  );
+
+  // sync form value -> localValue if external changes happen
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === fieldName) {
+        setLocalValue(value[fieldName] || "");
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
+
+  const handleChange = (e) => {
+    const raw = e.target.value.replace(/\D/g, ""); // keep only digits
+    let formatted = raw;
+
+    if (raw.length > 2) {
+      formatted = raw.slice(0, 2) + "/" + raw.slice(2);
+    }
+    if (raw.length > 4) {
+      formatted = formatted.slice(0, 5) + "/" + raw.slice(4, 8);
+    }
+
+    setLocalValue(formatted);                 // immediate UI update
+    form.setValue(fieldName, formatted, { shouldValidate: true }); // sync with form
+  };
+
+  return (
+    <div className="space-y-2">
+      <Label htmlFor={`${idPrefix}currentLoan-prepaymentPenalty-text`}>
+        Pre-Payment Penalty
+      </Label>
+      <Input
+        id={`${idPrefix}currentLoan-prepaymentPenalty-text`}
+        value={localValue}
+        onChange={handleChange}
+        placeholder="MM/DD/YYYY"
+        maxLength={10}
+        data-testid={`input-currentLoan-prepaymentPenalty-text-${idPrefix}`}
+      />
+    </div>
+  );
+}
+
+Why this fixes lag:
+
+Local state handles typing instantly → no waiting for form.watch to push updates.
+
+Formatting happens in handleChange only → not on every render.
+
+Backspace works smoothly because we rebuild from raw digits instead of reapplying formatting logic mid-delete.
