@@ -86,12 +86,6 @@ export default function AdminLogin() {
             <h1 className="text-3xl font-black italic tracking-tight" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }}>
               PRIME RATE HOME LOANS
             </h1>
-            <p className="text-sm text-muted-foreground">Admin Portal</p>
-          </div>
-
-          {/* Login Title */}
-          <div>
-            <h2 className="text-4xl font-bold tracking-tight">Log In</h2>
           </div>
 
           {/* Login Form */}
@@ -207,16 +201,6 @@ export default function AdminLogin() {
             : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%)'
         }}
       >
-        <div className="absolute inset-0 flex items-center justify-center p-16">
-          <div className="text-white text-center space-y-6">
-            <h3 className="text-5xl font-black italic" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }}>
-              PRIME RATE
-            </h3>
-            <p className="text-xl font-light">
-              Your trusted partner in home financing
-            </p>
-          </div>
-        </div>
       </div>
     </div>
   );
