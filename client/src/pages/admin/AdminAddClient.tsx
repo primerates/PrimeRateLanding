@@ -1602,11 +1602,22 @@ export default function AdminAddClient() {
     if (start > end) return '';
     
     // Calculate difference in months
-    const monthsDiff = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
-    const daysDiff = end.getDate() - start.getDate();
+    let yearsDiff = end.getFullYear() - start.getFullYear();
+    let monthsDiff = end.getMonth() - start.getMonth();
+    let daysDiff = end.getDate() - start.getDate();
     
-    // Adjust for partial months
-    const totalMonths = monthsDiff + (daysDiff >= 0 ? 0 : -1) + (daysDiff / 30);
+    // Calculate total months first
+    let totalMonths = yearsDiff * 12 + monthsDiff;
+    
+    // Round days to nearest month: if >= 15 days, add 1 month
+    if (daysDiff >= 15) {
+      totalMonths += 1;
+    } else if (daysDiff < 0) {
+      // If end day is before start day, we haven't completed the month
+      totalMonths -= 1;
+    }
+    
+    if (totalMonths < 0) return '';
     
     if (totalMonths < 1) {
       return `${totalMonths.toFixed(1)} months`;
