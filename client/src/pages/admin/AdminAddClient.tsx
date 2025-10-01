@@ -455,6 +455,49 @@ const PurchaseLoanRateLockExpirationLabel = React.memo<{
   );
 });
 
+// Isolated component for Purchase Loan Mid FICO Switch
+const PurchaseLoanMidFicoSwitch = React.memo<{
+  control: any;
+  onCheckedChange: () => void;
+  purchaseBorrowerMidFico: string;
+  purchaseCoBorrowerMidFico: string;
+}>(({ control, onCheckedChange, purchaseBorrowerMidFico, purchaseCoBorrowerMidFico }) => {
+  const midFico = useWatch({ control, name: 'purchaseLoan.midFico' }) || '';
+  
+  const isChecked = useMemo(() => {
+    return !!(purchaseBorrowerMidFico || purchaseCoBorrowerMidFico || midFico);
+  }, [purchaseBorrowerMidFico, purchaseCoBorrowerMidFico, midFico]);
+
+  return (
+    <Switch
+      checked={isChecked}
+      onCheckedChange={onCheckedChange}
+      data-testid="toggle-purchaseLoan-fico-type"
+      className="scale-[0.8]"
+    />
+  );
+});
+
+// Isolated component for Purchase Loan Rate Lock Status Label
+const PurchaseLoanRateLockStatusLabel = React.memo<{
+  control: any;
+}>(({ control }) => {
+  const rateLockStatus = useWatch({ control, name: 'purchaseLoan.rateLockStatus' }) || '';
+  
+  const isRed = useMemo(() => {
+    return rateLockStatus === 'not-locked' || rateLockStatus === 'expired' || !rateLockStatus;
+  }, [rateLockStatus]);
+
+  return (
+    <Label 
+      htmlFor="purchaseLoan-rateLockStatus"
+      className={isRed ? 'text-red-500' : ''}
+    >
+      Rate Lock Status
+    </Label>
+  );
+});
+
 // Isolated component for Purchase Loan Rate Lock Expiration Switch
 const PurchaseLoanRateLockExpirationSwitch = React.memo<{
   control: any;
@@ -5361,11 +5404,11 @@ export default function AdminAddClient() {
                         <Label htmlFor="purchaseLoan-midFico" className="text-sm">
                           {getPurchaseLoanFicoLabel()}
                         </Label>
-                        <Switch
-                          checked={purchaseBorrowerCreditScoresDialog.midFico || purchaseCoBorrowerCreditScoresDialog.midFico || targetForm.watch('purchaseLoan.midFico') ? true : false}
+                        <PurchaseLoanMidFicoSwitch
+                          control={targetForm.control}
                           onCheckedChange={cyclePurchaseLoanFicoType}
-                          data-testid="toggle-purchaseLoan-fico-type"
-                          className="scale-[0.8]"
+                          purchaseBorrowerMidFico={purchaseBorrowerCreditScoresDialog.midFico}
+                          purchaseCoBorrowerMidFico={purchaseCoBorrowerCreditScoresDialog.midFico}
                         />
                       </div>
                       <Input
@@ -5405,15 +5448,9 @@ export default function AdminAddClient() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label 
-                        htmlFor="purchaseLoan-rateLockStatus"
-                        className={(() => {
-                          const value = targetForm.watch('purchaseLoan.rateLockStatus');
-                          return (value === 'not-locked' || value === 'expired' || !value) ? 'text-red-500' : '';
-                        })()}
-                      >
-                        Rate Lock Status
-                      </Label>
+                      <PurchaseLoanRateLockStatusLabel
+                        control={targetForm.control}
+                      />
                       <Controller
                         name="purchaseLoan.rateLockStatus"
                         control={targetForm.control}
