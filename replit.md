@@ -90,47 +90,94 @@ Preferred communication style: Simple, everyday language.
 - **Contact forms** for general inquiries
 - **Real-time validation** and user feedback
 
-#### Auto-Sum/Calculation Pattern (Performance Optimized)
-For auto-calculating fields that sum multiple form inputs, use this pattern to avoid typing lag:
+#### Auto-Sum/Calculation Pattern (Zero-Lag Performance)
+For auto-calculating fields that sum multiple form inputs, use this isolated component pattern:
 
 ```typescript
-// RECOMMENDED: Isolated React.memo component with direct props
-const AutoSumComponent = React.memo<{ control: any }>(({ control }) => {
-  const field1 = useWatch({ control, name: 'path.field1' }) || '';
-  const field2 = useWatch({ control, name: 'path.field2' }) || '';
+// CRITICAL: Isolated React.memo component with useWatch + setValue pattern
+const TotalMonthlyPaymentField = React.memo<{ form: any }>(({ form }) => {
+  const [principal, tax] = useWatch({
+    control: form.control,
+    name: ["currentLoan.principalAndInterestPayment", "currentLoan.newField1"]
+  });
 
   const total = useMemo(() => {
-    const value1 = parseMonetaryValue(field1);
-    const value2 = parseMonetaryValue(field2);
-    return value1 + value2;
-  }, [field1, field2]);
+    const pNum = Number((principal || "").toString().replace(/[^\d]/g, "")) || 0;
+    const tNum = Number((tax || "").toString().replace(/[^\d]/g, "")) || 0;
+    return (pNum + tNum).toLocaleString();
+  }, [principal, tax]);
 
-  const formattedTotal = useMemo(() => 
-    total > 0 ? `$${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '$0.00',
-    [total]
-  );
+  useEffect(() => {
+    const currentTotal = form.getValues("currentLoan.newField2");
+    if (currentTotal !== total) {
+      form.setValue("currentLoan.newField2", total, {
+        shouldDirty: true,
+        shouldTouch: false,
+        shouldValidate: false
+      });
+    }
+  }, [total, form]);
 
   return (
-    <div className="p-2 bg-green-50 rounded-md border border-green-200">
-      <span className="text-sm font-semibold text-green-700">
-        {formattedTotal}
-      </span>
+    <div className="space-y-2 md:col-span-2">
+      <Label htmlFor="currentLoan-newField2">Total Monthly Payment</Label>
+      <div className="flex items-center border border-input bg-background px-3 rounded-md">
+        <span className="text-muted-foreground text-sm">$</span>
+        <Input
+          id="currentLoan-newField2"
+          type="text"
+          placeholder="0"
+          value={total}
+          readOnly
+          className="border-0 bg-transparent px-2 focus-visible:ring-0"
+          data-testid="input-currentLoan-newField2"
+        />
+      </div>
     </div>
   );
 });
 
-// Usage: <AutoSumComponent control={form.control} />
+// Usage: <TotalMonthlyPaymentField form={form} />
 ```
 
 **Critical Rules for Zero-Lag Auto-Sum:**
-- **Always use React.memo** - Prevents parent component re-renders
-- **Pass control as prop** - Never use useFormContext() in auto-sum components  
-- **Use useWatch for isolation** - Prevents unnecessary re-renders
-- **Never add auto-sum to large parent components** - Causes entire form to re-render
-- **Reference working pattern**: Income tab Borrower Employer cards (proven zero-lag)
+- **NEVER use watch() at component level** - Causes entire large components to re-render on every keystroke
+- **Always create isolated React.memo component** - Only this component re-renders, not parent
+- **Use useWatch inside the isolated component** - Monitors only the fields needed for calculation
+- **Calculate in useMemo** - Efficient computation only when dependencies change
+- **Update with setValue in guarded useEffect** - Prevents infinite loops, keeps form state in sync
+- **Format input fields only on blur** - Never format on every keystroke
 
-**Troubleshooting Typing Lag:**
-If typing lag occurs: "Extract calculation into isolated React.memo component with useWatch + useMemo pattern like Income tab"
+**Input Field Pattern (for fields being summed):**
+```typescript
+<Controller
+  control={form.control}
+  name="currentLoan.principalAndInterestPayment"
+  defaultValue=""
+  render={({ field }) => (
+    <Input
+      value={field.value}
+      onChange={(e) => {
+        const value = e.target.value.replace(/[^\d]/g, '');
+        field.onChange(value);
+      }}
+      onBlur={(e) => {
+        const value = e.target.value.replace(/[^\d]/g, '');
+        const formatted = value ? Number(value).toLocaleString() : '';
+        form.setValue("currentLoan.principalAndInterestPayment", formatted);
+      }}
+    />
+  )}
+/>
+```
+
+**Why This Works:**
+- Input fields store raw values while typing → zero lag
+- Formatting happens only on blur → no expensive operations during typing
+- Auto-sum component is isolated → only it re-renders when watched values change
+- Parent component never re-renders → maintains typing speed even in 23K+ line files
+
+**Reference Implementation:** Primary Loan card (lines 3862-3903 in AdminAddClient.tsx)
 
 #### Phone Number Auto-Format Pattern (xxx-xxx-xxxx)
 For phone number fields that need natural typing with automatic formatting and complete backspace deletion:
