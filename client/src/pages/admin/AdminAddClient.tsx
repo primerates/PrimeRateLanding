@@ -14763,8 +14763,23 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`coBorrowerIncome-pension-${index}-startDate`}>Start Date</Label>
                                 <Input
                                   id={`coBorrowerIncome-pension-${index}-startDate`}
-                                  {...form.register(`coBorrowerIncome.pensions.${index}.startDate`)}
-                                  placeholder="MM/YYYY"
+                                  value={form.watch(`coBorrowerIncome.pensions.${index}.startDate`) || ''}
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                                    let formatted = '';
+                                    if (value.length > 0) {
+                                      formatted = value.substring(0, 2);
+                                      if (value.length > 2) {
+                                        formatted += '/' + value.substring(2, 4);
+                                        if (value.length > 4) {
+                                          formatted += '/' + value.substring(4, 8);
+                                        }
+                                      }
+                                    }
+                                    form.setValue(`coBorrowerIncome.pensions.${index}.startDate`, formatted);
+                                  }}
+                                  placeholder="MM/DD/YYYY"
+                                  maxLength={10}
                                   data-testid={`input-coborrowerIncome-pension-${index}-startDate`}
                                 />
                               </div>
@@ -14901,8 +14916,23 @@ export default function AdminAddClient() {
                             <Label htmlFor="coBorrowerIncome-vaBenefitsStartDate">Start Date</Label>
                             <Input
                               id="coBorrowerIncome-vaBenefitsStartDate"
-                              {...form.register('coBorrowerIncome.vaBenefitsStartDate')}
-                              placeholder="MM/YYYY"
+                              value={form.watch('coBorrowerIncome.vaBenefitsStartDate') || ''}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                                let formatted = '';
+                                if (value.length > 0) {
+                                  formatted = value.substring(0, 2);
+                                  if (value.length > 2) {
+                                    formatted += '/' + value.substring(2, 4);
+                                    if (value.length > 4) {
+                                      formatted += '/' + value.substring(4, 8);
+                                    }
+                                  }
+                                }
+                                form.setValue('coBorrowerIncome.vaBenefitsStartDate', formatted);
+                              }}
+                              placeholder="MM/DD/YYYY"
+                              maxLength={10}
                               data-testid="input-coBorrowerIncome-vaBenefitsStartDate"
                             />
                           </div>
@@ -14989,8 +15019,23 @@ export default function AdminAddClient() {
                           <Label htmlFor="coBorrowerIncome-socialSecurityStartDate">Start Date</Label>
                           <Input
                             id="coBorrowerIncome-socialSecurityStartDate"
-                            {...form.register('coBorrowerIncome.socialSecurityStartDate')}
-                            placeholder="MM/YYYY"
+                            value={form.watch('coBorrowerIncome.socialSecurityStartDate') || ''}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                              let formatted = '';
+                              if (value.length > 0) {
+                                formatted = value.substring(0, 2);
+                                if (value.length > 2) {
+                                  formatted += '/' + value.substring(2, 4);
+                                  if (value.length > 4) {
+                                    formatted += '/' + value.substring(4, 8);
+                                  }
+                                }
+                              }
+                              form.setValue('coBorrowerIncome.socialSecurityStartDate', formatted);
+                            }}
+                            placeholder="MM/DD/YYYY"
+                            maxLength={10}
                             data-testid="input-coborrowerIncome-socialSecurityStartDate"
                           />
                         </div>
@@ -15124,8 +15169,23 @@ export default function AdminAddClient() {
                           <Label htmlFor="coBorrowerIncome-disabilityStartDate">Start Date</Label>
                           <Input
                             id="coBorrowerIncome-disabilityStartDate"
-                            {...form.register('coBorrowerIncome.disabilityStartDate')}
-                            placeholder="MM/YYYY"
+                            value={form.watch('coBorrowerIncome.disabilityStartDate') || ''}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                              let formatted = '';
+                              if (value.length > 0) {
+                                formatted = value.substring(0, 2);
+                                if (value.length > 2) {
+                                  formatted += '/' + value.substring(2, 4);
+                                  if (value.length > 4) {
+                                    formatted += '/' + value.substring(4, 8);
+                                  }
+                                }
+                              }
+                              form.setValue('coBorrowerIncome.disabilityStartDate', formatted);
+                            }}
+                            placeholder="MM/DD/YYYY"
+                            maxLength={10}
                             data-testid="input-coborrowerIncome-disabilityStartDate"
                           />
                         </div>
