@@ -4211,7 +4211,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="currentLoan-newField1">New Field 1</Label>
+                  <Label htmlFor="currentLoan-newField1">Tax & Insurance Payment</Label>
                   <Controller
                     control={form.control}
                     name="currentLoan.newField1"
@@ -4242,7 +4242,7 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="currentLoan-newField2">New Field 2</Label>
+                  <Label htmlFor="currentLoan-newField2">Total Monthly Payment</Label>
                   <Controller
                     control={form.control}
                     name="currentLoan.newField2"
