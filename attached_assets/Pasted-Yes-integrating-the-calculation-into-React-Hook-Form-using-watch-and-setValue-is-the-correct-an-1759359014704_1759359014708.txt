@@ -1,0 +1,75 @@
+Yes, integrating the calculation into React Hook Form using watch() and setValue() is the correct and optimal approach for a React Hook Form–based workflow. This method ensures that your codebase remains consistent, all field logic leverages the form context, and your validation, state management, and reactivity remain robust.
+
+Adapted Recommendation
+Use watch() to track the values of "principal & interest" and "tax & insurance".
+
+Use setValue() to update the combined field automatically, keeping it read-only.
+
+This approach integrates smoothly with Controller components and keeps all form logic with React Hook Form.
+
+Sample Code Using React Hook Form
+jsx
+import React, { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+
+export default function MortgageCalculatorForm() {
+  const { control, watch, setValue } = useForm();
+
+  // Watch input fields, calculate sum whenever either changes
+  const principalInterest = watch("principalInterest") || 0;
+  const taxInsurance = watch("taxInsurance") || 0;
+
+  useEffect(() => {
+    const total = (parseFloat(principalInterest) || 0) + (parseFloat(taxInsurance) || 0);
+    setValue("total", total.toFixed(2), { shouldValidate: false });
+  }, [principalInterest, taxInsurance, setValue]);
+
+  return (
+    <form>
+      <Controller
+        name="principalInterest"
+        control={control}
+        render={({ field }) => (
+          <input {...field} type="number" step="0.01" placeholder="Principal & Interest" />
+        )}
+      />
+      <Controller
+        name="taxInsurance"
+        control={control}
+        render={({ field }) => (
+          <input {...field} type="number" step="0.01" placeholder="Tax & Insurance" />
+        )}
+      />
+      <Controller
+        name="total"
+        control={control}
+        render={({ field }) => (
+          <input {...field} type="number" step="0.01" readOnly placeholder="Total Monthly Payment" />
+        )}
+      />
+    </form>
+  );
+}
+Why This Works
+Keeps calculation and field update inside React Hook Form context, fitting with the Controller pattern.
+
+Updates the "total" field instantly and reliably, without unnecessary renders or side effects.
+
+Ensures a read-only total, no user editing possible, and smooth typing performance in inputs.
+
+This adaptation is widely accepted and preserves a clean, maintainable structure for form logic in React Hook Form. It is the recommended integration for your case.Adapting the calculation logic to fit the React Hook Form Controller pattern is the best practice for your existing form setup. This approach allows you to monitor both fields using watch(), promptly calculate the sum, and update the read-only field using setValue().
+
+This ensures your implementation remains consistent with React Hook Form's structure while delivering fast input performance and proper field updates.
+
+Recommendation
+Proceed with the adaptation suggested:
+
+Use watch() for real-time value tracking.
+
+Calculate the sum in a React useEffect as values change.
+
+Update the combined field using setValue().
+
+Display the total in a read-only input managed by Controller.
+
+This keeps your form logic clean, performant, and easy to maintain within the existing Controller-based pattern.

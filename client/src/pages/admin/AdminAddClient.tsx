@@ -3903,6 +3903,17 @@ export default function AdminAddClient() {
     const propertyZipBinding = useFieldBinding('currentLoan.propertyAddress.zipCode', idPrefix, targetForm);
     const propertyCountyBinding = useFieldBinding('currentLoan.propertyAddress.county', idPrefix, targetForm);
     
+    // Watch payment fields and calculate total
+    const principalInterest = targetForm.watch('currentLoan.principalAndInterestPayment') || '';
+    const taxInsurance = targetForm.watch('currentLoan.newField1') || '';
+    
+    useEffect(() => {
+      const p = parseFloat(principalInterest.replace(/[^\d]/g, '')) || 0;
+      const t = parseFloat(taxInsurance.replace(/[^\d]/g, '')) || 0;
+      const total = p + t;
+      targetForm.setValue('currentLoan.newField2', total.toString(), { shouldValidate: false });
+    }, [principalInterest, taxInsurance, targetForm]);
+    
     const cardClassName = borderVariant === 'blue' ? 'border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200' : '';
     
     return (
