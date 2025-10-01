@@ -12546,6 +12546,37 @@ export default function AdminAddClient() {
                     </CardHeader>
                     <CollapsibleContent>
                       <CardContent className="space-y-4">
+                      {/* Disability Type Selection */}
+                      <Card className="bg-muted">
+                        <CardContent className="pt-6">
+                          <div className="space-y-3">
+                            <div className="flex gap-4">
+                              <div className="flex items-center space-x-2">
+                                <input
+                                  type="radio"
+                                  id="disability-va"
+                                  name="disability-type"
+                                  data-testid="radio-disability-va"
+                                  className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+                                />
+                                <Label htmlFor="disability-va">VA Disability</Label>
+                              </div>
+                              
+                              <div className="flex items-center space-x-2">
+                                <input
+                                  type="radio"
+                                  id="disability-other"
+                                  name="disability-type"
+                                  data-testid="radio-disability-other"
+                                  className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+                                />
+                                <Label htmlFor="disability-other">Other Disability</Label>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="income-vaBenefitsMonthlyAmount">Gross Monthly Income</Label>
