@@ -12746,15 +12746,15 @@ export default function AdminAddClient() {
                         </div>
                         <div className="flex items-center space-x-2">
                           <Checkbox
-                            id="coBorrowerIncome-type-alimony"
-                            checked={form.watch('coBorrowerIncome.incomeTypes.alimony') || false}
+                            id="coBorrowerIncome-type-pension"
+                            checked={form.watch('coBorrowerIncome.incomeTypes.pension') || false}
                             onCheckedChange={(checked) => {
-                              handleIncomeTypeChange('coBorrowerIncome.incomeTypes.alimony', !!checked, 'Alimony', true);
+                              handleIncomeTypeChange('coBorrowerIncome.incomeTypes.pension', !!checked, 'Pension', true);
                             }}
-                            data-testid="checkbox-coborrower-alimony"
+                            data-testid="checkbox-coborrower-pension"
                             className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           />
-                          <Label htmlFor="coBorrowerIncome-type-alimony">Alimony</Label>
+                          <Label htmlFor="coBorrowerIncome-type-pension">Pension</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <Checkbox
@@ -13908,7 +13908,7 @@ export default function AdminAddClient() {
                   }}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Co-Borrower Pension</CardTitle>
+                        <CardTitle>Co-Borrower - Pension</CardTitle>
                         <div className="flex items-center gap-2">
                           <Button 
                             type="button" 
