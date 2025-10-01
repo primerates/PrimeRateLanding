@@ -8935,8 +8935,23 @@ export default function AdminAddClient() {
                       <Label htmlFor="borrower-dateOfBirth">Date of Birth</Label>
                       <Input
                         id="borrower-dateOfBirth"
-                        type="date"
-                        {...form.register('borrower.dateOfBirth')}
+                        value={form.watch('borrower.dateOfBirth') || ''}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                          let formatted = '';
+                          if (value.length > 0) {
+                            formatted = value.substring(0, 2);
+                            if (value.length > 2) {
+                              formatted += '/' + value.substring(2, 4);
+                              if (value.length > 4) {
+                                formatted += '/' + value.substring(4, 8);
+                              }
+                            }
+                          }
+                          form.setValue('borrower.dateOfBirth', formatted);
+                        }}
+                        placeholder="MM/DD/YYYY"
+                        maxLength={10}
                         data-testid="input-borrower-dateOfBirth"
                       />
                     </div>
@@ -10129,8 +10144,23 @@ export default function AdminAddClient() {
                         <Label htmlFor="coBorrower-dateOfBirth">Date of Birth</Label>
                         <Input
                           id="coBorrower-dateOfBirth"
-                          type="date"
-                          {...form.register('coBorrower.dateOfBirth')}
+                          value={form.watch('coBorrower.dateOfBirth') || ''}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                            let formatted = '';
+                            if (value.length > 0) {
+                              formatted = value.substring(0, 2);
+                              if (value.length > 2) {
+                                formatted += '/' + value.substring(2, 4);
+                                if (value.length > 4) {
+                                  formatted += '/' + value.substring(4, 8);
+                                }
+                              }
+                            }
+                            form.setValue('coBorrower.dateOfBirth', formatted);
+                          }}
+                          placeholder="MM/DD/YYYY"
+                          maxLength={10}
                           data-testid="input-coborrower-dateOfBirth"
                         />
                       </div>
