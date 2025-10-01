@@ -4138,17 +4138,13 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor={`${idPrefix}currentLoan-prepaymentPenalty`}>Pre-Payment Penalty</Label>
-                  <Select {...prepaymentPenaltyBinding}>
-                    <SelectTrigger data-testid={prepaymentPenaltyBinding['data-testid']}>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="Yes - see notes">Yes - see notes</SelectItem>
-                      <SelectItem value="No">No</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Label htmlFor={`${idPrefix}currentLoan-prepaymentPenalty-text`}>Pre-Payment Penalty</Label>
+                  <Input
+                    id={`${idPrefix}currentLoan-prepaymentPenalty-text`}
+                    {...targetForm.register('currentLoan.prepaymentPenaltyText')}
+                    placeholder="Enter details"
+                    data-testid={`input-currentLoan-prepaymentPenalty-text-${idPrefix}`}
+                  />
                 </div>
                 
                 <div className="space-y-2">
