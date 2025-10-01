@@ -1785,11 +1785,8 @@ export default function AdminAddClient() {
   const [brandNewLoanCreditType, setBrandNewLoanCreditType] = useState<'lender' | 'broker'>('lender');
   // Background calculation storage - calculated duration but don't auto-switch toggle
   const [calculatedDuration, setCalculatedDuration] = useState<string>('');
-  // Purchase loan calculated duration storage
-  const [purchaseCalculatedDuration, setPurchaseCalculatedDuration] = useState<string>('');
   // Store original expiration dates to restore when toggling back to expiration mode
   const [originalExpirationDate, setOriginalExpirationDate] = useState<string>('');
-  const [originalPurchaseExpirationDate, setOriginalPurchaseExpirationDate] = useState<string>('');
 
   // New Loan conflict prevention state
   const [currentNewLoanType, setCurrentNewLoanType] = useState<'refinance' | 'purchase' | null>(null);
@@ -1845,7 +1842,6 @@ export default function AdminAddClient() {
   const [purchaseLoanTermType, setPurchaseLoanTermType] = useState<'dropdown' | 'manual'>('dropdown');
   const [purchaseLoanFicoType, setPurchaseLoanFicoType] = useState<'mid-fico' | 'borrower-scores' | 'co-borrower-scores'>('mid-fico');
   const [purchaseLoanLockDateType, setPurchaseLoanLockDateType] = useState<'date' | 'bond-entry'>('date');
-  const [purchaseLoanExpirationDurationType, setPurchaseLoanExpirationDurationType] = useState<'expiration' | 'duration'>('expiration');
   const [purchaseLoanCreditType, setPurchaseLoanCreditType] = useState<'lender' | 'broker'>('lender');
 
   // Helper function to get Current Primary Loan escrow label and handle toggle cycling
@@ -2186,25 +2182,6 @@ export default function AdminAddClient() {
         case 'date': return 'bond-entry';
         case 'bond-entry': return 'date';
         default: return 'date';
-      }
-    });
-  };
-
-  // Purchase Loan Expiration Duration label and type cycling functions
-  const getPurchaseLoanExpirationDurationLabel = () => {
-    switch (purchaseLoanExpirationDurationType) {
-      case 'expiration': return 'Rate Lock Expiration';
-      case 'duration': return 'Rate Lock Duration';
-      default: return 'Rate Lock Expiration';
-    }
-  };
-
-  const cyclePurchaseLoanExpirationDurationType = () => {
-    setPurchaseLoanExpirationDurationType(current => {
-      switch (current) {
-        case 'expiration': return 'duration';
-        case 'duration': return 'expiration';
-        default: return 'expiration';
       }
     });
   };
@@ -3758,43 +3735,6 @@ export default function AdminAddClient() {
     }
   }, [form.watch('brandNewLoan.rateLockDate'), form.watch('brandNewLoan.rateLockDuration'), brandNewLoanExpirationDurationType, form]);
 
-  // Background calculation for Purchase Loan Rate Lock Duration - calculate but don't auto-switch toggle
-  useEffect(() => {
-    const rateLockDate = form.watch('purchaseLoan.rateLockDate');
-    const rateLockExpiration = form.watch('purchaseLoan.rateLockDuration');
-    
-    // Only calculate if in expiration mode and both dates are provided
-    if (purchaseLoanExpirationDurationType === 'expiration' && rateLockDate && rateLockExpiration) {
-      try {
-        const startDate = new Date(rateLockDate);
-        const endDate = new Date(rateLockExpiration);
-        
-        // Check if both dates are valid
-        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-          setPurchaseCalculatedDuration('');
-          return;
-        }
-        
-        // Calculate the difference in milliseconds
-        const timeDiff = endDate.getTime() - startDate.getTime();
-        const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-        
-        if (daysDiff > 0) {
-          // Store calculated duration in background - don't auto-switch toggle
-          setPurchaseCalculatedDuration(`${daysDiff} days`);
-        } else {
-          setPurchaseCalculatedDuration('');
-        }
-      } catch (error) {
-        // Invalid date format, clear calculation
-        setPurchaseCalculatedDuration('');
-      }
-    } else {
-      // Clear calculation if not in expiration mode or missing dates
-      setPurchaseCalculatedDuration('');
-    }
-  }, [form.watch('purchaseLoan.rateLockDate'), form.watch('purchaseLoan.rateLockDuration'), purchaseLoanExpirationDurationType, form]);
-
   // Sync form values when toggling between expiration and duration modes
   useEffect(() => {
     // Handle Refinance loan toggle
@@ -3811,22 +3751,6 @@ export default function AdminAddClient() {
       form.setValue('brandNewLoan.rateLockDuration', originalExpirationDate);
     }
   }, [brandNewLoanExpirationDurationType, calculatedDuration, originalExpirationDate, form]);
-
-  useEffect(() => {
-    // Handle Purchase loan toggle
-    if (purchaseLoanExpirationDurationType === 'duration' && purchaseCalculatedDuration) {
-      // Store the current expiration date before overwriting with duration
-      const currentExpirationDate = form.getValues('purchaseLoan.rateLockDuration');
-      if (currentExpirationDate && currentExpirationDate !== purchaseCalculatedDuration) {
-        setOriginalPurchaseExpirationDate(currentExpirationDate);
-      }
-      // When switching to duration mode, set the calculated duration
-      form.setValue('purchaseLoan.rateLockDuration', purchaseCalculatedDuration);
-    } else if (purchaseLoanExpirationDurationType === 'expiration' && originalPurchaseExpirationDate) {
-      // When switching back to expiration mode, restore the original date
-      form.setValue('purchaseLoan.rateLockDuration', originalPurchaseExpirationDate);
-    }
-  }, [purchaseLoanExpirationDurationType, purchaseCalculatedDuration, originalPurchaseExpirationDate, form]);
 
   // Animation effect for first-time page entry
   useEffect(() => {
@@ -4053,36 +3977,6 @@ export default function AdminAddClient() {
         maxLength={10}
         className="border border-input bg-background px-3 rounded-md"
         data-testid="input-purchaseLoan-rateLockDate"
-      />
-    );
-  });
-
-  // Isolated Rate Lock Expiration component to prevent typing lag
-  const PurchaseRateLockExpirationInput = React.memo<{ form: any }>(({ form }) => {
-    const rateLockExpiration = useWatch({ control: form.control, name: 'purchaseLoan.rateLockDuration' });
-
-    return (
-      <Input
-        id="purchaseLoan-rateLockDuration"
-        value={rateLockExpiration || ''}
-        onChange={(e) => {
-          const value = e.target.value.replace(/\D/g, '');
-          let formatted = '';
-          if (value.length > 0) {
-            formatted = value.substring(0, 2);
-            if (value.length > 2) {
-              formatted += '/' + value.substring(2, 4);
-              if (value.length > 4) {
-                formatted += '/' + value.substring(4, 8);
-              }
-            }
-          }
-          form.setValue('purchaseLoan.rateLockDuration', formatted);
-        }}
-        placeholder="MM/DD/YYYY"
-        maxLength={10}
-        className="border border-input bg-background px-3 rounded-md"
-        data-testid="input-purchaseLoan-rateLockDuration"
       />
     );
   });
@@ -5509,30 +5403,16 @@ export default function AdminAddClient() {
                     </div>
                     
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="purchaseLoan-rateLockDuration" className="text-sm">
-                          {getPurchaseLoanExpirationDurationLabel()}
-                        </Label>
-                        <Switch
-                          checked={purchaseLoanExpirationDurationType === 'expiration'}
-                          onCheckedChange={cyclePurchaseLoanExpirationDurationType}
-                          data-testid="toggle-purchaseLoan-expiration-duration-type"
-                          className="scale-[0.8]"
-                        />
-                      </div>
-                      {purchaseLoanExpirationDurationType === 'expiration' ? (
-                        <PurchaseRateLockExpirationInput form={targetForm} />
-                      ) : (
-                        <Input
-                          id="purchaseLoan-rateLockDuration"
-                          {...targetForm.register('purchaseLoan.rateLockDuration')}
-                          placeholder="Enter duration"
-                          className={`border border-input px-3 rounded-md ${purchaseCalculatedDuration ? 'bg-muted' : 'bg-background'}`}
-                          data-testid="input-purchaseLoan-rateLockDuration"
-                          disabled={!!purchaseCalculatedDuration}
-                          readOnly={!!purchaseCalculatedDuration}
-                        />
-                      )}
+                      <Label htmlFor="purchaseLoan-rateLockDuration" className="text-sm">
+                        Rate Lock Duration
+                      </Label>
+                      <Input
+                        id="purchaseLoan-rateLockDuration"
+                        {...targetForm.register('purchaseLoan.rateLockDuration')}
+                        placeholder="Enter duration"
+                        className="border border-input bg-background px-3 rounded-md"
+                        data-testid="input-purchaseLoan-rateLockDuration"
+                      />
                     </div>
                     
                     <div className="space-y-2">
