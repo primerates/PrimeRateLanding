@@ -1545,6 +1545,19 @@ export default function AdminAddClient() {
     isOpen: boolean;
   }>({ isOpen: false });
 
+  // State for VA Disability and Other Disability selections
+  const [vaDisabilitySelected, setVaDisabilitySelected] = useState(false);
+  const [otherDisabilitySelected, setOtherDisabilitySelected] = useState(false);
+
+  // Delete confirmation dialogs for individual disability types
+  const [deleteVaDisabilityTypeDialog, setDeleteVaDisabilityTypeDialog] = useState<{
+    isOpen: boolean;
+  }>({ isOpen: false });
+
+  const [deleteOtherDisabilityTypeDialog, setDeleteOtherDisabilityTypeDialog] = useState<{
+    isOpen: boolean;
+  }>({ isOpen: false });
+
   // Delete confirmation dialog state for Co-Borrower Other Income
   const [deleteCoBorrowerOtherDialog, setDeleteCoBorrowerOtherDialog] = useState<{
     isOpen: boolean;
@@ -12552,72 +12565,118 @@ export default function AdminAddClient() {
                           <div className="space-y-3">
                             <div className="flex gap-4">
                               <div className="flex items-center space-x-2">
-                                <input
-                                  type="radio"
-                                  id="disability-va"
-                                  name="disability-type"
-                                  data-testid="radio-disability-va"
-                                  className="w-4 h-4 text-blue-600 focus:ring-blue-500"
-                                />
-                                <Label htmlFor="disability-va">VA Disability</Label>
+                                <div
+                                  onClick={() => {
+                                    if (vaDisabilitySelected) {
+                                      setDeleteVaDisabilityTypeDialog({ isOpen: true });
+                                    } else {
+                                      setVaDisabilitySelected(true);
+                                    }
+                                  }}
+                                  className={`w-6 h-6 rounded-full border-2 cursor-pointer flex items-center justify-center transition-colors ${
+                                    vaDisabilitySelected ? 'bg-purple-500 border-purple-500' : 'bg-white border-gray-300'
+                                  }`}
+                                  data-testid="circle-disability-va"
+                                >
+                                  {vaDisabilitySelected && <div className="w-3 h-3 rounded-full bg-white"></div>}
+                                </div>
+                                <Label 
+                                  htmlFor="disability-va"
+                                  className="cursor-pointer"
+                                  onClick={() => {
+                                    if (vaDisabilitySelected) {
+                                      setDeleteVaDisabilityTypeDialog({ isOpen: true });
+                                    } else {
+                                      setVaDisabilitySelected(true);
+                                    }
+                                  }}
+                                >
+                                  VA Disability
+                                </Label>
                               </div>
                               
                               <div className="flex items-center space-x-2">
-                                <input
-                                  type="radio"
-                                  id="disability-other"
-                                  name="disability-type"
-                                  data-testid="radio-disability-other"
-                                  className="w-4 h-4 text-blue-600 focus:ring-blue-500"
-                                />
-                                <Label htmlFor="disability-other">Other Disability</Label>
+                                <div
+                                  onClick={() => {
+                                    if (otherDisabilitySelected) {
+                                      setDeleteOtherDisabilityTypeDialog({ isOpen: true });
+                                    } else {
+                                      setOtherDisabilitySelected(true);
+                                    }
+                                  }}
+                                  className={`w-6 h-6 rounded-full border-2 cursor-pointer flex items-center justify-center transition-colors ${
+                                    otherDisabilitySelected ? 'bg-purple-500 border-purple-500' : 'bg-white border-gray-300'
+                                  }`}
+                                  data-testid="circle-disability-other"
+                                >
+                                  {otherDisabilitySelected && <div className="w-3 h-3 rounded-full bg-white"></div>}
+                                </div>
+                                <Label 
+                                  htmlFor="disability-other"
+                                  className="cursor-pointer"
+                                  onClick={() => {
+                                    if (otherDisabilitySelected) {
+                                      setDeleteOtherDisabilityTypeDialog({ isOpen: true });
+                                    } else {
+                                      setOtherDisabilitySelected(true);
+                                    }
+                                  }}
+                                >
+                                  Other Disability
+                                </Label>
                               </div>
                             </div>
                           </div>
                         </CardContent>
                       </Card>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="income-vaBenefitsMonthlyAmount">VA Disability Benefits - Gross Monthly Income</Label>
-                          <Input
-                            id="income-vaBenefitsMonthlyAmount"
-                            {...form.register('income.vaBenefitsMonthlyAmount')}
-                            placeholder="$0.00"
-                            data-testid="input-income-vaBenefitsMonthlyAmount"
-                          />
+                      {/* VA Disability Benefits Row - Only show when VA Disability is selected */}
+                      {vaDisabilitySelected && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="income-vaBenefitsMonthlyAmount">VA Disability Benefits - Gross Monthly Income</Label>
+                            <Input
+                              id="income-vaBenefitsMonthlyAmount"
+                              {...form.register('income.vaBenefitsMonthlyAmount')}
+                              placeholder="$0.00"
+                              data-testid="input-income-vaBenefitsMonthlyAmount"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="income-vaBenefitsStartDate">Start Date</Label>
+                            <Input
+                              id="income-vaBenefitsStartDate"
+                              {...form.register('income.vaBenefitsStartDate')}
+                              placeholder="MM/YYYY"
+                              data-testid="input-income-vaBenefitsStartDate"
+                            />
+                          </div>
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="income-vaBenefitsStartDate">Start Date</Label>
-                          <Input
-                            id="income-vaBenefitsStartDate"
-                            {...form.register('income.vaBenefitsStartDate')}
-                            placeholder="MM/YYYY"
-                            data-testid="input-income-vaBenefitsStartDate"
-                          />
-                        </div>
-                      </div>
+                      )}
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="income-otherDisabilityMonthlyAmount">Disability - Gross Monthly Income</Label>
-                          <Input
-                            id="income-otherDisabilityMonthlyAmount"
-                            {...form.register('income.otherDisabilityMonthlyAmount')}
-                            placeholder="$0.00"
-                            data-testid="input-income-otherDisabilityMonthlyAmount"
-                          />
+                      {/* Other Disability Row - Only show when Other Disability is selected */}
+                      {otherDisabilitySelected && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="income-otherDisabilityMonthlyAmount">Disability - Gross Monthly Income</Label>
+                            <Input
+                              id="income-otherDisabilityMonthlyAmount"
+                              {...form.register('income.otherDisabilityMonthlyAmount')}
+                              placeholder="$0.00"
+                              data-testid="input-income-otherDisabilityMonthlyAmount"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="income-otherDisabilityStartDate">Start Date</Label>
+                            <Input
+                              id="income-otherDisabilityStartDate"
+                              {...form.register('income.otherDisabilityStartDate')}
+                              placeholder="MM/YYYY"
+                              data-testid="input-income-otherDisabilityStartDate"
+                            />
+                          </div>
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="income-otherDisabilityStartDate">Start Date</Label>
-                          <Input
-                            id="income-otherDisabilityStartDate"
-                            {...form.register('income.otherDisabilityStartDate')}
-                            placeholder="MM/YYYY"
-                            data-testid="input-income-otherDisabilityStartDate"
-                          />
-                        </div>
-                      </div>
+                      )}
                       </CardContent>
                     </CollapsibleContent>
                   </Collapsible>
@@ -20514,6 +20573,72 @@ export default function AdminAddClient() {
                 setDeleteDisabilityDialog({ isOpen: false });
               }}
               data-testid="button-confirm-delete-disability"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete VA Disability Type Confirmation Dialog */}
+      <AlertDialog open={deleteVaDisabilityTypeDialog.isOpen} onOpenChange={(open) => !open && setDeleteVaDisabilityTypeDialog({ isOpen: false })}>
+        <AlertDialogContent data-testid="dialog-delete-va-disability-type">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove VA Disability</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove VA Disability? This will clear all entered data for this income type. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteVaDisabilityTypeDialog({ isOpen: false })}
+              data-testid="button-cancel-delete-va-disability-type"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                // Deselect VA Disability and clear its data
+                setVaDisabilitySelected(false);
+                form.setValue('income.vaBenefitsMonthlyAmount', '');
+                form.setValue('income.vaBenefitsStartDate', '');
+                setDeleteVaDisabilityTypeDialog({ isOpen: false });
+              }}
+              data-testid="button-confirm-delete-va-disability-type"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Other Disability Type Confirmation Dialog */}
+      <AlertDialog open={deleteOtherDisabilityTypeDialog.isOpen} onOpenChange={(open) => !open && setDeleteOtherDisabilityTypeDialog({ isOpen: false })}>
+        <AlertDialogContent data-testid="dialog-delete-other-disability-type">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Other Disability</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove Other Disability? This will clear all entered data for this income type. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteOtherDisabilityTypeDialog({ isOpen: false })}
+              data-testid="button-cancel-delete-other-disability-type"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                // Deselect Other Disability and clear its data
+                setOtherDisabilitySelected(false);
+                form.setValue('income.otherDisabilityMonthlyAmount', '');
+                form.setValue('income.otherDisabilityStartDate', '');
+                setDeleteOtherDisabilityTypeDialog({ isOpen: false });
+              }}
+              data-testid="button-confirm-delete-other-disability-type"
               className="bg-red-600 hover:bg-red-700"
             >
               Remove
