@@ -3593,38 +3593,21 @@ export default function AdminAddClient() {
     [totalCoBorrowerIncome]
   );
 
-  // Isolated component for Total Monthly Payment calculation - prevents re-render lag
-  const TotalCurrentLoanPayment = React.memo<{ control: any }>(({ control }) => {
-    const principalInterestPayment = useWatch({ control, name: 'currentLoan.principalAndInterestPayment' }) || '';
-    const taxInsurancePayment = useWatch({ control, name: 'currentLoan.newField1' }) || '';
-    
-    const currentLoanTotalPayment = useMemo(() => {
-      const principal = parseMonetaryValue(principalInterestPayment);
-      const taxInsurance = parseMonetaryValue(taxInsurancePayment);
-      return principal + taxInsurance;
-    }, [principalInterestPayment, taxInsurancePayment]);
-    
-    const currentLoanTotalPaymentFormatted = useMemo(() => 
-      currentLoanTotalPayment > 0 
-        ? `${currentLoanTotalPayment.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` 
-        : '0',
-      [currentLoanTotalPayment]
-    );
-
-    return (
-      <div className="flex items-center border border-input bg-gray-50 px-3 rounded-md">
-        <span className="text-muted-foreground text-sm">$</span>
-        <Input
-          id="currentLoan-totalMonthlyPayment"
-          type="text"
-          value={currentLoanTotalPaymentFormatted}
-          readOnly
-          className="border-0 bg-transparent px-2 focus-visible:ring-0 cursor-default"
-          data-testid="input-currentLoan-totalMonthlyPayment"
-        />
-      </div>
-    );
-  });
+  // Calculate Total Monthly Payment for Existing Primary Loan - same method as income tab
+  const currentLoanData = form.watch('currentLoan');
+  
+  const currentLoanTotalPayment = useMemo(() => {
+    const principal = parseMonetaryValue(currentLoanData?.principalAndInterestPayment);
+    const taxInsurance = parseMonetaryValue(currentLoanData?.newField1);
+    return principal + taxInsurance;
+  }, [currentLoanData]);
+  
+  const currentLoanTotalPaymentFormatted = useMemo(() => 
+    currentLoanTotalPayment > 0 
+      ? `${currentLoanTotalPayment.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` 
+      : '0',
+    [currentLoanTotalPayment]
+  );
 
   // Auto-sync rental property income with property data
   useEffect(() => {
@@ -4274,7 +4257,7 @@ export default function AdminAddClient() {
                 
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="currentLoan-totalMonthlyPayment">Total Monthly Payment</Label>
-                  <div className="flex items-center border border-input bg-gray-50 px-3 rounded-md">
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
                       id="currentLoan-totalMonthlyPayment"
