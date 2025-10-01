@@ -15125,14 +15125,13 @@ export default function AdminAddClient() {
                       >
                         <span className={`${showPropertyAnimation ? 'animate-roll-down' : ''}`}>
                           {(() => {
-                            // Count all active property cards
+                            // Count all active property cards (excluding home-purchase since it's a future event)
                             const primaryCards = (primaryResidenceCards || []).length;
                             const secondHomeCardsCount = (secondHomeCards || []).length;
                             const formProperties = (form.watch('property.properties') || []);
                             const investmentCards = formProperties.filter(p => p.use === 'investment').length;
-                            const homePurchaseCards = formProperties.filter(p => p.use === 'home-purchase').length;
                             
-                            return primaryCards + secondHomeCardsCount + investmentCards + homePurchaseCards;
+                            return primaryCards + secondHomeCardsCount + investmentCards;
                           })()}
                         </span>
                       </div>
