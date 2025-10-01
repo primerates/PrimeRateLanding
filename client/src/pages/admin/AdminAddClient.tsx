@@ -11275,12 +11275,117 @@ export default function AdminAddClient() {
               {/* Income Type Selection */}
               <Card className="border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-3">
-                    Borrower Income
-                    <span className="text-lg font-semibold" data-testid="text-total-borrower-income">
-                      {totalBorrowerIncomeFormatted}
-                    </span>
-                  </CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-3">
+                      Borrower Income
+                      <span className="text-lg font-semibold" data-testid="text-total-borrower-income">
+                        {totalBorrowerIncomeFormatted}
+                      </span>
+                    </CardTitle>
+                    <div className="flex items-center gap-2">
+                      {/* Expand All Button */}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          const updates: Record<string, boolean> = {};
+                          
+                          // Employment cards
+                          if (form.watch('income.incomeTypes.employment')) {
+                            (borrowerEmployerCards || ['default']).forEach(cardId => {
+                              const propertyId = cardId === 'default' ? 'template-card' : cardId;
+                              updates[propertyId] = true;
+                            });
+                          }
+                          
+                          // Second Employment cards
+                          if (form.watch('income.incomeTypes.secondEmployment')) {
+                            (borrowerSecondEmployerCards || ['default']).forEach(cardId => {
+                              const propertyId = cardId === 'default' ? 'second-employer-template-card' : cardId;
+                              updates[propertyId] = true;
+                            });
+                          }
+                          
+                          // Self-Employment cards
+                          if (form.watch('income.incomeTypes.selfEmployment')) {
+                            (borrowerSelfEmploymentCards || ['default']).forEach(cardId => {
+                              const propertyId = cardId === 'default' ? 'borrower-self-employment-template-card' : cardId;
+                              updates[propertyId] = true;
+                            });
+                          }
+                          
+                          // Pension card
+                          if (form.watch('income.incomeTypes.pension')) {
+                            updates['pension-card'] = true;
+                          }
+                          
+                          // Social Security card
+                          if (form.watch('income.incomeTypes.socialSecurity')) {
+                            updates['social-security-card'] = true;
+                          }
+                          
+                          setPropertyCardStates(prev => ({ ...prev, ...updates }));
+                        }}
+                        className="hover:bg-blue-500 hover:text-white"
+                        title="Expand All Income Tiles"
+                        data-testid="button-expand-all-income"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                      
+                      {/* Minimize All Button */}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          const updates: Record<string, boolean> = {};
+                          
+                          // Employment cards
+                          if (form.watch('income.incomeTypes.employment')) {
+                            (borrowerEmployerCards || ['default']).forEach(cardId => {
+                              const propertyId = cardId === 'default' ? 'template-card' : cardId;
+                              updates[propertyId] = false;
+                            });
+                          }
+                          
+                          // Second Employment cards
+                          if (form.watch('income.incomeTypes.secondEmployment')) {
+                            (borrowerSecondEmployerCards || ['default']).forEach(cardId => {
+                              const propertyId = cardId === 'default' ? 'second-employer-template-card' : cardId;
+                              updates[propertyId] = false;
+                            });
+                          }
+                          
+                          // Self-Employment cards
+                          if (form.watch('income.incomeTypes.selfEmployment')) {
+                            (borrowerSelfEmploymentCards || ['default']).forEach(cardId => {
+                              const propertyId = cardId === 'default' ? 'borrower-self-employment-template-card' : cardId;
+                              updates[propertyId] = false;
+                            });
+                          }
+                          
+                          // Pension card
+                          if (form.watch('income.incomeTypes.pension')) {
+                            updates['pension-card'] = false;
+                          }
+                          
+                          // Social Security card
+                          if (form.watch('income.incomeTypes.socialSecurity')) {
+                            updates['social-security-card'] = false;
+                          }
+                          
+                          setPropertyCardStates(prev => ({ ...prev, ...updates }));
+                        }}
+                        className="hover:bg-orange-500 hover:text-white"
+                        title="Minimize All Income Tiles"
+                        data-testid="button-minimize-all-income"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
