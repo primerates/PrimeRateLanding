@@ -11511,7 +11511,7 @@ export default function AdminAddClient() {
                             </Card>
 
                             {/* Employment Information - Single Row */}
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
                               <div className="space-y-2">
                                 <Label htmlFor="template-employer-name">Employer Name</Label>
                                 <Input
@@ -11574,6 +11574,79 @@ export default function AdminAddClient() {
                                   id="template-monthly-income"
                                   placeholder="$0.00"
                                   data-testid="input-template-monthly-income"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`${propertyId}-startDate`}>Start Date</Label>
+                                <Input
+                                  id={`${propertyId}-startDate`}
+                                  type="date"
+                                  value={employmentDates[propertyId]?.startDate || ''}
+                                  onChange={(e) => {
+                                    const startDate = e.target.value;
+                                    const currentData = employmentDates[propertyId] || { endDate: '', isPresent: false, duration: '' };
+                                    updateEmploymentDuration(propertyId, startDate, currentData.endDate, currentData.isPresent);
+                                  }}
+                                  placeholder="MM/DD/YYYY"
+                                  data-testid={`input-${propertyId}-startDate`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between mb-2">
+                                  <Label htmlFor={`${propertyId}-endDate`} className="text-sm">
+                                    {employmentDates[propertyId]?.isPresent ? 'Present' : 'End Date'}
+                                  </Label>
+                                  <Switch
+                                    checked={employmentDates[propertyId]?.isPresent ?? false}
+                                    onCheckedChange={(checked) => {
+                                      const currentData = employmentDates[propertyId] || { startDate: '', endDate: '', duration: '' };
+                                      updateEmploymentDuration(propertyId, currentData.startDate, currentData.endDate, checked);
+                                    }}
+                                    data-testid={`toggle-${propertyId}-present`}
+                                    className="scale-[0.8]"
+                                  />
+                                </div>
+                                <Input
+                                  id={`${propertyId}-endDate`}
+                                  type={employmentDates[propertyId]?.isPresent ? 'text' : 'date'}
+                                  value={employmentDates[propertyId]?.isPresent ? 'present' : (employmentDates[propertyId]?.endDate || '')}
+                                  onChange={(e) => {
+                                    if (!employmentDates[propertyId]?.isPresent) {
+                                      const endDate = e.target.value;
+                                      const currentData = employmentDates[propertyId] || { startDate: '', isPresent: false, duration: '' };
+                                      updateEmploymentDuration(propertyId, currentData.startDate, endDate, currentData.isPresent);
+                                    }
+                                  }}
+                                  placeholder={employmentDates[propertyId]?.isPresent ? 'Enter' : 'MM/DD/YYYY'}
+                                  readOnly={employmentDates[propertyId]?.isPresent}
+                                  className={employmentDates[propertyId]?.isPresent ? 'bg-muted' : ''}
+                                  data-testid={`input-${propertyId}-endDate`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`${propertyId}-employment-duration`}>Employment Duration</Label>
+                                <Input
+                                  id={`${propertyId}-employment-duration`}
+                                  value={employmentDates[propertyId]?.duration || ''}
+                                  placeholder={employmentDates[propertyId]?.isPresent ? 'Enter' : '0'}
+                                  readOnly={!employmentDates[propertyId]?.isPresent}
+                                  className={!employmentDates[propertyId]?.isPresent ? 'bg-muted' : ''}
+                                  onChange={(e) => {
+                                    if (employmentDates[propertyId]?.isPresent) {
+                                      const currentData = employmentDates[propertyId] || { startDate: '', endDate: '', isPresent: false };
+                                      setEmploymentDates(prev => ({
+                                        ...prev,
+                                        [propertyId]: {
+                                          ...currentData,
+                                          duration: e.target.value
+                                        }
+                                      }));
+                                    }
+                                  }}
+                                  data-testid={`input-${propertyId}-employment-duration`}
                                 />
                               </div>
                             </div>
