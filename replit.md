@@ -91,41 +91,8 @@ Preferred communication style: Simple, everyday language.
 - **Real-time validation** and user feedback
 
 #### Auto-Sum/Calculation Pattern (Performance Optimized)
-For auto-calculating fields that sum multiple form inputs, use this **exact pattern** to avoid typing lag and re-rendering issues:
+For auto-calculating fields that sum multiple form inputs, use this pattern to avoid typing lag:
 
-**Method 1: Direct Implementation (For Simple Components)**
-```typescript
-// Step 1: Watch the source fields
-const principalPayment = form.watch('currentLoan.principalAndInterestPayment') || '';
-const taxInsurancePayment = form.watch('currentLoan.newField1') || '';
-
-// Step 2: Calculate sum with useMemo
-const totalPayment = useMemo(() => {
-  const principal = parseMonetaryValue(principalPayment);
-  const taxInsurance = parseMonetaryValue(taxInsurancePayment);
-  return principal + taxInsurance;
-}, [principalPayment, taxInsurancePayment]);
-
-// Step 3: Format display value with useMemo
-const totalPaymentFormatted = useMemo(() => 
-  totalPayment > 0 
-    ? `$${totalPayment.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` 
-    : '$0',
-  [totalPayment]
-);
-
-// Step 4: Display in read-only field
-<div className="flex items-center border border-input bg-gray-50 px-3 rounded-md">
-  <span className="text-muted-foreground text-sm">$</span>
-  <Input
-    value={totalPaymentFormatted.replace('$', '')}
-    readOnly
-    className="border-0 bg-transparent px-2 focus-visible:ring-0 cursor-default"
-  />
-</div>
-```
-
-**Method 2: Isolated Component (For Complex Forms)**
 ```typescript
 // RECOMMENDED: Isolated React.memo component with direct props
 const AutoSumComponent = React.memo<{ control: any }>(({ control }) => {
@@ -155,28 +122,12 @@ const AutoSumComponent = React.memo<{ control: any }>(({ control }) => {
 // Usage: <AutoSumComponent control={form.control} />
 ```
 
-**Helper Function (Required):**
-```typescript
-const parseMonetaryValue = (value: string | undefined): number => {
-  if (!value || value.trim() === '') return 0;
-  const cleaned = value.replace(/[$,]/g, '');
-  const parsed = parseFloat(cleaned);
-  return isNaN(parsed) ? 0 : parsed;
-};
-```
-
 **Critical Rules for Zero-Lag Auto-Sum:**
-- **Use form.watch() for reactive data** - Watches specific form paths without triggering re-renders
-- **Use useMemo for calculations** - Only recalculates when dependencies change
-- **Use useMemo for formatting** - Separates formatting from calculation
-- **Always use React.memo for components** - Prevents parent component re-renders
+- **Always use React.memo** - Prevents parent component re-renders
 - **Pass control as prop** - Never use useFormContext() in auto-sum components  
+- **Use useWatch for isolation** - Prevents unnecessary re-renders
 - **Never add auto-sum to large parent components** - Causes entire form to re-render
-
-**Working Examples in Codebase:**
-- **Borrower Income Total** (line ~3510): Sums all income sources across multiple employer cards
-- **Co-Borrower Income Total** (line ~3559): Same pattern for co-borrower
-- **Total Monthly Payment** (Existing Primary Loan): Sums Principal & Interest + Tax & Insurance
+- **Reference working pattern**: Income tab Borrower Employer cards (proven zero-lag)
 
 **Troubleshooting Typing Lag:**
 If typing lag occurs: "Extract calculation into isolated React.memo component with useWatch + useMemo pattern like Income tab"
