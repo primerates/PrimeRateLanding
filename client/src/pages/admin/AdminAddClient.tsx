@@ -12579,7 +12579,7 @@ export default function AdminAddClient() {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="income-vaBenefitsMonthlyAmount">Gross Monthly Income</Label>
+                          <Label htmlFor="income-vaBenefitsMonthlyAmount">VA Disability Benefits - Gross Monthly Income</Label>
                           <Input
                             id="income-vaBenefitsMonthlyAmount"
                             {...form.register('income.vaBenefitsMonthlyAmount')}
@@ -12594,6 +12594,27 @@ export default function AdminAddClient() {
                             {...form.register('income.vaBenefitsStartDate')}
                             placeholder="MM/YYYY"
                             data-testid="input-income-vaBenefitsStartDate"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="income-otherDisabilityMonthlyAmount">Disability - Gross Monthly Income</Label>
+                          <Input
+                            id="income-otherDisabilityMonthlyAmount"
+                            {...form.register('income.otherDisabilityMonthlyAmount')}
+                            placeholder="$0.00"
+                            data-testid="input-income-otherDisabilityMonthlyAmount"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="income-otherDisabilityStartDate">Start Date</Label>
+                          <Input
+                            id="income-otherDisabilityStartDate"
+                            {...form.register('income.otherDisabilityStartDate')}
+                            placeholder="MM/YYYY"
+                            data-testid="input-income-otherDisabilityStartDate"
                           />
                         </div>
                       </div>
