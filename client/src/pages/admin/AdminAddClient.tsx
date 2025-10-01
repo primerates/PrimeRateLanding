@@ -3593,6 +3593,24 @@ export default function AdminAddClient() {
     [totalCoBorrowerIncome]
   );
 
+  // Calculate Total Monthly Payment for Current Loan - optimized with useMemo
+  const currentLoanData = form.watch('currentLoan');
+  const principalAndInterest = currentLoanData?.principalAndInterestPayment || '';
+  const taxAndInsurance = currentLoanData?.newField1 || '';
+  
+  const totalMonthlyPayment = useMemo(() => {
+    const piValue = parseFloat(principalAndInterest.replace(/[^\d]/g, '')) || 0;
+    const taxValue = parseFloat(taxAndInsurance.replace(/[^\d]/g, '')) || 0;
+    return piValue + taxValue;
+  }, [principalAndInterest, taxAndInsurance]);
+  
+  const totalMonthlyPaymentFormatted = useMemo(() => 
+    totalMonthlyPayment > 0 
+      ? `$${totalMonthlyPayment.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+      : '$0',
+    [totalMonthlyPayment]
+  );
+
   // Current Loan auto sum now handled by isolated TotalCurrentLoanPayment component
 
   // Auto-sync rental property income with property data
@@ -3864,7 +3882,8 @@ export default function AdminAddClient() {
     setIsOpen, 
     onRemove,
     onAutoCopyAddress,
-    formInstance 
+    formInstance,
+    totalMonthlyPaymentFormatted = '$0'
   }: {
     idPrefix?: string;
     borderVariant: 'blue' | 'none';
@@ -3873,6 +3892,7 @@ export default function AdminAddClient() {
     onRemove?: () => void;
     onAutoCopyAddress?: () => void;
     formInstance?: any;
+    totalMonthlyPaymentFormatted?: string;
   }) => {
     const contextForm = useFormContext();
     const targetForm = formInstance || contextForm;
@@ -3902,23 +3922,6 @@ export default function AdminAddClient() {
     const propertyStateBinding = useSelectFieldBinding('currentLoan.propertyAddress.state', idPrefix, targetForm);
     const propertyZipBinding = useFieldBinding('currentLoan.propertyAddress.zipCode', idPrefix, targetForm);
     const propertyCountyBinding = useFieldBinding('currentLoan.propertyAddress.county', idPrefix, targetForm);
-    
-    // Calculate Total Monthly Payment
-    const principalAndInterest = targetForm.watch('currentLoan.principalAndInterestPayment') || '';
-    const taxAndInsurance = targetForm.watch('currentLoan.newField1') || '';
-    
-    const totalMonthlyPayment = useMemo(() => {
-      const piValue = parseFloat(principalAndInterest.replace(/[^\d]/g, '')) || 0;
-      const taxValue = parseFloat(taxAndInsurance.replace(/[^\d]/g, '')) || 0;
-      return piValue + taxValue;
-    }, [principalAndInterest, taxAndInsurance]);
-    
-    const totalMonthlyPaymentFormatted = useMemo(() => 
-      totalMonthlyPayment > 0 
-        ? `$${totalMonthlyPayment.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
-        : '$0',
-      [totalMonthlyPayment]
-    );
     
     const cardClassName = borderVariant === 'blue' ? 'border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200' : '';
     
@@ -20489,6 +20492,7 @@ export default function AdminAddClient() {
                     }}
                     onAutoCopyAddress={autoCopyPropertyAddressToCurrentLoan}
                     formInstance={form}
+                    totalMonthlyPaymentFormatted={totalMonthlyPaymentFormatted}
                   />
                 );
               })}
