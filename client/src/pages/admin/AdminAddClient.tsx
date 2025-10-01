@@ -11515,23 +11515,6 @@ export default function AdminAddClient() {
                               </div>
                               
                               <div className="space-y-2">
-                                <div className="flex items-center justify-between mb-2">
-                                  <Label htmlFor="template-employer-phone" className="text-xs">
-                                    Employer Phone
-                                  </Label>
-                                  <Switch
-                                    data-testid="toggle-template-employment-verification"
-                                    className="scale-[0.8]"
-                                  />
-                                </div>
-                                <Input
-                                  id="template-employer-phone"
-                                  placeholder="(XXX) XXX-XXXX"
-                                  data-testid="input-template-employer-phone"
-                                />
-                              </div>
-                              
-                              <div className="space-y-2">
                                 <Label htmlFor="template-job-title">Job Title</Label>
                                 <Input
                                   id="template-job-title"
