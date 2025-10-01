@@ -15346,86 +15346,6 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
-              {/* Co-Borrower VA Benefits Income Card */}
-              {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.vaBenefits') && (
-                <Card>
-                  <Collapsible open={isCoBorrowerVaBenefitsIncomeOpen} onOpenChange={setIsCoBorrowerVaBenefitsIncomeOpen}>
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle>Co-Borrower - VA Disability</CardTitle>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setDeleteCoBorrowerVaBenefitsDialog({ isOpen: true })}
-                            className="hover:bg-red-500 hover:text-white"
-                            data-testid="button-delete-coborrower-va-benefits"
-                            title="Delete Co-Borrower VA Disability Income"
-                          >
-                            <Minus className="h-4 w-4 mr-2" />
-                            Remove
-                          </Button>
-                          <CollapsibleTrigger asChild>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="hover:bg-orange-500 hover:text-white" 
-                              data-testid="button-toggle-coborrower-va-benefits-income"
-                              title={isCoBorrowerVaBenefitsIncomeOpen ? 'Minimize' : 'Expand'}
-                              key={`coborrower-va-benefits-income-${isCoBorrowerVaBenefitsIncomeOpen}`}
-                            >
-                              {isCoBorrowerVaBenefitsIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                            </Button>
-                          </CollapsibleTrigger>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CollapsibleContent>
-                      <CardContent className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="coBorrowerIncome-vaBenefitsMonthlyAmount">Gross Monthly Income</Label>
-                          <Controller
-                            control={form.control}
-                            name="coBorrowerIncome.vaBenefitsMonthlyAmount"
-                            defaultValue=""
-                            render={({ field }) => {
-                              const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
-                              const displayValue = numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                              
-                              return (
-                                <Input
-                                  id="coBorrowerIncome-vaBenefitsMonthlyAmount"
-                                  type="text"
-                                  placeholder="$0"
-                                  value={displayValue}
-                                  onChange={(e) => {
-                                    const value = e.target.value.replace(/[^\d]/g, '');
-                                    field.onChange(value);
-                                  }}
-                                  data-testid="input-coborrowerIncome-vaBenefitsMonthlyAmount"
-                                />
-                              );
-                            }}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="coBorrowerIncome-vaBenefitsStartDate">Start Date</Label>
-                          <Input
-                            id="coBorrowerIncome-vaBenefitsStartDate"
-                            {...form.register('coBorrowerIncome.vaBenefitsStartDate')}
-                            placeholder="MM/YYYY"
-                            data-testid="input-coborrowerIncome-vaBenefitsStartDate"
-                          />
-                        </div>
-                      </div>
-                      </CardContent>
-                    </CollapsibleContent>
-                  </Collapsible>
-                </Card>
-              )}
-
               {/* Co-Borrower Disability Card */}
               {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.disability') && (
                 <Card>
@@ -15521,6 +15441,86 @@ export default function AdminAddClient() {
                             placeholder="MM/DD/YYYY"
                             maxLength={10}
                             data-testid="input-coborrowerIncome-disabilityStartDate"
+                          />
+                        </div>
+                      </div>
+                      </CardContent>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </Card>
+              )}
+
+              {/* Co-Borrower VA Benefits Income Card */}
+              {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.vaBenefits') && (
+                <Card>
+                  <Collapsible open={isCoBorrowerVaBenefitsIncomeOpen} onOpenChange={setIsCoBorrowerVaBenefitsIncomeOpen}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Co-Borrower - VA Disability</CardTitle>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setDeleteCoBorrowerVaBenefitsDialog({ isOpen: true })}
+                            className="hover:bg-red-500 hover:text-white"
+                            data-testid="button-delete-coborrower-va-benefits"
+                            title="Delete Co-Borrower VA Disability Income"
+                          >
+                            <Minus className="h-4 w-4 mr-2" />
+                            Remove
+                          </Button>
+                          <CollapsibleTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="hover:bg-orange-500 hover:text-white" 
+                              data-testid="button-toggle-coborrower-va-benefits-income"
+                              title={isCoBorrowerVaBenefitsIncomeOpen ? 'Minimize' : 'Expand'}
+                              key={`coborrower-va-benefits-income-${isCoBorrowerVaBenefitsIncomeOpen}`}
+                            >
+                              {isCoBorrowerVaBenefitsIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CollapsibleContent>
+                      <CardContent className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="coBorrowerIncome-vaBenefitsMonthlyAmount">Gross Monthly Income</Label>
+                          <Controller
+                            control={form.control}
+                            name="coBorrowerIncome.vaBenefitsMonthlyAmount"
+                            defaultValue=""
+                            render={({ field }) => {
+                              const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                              const displayValue = numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
+                              
+                              return (
+                                <Input
+                                  id="coBorrowerIncome-vaBenefitsMonthlyAmount"
+                                  type="text"
+                                  placeholder="$0"
+                                  value={displayValue}
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(/[^\d]/g, '');
+                                    field.onChange(value);
+                                  }}
+                                  data-testid="input-coborrowerIncome-vaBenefitsMonthlyAmount"
+                                />
+                              );
+                            }}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="coBorrowerIncome-vaBenefitsStartDate">Start Date</Label>
+                          <Input
+                            id="coBorrowerIncome-vaBenefitsStartDate"
+                            {...form.register('coBorrowerIncome.vaBenefitsStartDate')}
+                            placeholder="MM/YYYY"
+                            data-testid="input-coborrowerIncome-vaBenefitsStartDate"
                           />
                         </div>
                       </div>
