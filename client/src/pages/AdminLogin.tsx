@@ -197,7 +197,7 @@ export default function AdminLogin() {
         className="hidden lg:block lg:w-1/2 relative bg-cover bg-center"
         style={{
           backgroundImage: getCurrentPreset()?.assetPath
-            ? `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${getCurrentPreset()?.assetPath})`
+            ? `linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), url(${getCurrentPreset()?.assetPath})`
             : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%)'
         }}
       >
