@@ -19436,7 +19436,94 @@ export default function AdminAddClient() {
               {/* Loan List Card - Visual Copy (No Functionality) */}
               <Card className="transition-all duration-700">
                 <CardHeader>
-                  <CardTitle>Loan List</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>Loan List</CardTitle>
+                    <div className="flex items-center gap-2">
+                      {/* Expand All Button */}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          const updates: Record<string, boolean> = {};
+                          
+                          // Expand all Brand New Loan (Refinance) cards
+                          (brandNewLoanCards || []).forEach(card => {
+                            updates[card.id] = true;
+                          });
+                          
+                          // Expand all Purchase Loan cards
+                          (purchaseLoanCards || []).forEach(card => {
+                            updates[card.id] = true;
+                          });
+                          
+                          // Expand all Current Primary Loan cards
+                          (currentPrimaryLoanCards || []).forEach(card => {
+                            updates[card.id] = true;
+                          });
+                          
+                          // Expand all Current Second Loan cards
+                          (currentSecondLoanCards || []).forEach(card => {
+                            updates[card.id] = true;
+                          });
+                          
+                          // Expand all Current Third Loan cards
+                          (currentThirdLoanCards || []).forEach(card => {
+                            updates[card.id] = true;
+                          });
+                          
+                          setPropertyCardStates(prev => ({ ...prev, ...updates }));
+                        }}
+                        className="hover:bg-blue-500 hover:text-white"
+                        title="Expand All Loan Tiles"
+                        data-testid="button-expand-all-loans"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                      
+                      {/* Minimize All Button */}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          const updates: Record<string, boolean> = {};
+                          
+                          // Minimize all Brand New Loan (Refinance) cards
+                          (brandNewLoanCards || []).forEach(card => {
+                            updates[card.id] = false;
+                          });
+                          
+                          // Minimize all Purchase Loan cards
+                          (purchaseLoanCards || []).forEach(card => {
+                            updates[card.id] = false;
+                          });
+                          
+                          // Minimize all Current Primary Loan cards
+                          (currentPrimaryLoanCards || []).forEach(card => {
+                            updates[card.id] = false;
+                          });
+                          
+                          // Minimize all Current Second Loan cards
+                          (currentSecondLoanCards || []).forEach(card => {
+                            updates[card.id] = false;
+                          });
+                          
+                          // Minimize all Current Third Loan cards
+                          (currentThirdLoanCards || []).forEach(card => {
+                            updates[card.id] = false;
+                          });
+                          
+                          setPropertyCardStates(prev => ({ ...prev, ...updates }));
+                        }}
+                        className="hover:bg-orange-500 hover:text-white"
+                        title="Minimize All Loan Tiles"
+                        data-testid="button-minimize-all-loans"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
