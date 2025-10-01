@@ -4028,8 +4028,8 @@ export default function AdminAddClient() {
   });
 
   // Isolated Rate Lock Date component to prevent typing lag
-  const PurchaseRateLockDateInput = React.memo<{ control: any }>(({ control }) => {
-    const rateLockDate = useWatch({ control, name: 'purchaseLoan.rateLockDate' });
+  const PurchaseRateLockDateInput = React.memo<{ form: any }>(({ form }) => {
+    const rateLockDate = useWatch({ control: form.control, name: 'purchaseLoan.rateLockDate' });
 
     return (
       <Input
@@ -4047,9 +4047,7 @@ export default function AdminAddClient() {
               }
             }
           }
-          control._formValues.purchaseLoan = control._formValues.purchaseLoan || {};
-          control._formValues.purchaseLoan.rateLockDate = formatted;
-          control._subjects.values.next({ ...control._formValues });
+          form.setValue('purchaseLoan.rateLockDate', formatted);
         }}
         placeholder="MM/DD/YYYY"
         maxLength={10}
@@ -4060,8 +4058,8 @@ export default function AdminAddClient() {
   });
 
   // Isolated Rate Lock Expiration component to prevent typing lag
-  const PurchaseRateLockExpirationInput = React.memo<{ control: any }>(({ control }) => {
-    const rateLockExpiration = useWatch({ control, name: 'purchaseLoan.rateLockDuration' });
+  const PurchaseRateLockExpirationInput = React.memo<{ form: any }>(({ form }) => {
+    const rateLockExpiration = useWatch({ control: form.control, name: 'purchaseLoan.rateLockDuration' });
 
     return (
       <Input
@@ -4079,9 +4077,7 @@ export default function AdminAddClient() {
               }
             }
           }
-          control._formValues.purchaseLoan = control._formValues.purchaseLoan || {};
-          control._formValues.purchaseLoan.rateLockDuration = formatted;
-          control._subjects.values.next({ ...control._formValues });
+          form.setValue('purchaseLoan.rateLockDuration', formatted);
         }}
         placeholder="MM/DD/YYYY"
         maxLength={10}
@@ -5500,7 +5496,7 @@ export default function AdminAddClient() {
                         />
                       </div>
                       {purchaseLoanLockDateType === 'date' ? (
-                        <PurchaseRateLockDateInput control={targetForm.control} />
+                        <PurchaseRateLockDateInput form={targetForm} />
                       ) : (
                         <Input
                           id="purchaseLoan-rateLockDate"
@@ -5525,7 +5521,7 @@ export default function AdminAddClient() {
                         />
                       </div>
                       {purchaseLoanExpirationDurationType === 'expiration' ? (
-                        <PurchaseRateLockExpirationInput control={targetForm.control} />
+                        <PurchaseRateLockExpirationInput form={targetForm} />
                       ) : (
                         <Input
                           id="purchaseLoan-rateLockDuration"
