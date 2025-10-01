@@ -2776,41 +2776,6 @@ export default function AdminAddClient() {
     return isNaN(parsed) ? 0 : parsed;
   };
 
-  // Auto-Sum Payment Fields Component - isolated calculation without parent re-renders
-  const AutoSumPaymentFields = React.memo<{ control: any }>(({ control }) => {
-    // Watch specific fields for auto-sum calculation - isolated from parent component
-    const principalPayment = useWatch({ control, name: 'currentLoan.principalAndInterestPayment' }) || '';
-    const escrowPayment = useWatch({ control, name: 'currentLoan.escrowPayment' }) || '';
-    
-    // Calculate total with useMemo for performance
-    const totalPayment = useMemo(() => {
-      const principal = parseMonetaryValue(principalPayment);
-      const escrow = parseMonetaryValue(escrowPayment);
-      return principal + escrow;
-    }, [principalPayment, escrowPayment]);
-    
-    const totalPaymentFormatted = useMemo(() => 
-      totalPayment > 0 
-        ? `$${totalPayment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` 
-        : '$0.00',
-      [totalPayment]
-    );
-
-    return (
-      <div className="space-y-2 md:col-span-2">
-        <Label className="text-sm font-medium text-black">Total Monthly Payment</Label>
-        <div className="flex items-center border border-input bg-background px-3 rounded-md">
-          <span className="text-muted-foreground text-sm">$</span>
-          <Input
-            value={totalPaymentFormatted.replace('$', '')}
-            readOnly
-            className="border-0 bg-transparent px-2 focus-visible:ring-0"
-            data-testid="text-total-current-loan-payment"
-          />
-        </div>
-      </div>
-    );
-  });
 
   // Auto-Sum Payment Fields Component for Brand New Loan (Refinance) - isolated calculation without parent re-renders
   const BrandNewLoanAutoSumPaymentFields = React.memo<{ control: any }>(({ control }) => {
@@ -4157,7 +4122,7 @@ export default function AdminAddClient() {
                 </div>
               </div>
               
-              {/* Row 3: Principal & Interest Payment, Escrow Payment, Total Monthly Payment, Pre-Payment Penalty, Attached to Property */}
+              {/* Row 3: Principal & Interest Payment, Escrow Payment, Attached to Property */}
               <Card className={`bg-muted ${
                 showCurrentLoanCardAnimation[idPrefix] ? 'animate-roll-up-grey-box' : ''
               }`}>
@@ -4214,8 +4179,6 @@ export default function AdminAddClient() {
                     />
                   </div>
                 </div>
-                
-                <AutoSumPaymentFields control={form.control} />
                 
                 <div className="space-y-2 md:col-span-3">
                   <Label htmlFor={`${idPrefix}currentLoan-attachedToProperty`}>Attached to Property</Label>
