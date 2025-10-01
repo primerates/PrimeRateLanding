@@ -13169,7 +13169,17 @@ export default function AdminAddClient() {
                   <Card key={cardId} className="transition-colors duration-200">
                     <Collapsible 
                       open={isOpen} 
-                      onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
+                      onOpenChange={(open) => {
+                        setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }));
+                        if (open) {
+                          setTimeout(() => {
+                            setShowIncomeCardAnimation(prev => ({ ...prev, 'co-borrower-second-employment': true }));
+                            setTimeout(() => {
+                              setShowIncomeCardAnimation(prev => ({ ...prev, 'co-borrower-second-employment': false }));
+                            }, 800);
+                          }, 200);
+                        }
+                      }}
                     >
                       <CardHeader>
                         <div className="flex items-center justify-between">
