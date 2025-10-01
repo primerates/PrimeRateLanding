@@ -4988,6 +4988,7 @@ export default function AdminAddClient() {
     // Local state for monetary fields to prevent keystroke lag
     const [newLoanAmount, setNewLoanAmount] = useState('');
     const [lenderCredit, setLenderCredit] = useState('');
+    const [hasCreditValue, setHasCreditValue] = useState(false);
     
     // Initialize local state from form values on mount
     useEffect(() => {
@@ -4995,7 +4996,10 @@ export default function AdminAddClient() {
       if (loanAmountValue) setNewLoanAmount(loanAmountValue);
       
       const creditValue = targetForm.getValues('purchaseLoan.lenderCredit');
-      if (creditValue) setLenderCredit(creditValue);
+      if (creditValue) {
+        setLenderCredit(creditValue);
+        setHasCreditValue(true);
+      }
     }, []);
     
     // State for property address collapse
@@ -5223,7 +5227,7 @@ export default function AdminAddClient() {
                       {getPurchaseLoanCreditLabel()}
                     </Label>
                     <Switch
-                      checked={targetForm.watch('purchaseLoan.lenderCredit') || targetForm.watch('purchaseLoan.brokerCredit') ? true : false}
+                      checked={hasCreditValue}
                       onCheckedChange={cyclePurchaseLoanCreditType}
                       data-testid="toggle-purchaseLoan-credit-type"
                       className="scale-[0.8]"
@@ -5233,7 +5237,22 @@ export default function AdminAddClient() {
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
                       id="purchaseLoan-lenderCredit"
-                      {...targetForm.register('purchaseLoan.lenderCredit')}
+                      value={lenderCredit}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^\d.]/g, '');
+                        setLenderCredit(value);
+                      }}
+                      onBlur={(e) => {
+                        const num = parseFloat(lenderCredit) || 0;
+                        const formatted = num > 0 ? `$${num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` : '';
+                        setLenderCredit(formatted);
+                        setHasCreditValue(!!formatted);
+                        targetForm.setValue('purchaseLoan.lenderCredit', formatted);
+                      }}
+                      onFocus={(e) => {
+                        const raw = lenderCredit.replace(/[^\d.]/g, '');
+                        setLenderCredit(raw);
+                      }}
                       placeholder="0.00"
                       className="border-0 bg-transparent px-2 focus-visible:ring-0"
                       data-testid="input-purchaseLoan-lenderCredit"
