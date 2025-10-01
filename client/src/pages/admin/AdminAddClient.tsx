@@ -4027,6 +4027,66 @@ export default function AdminAddClient() {
     );
   });
 
+  // Isolated Rate Lock Date component to prevent typing lag
+  const PurchaseRateLockDateInput = React.memo<{ form: any }>(({ form }) => {
+    const rateLockDate = useWatch({ control: form.control, name: 'purchaseLoan.rateLockDate' });
+
+    return (
+      <Input
+        id="purchaseLoan-rateLockDate"
+        value={rateLockDate || ''}
+        onChange={(e) => {
+          const value = e.target.value.replace(/\D/g, '');
+          let formatted = '';
+          if (value.length > 0) {
+            formatted = value.substring(0, 2);
+            if (value.length > 2) {
+              formatted += '/' + value.substring(2, 4);
+              if (value.length > 4) {
+                formatted += '/' + value.substring(4, 8);
+              }
+            }
+          }
+          form.setValue('purchaseLoan.rateLockDate', formatted);
+        }}
+        placeholder="MM/DD/YYYY"
+        maxLength={10}
+        className="border border-input bg-background px-3 rounded-md"
+        data-testid="input-purchaseLoan-rateLockDate"
+      />
+    );
+  });
+
+  // Isolated Rate Lock Expiration component to prevent typing lag
+  const PurchaseRateLockExpirationInput = React.memo<{ form: any }>(({ form }) => {
+    const rateLockExpiration = useWatch({ control: form.control, name: 'purchaseLoan.rateLockDuration' });
+
+    return (
+      <Input
+        id="purchaseLoan-rateLockDuration"
+        value={rateLockExpiration || ''}
+        onChange={(e) => {
+          const value = e.target.value.replace(/\D/g, '');
+          let formatted = '';
+          if (value.length > 0) {
+            formatted = value.substring(0, 2);
+            if (value.length > 2) {
+              formatted += '/' + value.substring(2, 4);
+              if (value.length > 4) {
+                formatted += '/' + value.substring(4, 8);
+              }
+            }
+          }
+          form.setValue('purchaseLoan.rateLockDuration', formatted);
+        }}
+        placeholder="MM/DD/YYYY"
+        maxLength={10}
+        className="border border-input bg-background px-3 rounded-md"
+        data-testid="input-purchaseLoan-rateLockDuration"
+      />
+    );
+  });
+
   // CurrentLoanCard component - canonical mode only
   const CurrentLoanCard = ({ 
     idPrefix = '', 
@@ -5436,13 +5496,7 @@ export default function AdminAddClient() {
                         />
                       </div>
                       {purchaseLoanLockDateType === 'date' ? (
-                        <Input
-                          id="purchaseLoan-rateLockDate"
-                          type="date"
-                          {...targetForm.register('purchaseLoan.rateLockDate')}
-                          className="border border-input bg-background px-3 rounded-md"
-                          data-testid="input-purchaseLoan-rateLockDate"
-                        />
+                        <PurchaseRateLockDateInput form={targetForm} />
                       ) : (
                         <Input
                           id="purchaseLoan-rateLockDate"
@@ -5467,13 +5521,7 @@ export default function AdminAddClient() {
                         />
                       </div>
                       {purchaseLoanExpirationDurationType === 'expiration' ? (
-                        <Input
-                          id="purchaseLoan-rateLockDuration"
-                          type="date"
-                          {...targetForm.register('purchaseLoan.rateLockDuration')}
-                          className="border border-input bg-background px-3 rounded-md"
-                          data-testid="input-purchaseLoan-rateLockDuration"
-                        />
+                        <PurchaseRateLockExpirationInput form={targetForm} />
                       ) : (
                         <Input
                           id="purchaseLoan-rateLockDuration"
