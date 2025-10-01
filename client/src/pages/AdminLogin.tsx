@@ -7,6 +7,7 @@ import { Loader2, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { useBackground } from '@/contexts/BackgroundContext';
+import threeGlowingCubesBackground from '@assets/Three Glowing Cubes_1759260151137.png';
 
 export default function AdminLogin() {
   const [location, setLocation] = useLocation();
@@ -194,11 +195,12 @@ export default function AdminLogin() {
 
       {/* Right Side - Background Artwork */}
       <div 
-        className="hidden lg:block lg:w-1/2 relative bg-cover bg-center"
+        className="hidden lg:block lg:w-1/2 relative bg-white bg-cover bg-center"
         style={{
-          backgroundImage: getCurrentPreset()?.assetPath
-            ? `linear-gradient(rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.04)), url(${getCurrentPreset()?.assetPath})`
-            : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%)'
+          backgroundImage: `url(${threeGlowingCubesBackground})`,
+          backgroundSize: '50%',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
         }}
       >
       </div>
