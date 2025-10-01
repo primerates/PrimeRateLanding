@@ -1045,9 +1045,9 @@ export default function AdminAddClient() {
               setShowIncomeCardAnimation(prev => ({ ...prev, [`co-borrower-employment-${cardId}`]: false }));
             }, 800);
           } else {
-            setShowIncomeCardAnimation(prev => ({ ...prev, [`borrower-employment-${cardId}`]: true }));
+            setShowIncomeCardAnimation(prev => ({ ...prev, 'borrower-employment': true }));
             setTimeout(() => {
-              setShowIncomeCardAnimation(prev => ({ ...prev, [`borrower-employment-${cardId}`]: false }));
+              setShowIncomeCardAnimation(prev => ({ ...prev, 'borrower-employment': false }));
             }, 800);
           }
         }, 200);
