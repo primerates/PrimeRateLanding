@@ -11916,7 +11916,7 @@ export default function AdminAddClient() {
                                   {employmentDates[`second-employment-${cardId}`]?.isPresent ? 'Present' : 'End Date'}
                                 </Label>
                                 <Switch
-                                  checked={employmentDates[`second-employment-${cardId}`]?.isPresent ?? true}
+                                  checked={employmentDates[`second-employment-${cardId}`]?.isPresent ?? false}
                                   onCheckedChange={(checked) => {
                                     const currentData = employmentDates[`second-employment-${cardId}`] || { startDate: '', endDate: '', duration: '' };
                                     updateEmploymentDuration(`second-employment-${cardId}`, currentData.startDate, currentData.endDate, checked);
