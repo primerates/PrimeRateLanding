@@ -11641,27 +11641,32 @@ export default function AdminAddClient() {
                               </div>
                               
                               <div className="space-y-2">
-                                <div className="flex items-center justify-between mb-2">
-                                  <Label htmlFor={`income-employer-income-${cardId}`} className="text-sm">
-                                    {isShowingEmployerNetIncome[cardId] ? 'Net Monthly Income' : 'Gross Monthly Income'}
-                                  </Label>
-                                  <Switch
-                                    checked={isShowingEmployerNetIncome[cardId] || false}
-                                    onCheckedChange={(checked) => {
-                                      setIsShowingEmployerNetIncome(prev => ({ ...prev, [cardId]: checked }));
-                                    }}
-                                    data-testid={`toggle-income-employer-${cardId}`}
-                                    className="scale-[0.8]"
-                                  />
-                                </div>
-                                <ToggleIncomeInput
+                                <Label htmlFor={`income-employer-income-${cardId}`}>Gross Monthly Income</Label>
+                                <Controller
                                   control={form.control}
-                                  cardId={cardId}
-                                  showingNet={isShowingEmployerNetIncome[cardId] || false}
-                                  grossPath={getEmployerFieldPath(cardId, 'monthlyIncome')}
-                                  netPath={getEmployerFieldPath(cardId, 'netMonthlyIncome')}
-                                  id={`income-employer-income-${cardId}`}
-                                  data-testid={`input-income-employer-${cardId}`}
+                                  name={getEmployerFieldPath(cardId, 'monthlyIncome')}
+                                  defaultValue=""
+                                  render={({ field }) => {
+                                    const displayValue = useMemo(() => {
+                                      if (!field.value) return '';
+                                      const numVal = field.value.replace(/[^\d]/g, '');
+                                      return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
+                                    }, [field.value]);
+                                    
+                                    return (
+                                      <Input
+                                        id={`income-employer-income-${cardId}`}
+                                        type="text"
+                                        placeholder="$0"
+                                        value={displayValue}
+                                        onChange={(e) => {
+                                          const value = e.target.value.replace(/[^\d]/g, '');
+                                          field.onChange(value);
+                                        }}
+                                        data-testid={`input-income-employer-${cardId}`}
+                                      />
+                                    );
+                                  }}
                                 />
                               </div>
                               
