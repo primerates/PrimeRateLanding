@@ -5677,30 +5677,64 @@ export default function AdminAddClient() {
                 
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="secondLoan-principalInterestPayment">Loan Balance</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="secondLoan-principalInterestPayment"
-                      {...targetForm.register('secondLoan.principalAndInterestPayment')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-secondLoan-principalInterestPayment"
-                    />
-                  </div>
+                  <Controller
+                    control={targetForm.control}
+                    name="secondLoan.principalAndInterestPayment"
+                    defaultValue=""
+                    render={({ field }) => {
+                      const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                      const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                      
+                      return (
+                        <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                          <span className="text-muted-foreground text-sm">$</span>
+                          <Input
+                            id="secondLoan-principalInterestPayment"
+                            type="text"
+                            placeholder="0"
+                            value={displayValue}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/[^\d]/g, '');
+                              field.onChange(value);
+                            }}
+                            className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                            data-testid="input-secondLoan-principalInterestPayment"
+                          />
+                        </div>
+                      );
+                    }}
+                  />
                 </div>
                 
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="secondLoan-monthlyEscrow">Monthly Payment</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="secondLoan-monthlyEscrow"
-                      {...targetForm.register('secondLoan.escrowPayment')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-secondLoan-monthlyEscrow"
-                    />
-                  </div>
+                  <Controller
+                    control={targetForm.control}
+                    name="secondLoan.escrowPayment"
+                    defaultValue=""
+                    render={({ field }) => {
+                      const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                      const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                      
+                      return (
+                        <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                          <span className="text-muted-foreground text-sm">$</span>
+                          <Input
+                            id="secondLoan-monthlyEscrow"
+                            type="text"
+                            placeholder="0"
+                            value={displayValue}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/[^\d]/g, '');
+                              field.onChange(value);
+                            }}
+                            className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                            data-testid="input-secondLoan-monthlyEscrow"
+                          />
+                        </div>
+                      );
+                    }}
+                  />
                 </div>
                 
                 <div className="space-y-2 md:col-span-2">
