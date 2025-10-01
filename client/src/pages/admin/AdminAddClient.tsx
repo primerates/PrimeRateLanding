@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useLocation } from 'wouter';
-import { useForm, useWatch, useFormContext, UseFormReturn, Controller, FormProvider } from 'react-hook-form';
+import { useForm, useWatch, useFormContext, UseFormReturn, Controller, FormProvider, useController } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -3970,6 +3970,63 @@ export default function AdminAddClient() {
     };
   };
 
+  // Isolated Purchase Date component to prevent typing lag
+  const LoanPurchaseDateInput = React.memo<{ form: any; idPrefix: string }>(({ form, idPrefix }) => {
+    const purchaseDate = useWatch({ control: form.control, name: 'currentLoan.purchaseDate' });
+
+    return (
+      <div className="space-y-2">
+        <div className="min-h-5 flex items-center gap-2">
+          <Label htmlFor={`${idPrefix}currentLoan-purchaseDate`}>Purchase Date</Label>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                onClick={() => {
+                  toast({
+                    title: "Purchase Information",
+                    description: "Please see purchase and record dates in title report located in vendor page.",
+                    duration: 5000,
+                  });
+                }}
+                data-testid={`button-currentLoan-purchase-info-${idPrefix}`}
+              >
+                <Info className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="top" sideOffset={15} className="text-sm">
+              Purchase Information
+            </TooltipContent>
+          </Tooltip>
+        </div>
+        <Input
+          id={`${idPrefix}currentLoan-purchaseDate`}
+          value={purchaseDate || ''}
+          onChange={(e) => {
+            const value = e.target.value.replace(/\D/g, '');
+            let formatted = '';
+            if (value.length > 0) {
+              formatted = value.substring(0, 2);
+              if (value.length > 2) {
+                formatted += '/' + value.substring(2, 4);
+                if (value.length > 4) {
+                  formatted += '/' + value.substring(4, 8);
+                }
+              }
+            }
+            form.setValue('currentLoan.purchaseDate', formatted);
+          }}
+          placeholder="MM/DD/YYYY"
+          maxLength={10}
+          data-testid={`input-currentLoan-purchaseDate-${idPrefix}`}
+        />
+      </div>
+    );
+  });
+
   // CurrentLoanCard component - canonical mode only
   const CurrentLoanCard = ({ 
     idPrefix = '', 
@@ -4137,55 +4194,7 @@ export default function AdminAddClient() {
                   </Select>
                 </div>
                 
-                <div className="space-y-2">
-                  <div className="min-h-5 flex items-center gap-2">
-                    <Label htmlFor={`${idPrefix}currentLoan-purchaseDate`}>Purchase Date</Label>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                          onClick={() => {
-                            toast({
-                              title: "Purchase Information",
-                              description: "Please see purchase and record dates in title report located in vendor page.",
-                              duration: 5000,
-                            });
-                          }}
-                          data-testid={`button-currentLoan-purchase-info-${idPrefix}`}
-                        >
-                          <Info className="h-4 w-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent side="top" sideOffset={15} className="text-sm">
-                        Purchase Information
-                      </TooltipContent>
-                    </Tooltip>
-                  </div>
-                  <Input
-                    id={`${idPrefix}currentLoan-purchaseDate`}
-                    value={targetForm.watch('currentLoan.purchaseDate') || ''}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
-                      let formatted = '';
-                      if (value.length > 0) {
-                        formatted = value.substring(0, 2);
-                        if (value.length > 2) {
-                          formatted += '/' + value.substring(2, 4);
-                          if (value.length > 4) {
-                            formatted += '/' + value.substring(4, 8);
-                          }
-                        }
-                      }
-                      targetForm.setValue('currentLoan.purchaseDate', formatted);
-                    }}
-                    placeholder="MM/DD/YYYY"
-                    maxLength={10}
-                    data-testid={`input-currentLoan-purchaseDate-${idPrefix}`}
-                  />
-                </div>
+                <LoanPurchaseDateInput form={targetForm} idPrefix={idPrefix} />
                 
                 <div className="space-y-2">
                   <Label htmlFor={remainingTermBinding.id}>Remaining Term On Credit Report</Label>
