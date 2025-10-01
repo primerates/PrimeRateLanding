@@ -5418,11 +5418,12 @@ export default function AdminAddClient() {
                       {purchaseLoanExpirationDurationType === 'expiration' ? (
                         <Input
                           id="purchaseLoan-rateLockDuration"
-                          type="date"
+                          type="text"
+                          placeholder="MM/DD/YYYY"
                           {...targetForm.register('purchaseLoan.rateLockDuration')}
                           className={`border border-input px-3 rounded-md ${
                             isDateWithinFiveDays(targetForm.watch('purchaseLoan.rateLockDuration'))
-                              ? 'bg-red-500 text-white'
+                              ? 'bg-red-500 text-white placeholder:text-white/70'
                               : 'bg-background'
                           }`}
                           data-testid="input-purchaseLoan-rateLockDuration"
