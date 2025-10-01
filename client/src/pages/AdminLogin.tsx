@@ -90,6 +90,15 @@ export default function AdminLogin() {
           />
         </div>
         
+        {/* Smaller greyed out logo - top right */}
+        <div className="absolute top-8 right-8 opacity-[0.15]">
+          <img 
+            src={primeRateLogo} 
+            alt="" 
+            className="w-20 h-auto object-contain"
+          />
+        </div>
+        
         <div className="w-full max-w-md space-y-8">
           {/* Login Form */}
           <form onSubmit={handleLogin} className="space-y-6">
@@ -208,15 +217,6 @@ export default function AdminLogin() {
           >
             PRIME RATE
           </h1>
-        </div>
-        
-        {/* Smaller greyed out logo - top right (matching top left position) */}
-        <div className="absolute top-8 right-8 opacity-[0.15]">
-          <img 
-            src={primeRateLogo} 
-            alt="" 
-            className="w-20 h-auto object-contain"
-          />
         </div>
       </div>
     </div>
