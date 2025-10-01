@@ -99,6 +99,15 @@ export default function AdminLogin() {
           />
         </div>
         
+        {/* Even smaller greyed out logo - 7:30 position from top left logo */}
+        <div className="absolute top-28 left-4 opacity-[0.15]">
+          <img 
+            src={primeRateLogo} 
+            alt="" 
+            className="w-10 h-auto object-contain"
+          />
+        </div>
+        
         <div className="w-full max-w-md space-y-8">
           {/* Login Form */}
           <form onSubmit={handleLogin} className="space-y-6">
