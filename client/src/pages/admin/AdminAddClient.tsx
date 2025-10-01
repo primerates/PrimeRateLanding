@@ -8988,8 +8988,22 @@ export default function AdminAddClient() {
                       <Input
                         id="borrower-phone"
                         value={form.watch('borrower.phone') || ''}
-                        onChange={(e) => handlePhoneChange('borrower.phone', e.target.value)}
-                        placeholder="(XXX) XXX-XXXX"
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, '');
+                          let formatted = '';
+                          if (value.length > 0) {
+                            formatted = value.substring(0, 3);
+                            if (value.length > 3) {
+                              formatted += '-' + value.substring(3, 6);
+                              if (value.length > 6) {
+                                formatted += '-' + value.substring(6, 10);
+                              }
+                            }
+                          }
+                          form.setValue('borrower.phone', formatted);
+                        }}
+                        placeholder=""
+                        maxLength={12}
                         data-testid="input-borrower-phone"
                       />
                     </div>
@@ -10161,8 +10175,22 @@ export default function AdminAddClient() {
                         <Input
                           id="coBorrower-phone"
                           value={form.watch('coBorrower.phone') || ''}
-                          onChange={(e) => handlePhoneChange('coBorrower.phone', e.target.value)}
-                          placeholder="(XXX) XXX-XXXX"
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, '');
+                            let formatted = '';
+                            if (value.length > 0) {
+                              formatted = value.substring(0, 3);
+                              if (value.length > 3) {
+                                formatted += '-' + value.substring(3, 6);
+                                if (value.length > 6) {
+                                  formatted += '-' + value.substring(6, 10);
+                                }
+                              }
+                            }
+                            form.setValue('coBorrower.phone', formatted);
+                          }}
+                          placeholder=""
+                          maxLength={12}
                           data-testid="input-coborrower-phone"
                         />
                       </div>
