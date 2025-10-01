@@ -12573,12 +12573,12 @@ export default function AdminAddClient() {
                                       setVaDisabilitySelected(true);
                                     }
                                   }}
-                                  className={`w-6 h-6 rounded-full border-2 cursor-pointer flex items-center justify-center transition-colors ${
-                                    vaDisabilitySelected ? 'bg-purple-500 border-purple-500' : 'bg-white border-gray-300'
+                                  className={`w-3 h-3 rounded-full border-2 cursor-pointer flex items-center justify-center transition-colors ${
+                                    vaDisabilitySelected ? 'bg-blue-500 border-blue-500' : 'bg-white border-gray-300'
                                   }`}
                                   data-testid="circle-disability-va"
                                 >
-                                  {vaDisabilitySelected && <div className="w-3 h-3 rounded-full bg-white"></div>}
+                                  {vaDisabilitySelected && <div className="w-1.5 h-1.5 rounded-full bg-white"></div>}
                                 </div>
                                 <Label 
                                   htmlFor="disability-va"
@@ -12604,12 +12604,12 @@ export default function AdminAddClient() {
                                       setOtherDisabilitySelected(true);
                                     }
                                   }}
-                                  className={`w-6 h-6 rounded-full border-2 cursor-pointer flex items-center justify-center transition-colors ${
-                                    otherDisabilitySelected ? 'bg-purple-500 border-purple-500' : 'bg-white border-gray-300'
+                                  className={`w-3 h-3 rounded-full border-2 cursor-pointer flex items-center justify-center transition-colors ${
+                                    otherDisabilitySelected ? 'bg-blue-500 border-blue-500' : 'bg-white border-gray-300'
                                   }`}
                                   data-testid="circle-disability-other"
                                 >
-                                  {otherDisabilitySelected && <div className="w-3 h-3 rounded-full bg-white"></div>}
+                                  {otherDisabilitySelected && <div className="w-1.5 h-1.5 rounded-full bg-white"></div>}
                                 </div>
                                 <Label 
                                   htmlFor="disability-other"
