@@ -5242,25 +5242,39 @@ export default function AdminAddClient() {
                 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between mb-2">
-                    <Label htmlFor={`${idPrefix}purchaseLoan-debtPayOff`} className="text-sm">
-                      Total Debt Pay Off
+                    <Label htmlFor="purchaseLoan-lenderCredit" className="text-sm">
+                      {getPurchaseLoanCreditLabel()}
                     </Label>
                     <Switch
-                      checked={purchaseLoanDebtPayOffType === 'total-debt-payoff'}
-                      disabled
-                      data-testid="toggle-purchaseLoan-debtPayOff-type"
-                      className="scale-[0.8] opacity-50 cursor-not-allowed"
-                      aria-disabled
+                      checked={hasCreditValue}
+                      onCheckedChange={cyclePurchaseLoanCreditType}
+                      data-testid="toggle-purchaseLoan-credit-type"
+                      className="scale-[0.8]"
                     />
                   </div>
-                  <div className="flex items-center border border-input bg-muted px-3 rounded-md opacity-60">
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
                     <Input
-                      id={`${idPrefix}purchaseLoan-debtPayOff`}
-                      {...remainingTermBinding.field}
-                      disabled
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0 cursor-not-allowed"
-                      data-testid="input-purchaseLoan-debtPayOff-disabled"
-                      aria-disabled
+                      id="purchaseLoan-lenderCredit"
+                      value={lenderCredit}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^\d.]/g, '');
+                        setLenderCredit(value);
+                      }}
+                      onBlur={(e) => {
+                        const num = parseFloat(lenderCredit) || 0;
+                        const formatted = num > 0 ? `$${num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` : '';
+                        setLenderCredit(formatted);
+                        setHasCreditValue(!!formatted);
+                        targetForm.setValue('purchaseLoan.lenderCredit', formatted);
+                      }}
+                      onFocus={(e) => {
+                        const raw = lenderCredit.replace(/[^\d.]/g, '');
+                        setLenderCredit(raw);
+                      }}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-purchaseLoan-lenderCredit"
                     />
                   </div>
                 </div>
