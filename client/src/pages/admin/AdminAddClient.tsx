@@ -4138,10 +4138,35 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor={`${idPrefix}currentLoan-prepaymentPenalty-text`}>Pre-Payment Penalty</Label>
+                  <div className="min-h-5 flex items-center gap-2">
+                    <Label htmlFor={`${idPrefix}currentLoan-purchaseDate`}>Purchase Date</Label>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="p-1 h-auto text-blue-600 hover:text-blue-800"
+                          onClick={() => {
+                            toast({
+                              title: "Purchase Information",
+                              description: "Please see purchase and record dates in title report located in vendor page.",
+                              duration: 5000,
+                            });
+                          }}
+                          data-testid={`button-currentLoan-purchase-info-${idPrefix}`}
+                        >
+                          <Info className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" sideOffset={15} className="text-sm">
+                        Purchase Information
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                   <Input
-                    id={`${idPrefix}currentLoan-prepaymentPenalty-text`}
-                    value={targetForm.watch('currentLoan.prepaymentPenaltyText') || ''}
+                    id={`${idPrefix}currentLoan-purchaseDate`}
+                    value={targetForm.watch('currentLoan.purchaseDate') || ''}
                     onChange={(e) => {
                       const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
                       let formatted = '';
@@ -4154,11 +4179,11 @@ export default function AdminAddClient() {
                           }
                         }
                       }
-                      targetForm.setValue('currentLoan.prepaymentPenaltyText', formatted);
+                      targetForm.setValue('currentLoan.purchaseDate', formatted);
                     }}
                     placeholder="MM/DD/YYYY"
                     maxLength={10}
-                    data-testid={`input-currentLoan-prepaymentPenalty-text-${idPrefix}`}
+                    data-testid={`input-currentLoan-purchaseDate-${idPrefix}`}
                   />
                 </div>
                 
