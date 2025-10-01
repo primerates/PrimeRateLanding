@@ -12025,18 +12025,28 @@ export default function AdminAddClient() {
                               <Controller
                                 control={form.control}
                                 name={getSecondEmployerFieldPath(cardId, 'monthlyIncome')}
-                                render={({ field }) => (
-                                  <Input
-                                    id={`income-secondMonthlyIncome-${cardId}`}
-                                    value={formatDollarDisplay(field.value)}
-                                    onChange={(e) => {
-                                      const rawValue = parseDollarInput(e.target.value);
-                                      field.onChange(rawValue);
-                                    }}
-                                    placeholder="$0.00"
-                                    data-testid={`input-income-secondMonthlyIncome-${cardId}`}
-                                  />
-                                )}
+                                defaultValue=""
+                                render={({ field }) => {
+                                  const displayValue = useMemo(() => {
+                                    if (!field.value) return '';
+                                    const numVal = field.value.replace(/[^\d]/g, '');
+                                    return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
+                                  }, [field.value]);
+                                  
+                                  return (
+                                    <Input
+                                      id={`income-secondMonthlyIncome-${cardId}`}
+                                      type="text"
+                                      placeholder="$0"
+                                      value={displayValue}
+                                      onChange={(e) => {
+                                        const value = e.target.value.replace(/[^\d]/g, '');
+                                        field.onChange(value);
+                                      }}
+                                      data-testid={`input-income-secondMonthlyIncome-${cardId}`}
+                                    />
+                                  );
+                                }}
                               />
                             </div>
                             
