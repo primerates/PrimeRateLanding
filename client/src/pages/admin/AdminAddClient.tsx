@@ -4953,6 +4953,7 @@ export default function AdminAddClient() {
     const [newLoanAmount, setNewLoanAmount] = useState('');
     const [lenderCredit, setLenderCredit] = useState('');
     const [hasCreditValue, setHasCreditValue] = useState(false);
+    const [sellerCredit, setSellerCredit] = useState('');
     const [principalPayment, setPrincipalPayment] = useState('');
     const [hasPrincipalValue, setHasPrincipalValue] = useState(false);
     const [escrowPayment, setEscrowPayment] = useState('');
@@ -4968,6 +4969,9 @@ export default function AdminAddClient() {
         setLenderCredit(creditValue);
         setHasCreditValue(true);
       }
+      
+      const sellerCreditValue = targetForm.getValues('purchaseLoan.sellerCredit');
+      if (sellerCreditValue) setSellerCredit(sellerCreditValue);
       
       const principalValue = targetForm.getValues('purchaseLoan.principalAndInterestPayment');
       if (principalValue) {
@@ -5116,7 +5120,7 @@ export default function AdminAddClient() {
                 </div>
               </div>
               
-              {/* Row 2: New Loan Amount, Loan Term, Pre-Payment Penalty, Cash Out Amount, Total Debt Pay Off */}
+              {/* Row 2: New Loan Amount, Loan Term, Pre-Payment Penalty, Lender Credit, Seller Credit */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="newLoan-loanAmount">New Loan Amount</Label>
@@ -5228,6 +5232,36 @@ export default function AdminAddClient() {
                       placeholder="0.00"
                       className="border-0 bg-transparent px-2 focus-visible:ring-0"
                       data-testid="input-purchaseLoan-lenderCredit"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="purchaseLoan-sellerCredit" className="text-sm">
+                    Seller Credit
+                  </Label>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="purchaseLoan-sellerCredit"
+                      value={sellerCredit}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^\d.]/g, '');
+                        setSellerCredit(value);
+                      }}
+                      onBlur={(e) => {
+                        const num = parseFloat(sellerCredit) || 0;
+                        const formatted = num > 0 ? `$${num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` : '';
+                        setSellerCredit(formatted);
+                        targetForm.setValue('purchaseLoan.sellerCredit', formatted);
+                      }}
+                      onFocus={(e) => {
+                        const raw = sellerCredit.replace(/[^\d.]/g, '');
+                        setSellerCredit(raw);
+                      }}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-purchaseLoan-sellerCredit"
                     />
                   </div>
                 </div>
