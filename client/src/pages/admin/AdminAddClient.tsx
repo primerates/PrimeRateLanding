@@ -4148,17 +4148,11 @@ export default function AdminAddClient() {
                     name="currentLoan.currentRate"
                     defaultValue=""
                     render={({ field }) => {
-                      const rawValue = field.value ? field.value.replace(/[^\d]/g, '') : '';
-                      let displayValue = '';
-                      
-                      if (rawValue.length === 0) {
-                        displayValue = '';
-                      } else if (rawValue.length <= 3) {
-                        displayValue = rawValue;
-                      } else {
-                        const integerPart = rawValue.slice(0, -3);
-                        const decimalPart = rawValue.slice(-3);
-                        displayValue = `${integerPart}.${decimalPart}`;
+                      const numVal = field.value ? field.value.replace(/[^\d.]/g, '') : '';
+                      const parts = numVal.split('.');
+                      let displayValue = parts[0];
+                      if (parts.length > 1) {
+                        displayValue += '.' + parts[1].substring(0, 3);
                       }
                       
                       return (
@@ -4169,7 +4163,10 @@ export default function AdminAddClient() {
                             placeholder="0.000"
                             value={displayValue}
                             onChange={(e) => {
-                              const value = e.target.value.replace(/[^\d]/g, '');
+                              const value = e.target.value.replace(/[^\d.]/g, '');
+                              const parts = value.split('.');
+                              if (parts.length > 2) return;
+                              if (parts.length === 2 && parts[1].length > 3) return;
                               field.onChange(value);
                             }}
                             className="border-0 bg-transparent px-2 focus-visible:ring-0"
