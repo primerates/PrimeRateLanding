@@ -11511,7 +11511,7 @@ export default function AdminAddClient() {
                             </Card>
 
                             {/* Employment Information - Single Row */}
-                            <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                               <div className="space-y-2">
                                 <Label htmlFor="template-employer-name">Employer Name</Label>
                                 <Input
@@ -11574,46 +11574,6 @@ export default function AdminAddClient() {
                                   id="template-monthly-income"
                                   placeholder="$0.00"
                                   data-testid="input-template-monthly-income"
-                                />
-                              </div>
-                              
-                              <div className="space-y-2">
-                                <Label htmlFor="template-start-date">Start Date</Label>
-                                <Input
-                                  id="template-start-date"
-                                  type="date"
-                                  placeholder="MM/DD/YYYY"
-                                  data-testid="input-template-start-date"
-                                />
-                              </div>
-                              
-                              <div className="space-y-2">
-                                <div className="flex items-center justify-between mb-2">
-                                  <Label htmlFor="template-end-date" className="text-sm">
-                                    Present
-                                  </Label>
-                                  <Switch
-                                    data-testid="toggle-template-employment-present"
-                                    className="scale-[0.8]"
-                                  />
-                                </div>
-                                <Input
-                                  id="template-end-date"
-                                  type="text"
-                                  value="present"
-                                  placeholder="Enter"
-                                  readOnly
-                                  className="bg-muted"
-                                  data-testid="input-template-end-date"
-                                />
-                              </div>
-                              
-                              <div className="space-y-2">
-                                <Label htmlFor="template-employment-duration">Employment Duration</Label>
-                                <Input
-                                  id="template-employment-duration"
-                                  placeholder="Enter"
-                                  data-testid="input-template-employment-duration"
                                 />
                               </div>
                             </div>
