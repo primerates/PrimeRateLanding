@@ -14129,8 +14129,8 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
-              {/* Co-Borrower Disability Card (VA Benefits trigger) */}
-              {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.vaBenefits') && (
+              {/* Co-Borrower Disability Card (Child Support field trigger - renamed to Disability) */}
+              {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.childSupport') && (
                 <Card>
                   <Collapsible open={isCoBorrowerVaBenefitsIncomeOpen} onOpenChange={setIsCoBorrowerVaBenefitsIncomeOpen}>
                     <CardHeader>
@@ -20938,8 +20938,8 @@ export default function AdminAddClient() {
             </AlertDialogCancel>
             <AlertDialogAction 
               onClick={() => {
-                // Clear the income type checkbox and close the section
-                form.setValue('coBorrowerIncome.incomeTypes.vaBenefits', false);
+                // Clear the income type checkbox and close the section (childSupport field is used for Disability)
+                form.setValue('coBorrowerIncome.incomeTypes.childSupport', false);
                 form.setValue('coBorrowerIncome.vaBenefitsMonthlyAmount', '');
                 setIsCoBorrowerVaBenefitsIncomeOpen(false);
                 setDeleteCoBorrowerVaBenefitsDialog({ isOpen: false });
