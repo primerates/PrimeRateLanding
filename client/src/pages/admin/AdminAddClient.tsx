@@ -4141,9 +4141,7 @@ export default function AdminAddClient() {
                   <Label htmlFor={`${idPrefix}currentLoan-prepaymentPenalty-text`}>Pre-Payment Penalty</Label>
                   <Input
                     id={`${idPrefix}currentLoan-prepaymentPenalty-text`}
-                    value={(() => {
-                      return form.watch('currentLoan.prepaymentPenaltyText') || '';
-                    })()}
+                    value={targetForm.watch('currentLoan.prepaymentPenaltyText') || ''}
                     onChange={(e) => {
                       const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
                       let formatted = '';
@@ -4156,7 +4154,7 @@ export default function AdminAddClient() {
                           }
                         }
                       }
-                      form.setValue('currentLoan.prepaymentPenaltyText', formatted);
+                      targetForm.setValue('currentLoan.prepaymentPenaltyText', formatted);
                     }}
                     placeholder="MM/DD/YYYY"
                     maxLength={10}
