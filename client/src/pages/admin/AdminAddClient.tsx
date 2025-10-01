@@ -9083,8 +9083,23 @@ export default function AdminAddClient() {
                       <Label htmlFor="borrower-ssn">SSN</Label>
                       <Input
                         id="borrower-ssn"
-                        {...form.register('borrower.ssn')}
+                        value={form.watch('borrower.ssn') || ''}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, '');
+                          let formatted = '';
+                          if (value.length > 0) {
+                            formatted = value.substring(0, 3);
+                            if (value.length > 3) {
+                              formatted += '-' + value.substring(3, 5);
+                              if (value.length > 5) {
+                                formatted += '-' + value.substring(5, 9);
+                              }
+                            }
+                          }
+                          form.setValue('borrower.ssn', formatted);
+                        }}
                         placeholder="XXX-XX-XXXX"
+                        maxLength={11}
                         data-testid="input-borrower-ssn"
                       />
                     </div>
@@ -10292,8 +10307,23 @@ export default function AdminAddClient() {
                         <Label htmlFor="coBorrower-ssn">SSN</Label>
                         <Input
                           id="coBorrower-ssn"
-                          {...form.register('coBorrower.ssn')}
+                          value={form.watch('coBorrower.ssn') || ''}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, '');
+                            let formatted = '';
+                            if (value.length > 0) {
+                              formatted = value.substring(0, 3);
+                              if (value.length > 3) {
+                                formatted += '-' + value.substring(3, 5);
+                                if (value.length > 5) {
+                                  formatted += '-' + value.substring(5, 9);
+                                }
+                              }
+                            }
+                            form.setValue('coBorrower.ssn', formatted);
+                          }}
                           placeholder="XXX-XX-XXXX"
+                          maxLength={11}
                           data-testid="input-coborrower-ssn"
                         />
                       </div>
