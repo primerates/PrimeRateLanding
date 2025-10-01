@@ -12827,7 +12827,17 @@ export default function AdminAddClient() {
                   <Card key={cardId} className="transition-colors duration-200">
                     <Collapsible 
                       open={isOpen} 
-                      onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
+                      onOpenChange={(open) => {
+                        setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }));
+                        if (open) {
+                          setTimeout(() => {
+                            setShowIncomeCardAnimation(prev => ({ ...prev, [`co-borrower-employment-${propertyId}`]: true }));
+                            setTimeout(() => {
+                              setShowIncomeCardAnimation(prev => ({ ...prev, [`co-borrower-employment-${propertyId}`]: false }));
+                            }, 800);
+                          }, 200);
+                        }
+                      }}
                     >
                       <CardHeader>
                         <div className="flex items-center justify-between">
@@ -12889,7 +12899,7 @@ export default function AdminAddClient() {
                           <div className="space-y-6">
                             {/* Employment Type Selection */}
                             <Card className={`bg-muted ${
-                              showIncomeCardAnimation[`borrower-employment-${propertyId}`] ? 'animate-roll-down-subject-property' : ''
+                              showIncomeCardAnimation[`co-borrower-employment-${propertyId}`] ? 'animate-roll-down-subject-property' : ''
                             }`}>
                               <CardContent className="pt-6">
                                 <div className="space-y-3">
