@@ -195,14 +195,18 @@ export default function AdminLogin() {
 
       {/* Right Side - Background Artwork */}
       <div 
-        className="hidden lg:block lg:w-1/2 relative bg-white bg-cover bg-center"
-        style={{
-          backgroundImage: `url(${threeGlowingCubesBackground})`,
-          backgroundSize: '50%',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
+        className="hidden lg:block lg:w-1/2 relative bg-white"
       >
+        <div 
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(${threeGlowingCubesBackground})`,
+            backgroundSize: '50%',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            mixBlendMode: 'lighten'
+          }}
+        />
       </div>
     </div>
   );
