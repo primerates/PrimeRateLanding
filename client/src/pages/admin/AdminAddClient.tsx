@@ -12127,14 +12127,24 @@ export default function AdminAddClient() {
                               <Label htmlFor={`income-second-startDate-${cardId}`}>Start Date</Label>
                               <Input
                                 id={`income-second-startDate-${cardId}`}
-                                type="date"
                                 value={employmentDates[`second-employment-${cardId}`]?.startDate || ''}
                                 onChange={(e) => {
-                                  const startDate = e.target.value;
+                                  const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                                  let formatted = '';
+                                  if (value.length > 0) {
+                                    formatted = value.substring(0, 2);
+                                    if (value.length > 2) {
+                                      formatted += '/' + value.substring(2, 4);
+                                      if (value.length > 4) {
+                                        formatted += '/' + value.substring(4, 8);
+                                      }
+                                    }
+                                  }
                                   const currentData = employmentDates[`second-employment-${cardId}`] || { endDate: '', isPresent: false, duration: '' };
-                                  updateEmploymentDuration(`second-employment-${cardId}`, startDate, currentData.endDate, currentData.isPresent);
+                                  updateEmploymentDuration(`second-employment-${cardId}`, formatted, currentData.endDate, currentData.isPresent);
                                 }}
                                 placeholder="MM/DD/YYYY"
+                                maxLength={10}
                                 data-testid={`input-income-second-startDate-${cardId}`}
                               />
                             </div>
@@ -12156,16 +12166,26 @@ export default function AdminAddClient() {
                               </div>
                               <Input
                                 id={`income-second-endDate-${cardId}`}
-                                type={employmentDates[`second-employment-${cardId}`]?.isPresent ? 'text' : 'date'}
                                 value={employmentDates[`second-employment-${cardId}`]?.isPresent ? 'present' : (employmentDates[`second-employment-${cardId}`]?.endDate || '')}
                                 onChange={(e) => {
                                   if (!employmentDates[`second-employment-${cardId}`]?.isPresent) {
-                                    const endDate = e.target.value;
+                                    const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                                    let formatted = '';
+                                    if (value.length > 0) {
+                                      formatted = value.substring(0, 2);
+                                      if (value.length > 2) {
+                                        formatted += '/' + value.substring(2, 4);
+                                        if (value.length > 4) {
+                                          formatted += '/' + value.substring(4, 8);
+                                        }
+                                      }
+                                    }
                                     const currentData = employmentDates[`second-employment-${cardId}`] || { startDate: '', isPresent: false, duration: '' };
-                                    updateEmploymentDuration(`second-employment-${cardId}`, currentData.startDate, endDate, currentData.isPresent);
+                                    updateEmploymentDuration(`second-employment-${cardId}`, currentData.startDate, formatted, currentData.isPresent);
                                   }
                                 }}
                                 placeholder={employmentDates[`second-employment-${cardId}`]?.isPresent ? 'Enter' : 'MM/DD/YYYY'}
+                                maxLength={10}
                                 readOnly={employmentDates[`second-employment-${cardId}`]?.isPresent}
                                 className={employmentDates[`second-employment-${cardId}`]?.isPresent ? 'bg-muted' : ''}
                                 data-testid={`input-income-second-endDate-${cardId}`}
@@ -12510,14 +12530,24 @@ export default function AdminAddClient() {
                           <Label htmlFor={`income-self-employment-startDate-${cardId}`}>Start Date</Label>
                           <Input
                             id={`income-self-employment-startDate-${cardId}`}
-                            type="date"
                             value={employmentDates[propertyId]?.startDate || ''}
                             onChange={(e) => {
-                              const startDate = e.target.value;
+                              const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                              let formatted = '';
+                              if (value.length > 0) {
+                                formatted = value.substring(0, 2);
+                                if (value.length > 2) {
+                                  formatted += '/' + value.substring(2, 4);
+                                  if (value.length > 4) {
+                                    formatted += '/' + value.substring(4, 8);
+                                  }
+                                }
+                              }
                               const currentData = employmentDates[propertyId] || { endDate: '', isPresent: false, duration: '' };
-                              updateEmploymentDuration(propertyId, startDate, currentData.endDate, currentData.isPresent);
+                              updateEmploymentDuration(propertyId, formatted, currentData.endDate, currentData.isPresent);
                             }}
                             placeholder="MM/DD/YYYY"
+                            maxLength={10}
                             data-testid={`input-income-self-employment-startDate-${cardId}`}
                           />
                         </div>
@@ -12539,16 +12569,26 @@ export default function AdminAddClient() {
                           </div>
                           <Input
                             id={`income-self-employment-endDate-${cardId}`}
-                            type={employmentDates[propertyId]?.isPresent ? 'text' : 'date'}
                             value={employmentDates[propertyId]?.isPresent ? 'present' : (employmentDates[propertyId]?.endDate || '')}
                             onChange={(e) => {
                               if (!employmentDates[propertyId]?.isPresent) {
-                                const endDate = e.target.value;
+                                const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                                let formatted = '';
+                                if (value.length > 0) {
+                                  formatted = value.substring(0, 2);
+                                  if (value.length > 2) {
+                                    formatted += '/' + value.substring(2, 4);
+                                    if (value.length > 4) {
+                                      formatted += '/' + value.substring(4, 8);
+                                    }
+                                  }
+                                }
                                 const currentData = employmentDates[propertyId] || { startDate: '', isPresent: false, duration: '' };
-                                updateEmploymentDuration(propertyId, currentData.startDate, endDate, currentData.isPresent);
+                                updateEmploymentDuration(propertyId, currentData.startDate, formatted, currentData.isPresent);
                               }
                             }}
                             placeholder={employmentDates[propertyId]?.isPresent ? 'Present' : 'MM/DD/YYYY'}
+                            maxLength={10}
                             readOnly={employmentDates[propertyId]?.isPresent}
                             className={employmentDates[propertyId]?.isPresent ? 'bg-muted' : ''}
                             data-testid={`input-income-self-employment-endDate-${cardId}`}
