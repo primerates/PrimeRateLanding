@@ -13126,11 +13126,11 @@ export default function AdminAddClient() {
                               <div className="space-y-2">
                                 <div className="flex items-center justify-between mb-2">
                                   <Label htmlFor={`${propertyId}-employer-phone`} className="text-xs">
-                                    {form.watch('income.isShowingEmploymentVerification') ? 'Job Verification' : 'Employer Phone'}
+                                    {form.watch(getEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) ? 'Job Verification' : 'Employer Phone'}
                                   </Label>
                                   <Switch
-                                    checked={form.watch('income.isShowingEmploymentVerification') || false}
-                                    onCheckedChange={(checked) => form.setValue('income.isShowingEmploymentVerification', checked)}
+                                    checked={form.watch(getEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) || false}
+                                    onCheckedChange={(checked) => form.setValue(getEmployerFieldPath(cardId, 'isShowingEmploymentVerification') as any, checked)}
                                     data-testid={`toggle-${propertyId}-employment-verification`}
                                     className="scale-[0.8]"
                                   />
@@ -13138,9 +13138,9 @@ export default function AdminAddClient() {
                                 <Input
                                   id={`${propertyId}-employer-phone`}
                                   placeholder=""
-                                  value={form.watch('income.isShowingEmploymentVerification') 
-                                    ? (form.watch('income.employmentVerificationPhone') || '')
-                                    : (form.watch('income.employerPhone') || '')}
+                                  value={form.watch(getEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) 
+                                    ? (form.watch(getEmployerFieldPath(cardId, 'employmentVerificationPhone')) || '')
+                                    : (form.watch(getEmployerFieldPath(cardId, 'employerPhone')) || '')}
                                   onChange={(e) => {
                                     const value = e.target.value.replace(/\D/g, '');
                                     let formatted = '';
@@ -13153,10 +13153,10 @@ export default function AdminAddClient() {
                                         }
                                       }
                                     }
-                                    const fieldName = form.watch('income.isShowingEmploymentVerification') 
-                                      ? 'income.employmentVerificationPhone'
-                                      : 'income.employerPhone';
-                                    form.setValue(fieldName, formatted);
+                                    const fieldName = form.watch(getEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) 
+                                      ? getEmployerFieldPath(cardId, 'employmentVerificationPhone')
+                                      : getEmployerFieldPath(cardId, 'employerPhone');
+                                    form.setValue(fieldName as any, formatted);
                                   }}
                                   maxLength={12}
                                   data-testid={`input-${propertyId}-employer-phone`}
