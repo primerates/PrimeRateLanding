@@ -12351,7 +12351,7 @@ export default function AdminAddClient() {
                   }}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle>Borrower - Pension Income</CardTitle>
+                        <CardTitle>Borrower - Pension</CardTitle>
                         <div className="flex items-center gap-2">
                           <Button 
                             type="button" 
