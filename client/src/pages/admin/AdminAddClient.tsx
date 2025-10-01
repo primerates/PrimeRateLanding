@@ -548,6 +548,49 @@ const PurchaseLoanRateLockExpirationField = React.memo<{
   );
 });
 
+// Complete isolated wrapper for the entire Rate Lock Expiration/Duration section
+const PurchaseLoanRateLockExpirationSection = React.memo<{
+  control: any;
+  register: any;
+  purchaseLoanExpirationDurationType: string;
+  purchaseCalculatedDuration: string;
+  getLabelText: () => string;
+  onSwitchChange: () => void;
+}>(({ control, register, purchaseLoanExpirationDurationType, purchaseCalculatedDuration, getLabelText, onSwitchChange }) => {
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between mb-2">
+        <PurchaseLoanRateLockExpirationLabel
+          control={control}
+          labelText={getLabelText()}
+          isExpirationMode={purchaseLoanExpirationDurationType === 'expiration'}
+        />
+        <PurchaseLoanRateLockExpirationSwitch
+          control={control}
+          onCheckedChange={onSwitchChange}
+        />
+      </div>
+      {purchaseLoanExpirationDurationType === 'expiration' ? (
+        <PurchaseLoanRateLockExpirationField
+          control={control}
+          register={register}
+          isExpirationMode={true}
+        />
+      ) : (
+        <Input
+          id="purchaseLoan-rateLockDuration"
+          {...register('purchaseLoan.rateLockDuration')}
+          placeholder="Enter duration"
+          className={`border border-input px-3 rounded-md ${purchaseCalculatedDuration ? 'bg-muted' : 'bg-background'}`}
+          data-testid="input-purchaseLoan-rateLockDuration"
+          disabled={!!purchaseCalculatedDuration}
+          readOnly={!!purchaseCalculatedDuration}
+        />
+      )}
+    </div>
+  );
+});
+
 const CoBorrowerResidenceTimeCalculator = React.memo<{ control: any; setValue: any }>(({ control, setValue }) => {
   const fromDate = useWatch({ control, name: 'coBorrower.residenceAddress.from' }) || '';
   const toDate = useWatch({ control, name: 'coBorrower.residenceAddress.to' }) || '';
@@ -3856,15 +3899,15 @@ export default function AdminAddClient() {
   }, [form.watch('property.properties')]);
 
   // Background calculation of Rate Lock Duration - calculate but don't auto-switch toggle
+  const brandNewRateLockDate = useWatch({ control: form.control, name: 'brandNewLoan.rateLockDate' });
+  const brandNewRateLockExpiration = useWatch({ control: form.control, name: 'brandNewLoan.rateLockDuration' });
+  
   useEffect(() => {
-    const rateLockDate = form.watch('brandNewLoan.rateLockDate');
-    const rateLockExpiration = form.watch('brandNewLoan.rateLockDuration');
-    
     // Only calculate if in expiration mode and both dates are provided
-    if (brandNewLoanExpirationDurationType === 'expiration' && rateLockDate && rateLockExpiration) {
+    if (brandNewLoanExpirationDurationType === 'expiration' && brandNewRateLockDate && brandNewRateLockExpiration) {
       try {
-        const startDate = new Date(rateLockDate);
-        const endDate = new Date(rateLockExpiration);
+        const startDate = new Date(brandNewRateLockDate);
+        const endDate = new Date(brandNewRateLockExpiration);
         
         // Check if both dates are valid
         if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
@@ -3890,18 +3933,18 @@ export default function AdminAddClient() {
       // Clear calculation if not in expiration mode or missing dates
       setCalculatedDuration('');
     }
-  }, [form.watch('brandNewLoan.rateLockDate'), form.watch('brandNewLoan.rateLockDuration'), brandNewLoanExpirationDurationType, form]);
+  }, [brandNewRateLockDate, brandNewRateLockExpiration, brandNewLoanExpirationDurationType]);
 
   // Background calculation for Purchase Loan Rate Lock Duration - calculate but don't auto-switch toggle
+  const purchaseRateLockDate = useWatch({ control: form.control, name: 'purchaseLoan.rateLockDate' });
+  const purchaseRateLockExpiration = useWatch({ control: form.control, name: 'purchaseLoan.rateLockDuration' });
+  
   useEffect(() => {
-    const rateLockDate = form.watch('purchaseLoan.rateLockDate');
-    const rateLockExpiration = form.watch('purchaseLoan.rateLockDuration');
-    
     // Only calculate if in expiration mode and both dates are provided
-    if (purchaseLoanExpirationDurationType === 'expiration' && rateLockDate && rateLockExpiration) {
+    if (purchaseLoanExpirationDurationType === 'expiration' && purchaseRateLockDate && purchaseRateLockExpiration) {
       try {
-        const startDate = new Date(rateLockDate);
-        const endDate = new Date(rateLockExpiration);
+        const startDate = new Date(purchaseRateLockDate);
+        const endDate = new Date(purchaseRateLockExpiration);
         
         // Check if both dates are valid
         if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
@@ -3927,7 +3970,7 @@ export default function AdminAddClient() {
       // Clear calculation if not in expiration mode or missing dates
       setPurchaseCalculatedDuration('');
     }
-  }, [form.watch('purchaseLoan.rateLockDate'), form.watch('purchaseLoan.rateLockDuration'), purchaseLoanExpirationDurationType, form]);
+  }, [purchaseRateLockDate, purchaseRateLockExpiration, purchaseLoanExpirationDurationType]);
 
   // Sync form values when toggling between expiration and duration modes
   useEffect(() => {
@@ -5504,36 +5547,14 @@ export default function AdminAddClient() {
                       )}
                     </div>
                     
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <PurchaseLoanRateLockExpirationLabel
-                          control={targetForm.control}
-                          labelText={getPurchaseLoanExpirationDurationLabel()}
-                          isExpirationMode={purchaseLoanExpirationDurationType === 'expiration'}
-                        />
-                        <PurchaseLoanRateLockExpirationSwitch
-                          control={targetForm.control}
-                          onCheckedChange={cyclePurchaseLoanExpirationDurationType}
-                        />
-                      </div>
-                      {purchaseLoanExpirationDurationType === 'expiration' ? (
-                        <PurchaseLoanRateLockExpirationField
-                          control={targetForm.control}
-                          register={targetForm.register}
-                          isExpirationMode={true}
-                        />
-                      ) : (
-                        <Input
-                          id="purchaseLoan-rateLockDuration"
-                          {...targetForm.register('purchaseLoan.rateLockDuration')}
-                          placeholder="Enter duration"
-                          className={`border border-input px-3 rounded-md ${purchaseCalculatedDuration ? 'bg-muted' : 'bg-background'}`}
-                          data-testid="input-purchaseLoan-rateLockDuration"
-                          disabled={!!purchaseCalculatedDuration}
-                          readOnly={!!purchaseCalculatedDuration}
-                        />
-                      )}
-                    </div>
+                    <PurchaseLoanRateLockExpirationSection
+                      control={targetForm.control}
+                      register={targetForm.register}
+                      purchaseLoanExpirationDurationType={purchaseLoanExpirationDurationType}
+                      purchaseCalculatedDuration={purchaseCalculatedDuration}
+                      getLabelText={getPurchaseLoanExpirationDurationLabel}
+                      onSwitchChange={cyclePurchaseLoanExpirationDurationType}
+                    />
                     
                     <div className="space-y-2">
                       <div className="flex items-center justify-between mb-2">
