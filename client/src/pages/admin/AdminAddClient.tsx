@@ -1629,6 +1629,25 @@ export default function AdminAddClient() {
     }
   };
   
+  // Helper function to check if a date is within 5 days of today
+  const isDateWithinFiveDays = (dateString: string) => {
+    if (!dateString) return false;
+    
+    const targetDate = new Date(dateString);
+    const today = new Date();
+    
+    // Reset time to midnight for accurate day comparison
+    today.setHours(0, 0, 0, 0);
+    targetDate.setHours(0, 0, 0, 0);
+    
+    // Calculate difference in days
+    const diffTime = targetDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    // Return true if within 5 days (0-5 days from now)
+    return diffDays >= 0 && diffDays <= 5;
+  };
+  
   // Subject property confirmation dialog state
   const [subjectConfirmDialog, setSubjectConfirmDialog] = useState<{
     isOpen: boolean;
@@ -5378,7 +5397,15 @@ export default function AdminAddClient() {
                     
                     <div className="space-y-2">
                       <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="purchaseLoan-rateLockDuration" className="text-sm">
+                        <Label 
+                          htmlFor="purchaseLoan-rateLockDuration" 
+                          className={`text-sm ${
+                            purchaseLoanExpirationDurationType === 'expiration' && 
+                            isDateWithinFiveDays(targetForm.watch('purchaseLoan.rateLockDuration')) 
+                              ? 'text-red-500' 
+                              : ''
+                          }`}
+                        >
                           {getPurchaseLoanExpirationDurationLabel()}
                         </Label>
                         <Switch
@@ -5393,7 +5420,11 @@ export default function AdminAddClient() {
                           id="purchaseLoan-rateLockDuration"
                           type="date"
                           {...targetForm.register('purchaseLoan.rateLockDuration')}
-                          className="border border-input bg-background px-3 rounded-md"
+                          className={`border border-input px-3 rounded-md ${
+                            isDateWithinFiveDays(targetForm.watch('purchaseLoan.rateLockDuration'))
+                              ? 'bg-red-500 text-white'
+                              : 'bg-background'
+                          }`}
                           data-testid="input-purchaseLoan-rateLockDuration"
                         />
                       ) : (
