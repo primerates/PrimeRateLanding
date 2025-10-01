@@ -1282,6 +1282,12 @@ export default function AdminAddClient() {
     return `income.secondEmployers.${cleanCardId}.${fieldName}` as const;
   };
 
+  // Helper function to generate dynamic field paths for self-employment cards
+  const getSelfEmploymentFieldPath = (cardId: string, fieldName: string) => {
+    const cleanCardId = cardId === 'default' ? 'default' : cardId;
+    return `income.selfEmployment.${cleanCardId}.${fieldName}` as const;
+  };
+
   // Helper function to generate dynamic field paths for co-borrower employer cards
   const getCoBorrowerEmployerFieldPath = (cardId: string, fieldName: string) => {
     const cleanCardId = cardId === 'default' ? 'default' : cardId;
@@ -12195,20 +12201,26 @@ export default function AdminAddClient() {
                       {/* First row with business details */}
                       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                         <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="income-businessName">Business / DBA Name</Label>
-                          <Input
-                            id="income-businessName"
-                            {...form.register('income.businessName')}
-                            data-testid="input-income-businessName"
+                          <Label htmlFor={`income-businessName-${cardId}`}>Business / DBA Name</Label>
+                          <Controller
+                            control={form.control}
+                            name={getSelfEmploymentFieldPath(cardId, 'businessName')}
+                            render={({ field }) => (
+                              <Input
+                                id={`income-businessName-${cardId}`}
+                                {...field}
+                                data-testid={`input-income-businessName-${cardId}`}
+                              />
+                            )}
                           />
                         </div>
                         
                         <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="income-businessPhone">Phone</Label>
+                          <Label htmlFor={`income-businessPhone-${cardId}`}>Phone</Label>
                           <Input
-                            id="income-businessPhone"
+                            id={`income-businessPhone-${cardId}`}
                             placeholder=""
-                            value={form.watch('income.businessPhone') || ''}
+                            value={form.watch(getSelfEmploymentFieldPath(cardId, 'businessPhone')) || ''}
                             onChange={(e) => {
                               const value = e.target.value.replace(/\D/g, '');
                               let formatted = '';
@@ -12221,32 +12233,34 @@ export default function AdminAddClient() {
                                   }
                                 }
                               }
-                              form.setValue('income.businessPhone', formatted);
+                              form.setValue(getSelfEmploymentFieldPath(cardId, 'businessPhone') as any, formatted);
                             }}
                             maxLength={12}
-                            data-testid="input-income-businessPhone"
+                            data-testid={`input-income-businessPhone-${cardId}`}
                           />
                         </div>
                         
                         
                         <div className="space-y-2 md:col-span-2">
                           <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor="income-annualRevenue" className="text-sm">
+                            <Label htmlFor={`income-annualRevenue-${cardId}`} className="text-sm">
                               {isShowingNetRevenue ? 'Net Monthly Income' : 'Gross Monthly Income'}
                             </Label>
                             <Switch
                               checked={isShowingNetRevenue}
                               onCheckedChange={setIsShowingNetRevenue}
-                              data-testid="toggle-income-annual-revenue"
+                              data-testid={`toggle-income-annual-revenue-${cardId}`}
                               className="scale-[0.8]"
                             />
                           </div>
                           <Input
-                            id="income-annualRevenue"
+                            id={`income-annualRevenue-${cardId}`}
                             type="text"
                             placeholder="$0"
                             value={(() => {
-                              const fieldName = isShowingNetRevenue ? 'income.netAnnualRevenue' : 'income.grossAnnualRevenue';
+                              const fieldName = isShowingNetRevenue 
+                                ? getSelfEmploymentFieldPath(cardId, 'netAnnualRevenue')
+                                : getSelfEmploymentFieldPath(cardId, 'grossAnnualRevenue');
                               const val = form.watch(fieldName as any);
                               if (!val) return '';
                               const numVal = val.replace(/[^\d]/g, '');
@@ -12254,83 +12268,85 @@ export default function AdminAddClient() {
                             })()}
                             onChange={(e) => {
                               const value = e.target.value.replace(/[^\d]/g, '');
-                              const fieldName = isShowingNetRevenue ? 'income.netAnnualRevenue' : 'income.grossAnnualRevenue';
+                              const fieldName = isShowingNetRevenue 
+                                ? getSelfEmploymentFieldPath(cardId, 'netAnnualRevenue')
+                                : getSelfEmploymentFieldPath(cardId, 'grossAnnualRevenue');
                               form.setValue(fieldName as any, value, { shouldDirty: true, shouldTouch: true });
                             }}
-                            data-testid="input-income-annualRevenue"
+                            data-testid={`input-income-annualRevenue-${cardId}`}
                           />
                         </div>
                         
                         <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="income-self-employment-startDate">Start Date</Label>
+                          <Label htmlFor={`income-self-employment-startDate-${cardId}`}>Start Date</Label>
                           <Input
-                            id="income-self-employment-startDate"
+                            id={`income-self-employment-startDate-${cardId}`}
                             type="date"
-                            value={employmentDates['self-employment']?.startDate || ''}
+                            value={employmentDates[propertyId]?.startDate || ''}
                             onChange={(e) => {
                               const startDate = e.target.value;
-                              const currentData = employmentDates['self-employment'] || { endDate: '', isPresent: false, duration: '' };
-                              updateEmploymentDuration('self-employment', startDate, currentData.endDate, currentData.isPresent);
+                              const currentData = employmentDates[propertyId] || { endDate: '', isPresent: false, duration: '' };
+                              updateEmploymentDuration(propertyId, startDate, currentData.endDate, currentData.isPresent);
                             }}
                             placeholder="MM/DD/YYYY"
-                            data-testid="input-income-self-employment-startDate"
+                            data-testid={`input-income-self-employment-startDate-${cardId}`}
                           />
                         </div>
                         
                         <div className="space-y-2 md:col-span-2">
                           <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor="income-self-employment-endDate" className="text-sm">
-                              {employmentDates['self-employment']?.isPresent ? 'End Date' : 'Present'}
+                            <Label htmlFor={`income-self-employment-endDate-${cardId}`} className="text-sm">
+                              {employmentDates[propertyId]?.isPresent ? 'End Date' : 'Present'}
                             </Label>
                             <Switch
-                              checked={employmentDates['self-employment']?.isPresent ?? false}
+                              checked={employmentDates[propertyId]?.isPresent ?? false}
                               onCheckedChange={(checked) => {
-                                const currentData = employmentDates['self-employment'] || { startDate: '', endDate: '', duration: '' };
-                                updateEmploymentDuration('self-employment', currentData.startDate, currentData.endDate, checked);
+                                const currentData = employmentDates[propertyId] || { startDate: '', endDate: '', duration: '' };
+                                updateEmploymentDuration(propertyId, currentData.startDate, currentData.endDate, checked);
                               }}
-                              data-testid="toggle-self-employment-present"
+                              data-testid={`toggle-self-employment-present-${cardId}`}
                               className="scale-[0.8]"
                             />
                           </div>
                           <Input
-                            id="income-self-employment-endDate"
-                            type={employmentDates['self-employment']?.isPresent ? 'date' : 'text'}
-                            value={employmentDates['self-employment']?.isPresent ? (employmentDates['self-employment']?.endDate || '') : 'present'}
+                            id={`income-self-employment-endDate-${cardId}`}
+                            type={employmentDates[propertyId]?.isPresent ? 'date' : 'text'}
+                            value={employmentDates[propertyId]?.isPresent ? (employmentDates[propertyId]?.endDate || '') : 'present'}
                             onChange={(e) => {
-                              if (employmentDates['self-employment']?.isPresent) {
+                              if (employmentDates[propertyId]?.isPresent) {
                                 const endDate = e.target.value;
-                                const currentData = employmentDates['self-employment'] || { startDate: '', isPresent: true, duration: '' };
-                                updateEmploymentDuration('self-employment', currentData.startDate, endDate, currentData.isPresent);
+                                const currentData = employmentDates[propertyId] || { startDate: '', isPresent: true, duration: '' };
+                                updateEmploymentDuration(propertyId, currentData.startDate, endDate, currentData.isPresent);
                               }
                             }}
-                            placeholder={employmentDates['self-employment']?.isPresent ? 'MM/DD/YYYY' : 'Present'}
-                            readOnly={!employmentDates['self-employment']?.isPresent}
-                            className={!employmentDates['self-employment']?.isPresent ? 'bg-muted' : ''}
-                            data-testid="input-income-self-employment-endDate"
+                            placeholder={employmentDates[propertyId]?.isPresent ? 'MM/DD/YYYY' : 'Present'}
+                            readOnly={!employmentDates[propertyId]?.isPresent}
+                            className={!employmentDates[propertyId]?.isPresent ? 'bg-muted' : ''}
+                            data-testid={`input-income-self-employment-endDate-${cardId}`}
                           />
                         </div>
                         
                         <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="income-self-employment-duration">Duration</Label>
+                          <Label htmlFor={`income-self-employment-duration-${cardId}`}>Duration</Label>
                           <Input
-                            id="income-self-employment-duration"
-                            value={employmentDates['self-employment']?.duration || ''}
-                            placeholder={employmentDates['self-employment']?.isPresent ? 'Enter' : '0'}
-                            readOnly={!employmentDates['self-employment']?.isPresent}
-                            className={!employmentDates['self-employment']?.isPresent ? 'bg-muted' : ''}
+                            id={`income-self-employment-duration-${cardId}`}
+                            value={employmentDates[propertyId]?.duration || ''}
+                            placeholder={employmentDates[propertyId]?.isPresent ? 'Enter' : '0'}
+                            readOnly={!employmentDates[propertyId]?.isPresent}
+                            className={!employmentDates[propertyId]?.isPresent ? 'bg-muted' : ''}
                             onChange={(e) => {
-                              if (employmentDates['self-employment']?.isPresent) {
-                                const currentData = employmentDates['self-employment'] || { startDate: '', endDate: '', isPresent: false };
+                              if (employmentDates[propertyId]?.isPresent) {
+                                const currentData = employmentDates[propertyId] || { startDate: '', endDate: '', isPresent: false };
                                 setEmploymentDates(prev => ({
                                   ...prev,
-                                  'self-employment': {
+                                  [propertyId]: {
                                     ...currentData,
                                     duration: e.target.value
                                   }
                                 }));
                               }
                             }}
-                            data-testid="input-income-self-employment-duration"
+                            data-testid={`input-income-self-employment-duration-${cardId}`}
                           />
                         </div>
                       </div>
@@ -12338,39 +12354,57 @@ export default function AdminAddClient() {
                         {/* Business Address Row (copied from borrower residence address) */}
                         <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                           <div className="space-y-2 md:col-span-3">
-                            <Label htmlFor="income-business-street">Street Address</Label>
-                            <Input
-                              id="income-business-street"
-                              {...form.register('income.businessAddress.street')}
-                              data-testid="input-income-business-street"
+                            <Label htmlFor={`income-business-street-${cardId}`}>Street Address</Label>
+                            <Controller
+                              control={form.control}
+                              name={getSelfEmploymentFieldPath(cardId, 'businessAddress.street')}
+                              render={({ field }) => (
+                                <Input
+                                  id={`income-business-street-${cardId}`}
+                                  {...field}
+                                  data-testid={`input-income-business-street-${cardId}`}
+                                />
+                              )}
                             />
                           </div>
                           
                           <div className="space-y-2 md:col-span-1">
-                            <Label htmlFor="income-business-unit">Unit/Suite</Label>
-                            <Input
-                              id="income-business-unit"
-                              {...form.register('income.businessAddress.unit')}
-                              data-testid="input-income-business-unit"
+                            <Label htmlFor={`income-business-unit-${cardId}`}>Unit/Suite</Label>
+                            <Controller
+                              control={form.control}
+                              name={getSelfEmploymentFieldPath(cardId, 'businessAddress.unit')}
+                              render={({ field }) => (
+                                <Input
+                                  id={`income-business-unit-${cardId}`}
+                                  {...field}
+                                  data-testid={`input-income-business-unit-${cardId}`}
+                                />
+                              )}
                             />
                           </div>
                           
                           <div className="space-y-2 md:col-span-2">
-                            <Label htmlFor="income-business-city">City</Label>
-                            <Input
-                              id="income-business-city"
-                              {...form.register('income.businessAddress.city')}
-                              data-testid="input-income-business-city"
+                            <Label htmlFor={`income-business-city-${cardId}`}>City</Label>
+                            <Controller
+                              control={form.control}
+                              name={getSelfEmploymentFieldPath(cardId, 'businessAddress.city')}
+                              render={({ field }) => (
+                                <Input
+                                  id={`income-business-city-${cardId}`}
+                                  {...field}
+                                  data-testid={`input-income-business-city-${cardId}`}
+                                />
+                              )}
                             />
                           </div>
                           
                           <div className="space-y-2 md:col-span-1">
-                            <Label htmlFor="income-business-state">State</Label>
+                            <Label htmlFor={`income-business-state-${cardId}`}>State</Label>
                             <Select
-                              value={form.watch('income.businessAddress.state') || ''}
-                              onValueChange={(value) => form.setValue('income.businessAddress.state', value)}
+                              value={form.watch(getSelfEmploymentFieldPath(cardId, 'businessAddress.state')) || ''}
+                              onValueChange={(value) => form.setValue(getSelfEmploymentFieldPath(cardId, 'businessAddress.state') as any, value)}
                             >
-                              <SelectTrigger data-testid="select-income-business-state">
+                              <SelectTrigger data-testid={`select-income-business-state-${cardId}`}>
                                 <SelectValue placeholder="State" />
                               </SelectTrigger>
                               <SelectContent>
@@ -12384,27 +12418,42 @@ export default function AdminAddClient() {
                           </div>
                           
                           <div className="space-y-2 md:col-span-1">
-                            <Label htmlFor="income-business-zip">ZIP Code</Label>
-                            <Input
-                              id="income-business-zip"
-                              {...form.register('income.businessAddress.zip')}
-                              data-testid="input-income-business-zip"
+                            <Label htmlFor={`income-business-zip-${cardId}`}>ZIP Code</Label>
+                            <Controller
+                              control={form.control}
+                              name={getSelfEmploymentFieldPath(cardId, 'businessAddress.zip')}
+                              render={({ field }) => (
+                                <Input
+                                  id={`income-business-zip-${cardId}`}
+                                  {...field}
+                                  data-testid={`input-income-business-zip-${cardId}`}
+                                />
+                              )}
                             />
                           </div>
                           
                           <div className="space-y-2 md:col-span-2">
-                            <Label htmlFor="income-business-county">County</Label>
-                            <Input
-                              id="income-business-county"
-                              {...form.register('income.businessAddress.county')}
-                              data-testid="input-income-business-county"
+                            <Label htmlFor={`income-business-county-${cardId}`}>County</Label>
+                            <Controller
+                              control={form.control}
+                              name={getSelfEmploymentFieldPath(cardId, 'businessAddress.county')}
+                              render={({ field }) => (
+                                <Input
+                                  id={`income-business-county-${cardId}`}
+                                  {...field}
+                                  data-testid={`input-income-business-county-${cardId}`}
+                                />
+                              )}
                             />
                           </div>
                           
                           <div className="space-y-2 md:col-span-2">
-                            <Label htmlFor="income-formation">Formation</Label>
-                            <Select onValueChange={(value) => form.setValue('income.formation', value)} value={form.watch('income.formation') || ''}>
-                              <SelectTrigger data-testid="select-income-formation">
+                            <Label htmlFor={`income-formation-${cardId}`}>Formation</Label>
+                            <Select 
+                              onValueChange={(value) => form.setValue(getSelfEmploymentFieldPath(cardId, 'formation') as any, value)} 
+                              value={form.watch(getSelfEmploymentFieldPath(cardId, 'formation')) || ''}
+                            >
+                              <SelectTrigger data-testid={`select-income-formation-${cardId}`}>
                                 <SelectValue placeholder="Select" />
                               </SelectTrigger>
                               <SelectContent>
