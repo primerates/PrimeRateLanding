@@ -11303,21 +11303,19 @@ export default function AdminAddClient() {
                         />
                         <Label htmlFor="income-type-vaBenefits">Disability</Label>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2" title="Alimony / Child Support">
                         <Checkbox
                           id="income-type-disability"
                           checked={form.watch('income.incomeTypes.disability') || false}
-                          onCheckedChange={(checked) => {
-                            // Prevent unchecking - once checked, can only be removed via Remove button
-                            if (!checked && form.watch('income.incomeTypes.disability')) {
-                              return; // Do nothing - prevent unchecking
-                            }
-                            handleIncomeTypeChange('income.incomeTypes.disability', !!checked, 'Disability');
+                          onCheckedChange={() => {
+                            // Disabled - will be designed later
+                            return;
                           }}
+                          disabled
                           data-testid="checkbox-disability"
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] cursor-not-allowed opacity-50"
                         />
-                        <Label htmlFor="income-type-disability">Other</Label>
+                        <Label htmlFor="income-type-disability" className="cursor-not-allowed opacity-50">Other</Label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Checkbox
