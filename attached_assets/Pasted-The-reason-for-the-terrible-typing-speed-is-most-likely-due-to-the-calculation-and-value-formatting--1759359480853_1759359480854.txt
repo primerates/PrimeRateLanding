@@ -1,0 +1,89 @@
+The reason for the terrible typing speed is most likely due to the calculation and value formatting happening on every keystroke in a React render cycle, especially if setValue is called in a useEffect, which can trigger additional re-renders and field updates. Additionally, complex formatting (replace, comma insertion) inside the render can slow things further.
+
+Here’s how to fix and optimize your form for smooth, fast typing:
+
+1. Defer Formatting Until Blur (Not On Every Character)
+Format numbers with commas only on blur (when the user leaves the input), not on every keystroke. This eliminates expensive processing while typing. Show the raw value while editing, and only add formatting when done editing.
+
+2. Use Raw Numeric Values in the Form State
+Keep form values as plain numbers or raw digit strings—handle formatting for display only as needed, outside of state. Internally, avoid storing formatted (comma-inserted) strings in the React Hook Form state.
+
+Here's how you can update your Controller's render:
+jsx
+<Controller
+  control={form.control}
+  name="currentLoan.principalAndInterestPayment"
+  defaultValue=""
+  render={({ field }) => (
+    <Input
+      id="currentLoan-principalInterestPayment"
+      type="text"
+      placeholder="0"
+      value={field.value}
+      onChange={(e) => {
+        // Only digits allowed
+        const value = e.target.value.replace(/[^\d]/g, '');
+        field.onChange(value);
+      }}
+      onBlur={(e) => {
+        // Format with commas on blur
+        const value = e.target.value.replace(/[^\d]/g, '');
+        const formatted = value ? Number(value).toLocaleString() : '';
+        form.setValue("currentLoan.principalAndInterestPayment", formatted);
+      }}
+      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+      data-testid="input-currentLoan-principalInterestPayment"
+    />
+  )}
+/>
+For display, use:
+
+value={field.value} (raw, fast for typing)
+
+Only show comma-formatted value onBlur (using toLocaleString())
+
+3. Sum Calculation Optimization
+Rather than watching the fields and setting value constantly (which can cause cascades of re-renders), use a simple derived value for display only:
+
+jsx
+const p = form.getValues("currentLoan.principalAndInterestPayment")?.replace(/[^\d]/g, '') || "0";
+const t = form.getValues("currentLoan.newField1")?.replace(/[^\d]/g, '') || "0";
+const total = (Number(p) + Number(t)).toLocaleString();
+For the total read-only Controller:
+
+jsx
+<Controller
+  control={form.control}
+  name="currentLoan.newField2"
+  defaultValue=""
+  render={({ field }) => (
+    <Input
+      id="currentLoan-newField2"
+      type="text"
+      placeholder="0"
+      value={total}
+      readOnly
+      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+      data-testid="input-currentLoan-newField2"
+    />
+  )}
+/>
+No need to store the sum in form state—just calculate and display it.
+
+4. Summary of Improvements
+Only format on blur, not on every key input.
+
+Store only raw digit values.
+
+Calculate and display the sum without putting it into state (setValue for sum not needed).
+
+Why This Fixes Typing Lag
+Minimizes React renders during typing.
+
+Reduces use of setValue and form state writes.
+
+Keeps value transformations outside “hot path” of typing.
+
+Makes the code easier to maintain and more user-friendly.
+
+If you need a complete code example based on your exact setup, please share additional context such as how you initialize your form, or if this is part of a larger form component.
