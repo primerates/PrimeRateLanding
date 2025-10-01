@@ -7,7 +7,7 @@ import { Loader2, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { useBackground } from '@/contexts/BackgroundContext';
-import threeGlowingCubesBackground from '@assets/Three Glowing Cubes_1759260151137.png';
+import primeRateLogo from '@assets/Prime Rate Logo PNG_1759280639082.png';
 
 export default function AdminLogin() {
   const [location, setLocation] = useLocation();
@@ -201,10 +201,9 @@ export default function AdminLogin() {
           className="absolute inset-0 flex items-center justify-center"
         >
           <img 
-            src={threeGlowingCubesBackground} 
-            alt="Three Glowing Cubes" 
+            src={primeRateLogo} 
+            alt="Prime Rate Logo" 
             className="w-1/2 h-auto object-contain"
-            style={{ mixBlendMode: 'multiply' }}
           />
         </div>
       </div>
