@@ -5652,10 +5652,10 @@ export default function AdminAddClient() {
                   }}
                   className="hover:bg-blue-500 hover:text-white"
                   data-testid="button-add-current-second-loan"
-                  title="Add Current Second Loan"
+                  title="Add Another Second Loan"
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Current Second Loan
+                  Add Another Second Loan
                 </Button>
                 
                 {/* Remove Button */}
@@ -6001,10 +6001,10 @@ export default function AdminAddClient() {
                   }}
                   className="hover:bg-blue-500 hover:text-white"
                   data-testid="button-add-current-loan"
-                  title="Add Current Loan"
+                  title="Add Another Third Loan"
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Current Third Loan
+                  Add Another Third Loan
                 </Button>
                 
                 {/* Remove Button */}
