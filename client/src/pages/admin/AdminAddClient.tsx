@@ -4265,6 +4265,7 @@ export default function AdminAddClient() {
                             }}
                             className="border-0 bg-transparent px-2 focus-visible:ring-0"
                             data-testid="input-currentLoan-newField2"
+                            readOnly
                           />
                         </div>
                       );
