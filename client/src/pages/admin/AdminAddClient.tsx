@@ -13679,20 +13679,29 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`${propertyId}-monthlyIncome`}>Gross Monthly Income</Label>
                                 <Controller
                                   control={form.control}
-                                  name={getEmployerFieldPath(cardId, 'monthlyIncome')}
+                                  name={getCoBorrowerEmployerFieldPath(cardId, 'monthlyIncome')}
                                   defaultValue=""
-                                  render={({ field }) => (
-                                    <Input
-                                      id={`${propertyId}-monthlyIncome`}
-                                      value={formatDollarDisplay(field.value || '')}
-                                      onChange={(e) => {
-                                        const rawValue = parseDollarInput(e.target.value);
-                                        field.onChange(rawValue);
-                                      }}
-                                      placeholder="$0.00"
-                                      data-testid={`input-${propertyId}-monthlyIncome`}
-                                    />
-                                  )}
+                                  render={({ field }) => {
+                                    const displayValue = useMemo(() => {
+                                      if (!field.value) return '';
+                                      const numVal = field.value.replace(/[^\d]/g, '');
+                                      return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
+                                    }, [field.value]);
+                                    
+                                    return (
+                                      <Input
+                                        id={`${propertyId}-monthlyIncome`}
+                                        type="text"
+                                        placeholder="$0"
+                                        value={displayValue}
+                                        onChange={(e) => {
+                                          const value = e.target.value.replace(/[^\d]/g, '');
+                                          field.onChange(value);
+                                        }}
+                                        data-testid={`input-${propertyId}-monthlyIncome`}
+                                      />
+                                    );
+                                  }}
                                 />
                               </div>
                               
@@ -14052,18 +14061,28 @@ export default function AdminAddClient() {
                               <Controller
                                 control={form.control}
                                 name={getCoBorrowerSecondEmployerFieldPath(cardId, 'monthlyIncome')}
-                                render={({ field }) => (
-                                  <Input
-                                    id={`coBorrowerIncome-secondMonthlyIncome-${cardId}`}
-                                    value={formatDollarDisplay(field.value)}
-                                    onChange={(e) => {
-                                      const rawValue = parseDollarInput(e.target.value);
-                                      field.onChange(rawValue);
-                                    }}
-                                    placeholder="$0.00"
-                                    data-testid={`input-coBorrowerIncome-secondMonthlyIncome-${cardId}`}
-                                  />
-                                )}
+                                defaultValue=""
+                                render={({ field }) => {
+                                  const displayValue = useMemo(() => {
+                                    if (!field.value) return '';
+                                    const numVal = field.value.replace(/[^\d]/g, '');
+                                    return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
+                                  }, [field.value]);
+                                  
+                                  return (
+                                    <Input
+                                      id={`coBorrowerIncome-secondMonthlyIncome-${cardId}`}
+                                      type="text"
+                                      placeholder="$0"
+                                      value={displayValue}
+                                      onChange={(e) => {
+                                        const value = e.target.value.replace(/[^\d]/g, '');
+                                        field.onChange(value);
+                                      }}
+                                      data-testid={`input-coBorrowerIncome-secondMonthlyIncome-${cardId}`}
+                                    />
+                                  );
+                                }}
                               />
                             </div>
                             
@@ -14451,34 +14470,32 @@ export default function AdminAddClient() {
                         
                         
                         <div className="space-y-2 md:col-span-2">
-                          <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor={`coBorrowerIncome-annualRevenue-${cardId}`} className="text-sm">
-                              {isCoBorrowerShowingNetRevenue ? 'Net Monthly Income' : 'Gross Monthly Income'}
-                            </Label>
-                            <Switch
-                              checked={isCoBorrowerShowingNetRevenue}
-                              onCheckedChange={setIsCoBorrowerShowingNetRevenue}
-                              data-testid={`toggle-coBorrowerIncome-annual-revenue-${cardId}`}
-                              className="scale-[0.8]"
-                            />
-                          </div>
-                          <Input
-                            id={`coBorrowerIncome-annualRevenue-${cardId}`}
-                            type="text"
-                            placeholder="$0"
-                            value={(() => {
-                              const fieldName = isCoBorrowerShowingNetRevenue ? getCoBorrowerSelfEmploymentFieldPath(cardId, 'netAnnualRevenue') : getCoBorrowerSelfEmploymentFieldPath(cardId, 'grossAnnualRevenue');
-                              const val = form.watch(fieldName as any);
-                              if (!val) return '';
-                              const numVal = val.replace(/[^\d]/g, '');
-                              return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                            })()}
-                            onChange={(e) => {
-                              const value = e.target.value.replace(/[^\d]/g, '');
-                              const fieldName = isCoBorrowerShowingNetRevenue ? getCoBorrowerSelfEmploymentFieldPath(cardId, 'netAnnualRevenue') : getCoBorrowerSelfEmploymentFieldPath(cardId, 'grossAnnualRevenue');
-                              form.setValue(fieldName as any, value, { shouldDirty: true, shouldTouch: true });
+                          <Label htmlFor={`coBorrowerIncome-annualRevenue-${cardId}`}>Gross Monthly Income</Label>
+                          <Controller
+                            control={form.control}
+                            name={getCoBorrowerSelfEmploymentFieldPath(cardId, 'grossAnnualRevenue')}
+                            defaultValue=""
+                            render={({ field }) => {
+                              const displayValue = useMemo(() => {
+                                if (!field.value) return '';
+                                const numVal = field.value.replace(/[^\d]/g, '');
+                                return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
+                              }, [field.value]);
+                              
+                              return (
+                                <Input
+                                  id={`coBorrowerIncome-annualRevenue-${cardId}`}
+                                  type="text"
+                                  placeholder="$0"
+                                  value={displayValue}
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(/[^\d]/g, '');
+                                    field.onChange(value);
+                                  }}
+                                  data-testid={`input-coBorrowerIncome-annualRevenue-${cardId}`}
+                                />
+                              );
                             }}
-                            data-testid={`input-coBorrowerIncome-annualRevenue-${cardId}`}
                           />
                         </div>
                         
@@ -14763,11 +14780,31 @@ export default function AdminAddClient() {
                               </div>
                               <div className="space-y-2">
                                 <Label htmlFor={`coBorrowerIncome-pension-${index}-monthlyAmount`}>Gross Monthly Income</Label>
-                                <Input
-                                  id={`coBorrowerIncome-pension-${index}-monthlyAmount`}
-                                  {...form.register(`coBorrowerIncome.pensions.${index}.monthlyAmount`)}
-                                  placeholder="$0.00"
-                                  data-testid={`input-coborrowerIncome-pension-${index}-monthlyAmount`}
+                                <Controller
+                                  control={form.control}
+                                  name={`coBorrowerIncome.pensions.${index}.monthlyAmount`}
+                                  defaultValue=""
+                                  render={({ field }) => {
+                                    const displayValue = useMemo(() => {
+                                      if (!field.value) return '';
+                                      const numVal = field.value.replace(/[^\d]/g, '');
+                                      return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
+                                    }, [field.value]);
+                                    
+                                    return (
+                                      <Input
+                                        id={`coBorrowerIncome-pension-${index}-monthlyAmount`}
+                                        type="text"
+                                        placeholder="$0"
+                                        value={displayValue}
+                                        onChange={(e) => {
+                                          const value = e.target.value.replace(/[^\d]/g, '');
+                                          field.onChange(value);
+                                        }}
+                                        data-testid={`input-coborrowerIncome-pension-${index}-monthlyAmount`}
+                                      />
+                                    );
+                                  }}
                                 />
                               </div>
                               <div className="space-y-2">
@@ -15059,11 +15096,31 @@ export default function AdminAddClient() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="coBorrowerIncome-socialSecurityMonthlyAmount">Gross Monthly Income</Label>
-                          <Input
-                            id="coBorrowerIncome-socialSecurityMonthlyAmount"
-                            {...form.register('coBorrowerIncome.socialSecurityMonthlyAmount')}
-                            placeholder="$0.00"
-                            data-testid="input-coborrowerIncome-socialSecurityMonthlyAmount"
+                          <Controller
+                            control={form.control}
+                            name="coBorrowerIncome.socialSecurityMonthlyAmount"
+                            defaultValue=""
+                            render={({ field }) => {
+                              const displayValue = useMemo(() => {
+                                if (!field.value) return '';
+                                const numVal = field.value.replace(/[^\d]/g, '');
+                                return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
+                              }, [field.value]);
+                              
+                              return (
+                                <Input
+                                  id="coBorrowerIncome-socialSecurityMonthlyAmount"
+                                  type="text"
+                                  placeholder="$0"
+                                  value={displayValue}
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(/[^\d]/g, '');
+                                    field.onChange(value);
+                                  }}
+                                  data-testid="input-coborrowerIncome-socialSecurityMonthlyAmount"
+                                />
+                              );
+                            }}
                           />
                         </div>
                         <div className="space-y-2">
