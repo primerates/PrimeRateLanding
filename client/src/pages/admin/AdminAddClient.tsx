@@ -3593,24 +3593,6 @@ export default function AdminAddClient() {
     [totalCoBorrowerIncome]
   );
 
-  // Calculate Total Monthly Payment for Current Loan - optimized with useMemo
-  const currentLoanData = form.watch('currentLoan');
-  const principalAndInterest = currentLoanData?.principalAndInterestPayment || '';
-  const taxAndInsurance = currentLoanData?.newField1 || '';
-  
-  const totalMonthlyPayment = useMemo(() => {
-    const piValue = parseFloat(principalAndInterest.replace(/[^\d]/g, '')) || 0;
-    const taxValue = parseFloat(taxAndInsurance.replace(/[^\d]/g, '')) || 0;
-    return piValue + taxValue;
-  }, [principalAndInterest, taxAndInsurance]);
-  
-  const totalMonthlyPaymentFormatted = useMemo(() => 
-    totalMonthlyPayment > 0 
-      ? `$${totalMonthlyPayment.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
-      : '$0',
-    [totalMonthlyPayment]
-  );
-
   // Current Loan auto sum now handled by isolated TotalCurrentLoanPayment component
 
   // Auto-sync rental property income with property data
@@ -3882,8 +3864,7 @@ export default function AdminAddClient() {
     setIsOpen, 
     onRemove,
     onAutoCopyAddress,
-    formInstance,
-    totalMonthlyPaymentFormatted = '$0'
+    formInstance 
   }: {
     idPrefix?: string;
     borderVariant: 'blue' | 'none';
@@ -3892,7 +3873,6 @@ export default function AdminAddClient() {
     onRemove?: () => void;
     onAutoCopyAddress?: () => void;
     formInstance?: any;
-    totalMonthlyPaymentFormatted?: string;
   }) => {
     const contextForm = useFormContext();
     const targetForm = formInstance || contextForm;
@@ -4262,12 +4242,34 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="currentLoan-totalMonthlyPayment">Total Monthly Payment</Label>
-                  <div className="flex items-center border border-input bg-muted px-3 rounded-md h-9">
-                    <span className="text-lg font-semibold" data-testid="text-total-monthly-payment">
-                      {totalMonthlyPaymentFormatted}
-                    </span>
-                  </div>
+                  <Label htmlFor="currentLoan-newField2">Total Monthly Payment</Label>
+                  <Controller
+                    control={form.control}
+                    name="currentLoan.newField2"
+                    defaultValue=""
+                    render={({ field }) => {
+                      const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                      const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                      
+                      return (
+                        <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                          <span className="text-muted-foreground text-sm">$</span>
+                          <Input
+                            id="currentLoan-newField2"
+                            type="text"
+                            placeholder="0"
+                            value={displayValue}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/[^\d]/g, '');
+                              field.onChange(value);
+                            }}
+                            className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                            data-testid="input-currentLoan-newField2"
+                          />
+                        </div>
+                      );
+                    }}
+                  />
                 </div>
                 
                 <div className="space-y-2 md:col-span-3">
@@ -20492,7 +20494,6 @@ export default function AdminAddClient() {
                     }}
                     onAutoCopyAddress={autoCopyPropertyAddressToCurrentLoan}
                     formInstance={form}
-                    totalMonthlyPaymentFormatted={totalMonthlyPaymentFormatted}
                   />
                 );
               })}
