@@ -3993,23 +3993,6 @@ export default function AdminAddClient() {
     
     // State for property address collapse
     const [isPropertyAddressOpen, setIsPropertyAddressOpen] = useState(true);
-    
-    // Local state for Pre-Payment Penalty date field to prevent typing lag
-    const fieldName = 'currentLoan.prepaymentPenaltyText';
-    const [localPrepaymentPenalty, setLocalPrepaymentPenalty] = useState(
-      targetForm.getValues(fieldName) || ''
-    );
-    
-    // Sync form value -> localValue if external changes happen
-    useEffect(() => {
-      const subscription = targetForm.watch((value: any, { name }: any) => {
-        if (name === fieldName) {
-          setLocalPrepaymentPenalty(value[fieldName] || '');
-        }
-      });
-      return () => subscription.unsubscribe();
-    }, [targetForm]);
-    
     const currentLenderBinding = useFieldBinding('currentLoan.currentLender', idPrefix, targetForm);
     const loanNumberBinding = useFieldBinding('currentLoan.loanNumber', idPrefix, targetForm);
     const remainingTermBinding = useFieldBinding('currentLoan.remainingTermPerCreditReport', idPrefix, targetForm);
@@ -4158,20 +4141,20 @@ export default function AdminAddClient() {
                   <Label htmlFor={`${idPrefix}currentLoan-prepaymentPenalty-text`}>Pre-Payment Penalty</Label>
                   <Input
                     id={`${idPrefix}currentLoan-prepaymentPenalty-text`}
-                    value={localPrepaymentPenalty}
+                    value={targetForm.watch('currentLoan.prepaymentPenaltyText') || ''}
                     onChange={(e) => {
-                      const raw = e.target.value.replace(/\D/g, ''); // keep only digits
-                      let formatted = raw;
-                      
-                      if (raw.length > 2) {
-                        formatted = raw.slice(0, 2) + '/' + raw.slice(2);
+                      const value = e.target.value.replace(/\D/g, '');
+                      let formatted = '';
+                      if (value.length > 0) {
+                        formatted = value.substring(0, 2);
+                        if (value.length > 2) {
+                          formatted += '/' + value.substring(2, 4);
+                          if (value.length > 4) {
+                            formatted += '/' + value.substring(4, 8);
+                          }
+                        }
                       }
-                      if (raw.length > 4) {
-                        formatted = formatted.slice(0, 5) + '/' + raw.slice(4, 8);
-                      }
-                      
-                      setLocalPrepaymentPenalty(formatted); // immediate UI update
-                      targetForm.setValue(fieldName, formatted, { shouldValidate: true }); // sync with form
+                      targetForm.setValue('currentLoan.prepaymentPenaltyText', formatted);
                     }}
                     placeholder="MM/DD/YYYY"
                     maxLength={10}
