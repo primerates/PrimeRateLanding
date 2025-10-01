@@ -3903,6 +3903,14 @@ export default function AdminAddClient() {
     const propertyZipBinding = useFieldBinding('currentLoan.propertyAddress.zipCode', idPrefix, targetForm);
     const propertyCountyBinding = useFieldBinding('currentLoan.propertyAddress.county', idPrefix, targetForm);
     
+    // Watch payment fields for total calculation
+    const p = targetForm.watch("currentLoan.principalAndInterestPayment") || "";
+    const t = targetForm.watch("currentLoan.newField1") || "";
+    
+    const pNum = Number(p.toString().replace(/[^\d]/g, "")) || 0;
+    const tNum = Number(t.toString().replace(/[^\d]/g, "")) || 0;
+    const total = (pNum + tNum).toLocaleString();
+    
     const cardClassName = borderVariant === 'blue' ? 'border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200' : '';
     
     return (
@@ -4247,26 +4255,20 @@ export default function AdminAddClient() {
                     control={form.control}
                     name="currentLoan.newField2"
                     defaultValue=""
-                    render={({ field }) => {
-                      const p = form.getValues("currentLoan.principalAndInterestPayment")?.replace(/[^\d]/g, '') || "0";
-                      const t = form.getValues("currentLoan.newField1")?.replace(/[^\d]/g, '') || "0";
-                      const total = (Number(p) + Number(t)).toLocaleString();
-                      
-                      return (
-                        <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                          <span className="text-muted-foreground text-sm">$</span>
-                          <Input
-                            id="currentLoan-newField2"
-                            type="text"
-                            placeholder="0"
-                            value={total}
-                            readOnly
-                            className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                            data-testid="input-currentLoan-newField2"
-                          />
-                        </div>
-                      );
-                    }}
+                    render={({ field }) => (
+                      <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                        <span className="text-muted-foreground text-sm">$</span>
+                        <Input
+                          id="currentLoan-newField2"
+                          type="text"
+                          placeholder="0"
+                          value={total}
+                          readOnly
+                          className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                          data-testid="input-currentLoan-newField2"
+                        />
+                      </div>
+                    )}
                   />
                 </div>
                 

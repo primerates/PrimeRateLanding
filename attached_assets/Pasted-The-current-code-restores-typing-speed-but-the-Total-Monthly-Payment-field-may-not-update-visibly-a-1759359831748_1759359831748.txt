@@ -1,0 +1,98 @@
+The current code restores typing speed, but the Total Monthly Payment field may not update visibly as you type or after blurring an input. That’s because form.getValues only retrieves the most recent value after a form submission, state change, or a rerender, not during React's render for each keystroke.
+
+Solution
+To keep optimized typing and automatic total calculation, use watch (from React Hook Form) for both input fields. watch() will always give the latest values, re-rendering the total field when either changes—but only for that field, keeping input fast.
+
+Optimized Approach with watch()
+Step 1: Watch the dependent fields at the top of your component:
+
+jsx
+const p = form.watch("currentLoan.principalAndInterestPayment") || "";
+const t = form.watch("currentLoan.newField1") || "";
+Step 2: Parse unformatted numbers for calculation:
+
+jsx
+const pNum = Number(p.toString().replace(/[^\d]/g, "")) || 0;
+const tNum = Number(t.toString().replace(/[^\d]/g, "")) || 0;
+const total = (pNum + tNum).toLocaleString();
+Step 3: Render Total Monthly Payment using the computed value:
+
+jsx
+<Controller
+  control={form.control}
+  name="currentLoan.newField2"
+  defaultValue=""
+  render={({ field }) => (
+    <div className="flex items-center border border-input bg-background px-3 rounded-md">
+      <span className="text-muted-foreground text-sm">$</span>
+      <Input
+        id="currentLoan-newField2"
+        type="text"
+        placeholder="0"
+        value={total}
+        readOnly
+        className="border-0 bg-transparent px-2 focus-visible:ring-0"
+        data-testid="input-currentLoan-newField2"
+      />
+    </div>
+  )}
+/>
+Complete Example (Key Parts)
+jsx
+const p = form.watch("currentLoan.principalAndInterestPayment") || "";
+const t = form.watch("currentLoan.newField1") || "";
+
+const pNum = Number(p.toString().replace(/[^\d]/g, "")) || 0;
+const tNum = Number(t.toString().replace(/[^\d]/g, "")) || 0;
+const total = (pNum + tNum).toLocaleString();
+Then use the rest of your code for your Controllers as is.
+
+Why This Works
+watch() from React Hook Form always has the latest input for the watched fields—even before blur.
+
+Only the "Total" field rerenders, so typing stays fast.
+
+Calculation happens instantly on every value change—no need to call setValue for the total.
+
+**This solution will keep your typing smooth and your sum live-updated as desired.**The issue is caused by form.getValues not triggering a re-render when the input values change—so the sum does not update live. To fix this, use form.watch instead of form.getValues for the source fields. watch will ensure your "Total Monthly Payment" field always sees the latest values and triggers a re-render, keeping the total accurate and responsive.
+
+Replace inside your component (at the top, before returning JSX):
+
+jsx
+const principal = form.watch("currentLoan.principalAndInterestPayment") || "";
+const tax = form.watch("currentLoan.newField1") || "";
+
+const pNum = Number(principal.replace(/[^\d]/g, "")) || 0;
+const tNum = Number(tax.replace(/[^\d]/g, "")) || 0;
+const total = (pNum + tNum).toLocaleString();
+Then set your Total Monthly Payment Controller’s value prop to total:
+
+jsx
+<Controller
+  control={form.control}
+  name="currentLoan.newField2"
+  defaultValue=""
+  render={({ field }) => (
+    <div className="flex items-center border border-input bg-background px-3 rounded-md">
+      <span className="text-muted-foreground text-sm">$</span>
+      <Input
+        id="currentLoan-newField2"
+        type="text"
+        placeholder="0"
+        value={total}
+        readOnly
+        className="border-0 bg-transparent px-2 focus-visible:ring-0"
+        data-testid="input-currentLoan-newField2"
+      />
+    </div>
+  )}
+/>
+Summary:
+
+Replace all uses of form.getValues for these fields with form.watch.
+
+Calculate the sum from these watched values.
+
+Use that sum as the value for the read-only input.
+
+This will solve your problem—the total will update instantly, and typing speed remains excellent.
