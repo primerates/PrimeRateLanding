@@ -12853,8 +12853,23 @@ export default function AdminAddClient() {
                                 <Label htmlFor={`income-pension-${index}-startDate`}>Start Date</Label>
                                 <Input
                                   id={`income-pension-${index}-startDate`}
-                                  {...form.register(`income.pensions.${index}.startDate`)}
-                                  placeholder="MM/YYYY"
+                                  value={form.watch(`income.pensions.${index}.startDate`) || ''}
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                                    let formatted = '';
+                                    if (value.length > 0) {
+                                      formatted = value.substring(0, 2);
+                                      if (value.length > 2) {
+                                        formatted += '/' + value.substring(2, 4);
+                                        if (value.length > 4) {
+                                          formatted += '/' + value.substring(4, 8);
+                                        }
+                                      }
+                                    }
+                                    form.setValue(`income.pensions.${index}.startDate`, formatted);
+                                  }}
+                                  placeholder="MM/DD/YYYY"
+                                  maxLength={10}
                                   data-testid={`input-income-pension-${index}-startDate`}
                                 />
                               </div>
@@ -12918,8 +12933,23 @@ export default function AdminAddClient() {
                           <Label htmlFor="income-socialSecurityStartDate">Start Date</Label>
                           <Input
                             id="income-socialSecurityStartDate"
-                            {...form.register('income.socialSecurityStartDate')}
-                            placeholder="MM/YYYY"
+                            value={form.watch('income.socialSecurityStartDate') || ''}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                              let formatted = '';
+                              if (value.length > 0) {
+                                formatted = value.substring(0, 2);
+                                if (value.length > 2) {
+                                  formatted += '/' + value.substring(2, 4);
+                                  if (value.length > 4) {
+                                    formatted += '/' + value.substring(4, 8);
+                                  }
+                                }
+                              }
+                              form.setValue('income.socialSecurityStartDate', formatted);
+                            }}
+                            placeholder="MM/DD/YYYY"
+                            maxLength={10}
                             data-testid="input-income-socialSecurityStartDate"
                           />
                         </div>
@@ -13054,8 +13084,23 @@ export default function AdminAddClient() {
                             <Label htmlFor="income-vaBenefitsStartDate">Start Date</Label>
                             <Input
                               id="income-vaBenefitsStartDate"
-                              {...form.register('income.vaBenefitsStartDate')}
-                              placeholder="MM/YYYY"
+                              value={form.watch('income.vaBenefitsStartDate') || ''}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                                let formatted = '';
+                                if (value.length > 0) {
+                                  formatted = value.substring(0, 2);
+                                  if (value.length > 2) {
+                                    formatted += '/' + value.substring(2, 4);
+                                    if (value.length > 4) {
+                                      formatted += '/' + value.substring(4, 8);
+                                    }
+                                  }
+                                }
+                                form.setValue('income.vaBenefitsStartDate', formatted);
+                              }}
+                              placeholder="MM/DD/YYYY"
+                              maxLength={10}
                               data-testid="input-income-vaBenefitsStartDate"
                             />
                           </div>
@@ -13150,8 +13195,23 @@ export default function AdminAddClient() {
                           <Label htmlFor="income-disabilityStartDate">Start Date</Label>
                           <Input
                             id="income-disabilityStartDate"
-                            {...form.register('income.disabilityStartDate')}
-                            placeholder="MM/YYYY"
+                            value={form.watch('income.disabilityStartDate') || ''}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                              let formatted = '';
+                              if (value.length > 0) {
+                                formatted = value.substring(0, 2);
+                                if (value.length > 2) {
+                                  formatted += '/' + value.substring(2, 4);
+                                  if (value.length > 4) {
+                                    formatted += '/' + value.substring(4, 8);
+                                  }
+                                }
+                              }
+                              form.setValue('income.disabilityStartDate', formatted);
+                            }}
+                            placeholder="MM/DD/YYYY"
+                            maxLength={10}
                             data-testid="input-income-disabilityStartDate"
                           />
                         </div>
