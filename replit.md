@@ -6,6 +6,21 @@ This is a professional mortgage lending landing page for Prime Rate Home Loans, 
 
 ## Recent Changes
 
+### Implemented Toggle-Based Income Field in Borrower Employer Card (October 1, 2025)
+
+Successfully implemented the Self-Employment income field pattern in the Borrower Employer card with performance-optimized architecture:
+
+- **Toggle Switch Implementation**: Added Switch component to toggle between "Gross Monthly Income" and "Net Monthly Income" labels
+- **Per-Card Toggle State**: Implemented `isShowingEmployerNetIncome: Record<string, boolean>` allowing each employer card to independently maintain its gross/net selection
+- **Dual Field Storage**: Created separate form paths for `monthlyIncome` (Gross) and `netMonthlyIncome` (Net) in employer schema
+- **Performance-Optimized Component**: Created `ToggleIncomeInput` memoized component using React Hook Form's `useWatch` and `useController` hooks to eliminate typing lag
+- **Currency Formatting**: Implemented automatic formatting with useMemo that displays user input with $ symbol and comma separators
+- **Schema Updates**: Extended `employers` schema in shared/schema.ts to include `netMonthlyIncome` field
+- **Form Integration**: Field paths computed outside component and passed as props for optimal React.memo effectiveness
+- **Value Persistence**: Each field maintains its own value independently; toggling between cards or gross/net preserves previously entered amounts
+
+The Borrower Employer card now follows a performance-optimized version of the Self-Employment income field pattern, providing consistent user experience across different income types with zero typing lag even under rapid input scenarios.
+
 ### Completed Co-Borrower Residence Section Restructure (September 30, 2025)
 
 Successfully restructured the Co-Borrower residence sections to match the Borrower design with:

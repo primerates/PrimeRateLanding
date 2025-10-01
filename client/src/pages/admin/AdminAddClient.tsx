@@ -92,6 +92,49 @@ const CurrencyInput = React.memo<{
   );
 });
 
+// ToggleIncomeInput component for employer cards with gross/net toggle
+const ToggleIncomeInput = React.memo<{
+  control: any;
+  cardId: string;
+  showingNet: boolean;
+  grossPath: string;
+  netPath: string;
+  id?: string;
+  'data-testid'?: string;
+}>(({ control, cardId, showingNet, grossPath, netPath, id, 'data-testid': dataTestId }) => {
+  const fieldPath = showingNet ? netPath : grossPath;
+  
+  const formValue = useWatch({ control, name: fieldPath as any }) || '';
+  
+  const displayValue = useMemo(() => {
+    if (!formValue) return '';
+    const numVal = formValue.replace(/[^\d]/g, '');
+    return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
+  }, [formValue]);
+  
+  const { field } = useController({
+    control,
+    name: fieldPath as any,
+    defaultValue: '',
+  });
+  
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^\d]/g, '');
+    field.onChange(value);
+  }, [field]);
+  
+  return (
+    <Input
+      id={id}
+      type="text"
+      placeholder="$0"
+      value={displayValue}
+      onChange={handleChange}
+      data-testid={dataTestId}
+    />
+  );
+});
+
 // Helper function to calculate color state based on estimated vs appraised values
 const getValueComparisonColor = (estimatedValue: string, appraisedValue: string): { iconClass: string; shadowColor: 'green' | 'red' | 'none' } => {
   const parseValue = (value: string) => {
@@ -1327,6 +1370,9 @@ export default function AdminAddClient() {
   // Revenue toggle states for self-employment
   const [isShowingNetRevenue, setIsShowingNetRevenue] = useState(false);
   const [isCoBorrowerShowingNetRevenue, setIsCoBorrowerShowingNetRevenue] = useState(false);
+  
+  // Revenue toggle states for employer cards (per-card)
+  const [isShowingEmployerNetIncome, setIsShowingEmployerNetIncome] = useState<Record<string, boolean>>({});
 
   // Loan details collapsible state (per property)
   const [isLoanDetailsOpen, setIsLoanDetailsOpen] = useState<Record<string, boolean>>({});
@@ -11595,11 +11641,27 @@ export default function AdminAddClient() {
                               </div>
                               
                               <div className="space-y-2">
-                                <Label htmlFor="template-monthly-income">Gross Monthly Income</Label>
-                                <Input
-                                  id="template-monthly-income"
-                                  placeholder="$0.00"
-                                  data-testid="input-template-monthly-income"
+                                <div className="flex items-center justify-between mb-2">
+                                  <Label htmlFor={`income-employer-income-${cardId}`} className="text-sm">
+                                    {isShowingEmployerNetIncome[cardId] ? 'Net Monthly Income' : 'Gross Monthly Income'}
+                                  </Label>
+                                  <Switch
+                                    checked={isShowingEmployerNetIncome[cardId] || false}
+                                    onCheckedChange={(checked) => {
+                                      setIsShowingEmployerNetIncome(prev => ({ ...prev, [cardId]: checked }));
+                                    }}
+                                    data-testid={`toggle-income-employer-${cardId}`}
+                                    className="scale-[0.8]"
+                                  />
+                                </div>
+                                <ToggleIncomeInput
+                                  control={form.control}
+                                  cardId={cardId}
+                                  showingNet={isShowingEmployerNetIncome[cardId] || false}
+                                  grossPath={getEmployerFieldPath(cardId, 'monthlyIncome')}
+                                  netPath={getEmployerFieldPath(cardId, 'netMonthlyIncome')}
+                                  id={`income-employer-income-${cardId}`}
+                                  data-testid={`input-income-employer-${cardId}`}
                                 />
                               </div>
                               

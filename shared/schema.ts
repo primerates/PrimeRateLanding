@@ -125,6 +125,7 @@ export const incomeSchema = z.object({
     employerName: z.string().optional(),
     jobTitle: z.string().optional(),
     monthlyIncome: z.string().optional(),
+    netMonthlyIncome: z.string().optional(),
     monthlyBonusIncome: z.string().optional(),
     annualBonusIncome: z.string().optional(),
     employmentType: z.enum(["Full-Time", "Part-Time"]).optional(),
