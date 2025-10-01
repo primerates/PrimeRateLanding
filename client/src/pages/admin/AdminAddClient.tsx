@@ -12232,7 +12232,7 @@ export default function AdminAddClient() {
                       </Card>
 
                       {/* First row with business details */}
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor={`income-businessName-${cardId}`}>Business / DBA Name</Label>
                           <Controller
@@ -12307,6 +12307,79 @@ export default function AdminAddClient() {
                               form.setValue(fieldName as any, value, { shouldDirty: true, shouldTouch: true });
                             }}
                             data-testid={`input-income-annualRevenue-${cardId}`}
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor={`income-self-employment-startDate-${cardId}`}>Start Date</Label>
+                          <Input
+                            id={`income-self-employment-startDate-${cardId}`}
+                            type="date"
+                            value={employmentDates[propertyId]?.startDate || ''}
+                            onChange={(e) => {
+                              const startDate = e.target.value;
+                              const currentData = employmentDates[propertyId] || { endDate: '', isPresent: false, duration: '' };
+                              updateEmploymentDuration(propertyId, startDate, currentData.endDate, currentData.isPresent);
+                            }}
+                            placeholder="MM/DD/YYYY"
+                            data-testid={`input-income-self-employment-startDate-${cardId}`}
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor={`income-self-employment-endDate-${cardId}`} className="text-sm">
+                              {employmentDates[propertyId]?.isPresent ? 'Present' : 'End Date'}
+                            </Label>
+                            <Switch
+                              checked={employmentDates[propertyId]?.isPresent ?? true}
+                              onCheckedChange={(checked) => {
+                                const currentData = employmentDates[propertyId] || { startDate: '', endDate: '', duration: '' };
+                                updateEmploymentDuration(propertyId, currentData.startDate, currentData.endDate, checked);
+                              }}
+                              data-testid={`toggle-self-employment-present-${cardId}`}
+                              className="scale-[0.8]"
+                            />
+                          </div>
+                          <Input
+                            id={`income-self-employment-endDate-${cardId}`}
+                            type={employmentDates[propertyId]?.isPresent ? 'text' : 'date'}
+                            value={employmentDates[propertyId]?.isPresent ? 'present' : (employmentDates[propertyId]?.endDate || '')}
+                            onChange={(e) => {
+                              if (!employmentDates[propertyId]?.isPresent) {
+                                const endDate = e.target.value;
+                                const currentData = employmentDates[propertyId] || { startDate: '', isPresent: false, duration: '' };
+                                updateEmploymentDuration(propertyId, currentData.startDate, endDate, currentData.isPresent);
+                              }
+                            }}
+                            placeholder={employmentDates[propertyId]?.isPresent ? 'Present' : 'MM/DD/YYYY'}
+                            readOnly={employmentDates[propertyId]?.isPresent}
+                            className={employmentDates[propertyId]?.isPresent ? 'bg-muted' : ''}
+                            data-testid={`input-income-self-employment-endDate-${cardId}`}
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor={`income-self-employment-duration-${cardId}`}>Duration</Label>
+                          <Input
+                            id={`income-self-employment-duration-${cardId}`}
+                            value={employmentDates[propertyId]?.duration || ''}
+                            placeholder={employmentDates[propertyId]?.isPresent ? 'Enter' : '0'}
+                            readOnly={!employmentDates[propertyId]?.isPresent}
+                            className={!employmentDates[propertyId]?.isPresent ? 'bg-muted' : ''}
+                            onChange={(e) => {
+                              if (employmentDates[propertyId]?.isPresent) {
+                                const currentData = employmentDates[propertyId] || { startDate: '', endDate: '', isPresent: false };
+                                setEmploymentDates(prev => ({
+                                  ...prev,
+                                  [propertyId]: {
+                                    ...currentData,
+                                    duration: e.target.value
+                                  }
+                                }));
+                              }
+                            }}
+                            data-testid={`input-income-self-employment-duration-${cardId}`}
                           />
                         </div>
                       </div>
