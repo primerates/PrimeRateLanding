@@ -455,6 +455,28 @@ const PurchaseLoanRateLockExpirationLabel = React.memo<{
   );
 });
 
+// Isolated component for Purchase Loan Rate Lock Expiration Switch
+const PurchaseLoanRateLockExpirationSwitch = React.memo<{
+  control: any;
+  onCheckedChange: () => void;
+}>(({ control, onCheckedChange }) => {
+  const rateLockDuration = useWatch({ control, name: 'purchaseLoan.rateLockDuration' }) || '';
+  const rateLockExpiration = useWatch({ control, name: 'purchaseLoan.rateLockExpiration' }) || '';
+  
+  const isChecked = useMemo(() => {
+    return !!(rateLockDuration || rateLockExpiration);
+  }, [rateLockDuration, rateLockExpiration]);
+
+  return (
+    <Switch
+      checked={isChecked}
+      onCheckedChange={onCheckedChange}
+      data-testid="toggle-purchaseLoan-expiration-duration-type"
+      className="scale-[0.8]"
+    />
+  );
+});
+
 // Isolated component for Purchase Loan Rate Lock Expiration field
 const PurchaseLoanRateLockExpirationField = React.memo<{
   control: any;
@@ -5452,11 +5474,9 @@ export default function AdminAddClient() {
                           labelText={getPurchaseLoanExpirationDurationLabel()}
                           isExpirationMode={purchaseLoanExpirationDurationType === 'expiration'}
                         />
-                        <Switch
-                          checked={targetForm.watch('purchaseLoan.rateLockDuration') || targetForm.watch('purchaseLoan.rateLockExpiration') ? true : false}
+                        <PurchaseLoanRateLockExpirationSwitch
+                          control={targetForm.control}
                           onCheckedChange={cyclePurchaseLoanExpirationDurationType}
-                          data-testid="toggle-purchaseLoan-expiration-duration-type"
-                          className="scale-[0.8]"
                         />
                       </div>
                       {purchaseLoanExpirationDurationType === 'expiration' ? (
