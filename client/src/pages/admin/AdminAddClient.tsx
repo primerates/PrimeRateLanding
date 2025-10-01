@@ -13137,19 +13137,11 @@ export default function AdminAddClient() {
                                 </div>
                                 <Input
                                   id={`${propertyId}-employer-phone`}
-                                  value={(() => {
-                                    const isVerification = form.watch(getEmployerFieldPath(cardId, 'isShowingEmploymentVerification'));
-                                    const fieldPath = isVerification 
-                                      ? getEmployerFieldPath(cardId, 'employmentVerificationPhone')
-                                      : getEmployerFieldPath(cardId, 'employerPhone');
-                                    return form.watch(fieldPath as any) || '';
-                                  })()}
+                                  placeholder=""
+                                  value={form.watch(getEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) 
+                                    ? (form.watch(getEmployerFieldPath(cardId, 'employmentVerificationPhone')) || '')
+                                    : (form.watch(getEmployerFieldPath(cardId, 'employerPhone')) || '')}
                                   onChange={(e) => {
-                                    const isVerification = form.watch(getEmployerFieldPath(cardId, 'isShowingEmploymentVerification'));
-                                    const fieldPath = isVerification 
-                                      ? getEmployerFieldPath(cardId, 'employmentVerificationPhone')
-                                      : getEmployerFieldPath(cardId, 'employerPhone');
-                                    
                                     const value = e.target.value.replace(/\D/g, '');
                                     let formatted = '';
                                     if (value.length > 0) {
@@ -13161,9 +13153,11 @@ export default function AdminAddClient() {
                                         }
                                       }
                                     }
-                                    form.setValue(fieldPath as any, formatted);
+                                    const fieldName = form.watch(getEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) 
+                                      ? getEmployerFieldPath(cardId, 'employmentVerificationPhone')
+                                      : getEmployerFieldPath(cardId, 'employerPhone');
+                                    form.setValue(fieldName as any, formatted);
                                   }}
-                                  placeholder=""
                                   maxLength={12}
                                   data-testid={`input-${propertyId}-employer-phone`}
                                 />
