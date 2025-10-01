@@ -16802,7 +16802,29 @@ export default function AdminAddClient() {
                                 </div>
                                 <Input
                                   id={`property-owned-since-${propertyId}`}
+                                  value={(() => {
+                                    const properties = form.watch('property.properties') || [];
+                                    const primaryIndex = properties.findIndex(p => p.use === 'primary');
+                                    return form.watch(`property.properties.${primaryIndex >= 0 ? primaryIndex : 0}.purchaseDate`) || '';
+                                  })()}
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                                    let formatted = '';
+                                    if (value.length > 0) {
+                                      formatted = value.substring(0, 2);
+                                      if (value.length > 2) {
+                                        formatted += '/' + value.substring(2, 4);
+                                        if (value.length > 4) {
+                                          formatted += '/' + value.substring(4, 8);
+                                        }
+                                      }
+                                    }
+                                    const properties = form.watch('property.properties') || [];
+                                    const primaryIndex = properties.findIndex(p => p.use === 'primary');
+                                    form.setValue(`property.properties.${primaryIndex >= 0 ? primaryIndex : 0}.purchaseDate`, formatted);
+                                  }}
                                   placeholder="MM/DD/YYYY"
+                                  maxLength={10}
                                   data-testid={`input-property-owned-since-${propertyId}`}
                                 />
                               </div>
