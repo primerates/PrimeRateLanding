@@ -4419,16 +4419,33 @@ export default function AdminAddClient() {
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="newLoan-loanAmount">New Loan Amount</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="newLoan-loanAmount"
-                      {...form.register('newLoan.loanAmount')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-newLoan-loanAmount"
-                    />
-                  </div>
+                  <Controller
+                    control={form.control}
+                    name="newLoan.loanAmount"
+                    defaultValue=""
+                    render={({ field }) => {
+                      const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                      const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                      
+                      return (
+                        <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                          <span className="text-muted-foreground text-sm">$</span>
+                          <Input
+                            id="newLoan-loanAmount"
+                            type="text"
+                            placeholder="0"
+                            value={displayValue}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/[^\d]/g, '');
+                              field.onChange(value);
+                            }}
+                            className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                            data-testid="input-newLoan-loanAmount"
+                          />
+                        </div>
+                      );
+                    }}
+                  />
                 </div>
                 
                 <div className="space-y-2">
@@ -4480,16 +4497,33 @@ export default function AdminAddClient() {
                     />
                   </div>
                   {brandNewLoanCashOutType === 'cash-out' ? (
-                    <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                      <span className="text-muted-foreground text-sm">$</span>
-                      <Input
-                        id={`${idPrefix}brandNewLoan-loanTerm`}
-                        {...loanTermBinding.field}
-                        placeholder="0.00"
-                        className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                        data-testid={loanTermBinding['data-testid']}
-                      />
-                    </div>
+                    <Controller
+                      control={targetForm.control}
+                      name="brandNewLoan.loanTerm"
+                      defaultValue=""
+                      render={({ field }) => {
+                        const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                        const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                        
+                        return (
+                          <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                            <span className="text-muted-foreground text-sm">$</span>
+                            <Input
+                              id={`${idPrefix}brandNewLoan-loanTerm`}
+                              type="text"
+                              placeholder="0"
+                              value={displayValue}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/[^\d]/g, '');
+                                field.onChange(value);
+                              }}
+                              className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                              data-testid={loanTermBinding['data-testid']}
+                            />
+                          </div>
+                        );
+                      }}
+                    />
                   ) : (
                     <Input
                       id={`${idPrefix}brandNewLoan-loanTerm`}
@@ -4512,16 +4546,33 @@ export default function AdminAddClient() {
                       className="scale-[0.8]"
                     />
                   </div>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id={remainingTermBinding.id}
-                      {...remainingTermBinding.field}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid={remainingTermBinding['data-testid']}
-                    />
-                  </div>
+                  <Controller
+                    control={targetForm.control}
+                    name="brandNewLoan.remainingTermAfterPayoff"
+                    defaultValue=""
+                    render={({ field }) => {
+                      const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                      const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                      
+                      return (
+                        <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                          <span className="text-muted-foreground text-sm">$</span>
+                          <Input
+                            id={remainingTermBinding.id}
+                            type="text"
+                            placeholder="0"
+                            value={displayValue}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/[^\d]/g, '');
+                              field.onChange(value);
+                            }}
+                            className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                            data-testid={remainingTermBinding['data-testid']}
+                          />
+                        </div>
+                      );
+                    }}
+                  />
                 </div>
                 
                 <div className="space-y-2">
@@ -4736,16 +4787,33 @@ export default function AdminAddClient() {
                           className="scale-[0.8]"
                         />
                       </div>
-                      <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                        <span className="text-muted-foreground text-sm">$</span>
-                        <Input
-                          id="brandNewLoan-lenderCredit"
-                          {...targetForm.register('brandNewLoan.lenderCredit')}
-                          placeholder="0.00"
-                          className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                          data-testid="input-brandNewLoan-lenderCredit"
-                        />
-                      </div>
+                      <Controller
+                        control={targetForm.control}
+                        name="brandNewLoan.lenderCredit"
+                        defaultValue=""
+                        render={({ field }) => {
+                          const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                          const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                          
+                          return (
+                            <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                              <span className="text-muted-foreground text-sm">$</span>
+                              <Input
+                                id="brandNewLoan-lenderCredit"
+                                type="text"
+                                placeholder="0"
+                                value={displayValue}
+                                onChange={(e) => {
+                                  const value = e.target.value.replace(/[^\d]/g, '');
+                                  field.onChange(value);
+                                }}
+                                className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                                data-testid="input-brandNewLoan-lenderCredit"
+                              />
+                            </div>
+                          );
+                        }}
+                      />
                     </div>
                   </div>
                   
