@@ -11302,7 +11302,7 @@ export default function AdminAddClient() {
                           // Second Employment cards
                           if (form.watch('income.incomeTypes.secondEmployment')) {
                             (borrowerSecondEmployerCards || ['default']).forEach(cardId => {
-                              const propertyId = cardId === 'default' ? 'second-employer-template-card' : cardId;
+                              const propertyId = cardId === 'default' ? 'second-template-card' : cardId;
                               updates[propertyId] = true;
                             });
                           }
@@ -11310,7 +11310,7 @@ export default function AdminAddClient() {
                           // Self-Employment cards
                           if (form.watch('income.incomeTypes.selfEmployment')) {
                             (borrowerSelfEmploymentCards || ['default']).forEach(cardId => {
-                              const propertyId = cardId === 'default' ? 'borrower-self-employment-template-card' : cardId;
+                              const propertyId = cardId === 'default' ? 'self-employment-template-card' : cardId;
                               updates[propertyId] = true;
                             });
                           }
@@ -11353,7 +11353,7 @@ export default function AdminAddClient() {
                           // Second Employment cards
                           if (form.watch('income.incomeTypes.secondEmployment')) {
                             (borrowerSecondEmployerCards || ['default']).forEach(cardId => {
-                              const propertyId = cardId === 'default' ? 'second-employer-template-card' : cardId;
+                              const propertyId = cardId === 'default' ? 'second-template-card' : cardId;
                               updates[propertyId] = false;
                             });
                           }
@@ -11361,7 +11361,7 @@ export default function AdminAddClient() {
                           // Self-Employment cards
                           if (form.watch('income.incomeTypes.selfEmployment')) {
                             (borrowerSelfEmploymentCards || ['default']).forEach(cardId => {
-                              const propertyId = cardId === 'default' ? 'borrower-self-employment-template-card' : cardId;
+                              const propertyId = cardId === 'default' ? 'self-employment-template-card' : cardId;
                               updates[propertyId] = false;
                             });
                           }
