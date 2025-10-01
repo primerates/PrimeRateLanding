@@ -12408,38 +12408,32 @@ export default function AdminAddClient() {
                         
                         
                         <div className="space-y-2">
-                          <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor={`income-annualRevenue-${cardId}`} className="text-sm">
-                              {isShowingNetRevenue ? 'Net Monthly Income' : 'Gross Monthly Income'}
-                            </Label>
-                            <Switch
-                              checked={isShowingNetRevenue}
-                              onCheckedChange={setIsShowingNetRevenue}
-                              data-testid={`toggle-income-annual-revenue-${cardId}`}
-                              className="scale-[0.8]"
-                            />
-                          </div>
-                          <Input
-                            id={`income-annualRevenue-${cardId}`}
-                            type="text"
-                            placeholder="$0"
-                            value={(() => {
-                              const fieldName = isShowingNetRevenue 
-                                ? getSelfEmploymentFieldPath(cardId, 'netAnnualRevenue')
-                                : getSelfEmploymentFieldPath(cardId, 'grossAnnualRevenue');
-                              const val = form.watch(fieldName as any);
-                              if (!val) return '';
-                              const numVal = val.replace(/[^\d]/g, '');
-                              return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                            })()}
-                            onChange={(e) => {
-                              const value = e.target.value.replace(/[^\d]/g, '');
-                              const fieldName = isShowingNetRevenue 
-                                ? getSelfEmploymentFieldPath(cardId, 'netAnnualRevenue')
-                                : getSelfEmploymentFieldPath(cardId, 'grossAnnualRevenue');
-                              form.setValue(fieldName as any, value, { shouldDirty: true, shouldTouch: true });
+                          <Label htmlFor={`income-annualRevenue-${cardId}`}>Gross Monthly Income</Label>
+                          <Controller
+                            control={form.control}
+                            name={getSelfEmploymentFieldPath(cardId, 'grossAnnualRevenue')}
+                            defaultValue=""
+                            render={({ field }) => {
+                              const displayValue = useMemo(() => {
+                                if (!field.value) return '';
+                                const numVal = field.value.replace(/[^\d]/g, '');
+                                return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
+                              }, [field.value]);
+                              
+                              return (
+                                <Input
+                                  id={`income-annualRevenue-${cardId}`}
+                                  type="text"
+                                  placeholder="$0"
+                                  value={displayValue}
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(/[^\d]/g, '');
+                                    field.onChange(value);
+                                  }}
+                                  data-testid={`input-income-annualRevenue-${cardId}`}
+                                />
+                              );
                             }}
-                            data-testid={`input-income-annualRevenue-${cardId}`}
                           />
                         </div>
                         
@@ -12759,11 +12753,31 @@ export default function AdminAddClient() {
                               </div>
                               <div className="space-y-2">
                                 <Label htmlFor={`income-pension-${index}-monthlyAmount`}>Gross Monthly Income</Label>
-                                <Input
-                                  id={`income-pension-${index}-monthlyAmount`}
-                                  {...form.register(`income.pensions.${index}.monthlyAmount`)}
-                                  placeholder="$0.00"
-                                  data-testid={`input-income-pension-${index}-monthlyAmount`}
+                                <Controller
+                                  control={form.control}
+                                  name={`income.pensions.${index}.monthlyAmount`}
+                                  defaultValue=""
+                                  render={({ field }) => {
+                                    const displayValue = useMemo(() => {
+                                      if (!field.value) return '';
+                                      const numVal = field.value.replace(/[^\d]/g, '');
+                                      return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
+                                    }, [field.value]);
+                                    
+                                    return (
+                                      <Input
+                                        id={`income-pension-${index}-monthlyAmount`}
+                                        type="text"
+                                        placeholder="$0"
+                                        value={displayValue}
+                                        onChange={(e) => {
+                                          const value = e.target.value.replace(/[^\d]/g, '');
+                                          field.onChange(value);
+                                        }}
+                                        data-testid={`input-income-pension-${index}-monthlyAmount`}
+                                      />
+                                    );
+                                  }}
                                 />
                               </div>
                               <div className="space-y-2">
@@ -12839,11 +12853,31 @@ export default function AdminAddClient() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="income-socialSecurityMonthlyAmount">Gross Monthly Income</Label>
-                          <Input
-                            id="income-socialSecurityMonthlyAmount"
-                            {...form.register('income.socialSecurityMonthlyAmount')}
-                            placeholder="$0.00"
-                            data-testid="input-income-socialSecurityMonthlyAmount"
+                          <Controller
+                            control={form.control}
+                            name="income.socialSecurityMonthlyAmount"
+                            defaultValue=""
+                            render={({ field }) => {
+                              const displayValue = useMemo(() => {
+                                if (!field.value) return '';
+                                const numVal = field.value.replace(/[^\d]/g, '');
+                                return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
+                              }, [field.value]);
+                              
+                              return (
+                                <Input
+                                  id="income-socialSecurityMonthlyAmount"
+                                  type="text"
+                                  placeholder="$0"
+                                  value={displayValue}
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(/[^\d]/g, '');
+                                    field.onChange(value);
+                                  }}
+                                  data-testid="input-income-socialSecurityMonthlyAmount"
+                                />
+                              );
+                            }}
                           />
                         </div>
                         <div className="space-y-2">
