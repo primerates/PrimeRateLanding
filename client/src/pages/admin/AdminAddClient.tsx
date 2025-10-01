@@ -3593,7 +3593,22 @@ export default function AdminAddClient() {
     [totalCoBorrowerIncome]
   );
 
-  // Current Loan auto sum now handled by isolated TotalCurrentLoanPayment component
+  // Calculate Total Monthly Payment for Existing Primary Loan - optimized with useMemo
+  const principalInterestPayment = form.watch('currentLoan.principalAndInterestPayment') || '';
+  const taxInsurancePayment = form.watch('currentLoan.newField1') || '';
+  
+  const currentLoanTotalPayment = useMemo(() => {
+    const principal = parseMonetaryValue(principalInterestPayment);
+    const taxInsurance = parseMonetaryValue(taxInsurancePayment);
+    return principal + taxInsurance;
+  }, [principalInterestPayment, taxInsurancePayment]);
+  
+  const currentLoanTotalPaymentFormatted = useMemo(() => 
+    currentLoanTotalPayment > 0 
+      ? `${currentLoanTotalPayment.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` 
+      : '0',
+    [currentLoanTotalPayment]
+  );
 
   // Auto-sync rental property income with property data
   useEffect(() => {
@@ -4242,34 +4257,18 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="currentLoan-newField2">Total Monthly Payment</Label>
-                  <Controller
-                    control={form.control}
-                    name="currentLoan.newField2"
-                    defaultValue=""
-                    render={({ field }) => {
-                      const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
-                      const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                      
-                      return (
-                        <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                          <span className="text-muted-foreground text-sm">$</span>
-                          <Input
-                            id="currentLoan-newField2"
-                            type="text"
-                            placeholder="0"
-                            value={displayValue}
-                            onChange={(e) => {
-                              const value = e.target.value.replace(/[^\d]/g, '');
-                              field.onChange(value);
-                            }}
-                            className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                            data-testid="input-currentLoan-newField2"
-                          />
-                        </div>
-                      );
-                    }}
-                  />
+                  <Label htmlFor="currentLoan-totalMonthlyPayment">Total Monthly Payment</Label>
+                  <div className="flex items-center border border-input bg-gray-50 px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="currentLoan-totalMonthlyPayment"
+                      type="text"
+                      value={currentLoanTotalPaymentFormatted}
+                      readOnly
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0 cursor-default"
+                      data-testid="input-currentLoan-totalMonthlyPayment"
+                    />
+                  </div>
                 </div>
                 
                 <div className="space-y-2 md:col-span-3">
