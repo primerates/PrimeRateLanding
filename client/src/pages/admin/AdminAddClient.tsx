@@ -4514,8 +4514,39 @@ export default function AdminAddClient() {
                 </div>
               </div>
               
-              {/* Row 2: Loan Term, Cash Out Amount, Total Debt Pay Off, Pre-Payment Penalty */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {/* Row 2: New Loan Amount, Loan Term, Cash Out Amount, Total Debt Pay Off, Pre-Payment Penalty */}
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="newLoan-loanAmount">New Loan Amount</Label>
+                  <Controller
+                    control={form.control}
+                    name="newLoan.loanAmount"
+                    defaultValue=""
+                    render={({ field }) => {
+                      const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                      const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                      
+                      return (
+                        <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                          <span className="text-muted-foreground text-sm">$</span>
+                          <Input
+                            id="newLoan-loanAmount"
+                            type="text"
+                            placeholder="0"
+                            value={displayValue}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/[^\d]/g, '');
+                              field.onChange(value);
+                            }}
+                            className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                            data-testid="input-newLoan-loanAmount"
+                          />
+                        </div>
+                      );
+                    }}
+                  />
+                </div>
+                
                 <div className="space-y-2">
                   <div className="flex items-center justify-between mb-2">
                     <Label htmlFor={`${idPrefix}brandNewLoan-loanProgram`} className="text-sm">
