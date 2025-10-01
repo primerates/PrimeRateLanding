@@ -2848,42 +2848,6 @@ export default function AdminAddClient() {
     );
   });
 
-  // Auto-Sum Payment Fields Component for Purchase Loan - isolated calculation without parent re-renders
-  const PurchaseLoanAutoSumPaymentFields = React.memo<{ control: any }>(({ control }) => {
-    // Watch specific fields for auto-sum calculation - isolated from parent component
-    const principalPayment = useWatch({ control, name: 'purchaseLoan.principalAndInterestPayment' }) || '';
-    const escrowPayment = useWatch({ control, name: 'purchaseLoan.escrowPayment' }) || '';
-    
-    // Calculate total with useMemo for performance
-    const totalPayment = useMemo(() => {
-      const principal = parseMonetaryValue(principalPayment);
-      const escrow = parseMonetaryValue(escrowPayment);
-      return principal + escrow;
-    }, [principalPayment, escrowPayment]);
-    
-    const totalPaymentFormatted = useMemo(() => 
-      totalPayment > 0 
-        ? `$${totalPayment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` 
-        : '$0.00',
-      [totalPayment]
-    );
-
-    return (
-      <div className="space-y-2 md:col-span-2">
-        <Label className="text-sm font-medium text-black">Total Monthly Payment</Label>
-        <div className="flex items-center border border-input bg-background px-3 rounded-md">
-          <span className="text-muted-foreground text-sm">$</span>
-          <Input
-            value={totalPaymentFormatted.replace('$', '')}
-            readOnly
-            className="border-0 bg-transparent px-2 focus-visible:ring-0"
-            data-testid="text-total-purchase-loan-payment"
-          />
-        </div>
-      </div>
-    );
-  });
-
   // Format percentage value for display only
   const formatPercentageDisplay = (value: string | number | undefined): string => {
     if (!value && value !== 0) return '';
@@ -4989,6 +4953,10 @@ export default function AdminAddClient() {
     const [newLoanAmount, setNewLoanAmount] = useState('');
     const [lenderCredit, setLenderCredit] = useState('');
     const [hasCreditValue, setHasCreditValue] = useState(false);
+    const [principalPayment, setPrincipalPayment] = useState('');
+    const [hasPrincipalValue, setHasPrincipalValue] = useState(false);
+    const [escrowPayment, setEscrowPayment] = useState('');
+    const [hasEscrowValue, setHasEscrowValue] = useState(false);
     
     // Initialize local state from form values on mount
     useEffect(() => {
@@ -4999,6 +4967,18 @@ export default function AdminAddClient() {
       if (creditValue) {
         setLenderCredit(creditValue);
         setHasCreditValue(true);
+      }
+      
+      const principalValue = targetForm.getValues('purchaseLoan.principalAndInterestPayment');
+      if (principalValue) {
+        setPrincipalPayment(principalValue);
+        setHasPrincipalValue(true);
+      }
+      
+      const escrowValue = targetForm.getValues('purchaseLoan.escrowPayment');
+      if (escrowValue) {
+        setEscrowPayment(escrowValue);
+        setHasEscrowValue(true);
       }
     }, []);
     
@@ -5408,7 +5388,7 @@ export default function AdminAddClient() {
                       {getPurchaseLoanPaymentLabel()}
                     </Label>
                     <Switch
-                      checked={targetForm.watch('purchaseLoan.principalAndInterestPayment') || targetForm.watch('purchaseLoan.interestOnlyPayment') ? true : false}
+                      checked={hasPrincipalValue}
                       onCheckedChange={cyclePurchaseLoanPaymentType}
                       data-testid="toggle-purchaseLoan-payment-type"
                       className="scale-[0.8]"
@@ -5418,7 +5398,22 @@ export default function AdminAddClient() {
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
                       id="purchaseLoan-principalInterestPayment"
-                      {...targetForm.register('purchaseLoan.principalAndInterestPayment')}
+                      value={principalPayment}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^\d.]/g, '');
+                        setPrincipalPayment(value);
+                      }}
+                      onBlur={(e) => {
+                        const num = parseFloat(principalPayment) || 0;
+                        const formatted = num > 0 ? `$${num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` : '';
+                        setPrincipalPayment(formatted);
+                        setHasPrincipalValue(!!formatted);
+                        targetForm.setValue('purchaseLoan.principalAndInterestPayment', formatted);
+                      }}
+                      onFocus={(e) => {
+                        const raw = principalPayment.replace(/[^\d.]/g, '');
+                        setPrincipalPayment(raw);
+                      }}
                       placeholder="0.00"
                       className="border-0 bg-transparent px-2 focus-visible:ring-0"
                       data-testid="input-purchaseLoan-principalInterestPayment"
@@ -5432,7 +5427,7 @@ export default function AdminAddClient() {
                       {getPurchaseLoanEscrowLabel()}
                     </Label>
                     <Switch
-                      checked={targetForm.watch('purchaseLoan.escrowPayment') ? true : false}
+                      checked={hasEscrowValue}
                       onCheckedChange={cyclePurchaseLoanEscrowType}
                       data-testid="toggle-purchaseLoan-escrow-type"
                       className="scale-[0.8]"
@@ -5442,16 +5437,28 @@ export default function AdminAddClient() {
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
                       id="purchaseLoan-monthlyEscrow"
-                      {...targetForm.register('purchaseLoan.escrowPayment')}
+                      value={escrowPayment}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^\d.]/g, '');
+                        setEscrowPayment(value);
+                      }}
+                      onBlur={(e) => {
+                        const num = parseFloat(escrowPayment) || 0;
+                        const formatted = num > 0 ? `$${num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` : '';
+                        setEscrowPayment(formatted);
+                        setHasEscrowValue(!!formatted);
+                        targetForm.setValue('purchaseLoan.escrowPayment', formatted);
+                      }}
+                      onFocus={(e) => {
+                        const raw = escrowPayment.replace(/[^\d.]/g, '');
+                        setEscrowPayment(raw);
+                      }}
                       placeholder="0.00"
                       className="border-0 bg-transparent px-2 focus-visible:ring-0"
                       data-testid="input-purchaseLoan-monthlyEscrow"
                     />
                   </div>
                 </div>
-                
-                {/* Auto-calculated Total Monthly Payment */}
-                <PurchaseLoanAutoSumPaymentFields control={targetForm.control} />
                 
                 <div className="space-y-2">
                   <Label htmlFor={`${idPrefix}purchaseLoan-hoa`} className="text-sm">HOA</Label>
