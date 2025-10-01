@@ -5202,56 +5202,9 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <Label htmlFor="purchaseLoan-lenderCredit" className="text-sm">
-                      {getPurchaseLoanCreditLabel()}
-                    </Label>
-                    <Switch
-                      checked={hasCreditValue}
-                      onCheckedChange={cyclePurchaseLoanCreditType}
-                      data-testid="toggle-purchaseLoan-credit-type"
-                      className="scale-[0.8]"
-                    />
-                  </div>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="purchaseLoan-lenderCredit"
-                      value={lenderCredit}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/[^\d.]/g, '');
-                        setLenderCredit(value);
-                      }}
-                      onBlur={(e) => {
-                        const num = parseFloat(lenderCredit) || 0;
-                        const formatted = num > 0 ? `$${num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` : '';
-                        setLenderCredit(formatted);
-                        setHasCreditValue(!!formatted);
-                        targetForm.setValue('purchaseLoan.lenderCredit', formatted);
-                      }}
-                      onFocus={(e) => {
-                        const raw = lenderCredit.replace(/[^\d.]/g, '');
-                        setLenderCredit(raw);
-                      }}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-purchaseLoan-lenderCredit"
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <Label htmlFor="purchaseLoan-lenderCredit" className="text-sm">
-                      {getPurchaseLoanCreditLabel()}
-                    </Label>
-                    <Switch
-                      checked={hasCreditValue}
-                      onCheckedChange={cyclePurchaseLoanCreditType}
-                      data-testid="toggle-purchaseLoan-credit-type"
-                      className="scale-[0.8]"
-                    />
-                  </div>
+                  <Label htmlFor="purchaseLoan-lenderCredit" className="text-sm">
+                    Lender Credit
+                  </Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
