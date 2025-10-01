@@ -3856,6 +3856,49 @@ export default function AdminAddClient() {
     );
   });
 
+  // Isolated Total Monthly Payment component to prevent typing lag
+  const TotalMonthlyPaymentField = React.memo<{ form: any }>(({ form }) => {
+    const [principal, tax] = useWatch({
+      control: form.control,
+      name: ["currentLoan.principalAndInterestPayment", "currentLoan.newField1"]
+    });
+
+    const total = useMemo(() => {
+      const pNum = Number((principal || "").toString().replace(/[^\d]/g, "")) || 0;
+      const tNum = Number((tax || "").toString().replace(/[^\d]/g, "")) || 0;
+      return (pNum + tNum).toLocaleString();
+    }, [principal, tax]);
+
+    useEffect(() => {
+      const currentTotal = form.getValues("currentLoan.newField2");
+      if (currentTotal !== total) {
+        form.setValue("currentLoan.newField2", total, {
+          shouldDirty: true,
+          shouldTouch: false,
+          shouldValidate: false
+        });
+      }
+    }, [total, form]);
+
+    return (
+      <div className="space-y-2 md:col-span-2">
+        <Label htmlFor="currentLoan-newField2">Total Monthly Payment</Label>
+        <div className="flex items-center border border-input bg-background px-3 rounded-md">
+          <span className="text-muted-foreground text-sm">$</span>
+          <Input
+            id="currentLoan-newField2"
+            type="text"
+            placeholder="0"
+            value={total}
+            readOnly
+            className="border-0 bg-transparent px-2 focus-visible:ring-0"
+            data-testid="input-currentLoan-newField2"
+          />
+        </div>
+      </div>
+    );
+  });
+
   // CurrentLoanCard component - canonical mode only
   const CurrentLoanCard = ({ 
     idPrefix = '', 
@@ -3902,14 +3945,6 @@ export default function AdminAddClient() {
     const propertyStateBinding = useSelectFieldBinding('currentLoan.propertyAddress.state', idPrefix, targetForm);
     const propertyZipBinding = useFieldBinding('currentLoan.propertyAddress.zipCode', idPrefix, targetForm);
     const propertyCountyBinding = useFieldBinding('currentLoan.propertyAddress.county', idPrefix, targetForm);
-    
-    // Watch payment fields for total calculation
-    const p = targetForm.watch("currentLoan.principalAndInterestPayment") || "";
-    const t = targetForm.watch("currentLoan.newField1") || "";
-    
-    const pNum = Number(p.toString().replace(/[^\d]/g, "")) || 0;
-    const tNum = Number(t.toString().replace(/[^\d]/g, "")) || 0;
-    const total = (pNum + tNum).toLocaleString();
     
     const cardClassName = borderVariant === 'blue' ? 'border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200' : '';
     
@@ -4249,28 +4284,7 @@ export default function AdminAddClient() {
                   />
                 </div>
                 
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="currentLoan-newField2">Total Monthly Payment</Label>
-                  <Controller
-                    control={form.control}
-                    name="currentLoan.newField2"
-                    defaultValue=""
-                    render={({ field }) => (
-                      <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                        <span className="text-muted-foreground text-sm">$</span>
-                        <Input
-                          id="currentLoan-newField2"
-                          type="text"
-                          placeholder="0"
-                          value={total}
-                          readOnly
-                          className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                          data-testid="input-currentLoan-newField2"
-                        />
-                      </div>
-                    )}
-                  />
-                </div>
+                <TotalMonthlyPaymentField form={form} />
                 
                 <div className="space-y-2 md:col-span-3">
                   <Label htmlFor={`${idPrefix}currentLoan-attachedToProperty`}>Attached to Property</Label>
