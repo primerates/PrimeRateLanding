@@ -5192,25 +5192,24 @@ export default function AdminAddClient() {
                 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between mb-2">
-                    <Label htmlFor={`${idPrefix}purchaseLoan-cashOut`} className="text-sm">
-                      Cash Out Amount
+                    <Label htmlFor="purchaseLoan-lenderCredit" className="text-sm">
+                      {getPurchaseLoanCreditLabel()}
                     </Label>
                     <Switch
-                      checked={purchaseLoanCashOutType === 'cash-out'}
-                      disabled
-                      data-testid="toggle-purchaseLoan-cashOut-type"
-                      className="scale-[0.8] opacity-50 cursor-not-allowed"
-                      aria-disabled
+                      checked={targetForm.watch('purchaseLoan.lenderCredit') || targetForm.watch('purchaseLoan.brokerCredit') ? true : false}
+                      onCheckedChange={cyclePurchaseLoanCreditType}
+                      data-testid="toggle-purchaseLoan-credit-type"
+                      className="scale-[0.8]"
                     />
                   </div>
-                  <div className="flex items-center border border-input bg-muted px-3 rounded-md opacity-60">
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
                     <Input
-                      id={`${idPrefix}purchaseLoan-cashOut`}
-                      {...loanTermBinding.field}
-                      disabled
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0 cursor-not-allowed"
-                      data-testid="input-purchaseLoan-cashOut-disabled"
-                      aria-disabled
+                      id="purchaseLoan-lenderCredit"
+                      {...targetForm.register('purchaseLoan.lenderCredit')}
+                      placeholder="0.00"
+                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                      data-testid="input-purchaseLoan-lenderCredit"
                     />
                   </div>
                 </div>
@@ -5338,30 +5337,6 @@ export default function AdminAddClient() {
                         className="border border-input bg-background px-3 rounded-md"
                         data-testid="input-purchaseLoan-rateLockDuration"
                       />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="purchaseLoan-lenderCredit" className="text-sm">
-                          {getPurchaseLoanCreditLabel()}
-                        </Label>
-                        <Switch
-                          checked={targetForm.watch('purchaseLoan.lenderCredit') || targetForm.watch('purchaseLoan.brokerCredit') ? true : false}
-                          onCheckedChange={cyclePurchaseLoanCreditType}
-                          data-testid="toggle-purchaseLoan-credit-type"
-                          className="scale-[0.8]"
-                        />
-                      </div>
-                      <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                        <span className="text-muted-foreground text-sm">$</span>
-                        <Input
-                          id="purchaseLoan-lenderCredit"
-                          {...targetForm.register('purchaseLoan.lenderCredit')}
-                          placeholder="0.00"
-                          className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                          data-testid="input-purchaseLoan-lenderCredit"
-                        />
-                      </div>
                     </div>
                   </div>
                   
