@@ -4059,16 +4059,33 @@ export default function AdminAddClient() {
                 
                 <div className="space-y-2">
                   <Label htmlFor="currentLoan-currentBalance">Loan Balance</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="currentLoan-currentBalance"
-                      {...form.register('currentLoan.statementBalance.amount')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-currentLoan-currentBalance"
-                    />
-                  </div>
+                  <Controller
+                    control={form.control}
+                    name="currentLoan.statementBalance.amount"
+                    defaultValue=""
+                    render={({ field }) => {
+                      const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                      const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                      
+                      return (
+                        <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                          <span className="text-muted-foreground text-sm">$</span>
+                          <Input
+                            id="currentLoan-currentBalance"
+                            type="text"
+                            placeholder="0"
+                            value={displayValue}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/[^\d]/g, '');
+                              field.onChange(value);
+                            }}
+                            className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                            data-testid="input-currentLoan-currentBalance"
+                          />
+                        </div>
+                      );
+                    }}
+                  />
                 </div>
                 
                 <div className="space-y-2">
@@ -4141,16 +4158,33 @@ export default function AdminAddClient() {
                 
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="currentLoan-principalInterestPayment">Principal & Interest Payment</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="currentLoan-principalInterestPayment"
-                      {...form.register('currentLoan.principalAndInterestPayment')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-currentLoan-principalInterestPayment"
-                    />
-                  </div>
+                  <Controller
+                    control={form.control}
+                    name="currentLoan.principalAndInterestPayment"
+                    defaultValue=""
+                    render={({ field }) => {
+                      const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                      const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                      
+                      return (
+                        <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                          <span className="text-muted-foreground text-sm">$</span>
+                          <Input
+                            id="currentLoan-principalInterestPayment"
+                            type="text"
+                            placeholder="0"
+                            value={displayValue}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/[^\d]/g, '');
+                              field.onChange(value);
+                            }}
+                            className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                            data-testid="input-currentLoan-principalInterestPayment"
+                          />
+                        </div>
+                      );
+                    }}
+                  />
                 </div>
                 
                 <div className="space-y-2 md:col-span-3">
