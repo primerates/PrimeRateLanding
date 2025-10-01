@@ -4759,8 +4759,23 @@ export default function AdminAddClient() {
                       {brandNewLoanLockDateType === 'date' ? (
                         <Input
                           id="brandNewLoan-rateLockDate"
-                          type="date"
-                          {...targetForm.register('brandNewLoan.rateLockDate')}
+                          value={targetForm.watch('brandNewLoan.rateLockDate') || ''}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                            let formatted = '';
+                            if (value.length > 0) {
+                              formatted = value.substring(0, 2);
+                              if (value.length > 2) {
+                                formatted += '/' + value.substring(2, 4);
+                                if (value.length > 4) {
+                                  formatted += '/' + value.substring(4, 8);
+                                }
+                              }
+                            }
+                            targetForm.setValue('brandNewLoan.rateLockDate', formatted);
+                          }}
+                          placeholder="MM/DD/YYYY"
+                          maxLength={10}
                           className="border border-input bg-background px-3 rounded-md"
                           data-testid="input-brandNewLoan-rateLockDate"
                         />
@@ -4790,8 +4805,23 @@ export default function AdminAddClient() {
                       {brandNewLoanExpirationDurationType === 'expiration' ? (
                         <Input
                           id="brandNewLoan-rateLockDuration"
-                          type="date"
-                          {...targetForm.register('brandNewLoan.rateLockDuration')}
+                          value={targetForm.watch('brandNewLoan.rateLockDuration') || ''}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                            let formatted = '';
+                            if (value.length > 0) {
+                              formatted = value.substring(0, 2);
+                              if (value.length > 2) {
+                                formatted += '/' + value.substring(2, 4);
+                                if (value.length > 4) {
+                                  formatted += '/' + value.substring(4, 8);
+                                }
+                              }
+                            }
+                            targetForm.setValue('brandNewLoan.rateLockDuration', formatted);
+                          }}
+                          placeholder="MM/DD/YYYY"
+                          maxLength={10}
                           className="border border-input bg-background px-3 rounded-md"
                           data-testid="input-brandNewLoan-rateLockDuration"
                         />
