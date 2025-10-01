@@ -198,15 +198,15 @@ export default function AdminLogin() {
         className="hidden lg:block lg:w-1/2 relative bg-white"
       >
         <div 
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `url(${threeGlowingCubesBackground})`,
-            backgroundSize: '50%',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            mixBlendMode: 'lighten'
-          }}
-        />
+          className="absolute inset-0 flex items-center justify-center"
+        >
+          <img 
+            src={threeGlowingCubesBackground} 
+            alt="Three Glowing Cubes" 
+            className="w-1/2 h-auto object-contain"
+            style={{ mixBlendMode: 'multiply' }}
+          />
+        </div>
       </div>
     </div>
   );
