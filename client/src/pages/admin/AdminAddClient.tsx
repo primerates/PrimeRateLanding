@@ -13658,29 +13658,29 @@ export default function AdminAddClient() {
                         </div>
                         <div className="flex items-center space-x-2">
                           <Checkbox
-                            id="coBorrowerIncome-type-childSupport"
-                            checked={form.watch('coBorrowerIncome.incomeTypes.childSupport') || false}
+                            id="coBorrowerIncome-type-disability"
+                            checked={form.watch('coBorrowerIncome.incomeTypes.disability') || false}
                             onCheckedChange={(checked) => {
-                              handleIncomeTypeChange('coBorrowerIncome.incomeTypes.childSupport', !!checked, 'Child Support', true);
+                              handleIncomeTypeChange('coBorrowerIncome.incomeTypes.disability', !!checked, 'Disability', true);
                             }}
-                            data-testid="checkbox-coborrower-childSupport"
+                            data-testid="checkbox-coborrower-disability"
                             className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           />
-                          <Label htmlFor="coBorrowerIncome-type-childSupport">Disability</Label>
+                          <Label htmlFor="coBorrowerIncome-type-disability">Disability</Label>
                         </div>
                         <div className="flex items-center space-x-2" title="Alimony / Child Support">
                           <Checkbox
-                            id="coBorrowerIncome-type-disability"
-                            checked={form.watch('coBorrowerIncome.incomeTypes.disability') || false}
+                            id="coBorrowerIncome-type-alimonyChildSupport"
+                            checked={form.watch('coBorrowerIncome.incomeTypes.childSupport') || false}
                             onCheckedChange={() => {
                               // Disabled - will be designed later
                               return;
                             }}
                             disabled
-                            data-testid="checkbox-coborrower-disability"
+                            data-testid="checkbox-coborrower-alimonyChildSupport"
                             className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] cursor-not-allowed opacity-50"
                           />
-                          <Label htmlFor="coBorrowerIncome-type-disability" className="cursor-not-allowed opacity-50">Other</Label>
+                          <Label htmlFor="coBorrowerIncome-type-alimonyChildSupport" className="cursor-not-allowed opacity-50">Other</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <Checkbox
@@ -15136,8 +15136,8 @@ export default function AdminAddClient() {
                 </Card>
               )}
 
-              {/* Co-Borrower Disability Card (Child Support field trigger - renamed to Disability) */}
-              {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.childSupport') && (
+              {/* Co-Borrower Disability Card */}
+              {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.disability') && (
                 <Card>
                   <Collapsible open={isCoBorrowerVaBenefitsIncomeOpen} onOpenChange={setIsCoBorrowerVaBenefitsIncomeOpen}>
                     <CardHeader>
@@ -15340,110 +15340,6 @@ export default function AdminAddClient() {
                           </div>
                         </div>
                       )}
-                      </CardContent>
-                    </CollapsibleContent>
-                  </Collapsible>
-                </Card>
-              )}
-
-              {/* Co-Borrower Disability Card */}
-              {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.disability') && (
-                <Card>
-                  <Collapsible open={isCoBorrowerDisabilityIncomeOpen} onOpenChange={setIsCoBorrowerDisabilityIncomeOpen}>
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle>Co-Borrower - Disability</CardTitle>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setDeleteCoBorrowerDisabilityDialog({ isOpen: true })}
-                            className="hover:bg-red-500 hover:text-white"
-                            data-testid="button-delete-coborrower-disability"
-                            title="Delete Co-Borrower Disability Income"
-                          >
-                            <Minus className="h-4 w-4 mr-2" />
-                            Remove
-                          </Button>
-                          <CollapsibleTrigger asChild>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="hover:bg-orange-500 hover:text-white" 
-                              data-testid="button-toggle-coborrower-disability-income"
-                              title={isCoBorrowerDisabilityIncomeOpen ? 'Minimize' : 'Expand'}
-                              key={`coborrower-disability-income-${isCoBorrowerDisabilityIncomeOpen}`}
-                            >
-                              {isCoBorrowerDisabilityIncomeOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                            </Button>
-                          </CollapsibleTrigger>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CollapsibleContent>
-                      <CardContent className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="coBorrowerIncome-disabilityPayerName">Payer Name</Label>
-                          <Input
-                            id="coBorrowerIncome-disabilityPayerName"
-                            {...form.register('coBorrowerIncome.disabilityPayerName')}
-                            placeholder="e.g., Social Security Administration"
-                            data-testid="input-coborrowerIncome-disabilityPayerName"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="coBorrowerIncome-disabilityMonthlyAmount">Gross Monthly Income</Label>
-                          <Controller
-                            control={form.control}
-                            name="coBorrowerIncome.disabilityMonthlyAmount"
-                            defaultValue=""
-                            render={({ field }) => {
-                              const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
-                              const displayValue = numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                              
-                              return (
-                                <Input
-                                  id="coBorrowerIncome-disabilityMonthlyAmount"
-                                  type="text"
-                                  placeholder="$0"
-                                  value={displayValue}
-                                  onChange={(e) => {
-                                    const value = e.target.value.replace(/[^\d]/g, '');
-                                    field.onChange(value);
-                                  }}
-                                  data-testid="input-coborrowerIncome-disabilityMonthlyAmount"
-                                />
-                              );
-                            }}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="coBorrowerIncome-disabilityStartDate">Start Date</Label>
-                          <Input
-                            id="coBorrowerIncome-disabilityStartDate"
-                            value={form.watch('coBorrowerIncome.disabilityStartDate') || ''}
-                            onChange={(e) => {
-                              const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
-                              let formatted = '';
-                              if (value.length > 0) {
-                                formatted = value.substring(0, 2);
-                                if (value.length > 2) {
-                                  formatted += '/' + value.substring(2, 4);
-                                  if (value.length > 4) {
-                                    formatted += '/' + value.substring(4, 8);
-                                  }
-                                }
-                              }
-                              form.setValue('coBorrowerIncome.disabilityStartDate', formatted);
-                            }}
-                            placeholder="MM/DD/YYYY"
-                            maxLength={10}
-                            data-testid="input-coborrowerIncome-disabilityStartDate"
-                          />
-                        </div>
-                      </div>
                       </CardContent>
                     </CollapsibleContent>
                   </Collapsible>
@@ -22219,9 +22115,14 @@ export default function AdminAddClient() {
             </AlertDialogCancel>
             <AlertDialogAction 
               onClick={() => {
-                // Clear the income type checkbox and close the section (childSupport field is used for Disability)
-                form.setValue('coBorrowerIncome.incomeTypes.childSupport', false);
+                // Clear the income type checkbox and close the section
+                form.setValue('coBorrowerIncome.incomeTypes.disability', false);
                 form.setValue('coBorrowerIncome.vaBenefitsMonthlyAmount', '');
+                form.setValue('coBorrowerIncome.vaBenefitsStartDate', '');
+                form.setValue('coBorrowerIncome.otherDisabilityMonthlyAmount', '');
+                form.setValue('coBorrowerIncome.otherDisabilityStartDate', '');
+                setCoBorrowerVaDisabilitySelected(false);
+                setCoBorrowerOtherDisabilitySelected(false);
                 setIsCoBorrowerVaBenefitsIncomeOpen(false);
                 setDeleteCoBorrowerVaBenefitsDialog({ isOpen: false });
               }}
