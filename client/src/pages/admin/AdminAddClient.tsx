@@ -12740,7 +12740,7 @@ export default function AdminAddClient() {
                           <Checkbox
                             id="coBorrowerIncome-type-selfEmployment"
                             checked={form.watch('coBorrowerIncome.incomeTypes.selfEmployment') || false}
-                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.selfEmployment', !!checked, 'Self Employment', true)}
+                            onCheckedChange={(checked) => handleIncomeTypeChange('coBorrowerIncome.incomeTypes.selfEmployment', !!checked, 'Self-Employment', true)}
                             data-testid="checkbox-coborrower-selfEmployment"
                             className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           />
