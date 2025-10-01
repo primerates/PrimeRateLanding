@@ -13293,7 +13293,7 @@ export default function AdminAddClient() {
                                     {employmentDates[propertyId]?.isPresent ? 'Present' : 'End Date'}
                                   </Label>
                                   <Switch
-                                    checked={employmentDates[propertyId]?.isPresent ?? true}
+                                    checked={employmentDates[propertyId]?.isPresent ?? false}
                                     onCheckedChange={(checked) => {
                                       const currentData = employmentDates[propertyId] || { startDate: '', endDate: '', duration: '' };
                                       updateEmploymentDuration(propertyId, currentData.startDate, currentData.endDate, checked);
@@ -13644,7 +13644,7 @@ export default function AdminAddClient() {
                                   {employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent ? 'Present' : 'End Date'}
                                 </Label>
                                 <Switch
-                                  checked={employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent ?? true}
+                                  checked={employmentDates[`coborrower-second-employment-${cardId}`]?.isPresent ?? false}
                                   onCheckedChange={(checked) => {
                                     const currentData = employmentDates[`coborrower-second-employment-${cardId}`] || { startDate: '', endDate: '', duration: '' };
                                     updateEmploymentDuration(`coborrower-second-employment-${cardId}`, currentData.startDate, currentData.endDate, checked);
