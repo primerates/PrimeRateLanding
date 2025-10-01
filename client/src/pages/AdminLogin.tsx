@@ -209,6 +209,15 @@ export default function AdminLogin() {
             PRIME RATE
           </h1>
         </div>
+        
+        {/* Smaller greyed out logo - lower right (4:30 position) */}
+        <div className="absolute bottom-32 right-24 opacity-[0.15]">
+          <img 
+            src={primeRateLogo} 
+            alt="" 
+            className="w-20 h-auto object-contain"
+          />
+        </div>
       </div>
     </div>
   );
