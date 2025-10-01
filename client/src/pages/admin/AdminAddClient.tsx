@@ -4142,8 +4142,23 @@ export default function AdminAddClient() {
                   <Label htmlFor={loanStartDateBinding.id}>Loan Start Date</Label>
                   <Input
                     id={loanStartDateBinding.id}
-                    type="date"
-                    {...loanStartDateBinding.field}
+                    value={targetForm.watch('currentLoan.loanStartDate') || ''}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                      let formatted = '';
+                      if (value.length > 0) {
+                        formatted = value.substring(0, 2);
+                        if (value.length > 2) {
+                          formatted += '/' + value.substring(2, 4);
+                          if (value.length > 4) {
+                            formatted += '/' + value.substring(4, 8);
+                          }
+                        }
+                      }
+                      targetForm.setValue('currentLoan.loanStartDate', formatted);
+                    }}
+                    placeholder="MM/DD/YYYY"
+                    maxLength={10}
                     data-testid={loanStartDateBinding['data-testid']}
                   />
                 </div>
