@@ -3803,38 +3803,13 @@ export default function AdminAddClient() {
     };
   };
 
-  // Isolated Purchase Date component to prevent typing lag
+  // Isolated Loan Start Date component to prevent typing lag
   const LoanPurchaseDateInput = React.memo<{ form: any; idPrefix: string }>(({ form, idPrefix }) => {
     const purchaseDate = useWatch({ control: form.control, name: 'currentLoan.purchaseDate' });
 
     return (
       <div className="space-y-2">
-        <div className="min-h-5 flex items-center gap-2">
-          <Label htmlFor={`${idPrefix}currentLoan-purchaseDate`}>Purchase Date</Label>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="p-1 h-auto text-blue-600 hover:text-blue-800"
-                onClick={() => {
-                  toast({
-                    title: "Purchase Information",
-                    description: "Please see purchase and record dates in title report located in vendor page.",
-                    duration: 5000,
-                  });
-                }}
-                data-testid={`button-currentLoan-purchase-info-${idPrefix}`}
-              >
-                <Info className="h-4 w-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="top" sideOffset={15} className="text-sm">
-              Purchase Information
-            </TooltipContent>
-          </Tooltip>
-        </div>
+        <Label htmlFor={`${idPrefix}currentLoan-purchaseDate`}>Loan Start Date</Label>
         <Input
           id={`${idPrefix}currentLoan-purchaseDate`}
           value={purchaseDate || ''}
