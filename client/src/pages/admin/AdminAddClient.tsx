@@ -15154,7 +15154,80 @@ export default function AdminAddClient() {
               {/* Property List Card */}
               <Card className="transition-all duration-700">
                 <CardHeader>
-                  <CardTitle>Properties</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>Properties</CardTitle>
+                    <div className="flex items-center gap-2">
+                      {/* Expand All Button */}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          const updates: Record<string, boolean> = {};
+                          
+                          // Get all properties
+                          const allProperties = form.watch('property.properties') || [];
+                          
+                          // Update all property cards that are checked/active
+                          allProperties.forEach(property => {
+                            const propertyId = property.id || `property-${property.use}`;
+                            // Only expand if the property type is checked
+                            if (property.use === 'home-purchase' && hasPropertyType('home-purchase')) {
+                              updates[propertyId] = true;
+                            } else if (property.use === 'primary' && (hasPropertyType('primary') || (primaryResidenceCards || []).length > 0)) {
+                              updates[propertyId] = true;
+                            } else if (property.use === 'second-home' && (hasPropertyType('second-home') || (secondHomeCards || []).length > 0)) {
+                              updates[propertyId] = true;
+                            } else if (property.use === 'investment' && (hasPropertyType('investment') || (investmentCards || []).length > 0)) {
+                              updates[propertyId] = true;
+                            }
+                          });
+                          
+                          setPropertyCardStates(prev => ({ ...prev, ...updates }));
+                        }}
+                        className="hover:bg-blue-500 hover:text-white"
+                        title="Expand All Property Tiles"
+                        data-testid="button-expand-all-properties"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                      
+                      {/* Minimize All Button */}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          const updates: Record<string, boolean> = {};
+                          
+                          // Get all properties
+                          const allProperties = form.watch('property.properties') || [];
+                          
+                          // Update all property cards that are checked/active
+                          allProperties.forEach(property => {
+                            const propertyId = property.id || `property-${property.use}`;
+                            // Only minimize if the property type is checked
+                            if (property.use === 'home-purchase' && hasPropertyType('home-purchase')) {
+                              updates[propertyId] = false;
+                            } else if (property.use === 'primary' && (hasPropertyType('primary') || (primaryResidenceCards || []).length > 0)) {
+                              updates[propertyId] = false;
+                            } else if (property.use === 'second-home' && (hasPropertyType('second-home') || (secondHomeCards || []).length > 0)) {
+                              updates[propertyId] = false;
+                            } else if (property.use === 'investment' && (hasPropertyType('investment') || (investmentCards || []).length > 0)) {
+                              updates[propertyId] = false;
+                            }
+                          });
+                          
+                          setPropertyCardStates(prev => ({ ...prev, ...updates }));
+                        }}
+                        className="hover:bg-orange-500 hover:text-white"
+                        title="Minimize All Property Tiles"
+                        data-testid="button-minimize-all-properties"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
