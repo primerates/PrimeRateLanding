@@ -80,7 +80,23 @@ export default function AdminLogin() {
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Login Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-16 bg-background">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-16 bg-background relative">
+        {/* Subtle background logos - top left */}
+        <div className="absolute top-8 left-8 opacity-[0.08]">
+          <img 
+            src={primeRateLogo} 
+            alt="" 
+            className="w-20 h-auto object-contain"
+          />
+        </div>
+        <div className="absolute top-12 left-12 opacity-[0.05]">
+          <img 
+            src={primeRateLogo} 
+            alt="" 
+            className="w-20 h-auto object-contain"
+          />
+        </div>
+        
         <div className="w-full max-w-md space-y-8">
           {/* Login Form */}
           <form onSubmit={handleLogin} className="space-y-6">
@@ -194,7 +210,7 @@ export default function AdminLogin() {
             className="w-1/2 h-auto object-contain"
           />
           <h1 
-            className="mt-24 text-4xl font-black italic tracking-tight" 
+            className="mt-12 text-4xl font-black italic tracking-tight" 
             style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }}
           >
             PRIME RATE
