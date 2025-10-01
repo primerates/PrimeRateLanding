@@ -81,19 +81,12 @@ export default function AdminLogin() {
     <div className="min-h-screen flex">
       {/* Left Side - Login Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-16 bg-background relative">
-        {/* Subtle background logos - top left */}
-        <div className="absolute top-8 left-8 opacity-[0.08]">
+        {/* Subtle background logo - top left */}
+        <div className="absolute top-8 left-8 opacity-[0.15]">
           <img 
             src={primeRateLogo} 
             alt="" 
-            className="w-20 h-auto object-contain"
-          />
-        </div>
-        <div className="absolute top-12 left-12 opacity-[0.05]">
-          <img 
-            src={primeRateLogo} 
-            alt="" 
-            className="w-20 h-auto object-contain"
+            className="w-40 h-auto object-contain"
           />
         </div>
         
@@ -110,7 +103,7 @@ export default function AdminLogin() {
                 placeholder=""
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`h-12 text-base transition-colors border-0 border-b-2 rounded-none px-0 focus-visible:ring-0 ${
+                className={`h-12 text-base transition-colors border-0 border-b-2 rounded-none px-0 focus-visible:ring-0 focus-visible:border-0 ${
                   errors.email 
                     ? 'border-b-red-500' 
                     : email.trim() 
@@ -133,7 +126,7 @@ export default function AdminLogin() {
                   placeholder=""
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`h-12 text-base pr-10 transition-colors border-0 border-b-2 rounded-none px-0 focus-visible:ring-0 ${
+                  className={`h-12 text-base pr-10 transition-colors border-0 border-b-2 rounded-none px-0 focus-visible:ring-0 focus-visible:border-0 ${
                     errors.password 
                       ? 'border-b-red-500' 
                       : password.trim() 
