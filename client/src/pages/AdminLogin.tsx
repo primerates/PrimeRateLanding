@@ -84,7 +84,7 @@ export default function AdminLogin() {
           {/* Logo/Title */}
           <div className="space-y-2">
             <h1 className="text-3xl font-black italic tracking-tight" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }}>
-              Prime Rate
+              PRIME RATE
             </h1>
           </div>
 
@@ -197,7 +197,7 @@ export default function AdminLogin() {
         className="hidden lg:block lg:w-1/2 relative bg-cover bg-center"
         style={{
           backgroundImage: getCurrentPreset()?.assetPath
-            ? `linear-gradient(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.08)), url(${getCurrentPreset()?.assetPath})`
+            ? `linear-gradient(rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.04)), url(${getCurrentPreset()?.assetPath})`
             : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%)'
         }}
       >
