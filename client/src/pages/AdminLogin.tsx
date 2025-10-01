@@ -80,7 +80,7 @@ export default function AdminLogin() {
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Login Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-16 bg-background relative">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-16 bg-gradient-to-r from-background via-background to-muted/20 relative">
         {/* Subtle background logo - top left */}
         <div className="absolute top-8 left-8 opacity-[0.15]">
           <img 
