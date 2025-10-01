@@ -4028,8 +4028,8 @@ export default function AdminAddClient() {
   });
 
   // Isolated Rate Lock Date component to prevent typing lag
-  const PurchaseRateLockDateInput = React.memo<{ form: any }>(({ form }) => {
-    const rateLockDate = useWatch({ control: form.control, name: 'purchaseLoan.rateLockDate' });
+  const PurchaseRateLockDateInput = React.memo<{ control: any }>(({ control }) => {
+    const rateLockDate = useWatch({ control, name: 'purchaseLoan.rateLockDate' });
 
     return (
       <Input
@@ -4047,7 +4047,9 @@ export default function AdminAddClient() {
               }
             }
           }
-          form.setValue('purchaseLoan.rateLockDate', formatted);
+          control._formValues.purchaseLoan = control._formValues.purchaseLoan || {};
+          control._formValues.purchaseLoan.rateLockDate = formatted;
+          control._subjects.values.next({ ...control._formValues });
         }}
         placeholder="MM/DD/YYYY"
         maxLength={10}
@@ -4058,8 +4060,8 @@ export default function AdminAddClient() {
   });
 
   // Isolated Rate Lock Expiration component to prevent typing lag
-  const PurchaseRateLockExpirationInput = React.memo<{ form: any }>(({ form }) => {
-    const rateLockExpiration = useWatch({ control: form.control, name: 'purchaseLoan.rateLockDuration' });
+  const PurchaseRateLockExpirationInput = React.memo<{ control: any }>(({ control }) => {
+    const rateLockExpiration = useWatch({ control, name: 'purchaseLoan.rateLockDuration' });
 
     return (
       <Input
@@ -4077,7 +4079,9 @@ export default function AdminAddClient() {
               }
             }
           }
-          form.setValue('purchaseLoan.rateLockDuration', formatted);
+          control._formValues.purchaseLoan = control._formValues.purchaseLoan || {};
+          control._formValues.purchaseLoan.rateLockDuration = formatted;
+          control._subjects.values.next({ ...control._formValues });
         }}
         placeholder="MM/DD/YYYY"
         maxLength={10}
@@ -5489,14 +5493,14 @@ export default function AdminAddClient() {
                           {getPurchaseLoanLockDateLabel()}
                         </Label>
                         <Switch
-                          checked={targetForm.watch('purchaseLoan.rateLockDate') || targetForm.watch('purchaseLoan.lockDate') ? true : false}
+                          checked={purchaseLoanLockDateType === 'date'}
                           onCheckedChange={cyclePurchaseLoanLockDateType}
                           data-testid="toggle-purchaseLoan-lockDate-type"
                           className="scale-[0.8]"
                         />
                       </div>
                       {purchaseLoanLockDateType === 'date' ? (
-                        <PurchaseRateLockDateInput form={targetForm} />
+                        <PurchaseRateLockDateInput control={targetForm.control} />
                       ) : (
                         <Input
                           id="purchaseLoan-rateLockDate"
@@ -5514,14 +5518,14 @@ export default function AdminAddClient() {
                           {getPurchaseLoanExpirationDurationLabel()}
                         </Label>
                         <Switch
-                          checked={targetForm.watch('purchaseLoan.rateLockDuration') || targetForm.watch('purchaseLoan.rateLockExpiration') ? true : false}
+                          checked={purchaseLoanExpirationDurationType === 'expiration'}
                           onCheckedChange={cyclePurchaseLoanExpirationDurationType}
                           data-testid="toggle-purchaseLoan-expiration-duration-type"
                           className="scale-[0.8]"
                         />
                       </div>
                       {purchaseLoanExpirationDurationType === 'expiration' ? (
-                        <PurchaseRateLockExpirationInput form={targetForm} />
+                        <PurchaseRateLockExpirationInput control={targetForm.control} />
                       ) : (
                         <Input
                           id="purchaseLoan-rateLockDuration"
