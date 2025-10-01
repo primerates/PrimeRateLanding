@@ -414,6 +414,75 @@ const CoBorrowerPriorResidence2TimeCalculator = React.memo<{ control: any; setVa
   );
 });
 
+// Helper function to check if a date string is within 5 days of today
+const isDateWithinFiveDaysHelper = (dateString: string) => {
+  if (!dateString) return false;
+  
+  const targetDate = new Date(dateString);
+  const today = new Date();
+  
+  // Reset time to midnight for accurate day comparison
+  today.setHours(0, 0, 0, 0);
+  targetDate.setHours(0, 0, 0, 0);
+  
+  // Calculate difference in days
+  const diffTime = targetDate.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  // Return true if within 5 days (0-5 days from now)
+  return diffDays >= 0 && diffDays <= 5;
+};
+
+// Isolated component for Purchase Loan Rate Lock Expiration label
+const PurchaseLoanRateLockExpirationLabel = React.memo<{
+  control: any;
+  labelText: string;
+  isExpirationMode: boolean;
+}>(({ control, labelText, isExpirationMode }) => {
+  const fieldValue = useWatch({ control, name: 'purchaseLoan.rateLockDuration' }) || '';
+  
+  const isExpiring = useMemo(() => {
+    return isExpirationMode && isDateWithinFiveDaysHelper(fieldValue);
+  }, [fieldValue, isExpirationMode]);
+
+  return (
+    <Label 
+      htmlFor="purchaseLoan-rateLockDuration" 
+      className={`text-sm ${isExpiring ? 'text-red-500' : ''}`}
+    >
+      {labelText}
+    </Label>
+  );
+});
+
+// Isolated component for Purchase Loan Rate Lock Expiration field
+const PurchaseLoanRateLockExpirationField = React.memo<{
+  control: any;
+  register: any;
+  isExpirationMode: boolean;
+}>(({ control, register, isExpirationMode }) => {
+  const fieldValue = useWatch({ control, name: 'purchaseLoan.rateLockDuration' }) || '';
+  
+  const isExpiring = useMemo(() => {
+    return isExpirationMode && isDateWithinFiveDaysHelper(fieldValue);
+  }, [fieldValue, isExpirationMode]);
+
+  return (
+    <Input
+      id="purchaseLoan-rateLockDuration"
+      type="text"
+      placeholder="MM/DD/YYYY"
+      {...register('purchaseLoan.rateLockDuration')}
+      className={`border border-input px-3 rounded-md ${
+        isExpiring
+          ? 'bg-red-500 text-white placeholder:text-white/70'
+          : 'bg-background'
+      }`}
+      data-testid="input-purchaseLoan-rateLockDuration"
+    />
+  );
+});
+
 const CoBorrowerResidenceTimeCalculator = React.memo<{ control: any; setValue: any }>(({ control, setValue }) => {
   const fromDate = useWatch({ control, name: 'coBorrower.residenceAddress.from' }) || '';
   const toDate = useWatch({ control, name: 'coBorrower.residenceAddress.to' }) || '';
@@ -1627,25 +1696,6 @@ export default function AdminAddClient() {
       const years = totalMonths / 12;
       return `${years.toFixed(1)} years`;
     }
-  };
-  
-  // Helper function to check if a date is within 5 days of today
-  const isDateWithinFiveDays = (dateString: string) => {
-    if (!dateString) return false;
-    
-    const targetDate = new Date(dateString);
-    const today = new Date();
-    
-    // Reset time to midnight for accurate day comparison
-    today.setHours(0, 0, 0, 0);
-    targetDate.setHours(0, 0, 0, 0);
-    
-    // Calculate difference in days
-    const diffTime = targetDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    // Return true if within 5 days (0-5 days from now)
-    return diffDays >= 0 && diffDays <= 5;
   };
   
   // Subject property confirmation dialog state
@@ -5397,17 +5447,11 @@ export default function AdminAddClient() {
                     
                     <div className="space-y-2">
                       <div className="flex items-center justify-between mb-2">
-                        <Label 
-                          htmlFor="purchaseLoan-rateLockDuration" 
-                          className={`text-sm ${
-                            purchaseLoanExpirationDurationType === 'expiration' && 
-                            isDateWithinFiveDays(targetForm.watch('purchaseLoan.rateLockDuration')) 
-                              ? 'text-red-500' 
-                              : ''
-                          }`}
-                        >
-                          {getPurchaseLoanExpirationDurationLabel()}
-                        </Label>
+                        <PurchaseLoanRateLockExpirationLabel
+                          control={targetForm.control}
+                          labelText={getPurchaseLoanExpirationDurationLabel()}
+                          isExpirationMode={purchaseLoanExpirationDurationType === 'expiration'}
+                        />
                         <Switch
                           checked={targetForm.watch('purchaseLoan.rateLockDuration') || targetForm.watch('purchaseLoan.rateLockExpiration') ? true : false}
                           onCheckedChange={cyclePurchaseLoanExpirationDurationType}
@@ -5416,17 +5460,10 @@ export default function AdminAddClient() {
                         />
                       </div>
                       {purchaseLoanExpirationDurationType === 'expiration' ? (
-                        <Input
-                          id="purchaseLoan-rateLockDuration"
-                          type="text"
-                          placeholder="MM/DD/YYYY"
-                          {...targetForm.register('purchaseLoan.rateLockDuration')}
-                          className={`border border-input px-3 rounded-md ${
-                            isDateWithinFiveDays(targetForm.watch('purchaseLoan.rateLockDuration'))
-                              ? 'bg-red-500 text-white placeholder:text-white/70'
-                              : 'bg-background'
-                          }`}
-                          data-testid="input-purchaseLoan-rateLockDuration"
+                        <PurchaseLoanRateLockExpirationField
+                          control={targetForm.control}
+                          register={targetForm.register}
+                          isExpirationMode={true}
                         />
                       ) : (
                         <Input
