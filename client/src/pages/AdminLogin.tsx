@@ -158,7 +158,7 @@ export default function AdminLogin() {
             <button
               type="submit"
               onClick={handleLogin}
-              className="text-base font-medium text-foreground hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="text-sm font-medium text-foreground hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isSubmitting}
               data-testid="button-admin-login"
             >
@@ -173,7 +173,7 @@ export default function AdminLogin() {
             </button>
             <button
               type="button"
-              className="text-base font-medium text-foreground hover:text-primary transition-colors"
+              className="text-sm font-medium text-foreground hover:text-primary transition-colors"
               onClick={handleForgotPassword}
               data-testid="button-forgot-password"
             >
@@ -181,7 +181,7 @@ export default function AdminLogin() {
             </button>
             <button
               onClick={() => setLocation('/')}
-              className="text-base font-medium text-foreground hover:text-primary transition-colors"
+              className="text-sm font-medium text-foreground hover:text-primary transition-colors"
               data-testid="button-back-to-home"
             >
               Back to Home
