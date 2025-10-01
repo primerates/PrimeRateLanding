@@ -13107,6 +13107,46 @@ export default function AdminAddClient() {
                               </div>
                               
                               <div className="space-y-2">
+                                <div className="flex items-center justify-between mb-2">
+                                  <Label htmlFor={`${propertyId}-employer-phone`} className="text-xs">
+                                    {form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) ? 'Job Verification' : 'Employer Phone'}
+                                  </Label>
+                                  <Switch
+                                    checked={form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) || false}
+                                    onCheckedChange={(checked) => form.setValue(getCoBorrowerEmployerFieldPath(cardId, 'isShowingEmploymentVerification') as any, checked)}
+                                    data-testid={`toggle-${propertyId}-employment-verification`}
+                                    className="scale-[0.8]"
+                                  />
+                                </div>
+                                <Input
+                                  id={`${propertyId}-employer-phone`}
+                                  placeholder=""
+                                  value={form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) 
+                                    ? (form.watch(getCoBorrowerEmployerFieldPath(cardId, 'employmentVerificationPhone')) || '')
+                                    : (form.watch(getCoBorrowerEmployerFieldPath(cardId, 'employerPhone')) || '')}
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(/\D/g, '');
+                                    let formatted = '';
+                                    if (value.length > 0) {
+                                      formatted = value.substring(0, 3);
+                                      if (value.length > 3) {
+                                        formatted += '-' + value.substring(3, 6);
+                                        if (value.length > 6) {
+                                          formatted += '-' + value.substring(6, 10);
+                                        }
+                                      }
+                                    }
+                                    const fieldName = form.watch(getCoBorrowerEmployerFieldPath(cardId, 'isShowingEmploymentVerification')) 
+                                      ? getCoBorrowerEmployerFieldPath(cardId, 'employmentVerificationPhone')
+                                      : getCoBorrowerEmployerFieldPath(cardId, 'employerPhone');
+                                    form.setValue(fieldName as any, formatted);
+                                  }}
+                                  maxLength={12}
+                                  data-testid={`input-${propertyId}-employer-phone`}
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
                                 <Label htmlFor={`${propertyId}-jobTitle`}>Job Title</Label>
                                 <Controller
                                   control={form.control}
