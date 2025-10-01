@@ -4100,8 +4100,8 @@ export default function AdminAddClient() {
           </CardHeader>
           <CollapsibleContent>
             <CardContent className="space-y-6 pt-[1.7rem]">
-              {/* Row 1: Current Lender, Loan Number, Loan Purpose, Remaining Term On Credit Report */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {/* Row 1: Current Lender, Loan Number, Loan Purpose, Pre-Payment Penalty, Remaining Term On Credit Report */}
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor={currentLenderBinding.id}>Lender Name</Label>
                   <Input
@@ -4133,6 +4133,20 @@ export default function AdminAddClient() {
                       <SelectItem value="refinance-cash-out">Refinance Cash Out</SelectItem>
                       <SelectItem value="construction">Construction</SelectItem>
                       <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor={`${idPrefix}currentLoan-prepaymentPenalty`}>Pre-Payment Penalty</Label>
+                  <Select {...prepaymentPenaltyBinding}>
+                    <SelectTrigger data-testid={prepaymentPenaltyBinding['data-testid']}>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      <SelectItem value="Yes - see notes">Yes - see notes</SelectItem>
+                      <SelectItem value="No">No</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
