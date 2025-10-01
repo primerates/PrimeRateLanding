@@ -5830,6 +5830,7 @@ export default function AdminAddClient() {
 
   // CurrentThirdLoanCard component - using Current Third Loan structure with multiple card support
   const CurrentThirdLoanCard = ({ 
+    cardId,
     idPrefix = '', 
     borderVariant, 
     isOpen, 
@@ -5839,6 +5840,7 @@ export default function AdminAddClient() {
     onAddAdditionalLoan,
     formInstance 
   }: {
+    cardId: string;
     idPrefix?: string;
     borderVariant: 'blue' | 'none';
     isOpen: boolean;
@@ -5938,27 +5940,27 @@ export default function AdminAddClient() {
               {/* Row 1: Lender Name, Loan Number, Loan Category, Loan Term, Loan Duration */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="thirdLoan-lenderName">Lender Name</Label>
+                  <Label htmlFor={`${cardId}-lenderName`}>Lender Name</Label>
                   <Input
-                    id="thirdLoan-lenderName"
-                    {...targetForm.register('thirdLoan.lenderName')}
-                    data-testid="input-thirdLoan-lenderName"
+                    id={`${cardId}-lenderName`}
+                    {...targetForm.register(`${cardId}.lenderName`)}
+                    data-testid={`input-${cardId}-lenderName`}
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="thirdLoan-loanNumber">Loan Number</Label>
+                  <Label htmlFor={`${cardId}-loanNumber`}>Loan Number</Label>
                   <Input
-                    id="thirdLoan-loanNumber"
-                    {...targetForm.register('thirdLoan.loanNumber')}
-                    data-testid="input-thirdLoan-loanNumber"
+                    id={`${cardId}-loanNumber`}
+                    {...targetForm.register(`${cardId}.loanNumber`)}
+                    data-testid={`input-${cardId}-loanNumber`}
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="thirdLoan-loanCategory">Loan Category</Label>
-                  <Select value={targetForm.watch('thirdLoan.loanCategory') || ''} onValueChange={(value) => targetForm.setValue('thirdLoan.loanCategory', value)}>
-                    <SelectTrigger data-testid="select-thirdLoan-loanCategory">
+                  <Label htmlFor={`${cardId}-loanCategory`}>Loan Category</Label>
+                  <Select value={targetForm.watch(`${cardId}.loanCategory`) || ''} onValueChange={(value) => targetForm.setValue(`${cardId}.loanCategory`, value)}>
+                    <SelectTrigger data-testid={`select-${cardId}-loanCategory`}>
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
@@ -5970,9 +5972,9 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="thirdLoan-loanProgram">Loan Term</Label>
-                  <Select value={targetForm.watch('thirdLoan.loanProgram') || ''} onValueChange={(value) => targetForm.setValue('thirdLoan.loanProgram', value)}>
-                    <SelectTrigger data-testid="select-thirdLoan-loanProgram">
+                  <Label htmlFor={`${cardId}-loanProgram`}>Loan Term</Label>
+                  <Select value={targetForm.watch(`${cardId}.loanProgram`) || ''} onValueChange={(value) => targetForm.setValue(`${cardId}.loanProgram`, value)}>
+                    <SelectTrigger data-testid={`select-${cardId}-loanProgram`}>
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
@@ -5987,9 +5989,9 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="thirdLoan-loanDuration">Loan Duration</Label>
-                  <Select value={targetForm.watch('thirdLoan.loanDuration') || ''} onValueChange={(value) => targetForm.setValue('thirdLoan.loanDuration', value)}>
-                    <SelectTrigger data-testid="select-thirdLoan-loanDuration">
+                  <Label htmlFor={`${cardId}-loanDuration`}>Loan Duration</Label>
+                  <Select value={targetForm.watch(`${cardId}.loanDuration`) || ''} onValueChange={(value) => targetForm.setValue(`${cardId}.loanDuration`, value)}>
+                    <SelectTrigger data-testid={`select-${cardId}-loanDuration`}>
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
@@ -6011,24 +6013,24 @@ export default function AdminAddClient() {
                 <CardContent className="pt-6">
                   <div className="grid grid-cols-1 md:grid-cols-10 gap-4">
                 <div className="space-y-2 md:col-span-1">
-                  <Label htmlFor="thirdLoan-interestRate">Interest Rate</Label>
+                  <Label htmlFor={`${cardId}-interestRate`}>Interest Rate</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <Input
-                      id="thirdLoan-interestRate"
-                      {...targetForm.register('thirdLoan.interestRate')}
+                      id={`${cardId}-interestRate`}
+                      {...targetForm.register(`${cardId}.interestRate`)}
                       placeholder="0.00"
                       className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-thirdLoan-interestRate"
+                      data-testid={`input-${cardId}-interestRate`}
                     />
                     <span className="text-muted-foreground text-sm">%</span>
                   </div>
                 </div>
                 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="thirdLoan-principalInterestPayment">Loan Balance</Label>
+                  <Label htmlFor={`${cardId}-principalInterestPayment`}>Loan Balance</Label>
                   <Controller
                     control={targetForm.control}
-                    name="thirdLoan.principalAndInterestPayment"
+                    name={`${cardId}.principalAndInterestPayment` as any}
                     defaultValue=""
                     render={({ field }) => {
                       const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
@@ -6038,7 +6040,7 @@ export default function AdminAddClient() {
                         <div className="flex items-center border border-input bg-background px-3 rounded-md">
                           <span className="text-muted-foreground text-sm">$</span>
                           <Input
-                            id="thirdLoan-principalInterestPayment"
+                            id={`${cardId}-principalInterestPayment`}
                             type="text"
                             placeholder="0"
                             value={displayValue}
@@ -6047,7 +6049,7 @@ export default function AdminAddClient() {
                               field.onChange(value);
                             }}
                             className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                            data-testid="input-thirdLoan-principalInterestPayment"
+                            data-testid={`input-${cardId}-principalInterestPayment`}
                           />
                         </div>
                       );
@@ -6056,10 +6058,10 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="thirdLoan-monthlyEscrow">Monthly Payment</Label>
+                  <Label htmlFor={`${cardId}-monthlyEscrow`}>Monthly Payment</Label>
                   <Controller
                     control={targetForm.control}
-                    name="thirdLoan.escrowPayment"
+                    name={`${cardId}.escrowPayment` as any}
                     defaultValue=""
                     render={({ field }) => {
                       const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
@@ -6069,7 +6071,7 @@ export default function AdminAddClient() {
                         <div className="flex items-center border border-input bg-background px-3 rounded-md">
                           <span className="text-muted-foreground text-sm">$</span>
                           <Input
-                            id="thirdLoan-monthlyEscrow"
+                            id={`${cardId}-monthlyEscrow`}
                             type="text"
                             placeholder="0"
                             value={displayValue}
@@ -6078,7 +6080,7 @@ export default function AdminAddClient() {
                               field.onChange(value);
                             }}
                             className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                            data-testid="input-thirdLoan-monthlyEscrow"
+                            data-testid={`input-${cardId}-monthlyEscrow`}
                           />
                         </div>
                       );
@@ -6087,11 +6089,11 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="thirdLoan-prePaymentPenalty">Pre-Payment Penalty</Label>
-                  <Select value={targetForm.watch('thirdLoan.prePaymentPenalty') || ''} onValueChange={(value) => {
-                    targetForm.setValue('thirdLoan.prePaymentPenalty', value);
+                  <Label htmlFor={`${cardId}-prePaymentPenalty`}>Pre-Payment Penalty</Label>
+                  <Select value={targetForm.watch(`${cardId}.prePaymentPenalty`) || ''} onValueChange={(value) => {
+                    targetForm.setValue(`${cardId}.prePaymentPenalty`, value);
                   }}>
-                    <SelectTrigger data-testid="select-thirdLoan-prePaymentPenalty">
+                    <SelectTrigger data-testid={`select-${cardId}-prePaymentPenalty`}>
                       <SelectValue placeholder="select" />
                     </SelectTrigger>
                     <SelectContent>
@@ -6103,22 +6105,22 @@ export default function AdminAddClient() {
                 </div>
                 
                 <div className="space-y-2 md:col-span-3">
-                  <Label htmlFor="thirdLoan-attachedToProperty">Attached to Property</Label>
-                  <Select value={targetForm.watch('thirdLoan.attachedToProperty') || ''} onValueChange={(value) => {
-                    targetForm.setValue('thirdLoan.attachedToProperty', value as any);
+                  <Label htmlFor={`${cardId}-attachedToProperty`}>Attached to Property</Label>
+                  <Select value={targetForm.watch(`${cardId}.attachedToProperty`) || ''} onValueChange={(value) => {
+                    targetForm.setValue(`${cardId}.attachedToProperty`, value as any);
                     if (value && value !== 'Other' && value !== 'select') {
                       setTimeout(() => onAutoCopyAddress?.(), 100);
                     } else if (value === 'Other' || value === 'select') {
                       // Clear address fields for Other or empty
-                      targetForm.setValue('thirdLoan.propertyAddress.street', '');
-                      targetForm.setValue('thirdLoan.propertyAddress.unit', '');
-                      targetForm.setValue('thirdLoan.propertyAddress.city', '');
-                      targetForm.setValue('thirdLoan.propertyAddress.state', '');
-                      targetForm.setValue('thirdLoan.propertyAddress.zipCode', '');
-                      targetForm.setValue('thirdLoan.propertyAddress.county', '');
+                      targetForm.setValue(`${cardId}.propertyAddress.street`, '');
+                      targetForm.setValue(`${cardId}.propertyAddress.unit`, '');
+                      targetForm.setValue(`${cardId}.propertyAddress.city`, '');
+                      targetForm.setValue(`${cardId}.propertyAddress.state`, '');
+                      targetForm.setValue(`${cardId}.propertyAddress.zipCode`, '');
+                      targetForm.setValue(`${cardId}.propertyAddress.county`, '');
                     }
                   }}>
-                    <SelectTrigger data-testid="select-thirdLoan-attachedToProperty">
+                    <SelectTrigger data-testid={`select-${cardId}-attachedToProperty`}>
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
@@ -20440,6 +20442,7 @@ export default function AdminAddClient() {
                 return (
                   <CurrentThirdLoanCard
                     key={cardId}
+                    cardId={cardId}
                     idPrefix={`third-card-${index}-`}
                     borderVariant="blue"
                     isOpen={isOpen}
