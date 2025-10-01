@@ -19459,18 +19459,26 @@ export default function AdminAddClient() {
                           });
                           setPurchaseLoanCardStates(prev => ({ ...prev, ...purchaseUpdates }));
                           
-                          // Expand all Current Loan cards (Primary, Second, and Third)
-                          const currentUpdates: Record<string, boolean> = {};
+                          // Expand all Current Primary Loan cards
+                          const primaryUpdates: Record<string, boolean> = {};
                           (currentPrimaryLoanCards || []).forEach(cardId => {
-                            currentUpdates[cardId] = true;
+                            primaryUpdates[cardId] = true;
                           });
+                          setCurrentLoanCardStates(prev => ({ ...prev, ...primaryUpdates }));
+                          
+                          // Expand all Current Second Loan cards
+                          const secondUpdates: Record<string, boolean> = {};
                           (currentSecondLoanCards || []).forEach(cardId => {
-                            currentUpdates[cardId] = true;
+                            secondUpdates[cardId] = true;
                           });
+                          setSecondLoanCardStates(prev => ({ ...prev, ...secondUpdates }));
+                          
+                          // Expand all Current Third Loan cards
+                          const thirdUpdates: Record<string, boolean> = {};
                           (currentThirdLoanCards || []).forEach(cardId => {
-                            currentUpdates[cardId] = true;
+                            thirdUpdates[cardId] = true;
                           });
-                          setCurrentLoanCardStates(prev => ({ ...prev, ...currentUpdates }));
+                          setThirdLoanCardStates(prev => ({ ...prev, ...thirdUpdates }));
                         }}
                         className="hover:bg-blue-500 hover:text-white"
                         title="Expand All Loan Tiles"
@@ -19499,18 +19507,26 @@ export default function AdminAddClient() {
                           });
                           setPurchaseLoanCardStates(prev => ({ ...prev, ...purchaseUpdates }));
                           
-                          // Minimize all Current Loan cards (Primary, Second, and Third)
-                          const currentUpdates: Record<string, boolean> = {};
+                          // Minimize all Current Primary Loan cards
+                          const primaryUpdates: Record<string, boolean> = {};
                           (currentPrimaryLoanCards || []).forEach(cardId => {
-                            currentUpdates[cardId] = false;
+                            primaryUpdates[cardId] = false;
                           });
+                          setCurrentLoanCardStates(prev => ({ ...prev, ...primaryUpdates }));
+                          
+                          // Minimize all Current Second Loan cards
+                          const secondUpdates: Record<string, boolean> = {};
                           (currentSecondLoanCards || []).forEach(cardId => {
-                            currentUpdates[cardId] = false;
+                            secondUpdates[cardId] = false;
                           });
+                          setSecondLoanCardStates(prev => ({ ...prev, ...secondUpdates }));
+                          
+                          // Minimize all Current Third Loan cards
+                          const thirdUpdates: Record<string, boolean> = {};
                           (currentThirdLoanCards || []).forEach(cardId => {
-                            currentUpdates[cardId] = false;
+                            thirdUpdates[cardId] = false;
                           });
-                          setCurrentLoanCardStates(prev => ({ ...prev, ...currentUpdates }));
+                          setThirdLoanCardStates(prev => ({ ...prev, ...thirdUpdates }));
                         }}
                         className="hover:bg-orange-500 hover:text-white"
                         title="Minimize All Loan Tiles"
