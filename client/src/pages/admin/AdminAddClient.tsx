@@ -1841,7 +1841,6 @@ export default function AdminAddClient() {
   const [purchaseLoanDebtPayOffType, setPurchaseLoanDebtPayOffType] = useState<'total-debt-payoff' | 'total-debt-payments'>('total-debt-payoff');
   const [purchaseLoanTermType, setPurchaseLoanTermType] = useState<'dropdown' | 'manual'>('dropdown');
   const [purchaseLoanFicoType, setPurchaseLoanFicoType] = useState<'mid-fico' | 'borrower-scores' | 'co-borrower-scores'>('mid-fico');
-  const [purchaseLoanLockDateType, setPurchaseLoanLockDateType] = useState<'date' | 'bond-entry'>('date');
   const [purchaseLoanCreditType, setPurchaseLoanCreditType] = useState<'lender' | 'broker'>('lender');
 
   // Helper function to get Current Primary Loan escrow label and handle toggle cycling
@@ -2163,25 +2162,6 @@ export default function AdminAddClient() {
         case 'borrower-scores': return 'co-borrower-scores';
         case 'co-borrower-scores': return 'mid-fico';
         default: return 'mid-fico';
-      }
-    });
-  };
-
-  // Purchase Loan Lock Date label and type cycling functions
-  const getPurchaseLoanLockDateLabel = () => {
-    switch (purchaseLoanLockDateType) {
-      case 'date': return 'Rate Lock Date';
-      case 'bond-entry': return 'Lock Date - 10 Year Bond';
-      default: return 'Rate Lock Date';
-    }
-  };
-
-  const cyclePurchaseLoanLockDateType = () => {
-    setPurchaseLoanLockDateType(current => {
-      switch (current) {
-        case 'date': return 'bond-entry';
-        case 'bond-entry': return 'date';
-        default: return 'date';
       }
     });
   };
@@ -3951,36 +3931,6 @@ export default function AdminAddClient() {
     );
   });
 
-  // Isolated Rate Lock Date component to prevent typing lag
-  const PurchaseRateLockDateInput = React.memo<{ form: any }>(({ form }) => {
-    const rateLockDate = useWatch({ control: form.control, name: 'purchaseLoan.rateLockDate' });
-
-    return (
-      <Input
-        id="purchaseLoan-rateLockDate"
-        value={rateLockDate || ''}
-        onChange={(e) => {
-          const value = e.target.value.replace(/\D/g, '');
-          let formatted = '';
-          if (value.length > 0) {
-            formatted = value.substring(0, 2);
-            if (value.length > 2) {
-              formatted += '/' + value.substring(2, 4);
-              if (value.length > 4) {
-                formatted += '/' + value.substring(4, 8);
-              }
-            }
-          }
-          form.setValue('purchaseLoan.rateLockDate', formatted);
-        }}
-        placeholder="MM/DD/YYYY"
-        maxLength={10}
-        className="border border-input bg-background px-3 rounded-md"
-        data-testid="input-purchaseLoan-rateLockDate"
-      />
-    );
-  });
-
   // CurrentLoanCard component - canonical mode only
   const CurrentLoanCard = ({ 
     idPrefix = '', 
@@ -5375,31 +5325,6 @@ export default function AdminAddClient() {
                           </Select>
                         )}
                       />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="purchaseLoan-rateLockDate" className="text-sm">
-                          {getPurchaseLoanLockDateLabel()}
-                        </Label>
-                        <Switch
-                          checked={purchaseLoanLockDateType === 'date'}
-                          onCheckedChange={cyclePurchaseLoanLockDateType}
-                          data-testid="toggle-purchaseLoan-lockDate-type"
-                          className="scale-[0.8]"
-                        />
-                      </div>
-                      {purchaseLoanLockDateType === 'date' ? (
-                        <PurchaseRateLockDateInput form={targetForm} />
-                      ) : (
-                        <Input
-                          id="purchaseLoan-rateLockDate"
-                          {...targetForm.register('purchaseLoan.rateLockDate')}
-                          placeholder="Enter"
-                          className="border border-input bg-background px-3 rounded-md"
-                          data-testid="input-purchaseLoan-rateLockDate"
-                        />
-                      )}
                     </div>
                     
                     <div className="space-y-2">
