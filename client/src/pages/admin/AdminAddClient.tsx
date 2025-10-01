@@ -1767,9 +1767,6 @@ export default function AdminAddClient() {
   // Escrow payment field toggle state (per property)
   const [escrowPaymentFieldType, setEscrowPaymentFieldType] = useState<Record<string, 'tax-insurance' | 'property-tax' | 'home-insurance'>>({});
 
-  // Current Primary Loan escrow toggle state (3-state cycle)
-  const [currentLoanEscrowType, setCurrentLoanEscrowType] = useState<'tax-insurance' | 'insurance-only' | 'property-tax-only'>('tax-insurance');
-
   // Current Second Loan escrow toggle state (3-state cycle)
   const [secondLoanEscrowType, setSecondLoanEscrowType] = useState<'tax-insurance' | 'insurance-only' | 'property-tax-only'>('tax-insurance');
 
@@ -1843,16 +1840,6 @@ export default function AdminAddClient() {
   const [purchaseLoanFicoType, setPurchaseLoanFicoType] = useState<'mid-fico' | 'borrower-scores' | 'co-borrower-scores'>('mid-fico');
   const [purchaseLoanCreditType, setPurchaseLoanCreditType] = useState<'lender' | 'broker'>('lender');
 
-  // Helper function to get Current Primary Loan escrow label and handle toggle cycling
-  const getCurrentLoanEscrowLabel = () => {
-    switch (currentLoanEscrowType) {
-      case 'tax-insurance': return 'Tax & Insurance';
-      case 'insurance-only': return 'Insurance Only';
-      case 'property-tax-only': return 'Property Tax Only';
-      default: return 'Tax & Insurance';
-    }
-  };
-
   // Helper function to get Current Second Loan escrow label and handle toggle cycling
   const getSecondLoanEscrowLabel = () => {
     switch (secondLoanEscrowType) {
@@ -1861,17 +1848,6 @@ export default function AdminAddClient() {
       case 'property-tax-only': return 'Property Tax Only';
       default: return 'Tax & Insurance';
     }
-  };
-
-  const cycleCurrentLoanEscrowType = () => {
-    setCurrentLoanEscrowType(current => {
-      switch (current) {
-        case 'tax-insurance': return 'insurance-only';
-        case 'insurance-only': return 'property-tax-only';
-        case 'property-tax-only': return 'tax-insurance';
-        default: return 'tax-insurance';
-      }
-    });
   };
 
   const cycleSecondLoanEscrowType = () => {
@@ -4097,7 +4073,7 @@ export default function AdminAddClient() {
                 </div>
               </div>
               
-              {/* Row 3: Principal & Interest Payment, Escrow Payment, Attached to Property */}
+              {/* Row 3: Principal & Interest Payment, Attached to Property */}
               <Card className={`bg-muted ${
                 showCurrentLoanCardAnimation[idPrefix] ? 'animate-roll-up-grey-box' : ''
               }`}>
@@ -4127,30 +4103,6 @@ export default function AdminAddClient() {
                       placeholder="0.00"
                       className="border-0 bg-transparent px-2 focus-visible:ring-0"
                       data-testid="input-currentLoan-principalInterestPayment"
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2 md:col-span-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <Label htmlFor="currentLoan-monthlyEscrow" className="text-sm">
-                      {getCurrentLoanEscrowLabel()}
-                    </Label>
-                    <Switch
-                      checked={form.watch('currentLoan.escrowPayment') ? true : false}
-                      onCheckedChange={cycleCurrentLoanEscrowType}
-                      data-testid="toggle-currentLoan-escrow-type"
-                      className="scale-[0.8]"
-                    />
-                  </div>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="currentLoan-monthlyEscrow"
-                      {...form.register('currentLoan.escrowPayment')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-currentLoan-monthlyEscrow"
                     />
                   </div>
                 </div>
