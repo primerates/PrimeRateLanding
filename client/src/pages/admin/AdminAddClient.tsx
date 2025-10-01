@@ -4922,67 +4922,31 @@ export default function AdminAddClient() {
                     </div>
                     
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="brandNewLoan-rateLockDate" className="text-sm">
-                          {getBrandNewLoanLockDateLabel()}
-                        </Label>
-                        <Switch
-                          checked={targetForm.watch('brandNewLoan.rateLockDate') || targetForm.watch('brandNewLoan.lockDate') ? true : false}
-                          onCheckedChange={cycleBrandNewLoanLockDateType}
-                          data-testid="toggle-brandNewLoan-lockDate-type"
-                          className="scale-[0.8]"
-                        />
-                      </div>
-                      {brandNewLoanLockDateType === 'date' ? (
-                        <Input
-                          id="brandNewLoan-rateLockDate"
-                          type="date"
-                          {...targetForm.register('brandNewLoan.rateLockDate')}
-                          className="border border-input bg-background px-3 rounded-md"
-                          data-testid="input-brandNewLoan-rateLockDate"
-                        />
-                      ) : (
-                        <Input
-                          id="brandNewLoan-rateLockDate"
-                          {...targetForm.register('brandNewLoan.rateLockDate')}
-                          placeholder="Enter"
-                          className="border border-input bg-background px-3 rounded-md"
-                          data-testid="input-brandNewLoan-rateLockDate"
-                        />
-                      )}
+                      <Label htmlFor="brandNewLoan-rateLockDate" className="text-sm">
+                        Rate Lock Date
+                      </Label>
+                      <Input
+                        id="brandNewLoan-rateLockDate"
+                        type="text"
+                        {...targetForm.register('brandNewLoan.rateLockDate')}
+                        placeholder="MM/DD/YYYY"
+                        className="border border-input bg-background px-3 rounded-md"
+                        data-testid="input-brandNewLoan-rateLockDate"
+                      />
                     </div>
                     
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="brandNewLoan-rateLockDuration" className="text-sm">
-                          {getBrandNewLoanExpirationDurationLabel()}
-                        </Label>
-                        <Switch
-                          checked={targetForm.watch('brandNewLoan.rateLockDuration') || targetForm.watch('brandNewLoan.rateLockExpiration') ? true : false}
-                          onCheckedChange={cycleBrandNewLoanExpirationDurationType}
-                          data-testid="toggle-brandNewLoan-expiration-duration-type"
-                          className="scale-[0.8]"
-                        />
-                      </div>
-                      {brandNewLoanExpirationDurationType === 'expiration' ? (
-                        <Input
-                          id="brandNewLoan-rateLockDuration"
-                          type="date"
-                          {...targetForm.register('brandNewLoan.rateLockDuration')}
-                          className="border border-input bg-background px-3 rounded-md"
-                          data-testid="input-brandNewLoan-rateLockDuration"
-                        />
-                      ) : (
-                        <Input
-                          id="brandNewLoan-rateLockDuration"
-                          {...targetForm.register('brandNewLoan.rateLockDuration')}
-                          placeholder="Enter duration"
-                          className={`border border-input px-3 rounded-md ${calculatedDuration ? 'bg-muted' : 'bg-background'}`}
-                          data-testid="input-brandNewLoan-rateLockDuration"
-                          disabled={!!calculatedDuration}
-                          readOnly={!!calculatedDuration}
-                        />
-                      )}
+                      <Label htmlFor="brandNewLoan-rateLockDuration" className="text-sm">
+                        Rate Lock Expiration
+                      </Label>
+                      <Input
+                        id="brandNewLoan-rateLockDuration"
+                        type="text"
+                        {...targetForm.register('brandNewLoan.rateLockDuration')}
+                        placeholder="MM/DD/YYYY"
+                        className="border border-input bg-background px-3 rounded-md"
+                        data-testid="input-brandNewLoan-rateLockDuration"
+                      />
                     </div>
                     
                     <div className="space-y-2">
