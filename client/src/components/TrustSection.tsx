@@ -1,5 +1,4 @@
 import heroImage from '@assets/generated_images/Happy_family_outside_home_374959f2.png';
-import familyLivingRoomImage from '@assets/family in living room_1759289532381.avif';
 
 export default function TrustSection() {
   return (
@@ -20,8 +19,8 @@ export default function TrustSection() {
         {/* Hero background with gradient overlay */}
         <div className="absolute inset-0 z-0">
           <img 
-            src={familyLivingRoomImage} 
-            alt="Happy family in their living room"
+            src={heroImage} 
+            alt="Happy family standing outside their beautiful home"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/15 to-black/10"></div>
