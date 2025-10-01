@@ -12760,18 +12760,6 @@ export default function AdminAddClient() {
                         </div>
                         <div className="flex items-center space-x-2">
                           <Checkbox
-                            id="coBorrowerIncome-type-childSupport"
-                            checked={form.watch('coBorrowerIncome.incomeTypes.childSupport') || false}
-                            onCheckedChange={(checked) => {
-                              handleIncomeTypeChange('coBorrowerIncome.incomeTypes.childSupport', !!checked, 'Child Support', true);
-                            }}
-                            data-testid="checkbox-coborrower-childSupport"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="coBorrowerIncome-type-childSupport">Child Support</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
                             id="coBorrowerIncome-type-socialSecurity"
                             checked={form.watch('coBorrowerIncome.incomeTypes.socialSecurity') || false}
                             onCheckedChange={(checked) => {
@@ -12781,6 +12769,18 @@ export default function AdminAddClient() {
                             className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                           />
                           <Label htmlFor="coBorrowerIncome-type-socialSecurity">Social Security</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="coBorrowerIncome-type-childSupport"
+                            checked={form.watch('coBorrowerIncome.incomeTypes.childSupport') || false}
+                            onCheckedChange={(checked) => {
+                              handleIncomeTypeChange('coBorrowerIncome.incomeTypes.childSupport', !!checked, 'Child Support', true);
+                            }}
+                            data-testid="checkbox-coborrower-childSupport"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="coBorrowerIncome-type-childSupport">Child Support</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <Checkbox
