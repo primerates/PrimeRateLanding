@@ -151,28 +151,29 @@ export default function AdminLogin() {
               </div>
             </div>
 
+          </form>
+
+          {/* Sign In, Forgot Password, and Back to Home all on same line */}
+          <div className="flex items-center justify-between gap-4">
             <button
               type="submit"
-              className="text-lg font-medium text-foreground hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleLogin}
+              className="text-base font-medium text-foreground hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isSubmitting}
               data-testid="button-admin-login"
             >
               {isSubmitting ? (
                 <span className="flex items-center">
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Signing in...
                 </span>
               ) : (
                 'Sign In'
               )}
             </button>
-          </form>
-
-          {/* Forgot Password and Back to Home on same line */}
-          <div className="flex items-center justify-between">
             <button
               type="button"
-              className="text-sm text-primary hover:underline"
+              className="text-base font-medium text-foreground hover:text-primary transition-colors"
               onClick={handleForgotPassword}
               data-testid="button-forgot-password"
             >
@@ -180,10 +181,9 @@ export default function AdminLogin() {
             </button>
             <button
               onClick={() => setLocation('/')}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+              className="text-base font-medium text-foreground hover:text-primary transition-colors"
               data-testid="button-back-to-home"
             >
-              <ArrowLeft className="h-3 w-3" />
               Back to Home
             </button>
           </div>
