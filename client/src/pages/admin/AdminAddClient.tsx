@@ -11647,11 +11647,8 @@ export default function AdminAddClient() {
                                   name={getEmployerFieldPath(cardId, 'monthlyIncome')}
                                   defaultValue=""
                                   render={({ field }) => {
-                                    const displayValue = useMemo(() => {
-                                      if (!field.value) return '';
-                                      const numVal = field.value.replace(/[^\d]/g, '');
-                                      return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                                    }, [field.value]);
+                                    const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                                    const displayValue = numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
                                     
                                     return (
                                       <Input
@@ -12027,11 +12024,8 @@ export default function AdminAddClient() {
                                 name={getSecondEmployerFieldPath(cardId, 'monthlyIncome')}
                                 defaultValue=""
                                 render={({ field }) => {
-                                  const displayValue = useMemo(() => {
-                                    if (!field.value) return '';
-                                    const numVal = field.value.replace(/[^\d]/g, '');
-                                    return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                                  }, [field.value]);
+                                  const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                                  const displayValue = numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
                                   
                                   return (
                                     <Input
@@ -12424,11 +12418,8 @@ export default function AdminAddClient() {
                             name={getSelfEmploymentFieldPath(cardId, 'grossAnnualRevenue')}
                             defaultValue=""
                             render={({ field }) => {
-                              const displayValue = useMemo(() => {
-                                if (!field.value) return '';
-                                const numVal = field.value.replace(/[^\d]/g, '');
-                                return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                              }, [field.value]);
+                              const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                              const displayValue = numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
                               
                               return (
                                 <Input
@@ -12768,11 +12759,8 @@ export default function AdminAddClient() {
                                   name={`income.pensions.${index}.monthlyAmount`}
                                   defaultValue=""
                                   render={({ field }) => {
-                                    const displayValue = useMemo(() => {
-                                      if (!field.value) return '';
-                                      const numVal = field.value.replace(/[^\d]/g, '');
-                                      return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                                    }, [field.value]);
+                                    const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                                    const displayValue = numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
                                     
                                     return (
                                       <Input
@@ -12868,11 +12856,8 @@ export default function AdminAddClient() {
                             name="income.socialSecurityMonthlyAmount"
                             defaultValue=""
                             render={({ field }) => {
-                              const displayValue = useMemo(() => {
-                                if (!field.value) return '';
-                                const numVal = field.value.replace(/[^\d]/g, '');
-                                return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                              }, [field.value]);
+                              const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                              const displayValue = numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
                               
                               return (
                                 <Input
@@ -13039,11 +13024,8 @@ export default function AdminAddClient() {
                               name="income.vaBenefitsMonthlyAmount"
                               defaultValue=""
                               render={({ field }) => {
-                                const displayValue = useMemo(() => {
-                                  if (!field.value) return '';
-                                  const numVal = field.value.replace(/[^\d]/g, '');
-                                  return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                                }, [field.value]);
+                                const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                                const displayValue = numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
                                 
                                 return (
                                   <Input
@@ -13098,11 +13080,8 @@ export default function AdminAddClient() {
                               name="income.otherDisabilityMonthlyAmount"
                               defaultValue=""
                               render={({ field }) => {
-                                const displayValue = useMemo(() => {
-                                  if (!field.value) return '';
-                                  const numVal = field.value.replace(/[^\d]/g, '');
-                                  return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                                }, [field.value]);
+                                const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                                const displayValue = numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
                                 
                                 return (
                                   <Input
@@ -13190,11 +13169,8 @@ export default function AdminAddClient() {
                             name="income.disabilityMonthlyAmount"
                             defaultValue=""
                             render={({ field }) => {
-                              const displayValue = useMemo(() => {
-                                if (!field.value) return '';
-                                const numVal = field.value.replace(/[^\d]/g, '');
-                                return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                              }, [field.value]);
+                              const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                              const displayValue = numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
                               
                               return (
                                 <Input
@@ -13692,11 +13668,8 @@ export default function AdminAddClient() {
                                   name={getCoBorrowerEmployerFieldPath(cardId, 'monthlyIncome')}
                                   defaultValue=""
                                   render={({ field }) => {
-                                    const displayValue = useMemo(() => {
-                                      if (!field.value) return '';
-                                      const numVal = field.value.replace(/[^\d]/g, '');
-                                      return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                                    }, [field.value]);
+                                    const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                                    const displayValue = numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
                                     
                                     return (
                                       <Input
@@ -14073,11 +14046,8 @@ export default function AdminAddClient() {
                                 name={getCoBorrowerSecondEmployerFieldPath(cardId, 'monthlyIncome')}
                                 defaultValue=""
                                 render={({ field }) => {
-                                  const displayValue = useMemo(() => {
-                                    if (!field.value) return '';
-                                    const numVal = field.value.replace(/[^\d]/g, '');
-                                    return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                                  }, [field.value]);
+                                  const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                                  const displayValue = numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
                                   
                                   return (
                                     <Input
@@ -14486,11 +14456,8 @@ export default function AdminAddClient() {
                             name={getCoBorrowerSelfEmploymentFieldPath(cardId, 'grossAnnualRevenue')}
                             defaultValue=""
                             render={({ field }) => {
-                              const displayValue = useMemo(() => {
-                                if (!field.value) return '';
-                                const numVal = field.value.replace(/[^\d]/g, '');
-                                return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                              }, [field.value]);
+                              const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                              const displayValue = numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
                               
                               return (
                                 <Input
@@ -14795,11 +14762,8 @@ export default function AdminAddClient() {
                                   name={`coBorrowerIncome.pensions.${index}.monthlyAmount`}
                                   defaultValue=""
                                   render={({ field }) => {
-                                    const displayValue = useMemo(() => {
-                                      if (!field.value) return '';
-                                      const numVal = field.value.replace(/[^\d]/g, '');
-                                      return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                                    }, [field.value]);
+                                    const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                                    const displayValue = numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
                                     
                                     return (
                                       <Input
@@ -14968,11 +14932,8 @@ export default function AdminAddClient() {
                               name="coBorrowerIncome.vaBenefitsMonthlyAmount"
                               defaultValue=""
                               render={({ field }) => {
-                                const displayValue = useMemo(() => {
-                                  if (!field.value) return '';
-                                  const numVal = field.value.replace(/[^\d]/g, '');
-                                  return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                                }, [field.value]);
+                                const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                                const displayValue = numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
                                 
                                 return (
                                   <Input
@@ -15027,11 +14988,8 @@ export default function AdminAddClient() {
                               name="coBorrowerIncome.otherDisabilityMonthlyAmount"
                               defaultValue=""
                               render={({ field }) => {
-                                const displayValue = useMemo(() => {
-                                  if (!field.value) return '';
-                                  const numVal = field.value.replace(/[^\d]/g, '');
-                                  return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                                }, [field.value]);
+                                const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                                const displayValue = numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
                                 
                                 return (
                                   <Input
@@ -15111,11 +15069,8 @@ export default function AdminAddClient() {
                             name="coBorrowerIncome.socialSecurityMonthlyAmount"
                             defaultValue=""
                             render={({ field }) => {
-                              const displayValue = useMemo(() => {
-                                if (!field.value) return '';
-                                const numVal = field.value.replace(/[^\d]/g, '');
-                                return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                              }, [field.value]);
+                              const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                              const displayValue = numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
                               
                               return (
                                 <Input
@@ -15209,11 +15164,8 @@ export default function AdminAddClient() {
                             name="coBorrowerIncome.vaBenefitsMonthlyAmount"
                             defaultValue=""
                             render={({ field }) => {
-                              const displayValue = useMemo(() => {
-                                if (!field.value) return '';
-                                const numVal = field.value.replace(/[^\d]/g, '');
-                                return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                              }, [field.value]);
+                              const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                              const displayValue = numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
                               
                               return (
                                 <Input
@@ -15301,11 +15253,8 @@ export default function AdminAddClient() {
                             name="coBorrowerIncome.disabilityMonthlyAmount"
                             defaultValue=""
                             render={({ field }) => {
-                              const displayValue = useMemo(() => {
-                                if (!field.value) return '';
-                                const numVal = field.value.replace(/[^\d]/g, '');
-                                return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
-                              }, [field.value]);
+                              const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                              const displayValue = numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
                               
                               return (
                                 <Input
