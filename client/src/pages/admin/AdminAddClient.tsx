@@ -19129,27 +19129,39 @@ export default function AdminAddClient() {
                               )}
                             />
                           </div>
-                          <Input
-                            id="abc-rateLockExpiration"
-                            value={form.watch('abc.rateLockExpiration') || ''}
-                            onChange={(e) => {
-                              const value = e.target.value.replace(/\D/g, '');
-                              let formatted = '';
-                              if (value.length > 0) {
-                                formatted = value.substring(0, 2);
-                                if (value.length > 2) {
-                                  formatted += '/' + value.substring(2, 4);
-                                  if (value.length > 4) {
-                                    formatted += '/' + value.substring(4, 8);
+                          {form.watch("abc.rateLockExpirationToggle") ? (
+                            <Input
+                              id="abc-rateLockExpiration"
+                              value={form.watch('abc.rateLockExpiration') || ''}
+                              onChange={(e) => {
+                                form.setValue('abc.rateLockExpiration', e.target.value);
+                              }}
+                              placeholder="Enter duration"
+                              data-testid="input-abc-rateLockExpiration"
+                            />
+                          ) : (
+                            <Input
+                              id="abc-rateLockExpiration"
+                              value={form.watch('abc.rateLockExpiration') || ''}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/\D/g, '');
+                                let formatted = '';
+                                if (value.length > 0) {
+                                  formatted = value.substring(0, 2);
+                                  if (value.length > 2) {
+                                    formatted += '/' + value.substring(2, 4);
+                                    if (value.length > 4) {
+                                      formatted += '/' + value.substring(4, 8);
+                                    }
                                   }
                                 }
-                              }
-                              form.setValue('abc.rateLockExpiration', formatted);
-                            }}
-                            placeholder="MM/DD/YYYY"
-                            maxLength={10}
-                            data-testid="input-abc-rateLockExpiration"
-                          />
+                                form.setValue('abc.rateLockExpiration', formatted);
+                              }}
+                              placeholder="MM/DD/YYYY"
+                              maxLength={10}
+                              data-testid="input-abc-rateLockExpiration"
+                            />
+                          )}
                         </div>
                         
                         <div className="space-y-2">
