@@ -20550,35 +20550,37 @@ export default function AdminAddClient() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {/* Loan Purpose Row */}
-                  <div className="space-y-3">
+                  <div className="flex items-center gap-6">
                     <Label className="text-base font-semibold">Loan Purpose:</Label>
-                    <div className="grid grid-cols-3 gap-4">
-                      {/* Refinance Square */}
-                      <button
-                        type="button"
-                        className="aspect-square border-2 border-gray-300 bg-white hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 rounded-md flex items-center justify-center font-medium text-gray-700 hover:text-blue-700"
-                        data-testid="button-loan-purpose-refinance"
-                      >
-                        Refinance
-                      </button>
-                      
-                      {/* Purchase Square */}
-                      <button
-                        type="button"
-                        className="aspect-square border-2 border-gray-300 bg-white hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 rounded-md flex items-center justify-center font-medium text-gray-700 hover:text-blue-700"
-                        data-testid="button-loan-purpose-purchase"
-                      >
-                        Purchase
-                      </button>
-                      
-                      {/* Build Square */}
-                      <button
-                        type="button"
-                        className="aspect-square border-2 border-gray-300 bg-white hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 rounded-md flex items-center justify-center font-medium text-gray-700 hover:text-blue-700"
-                        data-testid="button-loan-purpose-build"
-                      >
-                        Build
-                      </button>
+                    
+                    {/* Refinance */}
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="loan-purpose-refinance"
+                        data-testid="checkbox-loan-purpose-refinance"
+                        className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                      />
+                      <Label htmlFor="loan-purpose-refinance">Refinance</Label>
+                    </div>
+                    
+                    {/* Purchase */}
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="loan-purpose-purchase"
+                        data-testid="checkbox-loan-purpose-purchase"
+                        className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                      />
+                      <Label htmlFor="loan-purpose-purchase">Purchase</Label>
+                    </div>
+                    
+                    {/* Build */}
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="loan-purpose-build"
+                        data-testid="checkbox-loan-purpose-build"
+                        className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                      />
+                      <Label htmlFor="loan-purpose-build">Build</Label>
                     </div>
                   </div>
                 </CardContent>
