@@ -20595,14 +20595,14 @@ export default function AdminAddClient() {
                             <Label htmlFor="compare-3-rates">3 Rates</Label>
                           </div>
                           
-                          {/* 4 Rate */}
+                          {/* 4 Rates */}
                           <div className="flex items-center space-x-2">
                             <Checkbox
                               id="compare-4-rate"
                               data-testid="checkbox-compare-4-rate"
                               className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                             />
-                            <Label htmlFor="compare-4-rate">4 Rate</Label>
+                            <Label htmlFor="compare-4-rate">4 Rates</Label>
                           </div>
                           
                           {/* 5 Rates */}
@@ -20656,7 +20656,7 @@ export default function AdminAddClient() {
                     {/* Source Row */}
                     <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                       <Label className="text-base font-semibold">Source:</Label>
-                      <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
+                      <div className="grid grid-cols-[180px_180px_180px_180px_180px] gap-4">
                         {/* Direct Mail */}
                         <div className="flex items-center space-x-2">
                           <Checkbox
@@ -20696,6 +20696,16 @@ export default function AdminAddClient() {
                           />
                           <Label htmlFor="source-repeat">Repeat</Label>
                         </div>
+                        
+                        {/* Website */}
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="source-website"
+                            data-testid="checkbox-source-website"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="source-website">Website</Label>
+                        </div>
                       </div>
                     </div>
                     </CardContent>
@@ -20709,7 +20719,7 @@ export default function AdminAddClient() {
                       {/* Property Row */}
                       <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                         <Label className="text-base font-semibold">Property:</Label>
-                        <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
+                        <div className="grid grid-cols-[180px_180px_180px_180px_180px_180px] gap-4">
                           {/* Primary Residence */}
                           <div className="flex items-center space-x-2">
                             <Checkbox
@@ -20748,6 +20758,26 @@ export default function AdminAddClient() {
                               className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                             />
                             <Label htmlFor="property-purpose-home-purchase">Home Purchase</Label>
+                          </div>
+                          
+                          {/* Duplex */}
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              id="property-purpose-duplex"
+                              data-testid="checkbox-property-purpose-duplex"
+                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                            />
+                            <Label htmlFor="property-purpose-duplex">Duplex</Label>
+                          </div>
+                          
+                          {/* Multi-Family */}
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              id="property-purpose-multi-family"
+                              data-testid="checkbox-property-purpose-multi-family"
+                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                            />
+                            <Label htmlFor="property-purpose-multi-family">Multi-Family</Label>
                           </div>
                         </div>
                       </div>
