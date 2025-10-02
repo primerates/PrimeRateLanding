@@ -19563,7 +19563,7 @@ export default function AdminAddClient() {
                       <Input
                         id="bbb-lenderName"
                         type="text"
-                        placeholder="Enter lender name"
+                        placeholder=""
                         {...form.register("bbb.lenderName")}
                         data-testid="input-bbb-lenderName"
                       />
@@ -19574,7 +19574,7 @@ export default function AdminAddClient() {
                       <Input
                         id="bbb-loanNumber"
                         type="text"
-                        placeholder="Enter loan number"
+                        placeholder=""
                         {...form.register("bbb.loanNumber")}
                         data-testid="input-bbb-loanNumber"
                       />
