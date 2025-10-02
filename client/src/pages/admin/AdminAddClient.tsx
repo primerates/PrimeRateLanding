@@ -7188,7 +7188,18 @@ export default function AdminAddClient() {
                       value={form.watch('borrower.stage') || 'Lead'}
                       onValueChange={(value) => form.setValue('borrower.stage', value as any)}
                     >
-                      <SelectTrigger data-testid="select-borrower-stage">
+                      <SelectTrigger 
+                        data-testid="select-borrower-stage"
+                        className={
+                          form.watch('borrower.stage') === 'Quote' ? 'text-orange-600' :
+                          form.watch('borrower.stage') === 'Funded' ? 'text-green-600' :
+                          form.watch('borrower.stage') === 'Audit' ? 'text-blue-600' :
+                          form.watch('borrower.stage') === 'Closed' ? 'text-green-600' :
+                          form.watch('borrower.stage') === 'Cancel' ? 'text-red-600' :
+                          form.watch('borrower.stage') === 'Withdraw' ? 'text-red-600' :
+                          ''
+                        }
+                      >
                         <SelectValue placeholder="Lead" />
                       </SelectTrigger>
                       <SelectContent>
