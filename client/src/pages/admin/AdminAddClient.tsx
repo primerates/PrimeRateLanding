@@ -18166,7 +18166,18 @@ export default function AdminAddClient() {
                         }}
                         data-testid="circle-1"
                       >
-                        RNL
+                        {(() => {
+                          // Check if New Refinance Loan card is open
+                          const hasRefinanceCards = (newRefinanceLoanCards || []).length > 0;
+                          // Check if New Purchase Loan card is open
+                          const hasPurchaseCards = (newPurchaseLoanCards || []).length > 0;
+                          
+                          // If either card is open, display "1"
+                          if (hasRefinanceCards || hasPurchaseCards) {
+                            return '1';
+                          }
+                          return '';
+                        })()}
                       </div>
                     </div>
                   </div>
