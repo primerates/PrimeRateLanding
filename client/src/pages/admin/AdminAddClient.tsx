@@ -20547,7 +20547,63 @@ export default function AdminAddClient() {
             <TabsContent value="quote" className="space-y-6">
               <div>
                 <Card className={`bg-gray-100 mb-6 hover:shadow-lg transition-shadow duration-300 border-l-4 transition-colors ${isQuoteCardsMinimized ? 'border-l-green-500' : 'border-l-transparent hover:border-l-green-500'}`}>
-                  <div className="flex justify-end pt-4 pr-4">
+                  <div className="flex justify-between items-center pt-4 px-4">
+                    {/* Compare Row */}
+                    <div className="flex items-center gap-2">
+                      <Label className="text-base font-semibold">Compare:</Label>
+                      <div className="flex gap-4">
+                        {/* 1 Rate */}
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="compare-1-rate"
+                            data-testid="checkbox-compare-1-rate"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="compare-1-rate">1 Rate</Label>
+                        </div>
+                        
+                        {/* 2 Rates */}
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="compare-2-rates"
+                            data-testid="checkbox-compare-2-rates"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="compare-2-rates">2 Rates</Label>
+                        </div>
+                        
+                        {/* 3 Rates */}
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="compare-3-rates"
+                            data-testid="checkbox-compare-3-rates"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="compare-3-rates">3 Rates</Label>
+                        </div>
+                        
+                        {/* 4 Rate */}
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="compare-4-rate"
+                            data-testid="checkbox-compare-4-rate"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="compare-4-rate">4 Rate</Label>
+                        </div>
+                        
+                        {/* 5 Rates */}
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="compare-5-rates"
+                            data-testid="checkbox-compare-5-rates"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="compare-5-rates">5 Rates</Label>
+                        </div>
+                      </div>
+                    </div>
+                    
                     <Button
                       variant="ghost"
                       size="sm"
@@ -20854,62 +20910,6 @@ export default function AdminAddClient() {
                               className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                             />
                             <Label htmlFor="loan-type-purchase">Purchase</Label>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Compare Row */}
-                      <div className="grid grid-cols-[150px_1fr] items-center gap-8">
-                        <Label className="text-base font-semibold">Compare:</Label>
-                        <div className="grid grid-cols-[180px_180px_180px_180px_180px] gap-4">
-                          {/* 1 Rate */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="compare-1-rate"
-                              data-testid="checkbox-compare-1-rate"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                            />
-                            <Label htmlFor="compare-1-rate">1 Rate</Label>
-                          </div>
-                          
-                          {/* 2 Rates */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="compare-2-rates"
-                              data-testid="checkbox-compare-2-rates"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                            />
-                            <Label htmlFor="compare-2-rates">2 Rates</Label>
-                          </div>
-                          
-                          {/* 3 Rates */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="compare-3-rates"
-                              data-testid="checkbox-compare-3-rates"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                            />
-                            <Label htmlFor="compare-3-rates">3 Rates</Label>
-                          </div>
-                          
-                          {/* 4 Rate */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="compare-4-rate"
-                              data-testid="checkbox-compare-4-rate"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                            />
-                            <Label htmlFor="compare-4-rate">4 Rate</Label>
-                          </div>
-                          
-                          {/* 5 Rates */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="compare-5-rates"
-                              data-testid="checkbox-compare-5-rates"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                            />
-                            <Label htmlFor="compare-5-rates">5 Rates</Label>
                           </div>
                         </div>
                       </div>
