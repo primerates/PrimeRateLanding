@@ -7181,7 +7181,7 @@ export default function AdminAddClient() {
               <Card className={`transition-all duration-700 ${
                 showEntryAnimation ? 'animate-roll-down-delayed' : (showBorrowerAnimation ? 'animate-roll-down' : '')
               }`}>
-                <CardContent className="grid grid-cols-1 md:grid-cols-5 gap-4 pt-6">
+                <CardContent className="grid grid-cols-1 md:grid-cols-6 gap-4 pt-6">
                   <div className="space-y-2 max-w-[75%]">
                     <Label htmlFor="borrower-stage">Stage</Label>
                     <Select
