@@ -6143,6 +6143,36 @@ export default function AdminAddClient() {
     setDeleteCurrentThirdLoanDialog({ isOpen: false, cardId: '' });
   };
 
+  // Helper function to handle ABC (Refinance - New Loan) checkbox changes
+  const handleAbcLoanTypeChange = (checked: boolean) => {
+    if (!checked) {
+      // Don't allow unchecking if card is already open - removal must be done through card Remove button
+      if (isAbcCardOpen) {
+        return;
+      }
+    } else {
+      // When checking, open the ABC card
+      if (!isAbcCardOpen) {
+        setIsAbcCardOpen(true);
+      }
+    }
+  };
+
+  // Helper function to handle BBB (Purchase - New Loan) checkbox changes
+  const handleBbbLoanTypeChange = (checked: boolean) => {
+    if (!checked) {
+      // Don't allow unchecking if card is already open - removal must be done through card Remove button
+      if (isBbbCardOpen) {
+        return;
+      }
+    } else {
+      // When checking, open the BBB card
+      if (!isBbbCardOpen) {
+        setIsBbbCardOpen(true);
+      }
+    }
+  };
+
 
   // Property type management functions
   const addPropertyType = (type: 'primary' | 'second-home' | 'investment' | 'home-purchase') => {
@@ -18184,11 +18214,23 @@ export default function AdminAddClient() {
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="property-type-abc-loan-tab"
-                          disabled
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
+                          checked={isAbcCardOpen}
+                          onCheckedChange={(checked) => {
+                            if (typeof checked === 'boolean') {
+                              handleAbcLoanTypeChange(checked);
+                            }
+                          }}
+                          className={`transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black ${
+                            isAbcCardOpen ? 'pointer-events-none opacity-75' : ''
+                          }`}
                           data-testid="checkbox-property-abc-loan-tab"
                         />
-                        <Label htmlFor="property-type-abc-loan-tab" className="font-medium text-black">
+                        <Label 
+                          htmlFor="property-type-abc-loan-tab" 
+                          className={`font-medium text-black ${
+                            isAbcCardOpen ? 'pointer-events-none opacity-75' : 'cursor-pointer'
+                          }`}
+                        >
                           Refinance - New Loan
                         </Label>
                       </div>
@@ -18196,11 +18238,23 @@ export default function AdminAddClient() {
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="property-type-bbb-loan-tab"
-                          disabled
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
+                          checked={isBbbCardOpen}
+                          onCheckedChange={(checked) => {
+                            if (typeof checked === 'boolean') {
+                              handleBbbLoanTypeChange(checked);
+                            }
+                          }}
+                          className={`transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black ${
+                            isBbbCardOpen ? 'pointer-events-none opacity-75' : ''
+                          }`}
                           data-testid="checkbox-property-bbb-loan-tab"
                         />
-                        <Label htmlFor="property-type-bbb-loan-tab" className="font-medium text-black">
+                        <Label 
+                          htmlFor="property-type-bbb-loan-tab" 
+                          className={`font-medium text-black ${
+                            isBbbCardOpen ? 'pointer-events-none opacity-75' : 'cursor-pointer'
+                          }`}
+                        >
                           Purchase - New Loan
                         </Label>
                       </div>
@@ -18339,6 +18393,8 @@ export default function AdminAddClient() {
                         onClick={() => {
                           // Clear ABC card data
                           form.setValue("abc", {});
+                          // Close the card (this will uncheck the checkbox with animation)
+                          setIsAbcCardOpen(false);
                         }}
                         className="hover:bg-red-500 hover:text-white"
                         data-testid="button-remove-abc"
@@ -19150,6 +19206,8 @@ export default function AdminAddClient() {
                         onClick={() => {
                           // Clear BBB card data
                           form.setValue("bbb", {});
+                          // Close the card (this will uncheck the checkbox with animation)
+                          setIsBbbCardOpen(false);
                         }}
                         className="hover:bg-red-500 hover:text-white"
                         data-testid="button-remove-bbb"
