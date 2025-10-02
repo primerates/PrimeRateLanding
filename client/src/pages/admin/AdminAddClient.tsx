@@ -20716,7 +20716,7 @@ export default function AdminAddClient() {
                   {/* Loan Type Row */}
                   <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                     <Label className="text-base font-semibold">Loan Type:</Label>
-                    <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
+                    <div className="grid grid-cols-[180px_180px_180px_180px_180px] gap-4">
                       {/* Cash Out */}
                       <div className="flex items-center space-x-2">
                         <Checkbox
