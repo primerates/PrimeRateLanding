@@ -865,19 +865,6 @@ export default function AdminAddClient() {
       });
     }
     
-    // Check brand new loan
-    const brandNewLoanAttached = form.watch('brandNewLoan.attachedToProperty');
-    if (brandNewLoanAttached === propertyId) {
-      form.setValue('brandNewLoan.propertyAddress', {
-        street: propertyAddress.street || '',
-        unit: propertyAddress.unit || '',
-        city: propertyAddress.city || '',
-        state: propertyAddress.state || '',
-        zipCode: propertyAddress.zip || '',
-        county: propertyAddress.county || ''
-      });
-    }
-    
     // Check purchase loan
     const purchaseLoanAttached = form.watch('purchaseLoan.attachedToProperty');
     if (purchaseLoanAttached === propertyId) {
@@ -927,8 +914,6 @@ export default function AdminAddClient() {
   const [showSecondLoanCardAnimation, setShowSecondLoanCardAnimation] = useState<{[key: string]: boolean}>({});
   // Animation state for third loan card grey box roll-up
   const [showThirdLoanCardAnimation, setShowThirdLoanCardAnimation] = useState<{[key: string]: boolean}>({});
-  // Animation state for brand new loan card grey box roll-up
-  const [showBrandNewLoanCardAnimation, setShowBrandNewLoanCardAnimation] = useState<{[key: string]: boolean}>({});
   // Animation state for purchase loan card grey box roll-up
   const [showPurchaseLoanCardAnimation, setShowPurchaseLoanCardAnimation] = useState<{[key: string]: boolean}>({});
   // Animation state for revert icon rotation
@@ -942,8 +927,6 @@ export default function AdminAddClient() {
   const [isSecondLoanOpen, setIsSecondLoanOpen] = useState(true);
   const [showThirdLoan, setShowThirdLoan] = useState(false);
   const [isThirdLoanOpen, setIsThirdLoanOpen] = useState(true);
-  const [showBrandNewLoan, setShowBrandNewLoan] = useState(false);
-  const [isBrandNewLoanOpen, setIsBrandNewLoanOpen] = useState(true);
   const [showPurchaseLoan, setShowPurchaseLoan] = useState(false);
   const [isPurchaseLoanOpen, setIsPurchaseLoanOpen] = useState(true);
   const [additionalLoans, setAdditionalLoans] = useState<Array<{id: string, isOpen: boolean}>>([]);
@@ -1390,9 +1373,6 @@ export default function AdminAddClient() {
   // Current Third Loan card collapsible state (per-card state management)
   const [thirdLoanCardStates, setThirdLoanCardStates] = useState<Record<string, boolean>>({});
   
-  // Brand New Loan card collapsible state (per-card state management)
-  const [brandNewLoanCardStates, setBrandNewLoanCardStates] = useState<Record<string, boolean>>({});
-  
   // Purchase Loan card collapsible state (per-card state management)
   const [purchaseLoanCardStates, setPurchaseLoanCardStates] = useState<Record<string, boolean>>({});
   
@@ -1459,15 +1439,7 @@ export default function AdminAddClient() {
     isDefaultCard: boolean | null; // null = not selected, true = default card created
   }>>({});
 
-  // Brand New Loan cards state management (similar to property cards and other loan cards)
-  const [brandNewLoanCards, setBrandNewLoanCards] = useState<string[]>([]);
-  
-  // Brand New Loan card data state
-  const [brandNewLoanData, setBrandNewLoanData] = useState<Record<string, {
-    isDefaultCard: boolean | null; // null = not selected, true = default card created
-  }>>({});
-
-  // Purchase Loan cards state management (similar to brand new loan cards)
+  // Purchase Loan cards state management
   const [purchaseLoanCards, setPurchaseLoanCards] = useState<string[]>([]);
   
   // Purchase Loan card data state
@@ -1539,12 +1511,6 @@ export default function AdminAddClient() {
 
   // Delete confirmation dialog state for Current Third Loan cards
   const [deleteCurrentThirdLoanDialog, setDeleteCurrentThirdLoanDialog] = useState<{
-    isOpen: boolean;
-    cardId: string;
-  }>({ isOpen: false, cardId: '' });
-
-  // Delete confirmation dialog state for Brand New Loan cards
-  const [deleteBrandNewLoanDialog, setDeleteBrandNewLoanDialog] = useState<{
     isOpen: boolean;
     cardId: string;
   }>({ isOpen: false, cardId: '' });
@@ -1816,22 +1782,7 @@ export default function AdminAddClient() {
   // Current Second Loan escrow toggle state (3-state cycle)
   const [secondLoanEscrowType, setSecondLoanEscrowType] = useState<'tax-insurance' | 'insurance-only' | 'property-tax-only'>('tax-insurance');
 
-  // Brand New Loan toggle states
-  const [brandNewLoanEscrowType, setBrandNewLoanEscrowType] = useState<'tax-insurance' | 'insurance-only' | 'property-tax-only'>('tax-insurance');
-  const [brandNewLoanPaymentType, setBrandNewLoanPaymentType] = useState<'principal-interest' | 'interest-only'>('principal-interest');
-  const [brandNewLoanCashOutType, setBrandNewLoanCashOutType] = useState<'cash-out' | 'benefits-summary'>('cash-out');
-  const [brandNewLoanDebtPayOffType, setBrandNewLoanDebtPayOffType] = useState<'total-debt-payoff' | 'total-debt-payments'>('total-debt-payoff');
-  const [brandNewLoanTermType, setBrandNewLoanTermType] = useState<'dropdown' | 'manual'>('dropdown');
-  const [brandNewLoanFicoType, setBrandNewLoanFicoType] = useState<'mid-fico' | 'borrower-scores' | 'co-borrower-scores'>('mid-fico');
-  const [brandNewLoanLockDateType, setBrandNewLoanLockDateType] = useState<'date' | 'bond-entry'>('date');
-  const [brandNewLoanExpirationDurationType, setBrandNewLoanExpirationDurationType] = useState<'expiration' | 'duration'>('expiration');
-  const [brandNewLoanCreditType, setBrandNewLoanCreditType] = useState<'lender' | 'broker'>('lender');
-  // Background calculation storage - calculated duration but don't auto-switch toggle
-  const [calculatedDuration, setCalculatedDuration] = useState<string>('');
-  // Store original expiration dates to restore when toggling back to expiration mode
-  const [originalExpirationDate, setOriginalExpirationDate] = useState<string>('');
-
-  // New Loan conflict prevention state
+  // Purchase Loan - New Loan conflict prevention state (only for purchase now)
   const [currentNewLoanType, setCurrentNewLoanType] = useState<'refinance' | 'purchase' | null>(null);
   const [showLoanConflictDialog, setShowLoanConflictDialog] = useState(false);
 
@@ -1886,6 +1837,9 @@ export default function AdminAddClient() {
   const [purchaseLoanFicoType, setPurchaseLoanFicoType] = useState<'mid-fico' | 'borrower-scores' | 'co-borrower-scores'>('mid-fico');
   const [purchaseLoanCreditType, setPurchaseLoanCreditType] = useState<'lender' | 'broker'>('lender');
 
+  // ABC card toggle states (Migrated from Brand New Loan - Refinance)
+  const [abcFicoType, setAbcFicoType] = useState<'mid-fico' | 'borrower-scores' | 'co-borrower-scores'>('mid-fico');
+
   // Helper function to get Current Second Loan escrow label and handle toggle cycling
   const getSecondLoanEscrowLabel = () => {
     switch (secondLoanEscrowType) {
@@ -1903,95 +1857,6 @@ export default function AdminAddClient() {
         case 'insurance-only': return 'property-tax-only';
         case 'property-tax-only': return 'tax-insurance';
         default: return 'tax-insurance';
-      }
-    });
-  };
-
-  // Brand New Loan toggle functions
-  const getBrandNewLoanEscrowLabel = () => {
-    switch (brandNewLoanEscrowType) {
-      case 'tax-insurance': return 'Tax & Insurance Payment';
-      case 'insurance-only': return 'Insurance Payment';
-      case 'property-tax-only': return 'Property Tax Payment';
-      default: return 'Tax & Insurance Payment';
-    }
-  };
-
-  const cycleBrandNewLoanEscrowType = () => {
-    setBrandNewLoanEscrowType(current => {
-      switch (current) {
-        case 'tax-insurance': return 'insurance-only';
-        case 'insurance-only': return 'property-tax-only';
-        case 'property-tax-only': return 'tax-insurance';
-        default: return 'tax-insurance';
-      }
-    });
-  };
-
-  const getBrandNewLoanPaymentLabel = () => {
-    switch (brandNewLoanPaymentType) {
-      case 'principal-interest': return 'Principal & Interest Payment';
-      case 'interest-only': return 'Interest Only Payment';
-      default: return 'Principal & Interest Payment';
-    }
-  };
-
-  const cycleBrandNewLoanPaymentType = () => {
-    setBrandNewLoanPaymentType(current => {
-      switch (current) {
-        case 'principal-interest': return 'interest-only';
-        case 'interest-only': return 'principal-interest';
-        default: return 'principal-interest';
-      }
-    });
-  };
-
-  const getBrandNewLoanCashOutLabel = () => {
-    switch (brandNewLoanCashOutType) {
-      case 'cash-out': return 'Cash Out Amount';
-      case 'benefits-summary': return 'Benefits Summary';
-      default: return 'Cash Out Amount';
-    }
-  };
-
-  const cycleBrandNewLoanCashOutType = () => {
-    setBrandNewLoanCashOutType(current => {
-      switch (current) {
-        case 'cash-out': return 'benefits-summary';
-        case 'benefits-summary': return 'cash-out';
-        default: return 'cash-out';
-      }
-    });
-  };
-
-  const getBrandNewLoanDebtPayOffLabel = () => {
-    switch (brandNewLoanDebtPayOffType) {
-      case 'total-debt-payoff': return 'Total Debt Pay Off';
-      case 'total-debt-payments': return 'Total Debt Pay Off Payments';
-      default: return 'Total Debt Pay Off';
-    }
-  };
-
-  const cycleBrandNewLoanDebtPayOffType = () => {
-    setBrandNewLoanDebtPayOffType(current => {
-      switch (current) {
-        case 'total-debt-payoff': return 'total-debt-payments';
-        case 'total-debt-payments': return 'total-debt-payoff';
-        default: return 'total-debt-payoff';
-      }
-    });
-  };
-
-  const getBrandNewLoanTermLabel = () => {
-    return 'Loan Term';
-  };
-
-  const cycleBrandNewLoanTermType = () => {
-    setBrandNewLoanTermType(current => {
-      switch (current) {
-        case 'dropdown': return 'manual';
-        case 'manual': return 'dropdown';
-        default: return 'dropdown';
       }
     });
   };
@@ -2047,49 +1912,6 @@ export default function AdminAddClient() {
     });
   };
 
-  const getBrandNewLoanFicoLabel = () => {
-    switch (brandNewLoanFicoType) {
-      case 'mid-fico': return 'Mid FICO';
-      case 'borrower-scores': return 'Borrower Credit Scores';
-      case 'co-borrower-scores': return 'Co-Borrower Credit Scores';
-      default: return 'Mid FICO';
-    }
-  };
-
-  const cycleBrandNewLoanFicoType = () => {
-    setBrandNewLoanFicoType(current => {
-      switch (current) {
-        case 'mid-fico': return 'borrower-scores';
-        case 'borrower-scores': return 'co-borrower-scores';
-        case 'co-borrower-scores': return 'mid-fico';
-        default: return 'mid-fico';
-      }
-    });
-  };
-
-  // Calculate Mid FICO value based on borrower and co-borrower scores
-  const getCalculatedMidFico = () => {
-    const borrowerMidFico = borrowerCreditScoresDialog.midFico;
-    const coBorrowerMidFico = coBorrowerCreditScoresDialog.midFico;
-
-    // If no Co-Borrower, return Borrower Mid FICO value or "Pending"
-    if (!hasCoBorrower) {
-      return borrowerMidFico || "Pending";
-    }
-
-    // If Co-Borrower exists, both scores must be present to calculate
-    if (borrowerMidFico && coBorrowerMidFico) {
-      const borrowerScore = parseInt(borrowerMidFico);
-      const coBorrowerScore = parseInt(coBorrowerMidFico);
-      
-      // Return the lower value
-      return Math.min(borrowerScore, coBorrowerScore).toString();
-    }
-
-    // If either score is missing, return "Pending"
-    return "Pending";
-  };
-
   // Calculate Mid FICO value for Purchase Loan based on borrower and co-borrower scores
   const getPurchaseCalculatedMidFico = () => {
     const borrowerMidFico = purchaseBorrowerCreditScoresDialog.midFico;
@@ -2111,60 +1933,6 @@ export default function AdminAddClient() {
 
     // If either score is missing, return "Pending"
     return "Pending";
-  };
-
-  const getBrandNewLoanLockDateLabel = () => {
-    switch (brandNewLoanLockDateType) {
-      case 'date': return 'Rate Lock Date';
-      case 'bond-entry': return 'Lock Date - 10 Year Bond';
-      default: return 'Rate Lock Date';
-    }
-  };
-
-  const cycleBrandNewLoanLockDateType = () => {
-    setBrandNewLoanLockDateType(current => {
-      switch (current) {
-        case 'date': return 'bond-entry';
-        case 'bond-entry': return 'date';
-        default: return 'date';
-      }
-    });
-  };
-
-  const getBrandNewLoanExpirationDurationLabel = () => {
-    switch (brandNewLoanExpirationDurationType) {
-      case 'expiration': return 'Rate Lock Expiration';
-      case 'duration': return 'Rate Lock Duration';
-      default: return 'Rate Lock Expiration';
-    }
-  };
-
-  const cycleBrandNewLoanExpirationDurationType = () => {
-    setBrandNewLoanExpirationDurationType(current => {
-      switch (current) {
-        case 'expiration': return 'duration';
-        case 'duration': return 'expiration';
-        default: return 'expiration';
-      }
-    });
-  };
-
-  const getBrandNewLoanCreditLabel = () => {
-    switch (brandNewLoanCreditType) {
-      case 'lender': return 'Lender Credit';
-      case 'broker': return 'Broker Credit';
-      default: return 'Lender Credit';
-    }
-  };
-
-  const cycleBrandNewLoanCreditType = () => {
-    setBrandNewLoanCreditType(current => {
-      switch (current) {
-        case 'lender': return 'broker';
-        case 'broker': return 'lender';
-        default: return 'lender';
-      }
-    });
   };
 
   // Purchase Loan FICO label and type cycling functions
@@ -2245,6 +2013,50 @@ export default function AdminAddClient() {
         default: return 'tax-insurance';
       }
     });
+  };
+
+  // ABC card FICO label and type cycling functions (Migrated from Brand New Loan - Refinance)
+  const getAbcFicoLabel = () => {
+    switch (abcFicoType) {
+      case 'mid-fico': return 'Mid FICO';
+      case 'borrower-scores': return 'Borrower Credit Scores';
+      case 'co-borrower-scores': return 'Co-Borrower Credit Scores';
+      default: return 'Mid FICO';
+    }
+  };
+
+  const cycleAbcFicoType = () => {
+    setAbcFicoType(current => {
+      switch (current) {
+        case 'mid-fico': return 'borrower-scores';
+        case 'borrower-scores': return 'co-borrower-scores';
+        case 'co-borrower-scores': return 'mid-fico';
+        default: return 'mid-fico';
+      }
+    });
+  };
+
+  // Calculate Mid FICO value for ABC card based on borrower and co-borrower scores
+  const getAbcCalculatedMidFico = () => {
+    const borrowerMidFico = borrowerCreditScoresDialog.midFico;
+    const coBorrowerMidFico = coBorrowerCreditScoresDialog.midFico;
+
+    // If no Co-Borrower, return Borrower Mid FICO value or "Pending"
+    if (!hasCoBorrower) {
+      return borrowerMidFico || "Pending";
+    }
+
+    // If Co-Borrower exists, both scores must be present to calculate
+    if (borrowerMidFico && coBorrowerMidFico) {
+      const borrowerScore = parseInt(borrowerMidFico);
+      const coBorrowerScore = parseInt(coBorrowerMidFico);
+      
+      // Return the lower value
+      return Math.min(borrowerScore, coBorrowerScore).toString();
+    }
+
+    // If either score is missing, return "Pending"
+    return "Pending";
   };
 
   const form = useForm<InsertClient>({
@@ -2799,41 +2611,6 @@ export default function AdminAddClient() {
   };
 
 
-  // Auto-Sum Payment Fields Component for Brand New Loan (Refinance) - isolated calculation without parent re-renders
-  const BrandNewLoanAutoSumPaymentFields = React.memo<{ control: any }>(({ control }) => {
-    // Watch specific fields for auto-sum calculation - isolated from parent component
-    const principalPayment = useWatch({ control, name: 'brandNewLoan.principalAndInterestPayment' }) || '';
-    const escrowPayment = useWatch({ control, name: 'brandNewLoan.escrowPayment' }) || '';
-    
-    // Calculate total with useMemo for performance
-    const totalPayment = useMemo(() => {
-      const principal = parseMonetaryValue(principalPayment);
-      const escrow = parseMonetaryValue(escrowPayment);
-      return principal + escrow;
-    }, [principalPayment, escrowPayment]);
-    
-    const totalPaymentFormatted = useMemo(() => 
-      totalPayment > 0 
-        ? `$${totalPayment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` 
-        : '$0.00',
-      [totalPayment]
-    );
-
-    return (
-      <div className="space-y-2 md:col-span-2">
-        <Label className="text-sm font-medium text-black">Total Monthly Payment</Label>
-        <div className="flex items-center border border-input bg-background px-3 rounded-md">
-          <span className="text-muted-foreground text-sm">$</span>
-          <Input
-            value={totalPaymentFormatted.replace('$', '')}
-            readOnly
-            className="border-0 bg-transparent px-2 focus-visible:ring-0"
-            data-testid="text-total-brand-new-loan-payment"
-          />
-        </div>
-      </div>
-    );
-  });
 
   // Format percentage value for display only
   const formatPercentageDisplay = (value: string | number | undefined): string => {
@@ -3629,60 +3406,6 @@ export default function AdminAddClient() {
     }
   }, [form.watch('property.properties')]);
 
-  // Background calculation of Rate Lock Duration - calculate but don't auto-switch toggle
-  useEffect(() => {
-    const rateLockDate = form.watch('brandNewLoan.rateLockDate');
-    const rateLockExpiration = form.watch('brandNewLoan.rateLockDuration');
-    
-    // Only calculate if in expiration mode and both dates are provided
-    if (brandNewLoanExpirationDurationType === 'expiration' && rateLockDate && rateLockExpiration) {
-      try {
-        const startDate = new Date(rateLockDate);
-        const endDate = new Date(rateLockExpiration);
-        
-        // Check if both dates are valid
-        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-          setCalculatedDuration('');
-          return;
-        }
-        
-        // Calculate the difference in milliseconds
-        const timeDiff = endDate.getTime() - startDate.getTime();
-        const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-        
-        if (daysDiff > 0) {
-          // Store calculated duration in background - don't auto-switch toggle
-          setCalculatedDuration(`${daysDiff} days`);
-        } else {
-          setCalculatedDuration('');
-        }
-      } catch (error) {
-        // Invalid date format, clear calculation
-        setCalculatedDuration('');
-      }
-    } else {
-      // Clear calculation if not in expiration mode or missing dates
-      setCalculatedDuration('');
-    }
-  }, [form.watch('brandNewLoan.rateLockDate'), form.watch('brandNewLoan.rateLockDuration'), brandNewLoanExpirationDurationType, form]);
-
-  // Sync form values when toggling between expiration and duration modes
-  useEffect(() => {
-    // Handle Refinance loan toggle
-    if (brandNewLoanExpirationDurationType === 'duration' && calculatedDuration) {
-      // Store the current expiration date before overwriting with duration
-      const currentExpirationDate = form.getValues('brandNewLoan.rateLockDuration');
-      if (currentExpirationDate && currentExpirationDate !== calculatedDuration) {
-        setOriginalExpirationDate(currentExpirationDate);
-      }
-      // When switching to duration mode, set the calculated duration
-      form.setValue('brandNewLoan.rateLockDuration', calculatedDuration);
-    } else if (brandNewLoanExpirationDurationType === 'expiration' && originalExpirationDate) {
-      // When switching back to expiration mode, restore the original date
-      form.setValue('brandNewLoan.rateLockDuration', originalExpirationDate);
-    }
-  }, [brandNewLoanExpirationDurationType, calculatedDuration, originalExpirationDate, form]);
-
   // Animation effect for first-time page entry
   useEffect(() => {
     // Trigger animation on initial component mount
@@ -3896,98 +3619,6 @@ export default function AdminAddClient() {
           />
         </div>
       </div>
-    );
-  });
-
-  // Isolated Rate Lock Date component to prevent typing lag
-  const BrandNewLoanRateLockDateInput = React.memo<{ form: any; idPrefix: string; type: string }>(({ form, idPrefix, type }) => {
-    const rateLockDate = useWatch({ control: form.control, name: 'brandNewLoan.rateLockDate' });
-
-    if (type !== 'date') {
-      return (
-        <Input
-          id="brandNewLoan-rateLockDate"
-          value={rateLockDate || ''}
-          onChange={(e) => {
-            form.setValue('brandNewLoan.rateLockDate', e.target.value);
-          }}
-          placeholder="Enter"
-          className="border border-input bg-background px-3 rounded-md"
-          data-testid="input-brandNewLoan-rateLockDate"
-        />
-      );
-    }
-
-    return (
-      <Input
-        id="brandNewLoan-rateLockDate"
-        value={rateLockDate || ''}
-        onChange={(e) => {
-          const value = e.target.value.replace(/\D/g, '');
-          let formatted = '';
-          if (value.length > 0) {
-            formatted = value.substring(0, 2);
-            if (value.length > 2) {
-              formatted += '/' + value.substring(2, 4);
-              if (value.length > 4) {
-                formatted += '/' + value.substring(4, 8);
-              }
-            }
-          }
-          form.setValue('brandNewLoan.rateLockDate', formatted);
-        }}
-        placeholder="MM/DD/YYYY"
-        maxLength={10}
-        className="border border-input bg-background px-3 rounded-md"
-        data-testid="input-brandNewLoan-rateLockDate"
-      />
-    );
-  });
-
-  // Isolated Rate Lock Duration component to prevent typing lag
-  const BrandNewLoanRateLockDurationInput = React.memo<{ form: any; idPrefix: string; type: string; calculatedDuration: string }>(({ form, idPrefix, type, calculatedDuration }) => {
-    const rateLockDuration = useWatch({ control: form.control, name: 'brandNewLoan.rateLockDuration' });
-
-    if (type !== 'expiration') {
-      return (
-        <Input
-          id="brandNewLoan-rateLockDuration"
-          value={rateLockDuration || ''}
-          onChange={(e) => {
-            form.setValue('brandNewLoan.rateLockDuration', e.target.value);
-          }}
-          placeholder="Enter duration"
-          className={`border border-input px-3 rounded-md ${calculatedDuration ? 'bg-muted' : 'bg-background'}`}
-          data-testid="input-brandNewLoan-rateLockDuration"
-          disabled={!!calculatedDuration}
-          readOnly={!!calculatedDuration}
-        />
-      );
-    }
-
-    return (
-      <Input
-        id="brandNewLoan-rateLockDuration"
-        value={rateLockDuration || ''}
-        onChange={(e) => {
-          const value = e.target.value.replace(/\D/g, '');
-          let formatted = '';
-          if (value.length > 0) {
-            formatted = value.substring(0, 2);
-            if (value.length > 2) {
-              formatted += '/' + value.substring(2, 4);
-              if (value.length > 4) {
-                formatted += '/' + value.substring(4, 8);
-              }
-            }
-          }
-          form.setValue('brandNewLoan.rateLockDuration', formatted);
-        }}
-        placeholder="MM/DD/YYYY"
-        maxLength={10}
-        className="border border-input bg-background px-3 rounded-md"
-        data-testid="input-brandNewLoan-rateLockDuration"
-      />
     );
   });
 
@@ -4446,103 +4077,7 @@ export default function AdminAddClient() {
     );
   };
 
-  // BrandNewLoanCard component - duplicate of CurrentLoanCard
-  const BrandNewLoanCard = ({ 
-    idPrefix = '', 
-    borderVariant, 
-    isOpen, 
-    setIsOpen, 
-    onRemove, 
-    onAutoCopyAddress,
-    formInstance 
-  }: {
-    idPrefix?: string;
-    borderVariant: 'blue' | 'none';
-    isOpen: boolean;
-    setIsOpen: (open: boolean) => void;
-    onRemove?: () => void;
-    onAutoCopyAddress?: () => void;
-    formInstance?: any;
-  }) => {
-    const contextForm = useFormContext();
-    const targetForm = formInstance || contextForm;
-    
-    // State for property address collapse
-    const [isPropertyAddressOpen, setIsPropertyAddressOpen] = useState(true);
-    const currentLenderBinding = useFieldBinding('brandNewLoan.currentLender', idPrefix, targetForm);
-    const loanNumberBinding = useFieldBinding('brandNewLoan.loanNumber', idPrefix, targetForm);
-    const docTypeBinding = useSelectFieldBinding('brandNewLoan.docType', idPrefix, targetForm);
-    const remainingTermBinding = useFieldBinding('brandNewLoan.remainingTermPerCreditReport', idPrefix, targetForm);
-    const loanCategoryBinding = useSelectFieldBinding('brandNewLoan.loanCategory', idPrefix, targetForm);
-    const loanProgramBinding = useSelectFieldBinding('brandNewLoan.loanProgram', idPrefix, targetForm);
-    const loanTermBinding = useSelectFieldBinding('brandNewLoan.loanTerm', idPrefix, targetForm);
-    const loanPurposeBinding = useSelectFieldBinding('brandNewLoan.loanPurpose', idPrefix, targetForm);
-    const prepaymentPenaltyBinding = useSelectFieldBinding('brandNewLoan.prepaymentPenalty', idPrefix, targetForm);
-    const statementBalanceBinding = useFieldBinding('brandNewLoan.statementBalance.amount', idPrefix, targetForm);
-    
-    // Payment field bindings - optimized for performance
-    const currentRateBinding = useFieldBinding('brandNewLoan.currentRate', idPrefix, targetForm);
-    const totalMonthlyPaymentBinding = useFieldBinding('brandNewLoan.totalMonthlyPayment', idPrefix, targetForm);
-    
-    // Property address bindings
-    const propertyStreetBinding = useFieldBinding('brandNewLoan.propertyAddress.street', idPrefix, targetForm);
-    const propertyUnitBinding = useFieldBinding('brandNewLoan.propertyAddress.unit', idPrefix, targetForm);
-    const propertyCityBinding = useFieldBinding('brandNewLoan.propertyAddress.city', idPrefix, targetForm);
-    const propertyStateBinding = useSelectFieldBinding('brandNewLoan.propertyAddress.state', idPrefix, targetForm);
-    const propertyZipBinding = useFieldBinding('brandNewLoan.propertyAddress.zipCode', idPrefix, targetForm);
-    const propertyCountyBinding = useFieldBinding('brandNewLoan.propertyAddress.county', idPrefix, targetForm);
-    
-    const cardClassName = borderVariant === 'blue' ? 'border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200' : '';
-    
-    return (
-      <Card className={cardClassName}>
-        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>New Loan - Refinance</CardTitle>
-              <div className="flex items-center gap-2">
-                
-                {/* Remove Button */}
-                {onRemove && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={onRemove}
-                    className="hover:bg-red-500 hover:text-white"
-                    data-testid="button-remove-brand-new-loan"
-                    title="Remove Brand New Loan"
-                  >
-                    <Minus className="h-4 w-4 mr-2" />
-                    Remove
-                  </Button>
-                )}
-                
-                <CollapsibleTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="hover:bg-orange-500 hover:text-white" 
-                    data-testid={`button-toggle-brand-new-loan-${idPrefix}`}
-                    title={isOpen ? 'Minimize' : 'Expand'}
-                  >
-                    {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                  </Button>
-                </CollapsibleTrigger>
-              </div>
-            </div>
-          </CardHeader>
-          <CollapsibleContent>
-            <CardContent className="space-y-6 pt-[1.7rem]">
-              {/* No content - placeholder for future fields */}
-            </CardContent>
-          </CollapsibleContent>
-        </Collapsible>
-      </Card>
-    );
-  };
-
-  // PurchaseLoanCard component - duplicate of BrandNewLoanCard with different form bindings
+  // PurchaseLoanCard component - Purchase loan card
   const PurchaseLoanCard = ({ 
     idPrefix = '', 
     borderVariant, 
@@ -7388,104 +6923,6 @@ export default function AdminAddClient() {
     setDeleteCurrentThirdLoanDialog({ isOpen: false, cardId: '' });
   };
 
-  // Helper function to handle Brand New Loan type changes with card management (similar to Current Primary Loan)
-  const handleBrandNewLoanTypeChange = (checked: boolean) => {
-    if (!checked) {
-      // Allow unchecking - remove all Brand New Loan cards
-      const hasCards = (brandNewLoanCards || []).length > 0;
-      
-      if (hasCards) {
-        // Remove all Brand New Loan cards when unchecked
-        setBrandNewLoanCards([]);
-        setBrandNewLoanData({});
-        setBrandNewLoanCardStates({});
-        setShowBrandNewLoan(false);
-        setCurrentNewLoanType(null);
-        
-        // Clear any Brand New Loan form data
-        form.setValue('brandNewLoan', undefined);
-        return;
-      }
-    } else {
-      // Check if Purchase loan is already open - show conflict dialog
-      const hasPurchaseCards = (purchaseLoanCards || []).length > 0;
-      if (hasPurchaseCards) {
-        setShowLoanConflictDialog(true);
-        return;
-      }
-      
-      // When checking, auto-create default loan card
-      const hasCards = (brandNewLoanCards || []).length > 0;
-      
-      // Only create default loan card if none exist yet
-      if (!hasCards) {
-        // Generate a unique ID for the default loan card
-        const newLoanId = `brand-new-loan-${Date.now()}`;
-        
-        // Set the loan cards state
-        setBrandNewLoanCards([newLoanId]);
-        
-        // Initialize data state for default card
-        setBrandNewLoanData(prev => ({ 
-          ...prev, 
-          [newLoanId]: { isDefaultCard: true } 
-        }));
-        
-        // Initialize per-card collapsible state (auto-expand like Property cards)
-        setBrandNewLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
-        
-        // Auto-expand the loan card
-        setShowBrandNewLoan(true);
-        
-        // Set current loan type to refinance
-        setCurrentNewLoanType('refinance');
-        
-        // Auto-attach to subject property if one exists
-        const properties = form.watch('property.properties') || [];
-        const subjectProperty = properties.find(p => p.isSubject);
-        if (subjectProperty?.id) {
-          form.setValue('brandNewLoan.attachedToProperty', subjectProperty.id);
-        }
-        
-        // Trigger animation for newly created loan card grey box
-        setTimeout(() => {
-          const animationKey = 'brand-new-card-0-';
-          setShowBrandNewLoanCardAnimation(prev => ({ ...prev, [animationKey]: true }));
-          setTimeout(() => {
-            setShowBrandNewLoanCardAnimation(prev => ({ ...prev, [animationKey]: false }));
-          }, 800);
-        }, 200);
-      }
-    }
-  };
-
-  // Handle removing brand new loan cards (new system)
-  const removeBrandNewLoanCard = (cardId: string) => {
-    // Remove the specific card from cards array
-    setBrandNewLoanCards(prev => prev.filter(id => id !== cardId));
-    
-    // Remove data state for this card
-    setBrandNewLoanData(prev => {
-      const { [cardId]: _, ...rest } = prev;
-      return rest;
-    });
-    
-    // Remove per-card collapsible state
-    setBrandNewLoanCardStates(prev => {
-      const { [cardId]: _, ...rest } = prev;
-      return rest;
-    });
-    
-    // If no cards remain, hide the brand new loan section and clear loan type
-    const remainingCards = brandNewLoanCards.filter(id => id !== cardId);
-    if (remainingCards.length === 0) {
-      setShowBrandNewLoan(false);
-      setCurrentNewLoanType(null);
-    }
-    
-    // Close the dialog
-    setDeleteBrandNewLoanDialog({ isOpen: false, cardId: '' });
-  };
 
   // Handle purchase loan type change
   const handlePurchaseLoanTypeChange = (checked: boolean) => {
@@ -7506,13 +6943,6 @@ export default function AdminAddClient() {
         return;
       }
     } else {
-      // Check if Refinance loan is already open - show conflict dialog
-      const hasRefinanceCards = (brandNewLoanCards || []).length > 0;
-      if (hasRefinanceCards) {
-        setShowLoanConflictDialog(true);
-        return;
-      }
-      
       // When checking, auto-create default loan card
       const hasCards = (purchaseLoanCards || []).length > 0;
       
@@ -19494,21 +18924,21 @@ export default function AdminAddClient() {
                     <Label className="text-lg font-semibold">Loan Purpose</Label>
                     <div className="mt-24">
                       <span className="text-muted-foreground" style={{ fontSize: '28px', color: '#1a3373', fontWeight: 'bold' }}>
-                        {/* Check Purchase Loan first */}
+                        {/* Check Purchase Loan first, then ABC card */}
                         {(purchaseLoanCards || []).length > 0 && form.watch('purchaseLoan.loanPurpose') === 'purchase'
                           ? 'Purchase'
-                          : form.watch('brandNewLoan.loanPurpose') && form.watch('brandNewLoan.loanPurpose') !== 'select' 
-                          ? form.watch('brandNewLoan.loanPurpose') === 'rate-term' 
+                          : form.watch('abc.loanPurpose') && form.watch('abc.loanPurpose') !== 'select' 
+                          ? form.watch('abc.loanPurpose') === 'rate-term' 
                             ? 'Rate & Term'
-                            : form.watch('brandNewLoan.loanPurpose') === 'cash-out'
+                            : form.watch('abc.loanPurpose') === 'cash-out'
                             ? 'Cash Out'
-                            : form.watch('brandNewLoan.loanPurpose') === 'purchase'
+                            : form.watch('abc.loanPurpose') === 'purchase'
                             ? 'Purchase'
-                            : form.watch('brandNewLoan.loanPurpose') === 'rate-reduction'
+                            : form.watch('abc.loanPurpose') === 'rate-reduction'
                             ? 'Rate Reduction'
-                            : form.watch('brandNewLoan.loanPurpose') === 'term-reduction'
+                            : form.watch('abc.loanPurpose') === 'term-reduction'
                             ? 'Term Reduction'
-                            : form.watch('brandNewLoan.loanPurpose') === 'other'
+                            : form.watch('abc.loanPurpose') === 'other'
                             ? 'Other'
                             : ''
                           : ''}
@@ -19547,7 +18977,7 @@ export default function AdminAddClient() {
                         style={{
                           fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                           fontSize: (() => {
-                            const loanCategory = form.watch('brandNewLoan.loanCategory');
+                            const loanCategory = form.watch('abc.loanCategory');
                             if (loanCategory === 'va' || loanCategory === 'va-jumbo') return '32px'; // VA: keep current size
                             if (loanCategory === 'fha') return '28px'; // FHA: one size smaller
                             if (loanCategory === 'conventional' || loanCategory === 'conventional-jumbo') return '24px'; // FNM: two sizes smaller
@@ -19560,7 +18990,7 @@ export default function AdminAddClient() {
                         data-testid="circle-2"
                       >
                         {(() => {
-                          const loanCategory = form.watch('brandNewLoan.loanCategory');
+                          const loanCategory = form.watch('abc.loanCategory');
                           if (loanCategory === 'va' || loanCategory === 'va-jumbo') return 'VA';
                           if (loanCategory === 'fha') return 'FHA';
                           if (loanCategory === 'conventional' || loanCategory === 'conventional-jumbo') return 'FNM';
@@ -19605,13 +19035,6 @@ export default function AdminAddClient() {
                         variant="ghost"
                         size="icon"
                         onClick={() => {
-                          // Expand all Brand New Loan (Refinance) cards
-                          const brandNewUpdates: Record<string, boolean> = {};
-                          (brandNewLoanCards || []).forEach(cardId => {
-                            brandNewUpdates[cardId] = true;
-                          });
-                          setBrandNewLoanCardStates(prev => ({ ...prev, ...brandNewUpdates }));
-                          
                           // Expand all Purchase Loan cards
                           const purchaseUpdates: Record<string, boolean> = {};
                           (purchaseLoanCards || []).forEach(cardId => {
@@ -19653,13 +19076,6 @@ export default function AdminAddClient() {
                         variant="ghost"
                         size="icon"
                         onClick={() => {
-                          // Minimize all Brand New Loan (Refinance) cards
-                          const brandNewUpdates: Record<string, boolean> = {};
-                          (brandNewLoanCards || []).forEach(cardId => {
-                            brandNewUpdates[cardId] = false;
-                          });
-                          setBrandNewLoanCardStates(prev => ({ ...prev, ...brandNewUpdates }));
-                          
                           // Minimize all Purchase Loan cards
                           const purchaseUpdates: Record<string, boolean> = {};
                           (purchaseLoanCards || []).forEach(cardId => {
@@ -19700,26 +19116,6 @@ export default function AdminAddClient() {
                 <CardContent>
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="property-type-primary-loan-tab"
-                          checked={(brandNewLoanCards || []).length > 0}
-                          onCheckedChange={(checked) => {
-                            if (typeof checked === 'boolean') {
-                              handleBrandNewLoanTypeChange(checked);
-                            }
-                          }}
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
-                          data-testid="checkbox-property-primary-loan-tab"
-                        />
-                        <Label 
-                          htmlFor="property-type-primary-loan-tab" 
-                          className="font-medium text-black cursor-pointer"
-                        >
-                          New Loan - Refinance
-                        </Label>
-                      </div>
-
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="property-type-purchase-loan-tab"
@@ -20155,7 +19551,7 @@ export default function AdminAddClient() {
                         <div className="space-y-2">
                           <div className="flex items-center justify-between mb-2">
                             <Label htmlFor="abc-midFico" className="text-sm">
-                              {getBrandNewLoanFicoLabel()}
+                              {getAbcFicoLabel()}
                             </Label>
                             <Controller
                               control={form.control}
@@ -20163,7 +19559,7 @@ export default function AdminAddClient() {
                               render={({ field }) => (
                                 <Switch
                                   checked={borrowerCreditScoresDialog.midFico || coBorrowerCreditScoresDialog.midFico || !!field.value}
-                                  onCheckedChange={cycleBrandNewLoanFicoType}
+                                  onCheckedChange={cycleAbcFicoType}
                                   data-testid="toggle-abc-fico-type"
                                   className="scale-[0.8]"
                                 />
@@ -20172,22 +19568,22 @@ export default function AdminAddClient() {
                           </div>
                           <Input
                             id="abc-midFico"
-                            {...(brandNewLoanFicoType === 'mid-fico' ? {} : form.register('abc.midFico'))}
-                            value={brandNewLoanFicoType === 'mid-fico' ? getCalculatedMidFico() : undefined}
+                            {...(abcFicoType === 'mid-fico' ? {} : form.register('abc.midFico'))}
+                            value={abcFicoType === 'mid-fico' ? getAbcCalculatedMidFico() : undefined}
                             placeholder="Enter"
                             className="border border-input bg-background px-3 rounded-md"
                             data-testid="input-abc-midFico"
-                            readOnly={brandNewLoanFicoType === 'mid-fico'}
+                            readOnly={abcFicoType === 'mid-fico'}
                             onClick={() => {
                               // Open credit scores dialog when in borrower-scores mode
-                              if (brandNewLoanFicoType === 'borrower-scores') {
+                              if (abcFicoType === 'borrower-scores') {
                                 setBorrowerCreditScoresDialog(prev => ({
                                   ...prev,
                                   isOpen: true
                                 }));
                               }
                               // Open co-borrower credit scores dialog when in co-borrower-scores mode
-                              else if (brandNewLoanFicoType === 'co-borrower-scores') {
+                              else if (abcFicoType === 'co-borrower-scores') {
                                 // Check if co-borrower exists before opening dialog
                                 if (hasCoBorrower) {
                                   setCoBorrowerCreditScoresDialog(prev => ({
@@ -20201,7 +19597,7 @@ export default function AdminAddClient() {
                               }
                             }}
                             style={{
-                              cursor: (brandNewLoanFicoType === 'borrower-scores' || brandNewLoanFicoType === 'co-borrower-scores') ? 'pointer' : 'text'
+                              cursor: (abcFicoType === 'borrower-scores' || abcFicoType === 'co-borrower-scores') ? 'pointer' : 'text'
                             }}
                           />
                         </div>
@@ -20668,55 +20064,7 @@ export default function AdminAddClient() {
                 </CardContent>
               </Card>
 
-              {/* Brand New Loan Cards - Dynamic multiple card system like Current Primary, Second, and Third Loans - Moved to display first */}
-              {(brandNewLoanCards || []).map((cardId, index) => {
-                const isOpen = brandNewLoanCardStates[cardId] ?? true; // Per-card state like Property cards
-                
-                return (
-                  <BrandNewLoanCard
-                    key={cardId}
-                    idPrefix={`brand-new-card-${index}-`}
-                    borderVariant="blue"
-                    isOpen={isOpen}
-                    setIsOpen={(open) => {
-                      setBrandNewLoanCardStates(prev => ({ ...prev, [cardId]: open }));
-                      // Trigger grey box animation when card is opened (copied from Primary Loan)
-                      if (open) {
-                        const animationKey = `brand-new-card-${index}-`;
-                        setShowBrandNewLoanCardAnimation(prev => ({ ...prev, [animationKey]: true }));
-                        setTimeout(() => {
-                          setShowBrandNewLoanCardAnimation(prev => ({ ...prev, [animationKey]: false }));
-                        }, 800);
-                      }
-                    }}
-                    onRemove={() => {
-                      setDeleteBrandNewLoanDialog({
-                        isOpen: true,
-                        cardId: cardId
-                      });
-                    }}
-                    onAutoCopyAddress={() => {
-                      // Auto-copy property address to Brand New Loan (similar to other loans)
-                      const properties = form.watch('property.properties') || [];
-                      const subjectProperty = properties.find(p => p.isSubject);
-                      if (subjectProperty?.address) {
-                        const address = subjectProperty.address;
-                        form.setValue('brandNewLoan.propertyAddress', {
-                          street: address.street || '',
-                          unit: address.unit || '',
-                          city: address.city || '',
-                          state: address.state || '',
-                          zipCode: address.zip || '',
-                          county: address.county || ''
-                        });
-                      }
-                    }}
-                    formInstance={form}
-                  />
-                );
-              })}
-
-              {/* Purchase Loan Cards - Dynamic multiple card system like Brand New Loan Cards */}
+              {/* Purchase Loan Cards - Dynamic multiple card system */}
               {(purchaseLoanCards || []).map((cardId, index) => {
                 const isOpen = purchaseLoanCardStates[cardId] ?? true; // Per-card state like Property cards
                 
@@ -22583,33 +21931,6 @@ export default function AdminAddClient() {
             <AlertDialogAction 
               onClick={() => removeCurrentThirdLoanCard(deleteCurrentThirdLoanDialog.cardId)}
               data-testid="button-confirm-delete-current-third-loan"
-              className="bg-red-600 hover:bg-red-700"
-            >
-              Remove
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      {/* Delete Brand New Loan Card Confirmation Dialog */}
-      <AlertDialog open={deleteBrandNewLoanDialog.isOpen} onOpenChange={(open) => !open && setDeleteBrandNewLoanDialog({ isOpen: false, cardId: '' })}>
-        <AlertDialogContent data-testid="dialog-delete-brand-new-loan">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Remove Brand New Loan</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to remove this Brand New Loan card? This will clear all entered data for this loan. This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel 
-              onClick={() => setDeleteBrandNewLoanDialog({ isOpen: false, cardId: '' })}
-              data-testid="button-cancel-delete-brand-new-loan"
-            >
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={() => removeBrandNewLoanCard(deleteBrandNewLoanDialog.cardId)}
-              data-testid="button-confirm-delete-brand-new-loan"
               className="bg-red-600 hover:bg-red-700"
             >
               Remove
