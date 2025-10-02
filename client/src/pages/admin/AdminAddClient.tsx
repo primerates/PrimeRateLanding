@@ -3899,6 +3899,98 @@ export default function AdminAddClient() {
     );
   });
 
+  // Isolated Rate Lock Date component to prevent typing lag
+  const BrandNewLoanRateLockDateInput = React.memo<{ form: any; idPrefix: string; type: string }>(({ form, idPrefix, type }) => {
+    const rateLockDate = useWatch({ control: form.control, name: 'brandNewLoan.rateLockDate' });
+
+    if (type !== 'date') {
+      return (
+        <Input
+          id="brandNewLoan-rateLockDate"
+          value={rateLockDate || ''}
+          onChange={(e) => {
+            form.setValue('brandNewLoan.rateLockDate', e.target.value);
+          }}
+          placeholder="Enter"
+          className="border border-input bg-background px-3 rounded-md"
+          data-testid="input-brandNewLoan-rateLockDate"
+        />
+      );
+    }
+
+    return (
+      <Input
+        id="brandNewLoan-rateLockDate"
+        value={rateLockDate || ''}
+        onChange={(e) => {
+          const value = e.target.value.replace(/\D/g, '');
+          let formatted = '';
+          if (value.length > 0) {
+            formatted = value.substring(0, 2);
+            if (value.length > 2) {
+              formatted += '/' + value.substring(2, 4);
+              if (value.length > 4) {
+                formatted += '/' + value.substring(4, 8);
+              }
+            }
+          }
+          form.setValue('brandNewLoan.rateLockDate', formatted);
+        }}
+        placeholder="MM/DD/YYYY"
+        maxLength={10}
+        className="border border-input bg-background px-3 rounded-md"
+        data-testid="input-brandNewLoan-rateLockDate"
+      />
+    );
+  });
+
+  // Isolated Rate Lock Duration component to prevent typing lag
+  const BrandNewLoanRateLockDurationInput = React.memo<{ form: any; idPrefix: string; type: string; calculatedDuration: string }>(({ form, idPrefix, type, calculatedDuration }) => {
+    const rateLockDuration = useWatch({ control: form.control, name: 'brandNewLoan.rateLockDuration' });
+
+    if (type !== 'expiration') {
+      return (
+        <Input
+          id="brandNewLoan-rateLockDuration"
+          value={rateLockDuration || ''}
+          onChange={(e) => {
+            form.setValue('brandNewLoan.rateLockDuration', e.target.value);
+          }}
+          placeholder="Enter duration"
+          className={`border border-input px-3 rounded-md ${calculatedDuration ? 'bg-muted' : 'bg-background'}`}
+          data-testid="input-brandNewLoan-rateLockDuration"
+          disabled={!!calculatedDuration}
+          readOnly={!!calculatedDuration}
+        />
+      );
+    }
+
+    return (
+      <Input
+        id="brandNewLoan-rateLockDuration"
+        value={rateLockDuration || ''}
+        onChange={(e) => {
+          const value = e.target.value.replace(/\D/g, '');
+          let formatted = '';
+          if (value.length > 0) {
+            formatted = value.substring(0, 2);
+            if (value.length > 2) {
+              formatted += '/' + value.substring(2, 4);
+              if (value.length > 4) {
+                formatted += '/' + value.substring(4, 8);
+              }
+            }
+          }
+          form.setValue('brandNewLoan.rateLockDuration', formatted);
+        }}
+        placeholder="MM/DD/YYYY"
+        maxLength={10}
+        className="border border-input bg-background px-3 rounded-md"
+        data-testid="input-brandNewLoan-rateLockDuration"
+      />
+    );
+  });
+
   // CurrentLoanCard component - canonical mode only
   const CurrentLoanCard = ({ 
     idPrefix = '', 
@@ -4554,11 +4646,17 @@ export default function AdminAddClient() {
                     <Label htmlFor={`${idPrefix}brandNewLoan-loanProgram`} className="text-sm">
                       {getBrandNewLoanTermLabel()}
                     </Label>
-                    <Switch
-                      checked={targetForm.watch('brandNewLoan.loanProgram') ? true : false}
-                      onCheckedChange={cycleBrandNewLoanTermType}
-                      data-testid="toggle-brandNewLoan-term-type"
-                      className="scale-[0.8]"
+                    <Controller
+                      control={targetForm.control}
+                      name="brandNewLoan.loanProgram"
+                      render={({ field }) => (
+                        <Switch
+                          checked={!!field.value}
+                          onCheckedChange={cycleBrandNewLoanTermType}
+                          data-testid="toggle-brandNewLoan-term-type"
+                          className="scale-[0.8]"
+                        />
+                      )}
                     />
                   </div>
                   {brandNewLoanTermType === 'dropdown' ? (
@@ -4578,7 +4676,7 @@ export default function AdminAddClient() {
                   ) : (
                     <Input
                       id={`${idPrefix}brandNewLoan-loanProgram`}
-                      {...loanProgramBinding.field}
+                      {...targetForm.register('brandNewLoan.loanProgram')}
                       placeholder="Enter loan term"
                       data-testid={loanProgramBinding['data-testid']}
                     />
@@ -4590,11 +4688,17 @@ export default function AdminAddClient() {
                     <Label htmlFor={`${idPrefix}brandNewLoan-loanTerm`} className="text-sm">
                       {getBrandNewLoanCashOutLabel()}
                     </Label>
-                    <Switch
-                      checked={targetForm.watch('brandNewLoan.loanTerm') ? true : false}
-                      onCheckedChange={cycleBrandNewLoanCashOutType}
-                      data-testid="toggle-brandNewLoan-cashOut-type"
-                      className="scale-[0.8]"
+                    <Controller
+                      control={targetForm.control}
+                      name="brandNewLoan.loanTerm"
+                      render={({ field }) => (
+                        <Switch
+                          checked={!!field.value}
+                          onCheckedChange={cycleBrandNewLoanCashOutType}
+                          data-testid="toggle-brandNewLoan-cashOut-type"
+                          className="scale-[0.8]"
+                        />
+                      )}
                     />
                   </div>
                   {brandNewLoanCashOutType === 'cash-out' ? (
@@ -4628,7 +4732,7 @@ export default function AdminAddClient() {
                   ) : (
                     <Input
                       id={`${idPrefix}brandNewLoan-loanTerm`}
-                      {...loanTermBinding.field}
+                      {...targetForm.register('brandNewLoan.loanTerm')}
                       placeholder="Enter benefits summary"
                       data-testid={loanTermBinding['data-testid']}
                     />
@@ -4640,11 +4744,17 @@ export default function AdminAddClient() {
                     <Label htmlFor={remainingTermBinding.id} className="text-sm">
                       {getBrandNewLoanDebtPayOffLabel()}
                     </Label>
-                    <Switch
-                      checked={targetForm.watch('brandNewLoan.remainingTermAfterPayoff') ? true : false}
-                      onCheckedChange={cycleBrandNewLoanDebtPayOffType}
-                      data-testid="toggle-brandNewLoan-debtPayOff-type"
-                      className="scale-[0.8]"
+                    <Controller
+                      control={targetForm.control}
+                      name="brandNewLoan.remainingTermAfterPayoff"
+                      render={({ field }) => (
+                        <Switch
+                          checked={!!field.value}
+                          onCheckedChange={cycleBrandNewLoanDebtPayOffType}
+                          data-testid="toggle-brandNewLoan-debtPayOff-type"
+                          className="scale-[0.8]"
+                        />
+                      )}
                     />
                   </div>
                   <Controller
@@ -4707,11 +4817,17 @@ export default function AdminAddClient() {
                         <Label htmlFor="brandNewLoan-midFico" className="text-sm">
                           {getBrandNewLoanFicoLabel()}
                         </Label>
-                        <Switch
-                          checked={borrowerCreditScoresDialog.midFico || coBorrowerCreditScoresDialog.midFico || targetForm.watch('brandNewLoan.midFico') ? true : false}
-                          onCheckedChange={cycleBrandNewLoanFicoType}
-                          data-testid="toggle-brandNewLoan-fico-type"
-                          className="scale-[0.8]"
+                        <Controller
+                          control={targetForm.control}
+                          name="brandNewLoan.midFico"
+                          render={({ field }) => (
+                            <Switch
+                              checked={borrowerCreditScoresDialog.midFico || coBorrowerCreditScoresDialog.midFico || !!field.value}
+                              onCheckedChange={cycleBrandNewLoanFicoType}
+                              data-testid="toggle-brandNewLoan-fico-type"
+                              className="scale-[0.8]"
+                            />
+                          )}
                         />
                       </div>
                       <Input
@@ -4751,15 +4867,18 @@ export default function AdminAddClient() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label 
-                        htmlFor="brandNewLoan-rateLockStatus"
-                        className={(() => {
-                          const value = targetForm.watch('brandNewLoan.rateLockStatus');
-                          return (value === 'not-locked' || value === 'expired' || !value) ? 'text-red-500' : '';
-                        })()}
-                      >
-                        Rate Lock Status
-                      </Label>
+                      <Controller
+                        control={targetForm.control}
+                        name="brandNewLoan.rateLockStatus"
+                        render={({ field }) => (
+                          <Label 
+                            htmlFor="brandNewLoan-rateLockStatus"
+                            className={(field.value === 'not-locked' || field.value === 'expired' || !field.value) ? 'text-red-500' : ''}
+                          >
+                            Rate Lock Status
+                          </Label>
+                        )}
+                      />
                       <Controller
                         name="brandNewLoan.rateLockStatus"
                         control={targetForm.control}
@@ -4787,45 +4906,24 @@ export default function AdminAddClient() {
                         <Label htmlFor="brandNewLoan-rateLockDate" className="text-sm">
                           {getBrandNewLoanLockDateLabel()}
                         </Label>
-                        <Switch
-                          checked={targetForm.watch('brandNewLoan.rateLockDate') || targetForm.watch('brandNewLoan.lockDate') ? true : false}
-                          onCheckedChange={cycleBrandNewLoanLockDateType}
-                          data-testid="toggle-brandNewLoan-lockDate-type"
-                          className="scale-[0.8]"
+                        <Controller
+                          control={targetForm.control}
+                          name="brandNewLoan.rateLockDate"
+                          render={({ field }) => (
+                            <Switch
+                              checked={!!field.value}
+                              onCheckedChange={cycleBrandNewLoanLockDateType}
+                              data-testid="toggle-brandNewLoan-lockDate-type"
+                              className="scale-[0.8]"
+                            />
+                          )}
                         />
                       </div>
-                      {brandNewLoanLockDateType === 'date' ? (
-                        <Input
-                          id="brandNewLoan-rateLockDate"
-                          value={targetForm.watch('brandNewLoan.rateLockDate') || ''}
-                          onChange={(e) => {
-                            const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
-                            let formatted = '';
-                            if (value.length > 0) {
-                              formatted = value.substring(0, 2);
-                              if (value.length > 2) {
-                                formatted += '/' + value.substring(2, 4);
-                                if (value.length > 4) {
-                                  formatted += '/' + value.substring(4, 8);
-                                }
-                              }
-                            }
-                            targetForm.setValue('brandNewLoan.rateLockDate', formatted);
-                          }}
-                          placeholder="MM/DD/YYYY"
-                          maxLength={10}
-                          className="border border-input bg-background px-3 rounded-md"
-                          data-testid="input-brandNewLoan-rateLockDate"
-                        />
-                      ) : (
-                        <Input
-                          id="brandNewLoan-rateLockDate"
-                          {...targetForm.register('brandNewLoan.rateLockDate')}
-                          placeholder="Enter"
-                          className="border border-input bg-background px-3 rounded-md"
-                          data-testid="input-brandNewLoan-rateLockDate"
-                        />
-                      )}
+                      <BrandNewLoanRateLockDateInput 
+                        form={targetForm} 
+                        idPrefix={idPrefix} 
+                        type={brandNewLoanLockDateType} 
+                      />
                     </div>
                     
                     <div className="space-y-2">
@@ -4833,47 +4931,25 @@ export default function AdminAddClient() {
                         <Label htmlFor="brandNewLoan-rateLockDuration" className="text-sm">
                           {getBrandNewLoanExpirationDurationLabel()}
                         </Label>
-                        <Switch
-                          checked={targetForm.watch('brandNewLoan.rateLockDuration') || targetForm.watch('brandNewLoan.rateLockExpiration') ? true : false}
-                          onCheckedChange={cycleBrandNewLoanExpirationDurationType}
-                          data-testid="toggle-brandNewLoan-expiration-duration-type"
-                          className="scale-[0.8]"
+                        <Controller
+                          control={targetForm.control}
+                          name="brandNewLoan.rateLockDuration"
+                          render={({ field }) => (
+                            <Switch
+                              checked={!!field.value}
+                              onCheckedChange={cycleBrandNewLoanExpirationDurationType}
+                              data-testid="toggle-brandNewLoan-expiration-duration-type"
+                              className="scale-[0.8]"
+                            />
+                          )}
                         />
                       </div>
-                      {brandNewLoanExpirationDurationType === 'expiration' ? (
-                        <Input
-                          id="brandNewLoan-rateLockDuration"
-                          value={targetForm.watch('brandNewLoan.rateLockDuration') || ''}
-                          onChange={(e) => {
-                            const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
-                            let formatted = '';
-                            if (value.length > 0) {
-                              formatted = value.substring(0, 2);
-                              if (value.length > 2) {
-                                formatted += '/' + value.substring(2, 4);
-                                if (value.length > 4) {
-                                  formatted += '/' + value.substring(4, 8);
-                                }
-                              }
-                            }
-                            targetForm.setValue('brandNewLoan.rateLockDuration', formatted);
-                          }}
-                          placeholder="MM/DD/YYYY"
-                          maxLength={10}
-                          className="border border-input bg-background px-3 rounded-md"
-                          data-testid="input-brandNewLoan-rateLockDuration"
-                        />
-                      ) : (
-                        <Input
-                          id="brandNewLoan-rateLockDuration"
-                          {...targetForm.register('brandNewLoan.rateLockDuration')}
-                          placeholder="Enter duration"
-                          className={`border border-input px-3 rounded-md ${calculatedDuration ? 'bg-muted' : 'bg-background'}`}
-                          data-testid="input-brandNewLoan-rateLockDuration"
-                          disabled={!!calculatedDuration}
-                          readOnly={!!calculatedDuration}
-                        />
-                      )}
+                      <BrandNewLoanRateLockDurationInput 
+                        form={targetForm} 
+                        idPrefix={idPrefix} 
+                        type={brandNewLoanExpirationDurationType}
+                        calculatedDuration={calculatedDuration}
+                      />
                     </div>
                     
                     <div className="space-y-2">
@@ -4881,11 +4957,17 @@ export default function AdminAddClient() {
                         <Label htmlFor="brandNewLoan-lenderCredit" className="text-sm">
                           {getBrandNewLoanCreditLabel()}
                         </Label>
-                        <Switch
-                          checked={targetForm.watch('brandNewLoan.lenderCredit') || targetForm.watch('brandNewLoan.brokerCredit') ? true : false}
-                          onCheckedChange={cycleBrandNewLoanCreditType}
-                          data-testid="toggle-brandNewLoan-credit-type"
-                          className="scale-[0.8]"
+                        <Controller
+                          control={targetForm.control}
+                          name="brandNewLoan.lenderCredit"
+                          render={({ field }) => (
+                            <Switch
+                              checked={!!field.value}
+                              onCheckedChange={cycleBrandNewLoanCreditType}
+                              data-testid="toggle-brandNewLoan-credit-type"
+                              className="scale-[0.8]"
+                            />
+                          )}
                         />
                       </div>
                       <Controller
