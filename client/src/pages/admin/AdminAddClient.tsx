@@ -7244,7 +7244,7 @@ export default function AdminAddClient() {
                     </Select>
                   </div>
                   
-                  <div className="space-y-2">
+                  <div className="space-y-2 max-w-[75%]">
                     <Label htmlFor="borrower-callDate">Initial Call Date</Label>
                     <Input
                       id="borrower-callDate"
@@ -7269,7 +7269,7 @@ export default function AdminAddClient() {
                     />
                   </div>
                   
-                  <div className="space-y-2">
+                  <div className="space-y-2 max-w-[75%]">
                     <Label htmlFor="borrower-startDate">Loan Start Date</Label>
                     <Input
                       id="borrower-startDate"
