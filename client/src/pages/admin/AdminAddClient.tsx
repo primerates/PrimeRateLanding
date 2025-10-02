@@ -908,6 +908,7 @@ export default function AdminAddClient() {
   // Animation state for revert icon rotation
   const [showRevertAnimation, setShowRevertAnimation] = useState(false);
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
+  const [isQuoteCardsMinimized, setIsQuoteCardsMinimized] = useState(false);
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
   const [isReadOnlyCurrentLoanOpen, setIsReadOnlyCurrentLoanOpen] = useState(true);
@@ -20548,8 +20549,21 @@ export default function AdminAddClient() {
                 <h2 className="text-2xl font-semibold mb-6">Quote</h2>
                 
                 <Card className="bg-gray-100 mb-6 hover:shadow-lg transition-shadow duration-300">
-                  <CardContent className="pt-6 space-y-6">
-                    {/* Client Row */}
+                  <div className="flex justify-end pt-4 pr-4">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="hover:bg-orange-500 hover:text-white"
+                      onClick={() => setIsQuoteCardsMinimized(!isQuoteCardsMinimized)}
+                      title={isQuoteCardsMinimized ? 'Expand' : 'Minimize'}
+                      data-testid="button-toggle-quote-cards"
+                    >
+                      {isQuoteCardsMinimized ? <Plus className="h-4 w-4" /> : <Minus className="h-4 w-4" />}
+                    </Button>
+                  </div>
+                  {!isQuoteCardsMinimized && (
+                    <CardContent className="pt-2 space-y-6">
+                      {/* Client Row */}
                     <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                       <Label className="text-base font-semibold">Client:</Label>
                       <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
@@ -20630,9 +20644,11 @@ export default function AdminAddClient() {
                         </div>
                       </div>
                     </div>
-                  </CardContent>
+                    </CardContent>
+                  )}
                 </Card>
 
+                {!isQuoteCardsMinimized && (
                 <div className="space-y-6 mb-6">
                   <Card className="bg-gray-100 hover:shadow-lg transition-shadow duration-300">
                     <CardContent className="pt-6 space-y-6">
@@ -20846,6 +20862,7 @@ export default function AdminAddClient() {
                     </CardContent>
                   </Card>
                 </div>
+                )}
               </div>
             </TabsContent>
 
