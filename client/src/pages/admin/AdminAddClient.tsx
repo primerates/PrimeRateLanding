@@ -20666,6 +20666,52 @@ export default function AdminAddClient() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Property Purpose Row */}
+                  <div className="grid grid-cols-[150px_1fr] items-center gap-8">
+                    <Label className="text-base font-semibold">Property Purpose:</Label>
+                    <div className="flex items-center gap-6">
+                      {/* Primary Residence */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="property-purpose-primary"
+                          data-testid="checkbox-property-purpose-primary"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="property-purpose-primary">Primary Residence</Label>
+                      </div>
+                      
+                      {/* Second Home */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="property-purpose-second-home"
+                          data-testid="checkbox-property-purpose-second-home"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="property-purpose-second-home">Second Home</Label>
+                      </div>
+                      
+                      {/* Investment Property */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="property-purpose-investment"
+                          data-testid="checkbox-property-purpose-investment"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="property-purpose-investment">Investment Property</Label>
+                      </div>
+                      
+                      {/* Home Purchase */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="property-purpose-home-purchase"
+                          data-testid="checkbox-property-purpose-home-purchase"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="property-purpose-home-purchase">Home Purchase</Label>
+                      </div>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
