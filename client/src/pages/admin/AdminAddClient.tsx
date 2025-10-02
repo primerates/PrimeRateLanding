@@ -18192,7 +18192,18 @@ export default function AdminAddClient() {
                         style={{
                           fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                           fontSize: (() => {
-                            const loanCategory = form.watch('abc.loanCategory');
+                            // Check if New Refinance Loan card is open
+                            const hasRefinanceCards = (newRefinanceLoanCards || []).length > 0;
+                            // Check if New Purchase Loan card is open
+                            const hasPurchaseCards = (newPurchaseLoanCards || []).length > 0;
+                            
+                            let loanCategory = '';
+                            if (hasRefinanceCards) {
+                              loanCategory = form.watch('abc.loanCategory');
+                            } else if (hasPurchaseCards) {
+                              loanCategory = form.watch('bbb.loanCategory');
+                            }
+                            
                             if (loanCategory === 'va' || loanCategory === 'va-jumbo') return '32px'; // VA: keep current size
                             if (loanCategory === 'fha') return '28px'; // FHA: one size smaller
                             if (loanCategory === 'conventional' || loanCategory === 'conventional-jumbo') return '24px'; // FNM: two sizes smaller
@@ -18205,7 +18216,19 @@ export default function AdminAddClient() {
                         data-testid="circle-2"
                       >
                         {(() => {
-                          const loanCategory = form.watch('abc.loanCategory');
+                          // Check if New Refinance Loan card is open
+                          const hasRefinanceCards = (newRefinanceLoanCards || []).length > 0;
+                          // Check if New Purchase Loan card is open
+                          const hasPurchaseCards = (newPurchaseLoanCards || []).length > 0;
+                          
+                          let loanCategory = '';
+                          if (hasRefinanceCards) {
+                            loanCategory = form.watch('abc.loanCategory');
+                          } else if (hasPurchaseCards) {
+                            loanCategory = form.watch('bbb.loanCategory');
+                          }
+                          
+                          if (loanCategory === 'select' || loanCategory === 'other' || !loanCategory) return 'NA';
                           if (loanCategory === 'va' || loanCategory === 'va-jumbo') return 'VA';
                           if (loanCategory === 'fha') return 'FHA';
                           if (loanCategory === 'conventional' || loanCategory === 'conventional-jumbo') return 'FNM';
