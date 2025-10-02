@@ -19389,26 +19389,13 @@ export default function AdminAddClient() {
                                   .map((property: any, index: number) => {
                                     const address = property.address;
                                     const streetAddress = address?.street;
-                                    const city = address?.city;
-                                    const state = address?.state;
-                                    const zipCode = address?.zip;
                                     
                                     let displayText;
                                     
                                     if (!streetAddress) {
                                       displayText = 'Subject Property';
                                     } else {
-                                      displayText = streetAddress || 'Property';
-                                      if (city && state) {
-                                        displayText += `, ${city}, ${state}`;
-                                      } else if (city) {
-                                        displayText += `, ${city}`;
-                                      } else if (state) {
-                                        displayText += `, ${state}`;
-                                      }
-                                      if (zipCode) {
-                                        displayText += ` ${zipCode}`;
-                                      }
+                                      displayText = streetAddress;
                                     }
                                     
                                     return (
