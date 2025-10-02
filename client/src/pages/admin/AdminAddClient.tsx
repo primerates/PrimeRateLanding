@@ -20484,8 +20484,33 @@ export default function AdminAddClient() {
                     </div>
                   </div>
                   
-                  {/* Row 3: Loan Start Date, Loan Balance */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  {/* Row 3: Rate Lock Date, Loan Start Date, Lender Credit */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="abc-rateLockDate">Rate Lock Date</Label>
+                      <Input
+                        id="abc-rateLockDate"
+                        value={form.watch('abc.rateLockDate') || ''}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, '');
+                          let formatted = '';
+                          if (value.length > 0) {
+                            formatted = value.substring(0, 2);
+                            if (value.length > 2) {
+                              formatted += '/' + value.substring(2, 4);
+                              if (value.length > 4) {
+                                formatted += '/' + value.substring(4, 8);
+                              }
+                            }
+                          }
+                          form.setValue('abc.rateLockDate', formatted);
+                        }}
+                        placeholder="MM/DD/YYYY"
+                        maxLength={10}
+                        data-testid="input-abc-rateLockDate"
+                      />
+                    </div>
+                    
                     <div className="space-y-2">
                       <Label htmlFor="abc-loanStartDate">Loan Start Date</Label>
                       <Input
@@ -20512,10 +20537,10 @@ export default function AdminAddClient() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="abc-loanBalanceRow3">Loan Balance</Label>
+                      <Label htmlFor="abc-lenderCredit">Lender Credit</Label>
                       <Controller
                         control={form.control}
-                        name="abc.loanBalanceRow3"
+                        name="abc.lenderCredit"
                         defaultValue=""
                         render={({ field }) => {
                           const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
@@ -20525,7 +20550,7 @@ export default function AdminAddClient() {
                             <div className="flex items-center border border-input bg-background px-3 rounded-md">
                               <span className="text-muted-foreground text-sm">$</span>
                               <Input
-                                id="abc-loanBalanceRow3"
+                                id="abc-lenderCredit"
                                 type="text"
                                 placeholder="0"
                                 value={displayValue}
@@ -20534,7 +20559,7 @@ export default function AdminAddClient() {
                                   field.onChange(value);
                                 }}
                                 className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                                data-testid="input-abc-loanBalanceRow3"
+                                data-testid="input-abc-lenderCredit"
                               />
                             </div>
                           );
