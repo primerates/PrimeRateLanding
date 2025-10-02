@@ -4610,24 +4610,41 @@ export default function AdminAddClient() {
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="newLoan-loanAmount">New Loan Amount</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      {...form.register("newLoan.loanAmount")}
-                      id="newLoan-loanAmount"
-                      type="text"
-                      inputMode="numeric"
-                      pattern="[0-9]*"
-                      placeholder="0"
-                      onBlur={(e) => {
-                        const digits = e.target.value.replace(/[^\d]/g, "");
-                        const formatted = digits ? Number(digits).toLocaleString() : "";
-                        form.setValue("newLoan.loanAmount", formatted);
-                      }}
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-newLoan-loanAmount"
-                    />
-                  </div>
+                  <Controller
+                    control={form.control}
+                    name="newLoan.loanAmount"
+                    defaultValue=""
+                    render={({ field }) => (
+                      <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                        <span className="text-muted-foreground text-sm">$</span>
+                        <Input
+                          id="newLoan-loanAmount"
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="0"
+                          value={field.value}
+                          onChange={(e) => {
+                            // Store ONLY raw digits - no formatting during typing
+                            const digits = e.target.value.replace(/[^\d]/g, '');
+                            field.onChange(digits);
+                          }}
+                          onBlur={() => {
+                            // Format with commas ONLY on blur, store formatted value
+                            const digits = field.value.replace(/[^\d]/g, '');
+                            const formatted = digits ? Number(digits).toLocaleString() : '';
+                            field.onChange(formatted);
+                          }}
+                          onFocus={() => {
+                            // Remove formatting on focus for easy editing
+                            const digits = field.value.replace(/[^\d]/g, '');
+                            field.onChange(digits);
+                          }}
+                          className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                          data-testid="input-newLoan-loanAmount"
+                        />
+                      </div>
+                    )}
+                  />
                 </div>
                 
                 <div className="space-y-2">
