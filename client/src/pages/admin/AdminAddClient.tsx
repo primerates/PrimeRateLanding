@@ -18866,6 +18866,25 @@ export default function AdminAddClient() {
                         name="abc.cashOutAmount"
                         defaultValue=""
                         render={({ field }) => {
+                          const isToggled = form.watch("abc.cashOutAmountToggle");
+                          
+                          if (isToggled) {
+                            // Benefits Summary mode - regular text input
+                            return (
+                              <Input
+                                id="abc-cashOutAmount"
+                                type="text"
+                                placeholder="Enter benefits summary"
+                                value={field.value || ''}
+                                onChange={(e) => {
+                                  field.onChange(e.target.value);
+                                }}
+                                data-testid="input-abc-cashOutAmount"
+                              />
+                            );
+                          }
+                          
+                          // Cash Out Amount mode - dollar value input
                           const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
                           const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
                           
