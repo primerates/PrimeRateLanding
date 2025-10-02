@@ -19385,7 +19385,7 @@ export default function AdminAddClient() {
                               {(() => {
                                 const properties = form.watch('property.properties') || [];
                                 return properties
-                                  .filter((property: any) => property.use === 'primary')
+                                  .filter((property: any) => property.isSubject === true)
                                   .map((property: any, index: number) => {
                                     const address = property.address;
                                     const streetAddress = address?.street;
@@ -19395,8 +19395,8 @@ export default function AdminAddClient() {
                                     
                                     let displayText;
                                     
-                                    if (property.use === 'primary' && !streetAddress) {
-                                      displayText = 'Primary Residence';
+                                    if (!streetAddress) {
+                                      displayText = 'Subject Property';
                                     } else {
                                       displayText = streetAddress || 'Property';
                                       if (city && state) {
