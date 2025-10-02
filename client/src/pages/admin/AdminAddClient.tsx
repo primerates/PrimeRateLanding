@@ -1829,8 +1829,6 @@ export default function AdminAddClient() {
   const [purchaseCoBorrowerWarningDialog, setPurchaseCoBorrowerWarningDialog] = useState(false);
 
   // Purchase Loan toggle states
-  const [purchaseLoanEscrowType, setPurchaseLoanEscrowType] = useState<'tax-insurance' | 'insurance-only' | 'property-tax-only'>('tax-insurance');
-  const [purchaseLoanPaymentType, setPurchaseLoanPaymentType] = useState<'principal-interest' | 'interest-only'>('principal-interest');
   const [purchaseLoanCashOutType, setPurchaseLoanCashOutType] = useState<'cash-out' | 'benefits-summary'>('cash-out');
   const [purchaseLoanDebtPayOffType, setPurchaseLoanDebtPayOffType] = useState<'total-debt-payoff' | 'total-debt-payments'>('total-debt-payoff');
   const [purchaseLoanTermType, setPurchaseLoanTermType] = useState<'dropdown' | 'manual'>('dropdown');
@@ -1971,46 +1969,6 @@ export default function AdminAddClient() {
         case 'lender': return 'broker';
         case 'broker': return 'lender';
         default: return 'lender';
-      }
-    });
-  };
-
-  // Purchase Loan Payment label and type cycling functions
-  const getPurchaseLoanPaymentLabel = () => {
-    switch (purchaseLoanPaymentType) {
-      case 'principal-interest': return 'Principal & Interest Payment';
-      case 'interest-only': return 'Interest Only Payment';
-      default: return 'Principal & Interest Payment';
-    }
-  };
-
-  const cyclePurchaseLoanPaymentType = () => {
-    setPurchaseLoanPaymentType(current => {
-      switch (current) {
-        case 'principal-interest': return 'interest-only';
-        case 'interest-only': return 'principal-interest';
-        default: return 'principal-interest';
-      }
-    });
-  };
-
-  // Purchase Loan Escrow label and type cycling functions
-  const getPurchaseLoanEscrowLabel = () => {
-    switch (purchaseLoanEscrowType) {
-      case 'tax-insurance': return 'Tax & Insurance Payment';
-      case 'insurance-only': return 'Insurance Payment';
-      case 'property-tax-only': return 'Property Tax Payment';
-      default: return 'Tax & Insurance Payment';
-    }
-  };
-
-  const cyclePurchaseLoanEscrowType = () => {
-    setPurchaseLoanEscrowType(current => {
-      switch (current) {
-        case 'tax-insurance': return 'insurance-only';
-        case 'insurance-only': return 'property-tax-only';
-        case 'property-tax-only': return 'tax-insurance';
-        default: return 'tax-insurance';
       }
     });
   };
@@ -4103,10 +4061,6 @@ export default function AdminAddClient() {
     const [lenderCredit, setLenderCredit] = useState('');
     const [hasCreditValue, setHasCreditValue] = useState(false);
     const [sellerCredit, setSellerCredit] = useState('');
-    const [principalPayment, setPrincipalPayment] = useState('');
-    const [hasPrincipalValue, setHasPrincipalValue] = useState(false);
-    const [escrowPayment, setEscrowPayment] = useState('');
-    const [hasEscrowValue, setHasEscrowValue] = useState(false);
     
     // Initialize local state from form values on mount
     useEffect(() => {
@@ -4121,18 +4075,6 @@ export default function AdminAddClient() {
       
       const sellerCreditValue = targetForm.getValues('purchaseLoan.sellerCredit');
       if (sellerCreditValue) setSellerCredit(sellerCreditValue);
-      
-      const principalValue = targetForm.getValues('purchaseLoan.principalAndInterestPayment');
-      if (principalValue) {
-        setPrincipalPayment(principalValue);
-        setHasPrincipalValue(true);
-      }
-      
-      const escrowValue = targetForm.getValues('purchaseLoan.escrowPayment');
-      if (escrowValue) {
-        setEscrowPayment(escrowValue);
-        setHasEscrowValue(true);
-      }
     }, []);
     
     // State for property address collapse
@@ -4516,8 +4458,8 @@ export default function AdminAddClient() {
                     </div>
                   </div>
                   
-                  {/* Row 4: Principal & Interest Payment, Escrow Payment, Total Monthly Payment, Pre-Payment Penalty, Attached to Property */}
-                  <div className="grid grid-cols-1 md:grid-cols-10 gap-4 mt-6">
+                  {/* Row 4: Interest Rate, HOA, Attached to Property */}
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
                 <div className="space-y-2 md:col-span-1">
                   <Label htmlFor="purchaseLoan-currentRate">Interest Rate</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
@@ -4529,84 +4471,6 @@ export default function AdminAddClient() {
                       data-testid="input-purchaseLoan-currentRate"
                     />
                     <span className="text-muted-foreground text-sm">%</span>
-                  </div>
-                </div>
-                
-                <div className="space-y-2 md:col-span-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <Label htmlFor="purchaseLoan-principalInterestPayment" className="text-sm">
-                      {getPurchaseLoanPaymentLabel()}
-                    </Label>
-                    <Switch
-                      checked={hasPrincipalValue}
-                      onCheckedChange={cyclePurchaseLoanPaymentType}
-                      data-testid="toggle-purchaseLoan-payment-type"
-                      className="scale-[0.8]"
-                    />
-                  </div>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="purchaseLoan-principalInterestPayment"
-                      value={principalPayment}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/[^\d.]/g, '');
-                        setPrincipalPayment(value);
-                      }}
-                      onBlur={(e) => {
-                        const num = parseFloat(principalPayment) || 0;
-                        const formatted = num > 0 ? `$${num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` : '';
-                        setPrincipalPayment(formatted);
-                        setHasPrincipalValue(!!formatted);
-                        targetForm.setValue('purchaseLoan.principalAndInterestPayment', formatted);
-                      }}
-                      onFocus={(e) => {
-                        const raw = principalPayment.replace(/[^\d.]/g, '');
-                        setPrincipalPayment(raw);
-                      }}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-purchaseLoan-principalInterestPayment"
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2 md:col-span-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <Label htmlFor="purchaseLoan-monthlyEscrow" className="text-sm">
-                      {getPurchaseLoanEscrowLabel()}
-                    </Label>
-                    <Switch
-                      checked={hasEscrowValue}
-                      onCheckedChange={cyclePurchaseLoanEscrowType}
-                      data-testid="toggle-purchaseLoan-escrow-type"
-                      className="scale-[0.8]"
-                    />
-                  </div>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="purchaseLoan-monthlyEscrow"
-                      value={escrowPayment}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/[^\d.]/g, '');
-                        setEscrowPayment(value);
-                      }}
-                      onBlur={(e) => {
-                        const num = parseFloat(escrowPayment) || 0;
-                        const formatted = num > 0 ? `$${num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` : '';
-                        setEscrowPayment(formatted);
-                        setHasEscrowValue(!!formatted);
-                        targetForm.setValue('purchaseLoan.escrowPayment', formatted);
-                      }}
-                      onFocus={(e) => {
-                        const raw = escrowPayment.replace(/[^\d.]/g, '');
-                        setEscrowPayment(raw);
-                      }}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-purchaseLoan-monthlyEscrow"
-                    />
                   </div>
                 </div>
                 
