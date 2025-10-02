@@ -18123,22 +18123,29 @@ export default function AdminAddClient() {
                     <Label className="text-lg font-semibold">Loan Purpose</Label>
                     <div className="mt-24">
                       <span className="text-muted-foreground" style={{ fontSize: '28px', color: '#1a3373', fontWeight: 'bold' }}>
-                        {/* Check ABC card */}
-                        {form.watch('abc.loanPurpose') && form.watch('abc.loanPurpose') !== 'select' 
-                          ? form.watch('abc.loanPurpose') === 'rate-term' 
-                            ? 'Rate & Term'
-                            : form.watch('abc.loanPurpose') === 'cash-out'
-                            ? 'Cash Out'
-                            : form.watch('abc.loanPurpose') === 'purchase'
-                            ? 'Purchase'
-                            : form.watch('abc.loanPurpose') === 'rate-reduction'
-                            ? 'Rate Reduction'
-                            : form.watch('abc.loanPurpose') === 'term-reduction'
-                            ? 'Term Reduction'
-                            : form.watch('abc.loanPurpose') === 'other'
-                            ? 'Other'
-                            : ''
-                          : ''}
+                        {(() => {
+                          // Check if New Refinance Loan card is open
+                          const hasRefinanceCards = (newRefinanceLoanCards || []).length > 0;
+                          // Check if New Purchase Loan card is open
+                          const hasPurchaseCards = (newPurchaseLoanCards || []).length > 0;
+                          
+                          if (hasRefinanceCards) {
+                            const loanPurpose = form.watch('abc.loanPurpose');
+                            if (loanPurpose === 'select' || !loanPurpose) return 'Select';
+                            if (loanPurpose === 'cash-out') return 'Cash Out';
+                            if (loanPurpose === 'rate-reduction') return 'Rate Reduction';
+                            if (loanPurpose === 'term-reduction') return 'Term Reduction';
+                            if (loanPurpose === 'other') return 'Other';
+                            return '';
+                          } else if (hasPurchaseCards) {
+                            const loanPurpose = form.watch('bbb.loanPurpose');
+                            if (loanPurpose === 'select' || !loanPurpose) return 'Select';
+                            if (loanPurpose === 'existing-build') return 'Existing Build';
+                            if (loanPurpose === 'new-build') return 'New Build';
+                            return '';
+                          }
+                          return '';
+                        })()}
                       </span>
                     </div>
                   </div>
