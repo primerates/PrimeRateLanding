@@ -20546,7 +20546,7 @@ export default function AdminAddClient() {
             {/* Quote Tab */}
             <TabsContent value="quote" className="space-y-6">
               <div>
-                <Card className="bg-gray-100 mb-6 hover:shadow-lg transition-shadow duration-300 border-l-4 border-l-transparent hover:border-l-green-500 transition-colors">
+                <Card className={`bg-gray-100 mb-6 hover:shadow-lg transition-shadow duration-300 border-l-4 transition-colors ${isQuoteCardsMinimized ? 'border-l-green-500' : 'border-l-transparent hover:border-l-green-500'}`}>
                   <div className="flex justify-end pt-4 pr-4">
                     <Button
                       variant="ghost"
