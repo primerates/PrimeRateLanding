@@ -20456,7 +20456,7 @@ export default function AdminAddClient() {
                   <CardTitle>ABC</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div className="space-y-2">
                       <Label htmlFor="abc-lenderName">Lender Name</Label>
                       <Input
@@ -20476,6 +20476,31 @@ export default function AdminAddClient() {
                         placeholder="Enter loan number"
                         {...form.register("abc.loanNumber")}
                         data-testid="input-abc-loanNumber"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="abc-loanCategory">Loan Category</Label>
+                      <Controller
+                        control={form.control}
+                        name="abc.loanCategory"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <Select value={field.value} onValueChange={field.onChange}>
+                            <SelectTrigger data-testid="select-abc-loanCategory">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select">Select</SelectItem>
+                              <SelectItem value="conventional">Conventional</SelectItem>
+                              <SelectItem value="conventional-jumbo">Conventional Jumbo</SelectItem>
+                              <SelectItem value="fha">FHA</SelectItem>
+                              <SelectItem value="va">VA</SelectItem>
+                              <SelectItem value="va-jumbo">VA Jumbo</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
                       />
                     </div>
                   </div>
