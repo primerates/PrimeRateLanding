@@ -18389,7 +18389,7 @@ export default function AdminAddClient() {
               </Card>
 
               {/* ABC Card */}
-              <Collapsible open={isAbcCardOpen} onOpenChange={setIsAbcCardOpen}>
+              <Collapsible open={isAbcCardOpen}>
               <Card className="transition-all duration-700 border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -19200,7 +19200,7 @@ export default function AdminAddClient() {
               </Collapsible>
 
               {/* BBB Card */}
-              <Collapsible open={isBbbCardOpen} onOpenChange={setIsBbbCardOpen}>
+              <Collapsible open={isBbbCardOpen}>
               <Card className="transition-all duration-700 border-l-4 border-l-cyan-500 hover:border-cyan-500 focus-within:border-cyan-500 transition-colors duration-200">
                 <CardHeader>
                   <div className="flex items-center justify-between">
