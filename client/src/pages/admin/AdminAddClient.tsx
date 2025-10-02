@@ -18411,19 +18411,6 @@ export default function AdminAddClient() {
                         <Minus className="h-4 w-4 mr-2" />
                         Remove
                       </Button>
-                      
-                      {/* Minimize Button */}
-                      <Button 
-                        type="button"
-                        variant="ghost" 
-                        size="sm" 
-                        className="hover:bg-orange-500 hover:text-white" 
-                        data-testid="button-toggle-abc"
-                        title={isAbcCardOpen ? "Minimize" : "Expand"}
-                        onClick={() => setIsAbcCardOpen(!isAbcCardOpen)}
-                      >
-                        {isAbcCardOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                      </Button>
                     </div>
                   </div>
                 </CardHeader>
@@ -19221,19 +19208,6 @@ export default function AdminAddClient() {
                       >
                         <Minus className="h-4 w-4 mr-2" />
                         Remove
-                      </Button>
-                      
-                      {/* Minimize Button */}
-                      <Button 
-                        type="button"
-                        variant="ghost" 
-                        size="sm" 
-                        className="hover:bg-orange-500 hover:text-white" 
-                        data-testid="button-toggle-bbb"
-                        title={isBbbCardOpen ? "Minimize" : "Expand"}
-                        onClick={() => setIsBbbCardOpen(!isBbbCardOpen)}
-                      >
-                        {isBbbCardOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                       </Button>
                     </div>
                   </div>
