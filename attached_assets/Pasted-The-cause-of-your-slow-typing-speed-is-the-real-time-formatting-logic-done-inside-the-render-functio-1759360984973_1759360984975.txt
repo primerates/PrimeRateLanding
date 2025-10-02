@@ -1,0 +1,99 @@
+The cause of your slow typing speed is the real-time formatting logic done inside the render function for every keystroke. This includes repeated replace and especially the .replace(/\B(?=(\d{3})+(?!\d))/g, ',') for every character. This is a common source of lag in controlled React inputs when formatting is applied in real-time.
+
+To make typing fast and keep formatting:
+
+The Best Solution:
+Perform all formatting (commas) on blur only—not during typing!
+
+On every keystroke, store only plain numbers (no commas).
+
+ONLY when leaving the input (onBlur), format with commas.
+
+Implementation:
+jsx
+<Controller
+  control={form.control}
+  name="newLoan.loanAmount"
+  defaultValue=""
+  render={({ field }) => (
+    <div className="flex items-center border border-input bg-background px-3 rounded-md">
+      <span className="text-muted-foreground text-sm">$</span>
+      <Input
+        id="newLoan-loanAmount"
+        type="text"
+        placeholder="0"
+        value={field.value}
+        onChange={(e) => {
+          // Only allow raw digits - much faster, no formatting on each key
+          const value = e.target.value.replace(/[^\d]/g, '');
+          field.onChange(value);
+        }}
+        onBlur={(e) => {
+          // Format with commas ONLY when input loses focus
+          const value = e.target.value.replace(/[^\d]/g, '');
+          const formatted = value ? Number(value).toLocaleString() : '';
+          form.setValue("newLoan.loanAmount", formatted);
+        }}
+        className="border-0 bg-transparent px-2 focus-visible:ring-0"
+        data-testid="input-newLoan-loanAmount"
+      />
+    </div>
+  )}
+/>
+Additional Optimization
+Consider using an uncontrolled input with register if formatting is still too slow and you don't need immediate React state control.
+
+If you need validation or calculated results immediately, use form.watch for those, but avoid formatting during typing.
+
+Why This Works
+No formatting on each keystroke: Typing remains as fast as possible.
+
+Formatting feels natural: User sees commas after finishing typing.
+
+Keeps state simple: Form value is always plain digits during typing, formatted only on blur.
+
+This pattern is widely recommended for performant React forms, as it prevents expensive re-renders and logic from blocking the input thread.The major reason for slow typing is the real-time formatting calculation (displayValue) on every key stroke, especially when adding commas inside the render. This repeatedly recalculates and forces React to reconcile the formatted string on every input, causing lag.
+
+The best performance fix:
+Only apply the comma-formatting on blur, not during each key press. Keep the field value as plain digits while the user types, and on onBlur update the field value to its formatted version.
+
+Optimize your Controller like this:
+jsx
+<Controller
+  control={form.control}
+  name="newLoan.loanAmount"
+  defaultValue=""
+  render={({ field }) => (
+    <div className="flex items-center border border-input bg-background px-3 rounded-md">
+      <span className="text-muted-foreground text-sm">$</span>
+      <Input
+        id="newLoan-loanAmount"
+        type="text"
+        placeholder="0"
+        value={field.value}
+        onChange={(e) => {
+          // Accept only digits, no formatting while typing for perf
+          const digits = e.target.value.replace(/[^\d]/g, '');
+          field.onChange(digits);
+        }}
+        onBlur={(e) => {
+          // Add commas on blur for better UX
+          const digits = e.target.value.replace(/[^\d]/g, '');
+          const formatted = digits ? Number(digits).toLocaleString() : '';
+          form.setValue('newLoan.loanAmount', formatted);
+        }}
+        className="border-0 bg-transparent px-2 focus-visible:ring-0"
+        data-testid="input-newLoan-loanAmount"
+      />
+    </div>
+  )}
+/>
+Summary:
+
+value={field.value} (plain digits, super fast)
+
+Only format to comma-notation in onBlur
+
+Never format in the render, only when input loses focus
+
+This pattern should completely solve your slow typing, allow instant field response, and still present nice formatting after entry

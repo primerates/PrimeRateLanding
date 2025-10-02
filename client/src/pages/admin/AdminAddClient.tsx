@@ -4522,28 +4522,30 @@ export default function AdminAddClient() {
                     control={form.control}
                     name="newLoan.loanAmount"
                     defaultValue=""
-                    render={({ field }) => {
-                      const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
-                      const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                      
-                      return (
-                        <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                          <span className="text-muted-foreground text-sm">$</span>
-                          <Input
-                            id="newLoan-loanAmount"
-                            type="text"
-                            placeholder="0"
-                            value={displayValue}
-                            onChange={(e) => {
-                              const value = e.target.value.replace(/[^\d]/g, '');
-                              field.onChange(value);
-                            }}
-                            className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                            data-testid="input-newLoan-loanAmount"
-                          />
-                        </div>
-                      );
-                    }}
+                    render={({ field }) => (
+                      <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                        <span className="text-muted-foreground text-sm">$</span>
+                        <Input
+                          id="newLoan-loanAmount"
+                          type="text"
+                          placeholder="0"
+                          value={field.value}
+                          onChange={(e) => {
+                            // Only allow raw digits - much faster, no formatting on each key
+                            const value = e.target.value.replace(/[^\d]/g, '');
+                            field.onChange(value);
+                          }}
+                          onBlur={(e) => {
+                            // Format with commas ONLY when input loses focus
+                            const value = e.target.value.replace(/[^\d]/g, '');
+                            const formatted = value ? Number(value).toLocaleString() : '';
+                            form.setValue("newLoan.loanAmount", formatted);
+                          }}
+                          className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                          data-testid="input-newLoan-loanAmount"
+                        />
+                      </div>
+                    )}
                   />
                 </div>
                 
