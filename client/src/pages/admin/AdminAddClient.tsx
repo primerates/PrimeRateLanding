@@ -18389,7 +18389,7 @@ export default function AdminAddClient() {
               </Card>
 
               {/* ABC Card */}
-              <Collapsible open={isAbcCardOpen}>
+              <Collapsible open={isAbcCardOpen} onOpenChange={setIsAbcCardOpen}>
               <Card className="transition-all duration-700 border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -18411,6 +18411,20 @@ export default function AdminAddClient() {
                         <Minus className="h-4 w-4 mr-2" />
                         Remove
                       </Button>
+                      
+                      {/* Minimize Button */}
+                      <CollapsibleTrigger asChild>
+                        <Button 
+                          type="button"
+                          variant="ghost" 
+                          size="sm" 
+                          className="hover:bg-orange-500 hover:text-white" 
+                          data-testid="button-toggle-abc"
+                          title={isAbcCardOpen ? "Minimize" : "Expand"}
+                        >
+                          {isAbcCardOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                        </Button>
+                      </CollapsibleTrigger>
                     </div>
                   </div>
                 </CardHeader>
@@ -19187,7 +19201,7 @@ export default function AdminAddClient() {
               </Collapsible>
 
               {/* BBB Card */}
-              <Collapsible open={isBbbCardOpen}>
+              <Collapsible open={isBbbCardOpen} onOpenChange={setIsBbbCardOpen}>
               <Card className="transition-all duration-700 border-l-4 border-l-cyan-500 hover:border-cyan-500 focus-within:border-cyan-500 transition-colors duration-200">
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -19209,6 +19223,20 @@ export default function AdminAddClient() {
                         <Minus className="h-4 w-4 mr-2" />
                         Remove
                       </Button>
+                      
+                      {/* Minimize Button */}
+                      <CollapsibleTrigger asChild>
+                        <Button 
+                          type="button"
+                          variant="ghost" 
+                          size="sm" 
+                          className="hover:bg-orange-500 hover:text-white" 
+                          data-testid="button-toggle-bbb"
+                          title={isBbbCardOpen ? "Minimize" : "Expand"}
+                        >
+                          {isBbbCardOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                        </Button>
+                      </CollapsibleTrigger>
                     </div>
                   </div>
                 </CardHeader>
