@@ -4535,12 +4535,12 @@ export default function AdminAddClient() {
           </CardHeader>
           <CollapsibleContent>
             <CardContent className="space-y-6 pt-[1.7rem]">
-              {/* Row 1: Mid FICO, Rate Lock Status, Rate Lock Date, Rate Lock Duration / Rate Lock Expiration, Lender Credit */}
+              {/* Row 1: Mid FICO, Rate Lock Status */}
               <Card className={`bg-muted ${
                 showBrandNewLoanCardAnimation[idPrefix] ? 'animate-roll-up-grey-box' : ''
               }`}>
                 <CardContent className="pt-6">
-                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <div className="flex items-center justify-between mb-2">
                         <Label htmlFor="brandNewLoan-midFico" className="text-sm">
@@ -4629,172 +4629,10 @@ export default function AdminAddClient() {
                         )}
                       />
                     </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="brandNewLoan-rateLockDate" className="text-sm">
-                          {getBrandNewLoanLockDateLabel()}
-                        </Label>
-                        <Controller
-                          control={targetForm.control}
-                          name="brandNewLoan.rateLockDate"
-                          render={({ field }) => (
-                            <Switch
-                              checked={!!field.value}
-                              onCheckedChange={cycleBrandNewLoanLockDateType}
-                              data-testid="toggle-brandNewLoan-lockDate-type"
-                              className="scale-[0.8]"
-                            />
-                          )}
-                        />
-                      </div>
-                      <BrandNewLoanRateLockDateInput 
-                        form={targetForm} 
-                        idPrefix={idPrefix} 
-                        type={brandNewLoanLockDateType} 
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="brandNewLoan-rateLockDuration" className="text-sm">
-                          {getBrandNewLoanExpirationDurationLabel()}
-                        </Label>
-                        <Controller
-                          control={targetForm.control}
-                          name="brandNewLoan.rateLockDuration"
-                          render={({ field }) => (
-                            <Switch
-                              checked={!!field.value}
-                              onCheckedChange={cycleBrandNewLoanExpirationDurationType}
-                              data-testid="toggle-brandNewLoan-expiration-duration-type"
-                              className="scale-[0.8]"
-                            />
-                          )}
-                        />
-                      </div>
-                      <BrandNewLoanRateLockDurationInput 
-                        form={targetForm} 
-                        idPrefix={idPrefix} 
-                        type={brandNewLoanExpirationDurationType}
-                        calculatedDuration={calculatedDuration}
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="brandNewLoan-lenderCredit" className="text-sm">
-                          {getBrandNewLoanCreditLabel()}
-                        </Label>
-                        <Controller
-                          control={targetForm.control}
-                          name="brandNewLoan.lenderCredit"
-                          render={({ field }) => (
-                            <Switch
-                              checked={!!field.value}
-                              onCheckedChange={cycleBrandNewLoanCreditType}
-                              data-testid="toggle-brandNewLoan-credit-type"
-                              className="scale-[0.8]"
-                            />
-                          )}
-                        />
-                      </div>
-                      <Controller
-                        control={targetForm.control}
-                        name="brandNewLoan.lenderCredit"
-                        defaultValue=""
-                        render={({ field }) => (
-                          <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                            <span className="text-muted-foreground text-sm">$</span>
-                            <Input
-                              id="brandNewLoan-lenderCredit"
-                              type="text"
-                              placeholder="0"
-                              value={field.value}
-                              onChange={(e) => {
-                                const value = e.target.value.replace(/[^\d]/g, '');
-                                field.onChange(value);
-                              }}
-                              onBlur={(e) => {
-                                const value = e.target.value.replace(/[^\d]/g, '');
-                                const formatted = value ? Number(value).toLocaleString() : '';
-                                targetForm.setValue("brandNewLoan.lenderCredit", formatted);
-                              }}
-                              className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                              data-testid="input-brandNewLoan-lenderCredit"
-                            />
-                          </div>
-                        )}
-                      />
-                    </div>
                   </div>
                   
-                  {/* Row 4: Principal & Interest Payment, Escrow Payment, Total Monthly Payment, Pre-Payment Penalty, Attached to Property */}
-                  <div className="grid grid-cols-1 md:grid-cols-10 gap-4 mt-6">
-                <div className="space-y-2 md:col-span-1">
-                  <Label htmlFor="brandNewLoan-currentRate">Interest Rate</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <Input
-                      id="brandNewLoan-currentRate"
-                      {...targetForm.register('brandNewLoan.currentRate')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-brandNewLoan-currentRate"
-                    />
-                    <span className="text-muted-foreground text-sm">%</span>
-                  </div>
-                </div>
-                
-                <div className="space-y-2 md:col-span-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <Label htmlFor="brandNewLoan-principalInterestPayment" className="text-sm">
-                      {getBrandNewLoanPaymentLabel()}
-                    </Label>
-                    <Switch
-                      checked={targetForm.watch('brandNewLoan.principalAndInterestPayment') || targetForm.watch('brandNewLoan.interestOnlyPayment') ? true : false}
-                      onCheckedChange={cycleBrandNewLoanPaymentType}
-                      data-testid="toggle-brandNewLoan-payment-type"
-                      className="scale-[0.8]"
-                    />
-                  </div>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="brandNewLoan-principalInterestPayment"
-                      {...targetForm.register('brandNewLoan.principalAndInterestPayment')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-brandNewLoan-principalInterestPayment"
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2 md:col-span-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <Label htmlFor="brandNewLoan-monthlyEscrow" className="text-sm">
-                      {getBrandNewLoanEscrowLabel()}
-                    </Label>
-                    <Switch
-                      checked={targetForm.watch('brandNewLoan.escrowPayment') ? true : false}
-                      onCheckedChange={cycleBrandNewLoanEscrowType}
-                      data-testid="toggle-brandNewLoan-escrow-type"
-                      className="scale-[0.8]"
-                    />
-                  </div>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="brandNewLoan-monthlyEscrow"
-                      {...targetForm.register('brandNewLoan.escrowPayment')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-brandNewLoan-monthlyEscrow"
-                    />
-                  </div>
-                </div>
-                
-                {/* Auto-calculated Total Monthly Payment */}
-                <BrandNewLoanAutoSumPaymentFields control={targetForm.control} />
+                  {/* Row 4: HOA, Attached to Property */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                 
                 <div className="space-y-2">
                   <Label htmlFor={`${idPrefix}brandNewLoan-hoa`} className="text-sm">HOA</Label>
