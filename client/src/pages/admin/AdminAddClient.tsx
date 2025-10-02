@@ -20536,7 +20536,22 @@ export default function AdminAddClient() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="abc-cashOutAmount">Cash Out Amount</Label>
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="abc-cashOutAmount" className="text-sm">Cash Out Amount</Label>
+                        <Controller
+                          control={form.control}
+                          name="abc.cashOutAmountToggle"
+                          defaultValue={false}
+                          render={({ field }) => (
+                            <Switch
+                              checked={!!field.value}
+                              onCheckedChange={field.onChange}
+                              data-testid="toggle-abc-cashOutAmount"
+                              className="scale-[0.8]"
+                            />
+                          )}
+                        />
+                      </div>
                       <Controller
                         control={form.control}
                         name="abc.cashOutAmount"
@@ -20567,7 +20582,22 @@ export default function AdminAddClient() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="abc-totalDebtPayOff">Total Debt Pay Off</Label>
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="abc-totalDebtPayOff" className="text-sm">Total Debt Pay Off</Label>
+                        <Controller
+                          control={form.control}
+                          name="abc.totalDebtPayOffToggle"
+                          defaultValue={false}
+                          render={({ field }) => (
+                            <Switch
+                              checked={!!field.value}
+                              onCheckedChange={field.onChange}
+                              data-testid="toggle-abc-totalDebtPayOff"
+                              className="scale-[0.8]"
+                            />
+                          )}
+                        />
+                      </div>
                       <Controller
                         control={form.control}
                         name="abc.totalDebtPayOff"
