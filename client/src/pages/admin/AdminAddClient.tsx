@@ -20585,6 +20585,52 @@ export default function AdminAddClient() {
                     </div>
                   </div>
 
+                  {/* Source Row */}
+                  <div className="grid grid-cols-[150px_1fr] items-center gap-8">
+                    <Label className="text-base font-semibold">Source:</Label>
+                    <div className="flex items-center gap-6">
+                      {/* Direct Mail */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="source-direct-mail"
+                          data-testid="checkbox-source-direct-mail"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="source-direct-mail">Direct Mail</Label>
+                      </div>
+                      
+                      {/* Social Media */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="source-social-media"
+                          data-testid="checkbox-source-social-media"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="source-social-media">Social Media</Label>
+                      </div>
+                      
+                      {/* Referral */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="source-referral"
+                          data-testid="checkbox-source-referral"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="source-referral">Referral</Label>
+                      </div>
+                      
+                      {/* Repeat */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="source-repeat"
+                          data-testid="checkbox-source-repeat"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="source-repeat">Repeat</Label>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Loan Purpose Row */}
                   <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                     <Label className="text-base font-semibold">Loan Purpose:</Label>
