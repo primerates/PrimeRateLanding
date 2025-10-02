@@ -20308,10 +20308,10 @@ export default function AdminAddClient() {
                     </div>
                   </div>
                   
-                  {/* Row 3: Mid FICO, Rate Lock Date, Rate Lock Expiration, Lender Credit/Broker Credit */}
+                  {/* Row 3: Mid FICO, Rate Lock Status, Rate Lock Date, Rate Lock Expiration, Lender Credit/Broker Credit */}
                   <Card className="bg-muted mt-4">
                     <CardContent className="pt-6">
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
                           <div className="flex items-center justify-between mb-2">
                             <Label htmlFor="abc-midFico" className="text-sm">
@@ -20363,6 +20363,41 @@ export default function AdminAddClient() {
                             style={{
                               cursor: (brandNewLoanFicoType === 'borrower-scores' || brandNewLoanFicoType === 'co-borrower-scores') ? 'pointer' : 'text'
                             }}
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Controller
+                            control={form.control}
+                            name="abc.rateLockStatus"
+                            render={({ field }) => (
+                              <Label 
+                                htmlFor="abc-rateLockStatus"
+                                className={(field.value === 'not-locked' || field.value === 'expired' || !field.value) ? 'text-red-500' : ''}
+                              >
+                                Rate Lock Status
+                              </Label>
+                            )}
+                          />
+                          <Controller
+                            name="abc.rateLockStatus"
+                            control={form.control}
+                            defaultValue="not-locked"
+                            render={({ field }) => (
+                              <Select 
+                                value={field.value || "not-locked"}
+                                onValueChange={field.onChange}
+                              >
+                                <SelectTrigger data-testid="select-abc-rateLockStatus">
+                                  <SelectValue placeholder="Not Locked" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="locked">Locked</SelectItem>
+                                  <SelectItem value="not-locked">Not Locked</SelectItem>
+                                  <SelectItem value="expired">Expired</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            )}
                           />
                         </div>
                         
