@@ -20634,7 +20634,7 @@ export default function AdminAddClient() {
                 </Card>
 
                 <div className="space-y-6 mb-6">
-                  <Card className="bg-gray-100">
+                  <Card className="bg-gray-100 hover:shadow-lg transition-shadow duration-300">
                     <CardContent className="pt-6 space-y-6">
                       {/* Property Row */}
                       <div className="grid grid-cols-[150px_1fr] items-center gap-8">
@@ -20750,7 +20750,7 @@ export default function AdminAddClient() {
                     </CardContent>
                   </Card>
 
-                  <Card className="bg-gray-100">
+                  <Card className="bg-gray-100 hover:shadow-lg transition-shadow duration-300">
                     <CardContent className="pt-6 space-y-6">
                       {/* Type Row */}
                       <div className="grid grid-cols-[150px_1fr] items-center gap-8">
