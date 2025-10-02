@@ -20456,7 +20456,7 @@ export default function AdminAddClient() {
                   <CardTitle>ABC</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="abc-loanBalance">Loan Balance</Label>
                       <Controller
@@ -20569,6 +20569,27 @@ export default function AdminAddClient() {
                             </div>
                           );
                         }}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="abc-prepaymentPenalty">Pre-Payment Penalty</Label>
+                      <Controller
+                        control={form.control}
+                        name="abc.prepaymentPenalty"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <Select value={field.value} onValueChange={field.onChange}>
+                            <SelectTrigger data-testid="select-abc-prepaymentPenalty">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select">Select</SelectItem>
+                              <SelectItem value="Yes - see notes">Yes - see notes</SelectItem>
+                              <SelectItem value="No">No</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
                       />
                     </div>
                   </div>
