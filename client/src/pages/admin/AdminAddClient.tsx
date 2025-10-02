@@ -20550,72 +20550,74 @@ export default function AdminAddClient() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {/* Client Row */}
-                  <div className="flex items-center gap-6">
+                  <div className="space-y-4">
                     <Label className="text-base font-semibold">Client:</Label>
-                    
-                    {/* New Client */}
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="client-new"
-                        data-testid="checkbox-client-new"
-                        className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                      />
-                      <Label htmlFor="client-new">New Client</Label>
-                    </div>
-                    
-                    {/* Repeat Client */}
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="client-repeat"
-                        data-testid="checkbox-client-repeat"
-                        className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                      />
-                      <Label htmlFor="client-repeat">Repeat Client</Label>
-                    </div>
-                    
-                    {/* Active Loan */}
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="client-active-loan"
-                        data-testid="checkbox-client-active-loan"
-                        className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                      />
-                      <Label htmlFor="client-active-loan">Active Loan</Label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {/* New Client */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="client-new"
+                          data-testid="checkbox-client-new"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="client-new">New Client</Label>
+                      </div>
+                      
+                      {/* Repeat Client */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="client-repeat"
+                          data-testid="checkbox-client-repeat"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="client-repeat">Repeat Client</Label>
+                      </div>
+                      
+                      {/* Active Loan */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="client-active-loan"
+                          data-testid="checkbox-client-active-loan"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="client-active-loan">Active Loan</Label>
+                      </div>
                     </div>
                   </div>
 
                   {/* Loan Purpose Row */}
-                  <div className="flex items-center gap-6">
+                  <div className="space-y-4">
                     <Label className="text-base font-semibold">Loan Purpose:</Label>
-                    
-                    {/* Refinance */}
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="loan-purpose-refinance"
-                        data-testid="checkbox-loan-purpose-refinance"
-                        className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                      />
-                      <Label htmlFor="loan-purpose-refinance">Refinance</Label>
-                    </div>
-                    
-                    {/* Purchase */}
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="loan-purpose-purchase"
-                        data-testid="checkbox-loan-purpose-purchase"
-                        className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                      />
-                      <Label htmlFor="loan-purpose-purchase">Purchase</Label>
-                    </div>
-                    
-                    {/* Build */}
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="loan-purpose-build"
-                        data-testid="checkbox-loan-purpose-build"
-                        className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                      />
-                      <Label htmlFor="loan-purpose-build">Build</Label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {/* Refinance */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-purpose-refinance"
+                          data-testid="checkbox-loan-purpose-refinance"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-purpose-refinance">Refinance</Label>
+                      </div>
+                      
+                      {/* Purchase */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-purpose-purchase"
+                          data-testid="checkbox-loan-purpose-purchase"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-purpose-purchase">Purchase</Label>
+                      </div>
+                      
+                      {/* Build */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-purpose-build"
+                          data-testid="checkbox-loan-purpose-build"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-purpose-build">Build</Label>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
