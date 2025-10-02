@@ -20552,7 +20552,7 @@ export default function AdminAddClient() {
                   {/* Client Row */}
                   <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                     <Label className="text-base font-semibold">Client:</Label>
-                    <div className="flex items-center gap-10">
+                    <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
                       {/* New Client */}
                       <div className="flex items-center space-x-2">
                         <Checkbox
@@ -20588,7 +20588,7 @@ export default function AdminAddClient() {
                   {/* Source Row */}
                   <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                     <Label className="text-base font-semibold">Source:</Label>
-                    <div className="flex items-center gap-10">
+                    <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
                       {/* Direct Mail */}
                       <div className="flex items-center space-x-2">
                         <Checkbox
@@ -20634,7 +20634,7 @@ export default function AdminAddClient() {
                   {/* Loan Purpose Row */}
                   <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                     <Label className="text-base font-semibold">Loan Purpose:</Label>
-                    <div className="flex items-center gap-10">
+                    <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
                       {/* Refinance */}
                       <div className="flex items-center space-x-2">
                         <Checkbox
@@ -20670,7 +20670,7 @@ export default function AdminAddClient() {
                   {/* Property Purpose Row */}
                   <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                     <Label className="text-base font-semibold">Property Purpose:</Label>
-                    <div className="flex items-center gap-10">
+                    <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
                       {/* Primary Residence */}
                       <div className="flex items-center space-x-2">
                         <Checkbox
