@@ -20872,14 +20872,14 @@ export default function AdminAddClient() {
                             <Label htmlFor="loan-type-cash-out">Cash Out</Label>
                           </div>
                           
-                          {/* Rate Reduction */}
+                          {/* Purchase */}
                           <div className="flex items-center space-x-2">
                             <Checkbox
-                              id="loan-type-rate-reduction"
-                              data-testid="checkbox-loan-type-rate-reduction"
+                              id="loan-type-purchase"
+                              data-testid="checkbox-loan-type-purchase"
                               className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                             />
-                            <Label htmlFor="loan-type-rate-reduction">Rate Reduction</Label>
+                            <Label htmlFor="loan-type-purchase">Purchase</Label>
                           </div>
                           
                           {/* Term Reduction */}
@@ -20892,24 +20892,24 @@ export default function AdminAddClient() {
                             <Label htmlFor="loan-type-term-reduction">Term Reduction</Label>
                           </div>
                           
-                          {/* Term Change */}
+                          {/* Change Program */}
                           <div className="flex items-center space-x-2">
                             <Checkbox
                               id="loan-type-term-change"
                               data-testid="checkbox-loan-type-term-change"
                               className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                             />
-                            <Label htmlFor="loan-type-term-change">Term Change</Label>
+                            <Label htmlFor="loan-type-term-change">Change Program</Label>
                           </div>
                           
-                          {/* Purchase */}
+                          {/* Rate Reduction */}
                           <div className="flex items-center space-x-2">
                             <Checkbox
-                              id="loan-type-purchase"
-                              data-testid="checkbox-loan-type-purchase"
+                              id="loan-type-rate-reduction"
+                              data-testid="checkbox-loan-type-rate-reduction"
                               className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                             />
-                            <Label htmlFor="loan-type-purchase">Purchase</Label>
+                            <Label htmlFor="loan-type-rate-reduction">Rate Reduction</Label>
                           </div>
                         </div>
                       </div>
