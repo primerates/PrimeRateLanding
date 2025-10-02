@@ -19361,7 +19361,7 @@ export default function AdminAddClient() {
                               {(() => {
                                 const properties = form.watch('property.properties') || [];
                                 return properties
-                                  .filter((property: any) => property.use === 'home-purchase')
+                                  .filter((property: any) => property.use === 'primary')
                                   .map((property: any, index: number) => {
                                     const address = property.address;
                                     const streetAddress = address?.street;
@@ -19394,7 +19394,6 @@ export default function AdminAddClient() {
                                     );
                                   });
                               })()}
-                              <SelectItem value="Other">Other</SelectItem>
                             </SelectContent>
                           </Select>
                         )}
