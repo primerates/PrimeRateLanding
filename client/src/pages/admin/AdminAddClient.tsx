@@ -20636,6 +20636,37 @@ export default function AdminAddClient() {
                         }}
                       />
                     </div>
+                    
+                    <div className="space-y-2 md:col-span-1">
+                      <Label htmlFor="abc-hoa">HOA</Label>
+                      <Controller
+                        control={form.control}
+                        name="abc.hoa"
+                        defaultValue=""
+                        render={({ field }) => {
+                          const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                          const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                          
+                          return (
+                            <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                              <span className="text-muted-foreground text-sm">$</span>
+                              <Input
+                                id="abc-hoa"
+                                type="text"
+                                placeholder="0"
+                                value={displayValue}
+                                onChange={(e) => {
+                                  const value = e.target.value.replace(/[^\d]/g, '');
+                                  field.onChange(value);
+                                }}
+                                className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                                data-testid="input-abc-hoa"
+                              />
+                            </div>
+                          );
+                        }}
+                      />
+                    </div>
                   </div>
                 </CardContent>
               </Card>
