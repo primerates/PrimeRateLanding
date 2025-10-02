@@ -20855,7 +20855,7 @@ export default function AdminAddClient() {
                       {/* Type Row */}
                       <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                         <Label className="text-base font-semibold">Type:</Label>
-                        <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
+                        <div className="grid grid-cols-[180px_180px_180px_180px_180px] gap-4">
                           {/* Refinance */}
                           <div className="flex items-center space-x-2">
                             <Checkbox
@@ -20884,6 +20884,16 @@ export default function AdminAddClient() {
                             <Label htmlFor="loan-purpose-purchase">Purchase</Label>
                           </div>
                           
+                          {/* Second Loan */}
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              id="loan-purpose-second-loan"
+                              data-testid="checkbox-loan-purpose-second-loan"
+                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                            />
+                            <Label htmlFor="loan-purpose-second-loan">Second Loan</Label>
+                          </div>
+                          
                           {/* Construction */}
                           <div className="flex items-center space-x-2">
                             <Checkbox
@@ -20892,6 +20902,16 @@ export default function AdminAddClient() {
                               className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                             />
                             <Label htmlFor="loan-purpose-build">Construction</Label>
+                          </div>
+                          
+                          {/* Bridge */}
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              id="loan-purpose-bridge"
+                              data-testid="checkbox-loan-purpose-bridge"
+                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                            />
+                            <Label htmlFor="loan-purpose-bridge">Bridge</Label>
                           </div>
                         </div>
                       </div>
