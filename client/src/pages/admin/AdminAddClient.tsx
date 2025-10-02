@@ -20308,6 +20308,80 @@ export default function AdminAddClient() {
                     </div>
                     
                     <div className="space-y-2">
+                      <Label htmlFor="bbb-prepaymentPenalty">Pre-Payment Penalty</Label>
+                      <Controller
+                        control={form.control}
+                        name="bbb.prepaymentPenalty"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <Select value={field.value} onValueChange={field.onChange}>
+                            <SelectTrigger data-testid="select-bbb-prepaymentPenalty">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select">Select</SelectItem>
+                              <SelectItem value="No">No</SelectItem>
+                              <SelectItem value="Yes - 6 Months">Yes - 6 Months</SelectItem>
+                              <SelectItem value="Yes - 1 Year">Yes - 1 Year</SelectItem>
+                              <SelectItem value="Yes - 2 Years">Yes - 2 Years</SelectItem>
+                              <SelectItem value="Yes - 3 Years">Yes - 3 Years</SelectItem>
+                              <SelectItem value="Yes - 4 Years">Yes - 4 Years</SelectItem>
+                              <SelectItem value="Yes - 5 Years">Yes - 5 Years</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="bbb-lenderCredit" className="text-sm">
+                          {form.watch("bbb.brokerCreditToggle") ? "Broker Credit" : "Lender Credit"}
+                        </Label>
+                        <Controller
+                          control={form.control}
+                          name="bbb.brokerCreditToggle"
+                          defaultValue={false}
+                          render={({ field }) => (
+                            <Switch
+                              checked={!!field.value}
+                              onCheckedChange={field.onChange}
+                              data-testid="toggle-bbb-brokerCredit"
+                              className="scale-[0.8]"
+                            />
+                          )}
+                        />
+                      </div>
+                      <Controller
+                        control={form.control}
+                        name="bbb.lenderCredit"
+                        defaultValue=""
+                        render={({ field }) => {
+                          const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                          const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                          
+                          return (
+                            <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                              <span className="text-muted-foreground text-sm">$</span>
+                              <Input
+                                id="bbb-lenderCredit"
+                                type="text"
+                                placeholder="0"
+                                value={displayValue}
+                                onChange={(e) => {
+                                  const value = e.target.value.replace(/[^\d]/g, '');
+                                  field.onChange(value);
+                                }}
+                                className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                                data-testid="input-bbb-lenderCredit"
+                              />
+                            </div>
+                          );
+                        }}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
                       <div className="flex items-center justify-between mb-2">
                         <Label htmlFor="bbb-cashOutAmount" className="text-sm">
                           {form.watch("bbb.cashOutAmountToggle") ? "Benefits Summary" : "Cash Out Amount"}
@@ -20364,86 +20438,12 @@ export default function AdminAddClient() {
                         />
                       )}
                     </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="bbb-totalDebtPayOff" className="text-sm">
-                          {form.watch("bbb.totalDebtPayOffToggle") ? "Total Debt Pay Off Payments" : "Total Debt Pay Off"}
-                        </Label>
-                        <Controller
-                          control={form.control}
-                          name="bbb.totalDebtPayOffToggle"
-                          defaultValue={false}
-                          render={({ field }) => (
-                            <Switch
-                              checked={!!field.value}
-                              onCheckedChange={field.onChange}
-                              data-testid="toggle-bbb-totalDebtPayOff"
-                              className="scale-[0.8]"
-                            />
-                          )}
-                        />
-                      </div>
-                      <Controller
-                        control={form.control}
-                        name="bbb.totalDebtPayOff"
-                        defaultValue=""
-                        render={({ field }) => {
-                          const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
-                          const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                          
-                          return (
-                            <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                              <span className="text-muted-foreground text-sm">$</span>
-                              <Input
-                                id="bbb-totalDebtPayOff"
-                                type="text"
-                                placeholder="0"
-                                value={displayValue}
-                                onChange={(e) => {
-                                  const value = e.target.value.replace(/[^\d]/g, '');
-                                  field.onChange(value);
-                                }}
-                                className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                                data-testid="input-bbb-totalDebtPayOff"
-                              />
-                            </div>
-                          );
-                        }}
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="bbb-prepaymentPenalty">Pre-Payment Penalty</Label>
-                      <Controller
-                        control={form.control}
-                        name="bbb.prepaymentPenalty"
-                        defaultValue=""
-                        render={({ field }) => (
-                          <Select value={field.value} onValueChange={field.onChange}>
-                            <SelectTrigger data-testid="select-bbb-prepaymentPenalty">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select">Select</SelectItem>
-                              <SelectItem value="No">No</SelectItem>
-                              <SelectItem value="Yes - 6 Months">Yes - 6 Months</SelectItem>
-                              <SelectItem value="Yes - 1 Year">Yes - 1 Year</SelectItem>
-                              <SelectItem value="Yes - 2 Years">Yes - 2 Years</SelectItem>
-                              <SelectItem value="Yes - 3 Years">Yes - 3 Years</SelectItem>
-                              <SelectItem value="Yes - 4 Years">Yes - 4 Years</SelectItem>
-                              <SelectItem value="Yes - 5 Years">Yes - 5 Years</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        )}
-                      />
-                    </div>
                   </div>
                   
-                  {/* Row 3: Mid FICO, Rate Lock Status, Rate Lock Date, Rate Lock Expiration, Lender Credit/Broker Credit */}
+                  {/* Row 3: Mid FICO, Rate Lock Status, Rate Lock Date, Rate Lock Expiration */}
                   <Card className="bg-muted mt-4">
                     <CardContent className="pt-6">
-                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div className="space-y-2">
                           <div className="flex items-center justify-between mb-2">
                             <Label htmlFor="bbb-midFico" className="text-sm">
@@ -20627,54 +20627,6 @@ export default function AdminAddClient() {
                               data-testid="input-bbb-rateLockExpiration"
                             />
                           )}
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor="bbb-lenderCredit" className="text-sm">
-                              {form.watch("bbb.brokerCreditToggle") ? "Broker Credit" : "Lender Credit"}
-                            </Label>
-                            <Controller
-                              control={form.control}
-                              name="bbb.brokerCreditToggle"
-                              defaultValue={false}
-                              render={({ field }) => (
-                                <Switch
-                                  checked={!!field.value}
-                                  onCheckedChange={field.onChange}
-                                  data-testid="toggle-bbb-brokerCredit"
-                                  className="scale-[0.8]"
-                                />
-                              )}
-                            />
-                          </div>
-                          <Controller
-                            control={form.control}
-                            name="bbb.lenderCredit"
-                            defaultValue=""
-                            render={({ field }) => {
-                              const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
-                              const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                              
-                              return (
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                                  <span className="text-muted-foreground text-sm">$</span>
-                                  <Input
-                                    id="bbb-lenderCredit"
-                                    type="text"
-                                    placeholder="0"
-                                    value={displayValue}
-                                    onChange={(e) => {
-                                      const value = e.target.value.replace(/[^\d]/g, '');
-                                      field.onChange(value);
-                                    }}
-                                    className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                                    data-testid="input-bbb-lenderCredit"
-                                  />
-                                </div>
-                              );
-                            }}
-                          />
                         </div>
                       </div>
                   
