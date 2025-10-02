@@ -20548,7 +20548,7 @@ export default function AdminAddClient() {
               <div>
                 <h2 className="text-2xl font-semibold mb-6">Quote</h2>
                 
-                <Card className="bg-gray-100 mb-6 hover:shadow-lg transition-shadow duration-300">
+                <Card className="bg-gray-100 mb-6 hover:shadow-lg transition-shadow duration-300 border-l-4 border-l-transparent hover:border-l-green-500 transition-colors">
                   <div className="flex justify-end pt-4 pr-4">
                     <Button
                       variant="ghost"
@@ -20650,7 +20650,7 @@ export default function AdminAddClient() {
 
                 {!isQuoteCardsMinimized && (
                 <div className="space-y-6 mb-6">
-                  <Card className="bg-gray-100 hover:shadow-lg transition-shadow duration-300">
+                  <Card className="bg-gray-100 hover:shadow-lg transition-shadow duration-300 border-l-4 border-l-transparent hover:border-l-green-500 transition-colors">
                     <CardContent className="pt-6 space-y-6">
                       {/* Property Row */}
                       <div className="grid grid-cols-[150px_1fr] items-center gap-8">
@@ -20766,7 +20766,7 @@ export default function AdminAddClient() {
                     </CardContent>
                   </Card>
 
-                  <Card className="bg-gray-100 hover:shadow-lg transition-shadow duration-300">
+                  <Card className="bg-gray-100 hover:shadow-lg transition-shadow duration-300 border-l-4 border-l-transparent hover:border-l-green-500 transition-colors">
                     <CardContent className="pt-6 space-y-6">
                       {/* Type Row */}
                       <div className="grid grid-cols-[150px_1fr] items-center gap-8">
