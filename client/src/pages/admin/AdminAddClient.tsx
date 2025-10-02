@@ -4535,78 +4535,7 @@ export default function AdminAddClient() {
           </CardHeader>
           <CollapsibleContent>
             <CardContent className="space-y-6 pt-[1.7rem]">
-              {/* Row 1: Current Lender, Loan Number, Loan Category, Loan Purpose, Doc Type */}
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor={currentLenderBinding.id}>Lender Name</Label>
-                  <Input
-                    id={currentLenderBinding.id}
-                    {...currentLenderBinding.field}
-                    data-testid={currentLenderBinding['data-testid']}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="brandNewLoan-loanNumber">Loan Number</Label>
-                  <Input
-                    id="brandNewLoan-loanNumber"
-                    {...targetForm.register('brandNewLoan.loanNumber')}
-                    data-testid="input-brandNewLoan-loanNumber"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor={`${idPrefix}brandNewLoan-loanCategory`}>Loan Category</Label>
-                  <Select {...loanCategoryBinding}>
-                    <SelectTrigger data-testid={loanCategoryBinding['data-testid']}>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="conventional">Conventional</SelectItem>
-                      <SelectItem value="conventional-jumbo">Conventional Jumbo</SelectItem>
-                      <SelectItem value="fha">FHA</SelectItem>
-                      <SelectItem value="va">VA</SelectItem>
-                      <SelectItem value="va-jumbo">VA Jumbo</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor={`${idPrefix}brandNewLoan-loanPurpose`}>Loan Purpose</Label>
-                  <Select {...loanPurposeBinding}>
-                    <SelectTrigger data-testid={loanPurposeBinding['data-testid']}>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="cash-out">Cash Out</SelectItem>
-                      <SelectItem value="rate-reduction">Rate Reduction</SelectItem>
-                      <SelectItem value="term-reduction">Term Reduction</SelectItem>
-                      <SelectItem value="purchase">Purchase</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor={`${idPrefix}brandNewLoan-docType`}>Doc Type</Label>
-                  <Select {...docTypeBinding}>
-                    <SelectTrigger data-testid={docTypeBinding['data-testid']}>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="full-doc">Full Doc</SelectItem>
-                      <SelectItem value="streamline">Streamline</SelectItem>
-                      <SelectItem value="irrrl">IRRRL</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              
-              {/* Row 2: New Loan Amount, Loan Term, Cash Out Amount, Total Debt Pay Off, Pre-Payment Penalty */}
+              {/* Row 1: New Loan Amount, Loan Term, Cash Out Amount, Total Debt Pay Off, Pre-Payment Penalty */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="newLoan-loanAmount">New Loan Amount</Label>
@@ -20517,10 +20446,9 @@ export default function AdminAddClient() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="select">Select</SelectItem>
-                              <SelectItem value="purchase">Purchase</SelectItem>
-                              <SelectItem value="refinance-rate-term">Refinance Rate & Term</SelectItem>
-                              <SelectItem value="refinance-cash-out">Refinance Cash Out</SelectItem>
-                              <SelectItem value="construction">Construction</SelectItem>
+                              <SelectItem value="cash-out">Cash Out</SelectItem>
+                              <SelectItem value="rate-reduction">Rate Reduction</SelectItem>
+                              <SelectItem value="term-reduction">Term Reduction</SelectItem>
                               <SelectItem value="other">Other</SelectItem>
                             </SelectContent>
                           </Select>
