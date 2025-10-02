@@ -20544,12 +20544,43 @@ export default function AdminAddClient() {
 
             {/* Quote Tab */}
             <TabsContent value="quote" className="space-y-6">
-              <Card>
+              <Card className="bg-gray-100">
                 <CardHeader>
-                  <CardTitle>Quote</CardTitle>
+                  <CardTitle>Menu</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">Quote functionality will be implemented here.</p>
+                <CardContent className="space-y-6">
+                  {/* Loan Purpose Row */}
+                  <div className="space-y-3">
+                    <Label className="text-base font-semibold">Loan Purpose:</Label>
+                    <div className="grid grid-cols-3 gap-4">
+                      {/* Refinance Square */}
+                      <button
+                        type="button"
+                        className="aspect-square border-2 border-gray-300 bg-white hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 rounded-md flex items-center justify-center font-medium text-gray-700 hover:text-blue-700"
+                        data-testid="button-loan-purpose-refinance"
+                      >
+                        Refinance
+                      </button>
+                      
+                      {/* Purchase Square */}
+                      <button
+                        type="button"
+                        className="aspect-square border-2 border-gray-300 bg-white hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 rounded-md flex items-center justify-center font-medium text-gray-700 hover:text-blue-700"
+                        data-testid="button-loan-purpose-purchase"
+                      >
+                        Purchase
+                      </button>
+                      
+                      {/* Build Square */}
+                      <button
+                        type="button"
+                        className="aspect-square border-2 border-gray-300 bg-white hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 rounded-md flex items-center justify-center font-medium text-gray-700 hover:text-blue-700"
+                        data-testid="button-loan-purpose-build"
+                      >
+                        Build
+                      </button>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
