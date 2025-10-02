@@ -14734,17 +14734,23 @@ export default function AdminAddClient() {
                                       const properties = form.watch('property.properties') || [];
                                       const currentProperty = actualPropertyIndex >= 0 ? properties[actualPropertyIndex] : null;
                                       
-                                      // Check current loan
-                                      const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
-                                      const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                      // Check all Existing Primary Loan cards
+                                      const isCurrentLoanAttached = (currentPrimaryLoanCards || []).some(cardId => {
+                                        const attachedPropertyId = form.watch(`${cardId}.attachedToProperty`);
+                                        return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                      });
                                       
-                                      // Check second loan
-                                      const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
-                                      const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                      // Check all Existing Second Loan cards
+                                      const isSecondLoanAttached = (currentSecondLoanCards || []).some(cardId => {
+                                        const attachedPropertyId = form.watch(`${cardId}.attachedToProperty`);
+                                        return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                      });
                                       
-                                      // Check third loan
-                                      const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
-                                      const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
+                                      // Check all Existing Third Loan cards
+                                      const isThirdLoanAttached = (currentThirdLoanCards || []).some(cardId => {
+                                        const attachedPropertyId = form.watch(`${cardId}.attachedToProperty`);
+                                        return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                      });
                                       
                                       // Check other additional loans (loan4, loan5, etc.)
                                       const additionalLoansData = additionalLoans || [];
@@ -14842,23 +14848,29 @@ export default function AdminAddClient() {
                                   // Check all loans for attachment to this property
                                   const attachedLoans = [];
                                   
-                                  // Check current loan
-                                  const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
-                                  if (currentLoanAttached && currentLoanAttached === currentProperty.id) {
-                                    attachedLoans.push('Current Primary Loan');
-                                  }
+                                  // Check all Existing Primary Loan cards
+                                  (currentPrimaryLoanCards || []).forEach((cardId, index) => {
+                                    const attachedPropertyId = form.watch(`${cardId}.attachedToProperty`);
+                                    if (attachedPropertyId && attachedPropertyId === currentProperty.id) {
+                                      attachedLoans.push('Existing Primary Loan');
+                                    }
+                                  });
                                   
-                                  // Check second loan
-                                  const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
-                                  if (secondLoanAttached && secondLoanAttached === currentProperty.id) {
-                                    attachedLoans.push('Current Second Loan');
-                                  }
+                                  // Check all Existing Second Loan cards
+                                  (currentSecondLoanCards || []).forEach((cardId, index) => {
+                                    const attachedPropertyId = form.watch(`${cardId}.attachedToProperty`);
+                                    if (attachedPropertyId && attachedPropertyId === currentProperty.id) {
+                                      attachedLoans.push('Existing Second Loan');
+                                    }
+                                  });
                                   
-                                  // Check third loan
-                                  const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
-                                  if (thirdLoanAttached && thirdLoanAttached === currentProperty.id) {
-                                    attachedLoans.push('Current Third Loan');
-                                  }
+                                  // Check all Existing Third Loan cards
+                                  (currentThirdLoanCards || []).forEach((cardId, index) => {
+                                    const attachedPropertyId = form.watch(`${cardId}.attachedToProperty`);
+                                    if (attachedPropertyId && attachedPropertyId === currentProperty.id) {
+                                      attachedLoans.push('Existing Third Loan');
+                                    }
+                                  });
                                   
                                   // Check other additional loans
                                   const additionalLoansData = additionalLoans || [];
@@ -17907,17 +17919,23 @@ export default function AdminAddClient() {
                                       // Check ALL loans for attachment to this property
                                       const currentProperty = property;
                                       
-                                      // Check current loan
-                                      const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
-                                      const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                      // Check all Existing Primary Loan cards
+                                      const isCurrentLoanAttached = (currentPrimaryLoanCards || []).some(cardId => {
+                                        const attachedPropertyId = form.watch(`${cardId}.attachedToProperty`);
+                                        return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                      });
                                       
-                                      // Check second loan
-                                      const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
-                                      const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                      // Check all Existing Second Loan cards
+                                      const isSecondLoanAttached = (currentSecondLoanCards || []).some(cardId => {
+                                        const attachedPropertyId = form.watch(`${cardId}.attachedToProperty`);
+                                        return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                      });
                                       
-                                      // Check third loan
-                                      const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
-                                      const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
+                                      // Check all Existing Third Loan cards
+                                      const isThirdLoanAttached = (currentThirdLoanCards || []).some(cardId => {
+                                        const attachedPropertyId = form.watch(`${cardId}.attachedToProperty`);
+                                        return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                      });
                                       
                                       // Check other additional loans (loan4, loan5, etc.)
                                       const additionalLoansData = additionalLoans || [];
@@ -18022,17 +18040,23 @@ export default function AdminAddClient() {
                                   // Dynamic connection display field - checks ALL loans
                                   const currentProperty = property;
                                   
-                                  // Check current loan
-                                  const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
-                                  const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
+                                  // Check all Existing Primary Loan cards
+                                  const isCurrentLoanAttached = (currentPrimaryLoanCards || []).some(cardId => {
+                                    const attachedPropertyId = form.watch(`${cardId}.attachedToProperty`);
+                                    return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                  });
                                   
-                                  // Check second loan
-                                  const secondLoanAttached = form.watch('secondLoan.attachedToProperty');
-                                  const isSecondLoanAttached = Boolean(secondLoanAttached && currentProperty?.id && secondLoanAttached === currentProperty.id);
+                                  // Check all Existing Second Loan cards
+                                  const isSecondLoanAttached = (currentSecondLoanCards || []).some(cardId => {
+                                    const attachedPropertyId = form.watch(`${cardId}.attachedToProperty`);
+                                    return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                  });
                                   
-                                  // Check third loan
-                                  const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
-                                  const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
+                                  // Check all Existing Third Loan cards
+                                  const isThirdLoanAttached = (currentThirdLoanCards || []).some(cardId => {
+                                    const attachedPropertyId = form.watch(`${cardId}.attachedToProperty`);
+                                    return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
+                                  });
                                   
                                   // Check other additional loans (loan4, loan5, etc.)
                                   const additionalLoansData = additionalLoans || [];
