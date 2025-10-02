@@ -13780,8 +13780,17 @@ export default function AdminAddClient() {
                       >
                         <span className={`${showPropertyAnimation ? 'animate-roll-down' : ''}`}>
                           {(() => {
-                            // Get the New Loan Amount from New Refinance Loan card
-                            const newLoanAmount = form.watch('abc.loanBalance') || '';
+                            // Check which new loan card is open
+                            const hasRefinanceCards = (newRefinanceLoanCards || []).length > 0;
+                            const hasPurchaseCards = (newPurchaseLoanCards || []).length > 0;
+                            
+                            // Get the New Loan Amount from whichever card is open
+                            let newLoanAmount = '';
+                            if (hasRefinanceCards) {
+                              newLoanAmount = form.watch('abc.loanBalance') || '';
+                            } else if (hasPurchaseCards) {
+                              newLoanAmount = form.watch('bbb.loanBalance') || '';
+                            }
                             
                             // Find the Primary Residence property
                             const properties = form.watch('property.properties') || [];
@@ -13842,8 +13851,17 @@ export default function AdminAddClient() {
                       >
                         <span className={`${showPropertyAnimation ? 'animate-roll-down' : ''}`}>
                           {(() => {
-                            // Get the New Loan Amount from New Refinance Loan card
-                            const newLoanAmount = form.watch('abc.loanBalance') || '';
+                            // Check which new loan card is open
+                            const hasRefinanceCards = (newRefinanceLoanCards || []).length > 0;
+                            const hasPurchaseCards = (newPurchaseLoanCards || []).length > 0;
+                            
+                            // Get the New Loan Amount from whichever card is open
+                            let newLoanAmount = '';
+                            if (hasRefinanceCards) {
+                              newLoanAmount = form.watch('abc.loanBalance') || '';
+                            } else if (hasPurchaseCards) {
+                              newLoanAmount = form.watch('bbb.loanBalance') || '';
+                            }
                             
                             // Find the Primary Residence property
                             const properties = form.watch('property.properties') || [];
