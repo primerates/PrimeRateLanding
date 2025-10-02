@@ -20547,43 +20547,42 @@ export default function AdminAddClient() {
               <div>
                 <h2 className="text-2xl font-semibold mb-6">Quote</h2>
                 
-                <Card className="bg-gray-100 mb-6">
-                  <CardContent className="pt-6 space-y-6">
-                    {/* Client Row */}
-                    <div className="grid grid-cols-[150px_1fr] items-center gap-8">
-                      <Label className="text-base font-semibold">Client:</Label>
-                      <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
-                        {/* New Client */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="client-new"
-                            data-testid="checkbox-client-new"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="client-new">New Client</Label>
-                        </div>
-                        
-                        {/* Repeat Client */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="client-repeat"
-                            data-testid="checkbox-client-repeat"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="client-repeat">Repeat Client</Label>
-                        </div>
-                        
-                        {/* Active Loan */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="client-active-loan"
-                            data-testid="checkbox-client-active-loan"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="client-active-loan">Active Loan</Label>
-                        </div>
+                <div className="space-y-6 mb-6">
+                  {/* Client Row */}
+                  <div className="grid grid-cols-[150px_1fr] items-center gap-8">
+                    <Label className="text-base font-semibold">Client:</Label>
+                    <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
+                      {/* New Client */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="client-new"
+                          data-testid="checkbox-client-new"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="client-new">New Client</Label>
+                      </div>
+                      
+                      {/* Repeat Client */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="client-repeat"
+                          data-testid="checkbox-client-repeat"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="client-repeat">Repeat Client</Label>
+                      </div>
+                      
+                      {/* Active Loan */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="client-active-loan"
+                          data-testid="checkbox-client-active-loan"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="client-active-loan">Active Loan</Label>
                       </div>
                     </div>
+                  </div>
 
                   {/* Source Row */}
                   <div className="grid grid-cols-[150px_1fr] items-center gap-8">
@@ -20676,8 +20675,7 @@ export default function AdminAddClient() {
                       </div>
                     </div>
                   </div>
-                  </CardContent>
-                </Card>
+                </div>
 
                 <Card className="bg-gray-100">
                   <CardContent className="pt-6 space-y-6">
