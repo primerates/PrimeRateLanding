@@ -343,7 +343,7 @@ export default function AdminDashboard() {
                   isLoaded 
                     ? 'transform scale-x-100 opacity-100' 
                     : 'transform scale-x-0 opacity-0'
-                }`}
+                } bg-gradient-to-br from-card to-card/80`}
                 style={{
                   transformOrigin: 'left',
                   transitionDelay: `${500 + (index * 150)}ms`
@@ -373,7 +373,7 @@ export default function AdminDashboard() {
                   isLoaded 
                     ? 'transform scale-x-100 opacity-100' 
                     : 'transform scale-x-0 opacity-0'
-                }`}
+                } bg-gradient-to-br from-card to-card/80`}
                 style={{
                   transformOrigin: 'left',
                   transitionDelay: `${1250 + (index * 150)}ms`
