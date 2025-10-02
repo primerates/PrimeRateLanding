@@ -901,6 +901,10 @@ export default function AdminAddClient() {
   const [showSecondLoanCardAnimation, setShowSecondLoanCardAnimation] = useState<{[key: string]: boolean}>({});
   // Animation state for third loan card grey box roll-up
   const [showThirdLoanCardAnimation, setShowThirdLoanCardAnimation] = useState<{[key: string]: boolean}>({});
+  // Animation state for New Refinance Loan card grey box roll-up
+  const [showNewRefinanceLoanCardAnimation, setShowNewRefinanceLoanCardAnimation] = useState<{[key: string]: boolean}>({});
+  // Animation state for New Purchase Loan card grey box roll-up
+  const [showNewPurchaseLoanCardAnimation, setShowNewPurchaseLoanCardAnimation] = useState<{[key: string]: boolean}>({});
   // Animation state for revert icon rotation
   const [showRevertAnimation, setShowRevertAnimation] = useState(false);
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
@@ -6287,6 +6291,15 @@ export default function AdminAddClient() {
         
         // Initialize per-card collapsible state (auto-expand)
         setNewRefinanceLoanCardStates({ [newCardId]: true });
+        
+        // Trigger animation for newly created card grey box
+        setTimeout(() => {
+          const animationKey = 'refinance-card-0-';
+          setShowNewRefinanceLoanCardAnimation(prev => ({ ...prev, [animationKey]: true }));
+          setTimeout(() => {
+            setShowNewRefinanceLoanCardAnimation(prev => ({ ...prev, [animationKey]: false }));
+          }, 800);
+        }, 200);
       }
     }
   };
@@ -6321,6 +6334,15 @@ export default function AdminAddClient() {
         
         // Initialize per-card collapsible state (auto-expand)
         setNewPurchaseLoanCardStates({ [newCardId]: true });
+        
+        // Trigger animation for newly created card grey box
+        setTimeout(() => {
+          const animationKey = 'purchase-card-0-';
+          setShowNewPurchaseLoanCardAnimation(prev => ({ ...prev, [animationKey]: true }));
+          setTimeout(() => {
+            setShowNewPurchaseLoanCardAnimation(prev => ({ ...prev, [animationKey]: false }));
+          }, 800);
+        }, 200);
       }
     }
   };
@@ -18618,6 +18640,14 @@ export default function AdminAddClient() {
                 const isOpen = newRefinanceLoanCardStates[cardId] ?? true;
                 const setIsOpen = (open: boolean) => {
                   setNewRefinanceLoanCardStates(prev => ({ ...prev, [cardId]: open }));
+                  // Trigger grey box animation when card is opened
+                  if (open) {
+                    const animationKey = `refinance-card-${index}-`;
+                    setShowNewRefinanceLoanCardAnimation(prev => ({ ...prev, [animationKey]: true }));
+                    setTimeout(() => {
+                      setShowNewRefinanceLoanCardAnimation(prev => ({ ...prev, [animationKey]: false }));
+                    }, 800);
+                  }
                 };
                 
                 return (
@@ -18936,7 +18966,9 @@ export default function AdminAddClient() {
                   </div>
                   
                   {/* Row 3: Mid FICO, Rate Lock Status, Rate Lock Date, Rate Lock Expiration, Lender Credit/Broker Credit */}
-                  <Card className="bg-muted mt-4">
+                  <Card className={`bg-muted mt-4 ${
+                    showNewRefinanceLoanCardAnimation[`refinance-card-${index}-`] ? 'animate-roll-up-grey-box' : ''
+                  }`}>
                     <CardContent className="pt-6">
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
@@ -19425,6 +19457,14 @@ export default function AdminAddClient() {
                 const isOpen = newPurchaseLoanCardStates[cardId] ?? true;
                 const setIsOpen = (open: boolean) => {
                   setNewPurchaseLoanCardStates(prev => ({ ...prev, [cardId]: open }));
+                  // Trigger grey box animation when card is opened
+                  if (open) {
+                    const animationKey = `purchase-card-${index}-`;
+                    setShowNewPurchaseLoanCardAnimation(prev => ({ ...prev, [animationKey]: true }));
+                    setTimeout(() => {
+                      setShowNewPurchaseLoanCardAnimation(prev => ({ ...prev, [animationKey]: false }));
+                    }, 800);
+                  }
                 };
                 
                 return (
@@ -19751,7 +19791,9 @@ export default function AdminAddClient() {
                   </div>
                   
                   {/* Row 3: Mid FICO, Rate Lock Status, Rate Lock Date, Rate Lock Expiration, Rate Lock Duration */}
-                  <Card className="bg-muted mt-4">
+                  <Card className={`bg-muted mt-4 ${
+                    showNewPurchaseLoanCardAnimation[`purchase-card-${index}-`] ? 'animate-roll-up-grey-box' : ''
+                  }`}>
                     <CardContent className="pt-6">
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
