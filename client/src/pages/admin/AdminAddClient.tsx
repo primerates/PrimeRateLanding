@@ -20456,6 +20456,30 @@ export default function AdminAddClient() {
                   <CardTitle>ABC</CardTitle>
                 </CardHeader>
                 <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="abc-lenderName">Lender Name</Label>
+                      <Input
+                        id="abc-lenderName"
+                        type="text"
+                        placeholder="Enter lender name"
+                        {...form.register("abc.lenderName")}
+                        data-testid="input-abc-lenderName"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="abc-loanNumber">Loan Number</Label>
+                      <Input
+                        id="abc-loanNumber"
+                        type="text"
+                        placeholder="Enter loan number"
+                        {...form.register("abc.loanNumber")}
+                        data-testid="input-abc-loanNumber"
+                      />
+                    </div>
+                  </div>
+                  
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="abc-loanBalance">Loan Balance</Label>
