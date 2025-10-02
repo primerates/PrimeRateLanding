@@ -19785,11 +19785,9 @@ export default function AdminAddClient() {
                           />
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
                   
-                  {/* Row 4: Interest Rate, Principal & Interest Payment, Tax & Insurance Payment, Total Monthly Payment */}
-                  <div className="grid grid-cols-1 md:grid-cols-10 gap-4 mt-4">
+                  {/* Row 4: Interest Rate, Principal & Interest Payment, Tax & Insurance Payment, Total Monthly Payment, HOA, Attached to Property */}
+                  <div className="grid grid-cols-1 md:grid-cols-10 gap-4 mt-6">
                     <div className="space-y-2 md:col-span-1">
                       <Label htmlFor="abc-interestRate">Interest Rate</Label>
                       <Controller
@@ -20061,6 +20059,8 @@ export default function AdminAddClient() {
                       />
                     </div>
                   </div>
+                    </CardContent>
+                  </Card>
                 </CardContent>
               </Card>
 
