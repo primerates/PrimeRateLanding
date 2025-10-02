@@ -19237,10 +19237,8 @@ export default function AdminAddClient() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="select">Select</SelectItem>
-                              <SelectItem value="cash-out">Cash Out</SelectItem>
-                              <SelectItem value="rate-reduction">Rate Reduction</SelectItem>
-                              <SelectItem value="term-reduction">Term Reduction</SelectItem>
-                              <SelectItem value="other">Other</SelectItem>
+                              <SelectItem value="existing-build">Existing Build</SelectItem>
+                              <SelectItem value="new-build">New Build</SelectItem>
                             </SelectContent>
                           </Select>
                         )}
