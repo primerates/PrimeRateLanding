@@ -20489,7 +20489,21 @@ export default function AdminAddClient() {
                     <CardContent className="pt-6">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="abc-rateLockDate">Rate Lock Date</Label>
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="abc-rateLockDate" className="text-sm">Rate Lock Date</Label>
+                            <Controller
+                              control={form.control}
+                              name="abc.rateLockDateToggle"
+                              defaultValue={false}
+                              render={({ field }) => (
+                                <Switch
+                                  checked={!!field.value}
+                                  onCheckedChange={field.onChange}
+                                  data-testid="toggle-abc-rateLockDate"
+                                />
+                              )}
+                            />
+                          </div>
                           <Input
                             id="abc-rateLockDate"
                             value={form.watch('abc.rateLockDate') || ''}
@@ -20514,7 +20528,21 @@ export default function AdminAddClient() {
                         </div>
                         
                         <div className="space-y-2">
-                          <Label htmlFor="abc-rateLockExpiration">Rate Lock Expiration</Label>
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="abc-rateLockExpiration" className="text-sm">Rate Lock Expiration</Label>
+                            <Controller
+                              control={form.control}
+                              name="abc.rateLockExpirationToggle"
+                              defaultValue={false}
+                              render={({ field }) => (
+                                <Switch
+                                  checked={!!field.value}
+                                  onCheckedChange={field.onChange}
+                                  data-testid="toggle-abc-rateLockExpiration"
+                                />
+                              )}
+                            />
+                          </div>
                           <Input
                             id="abc-rateLockExpiration"
                             value={form.watch('abc.rateLockExpiration') || ''}
@@ -20587,6 +20615,47 @@ export default function AdminAddClient() {
                       </div>
                     </CardContent>
                   </Card>
+                  
+                  {/* Row 4: Interest Rate */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="abc-interestRate">Interest Rate</Label>
+                      <Controller
+                        control={form.control}
+                        name="abc.interestRate"
+                        defaultValue=""
+                        render={({ field }) => {
+                          const numVal = field.value ? field.value.replace(/[^\d.]/g, '') : '';
+                          const parts = numVal.split('.');
+                          let displayValue = parts[0];
+                          if (parts.length > 1) {
+                            displayValue += '.' + parts[1].substring(0, 3);
+                          }
+                          
+                          return (
+                            <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                              <Input
+                                id="abc-interestRate"
+                                type="text"
+                                placeholder="0.000"
+                                value={displayValue}
+                                onChange={(e) => {
+                                  const value = e.target.value.replace(/[^\d.]/g, '');
+                                  const parts = value.split('.');
+                                  if (parts.length > 2) return;
+                                  if (parts.length === 2 && parts[1].length > 3) return;
+                                  field.onChange(value);
+                                }}
+                                className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                                data-testid="input-abc-interestRate"
+                              />
+                              <span className="text-muted-foreground text-sm">%</span>
+                            </div>
+                          );
+                        }}
+                      />
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
 
