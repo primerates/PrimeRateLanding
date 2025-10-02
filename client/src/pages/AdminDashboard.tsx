@@ -22,6 +22,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { useBackground, backgroundPresets } from '@/contexts/BackgroundContext';
+import primeRateLogo from '@assets/Prime Rate Logo PNG_1759280639082.png';
 
 export default function AdminDashboard() {
   const [location, setLocation] = useLocation();
@@ -183,6 +184,11 @@ export default function AdminDashboard() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
+              <img 
+                src={primeRateLogo} 
+                alt="Prime Rate Home Loans Logo" 
+                className="h-10 w-auto object-contain"
+              />
               <h1 className="text-xl font-black italic" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="text-admin-header">
                 PRIME RATE HOME LOANS
               </h1>
