@@ -20546,7 +20546,7 @@ export default function AdminAddClient() {
             {/* Quote Tab */}
             <TabsContent value="quote" className="space-y-6">
               <div>
-                <Card className={`bg-gray-100 mb-6 hover:shadow-lg transition-shadow duration-300 border-l-4 transition-colors ${isQuoteCardsMinimized ? 'border-l-green-500' : 'border-l-transparent hover:border-l-green-500'}`}>
+                <Card className={`bg-gray-100 mb-6 hover:shadow-lg transition-shadow duration-300 border-l-4 transition-colors ${isQuoteCardsMinimized ? 'border-l-green-500' : 'border-l-transparent hover:border-l-green-500'} animate-in slide-in-from-top-4 fade-in duration-500`}>
                   <div className="flex justify-end pt-4 pr-4">
                     <Button
                       variant="ghost"
@@ -20704,7 +20704,7 @@ export default function AdminAddClient() {
 
                 {!isQuoteCardsMinimized && (
                 <div className="space-y-6 mb-6">
-                  <Card className="bg-gray-100 hover:shadow-lg transition-shadow duration-300 border-l-4 border-l-transparent hover:border-l-green-500 transition-colors">
+                  <Card className="bg-gray-100 hover:shadow-lg transition-shadow duration-300 border-l-4 border-l-transparent hover:border-l-green-500 transition-colors animate-in slide-in-from-top-4 fade-in duration-500 delay-150">
                     <CardContent className="pt-6 space-y-6">
                       {/* Property Row */}
                       <div className="grid grid-cols-[150px_1fr] items-center gap-8">
@@ -20820,7 +20820,7 @@ export default function AdminAddClient() {
                     </CardContent>
                   </Card>
 
-                  <Card className="bg-gray-100 hover:shadow-lg transition-shadow duration-300 border-l-4 border-l-transparent hover:border-l-green-500 transition-colors">
+                  <Card className="bg-gray-100 hover:shadow-lg transition-shadow duration-300 border-l-4 border-l-transparent hover:border-l-green-500 transition-colors animate-in slide-in-from-top-4 fade-in duration-500 delay-300">
                     <CardContent className="pt-6 space-y-6">
                       {/* Type Row */}
                       <div className="grid grid-cols-[150px_1fr] items-center gap-8">
