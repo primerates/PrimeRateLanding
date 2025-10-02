@@ -7193,12 +7193,12 @@ export default function AdminAddClient() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Lead">Lead</SelectItem>
-                        <SelectItem value="Quote">Quote</SelectItem>
+                        <SelectItem value="Quote" className="text-orange-600">Quote</SelectItem>
                         <SelectItem value="Loan Prep">Loan Prep</SelectItem>
                         <SelectItem value="Loan">Loan</SelectItem>
-                        <SelectItem value="Funded">Funded</SelectItem>
-                        <SelectItem value="Audit">Audit</SelectItem>
-                        <SelectItem value="Closed">Closed</SelectItem>
+                        <SelectItem value="Funded" className="text-green-600">Funded</SelectItem>
+                        <SelectItem value="Audit" className="text-blue-600">Audit</SelectItem>
+                        <SelectItem value="Closed" className="text-green-600">Closed</SelectItem>
                         <SelectItem value="Cancel" className="text-red-600">Cancel</SelectItem>
                         <SelectItem value="Withdraw" className="text-red-600">Withdraw</SelectItem>
                       </SelectContent>
