@@ -20456,7 +20456,7 @@ export default function AdminAddClient() {
                   <CardTitle>ABC</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                     <div className="space-y-2">
                       <Label htmlFor="abc-lenderName">Lender Name</Label>
                       <Input
@@ -20497,6 +20497,30 @@ export default function AdminAddClient() {
                               <SelectItem value="fha">FHA</SelectItem>
                               <SelectItem value="va">VA</SelectItem>
                               <SelectItem value="va-jumbo">VA Jumbo</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="abc-loanPurpose">Loan Purpose</Label>
+                      <Controller
+                        control={form.control}
+                        name="abc.loanPurpose"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <Select value={field.value} onValueChange={field.onChange}>
+                            <SelectTrigger data-testid="select-abc-loanPurpose">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select">Select</SelectItem>
+                              <SelectItem value="purchase">Purchase</SelectItem>
+                              <SelectItem value="refinance-rate-term">Refinance Rate & Term</SelectItem>
+                              <SelectItem value="refinance-cash-out">Refinance Cash Out</SelectItem>
+                              <SelectItem value="construction">Construction</SelectItem>
                               <SelectItem value="other">Other</SelectItem>
                             </SelectContent>
                           </Select>
