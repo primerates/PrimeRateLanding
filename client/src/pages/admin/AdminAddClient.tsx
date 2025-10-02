@@ -20631,9 +20631,9 @@ export default function AdminAddClient() {
                     </div>
                   </div>
 
-                  {/* Property Purpose Row */}
+                  {/* Property Row */}
                   <div className="grid grid-cols-[150px_1fr] items-center gap-8">
-                    <Label className="text-base font-semibold">Property Purpose:</Label>
+                    <Label className="text-base font-semibold">Property:</Label>
                     <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
                       {/* Primary Residence */}
                       <div className="flex items-center space-x-2">
@@ -20709,6 +20709,62 @@ export default function AdminAddClient() {
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         />
                         <Label htmlFor="loan-purpose-build">Build</Label>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Loan Type Row */}
+                  <div className="grid grid-cols-[150px_1fr] items-center gap-8">
+                    <Label className="text-base font-semibold">Loan Type:</Label>
+                    <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
+                      {/* Cash Out */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-type-cash-out"
+                          data-testid="checkbox-loan-type-cash-out"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-type-cash-out">Cash Out</Label>
+                      </div>
+                      
+                      {/* Rate Reduction */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-type-rate-reduction"
+                          data-testid="checkbox-loan-type-rate-reduction"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-type-rate-reduction">Rate Reduction</Label>
+                      </div>
+                      
+                      {/* Term Reduction */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-type-term-reduction"
+                          data-testid="checkbox-loan-type-term-reduction"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-type-term-reduction">Term Reduction</Label>
+                      </div>
+                      
+                      {/* Term Change */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-type-term-change"
+                          data-testid="checkbox-loan-type-term-change"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-type-term-change">Term Change</Label>
+                      </div>
+                      
+                      {/* Purchase */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-type-purchase"
+                          data-testid="checkbox-loan-type-purchase"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-type-purchase">Purchase</Label>
                       </div>
                     </div>
                   </div>
