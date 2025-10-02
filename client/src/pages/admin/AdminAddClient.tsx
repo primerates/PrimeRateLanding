@@ -20547,89 +20547,93 @@ export default function AdminAddClient() {
               <div>
                 <h2 className="text-2xl font-semibold mb-6">Quote</h2>
                 
+                <Card className="bg-gray-100 mb-6">
+                  <CardContent className="pt-6 space-y-6">
+                    {/* Client Row */}
+                    <div className="grid grid-cols-[150px_1fr] items-center gap-8">
+                      <Label className="text-base font-semibold">Client:</Label>
+                      <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
+                        {/* New Client */}
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="client-new"
+                            data-testid="checkbox-client-new"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="client-new">New Client</Label>
+                        </div>
+                        
+                        {/* Repeat Client */}
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="client-repeat"
+                            data-testid="checkbox-client-repeat"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="client-repeat">Repeat Client</Label>
+                        </div>
+                        
+                        {/* Active Loan */}
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="client-active-loan"
+                            data-testid="checkbox-client-active-loan"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="client-active-loan">Active Loan</Label>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Source Row */}
+                    <div className="grid grid-cols-[150px_1fr] items-center gap-8">
+                      <Label className="text-base font-semibold">Source:</Label>
+                      <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
+                        {/* Direct Mail */}
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="source-direct-mail"
+                            data-testid="checkbox-source-direct-mail"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="source-direct-mail">Direct Mail</Label>
+                        </div>
+                        
+                        {/* Social Media */}
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="source-social-media"
+                            data-testid="checkbox-source-social-media"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="source-social-media">Social Media</Label>
+                        </div>
+                        
+                        {/* Referral */}
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="source-referral"
+                            data-testid="checkbox-source-referral"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="source-referral">Referral</Label>
+                        </div>
+                        
+                        {/* Repeat */}
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="source-repeat"
+                            data-testid="checkbox-source-repeat"
+                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                          />
+                          <Label htmlFor="source-repeat">Repeat</Label>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
                 <div className="space-y-6 mb-6">
-                  {/* Client Row */}
-                  <div className="grid grid-cols-[150px_1fr] items-center gap-8">
-                    <Label className="text-base font-semibold">Client:</Label>
-                    <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
-                      {/* New Client */}
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="client-new"
-                          data-testid="checkbox-client-new"
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                        />
-                        <Label htmlFor="client-new">New Client</Label>
-                      </div>
-                      
-                      {/* Repeat Client */}
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="client-repeat"
-                          data-testid="checkbox-client-repeat"
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                        />
-                        <Label htmlFor="client-repeat">Repeat Client</Label>
-                      </div>
-                      
-                      {/* Active Loan */}
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="client-active-loan"
-                          data-testid="checkbox-client-active-loan"
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                        />
-                        <Label htmlFor="client-active-loan">Active Loan</Label>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Source Row */}
-                  <div className="grid grid-cols-[150px_1fr] items-center gap-8">
-                    <Label className="text-base font-semibold">Source:</Label>
-                    <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
-                      {/* Direct Mail */}
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="source-direct-mail"
-                          data-testid="checkbox-source-direct-mail"
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                        />
-                        <Label htmlFor="source-direct-mail">Direct Mail</Label>
-                      </div>
-                      
-                      {/* Social Media */}
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="source-social-media"
-                          data-testid="checkbox-source-social-media"
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                        />
-                        <Label htmlFor="source-social-media">Social Media</Label>
-                      </div>
-                      
-                      {/* Referral */}
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="source-referral"
-                          data-testid="checkbox-source-referral"
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                        />
-                        <Label htmlFor="source-referral">Referral</Label>
-                      </div>
-                      
-                      {/* Repeat */}
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="source-repeat"
-                          data-testid="checkbox-source-repeat"
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                        />
-                        <Label htmlFor="source-repeat">Repeat</Label>
-                      </div>
-                    </div>
-                  </div>
-
                   {/* Property Row */}
                   <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                     <Label className="text-base font-semibold">Property:</Label>
@@ -20675,179 +20679,175 @@ export default function AdminAddClient() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Loan Purpose Row */}
+                  <div className="grid grid-cols-[150px_1fr] items-center gap-8">
+                    <Label className="text-base font-semibold">Loan Purpose:</Label>
+                    <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
+                      {/* Refinance */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-purpose-refinance"
+                          data-testid="checkbox-loan-purpose-refinance"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-purpose-refinance">Refinance</Label>
+                      </div>
+                      
+                      {/* Purchase */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-purpose-purchase"
+                          data-testid="checkbox-loan-purpose-purchase"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-purpose-purchase">Purchase</Label>
+                      </div>
+                      
+                      {/* Build */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-purpose-build"
+                          data-testid="checkbox-loan-purpose-build"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-purpose-build">Build</Label>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Loan Type Row */}
+                  <div className="grid grid-cols-[150px_1fr] items-center gap-8">
+                    <Label className="text-base font-semibold">Loan Type:</Label>
+                    <div className="grid grid-cols-[180px_180px_180px_180px_180px] gap-4">
+                      {/* Cash Out */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-type-cash-out"
+                          data-testid="checkbox-loan-type-cash-out"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-type-cash-out">Cash Out</Label>
+                      </div>
+                      
+                      {/* Rate Reduction */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-type-rate-reduction"
+                          data-testid="checkbox-loan-type-rate-reduction"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-type-rate-reduction">Rate Reduction</Label>
+                      </div>
+                      
+                      {/* Term Reduction */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-type-term-reduction"
+                          data-testid="checkbox-loan-type-term-reduction"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-type-term-reduction">Term Reduction</Label>
+                      </div>
+                      
+                      {/* Term Change */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-type-term-change"
+                          data-testid="checkbox-loan-type-term-change"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-type-term-change">Term Change</Label>
+                      </div>
+                      
+                      {/* Purchase */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-type-purchase"
+                          data-testid="checkbox-loan-type-purchase"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-type-purchase">Purchase</Label>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Loan Category Row */}
+                  <div className="grid grid-cols-[150px_1fr] items-center gap-8">
+                    <Label className="text-base font-semibold">Loan Category:</Label>
+                    <div className="grid grid-cols-[180px_180px_180px_180px_180px_180px_180px] gap-4">
+                      {/* VA */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-category-va"
+                          data-testid="checkbox-loan-category-va"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-category-va">VA</Label>
+                      </div>
+                      
+                      {/* VA Jumbo */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-category-va-jumbo"
+                          data-testid="checkbox-loan-category-va-jumbo"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-category-va-jumbo">VA Jumbo</Label>
+                      </div>
+                      
+                      {/* FHA */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-category-fha"
+                          data-testid="checkbox-loan-category-fha"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-category-fha">FHA</Label>
+                      </div>
+                      
+                      {/* Conventional */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-category-conventional"
+                          data-testid="checkbox-loan-category-conventional"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-category-conventional">Conventional</Label>
+                      </div>
+                      
+                      {/* FNM Jumbo */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-category-fnm-jumbo"
+                          data-testid="checkbox-loan-category-fnm-jumbo"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-category-fnm-jumbo">FNM Jumbo</Label>
+                      </div>
+                      
+                      {/* Non-QM */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-category-non-qm"
+                          data-testid="checkbox-loan-category-non-qm"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-category-non-qm">Non-QM</Label>
+                      </div>
+                      
+                      {/* Other */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-category-other"
+                          data-testid="checkbox-loan-category-other"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-category-other">Other</Label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-
-                <Card className="bg-gray-100">
-                  <CardContent className="pt-6 space-y-6">
-                    {/* Loan Purpose Row */}
-                    <div className="grid grid-cols-[150px_1fr] items-center gap-8">
-                      <Label className="text-base font-semibold">Loan Purpose:</Label>
-                      <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
-                        {/* Refinance */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="loan-purpose-refinance"
-                            data-testid="checkbox-loan-purpose-refinance"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="loan-purpose-refinance">Refinance</Label>
-                        </div>
-                        
-                        {/* Purchase */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="loan-purpose-purchase"
-                            data-testid="checkbox-loan-purpose-purchase"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="loan-purpose-purchase">Purchase</Label>
-                        </div>
-                        
-                        {/* Build */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="loan-purpose-build"
-                            data-testid="checkbox-loan-purpose-build"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="loan-purpose-build">Build</Label>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Loan Type Row */}
-                    <div className="grid grid-cols-[150px_1fr] items-center gap-8">
-                      <Label className="text-base font-semibold">Loan Type:</Label>
-                      <div className="grid grid-cols-[180px_180px_180px_180px_180px] gap-4">
-                        {/* Cash Out */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="loan-type-cash-out"
-                            data-testid="checkbox-loan-type-cash-out"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="loan-type-cash-out">Cash Out</Label>
-                        </div>
-                        
-                        {/* Rate Reduction */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="loan-type-rate-reduction"
-                            data-testid="checkbox-loan-type-rate-reduction"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="loan-type-rate-reduction">Rate Reduction</Label>
-                        </div>
-                        
-                        {/* Term Reduction */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="loan-type-term-reduction"
-                            data-testid="checkbox-loan-type-term-reduction"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="loan-type-term-reduction">Term Reduction</Label>
-                        </div>
-                        
-                        {/* Term Change */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="loan-type-term-change"
-                            data-testid="checkbox-loan-type-term-change"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="loan-type-term-change">Term Change</Label>
-                        </div>
-                        
-                        {/* Purchase */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="loan-type-purchase"
-                            data-testid="checkbox-loan-type-purchase"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="loan-type-purchase">Purchase</Label>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Loan Category Row */}
-                    <div className="grid grid-cols-[150px_1fr] items-center gap-8">
-                      <Label className="text-base font-semibold">Loan Category:</Label>
-                      <div className="grid grid-cols-[180px_180px_180px_180px_180px_180px_180px] gap-4">
-                        {/* VA */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="loan-category-va"
-                            data-testid="checkbox-loan-category-va"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="loan-category-va">VA</Label>
-                        </div>
-                        
-                        {/* VA Jumbo */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="loan-category-va-jumbo"
-                            data-testid="checkbox-loan-category-va-jumbo"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="loan-category-va-jumbo">VA Jumbo</Label>
-                        </div>
-                        
-                        {/* FHA */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="loan-category-fha"
-                            data-testid="checkbox-loan-category-fha"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="loan-category-fha">FHA</Label>
-                        </div>
-                        
-                        {/* Conventional */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="loan-category-conventional"
-                            data-testid="checkbox-loan-category-conventional"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="loan-category-conventional">Conventional</Label>
-                        </div>
-                        
-                        {/* FNM Jumbo */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="loan-category-fnm-jumbo"
-                            data-testid="checkbox-loan-category-fnm-jumbo"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="loan-category-fnm-jumbo">FNM Jumbo</Label>
-                        </div>
-                        
-                        {/* Non-QM */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="loan-category-non-qm"
-                            data-testid="checkbox-loan-category-non-qm"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="loan-category-non-qm">Non-QM</Label>
-                        </div>
-                        
-                        {/* Other */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="loan-category-other"
-                            data-testid="checkbox-loan-category-other"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="loan-category-other">Other</Label>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
               </div>
             </TabsContent>
 
