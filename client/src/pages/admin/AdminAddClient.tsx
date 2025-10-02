@@ -4358,7 +4358,7 @@ export default function AdminAddClient() {
                 </div>
               </div>
               
-              {/* Row 3: Mid FICO, Rate Lock Status, Rate Lock Date, Rate Lock Duration / Rate Lock Expiration, Lender Credit */}
+              {/* Row 3: Mid FICO, Rate Lock Status, Rate Lock Date, Rate Lock Expiration, Rate Lock Duration */}
               <Card className={`bg-muted ${
                 showPurchaseLoanCardAnimation[idPrefix] ? 'animate-roll-up-grey-box' : ''
               }`}>
@@ -4442,6 +4442,106 @@ export default function AdminAddClient() {
                           </Select>
                         )}
                       />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="purchaseLoan-rateLockDate" className="text-sm">
+                          {targetForm.watch("purchaseLoan.rateLockDateToggle") ? "Lock Date - 10 Year Bond" : "Rate Lock Date"}
+                        </Label>
+                        <Controller
+                          control={targetForm.control}
+                          name="purchaseLoan.rateLockDateToggle"
+                          defaultValue={false}
+                          render={({ field }) => (
+                            <Switch
+                              checked={!!field.value}
+                              onCheckedChange={field.onChange}
+                              data-testid="toggle-purchaseLoan-rateLockDate"
+                              className="scale-[0.8]"
+                            />
+                          )}
+                        />
+                      </div>
+                      {targetForm.watch("purchaseLoan.rateLockDateToggle") ? (
+                        <Input
+                          id="purchaseLoan-rateLockDate"
+                          {...targetForm.register('purchaseLoan.rateLockDate')}
+                          data-testid="input-purchaseLoan-rateLockDate"
+                        />
+                      ) : (
+                        <Input
+                          id="purchaseLoan-rateLockDate"
+                          value={targetForm.watch('purchaseLoan.rateLockDate') || ''}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, '');
+                            let formatted = '';
+                            if (value.length > 0) {
+                              formatted = value.substring(0, 2);
+                              if (value.length > 2) {
+                                formatted += '/' + value.substring(2, 4);
+                                if (value.length > 4) {
+                                  formatted += '/' + value.substring(4, 8);
+                                }
+                              }
+                            }
+                            targetForm.setValue('purchaseLoan.rateLockDate', formatted);
+                          }}
+                          placeholder="MM/DD/YYYY"
+                          maxLength={10}
+                          data-testid="input-purchaseLoan-rateLockDate"
+                        />
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="purchaseLoan-rateLockExpiration" className="text-sm">
+                          {targetForm.watch("purchaseLoan.rateLockExpirationToggle") ? "Rate Lock Duration" : "Rate Lock Expiration"}
+                        </Label>
+                        <Controller
+                          control={targetForm.control}
+                          name="purchaseLoan.rateLockExpirationToggle"
+                          defaultValue={false}
+                          render={({ field }) => (
+                            <Switch
+                              checked={!!field.value}
+                              onCheckedChange={field.onChange}
+                              data-testid="toggle-purchaseLoan-rateLockExpiration"
+                              className="scale-[0.8]"
+                            />
+                          )}
+                        />
+                      </div>
+                      {targetForm.watch("purchaseLoan.rateLockExpirationToggle") ? (
+                        <Input
+                          id="purchaseLoan-rateLockExpiration"
+                          {...targetForm.register('purchaseLoan.rateLockExpiration')}
+                          data-testid="input-purchaseLoan-rateLockExpiration"
+                        />
+                      ) : (
+                        <Input
+                          id="purchaseLoan-rateLockExpiration"
+                          value={targetForm.watch('purchaseLoan.rateLockExpiration') || ''}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, '');
+                            let formatted = '';
+                            if (value.length > 0) {
+                              formatted = value.substring(0, 2);
+                              if (value.length > 2) {
+                                formatted += '/' + value.substring(2, 4);
+                                if (value.length > 4) {
+                                  formatted += '/' + value.substring(4, 8);
+                                }
+                              }
+                            }
+                            targetForm.setValue('purchaseLoan.rateLockExpiration', formatted);
+                          }}
+                          placeholder="MM/DD/YYYY"
+                          maxLength={10}
+                          data-testid="input-purchaseLoan-rateLockExpiration"
+                        />
+                      )}
                     </div>
                     
                     <div className="space-y-2">
