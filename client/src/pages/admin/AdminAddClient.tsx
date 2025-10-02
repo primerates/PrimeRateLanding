@@ -20631,42 +20631,6 @@ export default function AdminAddClient() {
                     </div>
                   </div>
 
-                  {/* Loan Purpose Row */}
-                  <div className="grid grid-cols-[150px_1fr] items-center gap-8">
-                    <Label className="text-base font-semibold">Loan Purpose:</Label>
-                    <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
-                      {/* Refinance */}
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="loan-purpose-refinance"
-                          data-testid="checkbox-loan-purpose-refinance"
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                        />
-                        <Label htmlFor="loan-purpose-refinance">Refinance</Label>
-                      </div>
-                      
-                      {/* Purchase */}
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="loan-purpose-purchase"
-                          data-testid="checkbox-loan-purpose-purchase"
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                        />
-                        <Label htmlFor="loan-purpose-purchase">Purchase</Label>
-                      </div>
-                      
-                      {/* Build */}
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="loan-purpose-build"
-                          data-testid="checkbox-loan-purpose-build"
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                        />
-                        <Label htmlFor="loan-purpose-build">Build</Label>
-                      </div>
-                    </div>
-                  </div>
-
                   {/* Property Purpose Row */}
                   <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                     <Label className="text-base font-semibold">Property Purpose:</Label>
@@ -20709,6 +20673,42 @@ export default function AdminAddClient() {
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         />
                         <Label htmlFor="property-purpose-home-purchase">Home Purchase</Label>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Loan Purpose Row */}
+                  <div className="grid grid-cols-[150px_1fr] items-center gap-8">
+                    <Label className="text-base font-semibold">Loan Purpose:</Label>
+                    <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
+                      {/* Refinance */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-purpose-refinance"
+                          data-testid="checkbox-loan-purpose-refinance"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-purpose-refinance">Refinance</Label>
+                      </div>
+                      
+                      {/* Purchase */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-purpose-purchase"
+                          data-testid="checkbox-loan-purpose-purchase"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-purpose-purchase">Purchase</Label>
+                      </div>
+                      
+                      {/* Build */}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="loan-purpose-build"
+                          data-testid="checkbox-loan-purpose-build"
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        />
+                        <Label htmlFor="loan-purpose-build">Build</Label>
                       </div>
                     </div>
                   </div>
