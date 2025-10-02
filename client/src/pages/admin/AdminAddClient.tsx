@@ -20440,10 +20440,10 @@ export default function AdminAddClient() {
                     </div>
                   </div>
                   
-                  {/* Row 3: Mid FICO, Rate Lock Status, Rate Lock Date, Rate Lock Expiration */}
+                  {/* Row 3: Mid FICO, Rate Lock Status, Rate Lock Date, Rate Lock Expiration, Rate Lock Duration */}
                   <Card className="bg-muted mt-4">
                     <CardContent className="pt-6">
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
                           <div className="flex items-center justify-between mb-2">
                             <Label htmlFor="bbb-midFico" className="text-sm">
@@ -20627,6 +20627,17 @@ export default function AdminAddClient() {
                               data-testid="input-bbb-rateLockExpiration"
                             />
                           )}
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="bbb-rateLockDuration">Rate Lock Duration</Label>
+                          <Input
+                            id="bbb-rateLockDuration"
+                            type="text"
+                            placeholder="Enter rate lock duration"
+                            {...form.register("bbb.rateLockDuration")}
+                            data-testid="input-bbb-rateLockDuration"
+                          />
                         </div>
                       </div>
                   
