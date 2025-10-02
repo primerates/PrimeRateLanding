@@ -104,11 +104,11 @@ export default function AdminDashboard() {
 
   const menuItems = [
     // Line 1
-    { id: 'pipeline', label: 'Pipeline', icon: LayoutDashboard, path: '/admin/pipeline' },
+    { id: 'pipeline', label: 'Loans', icon: LayoutDashboard, path: '/admin/pipeline' },
     { id: 'loan-prep', label: 'Loan Prep', icon: FileText, path: '/admin/loan-prep' },
     { id: 'quotes', label: 'Quotes', icon: Calculator, path: '/admin/quotes' },
-    { id: 'stats', label: 'Stats', icon: BarChart3, path: '/admin/stats' },
-    { id: 'search', label: 'Search', icon: Search, path: '/admin/search' },
+    { id: 'search', label: 'Marketing', icon: Search, path: '/admin/search' },
+    { id: 'stats', label: 'Leads', icon: UserPlus, path: '/admin/stats' },
     // Line 2
     { id: 'add-client', label: 'Add Client', icon: UserPlus, path: '/admin/add-client' },
     { id: 'add-comment', label: 'Add Comment', icon: MessageSquare, path: '/admin/add-comment' },
@@ -275,6 +275,16 @@ export default function AdminDashboard() {
                   </div>
                 </PopoverContent>
               </Popover>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-primary-foreground"
+                data-testid="button-search"
+                aria-label="Search"
+              >
+                <Search className="h-4 w-4" />
+              </Button>
               
               <div 
                 className="relative flex items-center cursor-pointer"
