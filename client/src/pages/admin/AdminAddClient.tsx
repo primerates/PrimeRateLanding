@@ -20340,6 +20340,7 @@ export default function AdminAddClient() {
                                   checked={!!field.value}
                                   onCheckedChange={field.onChange}
                                   data-testid="toggle-abc-rateLockDate"
+                                  className="scale-[0.8]"
                                 />
                               )}
                             />
@@ -20389,6 +20390,7 @@ export default function AdminAddClient() {
                                   checked={!!field.value}
                                   onCheckedChange={field.onChange}
                                   data-testid="toggle-abc-rateLockExpiration"
+                                  className="scale-[0.8]"
                                 />
                               )}
                             />
@@ -20438,6 +20440,7 @@ export default function AdminAddClient() {
                                   checked={!!field.value}
                                   onCheckedChange={field.onChange}
                                   data-testid="toggle-abc-brokerCredit"
+                                  className="scale-[0.8]"
                                 />
                               )}
                             />
