@@ -18962,7 +18962,7 @@ export default function AdminAddClient() {
                         }}
                         data-testid="circle-1"
                       >
-                        1
+                        ABC
                       </div>
                     </div>
                   </div>
@@ -20001,7 +20001,7 @@ export default function AdminAddClient() {
                       />
                     </div>
                     
-                    <div className="space-y-2 md:col-span-3">
+                    <div className="space-y-2 md:col-span-2">
                       <Label htmlFor="abc-attachedToProperty">Attached to Property</Label>
                       <Controller
                         control={form.control}
