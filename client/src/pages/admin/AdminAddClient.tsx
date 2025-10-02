@@ -20450,6 +20450,17 @@ export default function AdminAddClient() {
                 </CardContent>
               </Card>
 
+              {/* ABC Card */}
+              <Card className="transition-all duration-700">
+                <CardHeader>
+                  <CardTitle>ABC</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="p-4 text-center text-muted-foreground">
+                    ABC content goes here
+                  </div>
+                </CardContent>
+              </Card>
 
               {/* Brand New Loan Cards - Dynamic multiple card system like Current Primary, Second, and Third Loans - Moved to display first */}
               {(brandNewLoanCards || []).map((cardId, index) => {
