@@ -20564,16 +20564,32 @@ export default function AdminAddClient() {
                     
                     <div className="space-y-2 md:col-span-2">
                       <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="abc-taxInsurancePayment" className="text-sm">Tax & Insurance Payment</Label>
+                        <Label htmlFor="abc-taxInsurancePayment" className="text-sm">
+                          {form.watch("abc.taxInsurancePaymentToggle") === "tax-only" 
+                            ? "Tax Payment Only" 
+                            : form.watch("abc.taxInsurancePaymentToggle") === "insurance-only"
+                            ? "Insurance Payment Only"
+                            : "Tax & Insurance Payment"}
+                        </Label>
                         <Controller
                           control={form.control}
                           name="abc.taxInsurancePaymentToggle"
-                          defaultValue={false}
+                          defaultValue=""
                           render={({ field }) => (
                             <Switch
                               checked={!!field.value}
-                              onCheckedChange={field.onChange}
+                              onCheckedChange={() => {
+                                const currentValue = field.value;
+                                if (!currentValue || currentValue === "") {
+                                  field.onChange("tax-only");
+                                } else if (currentValue === "tax-only") {
+                                  field.onChange("insurance-only");
+                                } else {
+                                  field.onChange("");
+                                }
+                              }}
                               data-testid="toggle-abc-taxInsurancePayment"
+                              className="scale-[0.8]"
                             />
                           )}
                         />
