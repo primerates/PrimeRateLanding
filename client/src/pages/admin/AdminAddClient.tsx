@@ -20683,7 +20683,7 @@ export default function AdminAddClient() {
                   {/* Loan Category Row */}
                   <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                     <Label className="text-base font-semibold">Loan Category:</Label>
-                    <div className="grid grid-cols-[180px_180px_180px_180px_180px_180px_180px] gap-4">
+                    <div className="grid grid-cols-[180px_180px_180px_180px_180px_180px] gap-4">
                       {/* VA */}
                       <div className="flex items-center space-x-2">
                         <Checkbox
@@ -20743,16 +20743,6 @@ export default function AdminAddClient() {
                         />
                         <Label htmlFor="loan-category-non-qm">Non-QM</Label>
                       </div>
-                      
-                      {/* Other */}
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="loan-category-other"
-                          data-testid="checkbox-loan-category-other"
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                        />
-                        <Label htmlFor="loan-category-other">Other</Label>
-                      </div>
                     </div>
                   </div>
 
@@ -20794,7 +20784,7 @@ export default function AdminAddClient() {
 
                   {/* Loan Type Row */}
                   <div className="grid grid-cols-[150px_1fr] items-center gap-8">
-                    <Label className="text-base font-semibold">Loan Type:</Label>
+                    <Label className="text-base font-semibold">Purpose:</Label>
                     <div className="grid grid-cols-[180px_180px_180px_180px_180px] gap-4">
                       {/* Cash Out */}
                       <div className="flex items-center space-x-2">
