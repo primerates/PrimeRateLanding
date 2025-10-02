@@ -20485,104 +20485,108 @@ export default function AdminAddClient() {
                   </div>
                   
                   {/* Row 3: Rate Lock Date, Rate Lock Expiration, Lender Credit/Broker Credit */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="abc-rateLockDate">Rate Lock Date</Label>
-                      <Input
-                        id="abc-rateLockDate"
-                        value={form.watch('abc.rateLockDate') || ''}
-                        onChange={(e) => {
-                          const value = e.target.value.replace(/\D/g, '');
-                          let formatted = '';
-                          if (value.length > 0) {
-                            formatted = value.substring(0, 2);
-                            if (value.length > 2) {
-                              formatted += '/' + value.substring(2, 4);
-                              if (value.length > 4) {
-                                formatted += '/' + value.substring(4, 8);
+                  <Card className="bg-muted mt-4">
+                    <CardContent className="pt-6">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="abc-rateLockDate">Rate Lock Date</Label>
+                          <Input
+                            id="abc-rateLockDate"
+                            value={form.watch('abc.rateLockDate') || ''}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/\D/g, '');
+                              let formatted = '';
+                              if (value.length > 0) {
+                                formatted = value.substring(0, 2);
+                                if (value.length > 2) {
+                                  formatted += '/' + value.substring(2, 4);
+                                  if (value.length > 4) {
+                                    formatted += '/' + value.substring(4, 8);
+                                  }
+                                }
                               }
-                            }
-                          }
-                          form.setValue('abc.rateLockDate', formatted);
-                        }}
-                        placeholder="MM/DD/YYYY"
-                        maxLength={10}
-                        data-testid="input-abc-rateLockDate"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="abc-rateLockExpiration">Rate Lock Expiration</Label>
-                      <Input
-                        id="abc-rateLockExpiration"
-                        value={form.watch('abc.rateLockExpiration') || ''}
-                        onChange={(e) => {
-                          const value = e.target.value.replace(/\D/g, '');
-                          let formatted = '';
-                          if (value.length > 0) {
-                            formatted = value.substring(0, 2);
-                            if (value.length > 2) {
-                              formatted += '/' + value.substring(2, 4);
-                              if (value.length > 4) {
-                                formatted += '/' + value.substring(4, 8);
+                              form.setValue('abc.rateLockDate', formatted);
+                            }}
+                            placeholder="MM/DD/YYYY"
+                            maxLength={10}
+                            data-testid="input-abc-rateLockDate"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="abc-rateLockExpiration">Rate Lock Expiration</Label>
+                          <Input
+                            id="abc-rateLockExpiration"
+                            value={form.watch('abc.rateLockExpiration') || ''}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/\D/g, '');
+                              let formatted = '';
+                              if (value.length > 0) {
+                                formatted = value.substring(0, 2);
+                                if (value.length > 2) {
+                                  formatted += '/' + value.substring(2, 4);
+                                  if (value.length > 4) {
+                                    formatted += '/' + value.substring(4, 8);
+                                  }
+                                }
                               }
-                            }
-                          }
-                          form.setValue('abc.rateLockExpiration', formatted);
-                        }}
-                        placeholder="MM/DD/YYYY"
-                        maxLength={10}
-                        data-testid="input-abc-rateLockExpiration"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="abc-lenderCredit" className="text-sm">
-                          {form.watch("abc.brokerCreditToggle") ? "Broker Credit" : "Lender Credit"}
-                        </Label>
-                        <Controller
-                          control={form.control}
-                          name="abc.brokerCreditToggle"
-                          defaultValue={false}
-                          render={({ field }) => (
-                            <Switch
-                              checked={!!field.value}
-                              onCheckedChange={field.onChange}
-                              data-testid="toggle-abc-brokerCredit"
+                              form.setValue('abc.rateLockExpiration', formatted);
+                            }}
+                            placeholder="MM/DD/YYYY"
+                            maxLength={10}
+                            data-testid="input-abc-rateLockExpiration"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="abc-lenderCredit" className="text-sm">
+                              {form.watch("abc.brokerCreditToggle") ? "Broker Credit" : "Lender Credit"}
+                            </Label>
+                            <Controller
+                              control={form.control}
+                              name="abc.brokerCreditToggle"
+                              defaultValue={false}
+                              render={({ field }) => (
+                                <Switch
+                                  checked={!!field.value}
+                                  onCheckedChange={field.onChange}
+                                  data-testid="toggle-abc-brokerCredit"
+                                />
+                              )}
                             />
-                          )}
-                        />
+                          </div>
+                          <Controller
+                            control={form.control}
+                            name="abc.lenderCredit"
+                            defaultValue=""
+                            render={({ field }) => {
+                              const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                              const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                              
+                              return (
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                                  <span className="text-muted-foreground text-sm">$</span>
+                                  <Input
+                                    id="abc-lenderCredit"
+                                    type="text"
+                                    placeholder="0"
+                                    value={displayValue}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^\d]/g, '');
+                                      field.onChange(value);
+                                    }}
+                                    className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                                    data-testid="input-abc-lenderCredit"
+                                  />
+                                </div>
+                              );
+                            }}
+                          />
+                        </div>
                       </div>
-                      <Controller
-                        control={form.control}
-                        name="abc.lenderCredit"
-                        defaultValue=""
-                        render={({ field }) => {
-                          const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
-                          const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                          
-                          return (
-                            <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                              <span className="text-muted-foreground text-sm">$</span>
-                              <Input
-                                id="abc-lenderCredit"
-                                type="text"
-                                placeholder="0"
-                                value={displayValue}
-                                onChange={(e) => {
-                                  const value = e.target.value.replace(/[^\d]/g, '');
-                                  field.onChange(value);
-                                }}
-                                className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                                data-testid="input-abc-lenderCredit"
-                              />
-                            </div>
-                          );
-                        }}
-                      />
-                    </div>
-                  </div>
+                    </CardContent>
+                  </Card>
                 </CardContent>
               </Card>
 
