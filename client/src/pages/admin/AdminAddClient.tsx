@@ -4614,36 +4614,28 @@ export default function AdminAddClient() {
                     control={form.control}
                     name="newLoan.loanAmount"
                     defaultValue=""
-                    render={({ field }) => (
-                      <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                        <span className="text-muted-foreground text-sm">$</span>
-                        <Input
-                          id="newLoan-loanAmount"
-                          type="text"
-                          inputMode="numeric"
-                          placeholder="0"
-                          value={field.value}
-                          onChange={(e) => {
-                            // Store ONLY raw digits - no formatting during typing
-                            const digits = e.target.value.replace(/[^\d]/g, '');
-                            field.onChange(digits);
-                          }}
-                          onBlur={() => {
-                            // Format with commas ONLY on blur, store formatted value
-                            const digits = field.value.replace(/[^\d]/g, '');
-                            const formatted = digits ? Number(digits).toLocaleString() : '';
-                            field.onChange(formatted);
-                          }}
-                          onFocus={() => {
-                            // Remove formatting on focus for easy editing
-                            const digits = field.value.replace(/[^\d]/g, '');
-                            field.onChange(digits);
-                          }}
-                          className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                          data-testid="input-newLoan-loanAmount"
-                        />
-                      </div>
-                    )}
+                    render={({ field }) => {
+                      const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                      const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                      
+                      return (
+                        <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                          <span className="text-muted-foreground text-sm">$</span>
+                          <Input
+                            id="newLoan-loanAmount"
+                            type="text"
+                            placeholder="0"
+                            value={displayValue}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/[^\d]/g, '');
+                              field.onChange(value);
+                            }}
+                            className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                            data-testid="input-newLoan-loanAmount"
+                          />
+                        </div>
+                      );
+                    }}
                   />
                 </div>
                 
