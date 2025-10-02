@@ -20173,40 +20173,17 @@ export default function AdminAddClient() {
                               {(() => {
                                 const properties = form.watch('property.properties') || [];
                                 return properties
-                                  .filter((property: any) => property.use === 'home-purchase')
+                                  .filter((property: any) => property.use === 'home-purchase' && property.address?.street)
                                   .map((property: any, index: number) => {
-                                    const address = property.address;
-                                    const streetAddress = address?.street;
-                                    const city = address?.city;
-                                    const state = address?.state;
-                                    const zipCode = address?.zip;
-                                    
-                                    let displayText;
-                                    
-                                    if (property.use === 'primary' && !streetAddress) {
-                                      displayText = 'Primary Residence';
-                                    } else {
-                                      displayText = streetAddress || 'Property';
-                                      if (city && state) {
-                                        displayText += `, ${city}, ${state}`;
-                                      } else if (city) {
-                                        displayText += `, ${city}`;
-                                      } else if (state) {
-                                        displayText += `, ${state}`;
-                                      }
-                                      if (zipCode) {
-                                        displayText += ` ${zipCode}`;
-                                      }
-                                    }
+                                    const streetAddress = property.address?.street;
                                     
                                     return (
                                       <SelectItem key={`property-${property.id}`} value={property.id}>
-                                        {displayText}
+                                        {streetAddress}
                                       </SelectItem>
                                     );
                                   });
                               })()}
-                              <SelectItem value="Other">Other</SelectItem>
                             </SelectContent>
                           </Select>
                         )}
