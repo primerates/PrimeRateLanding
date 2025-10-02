@@ -1492,12 +1492,12 @@ export default function AdminAddClient() {
     cardId: string;
   }>({ isOpen: false, cardId: '' });
 
-  // Delete confirmation dialog state for ABC (Refinance - New Loan) card
+  // Delete confirmation dialog state for ABC (New Refinance Loan) card
   const [deleteAbcDialog, setDeleteAbcDialog] = useState<{
     isOpen: boolean;
   }>({ isOpen: false });
 
-  // Delete confirmation dialog state for BBB (Purchase - New Loan) card
+  // Delete confirmation dialog state for BBB (New Purchase Loan) card
   const [deleteBbbDialog, setDeleteBbbDialog] = useState<{
     isOpen: boolean;
   }>({ isOpen: false });
@@ -6153,7 +6153,7 @@ export default function AdminAddClient() {
     setDeleteCurrentThirdLoanDialog({ isOpen: false, cardId: '' });
   };
 
-  // Helper function to handle ABC (Refinance - New Loan) checkbox changes
+  // Helper function to handle ABC (New Refinance Loan) checkbox changes
   const handleAbcLoanTypeChange = (checked: boolean) => {
     if (!checked) {
       // Don't allow unchecking if card is already open - removal must be done through card Remove button
@@ -6168,7 +6168,7 @@ export default function AdminAddClient() {
     }
   };
 
-  // Helper function to handle BBB (Purchase - New Loan) checkbox changes
+  // Helper function to handle BBB (New Purchase Loan) checkbox changes
   const handleBbbLoanTypeChange = (checked: boolean) => {
     if (!checked) {
       // Don't allow unchecking if card is already open - removal must be done through card Remove button
@@ -18241,7 +18241,7 @@ export default function AdminAddClient() {
                             isAbcCardOpen ? 'pointer-events-none opacity-75' : 'cursor-pointer'
                           }`}
                         >
-                          Refinance - New Loan
+                          New Refinance Loan
                         </Label>
                       </div>
 
@@ -18265,7 +18265,7 @@ export default function AdminAddClient() {
                             isBbbCardOpen ? 'pointer-events-none opacity-75' : 'cursor-pointer'
                           }`}
                         >
-                          Purchase - New Loan
+                          New Purchase Loan
                         </Label>
                       </div>
 
@@ -18393,7 +18393,7 @@ export default function AdminAddClient() {
               <Card className="transition-all duration-700 border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <CardTitle>Refinance - New Loan</CardTitle>
+                    <CardTitle>New Refinance Loan</CardTitle>
                     <div className="flex items-center gap-2">
                       {/* Remove Button */}
                       <Button
@@ -18406,7 +18406,7 @@ export default function AdminAddClient() {
                         }}
                         className="hover:bg-red-500 hover:text-white"
                         data-testid="button-remove-abc"
-                        title="Remove Refinance - New Loan Card"
+                        title="Remove New Refinance Loan Card"
                       >
                         <Minus className="h-4 w-4 mr-2" />
                         Remove
@@ -19204,7 +19204,7 @@ export default function AdminAddClient() {
               <Card className="transition-all duration-700 border-l-4 border-l-cyan-500 hover:border-cyan-500 focus-within:border-cyan-500 transition-colors duration-200">
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <CardTitle>Purchase - New Loan</CardTitle>
+                    <CardTitle>New Purchase Loan</CardTitle>
                     <div className="flex items-center gap-2">
                       {/* Remove Button */}
                       <Button
@@ -19217,7 +19217,7 @@ export default function AdminAddClient() {
                         }}
                         className="hover:bg-red-500 hover:text-white"
                         data-testid="button-remove-bbb"
-                        title="Remove Purchase - New Loan Card"
+                        title="Remove New Purchase Loan Card"
                       >
                         <Minus className="h-4 w-4 mr-2" />
                         Remove
@@ -21342,11 +21342,11 @@ export default function AdminAddClient() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Delete ABC (Refinance - New Loan) Card Confirmation Dialog */}
+      {/* Delete ABC (New Refinance Loan) Card Confirmation Dialog */}
       <AlertDialog open={deleteAbcDialog.isOpen} onOpenChange={(open) => !open && setDeleteAbcDialog({ isOpen: false })}>
         <AlertDialogContent data-testid="dialog-delete-abc">
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Refinance - New Loan Card</AlertDialogTitle>
+            <AlertDialogTitle>Delete New Refinance Loan Card</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete this refinance - new loan card? This action cannot be undone.
             </AlertDialogDescription>
@@ -21376,11 +21376,11 @@ export default function AdminAddClient() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Delete BBB (Purchase - New Loan) Card Confirmation Dialog */}
+      {/* Delete BBB (New Purchase Loan) Card Confirmation Dialog */}
       <AlertDialog open={deleteBbbDialog.isOpen} onOpenChange={(open) => !open && setDeleteBbbDialog({ isOpen: false })}>
         <AlertDialogContent data-testid="dialog-delete-bbb">
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Purchase - New Loan Card</AlertDialogTitle>
+            <AlertDialogTitle>Delete New Purchase Loan Card</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete this purchase - new loan card? This action cannot be undone.
             </AlertDialogDescription>
