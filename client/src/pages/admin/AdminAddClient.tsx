@@ -4161,207 +4161,9 @@ export default function AdminAddClient() {
           </CardHeader>
           <CollapsibleContent>
             <CardContent className="space-y-6 pt-[1.7rem]">
-              {/* Row 3: Mid FICO, Rate Lock Status, Rate Lock Date, Rate Lock Expiration, Rate Lock Duration */}
-              <Card className={`bg-muted ${
-                showPurchaseLoanCardAnimation[idPrefix] ? 'animate-roll-up-grey-box' : ''
-              }`}>
-                <CardContent className="pt-6">
-                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="purchaseLoan-midFico" className="text-sm">
-                          {getPurchaseLoanFicoLabel()}
-                        </Label>
-                        <Switch
-                          checked={purchaseBorrowerCreditScoresDialog.midFico || purchaseCoBorrowerCreditScoresDialog.midFico || targetForm.watch('purchaseLoan.midFico') ? true : false}
-                          onCheckedChange={cyclePurchaseLoanFicoType}
-                          data-testid="toggle-purchaseLoan-fico-type"
-                          className="scale-[0.8]"
-                        />
-                      </div>
-                      <Input
-                        id="purchaseLoan-midFico"
-                        {...(purchaseLoanFicoType === 'mid-fico' ? {} : targetForm.register('purchaseLoan.midFico'))}
-                        value={purchaseLoanFicoType === 'mid-fico' ? getPurchaseCalculatedMidFico() : undefined}
-                        placeholder="Enter"
-                        className="border border-input bg-background px-3 rounded-md"
-                        data-testid="input-purchaseLoan-midFico"
-                        readOnly={purchaseLoanFicoType === 'mid-fico'}
-                        onClick={() => {
-                          // Open credit scores dialog when in borrower-scores mode
-                          if (purchaseLoanFicoType === 'borrower-scores') {
-                            setPurchaseBorrowerCreditScoresDialog(prev => ({
-                              ...prev,
-                              isOpen: true
-                            }));
-                          }
-                          // Open co-borrower credit scores dialog when in co-borrower-scores mode
-                          else if (purchaseLoanFicoType === 'co-borrower-scores') {
-                            // Check if co-borrower exists before opening dialog
-                            if (hasCoBorrower) {
-                              setPurchaseCoBorrowerCreditScoresDialog(prev => ({
-                                ...prev,
-                                isOpen: true
-                              }));
-                            } else {
-                              // Show warning dialog if no co-borrower
-                              setPurchaseCoBorrowerWarningDialog(true);
-                            }
-                          }
-                        }}
-                        style={{
-                          cursor: (purchaseLoanFicoType === 'borrower-scores' || purchaseLoanFicoType === 'co-borrower-scores') ? 'pointer' : 'text'
-                        }}
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label 
-                        htmlFor="purchaseLoan-rateLockStatus"
-                        className={(() => {
-                          const value = targetForm.watch('purchaseLoan.rateLockStatus');
-                          return (value === 'not-locked' || value === 'expired' || !value) ? 'text-red-500' : '';
-                        })()}
-                      >
-                        Rate Lock Status
-                      </Label>
-                      <Controller
-                        name="purchaseLoan.rateLockStatus"
-                        control={targetForm.control}
-                        defaultValue="not-locked"
-                        render={({ field }) => (
-                          <Select 
-                            value={field.value || "not-locked"}
-                            onValueChange={field.onChange}
-                          >
-                            <SelectTrigger data-testid="select-purchaseLoan-rateLockStatus">
-                              <SelectValue placeholder="Not Locked" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="locked">Locked</SelectItem>
-                              <SelectItem value="not-locked">Not Locked</SelectItem>
-                              <SelectItem value="expired">Expired</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        )}
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="purchaseLoan-rateLockDate" className="text-sm">
-                          {targetForm.watch("purchaseLoan.rateLockDateToggle") ? "Lock Date - 10 Year Bond" : "Rate Lock Date"}
-                        </Label>
-                        <Controller
-                          control={targetForm.control}
-                          name="purchaseLoan.rateLockDateToggle"
-                          defaultValue={false}
-                          render={({ field }) => (
-                            <Switch
-                              checked={!!field.value}
-                              onCheckedChange={field.onChange}
-                              data-testid="toggle-purchaseLoan-rateLockDate"
-                              className="scale-[0.8]"
-                            />
-                          )}
-                        />
-                      </div>
-                      {targetForm.watch("purchaseLoan.rateLockDateToggle") ? (
-                        <Input
-                          id="purchaseLoan-rateLockDate"
-                          {...targetForm.register('purchaseLoan.rateLockDate')}
-                          data-testid="input-purchaseLoan-rateLockDate"
-                        />
-                      ) : (
-                        <Input
-                          id="purchaseLoan-rateLockDate"
-                          value={targetForm.watch('purchaseLoan.rateLockDate') || ''}
-                          onChange={(e) => {
-                            const value = e.target.value.replace(/\D/g, '');
-                            let formatted = '';
-                            if (value.length > 0) {
-                              formatted = value.substring(0, 2);
-                              if (value.length > 2) {
-                                formatted += '/' + value.substring(2, 4);
-                                if (value.length > 4) {
-                                  formatted += '/' + value.substring(4, 8);
-                                }
-                              }
-                            }
-                            targetForm.setValue('purchaseLoan.rateLockDate', formatted);
-                          }}
-                          placeholder="MM/DD/YYYY"
-                          maxLength={10}
-                          data-testid="input-purchaseLoan-rateLockDate"
-                        />
-                      )}
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="purchaseLoan-rateLockExpiration" className="text-sm">
-                          {targetForm.watch("purchaseLoan.rateLockExpirationToggle") ? "Rate Lock Duration" : "Rate Lock Expiration"}
-                        </Label>
-                        <Controller
-                          control={targetForm.control}
-                          name="purchaseLoan.rateLockExpirationToggle"
-                          defaultValue={false}
-                          render={({ field }) => (
-                            <Switch
-                              checked={!!field.value}
-                              onCheckedChange={field.onChange}
-                              data-testid="toggle-purchaseLoan-rateLockExpiration"
-                              className="scale-[0.8]"
-                            />
-                          )}
-                        />
-                      </div>
-                      {targetForm.watch("purchaseLoan.rateLockExpirationToggle") ? (
-                        <Input
-                          id="purchaseLoan-rateLockExpiration"
-                          {...targetForm.register('purchaseLoan.rateLockExpiration')}
-                          data-testid="input-purchaseLoan-rateLockExpiration"
-                        />
-                      ) : (
-                        <Input
-                          id="purchaseLoan-rateLockExpiration"
-                          value={targetForm.watch('purchaseLoan.rateLockExpiration') || ''}
-                          onChange={(e) => {
-                            const value = e.target.value.replace(/\D/g, '');
-                            let formatted = '';
-                            if (value.length > 0) {
-                              formatted = value.substring(0, 2);
-                              if (value.length > 2) {
-                                formatted += '/' + value.substring(2, 4);
-                                if (value.length > 4) {
-                                  formatted += '/' + value.substring(4, 8);
-                                }
-                              }
-                            }
-                            targetForm.setValue('purchaseLoan.rateLockExpiration', formatted);
-                          }}
-                          placeholder="MM/DD/YYYY"
-                          maxLength={10}
-                          data-testid="input-purchaseLoan-rateLockExpiration"
-                        />
-                      )}
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="purchaseLoan-rateLockDuration" className="text-sm">
-                        Rate Lock Duration
-                      </Label>
-                      <Input
-                        id="purchaseLoan-rateLockDuration"
-                        {...targetForm.register('purchaseLoan.rateLockDuration')}
-                        placeholder="Enter duration"
-                        className="border border-input bg-background px-3 rounded-md"
-                        data-testid="input-purchaseLoan-rateLockDuration"
-                      />
-                    </div>
-                  </div>
-                  
                   {/* Row 4: Interest Rate, HOA, Attached to Property */}
+                  <Card className="bg-muted">
+                <CardContent className="pt-6">
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
                 <div className="space-y-2 md:col-span-1">
                   <Label htmlFor="purchaseLoan-currentRate">Interest Rate</Label>
@@ -18912,6 +18714,18 @@ export default function AdminAddClient() {
                         />
                         <Label htmlFor="property-type-abc-loan-tab" className="font-medium text-black">
                           ABC
+                        </Label>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="property-type-bbb-loan-tab"
+                          disabled
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
+                          data-testid="checkbox-property-bbb-loan-tab"
+                        />
+                        <Label htmlFor="property-type-bbb-loan-tab" className="font-medium text-black">
+                          BBB
                         </Label>
                       </div>
 
