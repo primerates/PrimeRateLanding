@@ -20553,7 +20553,7 @@ export default function AdminAddClient() {
                   
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="abc-loanBalance">Loan Balance</Label>
+                      <Label htmlFor="abc-loanBalance">New Loan Amount</Label>
                       <Controller
                         control={form.control}
                         name="abc.loanBalance"
@@ -20596,9 +20596,11 @@ export default function AdminAddClient() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="select">Select</SelectItem>
-                              <SelectItem value="fixed-rate">Fixed Rate</SelectItem>
-                              <SelectItem value="adjustable">Adjustable</SelectItem>
-                              <SelectItem value="other">Other</SelectItem>
+                              <SelectItem value="30-year-fixed">30 Year Fixed</SelectItem>
+                              <SelectItem value="25-year-fixed">25 Year Fixed</SelectItem>
+                              <SelectItem value="20-year-fixed">20 Year Fixed</SelectItem>
+                              <SelectItem value="15-year-fixed">15 Year Fixed</SelectItem>
+                              <SelectItem value="10-year-fixed">10 Year Fixed</SelectItem>
                             </SelectContent>
                           </Select>
                         )}
