@@ -20516,7 +20516,9 @@ export default function AdminAddClient() {
                     
                     <div className="space-y-2 md:col-span-2">
                       <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="abc-principalInterestPayment" className="text-sm">Principal & Interest Payment</Label>
+                        <Label htmlFor="abc-principalInterestPayment" className="text-sm">
+                          {form.watch("abc.principalInterestPaymentToggle") ? "Interest Only Payment" : "Principal & Interest Payment"}
+                        </Label>
                         <Controller
                           control={form.control}
                           name="abc.principalInterestPaymentToggle"
@@ -20526,6 +20528,7 @@ export default function AdminAddClient() {
                               checked={!!field.value}
                               onCheckedChange={field.onChange}
                               data-testid="toggle-abc-principalInterestPayment"
+                              className="scale-[0.8]"
                             />
                           )}
                         />
