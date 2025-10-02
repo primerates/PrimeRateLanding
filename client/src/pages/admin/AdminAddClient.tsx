@@ -7199,8 +7199,8 @@ export default function AdminAddClient() {
                         <SelectItem value="Funded">Funded</SelectItem>
                         <SelectItem value="Audit">Audit</SelectItem>
                         <SelectItem value="Closed">Closed</SelectItem>
-                        <SelectItem value="Cancel">Cancel</SelectItem>
-                        <SelectItem value="Withdraw">Withdraw</SelectItem>
+                        <SelectItem value="Cancel" className="text-red-600">Cancel</SelectItem>
+                        <SelectItem value="Withdraw" className="text-red-600">Withdraw</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
