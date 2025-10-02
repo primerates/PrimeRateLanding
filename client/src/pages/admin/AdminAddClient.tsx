@@ -18698,7 +18698,7 @@ export default function AdminAddClient() {
                       <Input
                         id="abc-lenderName"
                         type="text"
-                        placeholder="Enter lender name"
+                        placeholder=""
                         {...form.register("abc.lenderName")}
                         data-testid="input-abc-lenderName"
                       />
@@ -18709,7 +18709,7 @@ export default function AdminAddClient() {
                       <Input
                         id="abc-loanNumber"
                         type="text"
-                        placeholder="Enter loan number"
+                        placeholder=""
                         {...form.register("abc.loanNumber")}
                         data-testid="input-abc-loanNumber"
                       />
@@ -18874,7 +18874,7 @@ export default function AdminAddClient() {
                               <Input
                                 id="abc-cashOutAmount"
                                 type="text"
-                                placeholder="Enter benefits summary"
+                                placeholder=""
                                 value={field.value || ''}
                                 onChange={(e) => {
                                   field.onChange(e.target.value);
