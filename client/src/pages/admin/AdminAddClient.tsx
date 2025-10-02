@@ -19111,7 +19111,24 @@ export default function AdminAddClient() {
                         </div>
                         
                         <div className="space-y-2">
-                          <Label htmlFor="abc-rateLockExpiration">Rate Lock Expiration</Label>
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="abc-rateLockExpiration" className="text-sm">
+                              {form.watch("abc.rateLockExpirationToggle") ? "Rate Lock Duration" : "Rate Lock Expiration"}
+                            </Label>
+                            <Controller
+                              control={form.control}
+                              name="abc.rateLockExpirationToggle"
+                              defaultValue={false}
+                              render={({ field }) => (
+                                <Switch
+                                  checked={!!field.value}
+                                  onCheckedChange={field.onChange}
+                                  data-testid="toggle-abc-rateLockExpiration"
+                                  className="scale-[0.8]"
+                                />
+                              )}
+                            />
+                          </div>
                           <Input
                             id="abc-rateLockExpiration"
                             value={form.watch('abc.rateLockExpiration') || ''}
