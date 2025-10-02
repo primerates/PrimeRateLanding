@@ -20544,11 +20544,9 @@ export default function AdminAddClient() {
 
             {/* Quote Tab */}
             <TabsContent value="quote" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Quote</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-semibold mb-6">Quote</h2>
+                <div className="space-y-6">
                   {/* Client Row */}
                   <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                     <Label className="text-base font-semibold">Client:</Label>
@@ -20676,9 +20674,9 @@ export default function AdminAddClient() {
                       </div>
                     </div>
                   </div>
-                </CardContent>
+                </div>
 
-                <CardContent className="space-y-6">
+                <div className="space-y-6 mt-8">
                   {/* Loan Purpose Row */}
                   <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                     <Label className="text-base font-semibold">Loan Purpose:</Label>
@@ -20846,8 +20844,8 @@ export default function AdminAddClient() {
                       </div>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </TabsContent>
 
             {/* Notes Tab */}
