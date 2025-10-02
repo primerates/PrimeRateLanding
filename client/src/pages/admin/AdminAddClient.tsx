@@ -19469,7 +19469,7 @@ export default function AdminAddClient() {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between mb-2">
                         <Label htmlFor="abc-cashOutAmount" className="text-sm">
-                          {form.watch("abc.cashOutAmountToggle") ? "Benefits Summary" : "Cash Out Amount"}
+                          {form.watch("abc.cashOutAmountToggle") ? "Builder Credit" : "Seller Credit"}
                         </Label>
                         <Controller
                           control={form.control}
@@ -19485,43 +19485,33 @@ export default function AdminAddClient() {
                           )}
                         />
                       </div>
-                      {form.watch("abc.cashOutAmountToggle") ? (
-                        <Input
-                          id="abc-cashOutAmount"
-                          type="text"
-                          placeholder="Enter benefits summary"
-                          {...form.register("abc.cashOutAmount")}
-                          data-testid="input-abc-cashOutAmount"
-                        />
-                      ) : (
-                        <Controller
-                          control={form.control}
-                          name="abc.cashOutAmount"
-                          defaultValue=""
-                          render={({ field }) => {
-                            const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
-                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                            
-                            return (
-                              <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                                <span className="text-muted-foreground text-sm">$</span>
-                                <Input
-                                  id="abc-cashOutAmount"
-                                  type="text"
-                                  placeholder="0"
-                                  value={displayValue}
-                                  onChange={(e) => {
-                                    const value = e.target.value.replace(/[^\d]/g, '');
-                                    field.onChange(value);
-                                  }}
-                                  className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                                  data-testid="input-abc-cashOutAmount"
-                                />
-                              </div>
-                            );
-                          }}
-                        />
-                      )}
+                      <Controller
+                        control={form.control}
+                        name="abc.cashOutAmount"
+                        defaultValue=""
+                        render={({ field }) => {
+                          const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                          const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                          
+                          return (
+                            <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                              <span className="text-muted-foreground text-sm">$</span>
+                              <Input
+                                id="abc-cashOutAmount"
+                                type="text"
+                                placeholder="0"
+                                value={displayValue}
+                                onChange={(e) => {
+                                  const value = e.target.value.replace(/[^\d]/g, '');
+                                  field.onChange(value);
+                                }}
+                                className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                                data-testid="input-abc-cashOutAmount"
+                              />
+                            </div>
+                          );
+                        }}
+                      />
                     </div>
                     
                     <div className="space-y-2">
@@ -19743,53 +19733,28 @@ export default function AdminAddClient() {
                         </div>
                         
                         <div className="space-y-2">
-                          <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor="abc-rateLockExpiration" className="text-sm">
-                              {form.watch("abc.rateLockExpirationToggle") ? "Rate Lock Duration" : "Rate Lock Expiration"}
-                            </Label>
-                            <Controller
-                              control={form.control}
-                              name="abc.rateLockExpirationToggle"
-                              defaultValue={false}
-                              render={({ field }) => (
-                                <Switch
-                                  checked={!!field.value}
-                                  onCheckedChange={field.onChange}
-                                  data-testid="toggle-abc-rateLockExpiration"
-                                  className="scale-[0.8]"
-                                />
-                              )}
-                            />
-                          </div>
-                          {form.watch("abc.rateLockExpirationToggle") ? (
-                            <Input
-                              id="abc-rateLockExpiration"
-                              {...form.register('abc.rateLockExpiration')}
-                              data-testid="input-abc-rateLockExpiration"
-                            />
-                          ) : (
-                            <Input
-                              id="abc-rateLockExpiration"
-                              value={form.watch('abc.rateLockExpiration') || ''}
-                              onChange={(e) => {
-                                const value = e.target.value.replace(/\D/g, '');
-                                let formatted = '';
-                                if (value.length > 0) {
-                                  formatted = value.substring(0, 2);
-                                  if (value.length > 2) {
-                                    formatted += '/' + value.substring(2, 4);
-                                    if (value.length > 4) {
-                                      formatted += '/' + value.substring(4, 8);
-                                    }
+                          <Label htmlFor="abc-rateLockExpiration">Rate Lock Expiration</Label>
+                          <Input
+                            id="abc-rateLockExpiration"
+                            value={form.watch('abc.rateLockExpiration') || ''}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/\D/g, '');
+                              let formatted = '';
+                              if (value.length > 0) {
+                                formatted = value.substring(0, 2);
+                                if (value.length > 2) {
+                                  formatted += '/' + value.substring(2, 4);
+                                  if (value.length > 4) {
+                                    formatted += '/' + value.substring(4, 8);
                                   }
                                 }
-                                form.setValue('abc.rateLockExpiration', formatted);
-                              }}
-                              placeholder="MM/DD/YYYY"
-                              maxLength={10}
-                              data-testid="input-abc-rateLockExpiration"
-                            />
-                          )}
+                              }
+                              form.setValue('abc.rateLockExpiration', formatted);
+                            }}
+                            placeholder="MM/DD/YYYY"
+                            maxLength={10}
+                            data-testid="input-abc-rateLockExpiration"
+                          />
                         </div>
                         
                         <div className="space-y-2">
