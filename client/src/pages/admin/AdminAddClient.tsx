@@ -4535,104 +4535,8 @@ export default function AdminAddClient() {
           </CardHeader>
           <CollapsibleContent>
             <CardContent className="space-y-6 pt-[1.7rem]">
-              {/* Row 1: Mid FICO, Rate Lock Status */}
-              <Card className={`bg-muted ${
-                showBrandNewLoanCardAnimation[idPrefix] ? 'animate-roll-up-grey-box' : ''
-              }`}>
-                <CardContent className="pt-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="brandNewLoan-midFico" className="text-sm">
-                          {getBrandNewLoanFicoLabel()}
-                        </Label>
-                        <Controller
-                          control={targetForm.control}
-                          name="brandNewLoan.midFico"
-                          render={({ field }) => (
-                            <Switch
-                              checked={borrowerCreditScoresDialog.midFico || coBorrowerCreditScoresDialog.midFico || !!field.value}
-                              onCheckedChange={cycleBrandNewLoanFicoType}
-                              data-testid="toggle-brandNewLoan-fico-type"
-                              className="scale-[0.8]"
-                            />
-                          )}
-                        />
-                      </div>
-                      <Input
-                        id="brandNewLoan-midFico"
-                        {...(brandNewLoanFicoType === 'mid-fico' ? {} : targetForm.register('brandNewLoan.midFico'))}
-                        value={brandNewLoanFicoType === 'mid-fico' ? getCalculatedMidFico() : undefined}
-                        placeholder="Enter"
-                        className="border border-input bg-background px-3 rounded-md"
-                        data-testid="input-brandNewLoan-midFico"
-                        readOnly={brandNewLoanFicoType === 'mid-fico'}
-                        onClick={() => {
-                          // Open credit scores dialog when in borrower-scores mode
-                          if (brandNewLoanFicoType === 'borrower-scores') {
-                            setBorrowerCreditScoresDialog(prev => ({
-                              ...prev,
-                              isOpen: true
-                            }));
-                          }
-                          // Open co-borrower credit scores dialog when in co-borrower-scores mode
-                          else if (brandNewLoanFicoType === 'co-borrower-scores') {
-                            // Check if co-borrower exists before opening dialog
-                            if (hasCoBorrower) {
-                              setCoBorrowerCreditScoresDialog(prev => ({
-                                ...prev,
-                                isOpen: true
-                              }));
-                            } else {
-                              // Show warning dialog if no co-borrower
-                              setCoBorrowerWarningDialog(true);
-                            }
-                          }
-                        }}
-                        style={{
-                          cursor: (brandNewLoanFicoType === 'borrower-scores' || brandNewLoanFicoType === 'co-borrower-scores') ? 'pointer' : 'text'
-                        }}
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Controller
-                        control={targetForm.control}
-                        name="brandNewLoan.rateLockStatus"
-                        render={({ field }) => (
-                          <Label 
-                            htmlFor="brandNewLoan-rateLockStatus"
-                            className={(field.value === 'not-locked' || field.value === 'expired' || !field.value) ? 'text-red-500' : ''}
-                          >
-                            Rate Lock Status
-                          </Label>
-                        )}
-                      />
-                      <Controller
-                        name="brandNewLoan.rateLockStatus"
-                        control={targetForm.control}
-                        defaultValue="not-locked"
-                        render={({ field }) => (
-                          <Select 
-                            value={field.value || "not-locked"}
-                            onValueChange={field.onChange}
-                          >
-                            <SelectTrigger data-testid="select-brandNewLoan-rateLockStatus">
-                              <SelectValue placeholder="Not Locked" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="locked">Locked</SelectItem>
-                              <SelectItem value="not-locked">Not Locked</SelectItem>
-                              <SelectItem value="expired">Expired</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        )}
-                      />
-                    </div>
-                  </div>
-                  
-                  {/* Row 4: Attached to Property */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+              {/* Row 1: Attached to Property */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 
                 <div className="space-y-2 md:col-span-3">
                   <Label htmlFor={`${idPrefix}brandNewLoan-attachedToProperty`}>Attached to Property</Label>
@@ -4692,9 +4596,7 @@ export default function AdminAddClient() {
                     </SelectContent>
                   </Select>
                 </div>
-                  </div>
-                </CardContent>
-              </Card>
+              </div>
             </CardContent>
           </CollapsibleContent>
         </Collapsible>
