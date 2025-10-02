@@ -4479,7 +4479,6 @@ export default function AdminAddClient() {
     const loanPurposeBinding = useSelectFieldBinding('brandNewLoan.loanPurpose', idPrefix, targetForm);
     const prepaymentPenaltyBinding = useSelectFieldBinding('brandNewLoan.prepaymentPenalty', idPrefix, targetForm);
     const statementBalanceBinding = useFieldBinding('brandNewLoan.statementBalance.amount', idPrefix, targetForm);
-    const attachedToPropertyBinding = useSelectFieldBinding('brandNewLoan.attachedToProperty', idPrefix, targetForm);
     
     // Payment field bindings - optimized for performance
     const currentRateBinding = useFieldBinding('brandNewLoan.currentRate', idPrefix, targetForm);
@@ -4535,68 +4534,7 @@ export default function AdminAddClient() {
           </CardHeader>
           <CollapsibleContent>
             <CardContent className="space-y-6 pt-[1.7rem]">
-              {/* Row 1: Attached to Property */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                
-                <div className="space-y-2 md:col-span-3">
-                  <Label htmlFor={`${idPrefix}brandNewLoan-attachedToProperty`}>Attached to Property</Label>
-                  <Select 
-                    {...attachedToPropertyBinding}
-                    onValueChange={(value) => {
-                      attachedToPropertyBinding.onValueChange(value);
-                      if (value && value !== '' && onAutoCopyAddress) {
-                        setTimeout(() => onAutoCopyAddress(), 100);
-                      }
-                    }}
-                  >
-                    <SelectTrigger data-testid={attachedToPropertyBinding['data-testid']}>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      {(() => {
-                        const properties = targetForm.watch('property.properties') || [];
-                        return properties
-                          .filter((property: any) => property.use !== 'home-purchase' && (property.address?.street || property.use === 'primary')) // Exclude Home Purchase, show existing properties only
-                          .map((property: any, index: number) => {
-                            const address = property.address;
-                            const streetAddress = address?.street;
-                            const city = address?.city;
-                            const state = address?.state;
-                            const zipCode = address?.zip;
-                            
-                            // Build display text using address components for uniqueness
-                            let displayText;
-                            
-                            // Special handling for Primary Residence without address
-                            if (property.use === 'primary' && !streetAddress) {
-                              displayText = 'Primary Residence';
-                            } else {
-                              displayText = streetAddress || 'Property';
-                              if (city && state) {
-                                displayText += `, ${city}, ${state}`;
-                              } else if (city) {
-                                displayText += `, ${city}`;
-                              } else if (state) {
-                                displayText += `, ${state}`;
-                              }
-                              if (zipCode) {
-                                displayText += ` ${zipCode}`;
-                              }
-                            }
-                            
-                            return (
-                              <SelectItem key={`property-${property.id}`} value={property.id}>
-                                {displayText}
-                              </SelectItem>
-                            );
-                          });
-                      })()}
-                      <SelectItem value="Other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+              {/* No content - placeholder for future fields */}
             </CardContent>
           </CollapsibleContent>
         </Collapsible>
