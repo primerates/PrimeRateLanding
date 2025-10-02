@@ -20537,7 +20537,9 @@ export default function AdminAddClient() {
                     
                     <div className="space-y-2">
                       <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="abc-cashOutAmount" className="text-sm">Cash Out Amount</Label>
+                        <Label htmlFor="abc-cashOutAmount" className="text-sm">
+                          {form.watch("abc.cashOutAmountToggle") ? "Benefits Summary" : "Cash Out Amount"}
+                        </Label>
                         <Controller
                           control={form.control}
                           name="abc.cashOutAmountToggle"
@@ -20552,38 +20554,50 @@ export default function AdminAddClient() {
                           )}
                         />
                       </div>
-                      <Controller
-                        control={form.control}
-                        name="abc.cashOutAmount"
-                        defaultValue=""
-                        render={({ field }) => {
-                          const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
-                          const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                          
-                          return (
-                            <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                              <span className="text-muted-foreground text-sm">$</span>
-                              <Input
-                                id="abc-cashOutAmount"
-                                type="text"
-                                placeholder="0"
-                                value={displayValue}
-                                onChange={(e) => {
-                                  const value = e.target.value.replace(/[^\d]/g, '');
-                                  field.onChange(value);
-                                }}
-                                className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                                data-testid="input-abc-cashOutAmount"
-                              />
-                            </div>
-                          );
-                        }}
-                      />
+                      {form.watch("abc.cashOutAmountToggle") ? (
+                        <Input
+                          id="abc-cashOutAmount"
+                          type="text"
+                          placeholder="Enter benefits summary"
+                          {...form.register("abc.cashOutAmount")}
+                          data-testid="input-abc-cashOutAmount"
+                        />
+                      ) : (
+                        <Controller
+                          control={form.control}
+                          name="abc.cashOutAmount"
+                          defaultValue=""
+                          render={({ field }) => {
+                            const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            
+                            return (
+                              <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                                <span className="text-muted-foreground text-sm">$</span>
+                                <Input
+                                  id="abc-cashOutAmount"
+                                  type="text"
+                                  placeholder="0"
+                                  value={displayValue}
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(/[^\d]/g, '');
+                                    field.onChange(value);
+                                  }}
+                                  className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                                  data-testid="input-abc-cashOutAmount"
+                                />
+                              </div>
+                            );
+                          }}
+                        />
+                      )}
                     </div>
                     
                     <div className="space-y-2">
                       <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="abc-totalDebtPayOff" className="text-sm">Total Debt Pay Off</Label>
+                        <Label htmlFor="abc-totalDebtPayOff" className="text-sm">
+                          {form.watch("abc.totalDebtPayOffToggle") ? "Total Debt Pay Off Payments" : "Total Debt Pay Off"}
+                        </Label>
                         <Controller
                           control={form.control}
                           name="abc.totalDebtPayOffToggle"
