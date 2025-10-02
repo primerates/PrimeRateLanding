@@ -20919,7 +20919,7 @@ export default function AdminAddClient() {
                       {/* Purpose Row */}
                       <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                         <Label className="text-base font-semibold">Purpose:</Label>
-                        <div className="grid grid-cols-[180px_180px_180px_180px_180px] gap-4">
+                        <div className="grid grid-cols-[180px_180px_180px_180px_180px_180px] gap-4">
                           {/* Cash Out */}
                           <div className="flex items-center space-x-2">
                             <Checkbox
@@ -20940,24 +20940,24 @@ export default function AdminAddClient() {
                             <Label htmlFor="loan-type-purchase">Purchase</Label>
                           </div>
                           
-                          {/* Term Reduction */}
+                          {/* Rate & Term */}
                           <div className="flex items-center space-x-2">
                             <Checkbox
                               id="loan-type-term-reduction"
                               data-testid="checkbox-loan-type-term-reduction"
                               className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                             />
-                            <Label htmlFor="loan-type-term-reduction">Term Reduction</Label>
+                            <Label htmlFor="loan-type-term-reduction">Rate & Term</Label>
                           </div>
                           
-                          {/* Rate Reduction */}
+                          {/* Streamline */}
                           <div className="flex items-center space-x-2">
                             <Checkbox
                               id="loan-type-rate-reduction"
                               data-testid="checkbox-loan-type-rate-reduction"
                               className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                             />
-                            <Label htmlFor="loan-type-rate-reduction">Rate Reduction</Label>
+                            <Label htmlFor="loan-type-rate-reduction">Streamline</Label>
                           </div>
                           
                           {/* Change Program */}
@@ -20968,6 +20968,16 @@ export default function AdminAddClient() {
                               className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                             />
                             <Label htmlFor="loan-type-term-change">Change Program</Label>
+                          </div>
+                          
+                          {/* VA IRRRL */}
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              id="loan-type-va-irrrl"
+                              data-testid="checkbox-loan-type-va-irrrl"
+                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                            />
+                            <Label htmlFor="loan-type-va-irrrl">VA IRRRL</Label>
                           </div>
                         </div>
                       </div>
