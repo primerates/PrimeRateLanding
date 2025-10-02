@@ -13780,20 +13780,20 @@ export default function AdminAddClient() {
                       >
                         <span className={`${showPropertyAnimation ? 'animate-roll-down' : ''}`}>
                           {(() => {
-                            // Find the subject property
+                            // Get the New Loan Amount from New Refinance Loan card
+                            const newLoanAmount = form.watch('abc.loanBalance') || '';
+                            
+                            // Find the Primary Residence property
                             const properties = form.watch('property.properties') || [];
-                            const subjectProperty = properties.find(p => p.isSubject === true);
+                            const primaryResidence = properties.find(p => p.use === 'primary');
                             
-                            // Get the New Loan amount
-                            const loanAmount = form.watch('newLoan.loanAmount') || '';
-                            
-                            // If no subject property or loan amount, return default %
-                            if (!subjectProperty || !loanAmount || loanAmount.trim() === '') {
+                            // If no primary residence or new loan amount, return default %
+                            if (!primaryResidence || !newLoanAmount || newLoanAmount.trim() === '') {
                               return <span style={{ fontSize: '28px' }}>%</span>;
                             }
                             
-                            // Get estimated value from subject property
-                            const estimatedValue = subjectProperty.estimatedValue || '';
+                            // Get estimated value from primary residence
+                            const estimatedValue = primaryResidence.estimatedValue || '';
                             
                             if (!estimatedValue || estimatedValue.trim() === '') {
                               return <span style={{ fontSize: '28px' }}>%</span>;
@@ -13805,7 +13805,7 @@ export default function AdminAddClient() {
                               return cleaned ? parseFloat(cleaned) : 0;
                             };
                             
-                            const loanNum = parseValue(loanAmount);
+                            const loanNum = parseValue(newLoanAmount);
                             const valueNum = parseValue(estimatedValue);
                             
                             if (loanNum === 0 || valueNum === 0) {
