@@ -930,6 +930,8 @@ export default function AdminAddClient() {
   const [showPurchaseLoan, setShowPurchaseLoan] = useState(false);
   const [isPurchaseLoanOpen, setIsPurchaseLoanOpen] = useState(true);
   const [additionalLoans, setAdditionalLoans] = useState<Array<{id: string, isOpen: boolean}>>([]);
+  const [isAbcCardOpen, setIsAbcCardOpen] = useState(true);
+  const [isBbbCardOpen, setIsBbbCardOpen] = useState(true);
   const [isThirdLoanPropertyAddressOpen, setIsThirdLoanPropertyAddressOpen] = useState(false);
   
   // State for Current Loan 1 info popup in Property tab
@@ -4161,99 +4163,6 @@ export default function AdminAddClient() {
           </CardHeader>
           <CollapsibleContent>
             <CardContent className="space-y-6 pt-[1.7rem]">
-                  {/* Row 4: Interest Rate, HOA, Attached to Property */}
-                  <Card className="bg-muted">
-                <CardContent className="pt-6">
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
-                <div className="space-y-2 md:col-span-1">
-                  <Label htmlFor="purchaseLoan-currentRate">Interest Rate</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <Input
-                      id="purchaseLoan-currentRate"
-                      {...targetForm.register('purchaseLoan.currentRate')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid="input-purchaseLoan-currentRate"
-                    />
-                    <span className="text-muted-foreground text-sm">%</span>
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor={`${idPrefix}purchaseLoan-hoa`} className="text-sm">HOA</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id={`${idPrefix}purchaseLoan-hoa`}
-                      {...targetForm.register('purchaseLoan.hoa')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid={`input-purchaseLoan-hoa`}
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor={`${idPrefix}purchaseLoan-attachedToProperty`}>Attached to Property</Label>
-                  <Select 
-                    {...attachedToPropertyBinding}
-                    onValueChange={(value) => {
-                      attachedToPropertyBinding.onValueChange(value);
-                      if (value && value !== '' && onAutoCopyAddress) {
-                        setTimeout(() => onAutoCopyAddress(), 100);
-                      }
-                    }}
-                  >
-                    <SelectTrigger data-testid={attachedToPropertyBinding['data-testid']}>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      {(() => {
-                        const properties = targetForm.watch('property.properties') || [];
-                        return properties
-                          .filter((property: any) => property.use === 'home-purchase') // Only show Home Purchase properties for Purchase Loan
-                          .map((property: any, index: number) => {
-                            const address = property.address;
-                            const streetAddress = address?.street;
-                            const city = address?.city;
-                            const state = address?.state;
-                            const zipCode = address?.zip;
-                            
-                            // Build display text using address components for uniqueness
-                            let displayText;
-                            
-                            // Special handling for Primary Residence without address
-                            if (property.use === 'primary' && !streetAddress) {
-                              displayText = 'Primary Residence';
-                            } else {
-                              displayText = streetAddress || 'Property';
-                              if (city && state) {
-                                displayText += `, ${city}, ${state}`;
-                              } else if (city) {
-                                displayText += `, ${city}`;
-                              } else if (state) {
-                                displayText += `, ${state}`;
-                              }
-                              if (zipCode) {
-                                displayText += ` ${zipCode}`;
-                              }
-                            }
-                            
-                            return (
-                              <SelectItem key={`property-${property.id}`} value={property.id}>
-                                {displayText}
-                              </SelectItem>
-                            );
-                          });
-                      })()}
-                      <SelectItem value="Other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                  </div>
-                </CardContent>
-              </Card>
             </CardContent>
           </CollapsibleContent>
         </Collapsible>
@@ -18687,26 +18596,6 @@ export default function AdminAddClient() {
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                       <div className="flex items-center space-x-2">
                         <Checkbox
-                          id="property-type-purchase-loan-tab"
-                          checked={(purchaseLoanCards || []).length > 0}
-                          onCheckedChange={(checked) => {
-                            if (checked !== null) {
-                              handlePurchaseLoanTypeChange(checked);
-                            }
-                          }}
-                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
-                          data-testid="checkbox-property-purchase-loan-tab"
-                        />
-                        <Label 
-                          htmlFor="property-type-purchase-loan-tab" 
-                          className="font-medium text-black cursor-pointer"
-                        >
-                          New Loan - Purchase
-                        </Label>
-                      </div>
-
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
                           id="property-type-abc-loan-tab"
                           disabled
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
@@ -18849,6 +18738,7 @@ export default function AdminAddClient() {
               </Card>
 
               {/* ABC Card */}
+              <Collapsible open={isAbcCardOpen} onOpenChange={setIsAbcCardOpen}>
               <Card className="transition-all duration-700 border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -18878,13 +18768,15 @@ export default function AdminAddClient() {
                         size="sm" 
                         className="hover:bg-orange-500 hover:text-white" 
                         data-testid="button-toggle-abc"
-                        title="Minimize"
+                        title={isAbcCardOpen ? "Minimize" : "Expand"}
+                        onClick={() => setIsAbcCardOpen(!isAbcCardOpen)}
                       >
-                        <Minus className="h-4 w-4" />
+                        {isAbcCardOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                       </Button>
                     </div>
                   </div>
                 </CardHeader>
+                <CollapsibleContent>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
                     <div className="space-y-2">
@@ -19652,9 +19544,12 @@ export default function AdminAddClient() {
                     </CardContent>
                   </Card>
                 </CardContent>
+                </CollapsibleContent>
               </Card>
+              </Collapsible>
 
               {/* BBB Card */}
+              <Collapsible open={isBbbCardOpen} onOpenChange={setIsBbbCardOpen}>
               <Card className="transition-all duration-700 border-l-4 border-l-cyan-500 hover:border-cyan-500 focus-within:border-cyan-500 transition-colors duration-200">
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -19684,13 +19579,15 @@ export default function AdminAddClient() {
                         size="sm" 
                         className="hover:bg-orange-500 hover:text-white" 
                         data-testid="button-toggle-bbb"
-                        title="Minimize"
+                        title={isBbbCardOpen ? "Minimize" : "Expand"}
+                        onClick={() => setIsBbbCardOpen(!isBbbCardOpen)}
                       >
-                        <Minus className="h-4 w-4" />
+                        {isBbbCardOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                       </Button>
                     </div>
                   </div>
                 </CardHeader>
+                <CollapsibleContent>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
                     <div className="space-y-2">
@@ -20452,7 +20349,9 @@ export default function AdminAddClient() {
                     </CardContent>
                   </Card>
                 </CardContent>
+                </CollapsibleContent>
               </Card>
+              </Collapsible>
 
               {/* Purchase Loan Cards - Dynamic multiple card system */}
               {(purchaseLoanCards || []).map((cardId, index) => {
