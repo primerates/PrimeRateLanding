@@ -187,7 +187,7 @@ export default function AdminDashboard() {
               <img 
                 src={primeRateLogo} 
                 alt="Prime Rate Home Loans Logo" 
-                className="h-10 w-auto object-contain"
+                className="h-9 w-auto object-contain"
               />
               <h1 className="text-xl font-black italic" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="text-admin-header">
                 PRIME RATE HOME LOANS
