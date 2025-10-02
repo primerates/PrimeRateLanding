@@ -20654,8 +20654,13 @@ export default function AdminAddClient() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="select">Select</SelectItem>
-                              <SelectItem value="Yes - see notes">Yes - see notes</SelectItem>
                               <SelectItem value="No">No</SelectItem>
+                              <SelectItem value="Yes - 6 Months">Yes - 6 Months</SelectItem>
+                              <SelectItem value="Yes - 1 Year">Yes - 1 Year</SelectItem>
+                              <SelectItem value="Yes - 2 Years">Yes - 2 Years</SelectItem>
+                              <SelectItem value="Yes - 3 Years">Yes - 3 Years</SelectItem>
+                              <SelectItem value="Yes - 4 Years">Yes - 4 Years</SelectItem>
+                              <SelectItem value="Yes - 5 Years">Yes - 5 Years</SelectItem>
                             </SelectContent>
                           </Select>
                         )}
