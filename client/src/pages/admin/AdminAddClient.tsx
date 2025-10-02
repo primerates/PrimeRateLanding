@@ -4619,11 +4619,6 @@ export default function AdminAddClient() {
                       inputMode="numeric"
                       pattern="[0-9]*"
                       placeholder="0"
-                      onBlur={(e) => {
-                        const digits = e.target.value.replace(/[^\d]/g, "");
-                        const formatted = digits ? Number(digits).toLocaleString() : "";
-                        form.setValue("newLoan.loanAmount", formatted);
-                      }}
                       className="border-0 bg-transparent px-2 focus-visible:ring-0"
                       data-testid="input-newLoan-loanAmount"
                     />
