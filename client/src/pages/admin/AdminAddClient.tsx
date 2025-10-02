@@ -20547,11 +20547,23 @@ export default function AdminAddClient() {
             <TabsContent value="quote" className="space-y-6">
               <div>
                 <Card className={`bg-gray-100 mb-6 hover:shadow-lg transition-shadow duration-300 border-l-4 transition-colors ${isQuoteCardsMinimized ? 'border-l-green-500' : 'border-l-transparent hover:border-l-green-500'}`}>
-                  <div className="flex justify-between items-center pt-4 px-4">
+                  <div className="flex justify-end pt-4 pr-4">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="hover:bg-orange-500 hover:text-white"
+                      onClick={() => setIsQuoteCardsMinimized(!isQuoteCardsMinimized)}
+                      title={isQuoteCardsMinimized ? 'Expand' : 'Minimize'}
+                      data-testid="button-toggle-quote-cards"
+                    >
+                      {isQuoteCardsMinimized ? <Plus className="h-4 w-4" /> : <Minus className="h-4 w-4" />}
+                    </Button>
+                  </div>
+                  <CardContent className="pt-2">
                     {/* Compare Row */}
-                    <div className="flex items-center gap-2">
+                    <div className="grid grid-cols-[150px_1fr] items-center gap-8 mb-6">
                       <Label className="text-base font-semibold">Compare:</Label>
-                      <div className="flex gap-4">
+                      <div className="grid grid-cols-[180px_180px_180px_180px_180px] gap-4">
                         {/* 1 Rate */}
                         <div className="flex items-center space-x-2">
                           <Checkbox
@@ -20603,18 +20615,7 @@ export default function AdminAddClient() {
                         </div>
                       </div>
                     </div>
-                    
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="hover:bg-orange-500 hover:text-white"
-                      onClick={() => setIsQuoteCardsMinimized(!isQuoteCardsMinimized)}
-                      title={isQuoteCardsMinimized ? 'Expand' : 'Minimize'}
-                      data-testid="button-toggle-quote-cards"
-                    >
-                      {isQuoteCardsMinimized ? <Plus className="h-4 w-4" /> : <Minus className="h-4 w-4" />}
-                    </Button>
-                  </div>
+                  </CardContent>
                   {!isQuoteCardsMinimized && (
                     <CardContent className="pt-2 space-y-6">
                       {/* Client Row */}
