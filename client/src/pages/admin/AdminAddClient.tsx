@@ -20490,7 +20490,9 @@ export default function AdminAddClient() {
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2">
                           <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor="abc-rateLockDate" className="text-sm">Rate Lock Date</Label>
+                            <Label htmlFor="abc-rateLockDate" className="text-sm">
+                              {form.watch("abc.rateLockDateToggle") ? "Lock Date - 10 Year Bond" : "Rate Lock Date"}
+                            </Label>
                             <Controller
                               control={form.control}
                               name="abc.rateLockDateToggle"
@@ -20504,32 +20506,42 @@ export default function AdminAddClient() {
                               )}
                             />
                           </div>
-                          <Input
-                            id="abc-rateLockDate"
-                            value={form.watch('abc.rateLockDate') || ''}
-                            onChange={(e) => {
-                              const value = e.target.value.replace(/\D/g, '');
-                              let formatted = '';
-                              if (value.length > 0) {
-                                formatted = value.substring(0, 2);
-                                if (value.length > 2) {
-                                  formatted += '/' + value.substring(2, 4);
-                                  if (value.length > 4) {
-                                    formatted += '/' + value.substring(4, 8);
+                          {form.watch("abc.rateLockDateToggle") ? (
+                            <Input
+                              id="abc-rateLockDate"
+                              {...form.register('abc.rateLockDate')}
+                              data-testid="input-abc-rateLockDate"
+                            />
+                          ) : (
+                            <Input
+                              id="abc-rateLockDate"
+                              value={form.watch('abc.rateLockDate') || ''}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/\D/g, '');
+                                let formatted = '';
+                                if (value.length > 0) {
+                                  formatted = value.substring(0, 2);
+                                  if (value.length > 2) {
+                                    formatted += '/' + value.substring(2, 4);
+                                    if (value.length > 4) {
+                                      formatted += '/' + value.substring(4, 8);
+                                    }
                                   }
                                 }
-                              }
-                              form.setValue('abc.rateLockDate', formatted);
-                            }}
-                            placeholder="MM/DD/YYYY"
-                            maxLength={10}
-                            data-testid="input-abc-rateLockDate"
-                          />
+                                form.setValue('abc.rateLockDate', formatted);
+                              }}
+                              placeholder="MM/DD/YYYY"
+                              maxLength={10}
+                              data-testid="input-abc-rateLockDate"
+                            />
+                          )}
                         </div>
                         
                         <div className="space-y-2">
                           <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor="abc-rateLockExpiration" className="text-sm">Rate Lock Expiration</Label>
+                            <Label htmlFor="abc-rateLockExpiration" className="text-sm">
+                              {form.watch("abc.rateLockExpirationToggle") ? "Rate Lock Duration" : "Rate Lock Expiration"}
+                            </Label>
                             <Controller
                               control={form.control}
                               name="abc.rateLockExpirationToggle"
@@ -20543,27 +20555,35 @@ export default function AdminAddClient() {
                               )}
                             />
                           </div>
-                          <Input
-                            id="abc-rateLockExpiration"
-                            value={form.watch('abc.rateLockExpiration') || ''}
-                            onChange={(e) => {
-                              const value = e.target.value.replace(/\D/g, '');
-                              let formatted = '';
-                              if (value.length > 0) {
-                                formatted = value.substring(0, 2);
-                                if (value.length > 2) {
-                                  formatted += '/' + value.substring(2, 4);
-                                  if (value.length > 4) {
-                                    formatted += '/' + value.substring(4, 8);
+                          {form.watch("abc.rateLockExpirationToggle") ? (
+                            <Input
+                              id="abc-rateLockExpiration"
+                              {...form.register('abc.rateLockExpiration')}
+                              data-testid="input-abc-rateLockExpiration"
+                            />
+                          ) : (
+                            <Input
+                              id="abc-rateLockExpiration"
+                              value={form.watch('abc.rateLockExpiration') || ''}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/\D/g, '');
+                                let formatted = '';
+                                if (value.length > 0) {
+                                  formatted = value.substring(0, 2);
+                                  if (value.length > 2) {
+                                    formatted += '/' + value.substring(2, 4);
+                                    if (value.length > 4) {
+                                      formatted += '/' + value.substring(4, 8);
+                                    }
                                   }
                                 }
-                              }
-                              form.setValue('abc.rateLockExpiration', formatted);
-                            }}
-                            placeholder="MM/DD/YYYY"
-                            maxLength={10}
-                            data-testid="input-abc-rateLockExpiration"
-                          />
+                                form.setValue('abc.rateLockExpiration', formatted);
+                              }}
+                              placeholder="MM/DD/YYYY"
+                              maxLength={10}
+                              data-testid="input-abc-rateLockExpiration"
+                            />
+                          )}
                         </div>
                         
                         <div className="space-y-2">
@@ -20616,9 +20636,9 @@ export default function AdminAddClient() {
                     </CardContent>
                   </Card>
                   
-                  {/* Row 4: Interest Rate */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                    <div className="space-y-2">
+                  {/* Row 4: Interest Rate, Principal & Interest Payment, Tax & Insurance Payment, Total Monthly Payment */}
+                  <div className="grid grid-cols-1 md:grid-cols-10 gap-4 mt-4">
+                    <div className="space-y-2 md:col-span-1">
                       <Label htmlFor="abc-interestRate">Interest Rate</Label>
                       <Controller
                         control={form.control}
@@ -20650,6 +20670,101 @@ export default function AdminAddClient() {
                                 data-testid="input-abc-interestRate"
                               />
                               <span className="text-muted-foreground text-sm">%</span>
+                            </div>
+                          );
+                        }}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor="abc-principalInterestPayment">Principal & Interest Payment</Label>
+                      <Controller
+                        control={form.control}
+                        name="abc.principalAndInterestPayment"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                            <span className="text-muted-foreground text-sm">$</span>
+                            <Input
+                              id="abc-principalInterestPayment"
+                              type="text"
+                              placeholder="0"
+                              value={field.value}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/[^\d]/g, '');
+                                field.onChange(value);
+                              }}
+                              onBlur={(e) => {
+                                const value = e.target.value.replace(/[^\d]/g, '');
+                                const formatted = value ? Number(value).toLocaleString() : '';
+                                form.setValue("abc.principalAndInterestPayment", formatted);
+                              }}
+                              className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                              data-testid="input-abc-principalInterestPayment"
+                            />
+                          </div>
+                        )}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor="abc-taxInsurancePayment">Tax & Insurance Payment</Label>
+                      <Controller
+                        control={form.control}
+                        name="abc.taxInsurancePayment"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                            <span className="text-muted-foreground text-sm">$</span>
+                            <Input
+                              id="abc-taxInsurancePayment"
+                              type="text"
+                              placeholder="0"
+                              value={field.value}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/[^\d]/g, '');
+                                field.onChange(value);
+                              }}
+                              onBlur={(e) => {
+                                const value = e.target.value.replace(/[^\d]/g, '');
+                                const formatted = value ? Number(value).toLocaleString() : '';
+                                form.setValue("abc.taxInsurancePayment", formatted);
+                              }}
+                              className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                              data-testid="input-abc-taxInsurancePayment"
+                            />
+                          </div>
+                        )}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor="abc-totalMonthlyPayment">Total Monthly Payment</Label>
+                      <Controller
+                        control={form.control}
+                        name="abc.totalMonthlyPayment"
+                        defaultValue=""
+                        render={({ field }) => {
+                          const principalAndInterest = form.watch("abc.principalAndInterestPayment") || '';
+                          const taxInsurance = form.watch("abc.taxInsurancePayment") || '';
+                          
+                          const pi = principalAndInterest ? parseInt(principalAndInterest.replace(/,/g, '')) : 0;
+                          const ti = taxInsurance ? parseInt(taxInsurance.replace(/,/g, '')) : 0;
+                          const total = pi + ti;
+                          const displayValue = total > 0 ? total.toLocaleString() : '';
+                          
+                          return (
+                            <div className="flex items-center border border-input bg-muted px-3 rounded-md">
+                              <span className="text-muted-foreground text-sm">$</span>
+                              <Input
+                                id="abc-totalMonthlyPayment"
+                                type="text"
+                                placeholder="0"
+                                value={displayValue}
+                                readOnly
+                                className="border-0 bg-transparent px-2 focus-visible:ring-0 cursor-not-allowed"
+                                data-testid="input-abc-totalMonthlyPayment"
+                              />
                             </div>
                           );
                         }}
