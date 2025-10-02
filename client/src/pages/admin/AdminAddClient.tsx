@@ -20456,35 +20456,59 @@ export default function AdminAddClient() {
                   <CardTitle>ABC</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-2">
-                    <Label htmlFor="abc-loanBalance">Loan Balance</Label>
-                    <Controller
-                      control={form.control}
-                      name="abc.loanBalance"
-                      defaultValue=""
-                      render={({ field }) => {
-                        const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
-                        const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                        
-                        return (
-                          <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                            <span className="text-muted-foreground text-sm">$</span>
-                            <Input
-                              id="abc-loanBalance"
-                              type="text"
-                              placeholder="0"
-                              value={displayValue}
-                              onChange={(e) => {
-                                const value = e.target.value.replace(/[^\d]/g, '');
-                                field.onChange(value);
-                              }}
-                              className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                              data-testid="input-abc-loanBalance"
-                            />
-                          </div>
-                        );
-                      }}
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="abc-loanBalance">Loan Balance</Label>
+                      <Controller
+                        control={form.control}
+                        name="abc.loanBalance"
+                        defaultValue=""
+                        render={({ field }) => {
+                          const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                          const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                          
+                          return (
+                            <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                              <span className="text-muted-foreground text-sm">$</span>
+                              <Input
+                                id="abc-loanBalance"
+                                type="text"
+                                placeholder="0"
+                                value={displayValue}
+                                onChange={(e) => {
+                                  const value = e.target.value.replace(/[^\d]/g, '');
+                                  field.onChange(value);
+                                }}
+                                className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                                data-testid="input-abc-loanBalance"
+                              />
+                            </div>
+                          );
+                        }}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="abc-loanTerm">Loan Term</Label>
+                      <Controller
+                        control={form.control}
+                        name="abc.loanTerm"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <Select value={field.value} onValueChange={field.onChange}>
+                            <SelectTrigger data-testid="select-abc-loanTerm">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select">Select</SelectItem>
+                              <SelectItem value="fixed-rate">Fixed Rate</SelectItem>
+                              <SelectItem value="adjustable">Adjustable</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                    </div>
                   </div>
                 </CardContent>
               </Card>
