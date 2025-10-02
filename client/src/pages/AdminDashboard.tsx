@@ -351,8 +351,8 @@ export default function AdminDashboard() {
                 onClick={() => handleMenuClick(item.path)}
                 data-testid={`card-admin-${item.id}`}
               >
-                <CardHeader className="text-center pb-4">
-                  <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-3">
+                <CardHeader className="text-center pb-8 pt-8">
+                  <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-6">
                     <Icon className="h-6 w-6 text-primary transition-transform duration-300 group-hover:rotate-[360deg]" />
                   </div>
                   <CardTitle className="text-lg">{item.label}</CardTitle>
@@ -381,8 +381,8 @@ export default function AdminDashboard() {
                 onClick={() => handleMenuClick(item.path)}
                 data-testid={`card-admin-${item.id}`}
               >
-                <CardHeader className="text-center pb-4">
-                  <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-3">
+                <CardHeader className="text-center pb-8 pt-8">
+                  <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-6">
                     <Icon className="h-6 w-6 text-primary transition-transform duration-300 group-hover:rotate-[360deg]" />
                   </div>
                   <CardTitle className="text-lg">{item.label}</CardTitle>
