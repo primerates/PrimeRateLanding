@@ -54,6 +54,7 @@ export const borrowerInfoSchema = z.object({
   priorYearsAtAddress: z.string().optional(),
   priorMonthsAtAddress: z.string().optional(),
   subjectProperty: addressSchema.partial().optional(),
+  stage: z.enum(["Lead", "Quote", "Loan Prep", "Loan", "Funded", "Audit", "Closed", "Cancel", "Withdraw"]).optional(),
   leadRef: z.string().optional(),
   dmBatch: z.string().optional(),
   source: z.enum(["Select", "Direct Mail", "Social Media", "Client Referral", "Other"]).optional(),

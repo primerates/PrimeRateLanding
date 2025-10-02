@@ -1948,6 +1948,7 @@ export default function AdminAddClient() {
         priorYearsAtAddress: '',
         priorMonthsAtAddress: '',
         subjectProperty: undefined,
+        stage: 'Lead',
         leadRef: '',
         source: 'Select',
         callDate: '',
@@ -7181,6 +7182,29 @@ export default function AdminAddClient() {
                 showEntryAnimation ? 'animate-roll-down-delayed' : (showBorrowerAnimation ? 'animate-roll-down' : '')
               }`}>
                 <CardContent className="grid grid-cols-1 md:grid-cols-5 gap-4 pt-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="borrower-stage">Stage</Label>
+                    <Select
+                      value={form.watch('borrower.stage') || 'Lead'}
+                      onValueChange={(value) => form.setValue('borrower.stage', value as any)}
+                    >
+                      <SelectTrigger data-testid="select-borrower-stage">
+                        <SelectValue placeholder="Lead" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Lead">Lead</SelectItem>
+                        <SelectItem value="Quote">Quote</SelectItem>
+                        <SelectItem value="Loan Prep">Loan Prep</SelectItem>
+                        <SelectItem value="Loan">Loan</SelectItem>
+                        <SelectItem value="Funded">Funded</SelectItem>
+                        <SelectItem value="Audit">Audit</SelectItem>
+                        <SelectItem value="Closed">Closed</SelectItem>
+                        <SelectItem value="Cancel">Cancel</SelectItem>
+                        <SelectItem value="Withdraw">Withdraw</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
                   <div className="space-y-2">
                     <div className="flex items-center justify-between mb-2">
                       <Label htmlFor="borrower-leadRef" className="text-sm">
