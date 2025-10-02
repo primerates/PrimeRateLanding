@@ -20308,10 +20308,64 @@ export default function AdminAddClient() {
                     </div>
                   </div>
                   
-                  {/* Row 3: Rate Lock Date, Rate Lock Expiration, Lender Credit/Broker Credit */}
+                  {/* Row 3: Mid FICO, Rate Lock Date, Rate Lock Expiration, Lender Credit/Broker Credit */}
                   <Card className="bg-muted mt-4">
                     <CardContent className="pt-6">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="abc-midFico" className="text-sm">
+                              {getBrandNewLoanFicoLabel()}
+                            </Label>
+                            <Controller
+                              control={form.control}
+                              name="abc.midFico"
+                              render={({ field }) => (
+                                <Switch
+                                  checked={borrowerCreditScoresDialog.midFico || coBorrowerCreditScoresDialog.midFico || !!field.value}
+                                  onCheckedChange={cycleBrandNewLoanFicoType}
+                                  data-testid="toggle-abc-fico-type"
+                                  className="scale-[0.8]"
+                                />
+                              )}
+                            />
+                          </div>
+                          <Input
+                            id="abc-midFico"
+                            {...(brandNewLoanFicoType === 'mid-fico' ? {} : form.register('abc.midFico'))}
+                            value={brandNewLoanFicoType === 'mid-fico' ? getCalculatedMidFico() : undefined}
+                            placeholder="Enter"
+                            className="border border-input bg-background px-3 rounded-md"
+                            data-testid="input-abc-midFico"
+                            readOnly={brandNewLoanFicoType === 'mid-fico'}
+                            onClick={() => {
+                              // Open credit scores dialog when in borrower-scores mode
+                              if (brandNewLoanFicoType === 'borrower-scores') {
+                                setBorrowerCreditScoresDialog(prev => ({
+                                  ...prev,
+                                  isOpen: true
+                                }));
+                              }
+                              // Open co-borrower credit scores dialog when in co-borrower-scores mode
+                              else if (brandNewLoanFicoType === 'co-borrower-scores') {
+                                // Check if co-borrower exists before opening dialog
+                                if (hasCoBorrower) {
+                                  setCoBorrowerCreditScoresDialog(prev => ({
+                                    ...prev,
+                                    isOpen: true
+                                  }));
+                                } else {
+                                  // Show warning dialog if no co-borrower
+                                  setCoBorrowerWarningDialog(true);
+                                }
+                              }
+                            }}
+                            style={{
+                              cursor: (brandNewLoanFicoType === 'borrower-scores' || brandNewLoanFicoType === 'co-borrower-scores') ? 'pointer' : 'text'
+                            }}
+                          />
+                        </div>
+                        
                         <div className="space-y-2">
                           <div className="flex items-center justify-between mb-2">
                             <Label htmlFor="abc-rateLockDate" className="text-sm">
