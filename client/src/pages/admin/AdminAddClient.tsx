@@ -1507,6 +1507,9 @@ export default function AdminAddClient() {
     isOpen: boolean;
   }>({ isOpen: false });
 
+  // Warning dialog for when trying to open a second new loan card
+  const [newLoanConflictDialog, setNewLoanConflictDialog] = useState(false);
+
 
   // Delete confirmation dialog state for Borrower Self-Employment
   const [deleteSelfEmploymentDialog, setDeleteSelfEmploymentDialog] = useState<{
@@ -6203,6 +6206,14 @@ export default function AdminAddClient() {
         return;
       }
     } else {
+      // Check if New Purchase Loan card is already open
+      const hasPurchaseCards = (newPurchaseLoanCards || []).length > 0;
+      if (hasPurchaseCards) {
+        // Show conflict warning dialog
+        setNewLoanConflictDialog(true);
+        return;
+      }
+      
       // When checking, auto-create default card
       const hasCards = (newRefinanceLoanCards || []).length > 0;
       
@@ -6229,6 +6240,14 @@ export default function AdminAddClient() {
         return;
       }
     } else {
+      // Check if New Refinance Loan card is already open
+      const hasRefinanceCards = (newRefinanceLoanCards || []).length > 0;
+      if (hasRefinanceCards) {
+        // Show conflict warning dialog
+        setNewLoanConflictDialog(true);
+        return;
+      }
+      
       // When checking, auto-create default card
       const hasCards = (newPurchaseLoanCards || []).length > 0;
       
@@ -21480,6 +21499,26 @@ export default function AdminAddClient() {
               className="bg-red-600 hover:bg-red-700"
             >
               Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* New Loan Conflict Warning Dialog */}
+      <AlertDialog open={newLoanConflictDialog} onOpenChange={setNewLoanConflictDialog}>
+        <AlertDialogContent data-testid="dialog-new-loan-conflict">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Only One Loan Per Property Allowed</AlertDialogTitle>
+            <AlertDialogDescription>
+              Only one loan per property is allowed per application. Please either delete the current loan in process or begin a new application for another loan.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction 
+              onClick={() => setNewLoanConflictDialog(false)}
+              data-testid="button-close-loan-conflict"
+            >
+              OK
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
