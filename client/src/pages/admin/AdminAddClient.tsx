@@ -20034,7 +20034,7 @@ export default function AdminAddClient() {
                           <Input
                             id="bbb-rateLockDuration"
                             type="text"
-                            placeholder="Enter rate lock duration"
+                            placeholder=""
                             {...form.register("bbb.rateLockDuration")}
                             data-testid="input-bbb-rateLockDuration"
                           />
