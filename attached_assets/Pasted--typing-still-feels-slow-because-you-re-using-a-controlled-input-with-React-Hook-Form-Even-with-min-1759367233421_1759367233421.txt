@@ -1,0 +1,58 @@
+ typing still feels slow because you're using a controlled input with React Hook Form. Even with minimal formatting logic, each keystroke triggers a re-render and state update, which can cause input lag in some setups—especially if your form or parent component is complex or has many fields.
+
+Here are advanced steps to further improve typing speed for your dollar entry field:
+
+1. Use Uncontrolled Input with register
+For fastest typing, use an uncontrolled input (with register)—especially if you don’t need every keystroke in your React state. This limits re-renders and React logic per keypress.
+
+jsx
+<Input
+  {...form.register("newLoan.loanAmount")}
+  type="text"
+  inputMode="numeric"
+  pattern="[0-9]*"
+  placeholder="0"
+  onBlur={(e) => {
+    const digits = e.target.value.replace(/[^\d]/g, "");
+    const formatted = digits ? Number(digits).toLocaleString() : "";
+    form.setValue("newLoan.loanAmount", formatted);
+  }}
+  className="..."
+  data-testid="input-newLoan-loanAmount"
+/>
+Typing speed will be near-native because React isn’t controlling the value.
+
+You can still run formatting/validation onBlur.
+
+2. Minimize State Scope
+If you must use Controller, memoize components aggressively so other fields don't re-render. Consider lifting other state out of high-level form scope, or use libraries like React.memo, useCallback, and useMemo for subtree components that don’t need live updates.
+
+3. Debounce Expensive Updates
+If you run calculations or API calls, debounce them—never process on every keystroke.
+
+For simple input, this isn’t needed, but for expensive logic or async actions, it matters.
+
+4. Performance Profiling
+Use Chrome DevTools "Performance" and React’s Profiler to:
+
+Find unnecessary re-renders caused by parents or siblings (the most common root for input lag).
+
+Use profiling tools to check how many renders occur per keystroke.
+
+5. Avoid Formatting During Typing
+Only format on blur (as you’re doing). Avoid logic like converting to number or commas except onBlur.
+
+6. Quick Fix Recap (Controlled Input)
+If you want a controlled field with Controller, keep your onChange lightweight—just digits:
+
+jsx
+onChange={(e) => field.onChange(e.target.value.replace(/[^\d]/g, ""))}
+onBlur={(e) => {
+  const digits = e.target.value.replace(/[^\d]/g, "");
+  const formatted = digits ? Number(digits).toLocaleString() : "";
+  form.setValue("newLoan.loanAmount", formatted);
+}}
+value={field.value}
+If lag persists, switch to uncontrolled.
+
+Or, move field outside expensive parents, so only its subtree updates.
