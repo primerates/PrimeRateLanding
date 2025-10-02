@@ -20483,6 +20483,65 @@ export default function AdminAddClient() {
                       />
                     </div>
                   </div>
+                  
+                  {/* Row 3: Loan Start Date, Loan Balance */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="abc-loanStartDate">Loan Start Date</Label>
+                      <Input
+                        id="abc-loanStartDate"
+                        value={form.watch('abc.loanStartDate') || ''}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, '');
+                          let formatted = '';
+                          if (value.length > 0) {
+                            formatted = value.substring(0, 2);
+                            if (value.length > 2) {
+                              formatted += '/' + value.substring(2, 4);
+                              if (value.length > 4) {
+                                formatted += '/' + value.substring(4, 8);
+                              }
+                            }
+                          }
+                          form.setValue('abc.loanStartDate', formatted);
+                        }}
+                        placeholder="MM/DD/YYYY"
+                        maxLength={10}
+                        data-testid="input-abc-loanStartDate"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="abc-loanBalanceRow3">Loan Balance</Label>
+                      <Controller
+                        control={form.control}
+                        name="abc.loanBalanceRow3"
+                        defaultValue=""
+                        render={({ field }) => {
+                          const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                          const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                          
+                          return (
+                            <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                              <span className="text-muted-foreground text-sm">$</span>
+                              <Input
+                                id="abc-loanBalanceRow3"
+                                type="text"
+                                placeholder="0"
+                                value={displayValue}
+                                onChange={(e) => {
+                                  const value = e.target.value.replace(/[^\d]/g, '');
+                                  field.onChange(value);
+                                }}
+                                className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                                data-testid="input-abc-loanBalanceRow3"
+                              />
+                            </div>
+                          );
+                        }}
+                      />
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
 
