@@ -20666,6 +20666,66 @@ export default function AdminAddClient() {
                         }}
                       />
                     </div>
+                    
+                    <div className="space-y-2 md:col-span-3">
+                      <Label htmlFor="abc-attachedToProperty">Attached to Property</Label>
+                      <Controller
+                        control={form.control}
+                        name="abc.attachedToProperty"
+                        render={({ field }) => (
+                          <Select 
+                            value={field.value}
+                            onValueChange={(value) => {
+                              field.onChange(value);
+                            }}
+                          >
+                            <SelectTrigger data-testid="select-abc-attachedToProperty">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select">Select</SelectItem>
+                              {(() => {
+                                const properties = form.watch('property.properties') || [];
+                                return properties
+                                  .filter((property: any) => property.use !== 'home-purchase' && (property.address?.street || property.use === 'primary'))
+                                  .map((property: any, index: number) => {
+                                    const address = property.address;
+                                    const streetAddress = address?.street;
+                                    const city = address?.city;
+                                    const state = address?.state;
+                                    const zipCode = address?.zip;
+                                    
+                                    let displayText;
+                                    
+                                    if (property.use === 'primary' && !streetAddress) {
+                                      displayText = 'Primary Residence';
+                                    } else {
+                                      displayText = streetAddress || 'Property';
+                                      if (city && state) {
+                                        displayText += `, ${city}, ${state}`;
+                                      } else if (city) {
+                                        displayText += `, ${city}`;
+                                      } else if (state) {
+                                        displayText += `, ${state}`;
+                                      }
+                                      if (zipCode) {
+                                        displayText += ` ${zipCode}`;
+                                      }
+                                    }
+                                    
+                                    return (
+                                      <SelectItem key={`property-${property.id}`} value={property.id}>
+                                        {displayText}
+                                      </SelectItem>
+                                    );
+                                  });
+                              })()}
+                              <SelectItem value="Other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                    </div>
                   </div>
                 </CardContent>
               </Card>
