@@ -18037,7 +18037,7 @@ export default function AdminAddClient() {
                         }}
                         data-testid="circle-1"
                       >
-                        ABC
+                        Refinance - New Loan
                       </div>
                     </div>
                   </div>
@@ -18189,7 +18189,7 @@ export default function AdminAddClient() {
                           data-testid="checkbox-property-abc-loan-tab"
                         />
                         <Label htmlFor="property-type-abc-loan-tab" className="font-medium text-black">
-                          ABC
+                          Refinance - New Loan
                         </Label>
                       </div>
 
@@ -18201,7 +18201,7 @@ export default function AdminAddClient() {
                           data-testid="checkbox-property-bbb-loan-tab"
                         />
                         <Label htmlFor="property-type-bbb-loan-tab" className="font-medium text-black">
-                          BBB
+                          Purchase - New Loan
                         </Label>
                       </div>
 
@@ -18329,7 +18329,7 @@ export default function AdminAddClient() {
               <Card className="transition-all duration-700 border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <CardTitle>ABC</CardTitle>
+                    <CardTitle>Refinance - New Loan</CardTitle>
                     <div className="flex items-center gap-2">
                       {/* Remove Button */}
                       <Button
@@ -18342,7 +18342,7 @@ export default function AdminAddClient() {
                         }}
                         className="hover:bg-red-500 hover:text-white"
                         data-testid="button-remove-abc"
-                        title="Remove ABC Card"
+                        title="Remove Refinance - New Loan Card"
                       >
                         <Minus className="h-4 w-4 mr-2" />
                         Remove
@@ -19140,7 +19140,7 @@ export default function AdminAddClient() {
               <Card className="transition-all duration-700 border-l-4 border-l-cyan-500 hover:border-cyan-500 focus-within:border-cyan-500 transition-colors duration-200">
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <CardTitle>BBB</CardTitle>
+                    <CardTitle>Purchase - New Loan</CardTitle>
                     <div className="flex items-center gap-2">
                       {/* Remove Button */}
                       <Button
@@ -19153,7 +19153,7 @@ export default function AdminAddClient() {
                         }}
                         className="hover:bg-red-500 hover:text-white"
                         data-testid="button-remove-bbb"
-                        title="Remove BBB Card"
+                        title="Remove Purchase - New Loan Card"
                       >
                         <Minus className="h-4 w-4 mr-2" />
                         Remove
