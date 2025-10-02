@@ -19279,7 +19279,7 @@ export default function AdminAddClient() {
               </Card>
 
               {/* ABC Card */}
-              <Card className="transition-all duration-700">
+              <Card className="transition-all duration-700 border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle>ABC</CardTitle>
@@ -20120,7 +20120,7 @@ export default function AdminAddClient() {
               </Card>
 
               {/* BBB Card */}
-              <Card className="transition-all duration-700">
+              <Card className="transition-all duration-700 border-l-4 border-l-cyan-500 hover:border-cyan-500 focus-within:border-cyan-500 transition-colors duration-200">
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle>BBB</CardTitle>
