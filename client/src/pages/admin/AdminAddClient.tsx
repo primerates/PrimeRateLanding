@@ -865,19 +865,6 @@ export default function AdminAddClient() {
       });
     }
     
-    // Check purchase loan
-    const purchaseLoanAttached = form.watch('purchaseLoan.attachedToProperty');
-    if (purchaseLoanAttached === propertyId) {
-      form.setValue('purchaseLoan.propertyAddress', {
-        street: propertyAddress.street || '',
-        unit: propertyAddress.unit || '',
-        city: propertyAddress.city || '',
-        state: propertyAddress.state || '',
-        zipCode: propertyAddress.zip || '',
-        county: propertyAddress.county || ''
-      });
-    }
-    
     // Check all additional loans (loan3, loan4, loan5, etc.)
     additionalLoans.forEach(loan => {
       const additionalLoanAttached = getDyn(`${loan.id}.attachedToProperty`);
@@ -914,8 +901,6 @@ export default function AdminAddClient() {
   const [showSecondLoanCardAnimation, setShowSecondLoanCardAnimation] = useState<{[key: string]: boolean}>({});
   // Animation state for third loan card grey box roll-up
   const [showThirdLoanCardAnimation, setShowThirdLoanCardAnimation] = useState<{[key: string]: boolean}>({});
-  // Animation state for purchase loan card grey box roll-up
-  const [showPurchaseLoanCardAnimation, setShowPurchaseLoanCardAnimation] = useState<{[key: string]: boolean}>({});
   // Animation state for revert icon rotation
   const [showRevertAnimation, setShowRevertAnimation] = useState(false);
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
@@ -927,8 +912,6 @@ export default function AdminAddClient() {
   const [isSecondLoanOpen, setIsSecondLoanOpen] = useState(true);
   const [showThirdLoan, setShowThirdLoan] = useState(false);
   const [isThirdLoanOpen, setIsThirdLoanOpen] = useState(true);
-  const [showPurchaseLoan, setShowPurchaseLoan] = useState(false);
-  const [isPurchaseLoanOpen, setIsPurchaseLoanOpen] = useState(true);
   const [additionalLoans, setAdditionalLoans] = useState<Array<{id: string, isOpen: boolean}>>([]);
   const [isAbcCardOpen, setIsAbcCardOpen] = useState(true);
   const [isBbbCardOpen, setIsBbbCardOpen] = useState(true);
@@ -1376,7 +1359,6 @@ export default function AdminAddClient() {
   const [thirdLoanCardStates, setThirdLoanCardStates] = useState<Record<string, boolean>>({});
   
   // Purchase Loan card collapsible state (per-card state management)
-  const [purchaseLoanCardStates, setPurchaseLoanCardStates] = useState<Record<string, boolean>>({});
   
   // Borrower Employer cards state management
   const [borrowerEmployerCards, setBorrowerEmployerCards] = useState<string[]>([]);
@@ -1441,13 +1423,6 @@ export default function AdminAddClient() {
     isDefaultCard: boolean | null; // null = not selected, true = default card created
   }>>({});
 
-  // Purchase Loan cards state management
-  const [purchaseLoanCards, setPurchaseLoanCards] = useState<string[]>([]);
-  
-  // Purchase Loan card data state
-  const [purchaseLoanData, setPurchaseLoanData] = useState<Record<string, {
-    isDefaultCard: boolean | null; // null = not selected, true = default card created
-  }>>({});
   
   // Employment dates state for each card
   const [employmentDates, setEmploymentDates] = useState<Record<string, {
@@ -1517,11 +1492,6 @@ export default function AdminAddClient() {
     cardId: string;
   }>({ isOpen: false, cardId: '' });
 
-  // Delete confirmation dialog state for Purchase Loan cards
-  const [deletePurchaseLoanDialog, setDeletePurchaseLoanDialog] = useState<{
-    isOpen: boolean;
-    cardId: string;
-  }>({ isOpen: false, cardId: '' });
 
   // Delete confirmation dialog state for Borrower Self-Employment
   const [deleteSelfEmploymentDialog, setDeleteSelfEmploymentDialog] = useState<{
@@ -1809,34 +1779,6 @@ export default function AdminAddClient() {
   // Co-Borrower warning dialog state
   const [coBorrowerWarningDialog, setCoBorrowerWarningDialog] = useState(false);
 
-  // Purchase Loan - Borrower Credit Scores popup dialog state
-  const [purchaseBorrowerCreditScoresDialog, setPurchaseBorrowerCreditScoresDialog] = useState({
-    isOpen: false,
-    experian: '',
-    midFico: '',
-    equifax: '',
-    transunion: ''
-  });
-
-  // Purchase Loan - Co-Borrower Credit Scores popup dialog state
-  const [purchaseCoBorrowerCreditScoresDialog, setPurchaseCoBorrowerCreditScoresDialog] = useState({
-    isOpen: false,
-    experian: '',
-    midFico: '',
-    equifax: '',
-    transunion: ''
-  });
-
-  // Purchase Loan - Co-Borrower warning dialog state
-  const [purchaseCoBorrowerWarningDialog, setPurchaseCoBorrowerWarningDialog] = useState(false);
-
-  // Purchase Loan toggle states
-  const [purchaseLoanCashOutType, setPurchaseLoanCashOutType] = useState<'cash-out' | 'benefits-summary'>('cash-out');
-  const [purchaseLoanDebtPayOffType, setPurchaseLoanDebtPayOffType] = useState<'total-debt-payoff' | 'total-debt-payments'>('total-debt-payoff');
-  const [purchaseLoanTermType, setPurchaseLoanTermType] = useState<'dropdown' | 'manual'>('dropdown');
-  const [purchaseLoanFicoType, setPurchaseLoanFicoType] = useState<'mid-fico' | 'borrower-scores' | 'co-borrower-scores'>('mid-fico');
-  const [purchaseLoanCreditType, setPurchaseLoanCreditType] = useState<'lender' | 'broker'>('lender');
-
   // ABC card toggle states (Migrated from Brand New Loan - Refinance)
   const [abcFicoType, setAbcFicoType] = useState<'mid-fico' | 'borrower-scores' | 'co-borrower-scores'>('mid-fico');
 
@@ -1860,120 +1802,6 @@ export default function AdminAddClient() {
         case 'insurance-only': return 'property-tax-only';
         case 'property-tax-only': return 'tax-insurance';
         default: return 'tax-insurance';
-      }
-    });
-  };
-
-  // Purchase Loan functions
-  const getPurchaseLoanCashOutLabel = () => {
-    switch (purchaseLoanCashOutType) {
-      case 'cash-out': return 'Cash Out Amount';
-      case 'benefits-summary': return 'Benefits Summary';
-      default: return 'Cash Out Amount';
-    }
-  };
-
-  const cyclePurchaseLoanCashOutType = () => {
-    setPurchaseLoanCashOutType(current => {
-      switch (current) {
-        case 'cash-out': return 'benefits-summary';
-        case 'benefits-summary': return 'cash-out';
-        default: return 'cash-out';
-      }
-    });
-  };
-
-  const getPurchaseLoanDebtPayOffLabel = () => {
-    switch (purchaseLoanDebtPayOffType) {
-      case 'total-debt-payoff': return 'Total Debt Pay Off';
-      case 'total-debt-payments': return 'Total Debt Pay Off Payments';
-      default: return 'Total Debt Pay Off';
-    }
-  };
-
-  const cyclePurchaseLoanDebtPayOffType = () => {
-    setPurchaseLoanDebtPayOffType(current => {
-      switch (current) {
-        case 'total-debt-payoff': return 'total-debt-payments';
-        case 'total-debt-payments': return 'total-debt-payoff';
-        default: return 'total-debt-payoff';
-      }
-    });
-  };
-
-  const getPurchaseLoanTermLabel = () => {
-    return 'Loan Term';
-  };
-
-  const cyclePurchaseLoanTermType = () => {
-    setPurchaseLoanTermType(current => {
-      switch (current) {
-        case 'dropdown': return 'manual';
-        case 'manual': return 'dropdown';
-        default: return 'dropdown';
-      }
-    });
-  };
-
-  // Calculate Mid FICO value for Purchase Loan based on borrower and co-borrower scores
-  const getPurchaseCalculatedMidFico = () => {
-    const borrowerMidFico = purchaseBorrowerCreditScoresDialog.midFico;
-    const coBorrowerMidFico = purchaseCoBorrowerCreditScoresDialog.midFico;
-
-    // If no Co-Borrower, return Borrower Mid FICO value or "Pending"
-    if (!hasCoBorrower) {
-      return borrowerMidFico || "Pending";
-    }
-
-    // If Co-Borrower exists, both scores must be present to calculate
-    if (borrowerMidFico && coBorrowerMidFico) {
-      const borrowerScore = parseInt(borrowerMidFico);
-      const coBorrowerScore = parseInt(coBorrowerMidFico);
-      
-      // Return the lower value
-      return Math.min(borrowerScore, coBorrowerScore).toString();
-    }
-
-    // If either score is missing, return "Pending"
-    return "Pending";
-  };
-
-  // Purchase Loan FICO label and type cycling functions
-  const getPurchaseLoanFicoLabel = () => {
-    switch (purchaseLoanFicoType) {
-      case 'mid-fico': return 'Mid FICO';
-      case 'borrower-scores': return 'Borrower Credit Scores';
-      case 'co-borrower-scores': return 'Co-Borrower Credit Scores';
-      default: return 'Mid FICO';
-    }
-  };
-
-  const cyclePurchaseLoanFicoType = () => {
-    setPurchaseLoanFicoType(current => {
-      switch (current) {
-        case 'mid-fico': return 'borrower-scores';
-        case 'borrower-scores': return 'co-borrower-scores';
-        case 'co-borrower-scores': return 'mid-fico';
-        default: return 'mid-fico';
-      }
-    });
-  };
-
-  // Purchase Loan Credit label and type cycling functions
-  const getPurchaseLoanCreditLabel = () => {
-    switch (purchaseLoanCreditType) {
-      case 'lender': return 'Lender Credit';
-      case 'broker': return 'Broker Credit';
-      default: return 'Lender Credit';
-    }
-  };
-
-  const cyclePurchaseLoanCreditType = () => {
-    setPurchaseLoanCreditType(current => {
-      switch (current) {
-        case 'lender': return 'broker';
-        case 'broker': return 'lender';
-        default: return 'lender';
       }
     });
   };
@@ -4077,92 +3905,6 @@ export default function AdminAddClient() {
                   </div>
                 </CardContent>
               </Card>
-            </CardContent>
-          </CollapsibleContent>
-        </Collapsible>
-      </Card>
-    );
-  };
-
-  // PurchaseLoanCard component - Purchase loan card
-  const PurchaseLoanCard = ({ 
-    idPrefix = '', 
-    borderVariant, 
-    isOpen, 
-    setIsOpen, 
-    onRemove, 
-    onAutoCopyAddress,
-    formInstance 
-  }: {
-    idPrefix?: string;
-    borderVariant: 'blue' | 'none';
-    isOpen: boolean;
-    setIsOpen: (open: boolean) => void;
-    onRemove?: () => void;
-    onAutoCopyAddress?: () => void;
-    formInstance?: any;
-  }) => {
-    const contextForm = useFormContext();
-    const targetForm = formInstance || contextForm;
-    
-    // State for property address collapse
-    const [isPropertyAddressOpen, setIsPropertyAddressOpen] = useState(true);
-    const attachedToPropertyBinding = useSelectFieldBinding('purchaseLoan.attachedToProperty', idPrefix, targetForm);
-    
-    // Payment field bindings - optimized for performance
-    const currentRateBinding = useFieldBinding('purchaseLoan.currentRate', idPrefix, targetForm);
-    const totalMonthlyPaymentBinding = useFieldBinding('purchaseLoan.totalMonthlyPayment', idPrefix, targetForm);
-    
-    // Property address bindings
-    const propertyStreetBinding = useFieldBinding('purchaseLoan.propertyAddress.street', idPrefix, targetForm);
-    const propertyUnitBinding = useFieldBinding('purchaseLoan.propertyAddress.unit', idPrefix, targetForm);
-    const propertyCityBinding = useFieldBinding('purchaseLoan.propertyAddress.city', idPrefix, targetForm);
-    const propertyStateBinding = useSelectFieldBinding('purchaseLoan.propertyAddress.state', idPrefix, targetForm);
-    const propertyZipBinding = useFieldBinding('purchaseLoan.propertyAddress.zipCode', idPrefix, targetForm);
-    const propertyCountyBinding = useFieldBinding('purchaseLoan.propertyAddress.county', idPrefix, targetForm);
-    
-    const cardClassName = borderVariant === 'blue' ? 'border-l-4 border-l-cyan-500 hover:border-cyan-500 focus-within:border-cyan-500 transition-colors duration-200' : '';
-    
-    return (
-      <Card className={cardClassName}>
-        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>New Loan - Purchase</CardTitle>
-              <div className="flex items-center gap-2">
-                
-                {/* Remove Button */}
-                {onRemove && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={onRemove}
-                    className="hover:bg-red-500 hover:text-white"
-                    data-testid="button-remove-purchase-loan"
-                    title="Remove Purchase Loan"
-                  >
-                    <Minus className="h-4 w-4 mr-2" />
-                    Remove
-                  </Button>
-                )}
-                
-                <CollapsibleTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="hover:bg-orange-500 hover:text-white" 
-                    data-testid={`button-toggle-purchase-loan-${idPrefix}`}
-                    title={isOpen ? 'Minimize' : 'Expand'}
-                  >
-                    {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                  </Button>
-                </CollapsibleTrigger>
-              </div>
-            </div>
-          </CardHeader>
-          <CollapsibleContent>
-            <CardContent className="space-y-6 pt-[1.7rem]">
             </CardContent>
           </CollapsibleContent>
         </Collapsible>
@@ -6401,103 +6143,6 @@ export default function AdminAddClient() {
     setDeleteCurrentThirdLoanDialog({ isOpen: false, cardId: '' });
   };
 
-
-  // Handle purchase loan type change
-  const handlePurchaseLoanTypeChange = (checked: boolean) => {
-    if (!checked) {
-      // Allow unchecking - remove all Purchase Loan cards
-      const hasCards = (purchaseLoanCards || []).length > 0;
-      
-      if (hasCards) {
-        // Remove all Purchase Loan cards when unchecked
-        setPurchaseLoanCards([]);
-        setPurchaseLoanData({});
-        setPurchaseLoanCardStates({});
-        setShowPurchaseLoan(false);
-        setCurrentNewLoanType(null);
-        
-        // Clear any Purchase Loan form data
-        form.setValue('purchaseLoan', undefined);
-        return;
-      }
-    } else {
-      // When checking, auto-create default loan card
-      const hasCards = (purchaseLoanCards || []).length > 0;
-      
-      // Only create default loan card if none exist yet
-      if (!hasCards) {
-        // Generate a unique ID for the default loan card
-        const newLoanId = `purchase-loan-${Date.now()}`;
-        
-        // Set the loan cards state
-        setPurchaseLoanCards([newLoanId]);
-        
-        // Initialize data state for default card
-        setPurchaseLoanData(prev => ({ 
-          ...prev, 
-          [newLoanId]: { isDefaultCard: true } 
-        }));
-        
-        // Initialize per-card collapsible state (auto-expand like Property cards)
-        setPurchaseLoanCardStates(prev => ({ ...prev, [newLoanId]: true }));
-        
-        // Auto-expand the loan card
-        setShowPurchaseLoan(true);
-        
-        // Set current loan type to purchase
-        setCurrentNewLoanType('purchase');
-        
-        // Auto-fill Purchase Loan specific values
-        form.setValue('purchaseLoan.loanPurpose', 'purchase');
-        form.setValue('purchaseLoan.cashOutAmount', 'Not Applicable');
-        form.setValue('purchaseLoan.totalDebtPayOff', 'Not Applicable');
-        
-        // Auto-attach to subject property if one exists
-        const properties = form.watch('property.properties') || [];
-        const subjectProperty = properties.find(p => p.isSubject);
-        if (subjectProperty?.id) {
-          form.setValue('purchaseLoan.attachedToProperty', subjectProperty.id);
-        }
-        
-        // Trigger animation for newly created loan card grey box
-        setTimeout(() => {
-          const animationKey = 'purchase-card-0-';
-          setShowPurchaseLoanCardAnimation(prev => ({ ...prev, [animationKey]: true }));
-          setTimeout(() => {
-            setShowPurchaseLoanCardAnimation(prev => ({ ...prev, [animationKey]: false }));
-          }, 800);
-        }, 200);
-      }
-    }
-  };
-
-  // Handle removing purchase loan cards (new system)
-  const removePurchaseLoanCard = (cardId: string) => {
-    // Remove the specific card from cards array
-    setPurchaseLoanCards(prev => prev.filter(id => id !== cardId));
-    
-    // Remove data state for this card
-    setPurchaseLoanData(prev => {
-      const { [cardId]: _, ...rest } = prev;
-      return rest;
-    });
-    
-    // Remove per-card collapsible state
-    setPurchaseLoanCardStates(prev => {
-      const { [cardId]: _, ...rest } = prev;
-      return rest;
-    });
-    
-    // If no cards remain, hide the purchase loan section and clear loan type
-    const remainingCards = purchaseLoanCards.filter(id => id !== cardId);
-    if (remainingCards.length === 0) {
-      setShowPurchaseLoan(false);
-      setCurrentNewLoanType(null);
-    }
-    
-    // Close the dialog
-    setDeletePurchaseLoanDialog({ isOpen: false, cardId: '' });
-  };
 
   // Property type management functions
   const addPropertyType = (type: 'primary' | 'second-home' | 'investment' | 'home-purchase') => {
@@ -14449,16 +14094,11 @@ export default function AdminAddClient() {
                                         const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
                                         const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
                                         
-                                        // Check purchase loan
-                                        const purchaseLoanAttached = form.watch('purchaseLoan.attachedToProperty');
-                                        const isPurchaseLoanAttached = Boolean(purchaseLoanAttached && currentProperty?.id && purchaseLoanAttached === currentProperty.id);
-                                        
                                         // Count active loans
                                         let activeLoansCount = 0;
                                         if (isCurrentLoanAttached) activeLoansCount++;
                                         if (isSecondLoanAttached) activeLoansCount++;
                                         if (isThirdLoanAttached) activeLoansCount++;
-                                        if (isPurchaseLoanAttached) activeLoansCount++;
                                         
                                         return activeLoansCount > 0 ? "default" : "outline";
                                       })()}
@@ -14482,16 +14122,11 @@ export default function AdminAddClient() {
                                         const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
                                         const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
                                         
-                                        // Check purchase loan
-                                        const purchaseLoanAttached = form.watch('purchaseLoan.attachedToProperty');
-                                        const isPurchaseLoanAttached = Boolean(purchaseLoanAttached && currentProperty?.id && purchaseLoanAttached === currentProperty.id);
-                                        
                                         // Count active loans
                                         let activeLoansCount = 0;
                                         if (isCurrentLoanAttached) activeLoansCount++;
                                         if (isSecondLoanAttached) activeLoansCount++;
                                         if (isThirdLoanAttached) activeLoansCount++;
-                                        if (isPurchaseLoanAttached) activeLoansCount++;
                                         
                                         return activeLoansCount > 0 
                                           ? { backgroundColor: '#d1d5db', borderColor: '#d1d5db', color: '#374151' } 
@@ -14512,16 +14147,11 @@ export default function AdminAddClient() {
                                         const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
                                         const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
                                         
-                                        // Check purchase loan
-                                        const purchaseLoanAttached = form.watch('purchaseLoan.attachedToProperty');
-                                        const isPurchaseLoanAttached = Boolean(purchaseLoanAttached && currentProperty?.id && purchaseLoanAttached === currentProperty.id);
-                                        
                                         // Count active loans
                                         let activeLoansCount = 0;
                                         if (isCurrentLoanAttached) activeLoansCount++;
                                         if (isSecondLoanAttached) activeLoansCount++;
                                         if (isThirdLoanAttached) activeLoansCount++;
-                                        if (isPurchaseLoanAttached) activeLoansCount++;
                                         
                                         return activeLoansCount > 0 
                                           ? "w-24 text-white border-2" 
@@ -14545,16 +14175,11 @@ export default function AdminAddClient() {
                                         const thirdLoanAttached = form.watch('thirdLoan.attachedToProperty');
                                         const isThirdLoanAttached = Boolean(thirdLoanAttached && currentProperty?.id && thirdLoanAttached === currentProperty.id);
                                         
-                                        // Check purchase loan
-                                        const purchaseLoanAttached = form.watch('purchaseLoan.attachedToProperty');
-                                        const isPurchaseLoanAttached = Boolean(purchaseLoanAttached && currentProperty?.id && purchaseLoanAttached === currentProperty.id);
-                                        
                                         // Count active loans
                                         let activeLoansCount = 0;
                                         if (isCurrentLoanAttached) activeLoansCount++;
                                         if (isSecondLoanAttached) activeLoansCount++;
                                         if (isThirdLoanAttached) activeLoansCount++;
-                                        if (isPurchaseLoanAttached) activeLoansCount++;
                                         
                                         return (
                                           <span>
@@ -14909,10 +14534,6 @@ export default function AdminAddClient() {
                                       const properties = form.watch('property.properties') || [];
                                       const currentProperty = actualPropertyIndex >= 0 ? properties[actualPropertyIndex] : null;
                                       
-                                      // Check purchase loan
-                                      const purchaseLoanAttached = form.watch('purchaseLoan.attachedToProperty');
-                                      const isPurchaseLoanAttached = Boolean(purchaseLoanAttached && currentProperty?.id && purchaseLoanAttached === currentProperty.id);
-                                      
                                       // Check current loan
                                       const currentLoanAttached = form.watch('currentLoan.attachedToProperty');
                                       const isCurrentLoanAttached = Boolean(currentLoanAttached && currentProperty?.id && currentLoanAttached === currentProperty.id);
@@ -14932,32 +14553,10 @@ export default function AdminAddClient() {
                                         return Boolean(attachedPropertyId && currentProperty?.id && attachedPropertyId === currentProperty.id);
                                       });
                                       
-                                      const hasAnyLoanAttached = isPurchaseLoanAttached || isCurrentLoanAttached || isSecondLoanAttached || isThirdLoanAttached || isOtherAdditionalLoanAttached;
+                                      const hasAnyLoanAttached = isCurrentLoanAttached || isSecondLoanAttached || isThirdLoanAttached || isOtherAdditionalLoanAttached;
                                       
                                       return (
                                         <div className="flex items-center gap-1">
-                                          <div 
-                                            className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center ${
-                                              isPurchaseLoanAttached
-                                                ? 'bg-cyan-500 border-cyan-500 hover:bg-cyan-600'
-                                                : 'bg-gray-200 border-gray-300'
-                                            }`}
-                                            style={{
-                                              backgroundColor: isPurchaseLoanAttached ? '#06b6d4' : '#e5e7eb',
-                                              borderColor: isPurchaseLoanAttached ? '#06b6d4' : '#d1d5db'
-                                            }}
-                                            onClick={() => {
-                                              if (isPurchaseLoanAttached) {
-                                                console.log('View Purchase Loan Details');
-                                              }
-                                            }}
-                                            title={isPurchaseLoanAttached ? "View Purchase Loan Details" : ""}
-                                            data-testid={`indicator-secured-loan-purchase-${propertyId}`}
-                                          >
-                                            {isPurchaseLoanAttached && (
-                                              <span className="text-xs font-semibold text-white">P</span>
-                                            )}
-                                          </div>
                                           <div 
                                             className={`w-4 h-4 rounded-full border-2 cursor-pointer flex items-center justify-center ${
                                               isCurrentLoanAttached
@@ -18402,10 +18001,8 @@ export default function AdminAddClient() {
                     <Label className="text-lg font-semibold">Loan Purpose</Label>
                     <div className="mt-24">
                       <span className="text-muted-foreground" style={{ fontSize: '28px', color: '#1a3373', fontWeight: 'bold' }}>
-                        {/* Check Purchase Loan first, then ABC card */}
-                        {(purchaseLoanCards || []).length > 0 && form.watch('purchaseLoan.loanPurpose') === 'purchase'
-                          ? 'Purchase'
-                          : form.watch('abc.loanPurpose') && form.watch('abc.loanPurpose') !== 'select' 
+                        {/* Check ABC card */}
+                        {form.watch('abc.loanPurpose') && form.watch('abc.loanPurpose') !== 'select' 
                           ? form.watch('abc.loanPurpose') === 'rate-term' 
                             ? 'Rate & Term'
                             : form.watch('abc.loanPurpose') === 'cash-out'
@@ -18513,12 +18110,7 @@ export default function AdminAddClient() {
                         variant="ghost"
                         size="icon"
                         onClick={() => {
-                          // Expand all Purchase Loan cards
-                          const purchaseUpdates: Record<string, boolean> = {};
-                          (purchaseLoanCards || []).forEach(cardId => {
-                            purchaseUpdates[cardId] = true;
-                          });
-                          setPurchaseLoanCardStates(prev => ({ ...prev, ...purchaseUpdates }));
+                          // Expand all loan cards
                           
                           // Expand all Current Primary Loan cards
                           const primaryUpdates: Record<string, boolean> = {};
@@ -18554,12 +18146,7 @@ export default function AdminAddClient() {
                         variant="ghost"
                         size="icon"
                         onClick={() => {
-                          // Minimize all Purchase Loan cards
-                          const purchaseUpdates: Record<string, boolean> = {};
-                          (purchaseLoanCards || []).forEach(cardId => {
-                            purchaseUpdates[cardId] = false;
-                          });
-                          setPurchaseLoanCardStates(prev => ({ ...prev, ...purchaseUpdates }));
+                          // Minimize all loan cards
                           
                           // Minimize all Current Primary Loan cards
                           const primaryUpdates: Record<string, boolean> = {};
@@ -20352,54 +19939,6 @@ export default function AdminAddClient() {
                 </CollapsibleContent>
               </Card>
               </Collapsible>
-
-              {/* Purchase Loan Cards - Dynamic multiple card system */}
-              {(purchaseLoanCards || []).map((cardId, index) => {
-                const isOpen = purchaseLoanCardStates[cardId] ?? true; // Per-card state like Property cards
-                
-                return (
-                  <PurchaseLoanCard
-                    key={cardId}
-                    idPrefix={`purchase-card-${index}-`}
-                    borderVariant="blue"
-                    isOpen={isOpen}
-                    setIsOpen={(open) => {
-                      setPurchaseLoanCardStates(prev => ({ ...prev, [cardId]: open }));
-                      // Trigger grey box animation when card is opened (copied from Brand New Loan)
-                      if (open) {
-                        const animationKey = `purchase-card-${index}-`;
-                        setShowPurchaseLoanCardAnimation(prev => ({ ...prev, [animationKey]: true }));
-                        setTimeout(() => {
-                          setShowPurchaseLoanCardAnimation(prev => ({ ...prev, [animationKey]: false }));
-                        }, 800);
-                      }
-                    }}
-                    onRemove={() => {
-                      setDeletePurchaseLoanDialog({
-                        isOpen: true,
-                        cardId: cardId
-                      });
-                    }}
-                    onAutoCopyAddress={() => {
-                      // Auto-copy property address to Purchase Loan (similar to other loans)
-                      const properties = form.watch('property.properties') || [];
-                      const subjectProperty = properties.find(p => p.isSubject);
-                      if (subjectProperty?.address) {
-                        const address = subjectProperty.address;
-                        form.setValue('purchaseLoan.propertyAddress', {
-                          street: address.street || '',
-                          unit: address.unit || '',
-                          city: address.city || '',
-                          state: address.state || '',
-                          zipCode: address.zip || '',
-                          county: address.county || ''
-                        });
-                      }
-                    }}
-                    formInstance={form}
-                  />
-                );
-              })}
 
               {/* Current Primary Loan Cards - Render multiple cards like Property cards */}
               {(currentPrimaryLoanCards || []).map((cardId, index) => {
@@ -22228,33 +21767,6 @@ export default function AdminAddClient() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Delete Purchase Loan Card Confirmation Dialog */}
-      <AlertDialog open={deletePurchaseLoanDialog.isOpen} onOpenChange={(open) => !open && setDeletePurchaseLoanDialog({ isOpen: false, cardId: '' })}>
-        <AlertDialogContent data-testid="dialog-delete-purchase-loan">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Remove Purchase Loan</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to remove this Purchase Loan card? This will clear all entered data for this loan. This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel 
-              onClick={() => setDeletePurchaseLoanDialog({ isOpen: false, cardId: '' })}
-              data-testid="button-cancel-delete-purchase-loan"
-            >
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={() => removePurchaseLoanCard(deletePurchaseLoanDialog.cardId)}
-              data-testid="button-confirm-delete-purchase-loan"
-              className="bg-red-600 hover:bg-red-700"
-            >
-              Remove
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
       {/* Current Loan 1 Preview Modal */}
       <Dialog open={isCurrentLoanPreviewOpen} onOpenChange={setIsCurrentLoanPreviewOpen}>
         <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto" data-testid="dialog-current-loan-preview">
@@ -22647,327 +22159,6 @@ export default function AdminAddClient() {
             <Button
               onClick={() => setCoBorrowerWarningDialog(false)}
               data-testid="button-close-co-borrower-warning"
-              className="w-full"
-            >
-              OK
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Purchase Loan - Borrower Credit Scores Dialog */}
-      <Dialog open={purchaseBorrowerCreditScoresDialog.isOpen} onOpenChange={(open) => setPurchaseBorrowerCreditScoresDialog(prev => ({ ...prev, isOpen: open }))}>
-        <DialogContent className="max-w-xs" data-testid="dialog-purchase-borrower-credit-scores">
-          <DialogHeader>
-            <DialogTitle>Borrower Credit Scores</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-6">
-            <div className="space-y-2 mt-6">
-              <Label htmlFor="purchase-borrower-mid-fico" className="text-lg">Borrower Mid FICO</Label>
-              <div 
-                className="text-4xl font-bold text-blue-900 py-2"
-                data-testid="display-purchase-borrower-mid-fico"
-              >
-                {purchaseBorrowerCreditScoresDialog.midFico || "000"}
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="purchase-experian-score" className="text-green-600 font-medium text-lg">Experian</Label>
-              <Input
-                id="purchase-experian-score"
-                value={purchaseBorrowerCreditScoresDialog.experian}
-                onChange={(e) => {
-                  // Only allow numeric characters
-                  const numericValue = e.target.value.replace(/[^0-9]/g, '');
-                  const newValue = numericValue.slice(0, 3);
-                  setPurchaseBorrowerCreditScoresDialog(prev => {
-                    const updated = { ...prev, experian: newValue };
-                    // Calculate middle value automatically
-                    const scores = [
-                      parseInt(newValue) || 0,
-                      parseInt(updated.equifax) || 0,
-                      parseInt(updated.transunion) || 0
-                    ].filter(score => score > 0).sort((a, b) => a - b);
-                    
-                    if (scores.length === 3) {
-                      updated.midFico = scores[1].toString(); // Middle value
-                    } else if (scores.length === 2) {
-                      updated.midFico = 'Pending'; // Show "Pending" when only 2 fields filled
-                    } else if (scores.length === 1) {
-                      updated.midFico = scores[0].toString(); // Only one score
-                    } else {
-                      updated.midFico = '';
-                    }
-                    
-                    return updated;
-                  });
-                }}
-                placeholder="000"
-                maxLength={3}
-                pattern="[0-9]{3}"
-                data-testid="input-purchase-experian-score"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="purchase-equifax-score" className="text-purple-600 font-medium text-lg">Equifax</Label>
-              <Input
-                id="purchase-equifax-score"
-                value={purchaseBorrowerCreditScoresDialog.equifax}
-                onChange={(e) => {
-                  // Only allow numeric characters
-                  const numericValue = e.target.value.replace(/[^0-9]/g, '');
-                  const newValue = numericValue.slice(0, 3);
-                  setPurchaseBorrowerCreditScoresDialog(prev => {
-                    const updated = { ...prev, equifax: newValue };
-                    // Calculate middle value automatically
-                    const scores = [
-                      parseInt(updated.experian) || 0,
-                      parseInt(newValue) || 0,
-                      parseInt(updated.transunion) || 0
-                    ].filter(score => score > 0).sort((a, b) => a - b);
-                    
-                    if (scores.length === 3) {
-                      updated.midFico = scores[1].toString(); // Middle value
-                    } else if (scores.length === 2) {
-                      updated.midFico = 'Pending'; // Show "Pending" when only 2 fields filled
-                    } else if (scores.length === 1) {
-                      updated.midFico = scores[0].toString(); // Only one score
-                    } else {
-                      updated.midFico = '';
-                    }
-                    
-                    return updated;
-                  });
-                }}
-                placeholder="000"
-                maxLength={3}
-                pattern="[0-9]{3}"
-                data-testid="input-purchase-equifax-score"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="purchase-transunion-score" className="text-orange-600 font-medium text-lg">Transunion</Label>
-              <Input
-                id="purchase-transunion-score"
-                value={purchaseBorrowerCreditScoresDialog.transunion}
-                onChange={(e) => {
-                  // Only allow numeric characters
-                  const numericValue = e.target.value.replace(/[^0-9]/g, '');
-                  const newValue = numericValue.slice(0, 3);
-                  setPurchaseBorrowerCreditScoresDialog(prev => {
-                    const updated = { ...prev, transunion: newValue };
-                    // Calculate middle value automatically
-                    const scores = [
-                      parseInt(updated.experian) || 0,
-                      parseInt(updated.equifax) || 0,
-                      parseInt(newValue) || 0
-                    ].filter(score => score > 0).sort((a, b) => a - b);
-                    
-                    if (scores.length === 3) {
-                      updated.midFico = scores[1].toString(); // Middle value
-                    } else if (scores.length === 2) {
-                      updated.midFico = 'Pending'; // Show "Pending" when only 2 fields filled
-                    } else if (scores.length === 1) {
-                      updated.midFico = scores[0].toString(); // Only one score
-                    } else {
-                      updated.midFico = '';
-                    }
-                    
-                    return updated;
-                  });
-                }}
-                placeholder="000"
-                maxLength={3}
-                pattern="[0-9]{3}"
-                data-testid="input-purchase-transunion-score"
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setPurchaseBorrowerCreditScoresDialog(prev => ({ ...prev, isOpen: false }))}
-              data-testid="button-cancel-purchase-credit-scores"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={() => {
-                // Here you can handle saving the scores to the form or wherever needed
-                setPurchaseBorrowerCreditScoresDialog(prev => ({ ...prev, isOpen: false }));
-              }}
-              data-testid="button-save-purchase-credit-scores"
-            >
-              Save
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Purchase Loan - Co-Borrower Credit Scores Dialog */}
-      <Dialog open={purchaseCoBorrowerCreditScoresDialog.isOpen} onOpenChange={(open) => setPurchaseCoBorrowerCreditScoresDialog(prev => ({ ...prev, isOpen: open }))}>
-        <DialogContent className="max-w-xs" data-testid="dialog-purchase-co-borrower-credit-scores">
-          <DialogHeader>
-            <DialogTitle>Co-Borrower Credit Scores</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-6">
-            <div className="space-y-2 mt-6">
-              <Label htmlFor="purchase-co-borrower-mid-fico" className="text-lg">Co-Borrower Mid FICO</Label>
-              <div 
-                className="text-4xl font-bold text-blue-900 py-2"
-                data-testid="display-purchase-co-borrower-mid-fico"
-              >
-                {purchaseCoBorrowerCreditScoresDialog.midFico || "000"}
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="purchase-co-experian-score" className="text-green-600 font-medium text-lg">Experian</Label>
-              <Input
-                id="purchase-co-experian-score"
-                value={purchaseCoBorrowerCreditScoresDialog.experian}
-                onChange={(e) => {
-                  // Only allow numeric characters
-                  const numericValue = e.target.value.replace(/[^0-9]/g, '');
-                  const newValue = numericValue.slice(0, 3);
-                  setPurchaseCoBorrowerCreditScoresDialog(prev => {
-                    const updated = { ...prev, experian: newValue };
-                    // Calculate middle value automatically
-                    const scores = [
-                      parseInt(newValue) || 0,
-                      parseInt(updated.equifax) || 0,
-                      parseInt(updated.transunion) || 0
-                    ].filter(score => score > 0).sort((a, b) => a - b);
-                    
-                    if (scores.length === 3) {
-                      updated.midFico = scores[1].toString(); // Middle value
-                    } else if (scores.length === 2) {
-                      updated.midFico = 'Pending'; // Show "Pending" when only 2 fields filled
-                    } else if (scores.length === 1) {
-                      updated.midFico = scores[0].toString(); // Only one score
-                    } else {
-                      updated.midFico = '';
-                    }
-                    
-                    return updated;
-                  });
-                }}
-                placeholder="000"
-                maxLength={3}
-                pattern="[0-9]{3}"
-                data-testid="input-purchase-co-experian-score"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="purchase-co-equifax-score" className="text-purple-600 font-medium text-lg">Equifax</Label>
-              <Input
-                id="purchase-co-equifax-score"
-                value={purchaseCoBorrowerCreditScoresDialog.equifax}
-                onChange={(e) => {
-                  // Only allow numeric characters
-                  const numericValue = e.target.value.replace(/[^0-9]/g, '');
-                  const newValue = numericValue.slice(0, 3);
-                  setPurchaseCoBorrowerCreditScoresDialog(prev => {
-                    const updated = { ...prev, equifax: newValue };
-                    // Calculate middle value automatically
-                    const scores = [
-                      parseInt(updated.experian) || 0,
-                      parseInt(newValue) || 0,
-                      parseInt(updated.transunion) || 0
-                    ].filter(score => score > 0).sort((a, b) => a - b);
-                    
-                    if (scores.length === 3) {
-                      updated.midFico = scores[1].toString(); // Middle value
-                    } else if (scores.length === 2) {
-                      updated.midFico = 'Pending'; // Show "Pending" when only 2 fields filled
-                    } else if (scores.length === 1) {
-                      updated.midFico = scores[0].toString(); // Only one score
-                    } else {
-                      updated.midFico = '';
-                    }
-                    
-                    return updated;
-                  });
-                }}
-                placeholder="000"
-                maxLength={3}
-                pattern="[0-9]{3}"
-                data-testid="input-purchase-co-equifax-score"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="purchase-co-transunion-score" className="text-orange-600 font-medium text-lg">Transunion</Label>
-              <Input
-                id="purchase-co-transunion-score"
-                value={purchaseCoBorrowerCreditScoresDialog.transunion}
-                onChange={(e) => {
-                  // Only allow numeric characters
-                  const numericValue = e.target.value.replace(/[^0-9]/g, '');
-                  const newValue = numericValue.slice(0, 3);
-                  setPurchaseCoBorrowerCreditScoresDialog(prev => {
-                    const updated = { ...prev, transunion: newValue };
-                    // Calculate middle value automatically
-                    const scores = [
-                      parseInt(updated.experian) || 0,
-                      parseInt(updated.equifax) || 0,
-                      parseInt(newValue) || 0
-                    ].filter(score => score > 0).sort((a, b) => a - b);
-                    
-                    if (scores.length === 3) {
-                      updated.midFico = scores[1].toString(); // Middle value
-                    } else if (scores.length === 2) {
-                      updated.midFico = 'Pending'; // Show "Pending" when only 2 fields filled
-                    } else if (scores.length === 1) {
-                      updated.midFico = scores[0].toString(); // Only one score
-                    } else {
-                      updated.midFico = '';
-                    }
-                    
-                    return updated;
-                  });
-                }}
-                placeholder="000"
-                maxLength={3}
-                pattern="[0-9]{3}"
-                data-testid="input-purchase-co-transunion-score"
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setPurchaseCoBorrowerCreditScoresDialog(prev => ({ ...prev, isOpen: false }))}
-              data-testid="button-cancel-purchase-co-credit-scores"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={() => {
-                // Here you can handle saving the scores to the form or wherever needed
-                setPurchaseCoBorrowerCreditScoresDialog(prev => ({ ...prev, isOpen: false }));
-              }}
-              data-testid="button-save-purchase-co-credit-scores"
-            >
-              Save
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Purchase Loan - Co-Borrower Warning Dialog */}
-      <Dialog open={purchaseCoBorrowerWarningDialog} onOpenChange={setPurchaseCoBorrowerWarningDialog}>
-        <DialogContent className="max-w-sm" data-testid="dialog-purchase-co-borrower-warning">
-          <DialogHeader>
-            <DialogTitle className="text-center">Co-Borrower Required</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <p className="text-center text-gray-600">
-              Please add the Co-Borrower to the application first.
-            </p>
-          </div>
-          <DialogFooter className="flex justify-center">
-            <Button
-              onClick={() => setPurchaseCoBorrowerWarningDialog(false)}
-              data-testid="button-close-purchase-co-borrower-warning"
               className="w-full"
             >
               OK
