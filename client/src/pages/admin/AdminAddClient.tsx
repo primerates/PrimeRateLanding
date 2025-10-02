@@ -1492,6 +1492,16 @@ export default function AdminAddClient() {
     cardId: string;
   }>({ isOpen: false, cardId: '' });
 
+  // Delete confirmation dialog state for ABC (Refinance - New Loan) card
+  const [deleteAbcDialog, setDeleteAbcDialog] = useState<{
+    isOpen: boolean;
+  }>({ isOpen: false });
+
+  // Delete confirmation dialog state for BBB (Purchase - New Loan) card
+  const [deleteBbbDialog, setDeleteBbbDialog] = useState<{
+    isOpen: boolean;
+  }>({ isOpen: false });
+
 
   // Delete confirmation dialog state for Borrower Self-Employment
   const [deleteSelfEmploymentDialog, setDeleteSelfEmploymentDialog] = useState<{
@@ -18391,10 +18401,8 @@ export default function AdminAddClient() {
                         variant="outline"
                         size="sm"
                         onClick={() => {
-                          // Clear ABC card data
-                          form.setValue("abc", {});
-                          // Close the card (this will uncheck the checkbox with animation)
-                          setIsAbcCardOpen(false);
+                          // Open confirmation dialog
+                          setDeleteAbcDialog({ isOpen: true });
                         }}
                         className="hover:bg-red-500 hover:text-white"
                         data-testid="button-remove-abc"
@@ -19204,10 +19212,8 @@ export default function AdminAddClient() {
                         variant="outline"
                         size="sm"
                         onClick={() => {
-                          // Clear BBB card data
-                          form.setValue("bbb", {});
-                          // Close the card (this will uncheck the checkbox with animation)
-                          setIsBbbCardOpen(false);
+                          // Open confirmation dialog
+                          setDeleteBbbDialog({ isOpen: true });
                         }}
                         className="hover:bg-red-500 hover:text-white"
                         data-testid="button-remove-bbb"
@@ -21328,6 +21334,74 @@ export default function AdminAddClient() {
                 removeCurrentPrimaryLoanCard(cardToDelete);
               }}
               data-testid="button-confirm-delete-current-primary-loan"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete ABC (Refinance - New Loan) Card Confirmation Dialog */}
+      <AlertDialog open={deleteAbcDialog.isOpen} onOpenChange={(open) => !open && setDeleteAbcDialog({ isOpen: false })}>
+        <AlertDialogContent data-testid="dialog-delete-abc">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Refinance - New Loan Card</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this refinance - new loan card? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteAbcDialog({ isOpen: false })}
+              data-testid="button-cancel-delete-abc"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                // Clear ABC card data
+                form.setValue("abc", {});
+                // Close the card (this will uncheck the checkbox with animation)
+                setIsAbcCardOpen(false);
+                // Close the dialog
+                setDeleteAbcDialog({ isOpen: false });
+              }}
+              data-testid="button-confirm-delete-abc"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete BBB (Purchase - New Loan) Card Confirmation Dialog */}
+      <AlertDialog open={deleteBbbDialog.isOpen} onOpenChange={(open) => !open && setDeleteBbbDialog({ isOpen: false })}>
+        <AlertDialogContent data-testid="dialog-delete-bbb">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Purchase - New Loan Card</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this purchase - new loan card? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setDeleteBbbDialog({ isOpen: false })}
+              data-testid="button-cancel-delete-bbb"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                // Clear BBB card data
+                form.setValue("bbb", {});
+                // Close the card (this will uncheck the checkbox with animation)
+                setIsBbbCardOpen(false);
+                // Close the dialog
+                setDeleteBbbDialog({ isOpen: false });
+              }}
+              data-testid="button-confirm-delete-bbb"
               className="bg-red-600 hover:bg-red-700"
             >
               Delete
