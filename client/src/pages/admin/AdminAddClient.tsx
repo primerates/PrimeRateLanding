@@ -18037,7 +18037,7 @@ export default function AdminAddClient() {
                         }}
                         data-testid="circle-1"
                       >
-                        Refinance - New Loan
+                        RNL
                       </div>
                     </div>
                   </div>
