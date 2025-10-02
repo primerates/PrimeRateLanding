@@ -20484,7 +20484,7 @@ export default function AdminAddClient() {
                     </div>
                   </div>
                   
-                  {/* Row 3: Rate Lock Date, Loan Start Date, Lender Credit */}
+                  {/* Row 3: Rate Lock Date, Rate Lock Expiration, Lender Credit/Broker Credit */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                     <div className="space-y-2">
                       <Label htmlFor="abc-rateLockDate">Rate Lock Date</Label>
@@ -20512,10 +20512,10 @@ export default function AdminAddClient() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="abc-loanStartDate">Loan Start Date</Label>
+                      <Label htmlFor="abc-rateLockExpiration">Rate Lock Expiration</Label>
                       <Input
-                        id="abc-loanStartDate"
-                        value={form.watch('abc.loanStartDate') || ''}
+                        id="abc-rateLockExpiration"
+                        value={form.watch('abc.rateLockExpiration') || ''}
                         onChange={(e) => {
                           const value = e.target.value.replace(/\D/g, '');
                           let formatted = '';
@@ -20528,16 +20528,32 @@ export default function AdminAddClient() {
                               }
                             }
                           }
-                          form.setValue('abc.loanStartDate', formatted);
+                          form.setValue('abc.rateLockExpiration', formatted);
                         }}
                         placeholder="MM/DD/YYYY"
                         maxLength={10}
-                        data-testid="input-abc-loanStartDate"
+                        data-testid="input-abc-rateLockExpiration"
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="abc-lenderCredit">Lender Credit</Label>
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="abc-lenderCredit" className="text-sm">
+                          {form.watch("abc.brokerCreditToggle") ? "Broker Credit" : "Lender Credit"}
+                        </Label>
+                        <Controller
+                          control={form.control}
+                          name="abc.brokerCreditToggle"
+                          defaultValue={false}
+                          render={({ field }) => (
+                            <Switch
+                              checked={!!field.value}
+                              onCheckedChange={field.onChange}
+                              data-testid="toggle-abc-brokerCredit"
+                            />
+                          )}
+                        />
+                      </div>
                       <Controller
                         control={form.control}
                         name="abc.lenderCredit"
