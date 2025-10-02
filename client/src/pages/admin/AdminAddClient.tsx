@@ -20547,7 +20547,7 @@ export default function AdminAddClient() {
               <div>
                 <h2 className="text-2xl font-semibold mb-6">Quote</h2>
                 
-                <Card className="bg-gray-100 mb-6">
+                <Card className="bg-gray-100 mb-6 hover:shadow-lg transition-shadow duration-300">
                   <CardContent className="pt-6 space-y-6">
                     {/* Client Row */}
                     <div className="grid grid-cols-[150px_1fr] items-center gap-8">
