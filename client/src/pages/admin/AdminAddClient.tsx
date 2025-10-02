@@ -913,8 +913,13 @@ export default function AdminAddClient() {
   const [showThirdLoan, setShowThirdLoan] = useState(false);
   const [isThirdLoanOpen, setIsThirdLoanOpen] = useState(true);
   const [additionalLoans, setAdditionalLoans] = useState<Array<{id: string, isOpen: boolean}>>([]);
-  const [isAbcCardOpen, setIsAbcCardOpen] = useState(true);
-  const [isBbbCardOpen, setIsBbbCardOpen] = useState(true);
+  
+  // Array-based states for New Refinance Loan and New Purchase Loan (like Existing Primary Loan)
+  const [newRefinanceLoanCards, setNewRefinanceLoanCards] = useState<string[]>([]);
+  const [newPurchaseLoanCards, setNewPurchaseLoanCards] = useState<string[]>([]);
+  const [newRefinanceLoanCardStates, setNewRefinanceLoanCardStates] = useState<{[key: string]: boolean}>({});
+  const [newPurchaseLoanCardStates, setNewPurchaseLoanCardStates] = useState<{[key: string]: boolean}>({});
+  
   const [isThirdLoanPropertyAddressOpen, setIsThirdLoanPropertyAddressOpen] = useState(false);
   
   // State for Current Loan 1 info popup in Property tab
@@ -6153,32 +6158,90 @@ export default function AdminAddClient() {
     setDeleteCurrentThirdLoanDialog({ isOpen: false, cardId: '' });
   };
 
-  // Helper function to handle ABC (New Refinance Loan) checkbox changes
-  const handleAbcLoanTypeChange = (checked: boolean) => {
+  // Handle removing New Refinance Loan cards (like removeCurrentPrimaryLoanCard)
+  const removeNewRefinanceLoanCard = (cardId: string) => {
+    // Remove the specific card from cards array
+    setNewRefinanceLoanCards(prev => prev.filter(id => id !== cardId));
+    
+    // Remove per-card collapsible state
+    setNewRefinanceLoanCardStates(prev => {
+      const { [cardId]: _, ...rest } = prev;
+      return rest;
+    });
+    
+    // Clear form data for this card
+    form.setValue("abc", {});
+    
+    // Close the dialog
+    setDeleteAbcDialog({ isOpen: false });
+  };
+
+  // Handle removing New Purchase Loan cards (like removeCurrentPrimaryLoanCard)
+  const removeNewPurchaseLoanCard = (cardId: string) => {
+    // Remove the specific card from cards array
+    setNewPurchaseLoanCards(prev => prev.filter(id => id !== cardId));
+    
+    // Remove per-card collapsible state
+    setNewPurchaseLoanCardStates(prev => {
+      const { [cardId]: _, ...rest } = prev;
+      return rest;
+    });
+    
+    // Clear form data for this card
+    form.setValue("bbb", {});
+    
+    // Close the dialog
+    setDeleteBbbDialog({ isOpen: false });
+  };
+
+  // Helper function to handle New Refinance Loan checkbox changes (array-based like Existing Primary Loan)
+  const handleNewRefinanceLoanTypeChange = (checked: boolean) => {
     if (!checked) {
-      // Don't allow unchecking if card is already open - removal must be done through card Remove button
-      if (isAbcCardOpen) {
+      // Don't allow unchecking if cards already exist - removal must be done through card Remove button
+      const hasCards = (newRefinanceLoanCards || []).length > 0;
+      if (hasCards) {
         return;
       }
     } else {
-      // When checking, open the ABC card
-      if (!isAbcCardOpen) {
-        setIsAbcCardOpen(true);
+      // When checking, auto-create default card
+      const hasCards = (newRefinanceLoanCards || []).length > 0;
+      
+      // Only create default card if none exist yet
+      if (!hasCards) {
+        // Generate a unique ID for the new card
+        const newCardId = `new-refinance-loan-${Date.now()}`;
+        
+        // Add to cards array
+        setNewRefinanceLoanCards([newCardId]);
+        
+        // Initialize per-card collapsible state (auto-expand)
+        setNewRefinanceLoanCardStates({ [newCardId]: true });
       }
     }
   };
 
-  // Helper function to handle BBB (New Purchase Loan) checkbox changes
-  const handleBbbLoanTypeChange = (checked: boolean) => {
+  // Helper function to handle New Purchase Loan checkbox changes (array-based like Existing Primary Loan)
+  const handleNewPurchaseLoanTypeChange = (checked: boolean) => {
     if (!checked) {
-      // Don't allow unchecking if card is already open - removal must be done through card Remove button
-      if (isBbbCardOpen) {
+      // Don't allow unchecking if cards already exist - removal must be done through card Remove button
+      const hasCards = (newPurchaseLoanCards || []).length > 0;
+      if (hasCards) {
         return;
       }
     } else {
-      // When checking, open the BBB card
-      if (!isBbbCardOpen) {
-        setIsBbbCardOpen(true);
+      // When checking, auto-create default card
+      const hasCards = (newPurchaseLoanCards || []).length > 0;
+      
+      // Only create default card if none exist yet
+      if (!hasCards) {
+        // Generate a unique ID for the new card
+        const newCardId = `new-purchase-loan-${Date.now()}`;
+        
+        // Add to cards array
+        setNewPurchaseLoanCards([newCardId]);
+        
+        // Initialize per-card collapsible state (auto-expand)
+        setNewPurchaseLoanCardStates({ [newCardId]: true });
       }
     }
   };
@@ -18224,21 +18287,21 @@ export default function AdminAddClient() {
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="property-type-abc-loan-tab"
-                          checked={isAbcCardOpen}
+                          checked={(newRefinanceLoanCards || []).length > 0}
                           onCheckedChange={(checked) => {
                             if (typeof checked === 'boolean') {
-                              handleAbcLoanTypeChange(checked);
+                              handleNewRefinanceLoanTypeChange(checked);
                             }
                           }}
                           className={`transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black ${
-                            isAbcCardOpen ? 'pointer-events-none opacity-75' : ''
+                            (newRefinanceLoanCards || []).length > 0 ? 'pointer-events-none opacity-75' : ''
                           }`}
                           data-testid="checkbox-property-abc-loan-tab"
                         />
                         <Label 
                           htmlFor="property-type-abc-loan-tab" 
                           className={`font-medium text-black ${
-                            isAbcCardOpen ? 'pointer-events-none opacity-75' : 'cursor-pointer'
+                            (newRefinanceLoanCards || []).length > 0 ? 'pointer-events-none opacity-75' : 'cursor-pointer'
                           }`}
                         >
                           New Refinance Loan
@@ -18248,21 +18311,21 @@ export default function AdminAddClient() {
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="property-type-bbb-loan-tab"
-                          checked={isBbbCardOpen}
+                          checked={(newPurchaseLoanCards || []).length > 0}
                           onCheckedChange={(checked) => {
                             if (typeof checked === 'boolean') {
-                              handleBbbLoanTypeChange(checked);
+                              handleNewPurchaseLoanTypeChange(checked);
                             }
                           }}
                           className={`transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black ${
-                            isBbbCardOpen ? 'pointer-events-none opacity-75' : ''
+                            (newPurchaseLoanCards || []).length > 0 ? 'pointer-events-none opacity-75' : ''
                           }`}
                           data-testid="checkbox-property-bbb-loan-tab"
                         />
                         <Label 
                           htmlFor="property-type-bbb-loan-tab" 
                           className={`font-medium text-black ${
-                            isBbbCardOpen ? 'pointer-events-none opacity-75' : 'cursor-pointer'
+                            (newPurchaseLoanCards || []).length > 0 ? 'pointer-events-none opacity-75' : 'cursor-pointer'
                           }`}
                         >
                           New Purchase Loan
@@ -18388,8 +18451,15 @@ export default function AdminAddClient() {
                 </CardContent>
               </Card>
 
-              {/* ABC Card */}
-              <Collapsible open={isAbcCardOpen} onOpenChange={setIsAbcCardOpen}>
+              {/* New Refinance Loan Card */}
+              {newRefinanceLoanCards.length > 0 && newRefinanceLoanCards.map((cardId, index) => {
+                const isOpen = newRefinanceLoanCardStates[cardId] ?? true;
+                const setIsOpen = (open: boolean) => {
+                  setNewRefinanceLoanCardStates(prev => ({ ...prev, [cardId]: open }));
+                };
+                
+                return (
+              <Collapsible key={cardId} open={isOpen} onOpenChange={setIsOpen}>
               <Card className="transition-all duration-700 border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -18420,9 +18490,9 @@ export default function AdminAddClient() {
                           size="sm" 
                           className="hover:bg-orange-500 hover:text-white" 
                           data-testid="button-toggle-abc"
-                          title={isAbcCardOpen ? "Minimize" : "Expand"}
+                          title={isOpen ? "Minimize" : "Expand"}
                         >
-                          {isAbcCardOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                          {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                         </Button>
                       </CollapsibleTrigger>
                     </div>
@@ -19199,9 +19269,18 @@ export default function AdminAddClient() {
                 </CollapsibleContent>
               </Card>
               </Collapsible>
+                );
+              })}
 
-              {/* BBB Card */}
-              <Collapsible open={isBbbCardOpen} onOpenChange={setIsBbbCardOpen}>
+              {/* New Purchase Loan Card */}
+              {newPurchaseLoanCards.length > 0 && newPurchaseLoanCards.map((cardId, index) => {
+                const isOpen = newPurchaseLoanCardStates[cardId] ?? true;
+                const setIsOpen = (open: boolean) => {
+                  setNewPurchaseLoanCardStates(prev => ({ ...prev, [cardId]: open }));
+                };
+                
+                return (
+              <Collapsible key={cardId} open={isOpen} onOpenChange={setIsOpen}>
               <Card className="transition-all duration-700 border-l-4 border-l-cyan-500 hover:border-cyan-500 focus-within:border-cyan-500 transition-colors duration-200">
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -19232,9 +19311,9 @@ export default function AdminAddClient() {
                           size="sm" 
                           className="hover:bg-orange-500 hover:text-white" 
                           data-testid="button-toggle-bbb"
-                          title={isBbbCardOpen ? "Minimize" : "Expand"}
+                          title={isOpen ? "Minimize" : "Expand"}
                         >
-                          {isBbbCardOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                          {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                         </Button>
                       </CollapsibleTrigger>
                     </div>
@@ -20003,6 +20082,8 @@ export default function AdminAddClient() {
                 </CollapsibleContent>
               </Card>
               </Collapsible>
+                );
+              })}
 
               {/* Current Primary Loan Cards - Render multiple cards like Property cards */}
               {(currentPrimaryLoanCards || []).map((cardId, index) => {
@@ -21362,12 +21443,8 @@ export default function AdminAddClient() {
             </AlertDialogCancel>
             <AlertDialogAction 
               onClick={() => {
-                // Clear ABC card data
-                form.setValue("abc", {});
-                // Close the card (this will uncheck the checkbox with animation)
-                setIsAbcCardOpen(false);
-                // Close the dialog
-                setDeleteAbcDialog({ isOpen: false });
+                const cardToDelete = newRefinanceLoanCards[0]; // Get the card ID
+                removeNewRefinanceLoanCard(cardToDelete);
               }}
               data-testid="button-confirm-delete-abc"
               className="bg-red-600 hover:bg-red-700"
@@ -21396,12 +21473,8 @@ export default function AdminAddClient() {
             </AlertDialogCancel>
             <AlertDialogAction 
               onClick={() => {
-                // Clear BBB card data
-                form.setValue("bbb", {});
-                // Close the card (this will uncheck the checkbox with animation)
-                setIsBbbCardOpen(false);
-                // Close the dialog
-                setDeleteBbbDialog({ isOpen: false });
+                const cardToDelete = newPurchaseLoanCards[0]; // Get the card ID
+                removeNewPurchaseLoanCard(cardToDelete);
               }}
               data-testid="button-confirm-delete-bbb"
               className="bg-red-600 hover:bg-red-700"
