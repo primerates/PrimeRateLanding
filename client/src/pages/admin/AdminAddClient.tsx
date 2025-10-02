@@ -20549,6 +20549,41 @@ export default function AdminAddClient() {
                   <CardTitle>Menu</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
+                  {/* Client Row */}
+                  <div className="flex items-center gap-6">
+                    <Label className="text-base font-semibold">Client:</Label>
+                    
+                    {/* New Client */}
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="client-new"
+                        data-testid="checkbox-client-new"
+                        className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                      />
+                      <Label htmlFor="client-new">New Client</Label>
+                    </div>
+                    
+                    {/* Repeat Client */}
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="client-repeat"
+                        data-testid="checkbox-client-repeat"
+                        className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                      />
+                      <Label htmlFor="client-repeat">Repeat Client</Label>
+                    </div>
+                    
+                    {/* Active Loan */}
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="client-active-loan"
+                        data-testid="checkbox-client-active-loan"
+                        className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                      />
+                      <Label htmlFor="client-active-loan">Active Loan</Label>
+                    </div>
+                  </div>
+
                   {/* Loan Purpose Row */}
                   <div className="flex items-center gap-6">
                     <Label className="text-base font-semibold">Loan Purpose:</Label>
