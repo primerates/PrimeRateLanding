@@ -20677,7 +20677,21 @@ export default function AdminAddClient() {
                     </div>
                     
                     <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor="abc-principalInterestPayment">Principal & Interest Payment</Label>
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="abc-principalInterestPayment" className="text-sm">Principal & Interest Payment</Label>
+                        <Controller
+                          control={form.control}
+                          name="abc.principalInterestPaymentToggle"
+                          defaultValue={false}
+                          render={({ field }) => (
+                            <Switch
+                              checked={!!field.value}
+                              onCheckedChange={field.onChange}
+                              data-testid="toggle-abc-principalInterestPayment"
+                            />
+                          )}
+                        />
+                      </div>
                       <Controller
                         control={form.control}
                         name="abc.principalAndInterestPayment"
@@ -20708,7 +20722,21 @@ export default function AdminAddClient() {
                     </div>
                     
                     <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor="abc-taxInsurancePayment">Tax & Insurance Payment</Label>
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="abc-taxInsurancePayment" className="text-sm">Tax & Insurance Payment</Label>
+                        <Controller
+                          control={form.control}
+                          name="abc.taxInsurancePaymentToggle"
+                          defaultValue={false}
+                          render={({ field }) => (
+                            <Switch
+                              checked={!!field.value}
+                              onCheckedChange={field.onChange}
+                              data-testid="toggle-abc-taxInsurancePayment"
+                            />
+                          )}
+                        />
+                      </div>
                       <Controller
                         control={form.control}
                         name="abc.taxInsurancePayment"
