@@ -20548,7 +20548,7 @@ export default function AdminAddClient() {
                 <CardHeader>
                   <CardTitle>Quote</CardTitle>
                 </CardHeader>
-                <CardContent className="bg-gray-100 rounded-md p-6 space-y-6">
+                <CardContent className="space-y-6">
                   {/* Client Row */}
                   <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                     <Label className="text-base font-semibold">Client:</Label>
@@ -20678,7 +20678,7 @@ export default function AdminAddClient() {
                   </div>
                 </CardContent>
 
-                <CardContent className="bg-gray-100 rounded-md p-6 space-y-6">
+                <CardContent className="space-y-6">
                   {/* Loan Purpose Row */}
                   <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                     <Label className="text-base font-semibold">Loan Purpose:</Label>
