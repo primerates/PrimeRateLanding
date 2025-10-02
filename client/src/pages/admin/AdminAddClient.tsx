@@ -20122,7 +20122,39 @@ export default function AdminAddClient() {
               {/* BBB Card */}
               <Card className="transition-all duration-700">
                 <CardHeader>
-                  <CardTitle>BBB</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>BBB</CardTitle>
+                    <div className="flex items-center gap-2">
+                      {/* Remove Button */}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          // Clear BBB card data
+                          form.setValue("bbb", {});
+                        }}
+                        className="hover:bg-red-500 hover:text-white"
+                        data-testid="button-remove-bbb"
+                        title="Remove BBB Card"
+                      >
+                        <Minus className="h-4 w-4 mr-2" />
+                        Remove
+                      </Button>
+                      
+                      {/* Minimize Button */}
+                      <Button 
+                        type="button"
+                        variant="ghost" 
+                        size="sm" 
+                        className="hover:bg-orange-500 hover:text-white" 
+                        data-testid="button-toggle-bbb"
+                        title="Minimize"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
@@ -20879,7 +20911,7 @@ export default function AdminAddClient() {
                               {(() => {
                                 const properties = form.watch('property.properties') || [];
                                 return properties
-                                  .filter((property: any) => property.use !== 'home-purchase' && (property.address?.street || property.use === 'primary'))
+                                  .filter((property: any) => property.use === 'home-purchase')
                                   .map((property: any, index: number) => {
                                     const address = property.address;
                                     const streetAddress = address?.street;
