@@ -1838,6 +1838,9 @@ export default function AdminAddClient() {
   // ABC card toggle states (Migrated from Brand New Loan - Refinance)
   const [abcFicoType, setAbcFicoType] = useState<'mid-fico' | 'borrower-scores' | 'co-borrower-scores'>('mid-fico');
 
+  // BBB card toggle states
+  const [bbbFicoType, setBbbFicoType] = useState<'mid-fico' | 'borrower-scores' | 'co-borrower-scores'>('mid-fico');
+
   // Helper function to get Current Second Loan escrow label and handle toggle cycling
   const getSecondLoanEscrowLabel = () => {
     switch (secondLoanEscrowType) {
@@ -1996,6 +1999,50 @@ export default function AdminAddClient() {
 
   // Calculate Mid FICO value for ABC card based on borrower and co-borrower scores
   const getAbcCalculatedMidFico = () => {
+    const borrowerMidFico = borrowerCreditScoresDialog.midFico;
+    const coBorrowerMidFico = coBorrowerCreditScoresDialog.midFico;
+
+    // If no Co-Borrower, return Borrower Mid FICO value or "Pending"
+    if (!hasCoBorrower) {
+      return borrowerMidFico || "Pending";
+    }
+
+    // If Co-Borrower exists, both scores must be present to calculate
+    if (borrowerMidFico && coBorrowerMidFico) {
+      const borrowerScore = parseInt(borrowerMidFico);
+      const coBorrowerScore = parseInt(coBorrowerMidFico);
+      
+      // Return the lower value
+      return Math.min(borrowerScore, coBorrowerScore).toString();
+    }
+
+    // If either score is missing, return "Pending"
+    return "Pending";
+  };
+
+  // BBB card FICO label and type cycling functions
+  const getBbbFicoLabel = () => {
+    switch (bbbFicoType) {
+      case 'mid-fico': return 'Mid FICO';
+      case 'borrower-scores': return 'Borrower Credit Scores';
+      case 'co-borrower-scores': return 'Co-Borrower Credit Scores';
+      default: return 'Mid FICO';
+    }
+  };
+
+  const cycleBbbFicoType = () => {
+    setBbbFicoType(current => {
+      switch (current) {
+        case 'mid-fico': return 'borrower-scores';
+        case 'borrower-scores': return 'co-borrower-scores';
+        case 'co-borrower-scores': return 'mid-fico';
+        default: return 'mid-fico';
+      }
+    });
+  };
+
+  // Calculate Mid FICO value for BBB card based on borrower and co-borrower scores
+  const getBbbCalculatedMidFico = () => {
     const borrowerMidFico = borrowerCreditScoresDialog.midFico;
     const coBorrowerMidFico = coBorrowerCreditScoresDialog.midFico;
 
@@ -19988,6 +20035,811 @@ export default function AdminAddClient() {
                             }}
                           >
                             <SelectTrigger data-testid="select-abc-attachedToProperty">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select">Select</SelectItem>
+                              {(() => {
+                                const properties = form.watch('property.properties') || [];
+                                return properties
+                                  .filter((property: any) => property.use !== 'home-purchase' && (property.address?.street || property.use === 'primary'))
+                                  .map((property: any, index: number) => {
+                                    const address = property.address;
+                                    const streetAddress = address?.street;
+                                    const city = address?.city;
+                                    const state = address?.state;
+                                    const zipCode = address?.zip;
+                                    
+                                    let displayText;
+                                    
+                                    if (property.use === 'primary' && !streetAddress) {
+                                      displayText = 'Primary Residence';
+                                    } else {
+                                      displayText = streetAddress || 'Property';
+                                      if (city && state) {
+                                        displayText += `, ${city}, ${state}`;
+                                      } else if (city) {
+                                        displayText += `, ${city}`;
+                                      } else if (state) {
+                                        displayText += `, ${state}`;
+                                      }
+                                      if (zipCode) {
+                                        displayText += ` ${zipCode}`;
+                                      }
+                                    }
+                                    
+                                    return (
+                                      <SelectItem key={`property-${property.id}`} value={property.id}>
+                                        {displayText}
+                                      </SelectItem>
+                                    );
+                                  });
+                              })()}
+                              <SelectItem value="Other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                    </div>
+                  </div>
+                    </CardContent>
+                  </Card>
+                </CardContent>
+              </Card>
+
+              {/* BBB Card */}
+              <Card className="transition-all duration-700">
+                <CardHeader>
+                  <CardTitle>BBB</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="bbb-lenderName">Lender Name</Label>
+                      <Input
+                        id="bbb-lenderName"
+                        type="text"
+                        placeholder="Enter lender name"
+                        {...form.register("bbb.lenderName")}
+                        data-testid="input-bbb-lenderName"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="bbb-loanNumber">Loan Number</Label>
+                      <Input
+                        id="bbb-loanNumber"
+                        type="text"
+                        placeholder="Enter loan number"
+                        {...form.register("bbb.loanNumber")}
+                        data-testid="input-bbb-loanNumber"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="bbb-loanCategory">Loan Category</Label>
+                      <Controller
+                        control={form.control}
+                        name="bbb.loanCategory"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <Select value={field.value} onValueChange={field.onChange}>
+                            <SelectTrigger data-testid="select-bbb-loanCategory">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select">Select</SelectItem>
+                              <SelectItem value="conventional">Conventional</SelectItem>
+                              <SelectItem value="conventional-jumbo">Conventional Jumbo</SelectItem>
+                              <SelectItem value="fha">FHA</SelectItem>
+                              <SelectItem value="va">VA</SelectItem>
+                              <SelectItem value="va-jumbo">VA Jumbo</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="bbb-loanPurpose">Loan Purpose</Label>
+                      <Controller
+                        control={form.control}
+                        name="bbb.loanPurpose"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <Select value={field.value} onValueChange={field.onChange}>
+                            <SelectTrigger data-testid="select-bbb-loanPurpose">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select">Select</SelectItem>
+                              <SelectItem value="cash-out">Cash Out</SelectItem>
+                              <SelectItem value="rate-reduction">Rate Reduction</SelectItem>
+                              <SelectItem value="term-reduction">Term Reduction</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="bbb-docType">Doc Type</Label>
+                      <Controller
+                        control={form.control}
+                        name="bbb.docType"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <Select value={field.value} onValueChange={field.onChange}>
+                            <SelectTrigger data-testid="select-bbb-docType">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select">Select</SelectItem>
+                              <SelectItem value="full-doc">Full Doc</SelectItem>
+                              <SelectItem value="streamline">Streamline</SelectItem>
+                              <SelectItem value="irrrl">IRRRL</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="bbb-loanBalance">New Loan Amount</Label>
+                      <Controller
+                        control={form.control}
+                        name="bbb.loanBalance"
+                        defaultValue=""
+                        render={({ field }) => {
+                          const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                          const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                          
+                          return (
+                            <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                              <span className="text-muted-foreground text-sm">$</span>
+                              <Input
+                                id="bbb-loanBalance"
+                                type="text"
+                                placeholder="0"
+                                value={displayValue}
+                                onChange={(e) => {
+                                  const value = e.target.value.replace(/[^\d]/g, '');
+                                  field.onChange(value);
+                                }}
+                                className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                                data-testid="input-bbb-loanBalance"
+                              />
+                            </div>
+                          );
+                        }}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="bbb-loanTerm">Loan Term</Label>
+                      <Controller
+                        control={form.control}
+                        name="bbb.loanTerm"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <Select value={field.value} onValueChange={field.onChange}>
+                            <SelectTrigger data-testid="select-bbb-loanTerm">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select">Select</SelectItem>
+                              <SelectItem value="30-year-fixed">30 Year Fixed</SelectItem>
+                              <SelectItem value="25-year-fixed">25 Year Fixed</SelectItem>
+                              <SelectItem value="20-year-fixed">20 Year Fixed</SelectItem>
+                              <SelectItem value="15-year-fixed">15 Year Fixed</SelectItem>
+                              <SelectItem value="10-year-fixed">10 Year Fixed</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="bbb-cashOutAmount" className="text-sm">
+                          {form.watch("bbb.cashOutAmountToggle") ? "Benefits Summary" : "Cash Out Amount"}
+                        </Label>
+                        <Controller
+                          control={form.control}
+                          name="bbb.cashOutAmountToggle"
+                          defaultValue={false}
+                          render={({ field }) => (
+                            <Switch
+                              checked={!!field.value}
+                              onCheckedChange={field.onChange}
+                              data-testid="toggle-bbb-cashOutAmount"
+                              className="scale-[0.8]"
+                            />
+                          )}
+                        />
+                      </div>
+                      {form.watch("bbb.cashOutAmountToggle") ? (
+                        <Input
+                          id="bbb-cashOutAmount"
+                          type="text"
+                          placeholder="Enter benefits summary"
+                          {...form.register("bbb.cashOutAmount")}
+                          data-testid="input-bbb-cashOutAmount"
+                        />
+                      ) : (
+                        <Controller
+                          control={form.control}
+                          name="bbb.cashOutAmount"
+                          defaultValue=""
+                          render={({ field }) => {
+                            const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            
+                            return (
+                              <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                                <span className="text-muted-foreground text-sm">$</span>
+                                <Input
+                                  id="bbb-cashOutAmount"
+                                  type="text"
+                                  placeholder="0"
+                                  value={displayValue}
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(/[^\d]/g, '');
+                                    field.onChange(value);
+                                  }}
+                                  className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                                  data-testid="input-bbb-cashOutAmount"
+                                />
+                              </div>
+                            );
+                          }}
+                        />
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="bbb-totalDebtPayOff" className="text-sm">
+                          {form.watch("bbb.totalDebtPayOffToggle") ? "Total Debt Pay Off Payments" : "Total Debt Pay Off"}
+                        </Label>
+                        <Controller
+                          control={form.control}
+                          name="bbb.totalDebtPayOffToggle"
+                          defaultValue={false}
+                          render={({ field }) => (
+                            <Switch
+                              checked={!!field.value}
+                              onCheckedChange={field.onChange}
+                              data-testid="toggle-bbb-totalDebtPayOff"
+                              className="scale-[0.8]"
+                            />
+                          )}
+                        />
+                      </div>
+                      <Controller
+                        control={form.control}
+                        name="bbb.totalDebtPayOff"
+                        defaultValue=""
+                        render={({ field }) => {
+                          const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                          const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                          
+                          return (
+                            <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                              <span className="text-muted-foreground text-sm">$</span>
+                              <Input
+                                id="bbb-totalDebtPayOff"
+                                type="text"
+                                placeholder="0"
+                                value={displayValue}
+                                onChange={(e) => {
+                                  const value = e.target.value.replace(/[^\d]/g, '');
+                                  field.onChange(value);
+                                }}
+                                className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                                data-testid="input-bbb-totalDebtPayOff"
+                              />
+                            </div>
+                          );
+                        }}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="bbb-prepaymentPenalty">Pre-Payment Penalty</Label>
+                      <Controller
+                        control={form.control}
+                        name="bbb.prepaymentPenalty"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <Select value={field.value} onValueChange={field.onChange}>
+                            <SelectTrigger data-testid="select-bbb-prepaymentPenalty">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select">Select</SelectItem>
+                              <SelectItem value="No">No</SelectItem>
+                              <SelectItem value="Yes - 6 Months">Yes - 6 Months</SelectItem>
+                              <SelectItem value="Yes - 1 Year">Yes - 1 Year</SelectItem>
+                              <SelectItem value="Yes - 2 Years">Yes - 2 Years</SelectItem>
+                              <SelectItem value="Yes - 3 Years">Yes - 3 Years</SelectItem>
+                              <SelectItem value="Yes - 4 Years">Yes - 4 Years</SelectItem>
+                              <SelectItem value="Yes - 5 Years">Yes - 5 Years</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Row 3: Mid FICO, Rate Lock Status, Rate Lock Date, Rate Lock Expiration, Lender Credit/Broker Credit */}
+                  <Card className="bg-muted mt-4">
+                    <CardContent className="pt-6">
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="bbb-midFico" className="text-sm">
+                              {getBbbFicoLabel()}
+                            </Label>
+                            <Controller
+                              control={form.control}
+                              name="bbb.midFico"
+                              render={({ field }) => (
+                                <Switch
+                                  checked={borrowerCreditScoresDialog.midFico || coBorrowerCreditScoresDialog.midFico || !!field.value}
+                                  onCheckedChange={cycleBbbFicoType}
+                                  data-testid="toggle-bbb-fico-type"
+                                  className="scale-[0.8]"
+                                />
+                              )}
+                            />
+                          </div>
+                          <Input
+                            id="bbb-midFico"
+                            {...(bbbFicoType === 'mid-fico' ? {} : form.register('bbb.midFico'))}
+                            value={bbbFicoType === 'mid-fico' ? getBbbCalculatedMidFico() : undefined}
+                            placeholder="Enter"
+                            className="border border-input bg-background px-3 rounded-md"
+                            data-testid="input-bbb-midFico"
+                            readOnly={bbbFicoType === 'mid-fico'}
+                            onClick={() => {
+                              if (bbbFicoType === 'borrower-scores') {
+                                setBorrowerCreditScoresDialog(prev => ({
+                                  ...prev,
+                                  isOpen: true
+                                }));
+                              }
+                              else if (bbbFicoType === 'co-borrower-scores') {
+                                if (hasCoBorrower) {
+                                  setCoBorrowerCreditScoresDialog(prev => ({
+                                    ...prev,
+                                    isOpen: true
+                                  }));
+                                } else {
+                                  setCoBorrowerWarningDialog(true);
+                                }
+                              }
+                            }}
+                            style={{
+                              cursor: (bbbFicoType === 'borrower-scores' || bbbFicoType === 'co-borrower-scores') ? 'pointer' : 'text'
+                            }}
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Controller
+                            control={form.control}
+                            name="bbb.rateLockStatus"
+                            render={({ field }) => (
+                              <Label 
+                                htmlFor="bbb-rateLockStatus"
+                                className={(field.value === 'not-locked' || field.value === 'expired' || !field.value) ? 'text-red-500' : ''}
+                              >
+                                Rate Lock Status
+                              </Label>
+                            )}
+                          />
+                          <Controller
+                            name="bbb.rateLockStatus"
+                            control={form.control}
+                            defaultValue="not-locked"
+                            render={({ field }) => (
+                              <Select 
+                                value={field.value || "not-locked"}
+                                onValueChange={field.onChange}
+                              >
+                                <SelectTrigger data-testid="select-bbb-rateLockStatus">
+                                  <SelectValue placeholder="Not Locked" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="locked">Locked</SelectItem>
+                                  <SelectItem value="not-locked">Not Locked</SelectItem>
+                                  <SelectItem value="expired">Expired</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            )}
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="bbb-rateLockDate" className="text-sm">
+                              {form.watch("bbb.rateLockDateToggle") ? "Lock Date - 10 Year Bond" : "Rate Lock Date"}
+                            </Label>
+                            <Controller
+                              control={form.control}
+                              name="bbb.rateLockDateToggle"
+                              defaultValue={false}
+                              render={({ field }) => (
+                                <Switch
+                                  checked={!!field.value}
+                                  onCheckedChange={field.onChange}
+                                  data-testid="toggle-bbb-rateLockDate"
+                                  className="scale-[0.8]"
+                                />
+                              )}
+                            />
+                          </div>
+                          {form.watch("bbb.rateLockDateToggle") ? (
+                            <Input
+                              id="bbb-rateLockDate"
+                              {...form.register('bbb.rateLockDate')}
+                              data-testid="input-bbb-rateLockDate"
+                            />
+                          ) : (
+                            <Input
+                              id="bbb-rateLockDate"
+                              value={form.watch('bbb.rateLockDate') || ''}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/\D/g, '');
+                                let formatted = '';
+                                if (value.length > 0) {
+                                  formatted = value.substring(0, 2);
+                                  if (value.length > 2) {
+                                    formatted += '/' + value.substring(2, 4);
+                                    if (value.length > 4) {
+                                      formatted += '/' + value.substring(4, 8);
+                                    }
+                                  }
+                                }
+                                form.setValue('bbb.rateLockDate', formatted);
+                              }}
+                              placeholder="MM/DD/YYYY"
+                              maxLength={10}
+                              data-testid="input-bbb-rateLockDate"
+                            />
+                          )}
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="bbb-rateLockExpiration" className="text-sm">
+                              {form.watch("bbb.rateLockExpirationToggle") ? "Rate Lock Duration" : "Rate Lock Expiration"}
+                            </Label>
+                            <Controller
+                              control={form.control}
+                              name="bbb.rateLockExpirationToggle"
+                              defaultValue={false}
+                              render={({ field }) => (
+                                <Switch
+                                  checked={!!field.value}
+                                  onCheckedChange={field.onChange}
+                                  data-testid="toggle-bbb-rateLockExpiration"
+                                  className="scale-[0.8]"
+                                />
+                              )}
+                            />
+                          </div>
+                          {form.watch("bbb.rateLockExpirationToggle") ? (
+                            <Input
+                              id="bbb-rateLockExpiration"
+                              {...form.register('bbb.rateLockExpiration')}
+                              data-testid="input-bbb-rateLockExpiration"
+                            />
+                          ) : (
+                            <Input
+                              id="bbb-rateLockExpiration"
+                              value={form.watch('bbb.rateLockExpiration') || ''}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/\D/g, '');
+                                let formatted = '';
+                                if (value.length > 0) {
+                                  formatted = value.substring(0, 2);
+                                  if (value.length > 2) {
+                                    formatted += '/' + value.substring(2, 4);
+                                    if (value.length > 4) {
+                                      formatted += '/' + value.substring(4, 8);
+                                    }
+                                  }
+                                }
+                                form.setValue('bbb.rateLockExpiration', formatted);
+                              }}
+                              placeholder="MM/DD/YYYY"
+                              maxLength={10}
+                              data-testid="input-bbb-rateLockExpiration"
+                            />
+                          )}
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="bbb-lenderCredit" className="text-sm">
+                              {form.watch("bbb.brokerCreditToggle") ? "Broker Credit" : "Lender Credit"}
+                            </Label>
+                            <Controller
+                              control={form.control}
+                              name="bbb.brokerCreditToggle"
+                              defaultValue={false}
+                              render={({ field }) => (
+                                <Switch
+                                  checked={!!field.value}
+                                  onCheckedChange={field.onChange}
+                                  data-testid="toggle-bbb-brokerCredit"
+                                  className="scale-[0.8]"
+                                />
+                              )}
+                            />
+                          </div>
+                          <Controller
+                            control={form.control}
+                            name="bbb.lenderCredit"
+                            defaultValue=""
+                            render={({ field }) => {
+                              const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                              const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                              
+                              return (
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                                  <span className="text-muted-foreground text-sm">$</span>
+                                  <Input
+                                    id="bbb-lenderCredit"
+                                    type="text"
+                                    placeholder="0"
+                                    value={displayValue}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^\d]/g, '');
+                                      field.onChange(value);
+                                    }}
+                                    className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                                    data-testid="input-bbb-lenderCredit"
+                                  />
+                                </div>
+                              );
+                            }}
+                          />
+                        </div>
+                      </div>
+                  
+                  {/* Row 4: Interest Rate, Principal & Interest Payment, Tax & Insurance Payment, Total Monthly Payment, HOA, Attached to Property */}
+                  <div className="grid grid-cols-1 md:grid-cols-10 gap-4 mt-6">
+                    <div className="space-y-2 md:col-span-1">
+                      <Label htmlFor="bbb-interestRate">Interest Rate</Label>
+                      <Controller
+                        control={form.control}
+                        name="bbb.interestRate"
+                        defaultValue=""
+                        render={({ field }) => {
+                          const numVal = field.value ? field.value.replace(/[^\d.]/g, '') : '';
+                          const parts = numVal.split('.');
+                          let displayValue = parts[0];
+                          if (parts.length > 1) {
+                            displayValue += '.' + parts[1].substring(0, 3);
+                          }
+                          
+                          return (
+                            <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                              <Input
+                                id="bbb-interestRate"
+                                type="text"
+                                placeholder="0.000"
+                                value={displayValue}
+                                onChange={(e) => {
+                                  const value = e.target.value.replace(/[^\d.]/g, '');
+                                  const parts = value.split('.');
+                                  if (parts.length > 2) return;
+                                  if (parts.length === 2 && parts[1].length > 3) return;
+                                  field.onChange(value);
+                                }}
+                                className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                                data-testid="input-bbb-interestRate"
+                              />
+                              <span className="text-muted-foreground text-sm">%</span>
+                            </div>
+                          );
+                        }}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2 md:col-span-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="bbb-principalInterestPayment" className="text-sm">
+                          {form.watch("bbb.principalInterestPaymentToggle") ? "Interest Only Payment" : "Principal & Interest Payment"}
+                        </Label>
+                        <Controller
+                          control={form.control}
+                          name="bbb.principalInterestPaymentToggle"
+                          defaultValue={false}
+                          render={({ field }) => (
+                            <Switch
+                              checked={!!field.value}
+                              onCheckedChange={field.onChange}
+                              data-testid="toggle-bbb-principalInterestPayment"
+                              className="scale-[0.8]"
+                            />
+                          )}
+                        />
+                      </div>
+                      <Controller
+                        control={form.control}
+                        name="bbb.principalAndInterestPayment"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                            <span className="text-muted-foreground text-sm">$</span>
+                            <Input
+                              id="bbb-principalInterestPayment"
+                              type="text"
+                              placeholder="0"
+                              value={field.value}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/[^\d]/g, '');
+                                field.onChange(value);
+                              }}
+                              onBlur={(e) => {
+                                const value = e.target.value.replace(/[^\d]/g, '');
+                                const formatted = value ? Number(value).toLocaleString() : '';
+                                form.setValue("bbb.principalAndInterestPayment", formatted);
+                              }}
+                              className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                              data-testid="input-bbb-principalInterestPayment"
+                            />
+                          </div>
+                        )}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2 md:col-span-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="bbb-taxInsurancePayment" className="text-sm">
+                          {form.watch("bbb.taxInsurancePaymentToggle") === "tax-only" 
+                            ? "Tax Payment Only" 
+                            : form.watch("bbb.taxInsurancePaymentToggle") === "insurance-only"
+                            ? "Insurance Payment Only"
+                            : "Tax & Insurance Payment"}
+                        </Label>
+                        <Controller
+                          control={form.control}
+                          name="bbb.taxInsurancePaymentToggle"
+                          defaultValue=""
+                          render={({ field }) => (
+                            <Switch
+                              checked={!!field.value}
+                              onCheckedChange={() => {
+                                const currentValue = field.value;
+                                if (!currentValue || currentValue === "") {
+                                  field.onChange("tax-only");
+                                } else if (currentValue === "tax-only") {
+                                  field.onChange("insurance-only");
+                                } else {
+                                  field.onChange("");
+                                }
+                              }}
+                              data-testid="toggle-bbb-taxInsurancePayment"
+                              className="scale-[0.8]"
+                            />
+                          )}
+                        />
+                      </div>
+                      <Controller
+                        control={form.control}
+                        name="bbb.taxInsurancePayment"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                            <span className="text-muted-foreground text-sm">$</span>
+                            <Input
+                              id="bbb-taxInsurancePayment"
+                              type="text"
+                              placeholder="0"
+                              value={field.value}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/[^\d]/g, '');
+                                field.onChange(value);
+                              }}
+                              onBlur={(e) => {
+                                const value = e.target.value.replace(/[^\d]/g, '');
+                                const formatted = value ? Number(value).toLocaleString() : '';
+                                form.setValue("bbb.taxInsurancePayment", formatted);
+                              }}
+                              className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                              data-testid="input-bbb-taxInsurancePayment"
+                            />
+                          </div>
+                        )}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor="bbb-totalMonthlyPayment">Total Monthly Payment</Label>
+                      <Controller
+                        control={form.control}
+                        name="bbb.totalMonthlyPayment"
+                        defaultValue=""
+                        render={({ field }) => {
+                          const principalAndInterest = form.watch("bbb.principalAndInterestPayment") || '';
+                          const taxInsurance = form.watch("bbb.taxInsurancePayment") || '';
+                          
+                          const pi = principalAndInterest ? parseInt(principalAndInterest.replace(/,/g, '')) : 0;
+                          const ti = taxInsurance ? parseInt(taxInsurance.replace(/,/g, '')) : 0;
+                          const total = pi + ti;
+                          const displayValue = total > 0 ? total.toLocaleString() : '';
+                          
+                          return (
+                            <div className="flex items-center border border-input bg-muted px-3 rounded-md">
+                              <span className="text-muted-foreground text-sm">$</span>
+                              <Input
+                                id="bbb-totalMonthlyPayment"
+                                type="text"
+                                placeholder="0"
+                                value={displayValue}
+                                readOnly
+                                className="border-0 bg-transparent px-2 focus-visible:ring-0 cursor-not-allowed"
+                                data-testid="input-bbb-totalMonthlyPayment"
+                              />
+                            </div>
+                          );
+                        }}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2 md:col-span-1">
+                      <Label htmlFor="bbb-hoa">HOA</Label>
+                      <Controller
+                        control={form.control}
+                        name="bbb.hoa"
+                        defaultValue=""
+                        render={({ field }) => {
+                          const numVal = field.value ? field.value.replace(/[^\d]/g, '') : '';
+                          const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                          
+                          return (
+                            <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                              <span className="text-muted-foreground text-sm">$</span>
+                              <Input
+                                id="bbb-hoa"
+                                type="text"
+                                placeholder="0"
+                                value={displayValue}
+                                onChange={(e) => {
+                                  const value = e.target.value.replace(/[^\d]/g, '');
+                                  field.onChange(value);
+                                }}
+                                className="border-0 bg-transparent px-2 focus-visible:ring-0"
+                                data-testid="input-bbb-hoa"
+                              />
+                            </div>
+                          );
+                        }}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor="bbb-attachedToProperty">Attached to Property</Label>
+                      <Controller
+                        control={form.control}
+                        name="bbb.attachedToProperty"
+                        render={({ field }) => (
+                          <Select 
+                            value={field.value}
+                            onValueChange={(value) => {
+                              field.onChange(value);
+                            }}
+                          >
+                            <SelectTrigger data-testid="select-bbb-attachedToProperty">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                             <SelectContent>
