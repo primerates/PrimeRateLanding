@@ -20854,14 +20854,14 @@ export default function AdminAddClient() {
                             <Label htmlFor="loan-purpose-purchase">Purchase</Label>
                           </div>
                           
-                          {/* Build */}
+                          {/* Construction */}
                           <div className="flex items-center space-x-2">
                             <Checkbox
                               id="loan-purpose-build"
                               data-testid="checkbox-loan-purpose-build"
                               className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                             />
-                            <Label htmlFor="loan-purpose-build">Build</Label>
+                            <Label htmlFor="loan-purpose-build">Construction</Label>
                           </div>
                         </div>
                       </div>
