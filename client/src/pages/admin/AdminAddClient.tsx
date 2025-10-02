@@ -20456,7 +20456,7 @@ export default function AdminAddClient() {
                   <CardTitle>ABC</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
                     <div className="space-y-2">
                       <Label htmlFor="abc-lenderName">Lender Name</Label>
                       <Input
@@ -20522,6 +20522,28 @@ export default function AdminAddClient() {
                               <SelectItem value="refinance-cash-out">Refinance Cash Out</SelectItem>
                               <SelectItem value="construction">Construction</SelectItem>
                               <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="abc-docType">Doc Type</Label>
+                      <Controller
+                        control={form.control}
+                        name="abc.docType"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <Select value={field.value} onValueChange={field.onChange}>
+                            <SelectTrigger data-testid="select-abc-docType">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select">Select</SelectItem>
+                              <SelectItem value="full-doc">Full Doc</SelectItem>
+                              <SelectItem value="streamline">Streamline</SelectItem>
+                              <SelectItem value="irrrl">IRRRL</SelectItem>
                             </SelectContent>
                           </Select>
                         )}
