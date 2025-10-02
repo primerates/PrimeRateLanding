@@ -18845,7 +18845,7 @@ export default function AdminAddClient() {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between mb-2">
                         <Label htmlFor="abc-cashOutAmount" className="text-sm">
-                          {form.watch("abc.cashOutAmountToggle") ? "Builder Credit" : "Seller Credit"}
+                          {form.watch("abc.cashOutAmountToggle") ? "Benefits Summary" : "Cash Out Amount"}
                         </Label>
                         <Controller
                           control={form.control}
