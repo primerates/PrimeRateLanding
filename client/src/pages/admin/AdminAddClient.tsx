@@ -21348,7 +21348,7 @@ export default function AdminAddClient() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete New Refinance Loan Card</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this refinance - new loan card? This action cannot be undone.
+              Are you sure you want to delete this new refinance loan card? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -21382,7 +21382,7 @@ export default function AdminAddClient() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete New Purchase Loan Card</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this purchase - new loan card? This action cannot be undone.
+              Are you sure you want to delete this new purchase loan card? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
