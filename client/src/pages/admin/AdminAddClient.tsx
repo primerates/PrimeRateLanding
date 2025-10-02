@@ -19102,6 +19102,18 @@ export default function AdminAddClient() {
 
                       <div className="flex items-center space-x-2">
                         <Checkbox
+                          id="property-type-abc-loan-tab"
+                          disabled
+                          className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
+                          data-testid="checkbox-property-abc-loan-tab"
+                        />
+                        <Label htmlFor="property-type-abc-loan-tab" className="font-medium text-black">
+                          ABC
+                        </Label>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
                           id="property-type-second-home-loan-tab"
                           disabled
                           className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg] border-black"
