@@ -3880,8 +3880,28 @@ export default function AdminAddClient() {
                       <SelectItem value="select">Select</SelectItem>
                       {(() => {
                         const properties = targetForm.watch('property.properties') || [];
+                        
+                        // Get all attached properties from other Existing Primary Loan cards
+                        const attachedPropertyIds = new Set<string>();
+                        (currentPrimaryLoanCards || []).forEach((otherCardId, otherIndex) => {
+                          // Skip the current card
+                          if (`card-${otherIndex}-` !== idPrefix) {
+                            const attachedProp = targetForm.watch(`card-${otherIndex}-currentLoan.attachedToProperty`);
+                            if (attachedProp && attachedProp !== 'select' && attachedProp !== 'Other') {
+                              attachedPropertyIds.add(attachedProp);
+                            }
+                          }
+                        });
+                        
                         return properties
-                          .filter((property: any) => property.use !== 'home-purchase' && (property.address?.street || property.use === 'primary')) // Exclude Home Purchase, show existing properties only
+                          .filter((property: any) => {
+                            // Exclude Home Purchase properties
+                            if (property.use === 'home-purchase') return false;
+                            // Exclude properties already attached to other loan cards
+                            if (attachedPropertyIds.has(property.id)) return false;
+                            // Show properties with addresses or primary residence
+                            return property.address?.street || property.use === 'primary';
+                          })
                           .map((property: any, index: number) => {
                             const address = property.address;
                             const streetAddress = address?.street;
