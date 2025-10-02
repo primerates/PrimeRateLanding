@@ -7205,7 +7205,7 @@ export default function AdminAddClient() {
                     </Select>
                   </div>
                   
-                  <div className="space-y-2">
+                  <div className="space-y-2 max-w-[75%]">
                     <div className="flex items-center justify-between mb-2">
                       <Label htmlFor="borrower-leadRef" className="text-sm">
                         {isShowingDMBatch ? 'DM Batch' : 'Lead Reference'}
@@ -7225,7 +7225,7 @@ export default function AdminAddClient() {
                     />
                   </div>
                   
-                  <div className="space-y-2">
+                  <div className="space-y-2 max-w-[75%]">
                     <Label htmlFor="borrower-source">Source</Label>
                     <Select
                       value={form.watch('borrower.source') || 'Select'}
