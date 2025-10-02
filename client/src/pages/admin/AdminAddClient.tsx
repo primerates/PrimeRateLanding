@@ -4631,24 +4631,10 @@ export default function AdminAddClient() {
                     </div>
                   </div>
                   
-                  {/* Row 4: HOA, Attached to Property */}
+                  {/* Row 4: Attached to Property */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                 
-                <div className="space-y-2">
-                  <Label htmlFor={`${idPrefix}brandNewLoan-hoa`} className="text-sm">HOA</Label>
-                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id={`${idPrefix}brandNewLoan-hoa`}
-                      {...targetForm.register('brandNewLoan.hoa')}
-                      placeholder="0.00"
-                      className="border-0 bg-transparent px-2 focus-visible:ring-0"
-                      data-testid={`input-brandNewLoan-hoa`}
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2 md:col-span-2">
+                <div className="space-y-2 md:col-span-3">
                   <Label htmlFor={`${idPrefix}brandNewLoan-attachedToProperty`}>Attached to Property</Label>
                   <Select 
                     {...attachedToPropertyBinding}
