@@ -7182,7 +7182,7 @@ export default function AdminAddClient() {
                 showEntryAnimation ? 'animate-roll-down-delayed' : (showBorrowerAnimation ? 'animate-roll-down' : '')
               }`}>
                 <CardContent className="grid grid-cols-1 md:grid-cols-5 gap-4 pt-6">
-                  <div className="space-y-2">
+                  <div className="space-y-2 max-w-[75%]">
                     <Label htmlFor="borrower-stage">Stage</Label>
                     <Select
                       value={form.watch('borrower.stage') || 'Lead'}
@@ -7294,7 +7294,7 @@ export default function AdminAddClient() {
                     />
                   </div>
                   
-                  <div className="space-y-2">
+                  <div className="space-y-2 max-w-[75%]">
                     <Label htmlFor="borrower-loanDuration">Loan Duration</Label>
                     <Input
                       id="borrower-loanDuration"
