@@ -20546,8 +20546,6 @@ export default function AdminAddClient() {
             {/* Quote Tab */}
             <TabsContent value="quote" className="space-y-6">
               <div>
-                <h2 className="text-2xl font-semibold mb-6">Quote</h2>
-                
                 <Card className="bg-gray-100 mb-6 hover:shadow-lg transition-shadow duration-300 border-l-4 border-l-transparent hover:border-l-green-500 transition-colors">
                   <div className="flex justify-end pt-4 pr-4">
                     <Button
