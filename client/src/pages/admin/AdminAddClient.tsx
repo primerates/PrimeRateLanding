@@ -20582,7 +20582,7 @@ export default function AdminAddClient() {
                       {/* Quote and Client Row */}
                       <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                         <Label className="text-base font-semibold">Quote:</Label>
-                        <div className="flex items-center gap-8">
+                        <div className="flex items-center gap-16">
                           <Select
                             value={selectedRateCount === 0 ? 'select' : `${selectedRateCount}-rate${selectedRateCount > 1 ? 's' : ''}`}
                             onValueChange={(value) => {
