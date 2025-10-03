@@ -20580,111 +20580,114 @@ export default function AdminAddClient() {
                   {!isQuoteCardsMinimized && (
                     <CardContent className="pt-2 space-y-6">
                       {/* Quote and Client Row */}
-                      <div className="grid grid-cols-[150px_200px_auto_200px_1fr] items-center gap-8">
+                      <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                         <Label className="text-base font-semibold">Quote:</Label>
-                        <Select
-                          value={selectedRateCount === 0 ? 'select' : `${selectedRateCount}-rate${selectedRateCount > 1 ? 's' : ''}`}
-                          onValueChange={(value) => {
-                            if (value === 'select') {
-                              setSelectedRateCount(0);
-                              setShowRateCircles(false);
-                            } else if (value === '1-rate') {
-                              setSelectedRateCount(1);
-                              setShowRateCircles(true);
-                            } else if (value === '2-rates') {
-                              setSelectedRateCount(2);
-                              setShowRateCircles(true);
-                            } else if (value === '3-rates') {
-                              setSelectedRateCount(3);
-                              setShowRateCircles(true);
-                            } else if (value === '4-rates') {
-                              setSelectedRateCount(4);
-                              setShowRateCircles(true);
-                            } else if (value === '5-rates') {
-                              setSelectedRateCount(5);
-                              setShowRateCircles(true);
-                            }
-                          }}
-                        >
-                          <SelectTrigger className="w-[200px]" data-testid="select-quote">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="select" data-testid="select-quote-select">Select</SelectItem>
-                            <SelectItem value="1-rate" data-testid="select-quote-1-rate">1 Rate</SelectItem>
-                            <SelectItem value="2-rates" data-testid="select-quote-2-rates">2 Rates</SelectItem>
-                            <SelectItem value="3-rates" data-testid="select-quote-3-rates">3 Rates</SelectItem>
-                            <SelectItem value="4-rates" data-testid="select-quote-4-rates">4 Rates</SelectItem>
-                            <SelectItem value="5-rates" data-testid="select-quote-5-rates">5 Rates</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <div className="flex items-center gap-4">
-                          <Label className="text-base font-semibold">Client:</Label>
-                          <Select>
-                            <SelectTrigger className="w-[200px]" data-testid="select-client">
+                        <div className="flex items-center gap-16">
+                          <Select
+                            value={selectedRateCount === 0 ? 'select' : `${selectedRateCount}-rate${selectedRateCount > 1 ? 's' : ''}`}
+                            onValueChange={(value) => {
+                              if (value === 'select') {
+                                setSelectedRateCount(0);
+                                setShowRateCircles(false);
+                              } else if (value === '1-rate') {
+                                setSelectedRateCount(1);
+                                setShowRateCircles(true);
+                              } else if (value === '2-rates') {
+                                setSelectedRateCount(2);
+                                setShowRateCircles(true);
+                              } else if (value === '3-rates') {
+                                setSelectedRateCount(3);
+                                setShowRateCircles(true);
+                              } else if (value === '4-rates') {
+                                setSelectedRateCount(4);
+                                setShowRateCircles(true);
+                              } else if (value === '5-rates') {
+                                setSelectedRateCount(5);
+                                setShowRateCircles(true);
+                              }
+                            }}
+                          >
+                            <SelectTrigger className="w-[200px]" data-testid="select-quote">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="select" data-testid="select-client-select">Select</SelectItem>
-                              <SelectItem value="new-client" data-testid="select-client-new">New Client</SelectItem>
-                              <SelectItem value="repeat-client" data-testid="select-client-repeat">Repeat Client</SelectItem>
-                              <SelectItem value="active-loan" data-testid="select-client-active-loan">Active Loan</SelectItem>
+                              <SelectItem value="select" data-testid="select-quote-select">Select</SelectItem>
+                              <SelectItem value="1-rate" data-testid="select-quote-1-rate">1 Rate</SelectItem>
+                              <SelectItem value="2-rates" data-testid="select-quote-2-rates">2 Rates</SelectItem>
+                              <SelectItem value="3-rates" data-testid="select-quote-3-rates">3 Rates</SelectItem>
+                              <SelectItem value="4-rates" data-testid="select-quote-4-rates">4 Rates</SelectItem>
+                              <SelectItem value="5-rates" data-testid="select-quote-5-rates">5 Rates</SelectItem>
                             </SelectContent>
                           </Select>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <Label className="text-base font-semibold">Source:</Label>
-                          <Select>
-                            <SelectTrigger className="w-[200px]" data-testid="select-source">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-source-select">Select</SelectItem>
-                              <SelectItem value="direct-mail" data-testid="select-source-direct-mail">Direct Mail</SelectItem>
-                              <SelectItem value="social-media" data-testid="select-source-social-media">Social Media</SelectItem>
-                              <SelectItem value="website" data-testid="select-source-website">Website</SelectItem>
-                              <SelectItem value="referral" data-testid="select-source-referral">Referral</SelectItem>
-                              <SelectItem value="repeat-client" data-testid="select-source-repeat-client">Repeat Client</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <div className="flex items-center gap-4">
+                            <Label className="text-base font-semibold">Client:</Label>
+                            <Select>
+                              <SelectTrigger className="w-[200px]" data-testid="select-client">
+                                <SelectValue placeholder="Select" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="select" data-testid="select-client-select">Select</SelectItem>
+                                <SelectItem value="new-client" data-testid="select-client-new">New Client</SelectItem>
+                                <SelectItem value="repeat-client" data-testid="select-client-repeat">Repeat Client</SelectItem>
+                                <SelectItem value="active-loan" data-testid="select-client-active-loan">Active Loan</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="flex items-center gap-4">
+                            <Label className="text-base font-semibold">Source:</Label>
+                            <Select>
+                              <SelectTrigger className="w-[200px]" data-testid="select-source">
+                                <SelectValue placeholder="Select" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="select" data-testid="select-source-select">Select</SelectItem>
+                                <SelectItem value="direct-mail" data-testid="select-source-direct-mail">Direct Mail</SelectItem>
+                                <SelectItem value="social-media" data-testid="select-source-social-media">Social Media</SelectItem>
+                                <SelectItem value="website" data-testid="select-source-website">Website</SelectItem>
+                                <SelectItem value="referral" data-testid="select-source-referral">Referral</SelectItem>
+                                <SelectItem value="repeat-client" data-testid="select-source-repeat-client">Repeat Client</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
                         </div>
                       </div>
 
                       {/* Property and Category Row */}
-                    <div className="grid grid-cols-[150px_200px_auto_200px_1fr] items-center gap-8">
+                    <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                       <Label className="text-base font-semibold">Property:</Label>
-                      <Select>
-                        <SelectTrigger className="w-[200px]" data-testid="select-property">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="select" data-testid="select-property-select">Select</SelectItem>
-                          <SelectItem value="primary-residence" data-testid="select-property-primary">Primary Residence</SelectItem>
-                          <SelectItem value="second-home" data-testid="select-property-second-home">Second Home</SelectItem>
-                          <SelectItem value="investment-property" data-testid="select-property-investment">Investment Property</SelectItem>
-                          <SelectItem value="home-purchase" data-testid="select-property-home-purchase">Home Purchase</SelectItem>
-                          <SelectItem value="duplex" data-testid="select-property-duplex">Duplex</SelectItem>
-                          <SelectItem value="multi-family" data-testid="select-property-multi-family">Multi-Family</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <div className="flex items-center gap-4">
-                        <Label className="text-base font-semibold">Category:</Label>
+                      <div className="flex items-center gap-16">
                         <Select>
-                          <SelectTrigger className="w-[200px]" data-testid="select-category">
+                          <SelectTrigger className="w-[200px]" data-testid="select-property">
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="select" data-testid="select-category-select">Select</SelectItem>
-                            <SelectItem value="va" data-testid="select-category-va">VA</SelectItem>
-                            <SelectItem value="va-jumbo" data-testid="select-category-va-jumbo">VA Jumbo</SelectItem>
-                            <SelectItem value="fha" data-testid="select-category-fha">FHA</SelectItem>
-                            <SelectItem value="conventional" data-testid="select-category-conventional">Conventional</SelectItem>
-                            <SelectItem value="conventional-jumbo" data-testid="select-category-conventional-jumbo">Conventional Jumbo</SelectItem>
-                            <SelectItem value="non-qm" data-testid="select-category-non-qm">Non-QM</SelectItem>
+                            <SelectItem value="select" data-testid="select-property-select">Select</SelectItem>
+                            <SelectItem value="primary-residence" data-testid="select-property-primary">Primary Residence</SelectItem>
+                            <SelectItem value="second-home" data-testid="select-property-second-home">Second Home</SelectItem>
+                            <SelectItem value="investment-property" data-testid="select-property-investment">Investment Property</SelectItem>
+                            <SelectItem value="home-purchase" data-testid="select-property-home-purchase">Home Purchase</SelectItem>
+                            <SelectItem value="duplex" data-testid="select-property-duplex">Duplex</SelectItem>
+                            <SelectItem value="multi-family" data-testid="select-property-multi-family">Multi-Family</SelectItem>
                           </SelectContent>
                         </Select>
+                        <div className="flex items-center gap-4">
+                          <Label className="text-base font-semibold">Category:</Label>
+                          <Select>
+                            <SelectTrigger className="w-[200px]" data-testid="select-category">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-category-select">Select</SelectItem>
+                              <SelectItem value="va" data-testid="select-category-va">VA</SelectItem>
+                              <SelectItem value="va-jumbo" data-testid="select-category-va-jumbo">VA Jumbo</SelectItem>
+                              <SelectItem value="fha" data-testid="select-category-fha">FHA</SelectItem>
+                              <SelectItem value="conventional" data-testid="select-category-conventional">Conventional</SelectItem>
+                              <SelectItem value="conventional-jumbo" data-testid="select-category-conventional-jumbo">Conventional Jumbo</SelectItem>
+                              <SelectItem value="non-qm" data-testid="select-category-non-qm">Non-QM</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
-                      <div></div>
                     </div>
                     </CardContent>
                   )}
