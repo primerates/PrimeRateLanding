@@ -20687,38 +20687,16 @@ export default function AdminAddClient() {
 
                       {/* Client Row */}
                     <div className="grid grid-cols-[150px_1fr] items-center gap-8">
-                      <Label className="text-base font-semibold">Client:</Label>
-                      <div className="grid grid-cols-[180px_180px_180px_180px] gap-4">
-                        {/* New Client */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="client-new"
-                            data-testid="checkbox-client-new"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="client-new">New Client</Label>
-                        </div>
-                        
-                        {/* Repeat Client */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="client-repeat"
-                            data-testid="checkbox-client-repeat"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="client-repeat">Repeat Client</Label>
-                        </div>
-                        
-                        {/* Active Loan */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="client-active-loan"
-                            data-testid="checkbox-client-active-loan"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="client-active-loan">Active Loan</Label>
-                        </div>
-                      </div>
+                      <Select>
+                        <SelectTrigger className="w-[200px] border-none shadow-none focus:ring-0" data-testid="select-client">
+                          <SelectValue placeholder="Client" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="new-client" data-testid="select-client-new">New Client</SelectItem>
+                          <SelectItem value="repeat-client" data-testid="select-client-repeat">Repeat Client</SelectItem>
+                          <SelectItem value="active-loan" data-testid="select-client-active-loan">Active Loan</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
 
                     {/* Source Row */}
