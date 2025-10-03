@@ -20806,7 +20806,32 @@ export default function AdminAddClient() {
                               <button
                                 type="button"
                                 onClick={() => setEditingRateIndex(index)}
-                                className="w-[86px] h-[86px] rounded-full bg-blue-500 hover:bg-blue-600 transition-colors duration-200 flex items-center justify-center text-white font-semibold text-lg shadow-lg hover:shadow-xl border-2 border-blue-900"
+                                className={`w-[86px] h-[86px] rounded-full transition-colors duration-200 flex items-center justify-center text-white font-semibold text-lg shadow-lg hover:shadow-xl border-2 ${
+                                  index === 0 
+                                    ? 'border-blue-900' 
+                                    : 'border-blue-900'
+                                }`}
+                                style={index === 0 ? {
+                                  backgroundColor: '#1a3373',
+                                  borderColor: '#0d1a3d'
+                                } : {
+                                  backgroundColor: 'rgb(59 130 246)',
+                                  borderColor: 'rgb(30 58 138)'
+                                }}
+                                onMouseEnter={(e) => {
+                                  if (index === 0) {
+                                    e.currentTarget.style.backgroundColor = '#0d1a3d';
+                                  } else {
+                                    e.currentTarget.style.backgroundColor = 'rgb(37 99 235)';
+                                  }
+                                }}
+                                onMouseLeave={(e) => {
+                                  if (index === 0) {
+                                    e.currentTarget.style.backgroundColor = '#1a3373';
+                                  } else {
+                                    e.currentTarget.style.backgroundColor = 'rgb(59 130 246)';
+                                  }
+                                }}
                                 data-testid={`button-rate-circle-${index}`}
                               >
                                 {rateValues[index] ? `${rateValues[index]}%` : '%'}
