@@ -913,6 +913,9 @@ export default function AdminAddClient() {
   const [rateValues, setRateValues] = useState<string[]>(['', '', '', '', '']);
   const [editingRateIndex, setEditingRateIndex] = useState<number | null>(null);
   const [showRateCircles, setShowRateCircles] = useState(false);
+  const [isCustomTerm, setIsCustomTerm] = useState(false);
+  const [loanTerm, setLoanTerm] = useState('');
+  const [customTerm, setCustomTerm] = useState('');
   
   // State for Quote tab rate detail fields
   const [rateBuyDownValues, setRateBuyDownValues] = useState<string[]>(['', '', '', '', '']);
@@ -20809,6 +20812,46 @@ export default function AdminAddClient() {
                             placeholder="Enter FICO score"
                             data-testid="input-mid-fico"
                           />
+                        </div>
+                      </div>
+
+                      {/* Row 3: Loan Term with toggle switch */}
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Label htmlFor={isCustomTerm ? "custom-term-input" : "loan-term-select"}>
+                              {isCustomTerm ? "Custom Term" : "Loan Term"}
+                            </Label>
+                            <Switch
+                              checked={isCustomTerm}
+                              onCheckedChange={setIsCustomTerm}
+                              data-testid="switch-custom-term"
+                            />
+                          </div>
+                          {!isCustomTerm ? (
+                            <Select value={loanTerm} onValueChange={setLoanTerm}>
+                              <SelectTrigger data-testid="select-loan-term">
+                                <SelectValue placeholder="Select" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="select" data-testid="select-loan-term-select">Select</SelectItem>
+                                <SelectItem value="30-years" data-testid="select-loan-term-30">30 Years</SelectItem>
+                                <SelectItem value="25-years" data-testid="select-loan-term-25">25 Years</SelectItem>
+                                <SelectItem value="20-years" data-testid="select-loan-term-20">20 Years</SelectItem>
+                                <SelectItem value="15-years" data-testid="select-loan-term-15">15 Years</SelectItem>
+                                <SelectItem value="10-years" data-testid="select-loan-term-10">10 Years</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          ) : (
+                            <Input
+                              id="custom-term-input"
+                              type="text"
+                              placeholder=""
+                              value={customTerm}
+                              onChange={(e) => setCustomTerm(e.target.value)}
+                              data-testid="input-custom-term"
+                            />
+                          )}
                         </div>
                       </div>
                     </CardContent>
