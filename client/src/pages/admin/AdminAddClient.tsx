@@ -20550,7 +20550,7 @@ export default function AdminAddClient() {
             {/* Quote Tab */}
             <TabsContent value="quote" className="space-y-6">
               <div>
-                <Card className={`bg-gray-100 mb-6 hover:shadow-lg transition-shadow duration-300 border-l-4 transition-colors ${isQuoteCardsMinimized ? 'border-l-green-500' : 'border-l-transparent hover:border-l-green-500'} animate-roll-down`}>
+                <Card className="mb-6 transition-all duration-700 animate-roll-down">
                   <div className="flex justify-between items-center pt-4 px-4">
                     <div className="flex items-center gap-8">
                       <div style={{ width: '150px' }}></div>
@@ -20725,7 +20725,7 @@ export default function AdminAddClient() {
 
                 {!isQuoteCardsMinimized && (
                 <div className="space-y-6 mb-6">
-                  <Card className="bg-gray-100 hover:shadow-lg transition-shadow duration-300 border-l-4 border-l-transparent hover:border-l-green-500 transition-colors animate-roll-down-dti-1">
+                  <Card className="transition-all duration-700 animate-roll-down-dti-1">
                     <CardContent className="pt-6 space-y-6">
                       {/* Property Row */}
                       <div className="grid grid-cols-[150px_1fr] items-center gap-8">
@@ -20861,7 +20861,7 @@ export default function AdminAddClient() {
                     </CardContent>
                   </Card>
 
-                  <Card className="bg-gray-100 hover:shadow-lg transition-shadow duration-300 border-l-4 border-l-transparent hover:border-l-green-500 transition-colors animate-roll-down-dti-2">
+                  <Card className="transition-all duration-700 animate-roll-down-dti-2">
                     <CardContent className="pt-6 space-y-6">
                       {/* Type Row */}
                       <div className="grid grid-cols-[150px_1fr] items-center gap-8">
