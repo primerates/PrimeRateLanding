@@ -20854,7 +20854,7 @@ export default function AdminAddClient() {
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
                                     type="text"
-                                    placeholder="0"
+                                    placeholder=""
                                     value={displayValue}
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
@@ -20888,7 +20888,7 @@ export default function AdminAddClient() {
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
                                     type="text"
-                                    placeholder="0"
+                                    placeholder=""
                                     value={displayValue}
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
@@ -20923,11 +20923,11 @@ export default function AdminAddClient() {
                             
                             return (
                               <div key={index} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
                                     type="text"
-                                    placeholder="0"
+                                    placeholder=""
                                     value={displayValue}
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
@@ -20965,11 +20965,11 @@ export default function AdminAddClient() {
                             
                             return (
                               <div key={index} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
                                     type="text"
-                                    placeholder="0"
+                                    placeholder=""
                                     value={displayValue}
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
@@ -20998,11 +20998,11 @@ export default function AdminAddClient() {
                             
                             return (
                               <div key={index} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
                                     type="text"
-                                    placeholder="0"
+                                    placeholder=""
                                     value={displayValue}
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
@@ -21030,11 +21030,11 @@ export default function AdminAddClient() {
                             
                             return (
                               <div key={index} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
                                     type="text"
-                                    placeholder="0"
+                                    placeholder=""
                                     value={displayValue}
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
@@ -21062,11 +21062,11 @@ export default function AdminAddClient() {
                             
                             return (
                               <div key={index} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
                                     type="text"
-                                    placeholder="0"
+                                    placeholder=""
                                     value={displayValue}
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
@@ -21094,11 +21094,11 @@ export default function AdminAddClient() {
                             
                             return (
                               <div key={index} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
                                     type="text"
-                                    placeholder="0"
+                                    placeholder=""
                                     value={displayValue}
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
@@ -21126,11 +21126,11 @@ export default function AdminAddClient() {
                             
                             return (
                               <div key={index} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
                                     type="text"
-                                    placeholder="0"
+                                    placeholder=""
                                     value={displayValue}
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
@@ -21160,11 +21160,11 @@ export default function AdminAddClient() {
                             
                             return (
                               <div key={index} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
                                     type="text"
-                                    placeholder="0"
+                                    placeholder=""
                                     value={displayValue}
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
@@ -21198,11 +21198,11 @@ export default function AdminAddClient() {
                             
                             return (
                               <div key={index} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
                                     type="text"
-                                    placeholder="0"
+                                    placeholder=""
                                     value={displayValue}
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
@@ -21230,11 +21230,11 @@ export default function AdminAddClient() {
                             
                             return (
                               <div key={index} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
                                     type="text"
-                                    placeholder="0"
+                                    placeholder=""
                                     value={displayValue}
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
