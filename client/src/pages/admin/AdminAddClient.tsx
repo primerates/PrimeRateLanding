@@ -21045,7 +21045,7 @@ export default function AdminAddClient() {
                       <div></div>
                       <div className="grid grid-cols-[180px_180px_180px_180px_180px] gap-4">
                         {Array.from({ length: selectedRateCount }).map((_, index) => (
-                          <div key={index} className="flex justify-start ml-4">
+                          <div key={index} className="flex justify-start ml-5">
                             {editingRateIndex === index ? (
                               <div className="relative">
                                 <Input
