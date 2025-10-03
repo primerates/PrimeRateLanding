@@ -20827,6 +20827,7 @@ export default function AdminAddClient() {
                           {Array.from({ length: selectedRateCount }).map((_, index) => {
                             const numVal = existingLoanBalanceValues[index] ? existingLoanBalanceValues[index].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            const tabIndex = (index * 10) + 1; // Column-based tab order: field 0 of each column
                             
                             return (
                               <div key={index} className="flex justify-center">
@@ -20842,6 +20843,7 @@ export default function AdminAddClient() {
                                       newValues[index] = value;
                                       setExistingLoanBalanceValues(newValues);
                                     }}
+                                    tabIndex={tabIndex}
                                     className="border-0 bg-transparent text-center font-medium focus-visible:ring-0 focus-visible:ring-offset-0"
                                     data-testid={`input-existing-loan-balance-${index}`}
                                   />
