@@ -21366,7 +21366,7 @@ export default function AdminAddClient() {
                             return (
                               <div key={index} className="flex justify-center">
                                 <div className="flex items-center px-3 rounded-md w-3/4">
-                                  <span className="text-2xl font-bold text-center w-full" data-testid={`text-new-monthly-payment-${index}`}>
+                                  <span className="text-base font-bold text-center w-full" data-testid={`text-new-monthly-payment-${index}`}>
                                     {displayValue ? `$${displayValue}` : ''}
                                   </span>
                                 </div>
