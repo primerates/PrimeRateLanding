@@ -20620,6 +20620,7 @@ export default function AdminAddClient() {
                               <SelectItem value="2-rates" data-testid="select-quote-2-rates">2 Rates</SelectItem>
                               <SelectItem value="3-rates" data-testid="select-quote-3-rates">3 Rates</SelectItem>
                               <SelectItem value="4-rates" data-testid="select-quote-4-rates">4 Rates</SelectItem>
+                              <SelectItem value="5-rates" data-testid="select-quote-5-rates">5 Rates</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
