@@ -20551,7 +20551,17 @@ export default function AdminAddClient() {
             <TabsContent value="quote" className="space-y-6">
               <div>
                 <Card className={`bg-gray-100 mb-6 hover:shadow-lg transition-shadow duration-300 border-l-4 transition-colors ${isQuoteCardsMinimized ? 'border-l-green-500' : 'border-l-transparent hover:border-l-green-500'} animate-roll-down`}>
-                  <div className="flex justify-end pt-4 pr-4">
+                  <div className="flex justify-between items-center pt-4 px-4">
+                    <div className="flex items-center gap-8">
+                      <div style={{ width: '150px' }}></div>
+                      <div className="grid grid-cols-[180px_180px_180px_180px_180px] gap-4">
+                        <div className="flex justify-start ml-6">
+                          <div className="w-7 h-7 rounded-full bg-blue-900 flex items-center justify-center">
+                            <DollarSign className="h-4 w-4 text-white" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <Button
                       variant="ghost"
                       size="sm"
