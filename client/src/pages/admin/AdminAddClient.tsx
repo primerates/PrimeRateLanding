@@ -934,6 +934,11 @@ export default function AdminAddClient() {
   const [additionalRow1Values, setAdditionalRow1Values] = useState<string[]>(['', '', '', '', '']);
   const [additionalRow2Values, setAdditionalRow2Values] = useState<string[]>(['', '', '', '', '']);
   
+  // State for Loan Term row
+  const [loanTermValues, setLoanTermValues] = useState<string[]>(['', '', '', '', '']);
+  const [customTermToggles, setCustomTermToggles] = useState<boolean[]>([false, false, false, false, false]);
+  const [customTermValues, setCustomTermValues] = useState<string[]>(['', '', '', '', '']);
+  
   // Calculate totals for each rate column using useMemo (like Income tab)
   const rateColumnTotals = useMemo(() => {
     return Array.from({ length: 5 }).map((_, index) => {
@@ -20965,6 +20970,67 @@ export default function AdminAddClient() {
                                     data-testid={`input-cash-out-amount-${index}`}
                                   />
                                 </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* Loan Term Row with Toggle */}
+                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
+                          <div className="flex items-center justify-end pr-4 gap-2">
+                            <Label className="text-base font-semibold text-right">
+                              {customTermToggles.some(t => t) ? 'Custom Term:' : 'Loan Term:'}
+                            </Label>
+                            <Switch
+                              checked={customTermToggles.some(t => t)}
+                              onCheckedChange={(checked) => {
+                                setCustomTermToggles(customTermToggles.map(() => checked));
+                              }}
+                              data-testid="switch-custom-term"
+                            />
+                          </div>
+                          {Array.from({ length: selectedRateCount }).map((_, index) => {
+                            const isCustom = customTermToggles[index];
+                            const tabIndex = (3 * selectedRateCount) + index + 1;
+                            
+                            return (
+                              <div key={index} className="flex justify-center">
+                                {isCustom ? (
+                                  <Input
+                                    type="text"
+                                    placeholder=""
+                                    value={customTermValues[index]}
+                                    onChange={(e) => {
+                                      const newValues = [...customTermValues];
+                                      newValues[index] = e.target.value;
+                                      setCustomTermValues(newValues);
+                                    }}
+                                    tabIndex={tabIndex}
+                                    className="text-center font-medium text-lg w-3/4"
+                                    data-testid={`input-custom-term-${index}`}
+                                  />
+                                ) : (
+                                  <Select
+                                    value={loanTermValues[index] || ''}
+                                    onValueChange={(value) => {
+                                      const newValues = [...loanTermValues];
+                                      newValues[index] = value;
+                                      setLoanTermValues(newValues);
+                                    }}
+                                  >
+                                    <SelectTrigger className="w-3/4" data-testid={`select-loan-term-${index}`}>
+                                      <SelectValue placeholder="Select" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="select">Select</SelectItem>
+                                      <SelectItem value="30">30 Years</SelectItem>
+                                      <SelectItem value="25">25 Years</SelectItem>
+                                      <SelectItem value="20">20 Years</SelectItem>
+                                      <SelectItem value="15">15 Years</SelectItem>
+                                      <SelectItem value="10">10 Years</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                )}
                               </div>
                             );
                           })}
