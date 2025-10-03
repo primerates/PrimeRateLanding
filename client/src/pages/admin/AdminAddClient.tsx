@@ -20687,9 +20687,10 @@ export default function AdminAddClient() {
 
                       {/* Client Row */}
                     <div className="grid grid-cols-[150px_1fr] items-center gap-8">
+                      <Label className="text-base font-semibold">Client:</Label>
                       <Select>
                         <SelectTrigger className="w-[200px] border-none shadow-none focus:ring-0" data-testid="select-client">
-                          <SelectValue placeholder="Client" />
+                          <SelectValue placeholder="Select client type" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="new-client" data-testid="select-client-new">New Client</SelectItem>
