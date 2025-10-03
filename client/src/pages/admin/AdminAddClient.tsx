@@ -20778,13 +20778,13 @@ export default function AdminAddClient() {
                 {/* Blue Circle Rate Input Buttons - Aligned under Type, Property, Client, Source */}
                 {showRateCircles && selectedRateCount > 0 && (
                   <>
-                    <div className="animate-roll-down px-4" style={{ marginTop: '64px' }}>
+                    <div className="animate-roll-down px-4" style={{ marginTop: '64px', width: `${250 * (selectedRateCount + 1)}px`, maxWidth: '100%' }}>
                       <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
                         {/* Empty space for Quote column */}
                         <div></div>
                         {/* Circles aligned under Type, Property, Client, Source */}
                         {Array.from({ length: selectedRateCount }).map((_, index) => (
-                          <div key={index} className="flex justify-center">
+                          <div key={index} className="flex justify-center items-center">
                             {editingRateIndex === index ? (
                               <div className="relative">
                                 <Input
