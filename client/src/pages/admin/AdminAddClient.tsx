@@ -20622,19 +20622,18 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="category-select">Category</Label>
+                          <Label htmlFor="type-select">Type</Label>
                           <Select>
-                            <SelectTrigger data-testid="select-category">
+                            <SelectTrigger data-testid="select-type">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="select" data-testid="select-category-select">Select</SelectItem>
-                              <SelectItem value="va" data-testid="select-category-va">VA</SelectItem>
-                              <SelectItem value="va-jumbo" data-testid="select-category-va-jumbo">VA Jumbo</SelectItem>
-                              <SelectItem value="fha" data-testid="select-category-fha">FHA</SelectItem>
-                              <SelectItem value="conventional" data-testid="select-category-conventional">Conventional</SelectItem>
-                              <SelectItem value="conventional-jumbo" data-testid="select-category-conventional-jumbo">Conventional Jumbo</SelectItem>
-                              <SelectItem value="non-qm" data-testid="select-category-non-qm">Non-QM</SelectItem>
+                              <SelectItem value="select" data-testid="select-type-select">Select</SelectItem>
+                              <SelectItem value="refinance" data-testid="select-type-refinance">Refinance</SelectItem>
+                              <SelectItem value="purchase" data-testid="select-type-purchase">Purchase</SelectItem>
+                              <SelectItem value="second-loan" data-testid="select-type-second-loan">Second Loan</SelectItem>
+                              <SelectItem value="construction" data-testid="select-type-construction">Construction</SelectItem>
+                              <SelectItem value="bridge" data-testid="select-type-bridge">Bridge</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -20690,21 +20689,22 @@ export default function AdminAddClient() {
                         </div>
                       </div>
 
-                      {/* Row 2: Type field aligned below Quote, Purpose aligned below Category, VA Benefits */}
+                      {/* Row 2: Category field aligned below Quote, Purpose aligned below Type, VA Benefits */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="type-select">Type</Label>
+                          <Label htmlFor="category-select">Category</Label>
                           <Select>
-                            <SelectTrigger data-testid="select-type">
+                            <SelectTrigger data-testid="select-category">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="select" data-testid="select-type-select">Select</SelectItem>
-                              <SelectItem value="refinance" data-testid="select-type-refinance">Refinance</SelectItem>
-                              <SelectItem value="purchase" data-testid="select-type-purchase">Purchase</SelectItem>
-                              <SelectItem value="second-loan" data-testid="select-type-second-loan">Second Loan</SelectItem>
-                              <SelectItem value="construction" data-testid="select-type-construction">Construction</SelectItem>
-                              <SelectItem value="bridge" data-testid="select-type-bridge">Bridge</SelectItem>
+                              <SelectItem value="select" data-testid="select-category-select">Select</SelectItem>
+                              <SelectItem value="va" data-testid="select-category-va">VA</SelectItem>
+                              <SelectItem value="va-jumbo" data-testid="select-category-va-jumbo">VA Jumbo</SelectItem>
+                              <SelectItem value="fha" data-testid="select-category-fha">FHA</SelectItem>
+                              <SelectItem value="conventional" data-testid="select-category-conventional">Conventional</SelectItem>
+                              <SelectItem value="conventional-jumbo" data-testid="select-category-conventional-jumbo">Conventional Jumbo</SelectItem>
+                              <SelectItem value="non-qm" data-testid="select-category-non-qm">Non-QM</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
