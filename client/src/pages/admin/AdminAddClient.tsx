@@ -20768,7 +20768,7 @@ export default function AdminAddClient() {
                 {/* Blue Circle Rate Input Buttons - Aligned under Type, Property, Client, Source */}
                 {showRateCircles && selectedRateCount > 0 && (
                   <>
-                    <div className="animate-roll-down px-4" style={{ marginTop: '24px' }}>
+                    <div className="animate-roll-down px-4" style={{ marginTop: '64px' }}>
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         {/* Empty space for Quote column */}
                         <div></div>
