@@ -916,6 +916,8 @@ export default function AdminAddClient() {
   const [isCustomTerm, setIsCustomTerm] = useState(false);
   const [loanTerm, setLoanTerm] = useState('');
   const [customTerm, setCustomTerm] = useState('');
+  const [monthlyEscrow, setMonthlyEscrow] = useState('');
+  const [escrowReserves, setEscrowReserves] = useState('');
   
   // State for Quote tab rate detail fields
   const [rateBuyDownValues, setRateBuyDownValues] = useState<string[]>(['', '', '', '', '']);
@@ -20685,7 +20687,7 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="property-select">Property</Label>
+                          <Label htmlFor="property-select">Property Use</Label>
                           <Select>
                             <SelectTrigger data-testid="select-property">
                               <SelectValue placeholder="Select" />
@@ -20738,7 +20740,7 @@ export default function AdminAddClient() {
                       {/* Row 2: Category field aligned below Quote, Purpose aligned below Type, VA Benefits */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="category-select">Category</Label>
+                          <Label htmlFor="category-select">Loan Category</Label>
                           <Select>
                             <SelectTrigger data-testid="select-category">
                               <SelectValue placeholder="Select" />
@@ -20756,7 +20758,7 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="purpose-select">Purpose</Label>
+                          <Label htmlFor="purpose-select">Loan Purpose</Label>
                           <Select>
                             <SelectTrigger data-testid="select-purpose">
                               <SelectValue placeholder="Select" />
@@ -20815,7 +20817,7 @@ export default function AdminAddClient() {
                         </div>
                       </div>
 
-                      {/* Row 3: Loan Term with toggle switch */}
+                      {/* Row 3: Loan Term with toggle switch, Monthly Escrow, and Escrow Reserves */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
                           <div className="flex items-center justify-between mb-2">
@@ -20853,6 +20855,36 @@ export default function AdminAddClient() {
                               data-testid="input-custom-term"
                             />
                           )}
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="monthly-escrow-select">Monthly Escrow</Label>
+                          <Select value={monthlyEscrow} onValueChange={setMonthlyEscrow}>
+                            <SelectTrigger data-testid="select-monthly-escrow">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-monthly-escrow-select">Select</SelectItem>
+                              <SelectItem value="tax-insurance" data-testid="select-monthly-escrow-tax-insurance">Tax & Insurance</SelectItem>
+                              <SelectItem value="tax-only" data-testid="select-monthly-escrow-tax-only">Tax Only</SelectItem>
+                              <SelectItem value="insurance-only" data-testid="select-monthly-escrow-insurance-only">Insurance Only</SelectItem>
+                              <SelectItem value="no-escrow" data-testid="select-monthly-escrow-no-escrow">No Escrow</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="escrow-reserves-select">Escrow Reserves</Label>
+                          <Select value={escrowReserves} onValueChange={setEscrowReserves}>
+                            <SelectTrigger data-testid="select-escrow-reserves">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-escrow-reserves-select">Select</SelectItem>
+                              <SelectItem value="new-escrow-reserves" data-testid="select-escrow-reserves-new">New Escrow Reserves</SelectItem>
+                              <SelectItem value="no-escrow-reserves" data-testid="select-escrow-reserves-no">No Escrow Reserves</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
                     </CardContent>
