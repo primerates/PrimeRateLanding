@@ -21257,32 +21257,21 @@ export default function AdminAddClient() {
                       style={{ width: `${250 * (selectedRateCount + 1)}px`, maxWidth: '100%' }}
                     >
                       <CardContent className="pt-6 space-y-6">
-                        {/* New Est. Loan Amount Row */}
+                        {/* New Est. Loan Amount Row - Auto-calculated */}
                         <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-base font-semibold text-right">New Est. Loan Amount:</Label>
                           </div>
                           {Array.from({ length: selectedRateCount }).map((_, index) => {
-                            const numVal = newEstLoanAmountValues[index] ? newEstLoanAmountValues[index].replace(/[^\d]/g, '') : '';
-                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            const total = rateColumnTotals[index];
+                            const displayValue = total > 0 ? total.toLocaleString('en-US') : '';
                             
                             return (
                               <div key={index} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                  <span className="text-muted-foreground text-sm">$</span>
-                                  <Input
-                                    type="text"
-                                    placeholder=""
-                                    value={displayValue}
-                                    onChange={(e) => {
-                                      const value = e.target.value.replace(/[^\d]/g, '');
-                                      const newValues = [...newEstLoanAmountValues];
-                                      newValues[index] = value;
-                                      setNewEstLoanAmountValues(newValues);
-                                    }}
-                                    className="border-0 bg-transparent text-center font-medium text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-new-est-loan-amount-${index}`}
-                                  />
+                                <div className="flex items-center px-3 rounded-md w-3/4">
+                                  <span className="text-base font-bold text-center w-full" data-testid={`text-new-est-loan-amount-${index}`}>
+                                    {displayValue ? `$${displayValue}` : ''}
+                                  </span>
                                 </div>
                               </div>
                             );
@@ -21321,26 +21310,12 @@ export default function AdminAddClient() {
                           })}
                         </div>
 
-                        {/* Total Row - Auto-calculated (like Income tab) */}
+                        {/* Footer Message */}
                         <div className="border-t pt-6">
-                          <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
-                            <div className="flex items-center justify-end pr-4">
-                              <Label className="text-base font-bold text-right">Total:</Label>
-                            </div>
-                            {Array.from({ length: selectedRateCount }).map((_, index) => {
-                              const total = rateColumnTotals[index];
-                              const displayValue = total > 0 ? total.toLocaleString('en-US') : '';
-                              
-                              return (
-                                <div key={index} className="flex justify-center">
-                                  <div className="flex items-center px-3 rounded-md w-3/4">
-                                    <span className="text-base font-bold text-center w-full" data-testid={`text-total-rate-${index}`}>
-                                      {displayValue ? `$${displayValue}` : ''}
-                                    </span>
-                                  </div>
-                                </div>
-                              );
-                            })}
+                          <div className="text-center">
+                            <p className="text-lg font-semibold text-muted-foreground">
+                              Prime Rates . Lower Payments.
+                            </p>
                           </div>
                         </div>
                       </CardContent>
