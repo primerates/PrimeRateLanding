@@ -909,6 +909,10 @@ export default function AdminAddClient() {
   const [showRevertAnimation, setShowRevertAnimation] = useState(false);
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
   const [isQuoteCardsMinimized, setIsQuoteCardsMinimized] = useState(false);
+  const [selectedRateCount, setSelectedRateCount] = useState(0);
+  const [rateValues, setRateValues] = useState<string[]>(['', '', '', '', '']);
+  const [editingRateIndex, setEditingRateIndex] = useState<number | null>(null);
+  const [showRateCircles, setShowRateCircles] = useState(false);
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
   const [isReadOnlyCurrentLoanOpen, setIsReadOnlyCurrentLoanOpen] = useState(true);
@@ -20571,6 +20575,16 @@ export default function AdminAddClient() {
                               id="compare-1-rate"
                               data-testid="checkbox-compare-1-rate"
                               className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                              checked={selectedRateCount === 1}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  setSelectedRateCount(1);
+                                  setShowRateCircles(true);
+                                } else {
+                                  setSelectedRateCount(0);
+                                  setShowRateCircles(false);
+                                }
+                              }}
                             />
                             <Label htmlFor="compare-1-rate">1 Rate</Label>
                           </div>
@@ -20581,6 +20595,16 @@ export default function AdminAddClient() {
                               id="compare-2-rates"
                               data-testid="checkbox-compare-2-rates"
                               className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                              checked={selectedRateCount === 2}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  setSelectedRateCount(2);
+                                  setShowRateCircles(true);
+                                } else {
+                                  setSelectedRateCount(0);
+                                  setShowRateCircles(false);
+                                }
+                              }}
                             />
                             <Label htmlFor="compare-2-rates">2 Rates</Label>
                           </div>
@@ -20591,6 +20615,16 @@ export default function AdminAddClient() {
                               id="compare-3-rates"
                               data-testid="checkbox-compare-3-rates"
                               className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                              checked={selectedRateCount === 3}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  setSelectedRateCount(3);
+                                  setShowRateCircles(true);
+                                } else {
+                                  setSelectedRateCount(0);
+                                  setShowRateCircles(false);
+                                }
+                              }}
                             />
                             <Label htmlFor="compare-3-rates">3 Rates</Label>
                           </div>
@@ -20601,6 +20635,16 @@ export default function AdminAddClient() {
                               id="compare-4-rate"
                               data-testid="checkbox-compare-4-rate"
                               className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                              checked={selectedRateCount === 4}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  setSelectedRateCount(4);
+                                  setShowRateCircles(true);
+                                } else {
+                                  setSelectedRateCount(0);
+                                  setShowRateCircles(false);
+                                }
+                              }}
                             />
                             <Label htmlFor="compare-4-rate">4 Rates</Label>
                           </div>
@@ -20611,6 +20655,16 @@ export default function AdminAddClient() {
                               id="compare-5-rates"
                               data-testid="checkbox-compare-5-rates"
                               className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                              checked={selectedRateCount === 5}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  setSelectedRateCount(5);
+                                  setShowRateCircles(true);
+                                } else {
+                                  setSelectedRateCount(0);
+                                  setShowRateCircles(false);
+                                }
+                              }}
                             />
                             <Label htmlFor="compare-5-rates">5 Rates</Label>
                           </div>
@@ -20984,6 +21038,52 @@ export default function AdminAddClient() {
 
                     </CardContent>
                   </Card>
+                  
+                  {/* Blue Circle Rate Input Buttons */}
+                  {showRateCircles && selectedRateCount > 0 && (
+                    <div className="flex justify-center gap-6 mt-8 animate-roll-down">
+                      {Array.from({ length: selectedRateCount }).map((_, index) => (
+                        <div key={index} className="relative">
+                          {editingRateIndex === index ? (
+                            <div className="relative">
+                              <Input
+                                type="text"
+                                value={rateValues[index]}
+                                onChange={(e) => {
+                                  const value = e.target.value.replace(/[^\d.]/g, '');
+                                  const newValues = [...rateValues];
+                                  newValues[index] = value;
+                                  setRateValues(newValues);
+                                }}
+                                onBlur={() => setEditingRateIndex(null)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    setEditingRateIndex(null);
+                                  }
+                                }}
+                                placeholder="0.00"
+                                autoFocus
+                                className="w-24 h-24 text-center text-xl font-semibold rounded-full border-4 border-blue-500 bg-white focus:ring-2 focus:ring-blue-300"
+                                data-testid={`input-rate-${index}`}
+                              />
+                              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">
+                                %
+                              </span>
+                            </div>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => setEditingRateIndex(index)}
+                              className="w-24 h-24 rounded-full bg-blue-500 hover:bg-blue-600 transition-colors duration-200 flex items-center justify-center text-white font-semibold text-lg shadow-lg hover:shadow-xl"
+                              data-testid={`button-rate-circle-${index}`}
+                            >
+                              {rateValues[index] ? `${rateValues[index]}%` : '+'}
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 )}
               </div>
