@@ -21373,7 +21373,7 @@ export default function AdminAddClient() {
                             return (
                               <div key={index} className="flex justify-center">
                                 <div className="flex items-center px-3 rounded-md w-3/4" style={{ backgroundColor: '#1a3373' }}>
-                                  <span className="text-white text-xl">$</span>
+                                  <span className="text-white text-sm">$</span>
                                   <Input
                                     type="text"
                                     placeholder=""
