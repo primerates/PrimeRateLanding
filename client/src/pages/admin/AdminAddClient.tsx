@@ -20837,7 +20837,7 @@ export default function AdminAddClient() {
                     </div>
 
                     {/* Existing Loan Balance Card */}
-                    <Card className="mt-8 transition-all duration-700 animate-roll-down">
+                    <Card className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-green-500">
                       <CardContent className="pt-6 space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                           <div className="flex items-center justify-end pr-4">
@@ -20909,7 +20909,7 @@ export default function AdminAddClient() {
                     </Card>
 
                     {/* Rate Details Section */}
-                    <Card className="mt-8 transition-all duration-700 animate-roll-down">
+                    <Card className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-blue-500">
                       <CardContent className="pt-6 space-y-6">
                         {/* Rate Buy Down Row */}
                         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -21185,7 +21185,7 @@ export default function AdminAddClient() {
                     </Card>
 
                     {/* New Est. Loan Amount & New Monthly Payment Card */}
-                    <Card className="mt-8 transition-all duration-700 animate-roll-down">
+                    <Card className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-cyan-500">
                       <CardContent className="pt-6 space-y-6">
                         {/* New Est. Loan Amount Row */}
                         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
