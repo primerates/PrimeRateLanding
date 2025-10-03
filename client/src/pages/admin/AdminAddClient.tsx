@@ -20690,10 +20690,10 @@ export default function AdminAddClient() {
                       <Label className="text-base font-semibold">Client:</Label>
                       <div className="grid grid-cols-[180px_180px_1fr] gap-4 items-center">
                         <Select>
-                          <SelectTrigger className="w-[200px] border-none shadow-none focus:ring-0" data-testid="select-client">
+                          <SelectTrigger className="w-[200px]" data-testid="select-client">
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
-                          <SelectContent className="text-black">
+                          <SelectContent>
                             <SelectItem value="select" data-testid="select-client-select">Select</SelectItem>
                             <SelectItem value="new-client" data-testid="select-client-new">New Client</SelectItem>
                             <SelectItem value="repeat-client" data-testid="select-client-repeat">Repeat Client</SelectItem>
@@ -20704,10 +20704,10 @@ export default function AdminAddClient() {
                         <div className="flex items-center gap-4">
                           <Label className="text-base font-semibold">Source:</Label>
                           <Select>
-                            <SelectTrigger className="w-[200px] border-none shadow-none focus:ring-0" data-testid="select-source">
+                            <SelectTrigger className="w-[200px]" data-testid="select-source">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
-                            <SelectContent className="text-black">
+                            <SelectContent>
                               <SelectItem value="select" data-testid="select-source-select">Select</SelectItem>
                               <SelectItem value="direct-mail" data-testid="select-source-direct-mail">Direct Mail</SelectItem>
                               <SelectItem value="social-media" data-testid="select-source-social-media">Social Media</SelectItem>
