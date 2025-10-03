@@ -20555,11 +20555,15 @@ export default function AdminAddClient() {
                     <div className="flex items-center gap-8">
                       <div style={{ width: '150px' }}></div>
                       <div className="grid grid-cols-[180px_180px_180px_180px_180px] gap-4">
-                        <div className="flex justify-start ml-10">
-                          <div className="w-[22px] h-[22px] rounded-full bg-blue-900 flex items-center justify-center">
-                            <DollarSign className="h-4 w-4 text-white" />
+                        {Array.from({ length: 5 }).map((_, index) => (
+                          <div key={index} className="flex justify-start ml-10">
+                            {index < selectedRateCount && (
+                              <div className="w-[22px] h-[22px] rounded-full bg-blue-900 flex items-center justify-center">
+                                <DollarSign className="h-4 w-4 text-white" />
+                              </div>
+                            )}
                           </div>
-                        </div>
+                        ))}
                       </div>
                     </div>
                     <Button
