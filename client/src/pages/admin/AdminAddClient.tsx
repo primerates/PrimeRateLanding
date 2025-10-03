@@ -20756,53 +20756,222 @@ export default function AdminAddClient() {
                 
                 {/* Blue Circle Rate Input Buttons - Aligned under Type, Property, Client, Source */}
                 {showRateCircles && selectedRateCount > 0 && (
-                  <div className="animate-roll-down px-4" style={{ marginTop: '24px' }}>
-                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                      {/* Empty space for Quote column */}
-                      <div></div>
-                      {/* Circles aligned under Type, Property, Client, Source */}
-                      {Array.from({ length: selectedRateCount }).map((_, index) => (
-                        <div key={index} className="flex justify-center">
-                          {editingRateIndex === index ? (
-                            <div className="relative">
+                  <>
+                    <div className="animate-roll-down px-4" style={{ marginTop: '24px' }}>
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        {/* Empty space for Quote column */}
+                        <div></div>
+                        {/* Circles aligned under Type, Property, Client, Source */}
+                        {Array.from({ length: selectedRateCount }).map((_, index) => (
+                          <div key={index} className="flex justify-center">
+                            {editingRateIndex === index ? (
+                              <div className="relative">
+                                <Input
+                                  type="text"
+                                  value={rateValues[index]}
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(/[^\d.]/g, '');
+                                    const newValues = [...rateValues];
+                                    newValues[index] = value;
+                                    setRateValues(newValues);
+                                  }}
+                                  onBlur={() => setEditingRateIndex(null)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                      setEditingRateIndex(null);
+                                    }
+                                  }}
+                                  placeholder="0.00"
+                                  autoFocus
+                                  className="w-[86px] h-[86px] text-center text-xl font-semibold rounded-full border-4 border-blue-500 bg-white focus:ring-2 focus:ring-blue-300"
+                                  data-testid={`input-rate-${index}`}
+                                />
+                                <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">
+                                  %
+                                </span>
+                              </div>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => setEditingRateIndex(index)}
+                                className="w-[86px] h-[86px] rounded-full bg-blue-500 hover:bg-blue-600 transition-colors duration-200 flex items-center justify-center text-white font-semibold text-lg shadow-lg hover:shadow-xl"
+                                data-testid={`button-rate-circle-${index}`}
+                              >
+                                {rateValues[index] ? `${rateValues[index]}%` : '%'}
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Rate Details Section */}
+                    <div className="mt-8 px-4 space-y-6 animate-roll-down">
+                      {/* Rate Buy Down Row */}
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div className="flex items-center justify-end pr-4">
+                          <Label className="text-sm font-semibold text-right">Rate Buy Down</Label>
+                        </div>
+                        {Array.from({ length: selectedRateCount }).map((_, index) => (
+                          <div key={index} className="flex justify-center">
+                            <Input
+                              type="text"
+                              placeholder="$0.00"
+                              className="text-center font-medium"
+                              data-testid={`input-rate-buy-down-${index}`}
+                            />
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Cash Out Amount Row */}
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div className="flex items-center justify-end pr-4">
+                          <Label className="text-sm font-semibold text-right">Cash Out Amount</Label>
+                        </div>
+                        {Array.from({ length: selectedRateCount }).map((_, index) => (
+                          <div key={index} className="flex justify-center">
+                            <Input
+                              type="text"
+                              placeholder="$0.00"
+                              className="text-center font-medium"
+                              data-testid={`input-cash-out-amount-${index}`}
+                            />
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Third Party Services Section */}
+                      <div className="border-t pt-6">
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-3">
+                          <div className="flex items-center justify-end pr-4">
+                            <Label className="text-base font-bold text-right">Third Party Services</Label>
+                          </div>
+                        </div>
+
+                        {/* VA Funding Fee */}
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-2">
+                          <div className="flex items-center justify-end pr-4">
+                            <Label className="text-sm text-right text-muted-foreground">• VA Funding Fee</Label>
+                          </div>
+                          {Array.from({ length: selectedRateCount }).map((_, index) => (
+                            <div key={index} className="flex justify-center">
                               <Input
                                 type="text"
-                                value={rateValues[index]}
-                                onChange={(e) => {
-                                  const value = e.target.value.replace(/[^\d.]/g, '');
-                                  const newValues = [...rateValues];
-                                  newValues[index] = value;
-                                  setRateValues(newValues);
-                                }}
-                                onBlur={() => setEditingRateIndex(null)}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') {
-                                    setEditingRateIndex(null);
-                                  }
-                                }}
-                                placeholder="0.00"
-                                autoFocus
-                                className="w-[86px] h-[86px] text-center text-xl font-semibold rounded-full border-4 border-blue-500 bg-white focus:ring-2 focus:ring-blue-300"
-                                data-testid={`input-rate-${index}`}
+                                placeholder="$0.00"
+                                className="text-center text-sm"
+                                data-testid={`input-va-funding-fee-${index}`}
                               />
-                              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">
-                                %
-                              </span>
                             </div>
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={() => setEditingRateIndex(index)}
-                              className="w-[86px] h-[86px] rounded-full bg-blue-500 hover:bg-blue-600 transition-colors duration-200 flex items-center justify-center text-white font-semibold text-lg shadow-lg hover:shadow-xl"
-                              data-testid={`button-rate-circle-${index}`}
-                            >
-                              {rateValues[index] ? `${rateValues[index]}%` : '%'}
-                            </button>
-                          )}
+                          ))}
                         </div>
-                      ))}
+
+                        {/* VA Appraisal Inspection */}
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-2">
+                          <div className="flex items-center justify-end pr-4">
+                            <Label className="text-sm text-right text-muted-foreground">• VA Appraisal Inspection</Label>
+                          </div>
+                          {Array.from({ length: selectedRateCount }).map((_, index) => (
+                            <div key={index} className="flex justify-center">
+                              <Input
+                                type="text"
+                                placeholder="$0.00"
+                                className="text-center text-sm"
+                                data-testid={`input-va-appraisal-${index}`}
+                              />
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* VA Termite Report */}
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-2">
+                          <div className="flex items-center justify-end pr-4">
+                            <Label className="text-sm text-right text-muted-foreground">• VA Termite Report</Label>
+                          </div>
+                          {Array.from({ length: selectedRateCount }).map((_, index) => (
+                            <div key={index} className="flex justify-center">
+                              <Input
+                                type="text"
+                                placeholder="$0.00"
+                                className="text-center text-sm"
+                                data-testid={`input-va-termite-${index}`}
+                              />
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* VA Underwriting Services */}
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-2">
+                          <div className="flex items-center justify-end pr-4">
+                            <Label className="text-sm text-right text-muted-foreground">• VA Underwriting Services</Label>
+                          </div>
+                          {Array.from({ length: selectedRateCount }).map((_, index) => (
+                            <div key={index} className="flex justify-center">
+                              <Input
+                                type="text"
+                                placeholder="$0.00"
+                                className="text-center text-sm"
+                                data-testid={`input-va-underwriting-${index}`}
+                              />
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Title & Escrow: Pay Off Interest */}
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-2">
+                          <div className="flex items-center justify-end pr-4">
+                            <Label className="text-sm text-right text-muted-foreground">• Title & Escrow: Pay Off Interest</Label>
+                          </div>
+                          {Array.from({ length: selectedRateCount }).map((_, index) => (
+                            <div key={index} className="flex justify-center">
+                              <Input
+                                type="text"
+                                placeholder="$0.00"
+                                className="text-center text-sm"
+                                data-testid={`input-title-escrow-${index}`}
+                              />
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* State Tax & Recording */}
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                          <div className="flex items-center justify-end pr-4">
+                            <Label className="text-sm text-right text-muted-foreground">• State Tax & Recording</Label>
+                          </div>
+                          {Array.from({ length: selectedRateCount }).map((_, index) => (
+                            <div key={index} className="flex justify-center">
+                              <Input
+                                type="text"
+                                placeholder="$0.00"
+                                className="text-center text-sm"
+                                data-testid={`input-state-tax-${index}`}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* New Escrow Reserves Section */}
+                      <div className="border-t pt-6">
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                          <div className="flex items-center justify-end pr-4">
+                            <Label className="text-base font-bold text-right">New Escrow Reserves</Label>
+                          </div>
+                          {Array.from({ length: selectedRateCount }).map((_, index) => (
+                            <div key={index} className="flex justify-center">
+                              <Input
+                                type="text"
+                                placeholder="$0.00"
+                                className="text-center font-medium"
+                                data-testid={`input-escrow-reserves-${index}`}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </>
                 )}
               </div>
             </TabsContent>
