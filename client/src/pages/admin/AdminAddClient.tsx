@@ -924,6 +924,7 @@ export default function AdminAddClient() {
   const [titleEscrowValues, setTitleEscrowValues] = useState<string[]>(['', '', '', '', '']);
   const [stateTaxValues, setStateTaxValues] = useState<string[]>(['', '', '', '', '']);
   const [escrowReservesValues, setEscrowReservesValues] = useState<string[]>(['', '', '', '', '']);
+  const [existingLoanBalanceValues, setExistingLoanBalanceValues] = useState<string[]>(['', '', '', '', '']);
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
   const [isReadOnlyCurrentLoanOpen, setIsReadOnlyCurrentLoanOpen] = useState(true);
@@ -20815,6 +20816,42 @@ export default function AdminAddClient() {
                         ))}
                       </div>
                     </div>
+
+                    {/* Existing Loan Balance Card */}
+                    <Card className="mt-8 transition-all duration-700 animate-roll-down">
+                      <CardContent className="pt-6">
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                          <div className="flex items-center justify-end pr-4">
+                            <Label className="text-base font-semibold text-right">Existing Loan Balance:</Label>
+                          </div>
+                          {Array.from({ length: selectedRateCount }).map((_, index) => {
+                            const numVal = existingLoanBalanceValues[index] ? existingLoanBalanceValues[index].replace(/[^\d]/g, '') : '';
+                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            
+                            return (
+                              <div key={index} className="flex justify-center">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                  <span className="text-muted-foreground text-sm">$</span>
+                                  <Input
+                                    type="text"
+                                    placeholder="0"
+                                    value={displayValue}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^\d]/g, '');
+                                      const newValues = [...existingLoanBalanceValues];
+                                      newValues[index] = value;
+                                      setExistingLoanBalanceValues(newValues);
+                                    }}
+                                    className="border-0 bg-transparent text-center font-medium focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    data-testid={`input-existing-loan-balance-${index}`}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </CardContent>
+                    </Card>
 
                     {/* Rate Details Section */}
                     <Card className="mt-8 transition-all duration-700 animate-roll-down">
