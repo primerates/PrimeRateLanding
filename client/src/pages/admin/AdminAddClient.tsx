@@ -21065,7 +21065,7 @@ export default function AdminAddClient() {
                                   }}
                                   placeholder="0.00"
                                   autoFocus
-                                  className="w-[86px] h-[86px] text-center text-lg font-semibold rounded-full border-4 border-blue-500 bg-white focus:ring-2 focus:ring-blue-300"
+                                  className="w-[86px] h-[86px] text-center text-xl font-semibold rounded-full border-4 border-blue-500 bg-white focus:ring-2 focus:ring-blue-300"
                                   data-testid={`input-rate-${index}`}
                                 />
                                 <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">
@@ -21076,7 +21076,7 @@ export default function AdminAddClient() {
                               <button
                                 type="button"
                                 onClick={() => setEditingRateIndex(index)}
-                                className="w-[86px] h-[86px] rounded-full bg-blue-500 hover:bg-blue-600 transition-colors duration-200 flex items-center justify-center text-white font-semibold text-base shadow-lg hover:shadow-xl"
+                                className="w-[86px] h-[86px] rounded-full bg-blue-500 hover:bg-blue-600 transition-colors duration-200 flex items-center justify-center text-white font-semibold text-lg shadow-lg hover:shadow-xl"
                                 data-testid={`button-rate-circle-${index}`}
                               >
                                 {rateValues[index] ? `${rateValues[index]}%` : '+'}
