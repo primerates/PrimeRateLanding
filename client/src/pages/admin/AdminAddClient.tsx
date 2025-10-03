@@ -20806,7 +20806,9 @@ export default function AdminAddClient() {
                               <button
                                 type="button"
                                 onClick={() => setEditingRateIndex(index)}
-                                className="w-[86px] h-[86px] rounded-full transition-colors duration-200 flex items-center justify-center text-white font-semibold text-lg shadow-lg hover:shadow-xl border-2"
+                                className={`w-[86px] h-[86px] rounded-full transition-colors duration-200 flex items-center justify-center text-white font-semibold text-lg border-2 ${
+                                  index === 0 ? 'shadow-2xl hover:shadow-2xl' : 'shadow-lg hover:shadow-xl'
+                                }`}
                                 style={{
                                   backgroundColor: '#1a3373',
                                   borderColor: '#0d1a3d'
