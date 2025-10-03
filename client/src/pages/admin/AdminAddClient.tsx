@@ -20844,7 +20844,7 @@ export default function AdminAddClient() {
 
                     {/* Existing Loan Balance Card */}
                     <Card className="mt-8 transition-all duration-700 animate-roll-down">
-                      <CardContent className="pt-6">
+                      <CardContent className="pt-6 space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-base font-semibold text-right">Existing Loan Balance:</Label>
@@ -20877,6 +20877,40 @@ export default function AdminAddClient() {
                             );
                           })}
                         </div>
+
+                        {/* Cash Out Amount Row */}
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                          <div className="flex items-center justify-end pr-4">
+                            <Label className="text-base font-semibold text-right">Cash Out Amount</Label>
+                          </div>
+                          {Array.from({ length: selectedRateCount }).map((_, index) => {
+                            const numVal = cashOutAmountValues[index] ? cashOutAmountValues[index].replace(/[^\d]/g, '') : '';
+                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            const tabIndex = 5 + index; // Row 1: tabs 5, 6, 7, 8
+                            
+                            return (
+                              <div key={index} className="flex justify-center">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                  <span className="text-muted-foreground text-sm">$</span>
+                                  <Input
+                                    type="text"
+                                    placeholder="0"
+                                    value={displayValue}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^\d]/g, '');
+                                      const newValues = [...cashOutAmountValues];
+                                      newValues[index] = value;
+                                      setCashOutAmountValues(newValues);
+                                    }}
+                                    tabIndex={tabIndex}
+                                    className="border-0 bg-transparent text-center font-medium focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    data-testid={`input-cash-out-amount-${index}`}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
                       </CardContent>
                     </Card>
 
@@ -20891,7 +20925,7 @@ export default function AdminAddClient() {
                           {Array.from({ length: selectedRateCount }).map((_, index) => {
                             const numVal = rateBuyDownValues[index] ? rateBuyDownValues[index].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                            const tabIndex = 5 + index; // Row 1: tabs 5, 6, 7, 8
+                            const tabIndex = 9 + index; // Row 2: tabs 9, 10, 11, 12
                             
                             return (
                               <div key={index} className="flex justify-center">
@@ -20916,40 +20950,6 @@ export default function AdminAddClient() {
                             );
                           })}
                         </div>
-
-                      {/* Cash Out Amount Row */}
-                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                        <div className="flex items-center justify-end pr-4">
-                          <Label className="text-base font-semibold text-right">Cash Out Amount</Label>
-                        </div>
-                        {Array.from({ length: selectedRateCount }).map((_, index) => {
-                          const numVal = cashOutAmountValues[index] ? cashOutAmountValues[index].replace(/[^\d]/g, '') : '';
-                          const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                          const tabIndex = 9 + index; // Row 2: tabs 9, 10, 11, 12
-                          
-                          return (
-                            <div key={index} className="flex justify-center">
-                              <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
-                                <span className="text-muted-foreground text-sm">$</span>
-                                <Input
-                                  type="text"
-                                  placeholder="0"
-                                  value={displayValue}
-                                  onChange={(e) => {
-                                    const value = e.target.value.replace(/[^\d]/g, '');
-                                    const newValues = [...cashOutAmountValues];
-                                    newValues[index] = value;
-                                    setCashOutAmountValues(newValues);
-                                  }}
-                                  tabIndex={tabIndex}
-                                  className="border-0 bg-transparent text-center font-medium focus-visible:ring-0 focus-visible:ring-offset-0"
-                                  data-testid={`input-cash-out-amount-${index}`}
-                                />
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
 
                       {/* Third Party Services Section */}
                       <div className="border-t pt-6">
