@@ -925,6 +925,11 @@ export default function AdminAddClient() {
   const [stateTaxValues, setStateTaxValues] = useState<string[]>(['', '', '', '', '']);
   const [escrowReservesValues, setEscrowReservesValues] = useState<string[]>(['', '', '', '', '']);
   const [existingLoanBalanceValues, setExistingLoanBalanceValues] = useState<string[]>(['', '', '', '', '']);
+  
+  // State for New Est. Loan Amount and New Monthly Payment sections
+  const [newEstLoanAmountValues, setNewEstLoanAmountValues] = useState<string[]>(['', '', '', '', '']);
+  const [newMonthlyPaymentValues, setNewMonthlyPaymentValues] = useState<string[]>(['', '', '', '', '']);
+  
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
   const [isReadOnlyCurrentLoanOpen, setIsReadOnlyCurrentLoanOpen] = useState(true);
@@ -21172,6 +21177,75 @@ export default function AdminAddClient() {
                           })}
                         </div>
                       </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* New Est. Loan Amount & New Monthly Payment Card */}
+                    <Card className="mt-8 transition-all duration-700 animate-roll-down">
+                      <CardContent className="pt-6 space-y-6">
+                        {/* New Est. Loan Amount Row */}
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                          <div className="flex items-center justify-end pr-4">
+                            <Label className="text-base font-semibold text-right">New Est. Loan Amount:</Label>
+                          </div>
+                          {Array.from({ length: selectedRateCount }).map((_, index) => {
+                            const numVal = newEstLoanAmountValues[index] ? newEstLoanAmountValues[index].replace(/[^\d]/g, '') : '';
+                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            
+                            return (
+                              <div key={index} className="flex justify-center">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                  <span className="text-muted-foreground text-sm">$</span>
+                                  <Input
+                                    type="text"
+                                    placeholder="0"
+                                    value={displayValue}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^\d]/g, '');
+                                      const newValues = [...newEstLoanAmountValues];
+                                      newValues[index] = value;
+                                      setNewEstLoanAmountValues(newValues);
+                                    }}
+                                    className="border-0 bg-transparent text-center font-medium text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    data-testid={`input-new-est-loan-amount-${index}`}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* New Monthly Payment Row */}
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                          <div className="flex items-center justify-end pr-4">
+                            <Label className="text-base font-semibold text-right">New Monthly Payment:</Label>
+                          </div>
+                          {Array.from({ length: selectedRateCount }).map((_, index) => {
+                            const numVal = newMonthlyPaymentValues[index] ? newMonthlyPaymentValues[index].replace(/[^\d]/g, '') : '';
+                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            
+                            return (
+                              <div key={index} className="flex justify-center">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                  <span className="text-muted-foreground text-sm">$</span>
+                                  <Input
+                                    type="text"
+                                    placeholder="0"
+                                    value={displayValue}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^\d]/g, '');
+                                      const newValues = [...newMonthlyPaymentValues];
+                                      newValues[index] = value;
+                                      setNewMonthlyPaymentValues(newValues);
+                                    }}
+                                    className="border-0 bg-transparent text-center font-medium text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    data-testid={`input-new-monthly-payment-${index}`}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
                       </CardContent>
                     </Card>
                   </>
