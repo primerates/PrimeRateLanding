@@ -19,7 +19,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Wallet } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw } from 'lucide-react';
 import { SiZillow } from 'react-icons/si';
 import { MdRealEstateAgent } from 'react-icons/md';
 import { FaHome } from 'react-icons/fa';
@@ -20551,21 +20551,7 @@ export default function AdminAddClient() {
             <TabsContent value="quote" className="space-y-6">
               <div>
                 <Card className="mb-6 transition-all duration-700 animate-roll-down">
-                  <div className="flex justify-between items-center pt-4 px-4">
-                    <div className="flex items-center gap-8">
-                      <div style={{ width: '150px' }}></div>
-                      <div className="grid grid-cols-[180px_180px_180px_180px_180px] gap-4">
-                        {Array.from({ length: 5 }).map((_, index) => (
-                          <div key={index} className="flex justify-start ml-10">
-                            {index < selectedRateCount && (
-                              <div className="w-[22px] h-[22px] rounded-full bg-blue-900 flex items-center justify-center">
-                                <Wallet className="h-3.5 w-3.5 text-white" />
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                  <div className="flex justify-end items-center pt-4 px-4">
                     <Button
                       variant="ghost"
                       size="sm"
