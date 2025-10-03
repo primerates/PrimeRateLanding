@@ -20685,21 +20685,40 @@ export default function AdminAddClient() {
                         </div>
                       </div>
 
-                      {/* Client and Source Row */}
+                      {/* Property, Client and Source Row */}
                     <div className="grid grid-cols-[150px_1fr] items-center gap-8">
-                      <Label className="text-base font-semibold">Client:</Label>
-                      <div className="grid grid-cols-[180px_180px_1fr] gap-4 items-center">
+                      <div className="flex items-center gap-4">
+                        <Label className="text-base font-semibold">Property:</Label>
                         <Select>
-                          <SelectTrigger className="w-[200px]" data-testid="select-client">
+                          <SelectTrigger className="w-[200px]" data-testid="select-property">
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="select" data-testid="select-client-select">Select</SelectItem>
-                            <SelectItem value="new-client" data-testid="select-client-new">New Client</SelectItem>
-                            <SelectItem value="repeat-client" data-testid="select-client-repeat">Repeat Client</SelectItem>
-                            <SelectItem value="active-loan" data-testid="select-client-active-loan">Active Loan</SelectItem>
+                            <SelectItem value="select" data-testid="select-property-select">Select</SelectItem>
+                            <SelectItem value="primary-residence" data-testid="select-property-primary">Primary Residence</SelectItem>
+                            <SelectItem value="second-home" data-testid="select-property-second-home">Second Home</SelectItem>
+                            <SelectItem value="investment-property" data-testid="select-property-investment">Investment Property</SelectItem>
+                            <SelectItem value="home-purchase" data-testid="select-property-home-purchase">Home Purchase</SelectItem>
+                            <SelectItem value="duplex" data-testid="select-property-duplex">Duplex</SelectItem>
+                            <SelectItem value="multi-family" data-testid="select-property-multi-family">Multi-Family</SelectItem>
                           </SelectContent>
                         </Select>
+                      </div>
+                      <div className="grid grid-cols-[180px_180px_1fr] gap-4 items-center">
+                        <div className="flex items-center gap-4">
+                          <Label className="text-base font-semibold">Client:</Label>
+                          <Select>
+                            <SelectTrigger className="w-[200px]" data-testid="select-client">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-client-select">Select</SelectItem>
+                              <SelectItem value="new-client" data-testid="select-client-new">New Client</SelectItem>
+                              <SelectItem value="repeat-client" data-testid="select-client-repeat">Repeat Client</SelectItem>
+                              <SelectItem value="active-loan" data-testid="select-client-active-loan">Active Loan</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                         <div></div>
                         <div className="flex items-center gap-4">
                           <Label className="text-base font-semibold">Source:</Label>
