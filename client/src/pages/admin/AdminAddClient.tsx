@@ -20690,9 +20690,10 @@ export default function AdminAddClient() {
                       <Label className="text-base font-semibold">Client:</Label>
                       <Select>
                         <SelectTrigger className="w-[200px] border-none shadow-none focus:ring-0" data-testid="select-client">
-                          <SelectValue placeholder="Select client type" />
+                          <SelectValue placeholder="Select" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="text-black">
+                          <SelectItem value="select" data-testid="select-client-select">Select</SelectItem>
                           <SelectItem value="new-client" data-testid="select-client-new">New Client</SelectItem>
                           <SelectItem value="repeat-client" data-testid="select-client-repeat">Repeat Client</SelectItem>
                           <SelectItem value="active-loan" data-testid="select-client-active-loan">Active Loan</SelectItem>
