@@ -20800,10 +20800,24 @@ export default function AdminAddClient() {
                                   onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
                                       setEditingRateIndex(null);
+                                    } else if (e.key === 'Tab' && !e.shiftKey) {
+                                      e.preventDefault();
+                                      if (index < selectedRateCount - 1) {
+                                        setEditingRateIndex(index + 1);
+                                      } else {
+                                        setEditingRateIndex(null);
+                                        setTimeout(() => {
+                                          const firstBalanceInput = document.querySelector('[data-testid="input-existing-loan-balance-0"]');
+                                          if (firstBalanceInput instanceof HTMLElement) {
+                                            firstBalanceInput.focus();
+                                          }
+                                        }, 0);
+                                      }
                                     }
                                   }}
                                   placeholder="0.00"
                                   autoFocus
+                                  tabIndex={index + 1}
                                   className="w-[86px] h-[86px] text-center text-xl font-semibold rounded-full border-4 border-blue-500 bg-white focus:ring-2 focus:ring-blue-300"
                                   data-testid={`input-rate-${index}`}
                                 />
@@ -20815,6 +20829,13 @@ export default function AdminAddClient() {
                               <button
                                 type="button"
                                 onClick={() => setEditingRateIndex(index)}
+                                tabIndex={index + 1}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    setEditingRateIndex(index);
+                                  }
+                                }}
                                 className="w-[86px] h-[86px] rounded-full transition-colors duration-200 flex items-center justify-center text-white font-semibold text-lg shadow-lg hover:shadow-xl border-2"
                                 style={{
                                   backgroundColor: '#1a3373',
@@ -20846,7 +20867,7 @@ export default function AdminAddClient() {
                           {Array.from({ length: selectedRateCount }).map((_, index) => {
                             const numVal = existingLoanBalanceValues[index] ? existingLoanBalanceValues[index].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                            const tabIndex = index + 1; // Row 0: tabs 1, 2, 3, 4
+                            const tabIndex = selectedRateCount + index + 1; // After circles: tabs 5, 6, 7, 8 (for 4 circles)
                             
                             return (
                               <div key={index} className="flex justify-center">
@@ -20880,7 +20901,7 @@ export default function AdminAddClient() {
                           {Array.from({ length: selectedRateCount }).map((_, index) => {
                             const numVal = cashOutAmountValues[index] ? cashOutAmountValues[index].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                            const tabIndex = 5 + index; // Row 1: tabs 5, 6, 7, 8
+                            const tabIndex = (2 * selectedRateCount) + index + 1; // After existing loan balance
                             
                             return (
                               <div key={index} className="flex justify-center">
@@ -20919,7 +20940,7 @@ export default function AdminAddClient() {
                           {Array.from({ length: selectedRateCount }).map((_, index) => {
                             const numVal = rateBuyDownValues[index] ? rateBuyDownValues[index].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                            const tabIndex = 9 + index; // Row 2: tabs 9, 10, 11, 12
+                            const tabIndex = (3 * selectedRateCount) + index + 1; // After cash out amount
                             
                             return (
                               <div key={index} className="flex justify-center">
@@ -20961,7 +20982,7 @@ export default function AdminAddClient() {
                           {Array.from({ length: selectedRateCount }).map((_, index) => {
                             const numVal = vaFundingFeeValues[index] ? vaFundingFeeValues[index].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                            const tabIndex = 13 + index; // Row 3: tabs 13, 14, 15, 16
+                            const tabIndex = (4 * selectedRateCount) + index + 1; // After rate buy down
                             
                             return (
                               <div key={index} className="flex justify-center">
