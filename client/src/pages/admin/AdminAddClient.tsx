@@ -18687,6 +18687,113 @@ export default function AdminAddClient() {
                 </CardContent>
               </Card>
 
+              {/* New Loan Details Card */}
+              <Card className="transition-all duration-700">
+                <CardContent className="pt-6">
+                  <div className="space-y-6">
+                    {/* Section 1: New Est. Loan Amount */}
+                    <div>
+                      <Label className="text-lg font-semibold mb-4 block">1. New Est. Loan Amount</Label>
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="new-est-loan-amount-1">Est. Loan Amount 1</Label>
+                          <CurrencyInput
+                            form={form}
+                            name="newLoanDetails.estLoanAmount1"
+                            placeholder="$0"
+                            id="new-est-loan-amount-1"
+                            data-testid="input-new-est-loan-amount-1"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="new-est-loan-amount-2">Est. Loan Amount 2</Label>
+                          <CurrencyInput
+                            form={form}
+                            name="newLoanDetails.estLoanAmount2"
+                            placeholder="$0"
+                            id="new-est-loan-amount-2"
+                            data-testid="input-new-est-loan-amount-2"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="new-est-loan-amount-3">Est. Loan Amount 3</Label>
+                          <CurrencyInput
+                            form={form}
+                            name="newLoanDetails.estLoanAmount3"
+                            placeholder="$0"
+                            id="new-est-loan-amount-3"
+                            data-testid="input-new-est-loan-amount-3"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="new-est-loan-amount-4">Est. Loan Amount 4</Label>
+                          <CurrencyInput
+                            form={form}
+                            name="newLoanDetails.estLoanAmount4"
+                            placeholder="$0"
+                            id="new-est-loan-amount-4"
+                            data-testid="input-new-est-loan-amount-4"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Section 2: New Monthly Payment */}
+                    <div>
+                      <Label className="text-lg font-semibold mb-4 block">2. New Monthly Payment</Label>
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="new-monthly-payment-1">Monthly Payment 1</Label>
+                          <CurrencyInput
+                            form={form}
+                            name="newLoanDetails.monthlyPayment1"
+                            placeholder="$0"
+                            id="new-monthly-payment-1"
+                            data-testid="input-new-monthly-payment-1"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="new-monthly-payment-2">Monthly Payment 2</Label>
+                          <CurrencyInput
+                            form={form}
+                            name="newLoanDetails.monthlyPayment2"
+                            placeholder="$0"
+                            id="new-monthly-payment-2"
+                            data-testid="input-new-monthly-payment-2"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="new-monthly-payment-3">Monthly Payment 3</Label>
+                          <CurrencyInput
+                            form={form}
+                            name="newLoanDetails.monthlyPayment3"
+                            placeholder="$0"
+                            id="new-monthly-payment-3"
+                            data-testid="input-new-monthly-payment-3"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="new-monthly-payment-4">Monthly Payment 4</Label>
+                          <CurrencyInput
+                            form={form}
+                            name="newLoanDetails.monthlyPayment4"
+                            placeholder="$0"
+                            id="new-monthly-payment-4"
+                            data-testid="input-new-monthly-payment-4"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* New Refinance Loan Card */}
               {newRefinanceLoanCards.length > 0 && newRefinanceLoanCards.map((cardId, index) => {
                 const isOpen = newRefinanceLoanCardStates[cardId] ?? true;
