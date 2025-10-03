@@ -20757,6 +20757,16 @@ export default function AdminAddClient() {
                             </SelectContent>
                           </Select>
                         </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="mid-fico-input">Mid FICO</Label>
+                          <Input
+                            id="mid-fico-input"
+                            type="text"
+                            placeholder="Enter FICO score"
+                            data-testid="input-mid-fico"
+                          />
+                        </div>
                       </div>
                     </CardContent>
                   )}
