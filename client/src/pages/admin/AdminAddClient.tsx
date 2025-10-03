@@ -20652,23 +20652,42 @@ export default function AdminAddClient() {
                         </div>
                       </div>
 
-                      {/* Property Row */}
+                      {/* Property and Category Row */}
                     <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                       <Label className="text-base font-semibold">Property:</Label>
-                      <Select>
-                        <SelectTrigger className="w-[200px]" data-testid="select-property">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="select" data-testid="select-property-select">Select</SelectItem>
-                          <SelectItem value="primary-residence" data-testid="select-property-primary">Primary Residence</SelectItem>
-                          <SelectItem value="second-home" data-testid="select-property-second-home">Second Home</SelectItem>
-                          <SelectItem value="investment-property" data-testid="select-property-investment">Investment Property</SelectItem>
-                          <SelectItem value="home-purchase" data-testid="select-property-home-purchase">Home Purchase</SelectItem>
-                          <SelectItem value="duplex" data-testid="select-property-duplex">Duplex</SelectItem>
-                          <SelectItem value="multi-family" data-testid="select-property-multi-family">Multi-Family</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <div className="flex items-center gap-16">
+                        <Select>
+                          <SelectTrigger className="w-[200px]" data-testid="select-property">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="select" data-testid="select-property-select">Select</SelectItem>
+                            <SelectItem value="primary-residence" data-testid="select-property-primary">Primary Residence</SelectItem>
+                            <SelectItem value="second-home" data-testid="select-property-second-home">Second Home</SelectItem>
+                            <SelectItem value="investment-property" data-testid="select-property-investment">Investment Property</SelectItem>
+                            <SelectItem value="home-purchase" data-testid="select-property-home-purchase">Home Purchase</SelectItem>
+                            <SelectItem value="duplex" data-testid="select-property-duplex">Duplex</SelectItem>
+                            <SelectItem value="multi-family" data-testid="select-property-multi-family">Multi-Family</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <div className="flex items-center gap-4">
+                          <Label className="text-base font-semibold">Category:</Label>
+                          <Select>
+                            <SelectTrigger className="w-[200px]" data-testid="select-category">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-category-select">Select</SelectItem>
+                              <SelectItem value="va" data-testid="select-category-va">VA</SelectItem>
+                              <SelectItem value="va-jumbo" data-testid="select-category-va-jumbo">VA Jumbo</SelectItem>
+                              <SelectItem value="fha" data-testid="select-category-fha">FHA</SelectItem>
+                              <SelectItem value="conventional" data-testid="select-category-conventional">Conventional</SelectItem>
+                              <SelectItem value="conventional-jumbo" data-testid="select-category-conventional-jumbo">Conventional Jumbo</SelectItem>
+                              <SelectItem value="non-qm" data-testid="select-category-non-qm">Non-QM</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
                     </div>
                     </CardContent>
                   )}
@@ -20677,76 +20696,6 @@ export default function AdminAddClient() {
                 {!isQuoteCardsMinimized && (
                 <div className="space-y-6 mb-6">
                   <Card className="transition-all duration-700 animate-roll-down-dti-1">
-                    <CardContent className="pt-6 space-y-6">
-                      {/* Category Row */}
-                      <div className="grid grid-cols-[150px_1fr] items-center gap-8">
-                        <Label className="text-base font-semibold">Category:</Label>
-                        <div className="grid grid-cols-[180px_180px_180px_180px_180px_180px] gap-4">
-                          {/* VA */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="loan-category-va"
-                              data-testid="checkbox-loan-category-va"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                            />
-                            <Label htmlFor="loan-category-va">VA</Label>
-                          </div>
-                          
-                          {/* VA Jumbo */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="loan-category-va-jumbo"
-                              data-testid="checkbox-loan-category-va-jumbo"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                            />
-                            <Label htmlFor="loan-category-va-jumbo">VA Jumbo</Label>
-                          </div>
-                          
-                          {/* FHA */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="loan-category-fha"
-                              data-testid="checkbox-loan-category-fha"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                            />
-                            <Label htmlFor="loan-category-fha">FHA</Label>
-                          </div>
-                          
-                          {/* Conventional */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="loan-category-conventional"
-                              data-testid="checkbox-loan-category-conventional"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                            />
-                            <Label htmlFor="loan-category-conventional">Conventional</Label>
-                          </div>
-                          
-                          {/* FNM Jumbo */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="loan-category-fnm-jumbo"
-                              data-testid="checkbox-loan-category-fnm-jumbo"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                            />
-                            <Label htmlFor="loan-category-fnm-jumbo">FNM Jumbo</Label>
-                          </div>
-                          
-                          {/* Non-QM */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="loan-category-non-qm"
-                              data-testid="checkbox-loan-category-non-qm"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                            />
-                            <Label htmlFor="loan-category-non-qm">Non-QM</Label>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="transition-all duration-700 animate-roll-down-dti-2">
                     <CardContent className="pt-6 space-y-6">
                       {/* Type Row */}
                       <div className="grid grid-cols-[150px_1fr] items-center gap-8">
