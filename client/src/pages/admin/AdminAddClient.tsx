@@ -934,6 +934,42 @@ export default function AdminAddClient() {
   const [additionalRow1Values, setAdditionalRow1Values] = useState<string[]>(['', '', '', '', '']);
   const [additionalRow2Values, setAdditionalRow2Values] = useState<string[]>(['', '', '', '', '']);
   
+  // Calculate totals for each rate column using useMemo (like Income tab)
+  const rateColumnTotals = useMemo(() => {
+    return Array.from({ length: 5 }).map((_, index) => {
+      const values = [
+        existingLoanBalanceValues[index],
+        cashOutAmountValues[index],
+        rateBuyDownValues[index],
+        vaFundingFeeValues[index],
+        vaAppraisalValues[index],
+        vaTermiteValues[index],
+        vaUnderwritingValues[index],
+        titleEscrowValues[index],
+        stateTaxValues[index],
+        escrowReservesValues[index]
+      ];
+      
+      const total = values.reduce((sum, val) => {
+        const num = parseInt(val || '0', 10);
+        return sum + num;
+      }, 0);
+      
+      return total;
+    });
+  }, [
+    existingLoanBalanceValues,
+    cashOutAmountValues,
+    rateBuyDownValues,
+    vaFundingFeeValues,
+    vaAppraisalValues,
+    vaTermiteValues,
+    vaUnderwritingValues,
+    titleEscrowValues,
+    stateTaxValues,
+    escrowReservesValues
+  ]);
+  
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
   const [isReadOnlyCurrentLoanOpen, setIsReadOnlyCurrentLoanOpen] = useState(true);
@@ -21283,6 +21319,29 @@ export default function AdminAddClient() {
                               </div>
                             );
                           })}
+                        </div>
+
+                        {/* Total Row - Auto-calculated (like Income tab) */}
+                        <div className="border-t pt-6">
+                          <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
+                            <div className="flex items-center justify-end pr-4">
+                              <Label className="text-base font-bold text-right">Total:</Label>
+                            </div>
+                            {Array.from({ length: selectedRateCount }).map((_, index) => {
+                              const total = rateColumnTotals[index];
+                              const displayValue = total > 0 ? total.toLocaleString('en-US') : '';
+                              
+                              return (
+                                <div key={index} className="flex justify-center">
+                                  <div className="flex items-center px-3 rounded-md w-3/4">
+                                    <span className="text-base font-bold text-center w-full" data-testid={`text-total-rate-${index}`}>
+                                      {displayValue ? `$${displayValue}` : ''}
+                                    </span>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
