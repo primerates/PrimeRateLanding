@@ -20779,7 +20779,7 @@ export default function AdminAddClient() {
                 {showRateCircles && selectedRateCount > 0 && (
                   <>
                     <div className="animate-roll-down px-4" style={{ marginTop: '64px' }}>
-                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                      <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
                         {/* Empty space for Quote column */}
                         <div></div>
                         {/* Circles aligned under Type, Property, Client, Source */}
@@ -20860,7 +20860,7 @@ export default function AdminAddClient() {
                     {/* Existing Loan Balance Card */}
                     <Card className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-green-500 hover:border-2 hover:border-green-500 transition-colors">
                       <CardContent className="pt-6 space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-base font-semibold text-right">Existing Loan Balance:</Label>
                           </div>
@@ -20894,7 +20894,7 @@ export default function AdminAddClient() {
                         </div>
 
                         {/* Cash Out Amount Row */}
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-base font-semibold text-right">Cash Out Amount</Label>
                           </div>
@@ -20933,7 +20933,7 @@ export default function AdminAddClient() {
                     <Card className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-cyan-500 hover:border-2 hover:border-cyan-500 transition-colors">
                       <CardContent className="pt-6 space-y-6">
                         {/* Rate Buy Down Row */}
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-base font-semibold text-right">Rate Buy Down</Label>
                           </div>
@@ -20968,14 +20968,14 @@ export default function AdminAddClient() {
 
                       {/* Third Party Services Section */}
                       <div className="border-t pt-6">
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-3">
+                        <div className="grid gap-4 mb-3" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-base font-bold text-right">Third Party Services</Label>
                           </div>
                         </div>
 
                         {/* VA Funding Fee */}
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-2">
+                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-sm text-right text-muted-foreground">• VA Funding Fee</Label>
                           </div>
@@ -21009,7 +21009,7 @@ export default function AdminAddClient() {
                         </div>
 
                         {/* VA Appraisal Inspection */}
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-2">
+                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-sm text-right text-muted-foreground">• VA Appraisal Inspection</Label>
                           </div>
@@ -21041,7 +21041,7 @@ export default function AdminAddClient() {
                         </div>
 
                         {/* VA Termite Report */}
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-2">
+                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-sm text-right text-muted-foreground">• VA Termite Report</Label>
                           </div>
@@ -21073,7 +21073,7 @@ export default function AdminAddClient() {
                         </div>
 
                         {/* VA Underwriting Services */}
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-2">
+                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-sm text-right text-muted-foreground">• VA Underwriting Services</Label>
                           </div>
@@ -21105,7 +21105,7 @@ export default function AdminAddClient() {
                         </div>
 
                         {/* Title & Escrow: Pay Off Interest */}
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-2">
+                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-sm text-right text-muted-foreground">• Title & Escrow: Pay Off Interest</Label>
                           </div>
@@ -21137,7 +21137,7 @@ export default function AdminAddClient() {
                         </div>
 
                         {/* State Tax & Recording */}
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-sm text-right text-muted-foreground">• State Tax & Recording</Label>
                           </div>
@@ -21171,7 +21171,7 @@ export default function AdminAddClient() {
 
                       {/* New Escrow Reserves Section */}
                       <div className="border-t pt-6">
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-base font-bold text-right">New Escrow Reserves</Label>
                           </div>
@@ -21209,7 +21209,7 @@ export default function AdminAddClient() {
                     <Card className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-blue-500 hover:border-2 hover:border-blue-500 transition-colors">
                       <CardContent className="pt-6 space-y-6">
                         {/* New Est. Loan Amount Row */}
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-base font-semibold text-right">New Est. Loan Amount:</Label>
                           </div>
@@ -21241,7 +21241,7 @@ export default function AdminAddClient() {
                         </div>
 
                         {/* New Monthly Payment Row */}
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-base font-semibold text-right">New Monthly Payment:</Label>
                           </div>
