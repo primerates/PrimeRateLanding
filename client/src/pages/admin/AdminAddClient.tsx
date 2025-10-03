@@ -20578,11 +20578,11 @@ export default function AdminAddClient() {
                     </Button>
                   </div>
                   {!isQuoteCardsMinimized && (
-                    <CardContent className="pt-2 space-y-6">
-                      {/* Quote and Client Row */}
-                      <div className="grid grid-cols-[150px_1fr] items-center gap-8">
-                        <Label className="text-base font-semibold">Quote:</Label>
-                        <div className="flex items-center gap-16">
+                    <CardContent className="pt-6 space-y-6">
+                      {/* Row 1: 5 Fields with titles above */}
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="quote-select">Quote</Label>
                           <Select
                             value={selectedRateCount === 0 ? 'select' : `${selectedRateCount}-rate${selectedRateCount > 1 ? 's' : ''}`}
                             onValueChange={(value) => {
@@ -20607,7 +20607,7 @@ export default function AdminAddClient() {
                               }
                             }}
                           >
-                            <SelectTrigger className="w-[200px]" data-testid="select-quote">
+                            <SelectTrigger data-testid="select-quote">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                             <SelectContent>
@@ -20619,61 +20619,62 @@ export default function AdminAddClient() {
                               <SelectItem value="5-rates" data-testid="select-quote-5-rates">5 Rates</SelectItem>
                             </SelectContent>
                           </Select>
-                          <div className="flex items-center gap-4">
-                            <Label className="text-base font-semibold">Client:</Label>
-                            <Select>
-                              <SelectTrigger className="w-[200px]" data-testid="select-client">
-                                <SelectValue placeholder="Select" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="select" data-testid="select-client-select">Select</SelectItem>
-                                <SelectItem value="new-client" data-testid="select-client-new">New Client</SelectItem>
-                                <SelectItem value="repeat-client" data-testid="select-client-repeat">Repeat Client</SelectItem>
-                                <SelectItem value="active-loan" data-testid="select-client-active-loan">Active Loan</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div className="flex items-center gap-4">
-                            <Label className="text-base font-semibold">Source:</Label>
-                            <Select>
-                              <SelectTrigger className="w-[200px]" data-testid="select-source">
-                                <SelectValue placeholder="Select" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="select" data-testid="select-source-select">Select</SelectItem>
-                                <SelectItem value="direct-mail" data-testid="select-source-direct-mail">Direct Mail</SelectItem>
-                                <SelectItem value="social-media" data-testid="select-source-social-media">Social Media</SelectItem>
-                                <SelectItem value="website" data-testid="select-source-website">Website</SelectItem>
-                                <SelectItem value="referral" data-testid="select-source-referral">Referral</SelectItem>
-                                <SelectItem value="repeat-client" data-testid="select-source-repeat-client">Repeat Client</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
                         </div>
-                      </div>
 
-                      {/* Property and Category Row */}
-                    <div className="grid grid-cols-[150px_1fr] items-center gap-8">
-                      <Label className="text-base font-semibold">Property:</Label>
-                      <div className="flex items-center gap-16">
-                        <Select>
-                          <SelectTrigger className="w-[200px]" data-testid="select-property">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="select" data-testid="select-property-select">Select</SelectItem>
-                            <SelectItem value="primary-residence" data-testid="select-property-primary">Primary Residence</SelectItem>
-                            <SelectItem value="second-home" data-testid="select-property-second-home">Second Home</SelectItem>
-                            <SelectItem value="investment-property" data-testid="select-property-investment">Investment Property</SelectItem>
-                            <SelectItem value="home-purchase" data-testid="select-property-home-purchase">Home Purchase</SelectItem>
-                            <SelectItem value="duplex" data-testid="select-property-duplex">Duplex</SelectItem>
-                            <SelectItem value="multi-family" data-testid="select-property-multi-family">Multi-Family</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <div className="flex items-center gap-4">
-                          <Label className="text-base font-semibold">Category:</Label>
+                        <div className="space-y-2">
+                          <Label htmlFor="client-select">Client</Label>
                           <Select>
-                            <SelectTrigger className="w-[200px]" data-testid="select-category">
+                            <SelectTrigger data-testid="select-client">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-client-select">Select</SelectItem>
+                              <SelectItem value="new-client" data-testid="select-client-new">New Client</SelectItem>
+                              <SelectItem value="repeat-client" data-testid="select-client-repeat">Repeat Client</SelectItem>
+                              <SelectItem value="active-loan" data-testid="select-client-active-loan">Active Loan</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="source-select">Source</Label>
+                          <Select>
+                            <SelectTrigger data-testid="select-source">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-source-select">Select</SelectItem>
+                              <SelectItem value="direct-mail" data-testid="select-source-direct-mail">Direct Mail</SelectItem>
+                              <SelectItem value="social-media" data-testid="select-source-social-media">Social Media</SelectItem>
+                              <SelectItem value="website" data-testid="select-source-website">Website</SelectItem>
+                              <SelectItem value="referral" data-testid="select-source-referral">Referral</SelectItem>
+                              <SelectItem value="repeat-client" data-testid="select-source-repeat-client">Repeat Client</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="property-select">Property</Label>
+                          <Select>
+                            <SelectTrigger data-testid="select-property">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-property-select">Select</SelectItem>
+                              <SelectItem value="primary-residence" data-testid="select-property-primary">Primary Residence</SelectItem>
+                              <SelectItem value="second-home" data-testid="select-property-second-home">Second Home</SelectItem>
+                              <SelectItem value="investment-property" data-testid="select-property-investment">Investment Property</SelectItem>
+                              <SelectItem value="home-purchase" data-testid="select-property-home-purchase">Home Purchase</SelectItem>
+                              <SelectItem value="duplex" data-testid="select-property-duplex">Duplex</SelectItem>
+                              <SelectItem value="multi-family" data-testid="select-property-multi-family">Multi-Family</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="category-select">Category</Label>
+                          <Select>
+                            <SelectTrigger data-testid="select-category">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                             <SelectContent>
@@ -20688,7 +20689,6 @@ export default function AdminAddClient() {
                           </Select>
                         </div>
                       </div>
-                    </div>
                     </CardContent>
                   )}
                 </Card>
