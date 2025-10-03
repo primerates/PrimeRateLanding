@@ -20690,7 +20690,7 @@ export default function AdminAddClient() {
                         </div>
                       </div>
 
-                      {/* Row 2: Type field aligned below Quote */}
+                      {/* Row 2: Type field aligned below Quote, Purpose aligned below Category */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="type-select">Type</Label>
@@ -20708,85 +20708,28 @@ export default function AdminAddClient() {
                             </SelectContent>
                           </Select>
                         </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="purpose-select">Purpose</Label>
+                          <Select>
+                            <SelectTrigger data-testid="select-purpose">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-purpose-select">Select</SelectItem>
+                              <SelectItem value="cash-out" data-testid="select-purpose-cash-out">Cash Out</SelectItem>
+                              <SelectItem value="purchase" data-testid="select-purpose-purchase">Purchase</SelectItem>
+                              <SelectItem value="rate-term" data-testid="select-purpose-rate-term">Rate & Term</SelectItem>
+                              <SelectItem value="program-change" data-testid="select-purpose-program-change">Program Change</SelectItem>
+                              <SelectItem value="streamline" data-testid="select-purpose-streamline">Streamline</SelectItem>
+                              <SelectItem value="va-irrrl" data-testid="select-purpose-va-irrrl">VA IRRRL</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
                     </CardContent>
                   )}
                 </Card>
-
-                {!isQuoteCardsMinimized && (
-                <div className="space-y-6 mb-6">
-                  <Card className="transition-all duration-700 animate-roll-down-dti-1">
-                    <CardContent className="pt-6 space-y-6">
-                      {/* Purpose Row */}
-                      <div className="grid grid-cols-[150px_1fr] items-center gap-8">
-                        <Label className="text-base font-semibold">Purpose:</Label>
-                        <div className="grid grid-cols-[180px_180px_180px_180px_180px_180px] gap-4">
-                          {/* Cash Out */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="loan-type-cash-out"
-                              data-testid="checkbox-loan-type-cash-out"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                            />
-                            <Label htmlFor="loan-type-cash-out">Cash Out</Label>
-                          </div>
-                          
-                          {/* Purchase */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="loan-type-purchase"
-                              data-testid="checkbox-loan-type-purchase"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                            />
-                            <Label htmlFor="loan-type-purchase">Purchase</Label>
-                          </div>
-                          
-                          {/* Rate & Term */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="loan-type-term-reduction"
-                              data-testid="checkbox-loan-type-term-reduction"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                            />
-                            <Label htmlFor="loan-type-term-reduction">Rate & Term</Label>
-                          </div>
-                          
-                          {/* Program Change */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="loan-type-term-change"
-                              data-testid="checkbox-loan-type-term-change"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                            />
-                            <Label htmlFor="loan-type-term-change">Program Change</Label>
-                          </div>
-                          
-                          {/* Streamline */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="loan-type-rate-reduction"
-                              data-testid="checkbox-loan-type-rate-reduction"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                            />
-                            <Label htmlFor="loan-type-rate-reduction">Streamline</Label>
-                          </div>
-                          
-                          {/* VA IRRRL */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="loan-type-va-irrrl"
-                              data-testid="checkbox-loan-type-va-irrrl"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                            />
-                            <Label htmlFor="loan-type-va-irrrl">VA IRRRL</Label>
-                          </div>
-                        </div>
-                      </div>
-
-                    </CardContent>
-                  </Card>
-                </div>
-                )}
                 
                 {/* Blue Circle Rate Input Buttons */}
                 {showRateCircles && selectedRateCount > 0 && (
