@@ -21405,7 +21405,8 @@ export default function AdminAddClient() {
                       <CardContent className="pt-6 space-y-6">
                         {/* New Est. Loan Amount Row - Auto-calculated */}
                         <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                          <div className="flex items-center justify-end pr-4">
+                          <div className="flex items-center justify-end pr-4 gap-2">
+                            <Info className="h-4 w-4 text-muted-foreground" data-testid="icon-info-loan-amount" />
                             <Label className="text-base font-semibold text-right">New Est. Loan Amount:</Label>
                           </div>
                           {selectedRateIds.map((rateId) => {
@@ -21427,7 +21428,8 @@ export default function AdminAddClient() {
                         {/* New Monthly Payment Row */}
                         <div className="border-t pt-6">
                           <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                            <div className="flex items-center justify-end pr-4">
+                            <div className="flex items-center justify-end pr-4 gap-2">
+                              <Info className="h-4 w-4 text-muted-foreground" data-testid="icon-info-monthly-payment" />
                               <Label className="text-base font-semibold text-right">New Monthly Payment:</Label>
                             </div>
                           {selectedRateIds.map((rateId) => {
@@ -21450,7 +21452,8 @@ export default function AdminAddClient() {
                         {/* Total Monthly Savings Row */}
                         <div className="border-t pt-6">
                           <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                            <div className="flex items-center justify-end pr-4">
+                            <div className="flex items-center justify-end pr-4 gap-2">
+                              <Info className="h-4 w-4 text-muted-foreground" data-testid="icon-info-monthly-savings" />
                               <Label className="text-base font-semibold text-right">Total Monthly Savings:</Label>
                             </div>
                           {selectedRateIds.map((rateId) => {
