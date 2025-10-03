@@ -20672,7 +20672,7 @@ export default function AdminAddClient() {
                             <PopoverContent className="w-[200px] p-3" align="start">
                               <div className="space-y-2">
                                 <div className="text-sm font-medium mb-3">Select Rates</div>
-                                {[0, 1, 2, 3].map((rateId) => (
+                                {[3, 2, 1, 0].map((rateId) => (
                                   <div key={rateId} className="flex items-center space-x-2">
                                     <Checkbox
                                       id={`rate-${rateId}`}
