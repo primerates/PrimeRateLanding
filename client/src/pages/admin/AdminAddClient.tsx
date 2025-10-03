@@ -21095,7 +21095,7 @@ export default function AdminAddClient() {
                               className="w-[86px] h-[86px] rounded-full bg-blue-500 hover:bg-blue-600 transition-colors duration-200 flex items-center justify-center text-white font-semibold text-lg shadow-lg hover:shadow-xl"
                               data-testid={`button-rate-circle-${index}`}
                             >
-                              {rateValues[index] ? `${rateValues[index]}%` : '+'}
+                              {rateValues[index] ? `${rateValues[index]}%` : '%'}
                             </button>
                           )}
                         </div>
