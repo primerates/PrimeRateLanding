@@ -21453,7 +21453,7 @@ export default function AdminAddClient() {
                         <div className="border-t pt-6">
                           <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                             <div className="flex items-center justify-end pr-4 gap-2">
-                              <Info className="h-4 w-4 text-muted-foreground" data-testid="icon-info-monthly-savings" />
+                              <Info className="h-4 w-4 text-muted-foreground -mr-0.5" data-testid="icon-info-monthly-savings" />
                               <Label className="text-base font-semibold text-right">Total Monthly Savings:</Label>
                             </div>
                           {selectedRateIds.map((rateId) => {
