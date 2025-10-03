@@ -20587,9 +20587,6 @@ export default function AdminAddClient() {
                               } else if (value === '4-rates') {
                                 setSelectedRateCount(4);
                                 setShowRateCircles(true);
-                              } else if (value === '5-rates') {
-                                setSelectedRateCount(5);
-                                setShowRateCircles(true);
                               }
                             }}
                           >
@@ -20602,7 +20599,6 @@ export default function AdminAddClient() {
                               <SelectItem value="2-rates" data-testid="select-quote-2-rates">2 Rates</SelectItem>
                               <SelectItem value="3-rates" data-testid="select-quote-3-rates">3 Rates</SelectItem>
                               <SelectItem value="4-rates" data-testid="select-quote-4-rates">4 Rates</SelectItem>
-                              <SelectItem value="5-rates" data-testid="select-quote-5-rates">5 Rates</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -20758,13 +20754,15 @@ export default function AdminAddClient() {
                   )}
                 </Card>
                 
-                {/* Blue Circle Rate Input Buttons */}
+                {/* Blue Circle Rate Input Buttons - Aligned under Type, Property, Client, Source */}
                 {showRateCircles && selectedRateCount > 0 && (
-                  <div className="grid grid-cols-[150px_1fr] items-start gap-8 animate-roll-down" style={{ marginTop: '48px' }}>
-                    <div></div>
-                    <div className="grid grid-cols-[180px_180px_180px_180px_180px] gap-4">
+                  <div className="animate-roll-down px-4" style={{ marginTop: '24px' }}>
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                      {/* Empty space for Quote column */}
+                      <div></div>
+                      {/* Circles aligned under Type, Property, Client, Source */}
                       {Array.from({ length: selectedRateCount }).map((_, index) => (
-                        <div key={index} className="flex justify-start ml-6">
+                        <div key={index} className="flex justify-center">
                           {editingRateIndex === index ? (
                             <div className="relative">
                               <Input
