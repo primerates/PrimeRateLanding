@@ -20687,8 +20687,8 @@ export default function AdminAddClient() {
 
                       {/* Property, Client and Source Row */}
                     <div className="grid grid-cols-[150px_1fr] items-center gap-8">
-                      <div className="flex items-center gap-4">
-                        <Label className="text-base font-semibold">Property:</Label>
+                      <Label className="text-base font-semibold">Property:</Label>
+                      <div className="grid grid-cols-[180px_180px_180px_180px_1fr] gap-4 items-center">
                         <Select>
                           <SelectTrigger className="w-[200px]" data-testid="select-property">
                             <SelectValue placeholder="Select" />
@@ -20703,9 +20703,6 @@ export default function AdminAddClient() {
                             <SelectItem value="multi-family" data-testid="select-property-multi-family">Multi-Family</SelectItem>
                           </SelectContent>
                         </Select>
-                      </div>
-                      <div className="grid grid-cols-[180px_180px_180px_180px_1fr] gap-4 items-center">
-                        <div></div>
                         <div></div>
                         <div className="flex items-center gap-4">
                           <Label className="text-base font-semibold">Client:</Label>
