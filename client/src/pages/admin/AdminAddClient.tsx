@@ -20608,6 +20608,9 @@ export default function AdminAddClient() {
                               } else if (value === '4-rates') {
                                 setSelectedRateCount(4);
                                 setShowRateCircles(true);
+                              } else if (value === '5-rates') {
+                                setSelectedRateCount(5);
+                                setShowRateCircles(true);
                               }
                             }}
                           >
