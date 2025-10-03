@@ -21226,10 +21226,10 @@ export default function AdminAddClient() {
                           })}
                         </div>
 
-                        {/* Title & Escrow: Pay Off Interest */}
+                        {/* Title & Escrow Services */}
                         <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
-                            <Label className="text-sm text-right text-muted-foreground">• Title & Escrow: Pay Off Interest</Label>
+                            <Label className="text-sm text-right text-muted-foreground">• Title & Escrow Services</Label>
                           </div>
                           {Array.from({ length: selectedRateCount }).map((_, index) => {
                             const numVal = titleEscrowValues[index] ? titleEscrowValues[index].replace(/[^\d]/g, '') : '';
