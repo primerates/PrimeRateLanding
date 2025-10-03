@@ -20689,6 +20689,26 @@ export default function AdminAddClient() {
                           </Select>
                         </div>
                       </div>
+
+                      {/* Row 2: Type field aligned below Quote */}
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="type-select">Type</Label>
+                          <Select>
+                            <SelectTrigger data-testid="select-type">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-type-select">Select</SelectItem>
+                              <SelectItem value="refinance" data-testid="select-type-refinance">Refinance</SelectItem>
+                              <SelectItem value="purchase" data-testid="select-type-purchase">Purchase</SelectItem>
+                              <SelectItem value="second-loan" data-testid="select-type-second-loan">Second Loan</SelectItem>
+                              <SelectItem value="construction" data-testid="select-type-construction">Construction</SelectItem>
+                              <SelectItem value="bridge" data-testid="select-type-bridge">Bridge</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
                     </CardContent>
                   )}
                 </Card>
@@ -20697,70 +20717,6 @@ export default function AdminAddClient() {
                 <div className="space-y-6 mb-6">
                   <Card className="transition-all duration-700 animate-roll-down-dti-1">
                     <CardContent className="pt-6 space-y-6">
-                      {/* Type Row */}
-                      <div className="grid grid-cols-[150px_1fr] items-center gap-8">
-                        <Label className="text-base font-semibold">Type:</Label>
-                        <div className="grid grid-cols-[180px_180px_180px_180px_180px] gap-4">
-                          {/* Refinance */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="loan-purpose-refinance"
-                              data-testid="checkbox-loan-purpose-refinance"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                            />
-                            <Label htmlFor="loan-purpose-refinance">Refinance</Label>
-                          </div>
-                          
-                          {/* Purchase */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="loan-purpose-purchase"
-                              data-testid="checkbox-loan-purpose-purchase"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  const purposePurchaseCheckbox = document.getElementById("loan-type-purchase") as HTMLButtonElement;
-                                  if (purposePurchaseCheckbox && purposePurchaseCheckbox.getAttribute("data-state") !== "checked") {
-                                    purposePurchaseCheckbox.click();
-                                  }
-                                }
-                              }}
-                            />
-                            <Label htmlFor="loan-purpose-purchase">Purchase</Label>
-                          </div>
-                          
-                          {/* Second Loan */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="loan-purpose-second-loan"
-                              data-testid="checkbox-loan-purpose-second-loan"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                            />
-                            <Label htmlFor="loan-purpose-second-loan">Second Loan</Label>
-                          </div>
-                          
-                          {/* Construction */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="loan-purpose-build"
-                              data-testid="checkbox-loan-purpose-build"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                            />
-                            <Label htmlFor="loan-purpose-build">Construction</Label>
-                          </div>
-                          
-                          {/* Bridge */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="loan-purpose-bridge"
-                              data-testid="checkbox-loan-purpose-bridge"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                            />
-                            <Label htmlFor="loan-purpose-bridge">Bridge</Label>
-                          </div>
-                        </div>
-                      </div>
-
                       {/* Purpose Row */}
                       <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                         <Label className="text-base font-semibold">Purpose:</Label>
