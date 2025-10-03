@@ -20704,7 +20704,9 @@ export default function AdminAddClient() {
                           </SelectContent>
                         </Select>
                       </div>
-                      <div className="grid grid-cols-[180px_180px_1fr] gap-4 items-center">
+                      <div className="grid grid-cols-[180px_180px_180px_1fr] gap-4 items-center">
+                        <div></div>
+                        <div></div>
                         <div className="flex items-center gap-4">
                           <Label className="text-base font-semibold">Client:</Label>
                           <Select>
@@ -20719,7 +20721,6 @@ export default function AdminAddClient() {
                             </SelectContent>
                           </Select>
                         </div>
-                        <div></div>
                         <div className="flex items-center gap-4">
                           <Label className="text-base font-semibold">Source:</Label>
                           <Select>
