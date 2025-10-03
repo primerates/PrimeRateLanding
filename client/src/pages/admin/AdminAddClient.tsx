@@ -20633,47 +20633,42 @@ export default function AdminAddClient() {
                               </SelectContent>
                             </Select>
                           </div>
+                          <div className="flex items-center gap-4">
+                            <Label className="text-base font-semibold">Source:</Label>
+                            <Select>
+                              <SelectTrigger className="w-[200px]" data-testid="select-source">
+                                <SelectValue placeholder="Select" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="select" data-testid="select-source-select">Select</SelectItem>
+                                <SelectItem value="direct-mail" data-testid="select-source-direct-mail">Direct Mail</SelectItem>
+                                <SelectItem value="social-media" data-testid="select-source-social-media">Social Media</SelectItem>
+                                <SelectItem value="website" data-testid="select-source-website">Website</SelectItem>
+                                <SelectItem value="referral" data-testid="select-source-referral">Referral</SelectItem>
+                                <SelectItem value="repeat-client" data-testid="select-source-repeat-client">Repeat Client</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
                         </div>
                       </div>
 
-                      {/* Property and Source Row */}
+                      {/* Property Row */}
                     <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                       <Label className="text-base font-semibold">Property:</Label>
-                      <div className="grid grid-cols-[180px_180px_180px_180px_1fr] gap-4 items-center">
-                        <Select>
-                          <SelectTrigger className="w-[200px]" data-testid="select-property">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="select" data-testid="select-property-select">Select</SelectItem>
-                            <SelectItem value="primary-residence" data-testid="select-property-primary">Primary Residence</SelectItem>
-                            <SelectItem value="second-home" data-testid="select-property-second-home">Second Home</SelectItem>
-                            <SelectItem value="investment-property" data-testid="select-property-investment">Investment Property</SelectItem>
-                            <SelectItem value="home-purchase" data-testid="select-property-home-purchase">Home Purchase</SelectItem>
-                            <SelectItem value="duplex" data-testid="select-property-duplex">Duplex</SelectItem>
-                            <SelectItem value="multi-family" data-testid="select-property-multi-family">Multi-Family</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div className="flex items-center gap-4">
-                          <Label className="text-base font-semibold">Source:</Label>
-                          <Select>
-                            <SelectTrigger className="w-[200px]" data-testid="select-source">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-source-select">Select</SelectItem>
-                              <SelectItem value="direct-mail" data-testid="select-source-direct-mail">Direct Mail</SelectItem>
-                              <SelectItem value="social-media" data-testid="select-source-social-media">Social Media</SelectItem>
-                              <SelectItem value="website" data-testid="select-source-website">Website</SelectItem>
-                              <SelectItem value="referral" data-testid="select-source-referral">Referral</SelectItem>
-                              <SelectItem value="repeat-client" data-testid="select-source-repeat-client">Repeat Client</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
+                      <Select>
+                        <SelectTrigger className="w-[200px]" data-testid="select-property">
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="select" data-testid="select-property-select">Select</SelectItem>
+                          <SelectItem value="primary-residence" data-testid="select-property-primary">Primary Residence</SelectItem>
+                          <SelectItem value="second-home" data-testid="select-property-second-home">Second Home</SelectItem>
+                          <SelectItem value="investment-property" data-testid="select-property-investment">Investment Property</SelectItem>
+                          <SelectItem value="home-purchase" data-testid="select-property-home-purchase">Home Purchase</SelectItem>
+                          <SelectItem value="duplex" data-testid="select-property-duplex">Duplex</SelectItem>
+                          <SelectItem value="multi-family" data-testid="select-property-multi-family">Multi-Family</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     </CardContent>
                   )}
