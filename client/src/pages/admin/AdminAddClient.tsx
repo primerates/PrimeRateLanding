@@ -20858,7 +20858,10 @@ export default function AdminAddClient() {
                     </div>
 
                     {/* Existing Loan Balance Card */}
-                    <Card className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-green-500 hover:border-2 hover:border-green-500 transition-colors">
+                    <Card 
+                      className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-green-500 hover:border-2 hover:border-green-500 transition-colors flex-none"
+                      style={{ width: `${250 * (selectedRateCount + 1)}px`, maxWidth: '100%' }}
+                    >
                       <CardContent className="pt-6 space-y-6">
                         <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
@@ -20930,7 +20933,10 @@ export default function AdminAddClient() {
                     </Card>
 
                     {/* Rate Details Section */}
-                    <Card className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-cyan-500 hover:border-2 hover:border-cyan-500 transition-colors">
+                    <Card 
+                      className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-cyan-500 hover:border-2 hover:border-cyan-500 transition-colors flex-none"
+                      style={{ width: `${250 * (selectedRateCount + 1)}px`, maxWidth: '100%' }}
+                    >
                       <CardContent className="pt-6 space-y-6">
                         {/* Rate Buy Down Row */}
                         <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
@@ -21206,7 +21212,10 @@ export default function AdminAddClient() {
                     </Card>
 
                     {/* New Est. Loan Amount & New Monthly Payment Card */}
-                    <Card className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-blue-500 hover:border-2 hover:border-blue-500 transition-colors">
+                    <Card 
+                      className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-blue-500 hover:border-2 hover:border-blue-500 transition-colors flex-none"
+                      style={{ width: `${250 * (selectedRateCount + 1)}px`, maxWidth: '100%' }}
+                    >
                       <CardContent className="pt-6 space-y-6">
                         {/* New Est. Loan Amount Row */}
                         <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
