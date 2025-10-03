@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
@@ -909,10 +910,11 @@ export default function AdminAddClient() {
   const [showRevertAnimation, setShowRevertAnimation] = useState(false);
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
   const [isQuoteCardsMinimized, setIsQuoteCardsMinimized] = useState(false);
-  const [selectedRateCount, setSelectedRateCount] = useState(0);
+  const [selectedRateIds, setSelectedRateIds] = useState<number[]>([]);
   const [rateValues, setRateValues] = useState<string[]>(['', '', '', '', '']);
   const [editingRateIndex, setEditingRateIndex] = useState<number | null>(null);
   const [showRateCircles, setShowRateCircles] = useState(false);
+  const [isRatePopoverOpen, setIsRatePopoverOpen] = useState(false);
   const [isCustomTerm, setIsCustomTerm] = useState(false);
   const [loanTerm, setLoanTerm] = useState('');
   const [customTerm, setCustomTerm] = useState('');
@@ -20651,42 +20653,56 @@ export default function AdminAddClient() {
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="quote-select">Quote</Label>
-                          <Select
-                            value={selectedRateCount === 0 ? 'select' : `${selectedRateCount}-rate${selectedRateCount > 1 ? 's' : ''}`}
-                            onValueChange={(value) => {
-                              if (value === 'select') {
-                                setSelectedRateCount(0);
-                                setShowRateCircles(false);
-                              } else if (value === '1-rate') {
-                                setSelectedRateCount(1);
-                                setShowRateCircles(true);
-                              } else if (value === '2-rates') {
-                                setSelectedRateCount(2);
-                                setShowRateCircles(true);
-                              } else if (value === '3-rates') {
-                                setSelectedRateCount(3);
-                                setShowRateCircles(true);
-                              } else if (value === '4-rates') {
-                                setSelectedRateCount(4);
-                                setShowRateCircles(true);
-                              } else if (value === '5-rates') {
-                                setSelectedRateCount(5);
-                                setShowRateCircles(true);
-                              }
-                            }}
-                          >
-                            <SelectTrigger data-testid="select-quote">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-quote-select">Select</SelectItem>
-                              <SelectItem value="1-rate" data-testid="select-quote-1-rate">1 Rate</SelectItem>
-                              <SelectItem value="2-rates" data-testid="select-quote-2-rates">2 Rates</SelectItem>
-                              <SelectItem value="3-rates" data-testid="select-quote-3-rates">3 Rates</SelectItem>
-                              <SelectItem value="4-rates" data-testid="select-quote-4-rates">4 Rates</SelectItem>
-                              <SelectItem value="5-rates" data-testid="select-quote-5-rates">5 Rates</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <Popover open={isRatePopoverOpen} onOpenChange={setIsRatePopoverOpen}>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                role="combobox"
+                                className="w-full justify-between"
+                                data-testid="button-quote-select"
+                              >
+                                {selectedRateIds.length === 0
+                                  ? "Select"
+                                  : selectedRateIds.length === 1
+                                  ? `Rate ${selectedRateIds[0] + 1}`
+                                  : `${selectedRateIds.length} Rates (${selectedRateIds.map(id => id + 1).join(', ')})`}
+                                <Plus className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[200px] p-3" align="start">
+                              <div className="space-y-2">
+                                <div className="text-sm font-medium mb-3">Select Rates</div>
+                                {[0, 1, 2, 3].map((rateId) => (
+                                  <div key={rateId} className="flex items-center space-x-2">
+                                    <Checkbox
+                                      id={`rate-${rateId}`}
+                                      checked={selectedRateIds.includes(rateId)}
+                                      onCheckedChange={(checked) => {
+                                        if (checked) {
+                                          const newIds = [...selectedRateIds, rateId].sort((a, b) => a - b);
+                                          setSelectedRateIds(newIds);
+                                          setShowRateCircles(true);
+                                        } else {
+                                          const newIds = selectedRateIds.filter(id => id !== rateId);
+                                          setSelectedRateIds(newIds);
+                                          if (newIds.length === 0) {
+                                            setShowRateCircles(false);
+                                          }
+                                        }
+                                      }}
+                                      data-testid={`checkbox-rate-${rateId + 1}`}
+                                    />
+                                    <label
+                                      htmlFor={`rate-${rateId}`}
+                                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                    >
+                                      Rate {rateId + 1}
+                                    </label>
+                                  </div>
+                                ))}
+                              </div>
+                            </PopoverContent>
+                          </Popover>
                         </div>
 
                         <div className="space-y-2">
