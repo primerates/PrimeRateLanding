@@ -21006,7 +21006,7 @@ export default function AdminAddClient() {
                                       setExistingLoanBalanceValues(newValues);
                                     }}
                                     tabIndex={tabIndex}
-                                    className="border-0 bg-transparent text-center font-medium text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
                                     data-testid={`input-existing-loan-balance-${index}`}
                                   />
                                 </div>
@@ -21040,7 +21040,7 @@ export default function AdminAddClient() {
                                       setCashOutAmountValues(newValues);
                                     }}
                                     tabIndex={tabIndex}
-                                    className="border-0 bg-transparent text-center font-medium text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
                                     data-testid={`input-cash-out-amount-${index}`}
                                   />
                                 </div>
@@ -21082,7 +21082,7 @@ export default function AdminAddClient() {
                                       setRateBuyDownValues(newValues);
                                     }}
                                     tabIndex={tabIndex}
-                                    className="border-0 bg-transparent text-center font-medium text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
                                     data-testid={`input-rate-buy-down-${index}`}
                                   />
                                 </div>
@@ -21124,7 +21124,7 @@ export default function AdminAddClient() {
                                       setVaFundingFeeValues(newValues);
                                     }}
                                     tabIndex={tabIndex}
-                                    className="border-0 bg-transparent text-center text-base focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
                                     data-testid={`input-va-funding-fee-${index}`}
                                   />
                                 </div>
@@ -21156,7 +21156,7 @@ export default function AdminAddClient() {
                                       newValues[index] = value;
                                       setVaAppraisalValues(newValues);
                                     }}
-                                    className="border-0 bg-transparent text-center text-base focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
                                     data-testid={`input-va-appraisal-${index}`}
                                   />
                                 </div>
@@ -21188,7 +21188,7 @@ export default function AdminAddClient() {
                                       newValues[index] = value;
                                       setVaTermiteValues(newValues);
                                     }}
-                                    className="border-0 bg-transparent text-center text-base focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
                                     data-testid={`input-va-termite-${index}`}
                                   />
                                 </div>
@@ -21220,7 +21220,7 @@ export default function AdminAddClient() {
                                       newValues[index] = value;
                                       setVaUnderwritingValues(newValues);
                                     }}
-                                    className="border-0 bg-transparent text-center text-base focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
                                     data-testid={`input-va-underwriting-${index}`}
                                   />
                                 </div>
@@ -21252,7 +21252,7 @@ export default function AdminAddClient() {
                                       newValues[index] = value;
                                       setTitleEscrowValues(newValues);
                                     }}
-                                    className="border-0 bg-transparent text-center text-base focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
                                     data-testid={`input-title-escrow-${index}`}
                                   />
                                 </div>
@@ -21284,7 +21284,7 @@ export default function AdminAddClient() {
                                       newValues[index] = value;
                                       setPayOffInterestValues(newValues);
                                     }}
-                                    className="border-0 bg-transparent text-center text-base focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
                                     data-testid={`input-pay-off-interest-${index}`}
                                   />
                                 </div>
@@ -21316,7 +21316,7 @@ export default function AdminAddClient() {
                                       newValues[index] = value;
                                       setStateTaxValues(newValues);
                                     }}
-                                    className="border-0 bg-transparent text-center text-base focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
                                     data-testid={`input-state-tax-${index}`}
                                   />
                                 </div>
@@ -21350,7 +21350,7 @@ export default function AdminAddClient() {
                                       newValues[index] = value;
                                       setEscrowReservesValues(newValues);
                                     }}
-                                    className="border-0 bg-transparent text-center font-medium text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
                                     data-testid={`input-escrow-reserves-${index}`}
                                   />
                                 </div>
