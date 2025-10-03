@@ -20827,7 +20827,7 @@ export default function AdminAddClient() {
                           {Array.from({ length: selectedRateCount }).map((_, index) => {
                             const numVal = existingLoanBalanceValues[index] ? existingLoanBalanceValues[index].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                            const tabIndex = (index * 10) + 1; // Column-based tab order: field 0 of each column
+                            const tabIndex = index + 1; // Row 0: tabs 1, 2, 3, 4
                             
                             return (
                               <div key={index} className="flex justify-center">
@@ -20866,6 +20866,7 @@ export default function AdminAddClient() {
                           {Array.from({ length: selectedRateCount }).map((_, index) => {
                             const numVal = rateBuyDownValues[index] ? rateBuyDownValues[index].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            const tabIndex = 5 + index; // Row 1: tabs 5, 6, 7, 8
                             
                             return (
                               <div key={index} className="flex justify-center">
@@ -20881,6 +20882,7 @@ export default function AdminAddClient() {
                                       newValues[index] = value;
                                       setRateBuyDownValues(newValues);
                                     }}
+                                    tabIndex={tabIndex}
                                     className="border-0 bg-transparent text-center font-medium focus-visible:ring-0 focus-visible:ring-offset-0"
                                     data-testid={`input-rate-buy-down-${index}`}
                                   />
@@ -20898,6 +20900,7 @@ export default function AdminAddClient() {
                         {Array.from({ length: selectedRateCount }).map((_, index) => {
                           const numVal = cashOutAmountValues[index] ? cashOutAmountValues[index].replace(/[^\d]/g, '') : '';
                           const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                          const tabIndex = 9 + index; // Row 2: tabs 9, 10, 11, 12
                           
                           return (
                             <div key={index} className="flex justify-center">
@@ -20913,6 +20916,7 @@ export default function AdminAddClient() {
                                     newValues[index] = value;
                                     setCashOutAmountValues(newValues);
                                   }}
+                                  tabIndex={tabIndex}
                                   className="border-0 bg-transparent text-center font-medium focus-visible:ring-0 focus-visible:ring-offset-0"
                                   data-testid={`input-cash-out-amount-${index}`}
                                 />
@@ -20938,6 +20942,7 @@ export default function AdminAddClient() {
                           {Array.from({ length: selectedRateCount }).map((_, index) => {
                             const numVal = vaFundingFeeValues[index] ? vaFundingFeeValues[index].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            const tabIndex = 13 + index; // Row 3: tabs 13, 14, 15, 16
                             
                             return (
                               <div key={index} className="flex justify-center">
@@ -20953,6 +20958,7 @@ export default function AdminAddClient() {
                                       newValues[index] = value;
                                       setVaFundingFeeValues(newValues);
                                     }}
+                                    tabIndex={tabIndex}
                                     className="border-0 bg-transparent text-center text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
                                     data-testid={`input-va-funding-fee-${index}`}
                                   />
