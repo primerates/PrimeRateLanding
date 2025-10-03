@@ -20555,7 +20555,7 @@ export default function AdminAddClient() {
                     <div className="flex items-center gap-8">
                       <div style={{ width: '150px' }}></div>
                       <div className="grid grid-cols-[180px_180px_180px_180px_180px] gap-4">
-                        <div className="flex justify-start ml-9">
+                        <div className="flex justify-start ml-10">
                           <div className="w-[22px] h-[22px] rounded-full bg-blue-900 flex items-center justify-center">
                             <DollarSign className="h-3 w-3 text-white" />
                           </div>
