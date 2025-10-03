@@ -20822,7 +20822,7 @@ export default function AdminAddClient() {
                         {/* Rate Buy Down Row */}
                         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                           <div className="flex items-center justify-end pr-4">
-                            <Label className="text-base font-bold text-right">Rate Buy Down</Label>
+                            <Label className="text-base font-semibold text-right">Rate Buy Down</Label>
                           </div>
                           {Array.from({ length: selectedRateCount }).map((_, index) => {
                             const numVal = rateBuyDownValues[index] ? rateBuyDownValues[index].replace(/[^\d]/g, '') : '';
@@ -20854,7 +20854,7 @@ export default function AdminAddClient() {
                       {/* Cash Out Amount Row */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="flex items-center justify-end pr-4">
-                          <Label className="text-base font-bold text-right">Cash Out Amount</Label>
+                          <Label className="text-base font-semibold text-right">Cash Out Amount</Label>
                         </div>
                         {Array.from({ length: selectedRateCount }).map((_, index) => {
                           const numVal = cashOutAmountValues[index] ? cashOutAmountValues[index].replace(/[^\d]/g, '') : '';
