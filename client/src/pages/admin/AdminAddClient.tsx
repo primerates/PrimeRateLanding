@@ -21390,10 +21390,11 @@ export default function AdminAddClient() {
                         </div>
 
                         {/* New Monthly Payment Row */}
-                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
-                          <div className="flex items-center justify-end pr-4">
-                            <Label className="text-base font-semibold text-right">New Monthly Payment:</Label>
-                          </div>
+                        <div className="border-t pt-6">
+                          <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
+                            <div className="flex items-center justify-end pr-4">
+                              <Label className="text-base font-semibold text-right">New Monthly Payment:</Label>
+                            </div>
                           {Array.from({ length: selectedRateCount }).map((_, index) => {
                             const numVal = newMonthlyPaymentValues[index] ? newMonthlyPaymentValues[index].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
@@ -21408,6 +21409,7 @@ export default function AdminAddClient() {
                               </div>
                             );
                           })}
+                          </div>
                         </div>
 
                         {/* Footer Message */}
