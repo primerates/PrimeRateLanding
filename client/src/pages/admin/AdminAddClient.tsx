@@ -21013,20 +21013,20 @@ export default function AdminAddClient() {
                     {/* Existing Loan Balance Card */}
                     <Card 
                       className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-green-500 hover:border-2 hover:border-green-500 transition-colors flex-none"
-                      style={{ width: `${250 * (selectedRateCount + 1)}px`, maxWidth: '100%' }}
+                      style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
                     >
                       <CardContent className="pt-6 space-y-6">
-                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
+                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-base font-semibold text-right">Existing Loan Balance:</Label>
                           </div>
-                          {Array.from({ length: selectedRateCount }).map((_, index) => {
-                            const numVal = existingLoanBalanceValues[index] ? existingLoanBalanceValues[index].replace(/[^\d]/g, '') : '';
+                          {selectedRateIds.map((rateId) => {
+                            const numVal = existingLoanBalanceValues[rateId] ? existingLoanBalanceValues[rateId].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                            const tabIndex = selectedRateCount + index + 1; // After circles: tabs 5, 6, 7, 8 (for 4 circles)
+                            const tabIndex = selectedRateIds.length + rateId + 1;
                             
                             return (
-                              <div key={index} className="flex justify-center">
+                              <div key={rateId} className="flex justify-center">
                                 <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
@@ -21036,12 +21036,12 @@ export default function AdminAddClient() {
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
                                       const newValues = [...existingLoanBalanceValues];
-                                      newValues[index] = value;
+                                      newValues[rateId] = value;
                                       setExistingLoanBalanceValues(newValues);
                                     }}
                                     tabIndex={tabIndex}
                                     className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-existing-loan-balance-${index}`}
+                                    data-testid={`input-existing-loan-balance-${rateId}`}
                                   />
                                 </div>
                               </div>
@@ -21050,17 +21050,17 @@ export default function AdminAddClient() {
                         </div>
 
                         {/* Cash Out Amount Row */}
-                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
+                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-base font-semibold text-right">Cash Out Amount</Label>
                           </div>
-                          {Array.from({ length: selectedRateCount }).map((_, index) => {
-                            const numVal = cashOutAmountValues[index] ? cashOutAmountValues[index].replace(/[^\d]/g, '') : '';
+                          {selectedRateIds.map((rateId) => {
+                            const numVal = cashOutAmountValues[rateId] ? cashOutAmountValues[rateId].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                            const tabIndex = (2 * selectedRateCount) + index + 1; // After existing loan balance
+                            const tabIndex = (2 * selectedRateIds.length) + rateId + 1; // After existing loan balance
                             
                             return (
-                              <div key={index} className="flex justify-center">
+                              <div key={rateId} className="flex justify-center">
                                 <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
@@ -21070,12 +21070,12 @@ export default function AdminAddClient() {
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
                                       const newValues = [...cashOutAmountValues];
-                                      newValues[index] = value;
+                                      newValues[rateId] = value;
                                       setCashOutAmountValues(newValues);
                                     }}
                                     tabIndex={tabIndex}
                                     className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-cash-out-amount-${index}`}
+                                    data-testid={`input-cash-out-amount-${rateId}`}
                                   />
                                 </div>
                               </div>
@@ -21088,21 +21088,21 @@ export default function AdminAddClient() {
                     {/* Rate Details Section */}
                     <Card 
                       className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-cyan-500 hover:border-2 hover:border-cyan-500 transition-colors flex-none"
-                      style={{ width: `${250 * (selectedRateCount + 1)}px`, maxWidth: '100%' }}
+                      style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
                     >
                       <CardContent className="pt-6 space-y-6">
                         {/* Rate Buy Down Row */}
-                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
+                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-base font-semibold text-right">Rate Buy Down</Label>
                           </div>
-                          {Array.from({ length: selectedRateCount }).map((_, index) => {
-                            const numVal = rateBuyDownValues[index] ? rateBuyDownValues[index].replace(/[^\d]/g, '') : '';
+                          {selectedRateIds.map((rateId) => {
+                            const numVal = rateBuyDownValues[rateId] ? rateBuyDownValues[rateId].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                            const tabIndex = (3 * selectedRateCount) + index + 1; // After cash out amount
+                            const tabIndex = (3 * selectedRateIds.length) + rateId + 1; // After cash out amount
                             
                             return (
-                              <div key={index} className="flex justify-center">
+                              <div key={rateId} className="flex justify-center">
                                 <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
@@ -21112,12 +21112,12 @@ export default function AdminAddClient() {
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
                                       const newValues = [...rateBuyDownValues];
-                                      newValues[index] = value;
+                                      newValues[rateId] = value;
                                       setRateBuyDownValues(newValues);
                                     }}
                                     tabIndex={tabIndex}
                                     className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-rate-buy-down-${index}`}
+                                    data-testid={`input-rate-buy-down-${rateId}`}
                                   />
                                 </div>
                               </div>
@@ -21127,24 +21127,24 @@ export default function AdminAddClient() {
 
                       {/* Third Party Services Section */}
                       <div className="border-t pt-6">
-                        <div className="grid gap-4 mb-3" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
+                        <div className="grid gap-4 mb-3" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-base font-bold text-right">Third Party Services</Label>
                           </div>
                         </div>
 
                         {/* VA Funding Fee */}
-                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
+                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-sm text-right text-muted-foreground">• VA Funding Fee</Label>
                           </div>
-                          {Array.from({ length: selectedRateCount }).map((_, index) => {
-                            const numVal = vaFundingFeeValues[index] ? vaFundingFeeValues[index].replace(/[^\d]/g, '') : '';
+                          {selectedRateIds.map((rateId) => {
+                            const numVal = vaFundingFeeValues[rateId] ? vaFundingFeeValues[rateId].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                            const tabIndex = (4 * selectedRateCount) + index + 1; // After rate buy down
+                            const tabIndex = (4 * selectedRateIds.length) + rateId + 1; // After rate buy down
                             
                             return (
-                              <div key={index} className="flex justify-center">
+                              <div key={rateId} className="flex justify-center">
                                 <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
@@ -21154,12 +21154,12 @@ export default function AdminAddClient() {
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
                                       const newValues = [...vaFundingFeeValues];
-                                      newValues[index] = value;
+                                      newValues[rateId] = value;
                                       setVaFundingFeeValues(newValues);
                                     }}
                                     tabIndex={tabIndex}
                                     className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-va-funding-fee-${index}`}
+                                    data-testid={`input-va-funding-fee-${rateId}`}
                                   />
                                 </div>
                               </div>
@@ -21168,16 +21168,16 @@ export default function AdminAddClient() {
                         </div>
 
                         {/* VA Appraisal Inspection */}
-                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
+                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-sm text-right text-muted-foreground">• VA Appraisal Inspection</Label>
                           </div>
-                          {Array.from({ length: selectedRateCount }).map((_, index) => {
-                            const numVal = vaAppraisalValues[index] ? vaAppraisalValues[index].replace(/[^\d]/g, '') : '';
+                          {selectedRateIds.map((rateId) => {
+                            const numVal = vaAppraisalValues[rateId] ? vaAppraisalValues[rateId].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
                             
                             return (
-                              <div key={index} className="flex justify-center">
+                              <div key={rateId} className="flex justify-center">
                                 <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
@@ -21187,11 +21187,11 @@ export default function AdminAddClient() {
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
                                       const newValues = [...vaAppraisalValues];
-                                      newValues[index] = value;
+                                      newValues[rateId] = value;
                                       setVaAppraisalValues(newValues);
                                     }}
                                     className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-va-appraisal-${index}`}
+                                    data-testid={`input-va-appraisal-${rateId}`}
                                   />
                                 </div>
                               </div>
@@ -21200,16 +21200,16 @@ export default function AdminAddClient() {
                         </div>
 
                         {/* VA Termite Report */}
-                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
+                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-sm text-right text-muted-foreground">• VA Termite Report</Label>
                           </div>
-                          {Array.from({ length: selectedRateCount }).map((_, index) => {
-                            const numVal = vaTermiteValues[index] ? vaTermiteValues[index].replace(/[^\d]/g, '') : '';
+                          {selectedRateIds.map((rateId) => {
+                            const numVal = vaTermiteValues[rateId] ? vaTermiteValues[rateId].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
                             
                             return (
-                              <div key={index} className="flex justify-center">
+                              <div key={rateId} className="flex justify-center">
                                 <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
@@ -21219,11 +21219,11 @@ export default function AdminAddClient() {
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
                                       const newValues = [...vaTermiteValues];
-                                      newValues[index] = value;
+                                      newValues[rateId] = value;
                                       setVaTermiteValues(newValues);
                                     }}
                                     className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-va-termite-${index}`}
+                                    data-testid={`input-va-termite-${rateId}`}
                                   />
                                 </div>
                               </div>
@@ -21232,16 +21232,16 @@ export default function AdminAddClient() {
                         </div>
 
                         {/* VA Underwriting Services */}
-                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
+                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-sm text-right text-muted-foreground">• VA Underwriting Services</Label>
                           </div>
-                          {Array.from({ length: selectedRateCount }).map((_, index) => {
-                            const numVal = vaUnderwritingValues[index] ? vaUnderwritingValues[index].replace(/[^\d]/g, '') : '';
+                          {selectedRateIds.map((rateId) => {
+                            const numVal = vaUnderwritingValues[rateId] ? vaUnderwritingValues[rateId].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
                             
                             return (
-                              <div key={index} className="flex justify-center">
+                              <div key={rateId} className="flex justify-center">
                                 <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
@@ -21251,11 +21251,11 @@ export default function AdminAddClient() {
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
                                       const newValues = [...vaUnderwritingValues];
-                                      newValues[index] = value;
+                                      newValues[rateId] = value;
                                       setVaUnderwritingValues(newValues);
                                     }}
                                     className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-va-underwriting-${index}`}
+                                    data-testid={`input-va-underwriting-${rateId}`}
                                   />
                                 </div>
                               </div>
@@ -21264,16 +21264,16 @@ export default function AdminAddClient() {
                         </div>
 
                         {/* Title & Escrow Services */}
-                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
+                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-sm text-right text-muted-foreground">• Title & Escrow Services</Label>
                           </div>
-                          {Array.from({ length: selectedRateCount }).map((_, index) => {
-                            const numVal = titleEscrowValues[index] ? titleEscrowValues[index].replace(/[^\d]/g, '') : '';
+                          {selectedRateIds.map((rateId) => {
+                            const numVal = titleEscrowValues[rateId] ? titleEscrowValues[rateId].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
                             
                             return (
-                              <div key={index} className="flex justify-center">
+                              <div key={rateId} className="flex justify-center">
                                 <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
@@ -21283,11 +21283,11 @@ export default function AdminAddClient() {
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
                                       const newValues = [...titleEscrowValues];
-                                      newValues[index] = value;
+                                      newValues[rateId] = value;
                                       setTitleEscrowValues(newValues);
                                     }}
                                     className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-title-escrow-${index}`}
+                                    data-testid={`input-title-escrow-${rateId}`}
                                   />
                                 </div>
                               </div>
@@ -21296,16 +21296,16 @@ export default function AdminAddClient() {
                         </div>
 
                         {/* Pay Off Interest */}
-                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
+                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-sm text-right text-muted-foreground">• Pay Off Interest</Label>
                           </div>
-                          {Array.from({ length: selectedRateCount }).map((_, index) => {
-                            const numVal = payOffInterestValues[index] ? payOffInterestValues[index].replace(/[^\d]/g, '') : '';
+                          {selectedRateIds.map((rateId) => {
+                            const numVal = payOffInterestValues[rateId] ? payOffInterestValues[rateId].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
                             
                             return (
-                              <div key={index} className="flex justify-center">
+                              <div key={rateId} className="flex justify-center">
                                 <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
@@ -21315,11 +21315,11 @@ export default function AdminAddClient() {
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
                                       const newValues = [...payOffInterestValues];
-                                      newValues[index] = value;
+                                      newValues[rateId] = value;
                                       setPayOffInterestValues(newValues);
                                     }}
                                     className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-pay-off-interest-${index}`}
+                                    data-testid={`input-pay-off-interest-${rateId}`}
                                   />
                                 </div>
                               </div>
@@ -21328,16 +21328,16 @@ export default function AdminAddClient() {
                         </div>
 
                         {/* State Tax & Recording */}
-                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
+                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-sm text-right text-muted-foreground">• State Tax & Recording</Label>
                           </div>
-                          {Array.from({ length: selectedRateCount }).map((_, index) => {
-                            const numVal = stateTaxValues[index] ? stateTaxValues[index].replace(/[^\d]/g, '') : '';
+                          {selectedRateIds.map((rateId) => {
+                            const numVal = stateTaxValues[rateId] ? stateTaxValues[rateId].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
                             
                             return (
-                              <div key={index} className="flex justify-center">
+                              <div key={rateId} className="flex justify-center">
                                 <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
@@ -21347,11 +21347,11 @@ export default function AdminAddClient() {
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
                                       const newValues = [...stateTaxValues];
-                                      newValues[index] = value;
+                                      newValues[rateId] = value;
                                       setStateTaxValues(newValues);
                                     }}
                                     className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-state-tax-${index}`}
+                                    data-testid={`input-state-tax-${rateId}`}
                                   />
                                 </div>
                               </div>
@@ -21362,16 +21362,16 @@ export default function AdminAddClient() {
 
                       {/* New Escrow Reserves Section */}
                       <div className="border-t pt-6">
-                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
+                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-base font-bold text-right">New Escrow Reserves</Label>
                           </div>
-                          {Array.from({ length: selectedRateCount }).map((_, index) => {
-                            const numVal = escrowReservesValues[index] ? escrowReservesValues[index].replace(/[^\d]/g, '') : '';
+                          {selectedRateIds.map((rateId) => {
+                            const numVal = escrowReservesValues[rateId] ? escrowReservesValues[rateId].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
                             
                             return (
-                              <div key={index} className="flex justify-center">
+                              <div key={rateId} className="flex justify-center">
                                 <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
                                   <Input
@@ -21381,11 +21381,11 @@ export default function AdminAddClient() {
                                     onChange={(e) => {
                                       const value = e.target.value.replace(/[^\d]/g, '');
                                       const newValues = [...escrowReservesValues];
-                                      newValues[index] = value;
+                                      newValues[rateId] = value;
                                       setEscrowReservesValues(newValues);
                                     }}
                                     className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-escrow-reserves-${index}`}
+                                    data-testid={`input-escrow-reserves-${rateId}`}
                                   />
                                 </div>
                               </div>
@@ -21399,22 +21399,22 @@ export default function AdminAddClient() {
                     {/* New Est. Loan Amount & New Monthly Payment Card */}
                     <Card 
                       className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-blue-500 hover:border-2 hover:border-blue-500 transition-colors flex-none"
-                      style={{ width: `${250 * (selectedRateCount + 1)}px`, maxWidth: '100%' }}
+                      style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
                     >
                       <CardContent className="pt-6 space-y-6">
                         {/* New Est. Loan Amount Row - Auto-calculated */}
-                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
+                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-base font-semibold text-right">New Est. Loan Amount:</Label>
                           </div>
-                          {Array.from({ length: selectedRateCount }).map((_, index) => {
-                            const total = rateColumnTotals[index];
+                          {selectedRateIds.map((rateId) => {
+                            const total = rateColumnTotals[rateId];
                             const displayValue = total > 0 ? total.toLocaleString('en-US') : '';
                             
                             return (
-                              <div key={index} className="flex justify-center">
+                              <div key={rateId} className="flex justify-center">
                                 <div className="flex items-center px-3 rounded-md w-3/4">
-                                  <span className="text-base font-bold text-center w-full" data-testid={`text-new-est-loan-amount-${index}`}>
+                                  <span className="text-base font-bold text-center w-full" data-testid={`text-new-est-loan-amount-${rateId}`}>
                                     {displayValue ? `$${displayValue}` : ''}
                                   </span>
                                 </div>
@@ -21425,18 +21425,18 @@ export default function AdminAddClient() {
 
                         {/* New Monthly Payment Row */}
                         <div className="border-t pt-6">
-                          <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
+                          <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                             <div className="flex items-center justify-end pr-4">
                               <Label className="text-base font-semibold text-right">New Monthly Payment:</Label>
                             </div>
-                          {Array.from({ length: selectedRateCount }).map((_, index) => {
-                            const numVal = newMonthlyPaymentValues[index] ? newMonthlyPaymentValues[index].replace(/[^\d]/g, '') : '';
+                          {selectedRateIds.map((rateId) => {
+                            const numVal = newMonthlyPaymentValues[rateId] ? newMonthlyPaymentValues[rateId].replace(/[^\d]/g, '') : '';
                             const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
                             
                             return (
-                              <div key={index} className="flex justify-center">
+                              <div key={rateId} className="flex justify-center">
                                 <div className="flex items-center px-3 rounded-md w-3/4">
-                                  <span className="text-base font-bold text-center w-full" data-testid={`text-new-monthly-payment-${index}`}>
+                                  <span className="text-base font-bold text-center w-full" data-testid={`text-new-monthly-payment-${rateId}`}>
                                     {displayValue ? `$${displayValue}` : ''}
                                   </span>
                                 </div>
