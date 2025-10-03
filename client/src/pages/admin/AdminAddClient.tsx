@@ -944,6 +944,7 @@ export default function AdminAddClient() {
   // State for New Est. Loan Amount and New Monthly Payment sections
   const [newEstLoanAmountValues, setNewEstLoanAmountValues] = useState<string[]>(['', '', '', '', '']);
   const [newMonthlyPaymentValues, setNewMonthlyPaymentValues] = useState<string[]>(['', '', '', '', '']);
+  const [totalMonthlySavingsValues, setTotalMonthlySavingsValues] = useState<string[]>(['', '', '', '', '']);
   
   // State for additional rows in Rate Details Section
   const [additionalRow1Values, setAdditionalRow1Values] = useState<string[]>(['', '', '', '', '']);
@@ -21446,12 +21447,26 @@ export default function AdminAddClient() {
                           </div>
                         </div>
 
-                        {/* Footer Message */}
+                        {/* Total Monthly Savings Row */}
                         <div className="border-t pt-6">
-                          <div className="text-center">
-                            <p className="text-lg font-semibold text-muted-foreground">
-                              Prime Rates . Lower Payments.
-                            </p>
+                          <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
+                            <div className="flex items-center justify-end pr-4">
+                              <Label className="text-base font-semibold text-right">Total Monthly Savings:</Label>
+                            </div>
+                          {selectedRateIds.map((rateId) => {
+                            const numVal = totalMonthlySavingsValues[rateId] ? totalMonthlySavingsValues[rateId].replace(/[^\d]/g, '') : '';
+                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            
+                            return (
+                              <div key={rateId} className="flex justify-center">
+                                <div className="flex items-center px-3 rounded-md w-3/4">
+                                  <span className="text-base font-bold text-center w-full" data-testid={`text-total-monthly-savings-${rateId}`}>
+                                    {displayValue ? `$${displayValue}` : ''}
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })}
                           </div>
                         </div>
                       </CardContent>
