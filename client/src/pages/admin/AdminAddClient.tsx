@@ -21041,7 +21041,7 @@ export default function AdminAddClient() {
                   
                   {/* Blue Circle Rate Input Buttons */}
                   {showRateCircles && selectedRateCount > 0 && (
-                    <div className="grid grid-cols-[150px_1fr] items-start gap-8 mt-16 animate-roll-down">
+                    <div className="grid grid-cols-[150px_1fr] items-start gap-8 mt-24 animate-roll-down">
                       <div></div>
                       <div className="grid grid-cols-[180px_180px_180px_180px_180px] gap-4">
                         {Array.from({ length: selectedRateCount }).map((_, index) => (
