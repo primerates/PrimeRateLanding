@@ -20704,57 +20704,19 @@ export default function AdminAddClient() {
                     {/* Source Row */}
                     <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                       <Label className="text-base font-semibold">Source:</Label>
-                      <div className="grid grid-cols-[180px_180px_180px_180px_180px] gap-4">
-                        {/* Direct Mail */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="source-direct-mail"
-                            data-testid="checkbox-source-direct-mail"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="source-direct-mail">Direct Mail</Label>
-                        </div>
-                        
-                        {/* Social Media */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="source-social-media"
-                            data-testid="checkbox-source-social-media"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="source-social-media">Social Media</Label>
-                        </div>
-                        
-                        {/* Referral */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="source-referral"
-                            data-testid="checkbox-source-referral"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="source-referral">Referral</Label>
-                        </div>
-                        
-                        {/* Repeat */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="source-repeat"
-                            data-testid="checkbox-source-repeat"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="source-repeat">Repeat</Label>
-                        </div>
-                        
-                        {/* Website */}
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="source-website"
-                            data-testid="checkbox-source-website"
-                            className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                          />
-                          <Label htmlFor="source-website">Website</Label>
-                        </div>
-                      </div>
+                      <Select>
+                        <SelectTrigger className="w-[200px] border-none shadow-none focus:ring-0" data-testid="select-source">
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent className="text-black">
+                          <SelectItem value="select" data-testid="select-source-select">Select</SelectItem>
+                          <SelectItem value="direct-mail" data-testid="select-source-direct-mail">Direct Mail</SelectItem>
+                          <SelectItem value="social-media" data-testid="select-source-social-media">Social Media</SelectItem>
+                          <SelectItem value="website" data-testid="select-source-website">Website</SelectItem>
+                          <SelectItem value="referral" data-testid="select-source-referral">Referral</SelectItem>
+                          <SelectItem value="repeat-client" data-testid="select-source-repeat-client">Repeat Client</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     </CardContent>
                   )}
