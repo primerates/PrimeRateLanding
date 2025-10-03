@@ -20582,107 +20582,42 @@ export default function AdminAddClient() {
                       {/* Quote Row */}
                       <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                         <Label className="text-base font-semibold">Quote:</Label>
-                        <div className="grid grid-cols-[180px_180px_180px_180px_180px] gap-4">
-                          {/* 1 Rate */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="compare-1-rate"
-                              data-testid="checkbox-compare-1-rate"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                              checked={selectedRateCount === 1}
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  setSelectedRateCount(1);
-                                  setShowRateCircles(true);
-                                } else {
-                                  setSelectedRateCount(0);
-                                  setShowRateCircles(false);
-                                }
-                              }}
-                            />
-                            <Label htmlFor="compare-1-rate">1 Rate</Label>
-                          </div>
-                          
-                          {/* 2 Rates */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="compare-2-rates"
-                              data-testid="checkbox-compare-2-rates"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                              checked={selectedRateCount === 2}
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  setSelectedRateCount(2);
-                                  setShowRateCircles(true);
-                                } else {
-                                  setSelectedRateCount(0);
-                                  setShowRateCircles(false);
-                                }
-                              }}
-                            />
-                            <Label htmlFor="compare-2-rates">2 Rates</Label>
-                          </div>
-                          
-                          {/* 3 Rates */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="compare-3-rates"
-                              data-testid="checkbox-compare-3-rates"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                              checked={selectedRateCount === 3}
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  setSelectedRateCount(3);
-                                  setShowRateCircles(true);
-                                } else {
-                                  setSelectedRateCount(0);
-                                  setShowRateCircles(false);
-                                }
-                              }}
-                            />
-                            <Label htmlFor="compare-3-rates">3 Rates</Label>
-                          </div>
-                          
-                          {/* 4 Rates */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="compare-4-rate"
-                              data-testid="checkbox-compare-4-rate"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                              checked={selectedRateCount === 4}
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  setSelectedRateCount(4);
-                                  setShowRateCircles(true);
-                                } else {
-                                  setSelectedRateCount(0);
-                                  setShowRateCircles(false);
-                                }
-                              }}
-                            />
-                            <Label htmlFor="compare-4-rate">4 Rates</Label>
-                          </div>
-                          
-                          {/* 5 Rates */}
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="compare-5-rates"
-                              data-testid="checkbox-compare-5-rates"
-                              className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
-                              checked={selectedRateCount === 5}
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  setSelectedRateCount(5);
-                                  setShowRateCircles(true);
-                                } else {
-                                  setSelectedRateCount(0);
-                                  setShowRateCircles(false);
-                                }
-                              }}
-                            />
-                            <Label htmlFor="compare-5-rates">5 Rates</Label>
-                          </div>
-                        </div>
+                        <Select
+                          value={selectedRateCount === 0 ? 'select' : `${selectedRateCount}-rate${selectedRateCount > 1 ? 's' : ''}`}
+                          onValueChange={(value) => {
+                            if (value === 'select') {
+                              setSelectedRateCount(0);
+                              setShowRateCircles(false);
+                            } else if (value === '1-rate') {
+                              setSelectedRateCount(1);
+                              setShowRateCircles(true);
+                            } else if (value === '2-rates') {
+                              setSelectedRateCount(2);
+                              setShowRateCircles(true);
+                            } else if (value === '3-rates') {
+                              setSelectedRateCount(3);
+                              setShowRateCircles(true);
+                            } else if (value === '4-rates') {
+                              setSelectedRateCount(4);
+                              setShowRateCircles(true);
+                            } else if (value === '5-rates') {
+                              setSelectedRateCount(5);
+                              setShowRateCircles(true);
+                            }
+                          }}
+                        >
+                          <SelectTrigger className="w-[200px]" data-testid="select-quote">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="select" data-testid="select-quote-select">Select</SelectItem>
+                            <SelectItem value="1-rate" data-testid="select-quote-1-rate">1 Rate</SelectItem>
+                            <SelectItem value="2-rates" data-testid="select-quote-2-rates">2 Rates</SelectItem>
+                            <SelectItem value="3-rates" data-testid="select-quote-3-rates">3 Rates</SelectItem>
+                            <SelectItem value="4-rates" data-testid="select-quote-4-rates">4 Rates</SelectItem>
+                            <SelectItem value="5-rates" data-testid="select-quote-5-rates">5 Rates</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
 
                       {/* Property, Client and Source Row */}
