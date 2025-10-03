@@ -20690,7 +20690,7 @@ export default function AdminAddClient() {
                         </div>
                       </div>
 
-                      {/* Row 2: Type field aligned below Quote, Purpose aligned below Category */}
+                      {/* Row 2: Type field aligned below Quote, Purpose aligned below Category, VA Benefits */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="type-select">Type</Label>
@@ -20723,6 +20723,20 @@ export default function AdminAddClient() {
                               <SelectItem value="program-change" data-testid="select-purpose-program-change">Program Change</SelectItem>
                               <SelectItem value="streamline" data-testid="select-purpose-streamline">Streamline</SelectItem>
                               <SelectItem value="va-irrrl" data-testid="select-purpose-va-irrrl">VA IRRRL</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="va-benefits-select">VA Benefits</Label>
+                          <Select>
+                            <SelectTrigger data-testid="select-va-benefits">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-va-benefits-select">Select</SelectItem>
+                              <SelectItem value="yes-exempt" data-testid="select-va-benefits-yes-exempt">Yes - Exempt</SelectItem>
+                              <SelectItem value="no-not-exempt" data-testid="select-va-benefits-no-not-exempt">No - Not Exempt</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
