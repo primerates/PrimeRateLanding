@@ -20622,6 +20622,24 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
+                          <Label htmlFor="category-select">Category</Label>
+                          <Select>
+                            <SelectTrigger data-testid="select-category">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-category-select">Select</SelectItem>
+                              <SelectItem value="va" data-testid="select-category-va">VA</SelectItem>
+                              <SelectItem value="va-jumbo" data-testid="select-category-va-jumbo">VA Jumbo</SelectItem>
+                              <SelectItem value="fha" data-testid="select-category-fha">FHA</SelectItem>
+                              <SelectItem value="conventional" data-testid="select-category-conventional">Conventional</SelectItem>
+                              <SelectItem value="conventional-jumbo" data-testid="select-category-conventional-jumbo">Conventional Jumbo</SelectItem>
+                              <SelectItem value="non-qm" data-testid="select-category-non-qm">Non-QM</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
                           <Label htmlFor="client-select">Client</Label>
                           <Select>
                             <SelectTrigger data-testid="select-client">
@@ -20667,24 +20685,6 @@ export default function AdminAddClient() {
                               <SelectItem value="home-purchase" data-testid="select-property-home-purchase">Home Purchase</SelectItem>
                               <SelectItem value="duplex" data-testid="select-property-duplex">Duplex</SelectItem>
                               <SelectItem value="multi-family" data-testid="select-property-multi-family">Multi-Family</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="category-select">Category</Label>
-                          <Select>
-                            <SelectTrigger data-testid="select-category">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-category-select">Select</SelectItem>
-                              <SelectItem value="va" data-testid="select-category-va">VA</SelectItem>
-                              <SelectItem value="va-jumbo" data-testid="select-category-va-jumbo">VA Jumbo</SelectItem>
-                              <SelectItem value="fha" data-testid="select-category-fha">FHA</SelectItem>
-                              <SelectItem value="conventional" data-testid="select-category-conventional">Conventional</SelectItem>
-                              <SelectItem value="conventional-jumbo" data-testid="select-category-conventional-jumbo">Conventional Jumbo</SelectItem>
-                              <SelectItem value="non-qm" data-testid="select-category-non-qm">Non-QM</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
