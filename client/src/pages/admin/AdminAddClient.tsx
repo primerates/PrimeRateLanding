@@ -21365,8 +21365,8 @@ export default function AdminAddClient() {
                             
                             return (
                               <div key={index} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                  <span className="text-muted-foreground text-sm">$</span>
+                                <div className="flex items-center px-3 rounded-md w-3/4" style={{ backgroundColor: '#1a3373' }}>
+                                  <span className="text-white text-sm">$</span>
                                   <Input
                                     type="text"
                                     placeholder=""
@@ -21377,7 +21377,7 @@ export default function AdminAddClient() {
                                       newValues[index] = value;
                                       setNewMonthlyPaymentValues(newValues);
                                     }}
-                                    className="border-0 bg-transparent text-center font-medium text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    className="border-0 bg-transparent text-center font-medium text-lg text-white placeholder:text-white/50 focus-visible:ring-0 focus-visible:ring-offset-0"
                                     data-testid={`input-new-monthly-payment-${index}`}
                                   />
                                 </div>
