@@ -913,6 +913,17 @@ export default function AdminAddClient() {
   const [rateValues, setRateValues] = useState<string[]>(['', '', '', '', '']);
   const [editingRateIndex, setEditingRateIndex] = useState<number | null>(null);
   const [showRateCircles, setShowRateCircles] = useState(false);
+  
+  // State for Quote tab rate detail fields
+  const [rateBuyDownValues, setRateBuyDownValues] = useState<string[]>(['', '', '', '', '']);
+  const [cashOutAmountValues, setCashOutAmountValues] = useState<string[]>(['', '', '', '', '']);
+  const [vaFundingFeeValues, setVaFundingFeeValues] = useState<string[]>(['', '', '', '', '']);
+  const [vaAppraisalValues, setVaAppraisalValues] = useState<string[]>(['', '', '', '', '']);
+  const [vaTermiteValues, setVaTermiteValues] = useState<string[]>(['', '', '', '', '']);
+  const [vaUnderwritingValues, setVaUnderwritingValues] = useState<string[]>(['', '', '', '', '']);
+  const [titleEscrowValues, setTitleEscrowValues] = useState<string[]>(['', '', '', '', '']);
+  const [stateTaxValues, setStateTaxValues] = useState<string[]>(['', '', '', '', '']);
+  const [escrowReservesValues, setEscrowReservesValues] = useState<string[]>(['', '', '', '', '']);
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
   const [isReadOnlyCurrentLoanOpen, setIsReadOnlyCurrentLoanOpen] = useState(true);
@@ -20812,16 +20823,31 @@ export default function AdminAddClient() {
                         <div className="flex items-center justify-end pr-4">
                           <Label className="text-sm font-semibold text-right">Rate Buy Down</Label>
                         </div>
-                        {Array.from({ length: selectedRateCount }).map((_, index) => (
-                          <div key={index} className="flex justify-center">
-                            <Input
-                              type="text"
-                              placeholder="$0.00"
-                              className="text-center font-medium"
-                              data-testid={`input-rate-buy-down-${index}`}
-                            />
-                          </div>
-                        ))}
+                        {Array.from({ length: selectedRateCount }).map((_, index) => {
+                          const numVal = rateBuyDownValues[index] ? rateBuyDownValues[index].replace(/[^\d]/g, '') : '';
+                          const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                          
+                          return (
+                            <div key={index} className="flex justify-center">
+                              <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                <span className="text-muted-foreground text-sm">$</span>
+                                <Input
+                                  type="text"
+                                  placeholder="0"
+                                  value={displayValue}
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(/[^\d]/g, '');
+                                    const newValues = [...rateBuyDownValues];
+                                    newValues[index] = value;
+                                    setRateBuyDownValues(newValues);
+                                  }}
+                                  className="border-0 bg-transparent text-center font-medium focus-visible:ring-0 focus-visible:ring-offset-0"
+                                  data-testid={`input-rate-buy-down-${index}`}
+                                />
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
 
                       {/* Cash Out Amount Row */}
@@ -20829,16 +20855,31 @@ export default function AdminAddClient() {
                         <div className="flex items-center justify-end pr-4">
                           <Label className="text-sm font-semibold text-right">Cash Out Amount</Label>
                         </div>
-                        {Array.from({ length: selectedRateCount }).map((_, index) => (
-                          <div key={index} className="flex justify-center">
-                            <Input
-                              type="text"
-                              placeholder="$0.00"
-                              className="text-center font-medium"
-                              data-testid={`input-cash-out-amount-${index}`}
-                            />
-                          </div>
-                        ))}
+                        {Array.from({ length: selectedRateCount }).map((_, index) => {
+                          const numVal = cashOutAmountValues[index] ? cashOutAmountValues[index].replace(/[^\d]/g, '') : '';
+                          const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                          
+                          return (
+                            <div key={index} className="flex justify-center">
+                              <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                <span className="text-muted-foreground text-sm">$</span>
+                                <Input
+                                  type="text"
+                                  placeholder="0"
+                                  value={displayValue}
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(/[^\d]/g, '');
+                                    const newValues = [...cashOutAmountValues];
+                                    newValues[index] = value;
+                                    setCashOutAmountValues(newValues);
+                                  }}
+                                  className="border-0 bg-transparent text-center font-medium focus-visible:ring-0 focus-visible:ring-offset-0"
+                                  data-testid={`input-cash-out-amount-${index}`}
+                                />
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
 
                       {/* Third Party Services Section */}
@@ -20854,16 +20895,31 @@ export default function AdminAddClient() {
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-sm text-right text-muted-foreground">• VA Funding Fee</Label>
                           </div>
-                          {Array.from({ length: selectedRateCount }).map((_, index) => (
-                            <div key={index} className="flex justify-center">
-                              <Input
-                                type="text"
-                                placeholder="$0.00"
-                                className="text-center text-sm"
-                                data-testid={`input-va-funding-fee-${index}`}
-                              />
-                            </div>
-                          ))}
+                          {Array.from({ length: selectedRateCount }).map((_, index) => {
+                            const numVal = vaFundingFeeValues[index] ? vaFundingFeeValues[index].replace(/[^\d]/g, '') : '';
+                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            
+                            return (
+                              <div key={index} className="flex justify-center">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                  <span className="text-muted-foreground text-sm">$</span>
+                                  <Input
+                                    type="text"
+                                    placeholder="0"
+                                    value={displayValue}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^\d]/g, '');
+                                      const newValues = [...vaFundingFeeValues];
+                                      newValues[index] = value;
+                                      setVaFundingFeeValues(newValues);
+                                    }}
+                                    className="border-0 bg-transparent text-center text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    data-testid={`input-va-funding-fee-${index}`}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
 
                         {/* VA Appraisal Inspection */}
@@ -20871,16 +20927,31 @@ export default function AdminAddClient() {
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-sm text-right text-muted-foreground">• VA Appraisal Inspection</Label>
                           </div>
-                          {Array.from({ length: selectedRateCount }).map((_, index) => (
-                            <div key={index} className="flex justify-center">
-                              <Input
-                                type="text"
-                                placeholder="$0.00"
-                                className="text-center text-sm"
-                                data-testid={`input-va-appraisal-${index}`}
-                              />
-                            </div>
-                          ))}
+                          {Array.from({ length: selectedRateCount }).map((_, index) => {
+                            const numVal = vaAppraisalValues[index] ? vaAppraisalValues[index].replace(/[^\d]/g, '') : '';
+                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            
+                            return (
+                              <div key={index} className="flex justify-center">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                  <span className="text-muted-foreground text-sm">$</span>
+                                  <Input
+                                    type="text"
+                                    placeholder="0"
+                                    value={displayValue}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^\d]/g, '');
+                                      const newValues = [...vaAppraisalValues];
+                                      newValues[index] = value;
+                                      setVaAppraisalValues(newValues);
+                                    }}
+                                    className="border-0 bg-transparent text-center text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    data-testid={`input-va-appraisal-${index}`}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
 
                         {/* VA Termite Report */}
@@ -20888,16 +20959,31 @@ export default function AdminAddClient() {
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-sm text-right text-muted-foreground">• VA Termite Report</Label>
                           </div>
-                          {Array.from({ length: selectedRateCount }).map((_, index) => (
-                            <div key={index} className="flex justify-center">
-                              <Input
-                                type="text"
-                                placeholder="$0.00"
-                                className="text-center text-sm"
-                                data-testid={`input-va-termite-${index}`}
-                              />
-                            </div>
-                          ))}
+                          {Array.from({ length: selectedRateCount }).map((_, index) => {
+                            const numVal = vaTermiteValues[index] ? vaTermiteValues[index].replace(/[^\d]/g, '') : '';
+                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            
+                            return (
+                              <div key={index} className="flex justify-center">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                  <span className="text-muted-foreground text-sm">$</span>
+                                  <Input
+                                    type="text"
+                                    placeholder="0"
+                                    value={displayValue}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^\d]/g, '');
+                                      const newValues = [...vaTermiteValues];
+                                      newValues[index] = value;
+                                      setVaTermiteValues(newValues);
+                                    }}
+                                    className="border-0 bg-transparent text-center text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    data-testid={`input-va-termite-${index}`}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
 
                         {/* VA Underwriting Services */}
@@ -20905,16 +20991,31 @@ export default function AdminAddClient() {
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-sm text-right text-muted-foreground">• VA Underwriting Services</Label>
                           </div>
-                          {Array.from({ length: selectedRateCount }).map((_, index) => (
-                            <div key={index} className="flex justify-center">
-                              <Input
-                                type="text"
-                                placeholder="$0.00"
-                                className="text-center text-sm"
-                                data-testid={`input-va-underwriting-${index}`}
-                              />
-                            </div>
-                          ))}
+                          {Array.from({ length: selectedRateCount }).map((_, index) => {
+                            const numVal = vaUnderwritingValues[index] ? vaUnderwritingValues[index].replace(/[^\d]/g, '') : '';
+                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            
+                            return (
+                              <div key={index} className="flex justify-center">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                  <span className="text-muted-foreground text-sm">$</span>
+                                  <Input
+                                    type="text"
+                                    placeholder="0"
+                                    value={displayValue}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^\d]/g, '');
+                                      const newValues = [...vaUnderwritingValues];
+                                      newValues[index] = value;
+                                      setVaUnderwritingValues(newValues);
+                                    }}
+                                    className="border-0 bg-transparent text-center text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    data-testid={`input-va-underwriting-${index}`}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
 
                         {/* Title & Escrow: Pay Off Interest */}
@@ -20922,16 +21023,31 @@ export default function AdminAddClient() {
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-sm text-right text-muted-foreground">• Title & Escrow: Pay Off Interest</Label>
                           </div>
-                          {Array.from({ length: selectedRateCount }).map((_, index) => (
-                            <div key={index} className="flex justify-center">
-                              <Input
-                                type="text"
-                                placeholder="$0.00"
-                                className="text-center text-sm"
-                                data-testid={`input-title-escrow-${index}`}
-                              />
-                            </div>
-                          ))}
+                          {Array.from({ length: selectedRateCount }).map((_, index) => {
+                            const numVal = titleEscrowValues[index] ? titleEscrowValues[index].replace(/[^\d]/g, '') : '';
+                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            
+                            return (
+                              <div key={index} className="flex justify-center">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                  <span className="text-muted-foreground text-sm">$</span>
+                                  <Input
+                                    type="text"
+                                    placeholder="0"
+                                    value={displayValue}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^\d]/g, '');
+                                      const newValues = [...titleEscrowValues];
+                                      newValues[index] = value;
+                                      setTitleEscrowValues(newValues);
+                                    }}
+                                    className="border-0 bg-transparent text-center text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    data-testid={`input-title-escrow-${index}`}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
 
                         {/* State Tax & Recording */}
@@ -20939,16 +21055,31 @@ export default function AdminAddClient() {
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-sm text-right text-muted-foreground">• State Tax & Recording</Label>
                           </div>
-                          {Array.from({ length: selectedRateCount }).map((_, index) => (
-                            <div key={index} className="flex justify-center">
-                              <Input
-                                type="text"
-                                placeholder="$0.00"
-                                className="text-center text-sm"
-                                data-testid={`input-state-tax-${index}`}
-                              />
-                            </div>
-                          ))}
+                          {Array.from({ length: selectedRateCount }).map((_, index) => {
+                            const numVal = stateTaxValues[index] ? stateTaxValues[index].replace(/[^\d]/g, '') : '';
+                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            
+                            return (
+                              <div key={index} className="flex justify-center">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                  <span className="text-muted-foreground text-sm">$</span>
+                                  <Input
+                                    type="text"
+                                    placeholder="0"
+                                    value={displayValue}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^\d]/g, '');
+                                      const newValues = [...stateTaxValues];
+                                      newValues[index] = value;
+                                      setStateTaxValues(newValues);
+                                    }}
+                                    className="border-0 bg-transparent text-center text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    data-testid={`input-state-tax-${index}`}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
 
@@ -20958,16 +21089,31 @@ export default function AdminAddClient() {
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-base font-bold text-right">New Escrow Reserves</Label>
                           </div>
-                          {Array.from({ length: selectedRateCount }).map((_, index) => (
-                            <div key={index} className="flex justify-center">
-                              <Input
-                                type="text"
-                                placeholder="$0.00"
-                                className="text-center font-medium"
-                                data-testid={`input-escrow-reserves-${index}`}
-                              />
-                            </div>
-                          ))}
+                          {Array.from({ length: selectedRateCount }).map((_, index) => {
+                            const numVal = escrowReservesValues[index] ? escrowReservesValues[index].replace(/[^\d]/g, '') : '';
+                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            
+                            return (
+                              <div key={index} className="flex justify-center">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-full">
+                                  <span className="text-muted-foreground text-sm">$</span>
+                                  <Input
+                                    type="text"
+                                    placeholder="0"
+                                    value={displayValue}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^\d]/g, '');
+                                      const newValues = [...escrowReservesValues];
+                                      newValues[index] = value;
+                                      setEscrowReservesValues(newValues);
+                                    }}
+                                    className="border-0 bg-transparent text-center font-medium focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    data-testid={`input-escrow-reserves-${index}`}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     </div>
