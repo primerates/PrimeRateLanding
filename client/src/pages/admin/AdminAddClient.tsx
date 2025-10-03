@@ -20818,7 +20818,7 @@ export default function AdminAddClient() {
                       {/* Row 3: Loan Term with toggle switch */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center justify-between mb-2">
                             <Label htmlFor={isCustomTerm ? "custom-term-input" : "loan-term-select"}>
                               {isCustomTerm ? "Custom Term" : "Loan Term"}
                             </Label>
@@ -20826,6 +20826,7 @@ export default function AdminAddClient() {
                               checked={isCustomTerm}
                               onCheckedChange={setIsCustomTerm}
                               data-testid="switch-custom-term"
+                              className="scale-[0.8]"
                             />
                           </div>
                           {!isCustomTerm ? (
