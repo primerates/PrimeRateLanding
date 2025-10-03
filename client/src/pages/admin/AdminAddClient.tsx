@@ -930,6 +930,10 @@ export default function AdminAddClient() {
   const [newEstLoanAmountValues, setNewEstLoanAmountValues] = useState<string[]>(['', '', '', '', '']);
   const [newMonthlyPaymentValues, setNewMonthlyPaymentValues] = useState<string[]>(['', '', '', '', '']);
   
+  // State for additional rows in Rate Details Section
+  const [additionalRow1Values, setAdditionalRow1Values] = useState<string[]>(['', '', '', '', '']);
+  const [additionalRow2Values, setAdditionalRow2Values] = useState<string[]>(['', '', '', '', '']);
+  
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
   const [isReadOnlyCurrentLoanOpen, setIsReadOnlyCurrentLoanOpen] = useState(true);
