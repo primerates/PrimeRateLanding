@@ -20559,11 +20559,7 @@ export default function AdminAddClient() {
                           <div key={index} className="flex justify-start ml-10">
                             {index < selectedRateCount && (
                               <div className="w-[22px] h-[22px] rounded-full bg-blue-900 flex items-center justify-center">
-                                {index === 0 ? (
-                                  <Wallet className="h-4 w-4 text-white" />
-                                ) : (
-                                  <DollarSign className="h-4 w-4 text-white" />
-                                )}
+                                <Wallet className="h-3.5 w-3.5 text-white" />
                               </div>
                             )}
                           </div>
