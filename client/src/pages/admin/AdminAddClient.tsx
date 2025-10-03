@@ -21041,47 +21041,50 @@ export default function AdminAddClient() {
                   
                   {/* Blue Circle Rate Input Buttons */}
                   {showRateCircles && selectedRateCount > 0 && (
-                    <div className="flex justify-center gap-6 mt-8 animate-roll-down">
-                      {Array.from({ length: selectedRateCount }).map((_, index) => (
-                        <div key={index} className="relative">
-                          {editingRateIndex === index ? (
-                            <div className="relative">
-                              <Input
-                                type="text"
-                                value={rateValues[index]}
-                                onChange={(e) => {
-                                  const value = e.target.value.replace(/[^\d.]/g, '');
-                                  const newValues = [...rateValues];
-                                  newValues[index] = value;
-                                  setRateValues(newValues);
-                                }}
-                                onBlur={() => setEditingRateIndex(null)}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') {
-                                    setEditingRateIndex(null);
-                                  }
-                                }}
-                                placeholder="0.00"
-                                autoFocus
-                                className="w-24 h-24 text-center text-xl font-semibold rounded-full border-4 border-blue-500 bg-white focus:ring-2 focus:ring-blue-300"
-                                data-testid={`input-rate-${index}`}
-                              />
-                              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">
-                                %
-                              </span>
-                            </div>
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={() => setEditingRateIndex(index)}
-                              className="w-24 h-24 rounded-full bg-blue-500 hover:bg-blue-600 transition-colors duration-200 flex items-center justify-center text-white font-semibold text-lg shadow-lg hover:shadow-xl"
-                              data-testid={`button-rate-circle-${index}`}
-                            >
-                              {rateValues[index] ? `${rateValues[index]}%` : '+'}
-                            </button>
-                          )}
-                        </div>
-                      ))}
+                    <div className="grid grid-cols-[150px_1fr] items-start gap-8 mt-8 animate-roll-down">
+                      <div></div>
+                      <div className="grid grid-cols-[180px_180px_180px_180px_180px] gap-4">
+                        {Array.from({ length: selectedRateCount }).map((_, index) => (
+                          <div key={index} className="flex justify-center">
+                            {editingRateIndex === index ? (
+                              <div className="relative">
+                                <Input
+                                  type="text"
+                                  value={rateValues[index]}
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(/[^\d.]/g, '');
+                                    const newValues = [...rateValues];
+                                    newValues[index] = value;
+                                    setRateValues(newValues);
+                                  }}
+                                  onBlur={() => setEditingRateIndex(null)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                      setEditingRateIndex(null);
+                                    }
+                                  }}
+                                  placeholder="0.00"
+                                  autoFocus
+                                  className="w-24 h-24 text-center text-xl font-semibold rounded-full border-4 border-blue-500 bg-white focus:ring-2 focus:ring-blue-300"
+                                  data-testid={`input-rate-${index}`}
+                                />
+                                <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">
+                                  %
+                                </span>
+                              </div>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => setEditingRateIndex(index)}
+                                className="w-24 h-24 rounded-full bg-blue-500 hover:bg-blue-600 transition-colors duration-200 flex items-center justify-center text-white font-semibold text-lg shadow-lg hover:shadow-xl"
+                                data-testid={`button-rate-circle-${index}`}
+                              >
+                                {rateValues[index] ? `${rateValues[index]}%` : '+'}
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
