@@ -19,7 +19,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Wallet } from 'lucide-react';
 import { SiZillow } from 'react-icons/si';
 import { MdRealEstateAgent } from 'react-icons/md';
 import { FaHome } from 'react-icons/fa';
@@ -20559,7 +20559,11 @@ export default function AdminAddClient() {
                           <div key={index} className="flex justify-start ml-10">
                             {index < selectedRateCount && (
                               <div className="w-[22px] h-[22px] rounded-full bg-blue-900 flex items-center justify-center">
-                                <DollarSign className="h-4 w-4 text-white" />
+                                {index === 0 ? (
+                                  <Wallet className="h-4 w-4 text-white" />
+                                ) : (
+                                  <DollarSign className="h-4 w-4 text-white" />
+                                )}
                               </div>
                             )}
                           </div>
