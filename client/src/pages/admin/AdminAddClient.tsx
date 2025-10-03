@@ -21365,21 +21365,10 @@ export default function AdminAddClient() {
                             
                             return (
                               <div key={index} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                  <span className="text-muted-foreground text-sm">$</span>
-                                  <Input
-                                    type="text"
-                                    placeholder=""
-                                    value={displayValue}
-                                    onChange={(e) => {
-                                      const value = e.target.value.replace(/[^\d]/g, '');
-                                      const newValues = [...newMonthlyPaymentValues];
-                                      newValues[index] = value;
-                                      setNewMonthlyPaymentValues(newValues);
-                                    }}
-                                    className="border-0 bg-transparent text-center font-medium text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-new-monthly-payment-${index}`}
-                                  />
+                                <div className="flex items-center px-3 rounded-md w-3/4">
+                                  <span className="text-base font-bold text-center w-full" data-testid={`text-new-monthly-payment-${index}`}>
+                                    {displayValue ? `$${displayValue}` : ''}
+                                  </span>
                                 </div>
                               </div>
                             );
