@@ -20579,48 +20579,67 @@ export default function AdminAddClient() {
                   </div>
                   {!isQuoteCardsMinimized && (
                     <CardContent className="pt-2 space-y-6">
-                      {/* Quote Row */}
+                      {/* Quote and Client Row */}
                       <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                         <Label className="text-base font-semibold">Quote:</Label>
-                        <Select
-                          value={selectedRateCount === 0 ? 'select' : `${selectedRateCount}-rate${selectedRateCount > 1 ? 's' : ''}`}
-                          onValueChange={(value) => {
-                            if (value === 'select') {
-                              setSelectedRateCount(0);
-                              setShowRateCircles(false);
-                            } else if (value === '1-rate') {
-                              setSelectedRateCount(1);
-                              setShowRateCircles(true);
-                            } else if (value === '2-rates') {
-                              setSelectedRateCount(2);
-                              setShowRateCircles(true);
-                            } else if (value === '3-rates') {
-                              setSelectedRateCount(3);
-                              setShowRateCircles(true);
-                            } else if (value === '4-rates') {
-                              setSelectedRateCount(4);
-                              setShowRateCircles(true);
-                            } else if (value === '5-rates') {
-                              setSelectedRateCount(5);
-                              setShowRateCircles(true);
-                            }
-                          }}
-                        >
-                          <SelectTrigger className="w-[200px]" data-testid="select-quote">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="select" data-testid="select-quote-select">Select</SelectItem>
-                            <SelectItem value="1-rate" data-testid="select-quote-1-rate">1 Rate</SelectItem>
-                            <SelectItem value="2-rates" data-testid="select-quote-2-rates">2 Rates</SelectItem>
-                            <SelectItem value="3-rates" data-testid="select-quote-3-rates">3 Rates</SelectItem>
-                            <SelectItem value="4-rates" data-testid="select-quote-4-rates">4 Rates</SelectItem>
-                            <SelectItem value="5-rates" data-testid="select-quote-5-rates">5 Rates</SelectItem>
-                          </SelectContent>
-                        </Select>
+                        <div className="grid grid-cols-[180px_180px_180px_180px_1fr] gap-4 items-center">
+                          <Select
+                            value={selectedRateCount === 0 ? 'select' : `${selectedRateCount}-rate${selectedRateCount > 1 ? 's' : ''}`}
+                            onValueChange={(value) => {
+                              if (value === 'select') {
+                                setSelectedRateCount(0);
+                                setShowRateCircles(false);
+                              } else if (value === '1-rate') {
+                                setSelectedRateCount(1);
+                                setShowRateCircles(true);
+                              } else if (value === '2-rates') {
+                                setSelectedRateCount(2);
+                                setShowRateCircles(true);
+                              } else if (value === '3-rates') {
+                                setSelectedRateCount(3);
+                                setShowRateCircles(true);
+                              } else if (value === '4-rates') {
+                                setSelectedRateCount(4);
+                                setShowRateCircles(true);
+                              } else if (value === '5-rates') {
+                                setSelectedRateCount(5);
+                                setShowRateCircles(true);
+                              }
+                            }}
+                          >
+                            <SelectTrigger className="w-[200px]" data-testid="select-quote">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-quote-select">Select</SelectItem>
+                              <SelectItem value="1-rate" data-testid="select-quote-1-rate">1 Rate</SelectItem>
+                              <SelectItem value="2-rates" data-testid="select-quote-2-rates">2 Rates</SelectItem>
+                              <SelectItem value="3-rates" data-testid="select-quote-3-rates">3 Rates</SelectItem>
+                              <SelectItem value="4-rates" data-testid="select-quote-4-rates">4 Rates</SelectItem>
+                              <SelectItem value="5-rates" data-testid="select-quote-5-rates">5 Rates</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <div></div>
+                          <div className="flex items-center gap-4">
+                            <Label className="text-base font-semibold">Client:</Label>
+                            <Select>
+                              <SelectTrigger className="w-[200px]" data-testid="select-client">
+                                <SelectValue placeholder="Select" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="select" data-testid="select-client-select">Select</SelectItem>
+                                <SelectItem value="new-client" data-testid="select-client-new">New Client</SelectItem>
+                                <SelectItem value="repeat-client" data-testid="select-client-repeat">Repeat Client</SelectItem>
+                                <SelectItem value="active-loan" data-testid="select-client-active-loan">Active Loan</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div></div>
+                          <div></div>
+                        </div>
                       </div>
 
-                      {/* Property, Client and Source Row */}
+                      {/* Property and Source Row */}
                     <div className="grid grid-cols-[150px_1fr] items-center gap-8">
                       <Label className="text-base font-semibold">Property:</Label>
                       <div className="grid grid-cols-[180px_180px_180px_180px_1fr] gap-4 items-center">
@@ -20639,20 +20658,7 @@ export default function AdminAddClient() {
                           </SelectContent>
                         </Select>
                         <div></div>
-                        <div className="flex items-center gap-4">
-                          <Label className="text-base font-semibold">Client:</Label>
-                          <Select>
-                            <SelectTrigger className="w-[200px]" data-testid="select-client">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-client-select">Select</SelectItem>
-                              <SelectItem value="new-client" data-testid="select-client-new">New Client</SelectItem>
-                              <SelectItem value="repeat-client" data-testid="select-client-repeat">Repeat Client</SelectItem>
-                              <SelectItem value="active-loan" data-testid="select-client-active-loan">Active Loan</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
+                        <div></div>
                         <div></div>
                         <div className="flex items-center gap-4">
                           <Label className="text-base font-semibold">Source:</Label>
