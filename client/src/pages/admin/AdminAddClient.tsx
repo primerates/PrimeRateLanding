@@ -20928,24 +20928,24 @@ export default function AdminAddClient() {
                 </Card>
                 
                 {/* Blue Circle Rate Input Buttons - Aligned under Type, Property, Client, Source */}
-                {showRateCircles && selectedRateCount > 0 && (
+                {showRateCircles && selectedRateIds.length > 0 && (
                   <>
-                    <div className="animate-roll-down px-4" style={{ marginTop: '64px', width: `${250 * (selectedRateCount + 1)}px`, maxWidth: '100%' }}>
-                      <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
+                    <div className="animate-roll-down px-4" style={{ marginTop: '64px', width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}>
+                      <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                         {/* Empty space for Quote column */}
                         <div></div>
                         {/* Circles aligned under Type, Property, Client, Source */}
-                        {Array.from({ length: selectedRateCount }).map((_, index) => (
-                          <div key={index} className="flex justify-center items-center">
-                            {editingRateIndex === index ? (
+                        {selectedRateIds.map((rateId) => (
+                          <div key={rateId} className="flex justify-center items-center">
+                            {editingRateIndex === rateId ? (
                               <div className="relative">
                                 <Input
                                   type="text"
-                                  value={rateValues[index]}
+                                  value={rateValues[rateId]}
                                   onChange={(e) => {
                                     const value = e.target.value.replace(/[^\d.]/g, '');
                                     const newValues = [...rateValues];
-                                    newValues[index] = value;
+                                    newValues[rateId] = value;
                                     setRateValues(newValues);
                                   }}
                                   onBlur={() => setEditingRateIndex(null)}
@@ -20954,12 +20954,13 @@ export default function AdminAddClient() {
                                       setEditingRateIndex(null);
                                     } else if (e.key === 'Tab' && !e.shiftKey) {
                                       e.preventDefault();
-                                      if (index < selectedRateCount - 1) {
-                                        setEditingRateIndex(index + 1);
+                                      const currentIndex = selectedRateIds.indexOf(rateId);
+                                      if (currentIndex < selectedRateIds.length - 1) {
+                                        setEditingRateIndex(selectedRateIds[currentIndex + 1]);
                                       } else {
                                         setEditingRateIndex(null);
                                         setTimeout(() => {
-                                          const firstBalanceInput = document.querySelector('[data-testid="input-existing-loan-balance-0"]');
+                                          const firstBalanceInput = document.querySelector(`[data-testid="input-existing-loan-balance-${selectedRateIds[0]}"]`);
                                           if (firstBalanceInput instanceof HTMLElement) {
                                             firstBalanceInput.focus();
                                           }
@@ -20969,9 +20970,9 @@ export default function AdminAddClient() {
                                   }}
                                   placeholder="0.00"
                                   autoFocus
-                                  tabIndex={index + 1}
+                                  tabIndex={rateId + 1}
                                   className="w-[86px] h-[86px] text-center text-xl font-semibold rounded-full border-4 border-blue-500 bg-white focus:ring-2 focus:ring-blue-300"
-                                  data-testid={`input-rate-${index}`}
+                                  data-testid={`input-rate-${rateId}`}
                                 />
                                 <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">
                                   %
@@ -20980,12 +20981,12 @@ export default function AdminAddClient() {
                             ) : (
                               <button
                                 type="button"
-                                onClick={() => setEditingRateIndex(index)}
-                                tabIndex={index + 1}
+                                onClick={() => setEditingRateIndex(rateId)}
+                                tabIndex={rateId + 1}
                                 onKeyDown={(e) => {
                                   if (e.key === 'Enter' || e.key === ' ') {
                                     e.preventDefault();
-                                    setEditingRateIndex(index);
+                                    setEditingRateIndex(rateId);
                                   }
                                 }}
                                 className="w-[86px] h-[86px] rounded-full transition-colors duration-200 flex items-center justify-center text-white font-semibold text-lg shadow-lg hover:shadow-xl border-2"
@@ -20999,9 +21000,9 @@ export default function AdminAddClient() {
                                 onMouseLeave={(e) => {
                                   e.currentTarget.style.backgroundColor = '#1a3373';
                                 }}
-                                data-testid={`button-rate-circle-${index}`}
+                                data-testid={`button-rate-circle-${rateId}`}
                               >
-                                {rateValues[index] ? `${rateValues[index]}%` : '%'}
+                                {rateValues[rateId] ? `${rateValues[rateId]}%` : '%'}
                               </button>
                             )}
                           </div>
