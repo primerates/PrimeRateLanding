@@ -19,7 +19,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator } from 'lucide-react';
 import { SiZillow } from 'react-icons/si';
 import { MdRealEstateAgent } from 'react-icons/md';
 import { FaHome } from 'react-icons/fa';
@@ -918,6 +918,13 @@ export default function AdminAddClient() {
   const [customTerm, setCustomTerm] = useState('');
   const [monthlyEscrow, setMonthlyEscrow] = useState('');
   const [escrowReserves, setEscrowReserves] = useState('');
+  const [showCalculator, setShowCalculator] = useState(false);
+  const [calculatorPosition, setCalculatorPosition] = useState({ x: 100, y: 100 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [calculatorDisplay, setCalculatorDisplay] = useState('0');
+  const [calculatorMemory, setCalculatorMemory] = useState('');
+  const [calculatorOperator, setCalculatorOperator] = useState('');
   
   // State for Quote tab rate detail fields
   const [rateBuyDownValues, setRateBuyDownValues] = useState<string[]>(['', '', '', '', '']);
@@ -20616,7 +20623,17 @@ export default function AdminAddClient() {
             <TabsContent value="quote" className="space-y-6">
               <div>
                 <Card className="mb-6 transition-all duration-700 animate-roll-down">
-                  <div className="flex justify-end items-center pt-4 px-4">
+                  <div className="flex justify-end items-center gap-2 pt-4 px-4">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="hover:bg-blue-500 hover:text-white"
+                      onClick={() => setShowCalculator(!showCalculator)}
+                      title="Calculator"
+                      data-testid="button-calculator"
+                    >
+                      <Calculator className="h-4 w-4" />
+                    </Button>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -21441,6 +21458,100 @@ export default function AdminAddClient() {
           </Tabs>
         </form>
       </div>
+
+      {/* Draggable Calculator */}
+      {showCalculator && (
+        <div
+          style={{
+            position: 'fixed',
+            left: `${calculatorPosition.x}px`,
+            top: `${calculatorPosition.y}px`,
+            zIndex: 1000,
+            cursor: isDragging ? 'grabbing' : 'grab'
+          }}
+          onMouseDown={(e) => {
+            if ((e.target as HTMLElement).closest('.calculator-body')) return;
+            setIsDragging(true);
+            setDragOffset({
+              x: e.clientX - calculatorPosition.x,
+              y: e.clientY - calculatorPosition.y
+            });
+          }}
+          onMouseMove={(e) => {
+            if (isDragging) {
+              setCalculatorPosition({
+                x: e.clientX - dragOffset.x,
+                y: e.clientY - dragOffset.y
+              });
+            }
+          }}
+          onMouseUp={() => setIsDragging(false)}
+          onMouseLeave={() => setIsDragging(false)}
+        >
+          <Card className="w-64 shadow-lg">
+            <CardHeader className="pb-3">
+              <div className="flex justify-between items-center">
+                <CardTitle className="text-sm">Calculator</CardTitle>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowCalculator(false)}
+                  className="h-6 w-6 p-0"
+                  data-testid="button-close-calculator"
+                >
+                  <Minus className="h-3 w-3" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="calculator-body">
+              <div className="bg-muted p-3 rounded-md mb-3 text-right font-mono text-xl font-bold">
+                {calculatorDisplay}
+              </div>
+              <div className="grid grid-cols-4 gap-2">
+                {['7', '8', '9', '/', '4', '5', '6', '*', '1', '2', '3', '-', 'C', '0', '=', '+'].map((btn) => (
+                  <Button
+                    key={btn}
+                    variant={btn === '=' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => {
+                      if (btn === 'C') {
+                        setCalculatorDisplay('0');
+                        setCalculatorMemory('');
+                        setCalculatorOperator('');
+                      } else if (btn === '=') {
+                        if (calculatorMemory && calculatorOperator) {
+                          const prev = parseFloat(calculatorMemory);
+                          const current = parseFloat(calculatorDisplay);
+                          let result = 0;
+                          switch (calculatorOperator) {
+                            case '+': result = prev + current; break;
+                            case '-': result = prev - current; break;
+                            case '*': result = prev * current; break;
+                            case '/': result = prev / current; break;
+                          }
+                          setCalculatorDisplay(result.toString());
+                          setCalculatorMemory('');
+                          setCalculatorOperator('');
+                        }
+                      } else if (['+', '-', '*', '/'].includes(btn)) {
+                        setCalculatorMemory(calculatorDisplay);
+                        setCalculatorOperator(btn);
+                        setCalculatorDisplay('0');
+                      } else {
+                        setCalculatorDisplay(calculatorDisplay === '0' ? btn : calculatorDisplay + btn);
+                      }
+                    }}
+                    className="h-10"
+                    data-testid={`calculator-btn-${btn}`}
+                  >
+                    {btn}
+                  </Button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Removal Confirmation Dialog */}
       <Dialog open={confirmRemovalDialog.isOpen} onOpenChange={(open) => !open && setConfirmRemovalDialog({ isOpen: false, type: null })}>
