@@ -21329,8 +21329,8 @@ export default function AdminAddClient() {
 
                     {/* New Est. Loan Amount & New Monthly Payment Card */}
                     <Card 
-                      className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-blue-500 hover:border-2 hover:border-blue-500 transition-colors flex-none"
-                      style={{ width: `${250 * (selectedRateCount + 1)}px`, maxWidth: '100%' }}
+                      className="mt-8 transition-all duration-700 animate-roll-down border-l-4 hover:border-2 transition-colors flex-none"
+                      style={{ width: `${250 * (selectedRateCount + 1)}px`, maxWidth: '100%', borderLeftColor: '#1a3373', borderColor: '#1a3373' }}
                     >
                       <CardContent className="pt-6 space-y-6">
                         {/* New Est. Loan Amount Row - Auto-calculated */}
@@ -21366,7 +21366,7 @@ export default function AdminAddClient() {
                             return (
                               <div key={index} className="flex justify-center">
                                 <div className="flex items-center px-3 rounded-md w-3/4" style={{ backgroundColor: '#1a3373' }}>
-                                  <span className="text-white text-sm">$</span>
+                                  <span className="text-white text-base">$</span>
                                   <Input
                                     type="text"
                                     placeholder=""
@@ -21377,7 +21377,7 @@ export default function AdminAddClient() {
                                       newValues[index] = value;
                                       setNewMonthlyPaymentValues(newValues);
                                     }}
-                                    className="border-0 bg-transparent text-center font-medium text-lg text-white placeholder:text-white/50 focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    className="border-0 bg-transparent text-center font-medium text-xl text-white placeholder:text-white/50 focus-visible:ring-0 focus-visible:ring-offset-0"
                                     data-testid={`input-new-monthly-payment-${index}`}
                                   />
                                 </div>
