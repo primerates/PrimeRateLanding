@@ -927,6 +927,7 @@ export default function AdminAddClient() {
   const [vaTermiteValues, setVaTermiteValues] = useState<string[]>(['', '', '', '', '']);
   const [vaUnderwritingValues, setVaUnderwritingValues] = useState<string[]>(['', '', '', '', '']);
   const [titleEscrowValues, setTitleEscrowValues] = useState<string[]>(['', '', '', '', '']);
+  const [payOffInterestValues, setPayOffInterestValues] = useState<string[]>(['', '', '', '', '']);
   const [stateTaxValues, setStateTaxValues] = useState<string[]>(['', '', '', '', '']);
   const [escrowReservesValues, setEscrowReservesValues] = useState<string[]>(['', '', '', '', '']);
   const [existingLoanBalanceValues, setExistingLoanBalanceValues] = useState<string[]>(['', '', '', '', '']);
@@ -951,6 +952,7 @@ export default function AdminAddClient() {
         vaTermiteValues[index],
         vaUnderwritingValues[index],
         titleEscrowValues[index],
+        payOffInterestValues[index],
         stateTaxValues[index],
         escrowReservesValues[index]
       ];
@@ -971,6 +973,7 @@ export default function AdminAddClient() {
     vaTermiteValues,
     vaUnderwritingValues,
     titleEscrowValues,
+    payOffInterestValues,
     stateTaxValues,
     escrowReservesValues
   ]);
@@ -21251,6 +21254,38 @@ export default function AdminAddClient() {
                                     }}
                                     className="border-0 bg-transparent text-center text-base focus-visible:ring-0 focus-visible:ring-offset-0"
                                     data-testid={`input-title-escrow-${index}`}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* Pay Off Interest */}
+                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateCount + 1}, minmax(0, 1fr))` }}>
+                          <div className="flex items-center justify-end pr-4">
+                            <Label className="text-sm text-right text-muted-foreground">• Pay Off Interest</Label>
+                          </div>
+                          {Array.from({ length: selectedRateCount }).map((_, index) => {
+                            const numVal = payOffInterestValues[index] ? payOffInterestValues[index].replace(/[^\d]/g, '') : '';
+                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            
+                            return (
+                              <div key={index} className="flex justify-center">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
+                                  <span className="text-muted-foreground text-sm">$</span>
+                                  <Input
+                                    type="text"
+                                    placeholder=""
+                                    value={displayValue}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^\d]/g, '');
+                                      const newValues = [...payOffInterestValues];
+                                      newValues[index] = value;
+                                      setPayOffInterestValues(newValues);
+                                    }}
+                                    className="border-0 bg-transparent text-center text-base focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    data-testid={`input-pay-off-interest-${index}`}
                                   />
                                 </div>
                               </div>
