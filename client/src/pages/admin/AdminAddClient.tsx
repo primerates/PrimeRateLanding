@@ -935,6 +935,7 @@ export default function AdminAddClient() {
   const [showLoanProgramControls, setShowLoanProgramControls] = useState(false);
   const [loanProgramFontSize, setLoanProgramFontSize] = useState('text-3xl');
   const [loanProgramColor, setLoanProgramColor] = useState('text-foreground');
+  const loanProgramTextareaRef = useRef<HTMLTextAreaElement>(null);
   
   // State for Quote tab rate detail fields
   const [rateBuyDownValues, setRateBuyDownValues] = useState<string[]>(['', '', '', '', '']);
@@ -21290,6 +21291,7 @@ export default function AdminAddClient() {
                         <div className="relative flex items-center justify-center">
                           <div className="w-full">
                             <textarea
+                              ref={loanProgramTextareaRef}
                               placeholder="Loan Program"
                               value={quoteLoanProgram}
                               onChange={(e) => setQuoteLoanProgram(e.target.value)}
@@ -21308,7 +21310,13 @@ export default function AdminAddClient() {
                                 {/* Font Size Selector */}
                                 <div className="flex flex-col gap-1">
                                   <Label className="text-xs text-muted-foreground">Font Size</Label>
-                                  <Select value={loanProgramFontSize} onValueChange={setLoanProgramFontSize}>
+                                  <Select 
+                                    value={loanProgramFontSize} 
+                                    onValueChange={(value) => {
+                                      setLoanProgramFontSize(value);
+                                      setTimeout(() => loanProgramTextareaRef.current?.focus(), 0);
+                                    }}
+                                  >
                                     <SelectTrigger className="w-32 h-8" data-testid="select-loan-program-font-size">
                                       <SelectValue />
                                     </SelectTrigger>
@@ -21325,7 +21333,13 @@ export default function AdminAddClient() {
                                 {/* Font Color Selector */}
                                 <div className="flex flex-col gap-1">
                                   <Label className="text-xs text-muted-foreground">Font Color</Label>
-                                  <Select value={loanProgramColor} onValueChange={setLoanProgramColor}>
+                                  <Select 
+                                    value={loanProgramColor} 
+                                    onValueChange={(value) => {
+                                      setLoanProgramColor(value);
+                                      setTimeout(() => loanProgramTextareaRef.current?.focus(), 0);
+                                    }}
+                                  >
                                     <SelectTrigger className="w-32 h-8" data-testid="select-loan-program-color">
                                       <SelectValue />
                                     </SelectTrigger>
