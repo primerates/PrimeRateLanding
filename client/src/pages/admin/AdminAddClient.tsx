@@ -21268,7 +21268,7 @@ export default function AdminAddClient() {
                             value={quoteLoanProgram}
                             onChange={(e) => setQuoteLoanProgram(e.target.value)}
                             rows={2}
-                            className="bg-transparent border-0 text-4xl font-semibold text-center focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/40 resize-none w-full"
+                            className="bg-transparent border-0 text-3xl font-semibold text-center focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/40 resize-none w-full"
                             data-testid="input-quote-loan-program"
                           />
                         </div>
