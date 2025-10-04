@@ -966,6 +966,9 @@ export default function AdminAddClient() {
     return insurance + tax;
   }, [propertyInsurancePayment, propertyTaxPayment]);
   
+  // State for Estimated New Loan Amount dialog
+  const [isEstLoanAmountInfoOpen, setIsEstLoanAmountInfoOpen] = useState(false);
+  
   // Calculate totals for each rate column using useMemo (like Income tab)
   const rateColumnTotals = useMemo(() => {
     return Array.from({ length: 5 }).map((_, index) => {
@@ -21511,7 +21514,11 @@ export default function AdminAddClient() {
                         {/* New Est. Loan Amount Row - Auto-calculated */}
                         <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4 gap-2">
-                            <Info className="h-4 w-4 text-muted-foreground" data-testid="icon-info-loan-amount" />
+                            <Info 
+                              className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                              onClick={() => setIsEstLoanAmountInfoOpen(true)}
+                              data-testid="icon-info-loan-amount" 
+                            />
                             <Label className="text-base font-semibold text-right">New Est. Loan Amount:</Label>
                           </div>
                           {selectedRateIds.map((rateId) => {
@@ -21690,6 +21697,21 @@ export default function AdminAddClient() {
                   data-testid="input-statement-escrow-balance"
                 />
               </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Estimated New Loan Amount Dialog */}
+      <Dialog open={isEstLoanAmountInfoOpen} onOpenChange={setIsEstLoanAmountInfoOpen}>
+        <DialogContent className="sm:max-w-[500px] p-0">
+          <DialogHeader className="text-white p-6 rounded-t-lg" style={{ backgroundColor: '#1a3373' }}>
+            <DialogTitle className="text-white">Estimated New Loan Amount</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-6 px-6">
+            {/* Message */}
+            <div className="text-lg text-muted-foreground">
+              The initial new loan amount is an estimate based on your mortgage statement, which may not reflect the most current balance. The final loan amount will be confirmed once we receive the official payoff demand from your lender.
             </div>
           </div>
         </DialogContent>
