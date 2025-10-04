@@ -21116,7 +21116,7 @@ export default function AdminAddClient() {
                                 {/* VA Section */}
                                 <div className="border-t pt-2">
                                   {/* VA Title - Non-clickable */}
-                                  <div className="text-sm font-bold text-green-700 px-2 py-1.5">
+                                  <div className="text-base font-bold text-green-700 px-2 py-1.5">
                                     VA
                                   </div>
                                   
