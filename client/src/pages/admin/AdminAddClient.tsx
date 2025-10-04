@@ -20946,7 +20946,16 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="ltv-ratio-select">LTV</Label>
+                          <Label htmlFor="mid-fico-input">Mid FICO</Label>
+                          <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm transition-colors items-center">
+                            <span className="font-medium" data-testid="text-mid-fico">
+                              {getAbcCalculatedMidFico()}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="ltv-ratio-select">DTI Ratio</Label>
                           <Select>
                             <SelectTrigger data-testid="select-ltv-ratio">
                               <SelectValue placeholder="Select" />
@@ -20960,15 +20969,6 @@ export default function AdminAddClient() {
                               <SelectItem value="below-60" data-testid="select-ltv-ratio-below-60">Below 60%</SelectItem>
                             </SelectContent>
                           </Select>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="mid-fico-input">Mid FICO</Label>
-                          <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm transition-colors items-center">
-                            <span className="font-medium" data-testid="text-mid-fico">
-                              {getAbcCalculatedMidFico()}
-                            </span>
-                          </div>
                         </div>
 
                         <div className="space-y-2">
