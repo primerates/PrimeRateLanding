@@ -508,3 +508,39 @@
   }
 
 }
+
+/* Print styles for Quote tab PDF printing */
+@media print {
+  /* Hide everything by default */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Show only the printable content */
+  #quote-printable-content,
+  #quote-printable-content * {
+    visibility: visible;
+  }
+
+  /* Position printable content at top left of page */
+  #quote-printable-content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  /* Remove animations for print */
+  .animate-roll-down,
+  .animate-roll-up-circle-1,
+  .animate-roll-up-circle-2,
+  .animate-roll-up-circle-3 {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+
+  /* Ensure cards are visible */
+  .border-l-4 {
+    page-break-inside: avoid;
+  }
+}

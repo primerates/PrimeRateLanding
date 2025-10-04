@@ -20,7 +20,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator, StickyNote, ChevronDown, ChevronUp, BookOpen, FileText, Pin } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator, StickyNote, ChevronDown, ChevronUp, BookOpen, FileText, Pin, Printer } from 'lucide-react';
 import { SiZillow } from 'react-icons/si';
 import { MdRealEstateAgent } from 'react-icons/md';
 import { FaHome } from 'react-icons/fa';
@@ -20928,6 +20928,16 @@ export default function AdminAddClient() {
                     >
                       {isQuoteCardsMinimized ? <Plus className="h-4 w-4" /> : <Minus className="h-4 w-4" />}
                     </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="hover:bg-green-500 hover:text-white"
+                      onClick={() => window.print()}
+                      title="Print Quote Details"
+                      data-testid="button-print-quote"
+                    >
+                      <Printer className="h-4 w-4" />
+                    </Button>
                   </div>
                   {!isQuoteCardsMinimized && (
                     <CardContent className="pt-6 space-y-6">
@@ -21778,7 +21788,7 @@ export default function AdminAddClient() {
                 
                 {/* Blue Circle Rate Input Buttons - Aligned under Type, Property, Client, Source */}
                 {showRateCircles && selectedRateIds.length > 0 && (
-                  <>
+                  <div id="quote-printable-content">
                     <div className="animate-roll-down px-4" style={{ marginTop: '64px', width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}>
                       <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                         {/* Transparent text input for Loan Program */}
@@ -22458,7 +22468,7 @@ export default function AdminAddClient() {
                       </CardContent>
                       </Card>
                     )}
-                  </>
+                  </div>
                 )}
               </div>
             </TabsContent>
