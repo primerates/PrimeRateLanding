@@ -2294,7 +2294,53 @@ export default function AdminAddClient() {
     },
   });
 
-  
+  // Function to calculate Estimated LTV
+  const calculateEstimatedLTV = () => {
+    // Check which new loan card is open
+    const hasRefinanceCards = (newRefinanceLoanCards || []).length > 0;
+    const hasPurchaseCards = (newPurchaseLoanCards || []).length > 0;
+    
+    // Get the New Loan Amount from whichever card is open
+    let newLoanAmount = '';
+    if (hasRefinanceCards) {
+      newLoanAmount = form.watch('abc.loanBalance') || '';
+    } else if (hasPurchaseCards) {
+      newLoanAmount = form.watch('bbb.loanBalance') || '';
+    }
+    
+    // Find the Primary Residence property
+    const properties = form.watch('property.properties') || [];
+    const primaryResidence = properties.find(p => p.use === 'primary');
+    
+    // If no primary residence or new loan amount, return empty
+    if (!primaryResidence || !newLoanAmount || newLoanAmount.trim() === '') {
+      return '';
+    }
+    
+    // Get estimated value from primary residence
+    const estimatedValue = primaryResidence.estimatedValue || '';
+    
+    if (!estimatedValue || estimatedValue.trim() === '') {
+      return '';
+    }
+    
+    // Parse values (handle currency formatting)
+    const parseValue = (value: string) => {
+      const cleaned = value.replace(/[$,]/g, '');
+      return cleaned ? parseFloat(cleaned) : 0;
+    };
+    
+    const loanNum = parseValue(newLoanAmount);
+    const valueNum = parseValue(estimatedValue);
+    
+    if (loanNum === 0 || valueNum === 0) {
+      return '';
+    }
+    
+    // Calculate LTV percentage
+    const ltv = (loanNum / valueNum) * 100;
+    return Math.round(ltv).toString() + '%';
+  };
 
   const addClientMutation = useMutation({
     mutationFn: async (data: InsertClient) => {
@@ -20928,14 +20974,11 @@ export default function AdminAddClient() {
 
                         <div className="space-y-2">
                           <Label htmlFor="debt-to-income-input">Debt To Income Ratio</Label>
-                          <Input
-                            id="debt-to-income-input"
-                            type="text"
-                            placeholder=""
-                            value={debtToIncomeRatio}
-                            onChange={(e) => setDebtToIncomeRatio(e.target.value)}
-                            data-testid="input-debt-to-income"
-                          />
+                          <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm transition-colors items-center">
+                            <span className="font-medium" data-testid="text-debt-to-income">
+                              {calculateEstimatedLTV()}
+                            </span>
+                          </div>
                         </div>
 
                         <div className="space-y-2">
