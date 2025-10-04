@@ -1091,10 +1091,29 @@ export default function AdminAddClient() {
       
       const monthlyPayment = principal * (monthlyRate * onePlusRToN) / (onePlusRToN - 1);
       
+      // Add escrow values based on Monthly Escrow selection (only if Escrow Reserves is not "Escrow Not Included")
+      let escrowAmount = 0;
+      if (escrowReserves !== 'escrow-not-included') {
+        if (monthlyEscrow === 'includes-tax-insurance') {
+          // Add Total Monthly Escrow (insurance + property tax)
+          const insurance = parseFloat(monthlyInsurance || '0');
+          const propertyTax = parseFloat(monthlyPropertyTax || '0');
+          escrowAmount = insurance + propertyTax;
+        } else if (monthlyEscrow === 'includes-tax-only') {
+          // Add only Monthly Property Tax
+          escrowAmount = parseFloat(monthlyPropertyTax || '0');
+        } else if (monthlyEscrow === 'includes-insurance-only') {
+          // Add only Monthly Insurance
+          escrowAmount = parseFloat(monthlyInsurance || '0');
+        }
+      }
+      
+      const totalPayment = monthlyPayment + escrowAmount;
+      
       // Round to nearest dollar and return as string
-      return Math.round(monthlyPayment).toString();
+      return Math.round(totalPayment).toString();
     });
-  }, [rateColumnTotals, rateValues, loanTerm, customTerm, isCustomTerm]);
+  }, [rateColumnTotals, rateValues, loanTerm, customTerm, isCustomTerm, monthlyEscrow, escrowReserves, monthlyInsurance, monthlyPropertyTax]);
   
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
@@ -21878,7 +21897,7 @@ export default function AdminAddClient() {
               <Label htmlFor="monthly-insurance" className="w-48 text-right">
                 Monthly Insurance:
               </Label>
-              <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
+              <div className={`flex items-center border border-input px-3 rounded-md flex-1 ${escrowReserves === 'escrow-not-included' ? 'bg-muted' : 'bg-background'}`}>
                 <span className="text-muted-foreground text-sm">$</span>
                 <Input
                   id="monthly-insurance"
@@ -21889,7 +21908,8 @@ export default function AdminAddClient() {
                     const value = e.target.value.replace(/[^\d]/g, '');
                     setMonthlyInsurance(value);
                   }}
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  disabled={escrowReserves === 'escrow-not-included'}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
                   data-testid="input-monthly-insurance"
                 />
               </div>
@@ -21900,7 +21920,7 @@ export default function AdminAddClient() {
               <Label htmlFor="monthly-property-tax" className="w-48 text-right">
                 Monthly Property Tax:
               </Label>
-              <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
+              <div className={`flex items-center border border-input px-3 rounded-md flex-1 ${escrowReserves === 'escrow-not-included' ? 'bg-muted' : 'bg-background'}`}>
                 <span className="text-muted-foreground text-sm">$</span>
                 <Input
                   id="monthly-property-tax"
@@ -21911,7 +21931,8 @@ export default function AdminAddClient() {
                     const value = e.target.value.replace(/[^\d]/g, '');
                     setMonthlyPropertyTax(value);
                   }}
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  disabled={escrowReserves === 'escrow-not-included'}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
                   data-testid="input-monthly-property-tax"
                 />
               </div>
