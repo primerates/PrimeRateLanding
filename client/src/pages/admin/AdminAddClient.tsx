@@ -20,7 +20,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator, StickyNote, ChevronDown, ChevronUp, BookOpen } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator, StickyNote, ChevronDown, ChevronUp } from 'lucide-react';
 import { SiZillow } from 'react-icons/si';
 import { MdRealEstateAgent } from 'react-icons/md';
 import { FaHome } from 'react-icons/fa';
@@ -20826,15 +20826,6 @@ export default function AdminAddClient() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="hover:bg-blue-500 hover:text-white"
-                      title="Open Book"
-                      data-testid="button-open-book"
-                    >
-                      <BookOpen className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
                       className="hover:bg-yellow-500 hover:text-white"
                       onClick={() => setIsStickyNotesOpen(true)}
                       title="Sticky Notes"
@@ -21711,7 +21702,7 @@ export default function AdminAddClient() {
                     </Card>
 
                     {/* New Est. Loan Amount & New Monthly Payment Card */}
-                    <div className={`transition-all duration-500 ease-in-out ${isThirdCardExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+                    {isThirdCardExpanded && (
                       <Card 
                         className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-blue-500 hover:border-2 hover:border-blue-500 transition-colors flex-none"
                         style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
@@ -21830,7 +21821,7 @@ export default function AdminAddClient() {
                         )}
                       </CardContent>
                       </Card>
-                    </div>
+                    )}
                   </>
                 )}
               </div>
