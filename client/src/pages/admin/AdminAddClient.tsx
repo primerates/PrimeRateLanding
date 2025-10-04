@@ -981,6 +981,28 @@ export default function AdminAddClient() {
     return mortgage + escrow;
   }, [newMortgagePayment, newEscrowPayment]);
   
+  // State for New Monthly Savings dialog
+  const [isMonthlySavingsInfoOpen, setIsMonthlySavingsInfoOpen] = useState(false);
+  const [existingMortgagePayment, setExistingMortgagePayment] = useState('');
+  const [monthlyPaymentDebtsPayOff, setMonthlyPaymentDebtsPayOff] = useState('');
+  const [monthlyPaymentOtherDebts, setMonthlyPaymentOtherDebts] = useState('');
+  const [newMortgagePaymentSavings, setNewMortgagePaymentSavings] = useState('');
+  
+  // Auto-calculate Total Existing Monthly Payments
+  const calculatedTotalExistingPayments = useMemo(() => {
+    const existing = parseInt(existingMortgagePayment || '0', 10);
+    const debtsPayOff = parseInt(monthlyPaymentDebtsPayOff || '0', 10);
+    const otherDebts = parseInt(monthlyPaymentOtherDebts || '0', 10);
+    return existing + debtsPayOff + otherDebts;
+  }, [existingMortgagePayment, monthlyPaymentDebtsPayOff, monthlyPaymentOtherDebts]);
+  
+  // Auto-calculate Total Monthly Savings
+  const calculatedMonthlySavings = useMemo(() => {
+    const totalExisting = calculatedTotalExistingPayments;
+    const newMortgage = parseInt(newMortgagePaymentSavings || '0', 10);
+    return totalExisting - newMortgage;
+  }, [calculatedTotalExistingPayments, newMortgagePaymentSavings]);
+  
   // Calculate totals for each rate column using useMemo (like Income tab)
   const rateColumnTotals = useMemo(() => {
     return Array.from({ length: 5 }).map((_, index) => {
@@ -21581,7 +21603,11 @@ export default function AdminAddClient() {
                         <div className="border-t pt-6">
                           <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                             <div className="flex items-center justify-end pr-4 gap-2">
-                              <Info className="h-4 w-4 text-muted-foreground -mr-0.5" data-testid="icon-info-monthly-savings" />
+                              <Info 
+                                className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors -mr-0.5" 
+                                onClick={() => setIsMonthlySavingsInfoOpen(true)}
+                                data-testid="icon-info-monthly-savings" 
+                              />
                               <Label className="text-base font-semibold text-right">Total Monthly Savings:</Label>
                             </div>
                           {selectedRateIds.map((rateId) => {
@@ -21802,6 +21828,131 @@ export default function AdminAddClient() {
             {/* Message */}
             <div className="text-lg text-muted-foreground">
               The initial new loan amount & payment is an estimate based on your mortgage statement, which may not reflect the most current balance. The final loan amount & payment will be confirmed once we receive the official payoff demand from your lender.
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* New Monthly Savings Dialog */}
+      <Dialog open={isMonthlySavingsInfoOpen} onOpenChange={setIsMonthlySavingsInfoOpen}>
+        <DialogContent className="sm:max-w-[600px] p-0">
+          <DialogHeader className="text-white p-6 rounded-t-lg" style={{ backgroundColor: '#1a3373' }}>
+            <DialogTitle className="text-white">New Monthly Savings</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4 px-6">
+            {/* Existing Mortgage Payment */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="existing-mortgage-payment" className="w-80 text-right">
+                Existing Mortgage Payment:
+              </Label>
+              <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
+                <span className="text-muted-foreground text-sm">$</span>
+                <Input
+                  id="existing-mortgage-payment"
+                  type="text"
+                  placeholder=""
+                  value={existingMortgagePayment.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    setExistingMortgagePayment(value);
+                  }}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  data-testid="input-existing-mortgage-payment"
+                />
+              </div>
+            </div>
+
+            {/* Monthly Payment of Debts Marked for Pay Off */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="debts-payoff" className="w-80 text-right">
+                Monthly Payment of Debts Marked for Pay Off:
+              </Label>
+              <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
+                <span className="text-muted-foreground text-sm">$</span>
+                <Input
+                  id="debts-payoff"
+                  type="text"
+                  placeholder=""
+                  value={monthlyPaymentDebtsPayOff.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    setMonthlyPaymentDebtsPayOff(value);
+                  }}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  data-testid="input-debts-payoff"
+                />
+              </div>
+            </div>
+
+            {/* Monthly Payment of Other Debts with Remaining Cash Out Deployed */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="other-debts" className="w-80 text-right">
+                Monthly Payment of Other Debts with Remaining Cash Out Deployed:
+              </Label>
+              <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
+                <span className="text-muted-foreground text-sm">$</span>
+                <Input
+                  id="other-debts"
+                  type="text"
+                  placeholder=""
+                  value={monthlyPaymentOtherDebts.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    setMonthlyPaymentOtherDebts(value);
+                  }}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  data-testid="input-other-debts"
+                />
+              </div>
+            </div>
+
+            {/* Total Existing Monthly Payments - Display Only (Auto-calculated) */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="total-existing-payments" className="w-80 text-right">
+                Total Existing Monthly Payments:
+              </Label>
+              <div className="flex items-center border border-input bg-muted px-3 rounded-md flex-1 h-9">
+                <span className="text-base font-bold text-center w-full" data-testid="text-total-existing-payments">
+                  {calculatedTotalExistingPayments > 0 ? `$${calculatedTotalExistingPayments.toLocaleString('en-US')}` : ''}
+                </span>
+              </div>
+            </div>
+
+            {/* Horizontal Separator */}
+            <div className="border-t my-6"></div>
+
+            {/* New Mortgage Payments */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="new-mortgage-payments-savings" className="w-80 text-right">
+                New Mortgage Payments:
+              </Label>
+              <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
+                <span className="text-muted-foreground text-sm">$</span>
+                <Input
+                  id="new-mortgage-payments-savings"
+                  type="text"
+                  placeholder=""
+                  value={newMortgagePaymentSavings.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    setNewMortgagePaymentSavings(value);
+                  }}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  data-testid="input-new-mortgage-payments-savings"
+                />
+              </div>
+            </div>
+
+            {/* Total Monthly Savings - Display Only (Auto-calculated) */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="calculated-monthly-savings" className="w-80 text-right">
+                Total Monthly Savings:
+              </Label>
+              <div className="flex items-center border border-input bg-muted px-3 rounded-md flex-1 h-9">
+                <span className="text-base font-bold text-center w-full" data-testid="text-calculated-monthly-savings">
+                  {calculatedMonthlySavings > 0 ? `$${calculatedMonthlySavings.toLocaleString('en-US')}` : ''}
+                </span>
+              </div>
             </div>
           </div>
         </DialogContent>
