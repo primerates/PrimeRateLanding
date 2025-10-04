@@ -21654,7 +21654,7 @@ export default function AdminAddClient() {
           <DialogHeader className="text-white p-6 rounded-t-lg" style={{ backgroundColor: '#1a3373' }}>
             <DialogTitle className="text-white">Escrow Information</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-4 px-6">
+          <div className="space-y-4 py-4 px-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
             {/* Property Insurance Payment */}
             <div className="flex items-center gap-4">
               <Label htmlFor="property-insurance" className="w-48 text-right">
@@ -21750,7 +21750,7 @@ export default function AdminAddClient() {
           <DialogHeader className="text-white p-6 rounded-t-lg" style={{ backgroundColor: '#1a3373' }}>
             <DialogTitle className="text-white">Estimated New Loan Amount</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-6 px-6">
+          <div className="space-y-4 py-6 px-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
             {/* Message */}
             <div className="text-lg text-muted-foreground">
               The initial new loan amount is an estimate based on your mortgage statement, which may not reflect the most current balance. The final loan amount will be confirmed once we receive the official payoff demand from your lender.
@@ -21765,7 +21765,7 @@ export default function AdminAddClient() {
           <DialogHeader className="text-white p-6 rounded-t-lg" style={{ backgroundColor: '#1a3373' }}>
             <DialogTitle className="text-white">New Payment</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-4 px-6">
+          <div className="space-y-4 py-4 px-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
             {/* New Mortgage Payment */}
             <div className="flex items-center gap-4">
               <Label htmlFor="new-mortgage-payment" className="w-48 text-right">
@@ -21839,7 +21839,7 @@ export default function AdminAddClient() {
           <DialogHeader className="text-white p-6 rounded-t-lg" style={{ backgroundColor: '#1a3373' }}>
             <DialogTitle className="text-white">New Monthly Savings</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-4 px-6">
+          <div className="space-y-4 py-4 px-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
             {/* Existing Mortgage Payment */}
             <div className="flex items-center gap-4">
               <Label htmlFor="existing-mortgage-payment" className="w-80 text-right">
