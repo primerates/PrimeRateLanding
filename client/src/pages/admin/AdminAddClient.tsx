@@ -21101,8 +21101,6 @@ export default function AdminAddClient() {
                             </PopoverTrigger>
                             <PopoverContent className="w-[200px] p-3" align="start">
                               <div className="space-y-2">
-                                <div className="text-sm font-medium mb-3">Select Loan Category</div>
-                                
                                 {/* Select Option */}
                                 <div 
                                   className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
@@ -21118,11 +21116,11 @@ export default function AdminAddClient() {
                                 {/* VA Section */}
                                 <div className="border-t pt-2">
                                   {/* VA Title - Non-clickable */}
-                                  <div className="text-sm font-semibold text-muted-foreground px-2 py-1.5">
+                                  <div className="text-sm font-bold px-2 py-1.5">
                                     VA
                                   </div>
                                   
-                                  {/* VA Sub-options */}
+                                  {/* VA Sub-options with squares */}
                                   <div className="ml-3 space-y-1">
                                     <div 
                                       className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
@@ -21132,6 +21130,7 @@ export default function AdminAddClient() {
                                       }}
                                       data-testid="option-category-va-cash-out-refi"
                                     >
+                                      <div className="w-3 h-3 border border-current flex-shrink-0" />
                                       <span className="text-sm">Cash Out Refi</span>
                                     </div>
                                     
@@ -21143,6 +21142,7 @@ export default function AdminAddClient() {
                                       }}
                                       data-testid="option-category-va-purchase"
                                     >
+                                      <div className="w-3 h-3 border border-current flex-shrink-0" />
                                       <span className="text-sm">Purchase</span>
                                     </div>
                                     
@@ -21154,6 +21154,7 @@ export default function AdminAddClient() {
                                       }}
                                       data-testid="option-category-va-rate-term"
                                     >
+                                      <div className="w-3 h-3 border border-current flex-shrink-0" />
                                       <span className="text-sm">Rate & Term</span>
                                     </div>
                                     
@@ -21165,6 +21166,7 @@ export default function AdminAddClient() {
                                       }}
                                       data-testid="option-category-va-irrrl"
                                     >
+                                      <div className="w-3 h-3 border border-current flex-shrink-0" />
                                       <span className="text-sm">IRRRL</span>
                                     </div>
                                   </div>
