@@ -931,6 +931,7 @@ export default function AdminAddClient() {
   const [calculatorDisplay, setCalculatorDisplay] = useState('0');
   const [calculatorMemory, setCalculatorMemory] = useState('');
   const [calculatorOperator, setCalculatorOperator] = useState('');
+  const [quoteLoanProgram, setQuoteLoanProgram] = useState('');
   
   // State for Quote tab rate detail fields
   const [rateBuyDownValues, setRateBuyDownValues] = useState<string[]>(['', '', '', '', '']);
@@ -21260,8 +21261,17 @@ export default function AdminAddClient() {
                   <>
                     <div className="animate-roll-down px-4" style={{ marginTop: '64px', width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}>
                       <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                        {/* Empty space for Quote column */}
-                        <div></div>
+                        {/* Transparent text input for Loan Program */}
+                        <div className="flex items-center justify-center">
+                          <Input
+                            type="text"
+                            placeholder="Loan Program"
+                            value={quoteLoanProgram}
+                            onChange={(e) => setQuoteLoanProgram(e.target.value)}
+                            className="bg-transparent border-0 text-2xl font-semibold text-center focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/40"
+                            data-testid="input-quote-loan-program"
+                          />
+                        </div>
                         {/* Circles aligned under Type, Property, Client, Source */}
                         {selectedRateIds.map((rateId) => (
                           <div key={rateId} className="flex justify-center items-center">
