@@ -21711,7 +21711,7 @@ export default function AdminAddClient() {
                         </div>
                       </div>
 
-                      {/* Row 3: Mid FICO, LTV Ratio, Lender, VA Benefits, Lender Credit */}
+                      {/* Row 3: Mid FICO, LTV Ratio, VA Benefits, Lender, Lender Credit */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="mid-fico-input">Mid FICO</Label>
@@ -21732,20 +21732,6 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="lender-select">Lender</Label>
-                          <Select value={debtToIncomeRatio} onValueChange={setDebtToIncomeRatio}>
-                            <SelectTrigger data-testid="select-lender">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-lender-select">Select</SelectItem>
-                              <SelectItem value="uwm" data-testid="select-lender-uwm">UWM</SelectItem>
-                              <SelectItem value="pennymac" data-testid="select-lender-pennymac">Pennymac</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        <div className="space-y-2">
                           <Label htmlFor="va-benefits-select">VA Benefits</Label>
                           <Select>
                             <SelectTrigger data-testid="select-va-benefits">
@@ -21755,6 +21741,20 @@ export default function AdminAddClient() {
                               <SelectItem value="select" data-testid="select-va-benefits-select">Select</SelectItem>
                               <SelectItem value="yes-exempt" data-testid="select-va-benefits-yes-exempt">Yes - Exempt</SelectItem>
                               <SelectItem value="no-not-exempt" data-testid="select-va-benefits-no-not-exempt">No - Not Exempt</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="lender-select">Lender</Label>
+                          <Select value={debtToIncomeRatio} onValueChange={setDebtToIncomeRatio}>
+                            <SelectTrigger data-testid="select-lender">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-lender-select">Select</SelectItem>
+                              <SelectItem value="uwm" data-testid="select-lender-uwm">UWM</SelectItem>
+                              <SelectItem value="pennymac" data-testid="select-lender-pennymac">Pennymac</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
