@@ -21845,7 +21845,7 @@ export default function AdminAddClient() {
       <Dialog open={isNewPaymentInfoOpen} onOpenChange={setIsNewPaymentInfoOpen}>
         <DialogContent className="sm:max-w-[500px] p-0">
           <DialogHeader className="text-white p-6 rounded-t-lg" style={{ backgroundColor: '#1a3373' }}>
-            <DialogTitle className="text-white">New Payment</DialogTitle>
+            <DialogTitle className="text-white">New Monthly Payment</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-6 px-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
             {/* Message */}
