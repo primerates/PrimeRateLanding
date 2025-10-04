@@ -21786,7 +21786,7 @@ export default function AdminAddClient() {
                           <div className="w-full">
                             <textarea
                               ref={loanProgramTextareaRef}
-                              placeholder="Loan Program"
+                              placeholder="Loan Type"
                               value={quoteLoanProgram}
                               onChange={(e) => setQuoteLoanProgram(e.target.value)}
                               onFocus={() => setShowLoanProgramControls(true)}
