@@ -21644,17 +21644,13 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="va-benefits-select">VA Benefits</Label>
-                          <Select>
-                            <SelectTrigger data-testid="select-va-benefits">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-va-benefits-select">Select</SelectItem>
-                              <SelectItem value="yes-exempt" data-testid="select-va-benefits-yes-exempt">Yes - Exempt</SelectItem>
-                              <SelectItem value="no-not-exempt" data-testid="select-va-benefits-no-not-exempt">No - Not Exempt</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <Label htmlFor="du-approval-input">Loan Program</Label>
+                          <Input
+                            id="du-approval-input"
+                            type="text"
+                            placeholder=""
+                            data-testid="input-du-approval"
+                          />
                         </div>
 
                         <div className="space-y-2">
@@ -21687,7 +21683,7 @@ export default function AdminAddClient() {
                         </div>
                       </div>
 
-                      {/* Row 3: Mid FICO, LTV Ratio, DTI Ratio, DU Approval, Lender Credit */}
+                      {/* Row 3: Mid FICO, LTV Ratio, DTI Ratio, VA Benefits, Lender Credit */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="mid-fico-input">Mid FICO</Label>
@@ -21720,13 +21716,17 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="du-approval-input">Loan Program</Label>
-                          <Input
-                            id="du-approval-input"
-                            type="text"
-                            placeholder=""
-                            data-testid="input-du-approval"
-                          />
+                          <Label htmlFor="va-benefits-select">VA Benefits</Label>
+                          <Select>
+                            <SelectTrigger data-testid="select-va-benefits">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-va-benefits-select">Select</SelectItem>
+                              <SelectItem value="yes-exempt" data-testid="select-va-benefits-yes-exempt">Yes - Exempt</SelectItem>
+                              <SelectItem value="no-not-exempt" data-testid="select-va-benefits-no-not-exempt">No - Not Exempt</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
 
                         <div className="space-y-2">
