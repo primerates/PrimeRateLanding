@@ -21602,7 +21602,7 @@ export default function AdminAddClient() {
       {/* Escrow Information Dialog */}
       <Dialog open={isEscrowInfoOpen} onOpenChange={setIsEscrowInfoOpen}>
         <DialogContent className="sm:max-w-[500px] p-0">
-          <DialogHeader className="bg-blue-500 text-white p-6 rounded-t-lg">
+          <DialogHeader className="text-white p-6 rounded-t-lg" style={{ backgroundColor: '#1a3373' }}>
             <DialogTitle className="text-white">Escrow Information</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4 px-6">
