@@ -21441,8 +21441,16 @@ export default function AdminAddClient() {
                       {/* New Escrow Reserves Section */}
                       <div className="border-t pt-6">
                         <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                          <div className="flex items-center justify-end pr-4">
+                          <div className="flex flex-col items-end justify-center pr-4">
                             <Label className="text-base font-bold text-right">New Escrow Reserves</Label>
+                            {monthlyEscrow && monthlyEscrow !== 'select' && (
+                              <span className="text-sm text-muted-foreground text-right mt-1">
+                                {monthlyEscrow === 'tax-insurance' && 'Tax & Insurance'}
+                                {monthlyEscrow === 'tax-only' && 'Tax Only'}
+                                {monthlyEscrow === 'insurance-only' && 'Insurance Only'}
+                                {monthlyEscrow === 'no-escrow' && 'No Escrow'}
+                              </span>
+                            )}
                           </div>
                           {selectedRateIds.map((rateId) => {
                             const numVal = escrowReservesValues[rateId] ? escrowReservesValues[rateId].replace(/[^\d]/g, '') : '';
@@ -21471,25 +21479,6 @@ export default function AdminAddClient() {
                           })}
                         </div>
                       </div>
-
-                      {/* Display Monthly Escrow Selection */}
-                      {monthlyEscrow && monthlyEscrow !== 'select' && (
-                        <div className="pt-4">
-                          <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                            <div className="flex items-center justify-end pr-4">
-                              <span className="text-sm text-muted-foreground text-right">
-                                {monthlyEscrow === 'tax-insurance' && 'Tax & Insurance'}
-                                {monthlyEscrow === 'tax-only' && 'Tax Only'}
-                                {monthlyEscrow === 'insurance-only' && 'Insurance Only'}
-                                {monthlyEscrow === 'no-escrow' && 'No Escrow'}
-                              </span>
-                            </div>
-                            {selectedRateIds.map((rateId) => (
-                              <div key={rateId}></div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
                       </CardContent>
                     </Card>
 
