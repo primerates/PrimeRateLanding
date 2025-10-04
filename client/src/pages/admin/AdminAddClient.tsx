@@ -20875,29 +20875,33 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="ltv-ratio-select">Loan To Value Ratio</Label>
-                          <Select>
-                            <SelectTrigger data-testid="select-ltv-ratio">
+                          <Label htmlFor="monthly-escrow-select">Monthly Escrow</Label>
+                          <Select value={monthlyEscrow} onValueChange={setMonthlyEscrow}>
+                            <SelectTrigger data-testid="select-monthly-escrow">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="select" data-testid="select-ltv-ratio-select">Select</SelectItem>
-                              <SelectItem value="90-100" data-testid="select-ltv-ratio-90-100">90% to 100%</SelectItem>
-                              <SelectItem value="80-90" data-testid="select-ltv-ratio-80-90">80% to 90%</SelectItem>
-                              <SelectItem value="70-80" data-testid="select-ltv-ratio-70-80">70% to 80%</SelectItem>
-                              <SelectItem value="60-70" data-testid="select-ltv-ratio-60-70">60% to 70%</SelectItem>
-                              <SelectItem value="below-60" data-testid="select-ltv-ratio-below-60">Below 60%</SelectItem>
+                              <SelectItem value="select" data-testid="select-monthly-escrow-select">Select</SelectItem>
+                              <SelectItem value="tax-insurance" data-testid="select-monthly-escrow-tax-insurance">Tax & Insurance</SelectItem>
+                              <SelectItem value="tax-only" data-testid="select-monthly-escrow-tax-only">Tax Only</SelectItem>
+                              <SelectItem value="insurance-only" data-testid="select-monthly-escrow-insurance-only">Insurance Only</SelectItem>
+                              <SelectItem value="no-escrow" data-testid="select-monthly-escrow-no-escrow">No Escrow</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="mid-fico-input">Mid FICO</Label>
-                          <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm transition-colors items-center">
-                            <span className="font-medium" data-testid="text-mid-fico">
-                              {getAbcCalculatedMidFico()}
-                            </span>
-                          </div>
+                          <Label htmlFor="escrow-reserves-select">Escrow Reserves</Label>
+                          <Select value={escrowReserves} onValueChange={setEscrowReserves}>
+                            <SelectTrigger data-testid="select-escrow-reserves">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-escrow-reserves-select">Select</SelectItem>
+                              <SelectItem value="new-escrow-reserves" data-testid="select-escrow-reserves-new">New Escrow Reserves</SelectItem>
+                              <SelectItem value="no-escrow-reserves" data-testid="select-escrow-reserves-no">No Escrow Reserves</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
 
@@ -20942,37 +20946,33 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="monthly-escrow-select">Monthly Escrow</Label>
-                          <Select value={monthlyEscrow} onValueChange={setMonthlyEscrow}>
-                            <SelectTrigger data-testid="select-monthly-escrow">
+                          <Label htmlFor="ltv-ratio-select">LTV Ratio</Label>
+                          <Select>
+                            <SelectTrigger data-testid="select-ltv-ratio">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="select" data-testid="select-monthly-escrow-select">Select</SelectItem>
-                              <SelectItem value="tax-insurance" data-testid="select-monthly-escrow-tax-insurance">Tax & Insurance</SelectItem>
-                              <SelectItem value="tax-only" data-testid="select-monthly-escrow-tax-only">Tax Only</SelectItem>
-                              <SelectItem value="insurance-only" data-testid="select-monthly-escrow-insurance-only">Insurance Only</SelectItem>
-                              <SelectItem value="no-escrow" data-testid="select-monthly-escrow-no-escrow">No Escrow</SelectItem>
+                              <SelectItem value="select" data-testid="select-ltv-ratio-select">Select</SelectItem>
+                              <SelectItem value="90-100" data-testid="select-ltv-ratio-90-100">90% to 100%</SelectItem>
+                              <SelectItem value="80-90" data-testid="select-ltv-ratio-80-90">80% to 90%</SelectItem>
+                              <SelectItem value="70-80" data-testid="select-ltv-ratio-70-80">70% to 80%</SelectItem>
+                              <SelectItem value="60-70" data-testid="select-ltv-ratio-60-70">60% to 70%</SelectItem>
+                              <SelectItem value="below-60" data-testid="select-ltv-ratio-below-60">Below 60%</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="escrow-reserves-select">Escrow Reserves</Label>
-                          <Select value={escrowReserves} onValueChange={setEscrowReserves}>
-                            <SelectTrigger data-testid="select-escrow-reserves">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-escrow-reserves-select">Select</SelectItem>
-                              <SelectItem value="new-escrow-reserves" data-testid="select-escrow-reserves-new">New Escrow Reserves</SelectItem>
-                              <SelectItem value="no-escrow-reserves" data-testid="select-escrow-reserves-no">No Escrow Reserves</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <Label htmlFor="mid-fico-input">Mid FICO</Label>
+                          <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm transition-colors items-center">
+                            <span className="font-medium" data-testid="text-mid-fico">
+                              {getAbcCalculatedMidFico()}
+                            </span>
+                          </div>
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="debt-to-income-input">Debt To Income Ratio</Label>
+                          <Label htmlFor="debt-to-income-input">DTI Ratio</Label>
                           <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm transition-colors items-center">
                             <span className="font-medium" data-testid="text-debt-to-income">
                               {calculateEstimatedLTV()}
