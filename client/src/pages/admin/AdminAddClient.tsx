@@ -21644,13 +21644,23 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="du-approval-input">Loan Program</Label>
-                          <Input
-                            id="du-approval-input"
-                            type="text"
-                            placeholder=""
-                            data-testid="input-du-approval"
-                          />
+                          <Label htmlFor="loan-program-select">Loan Program</Label>
+                          <Select>
+                            <SelectTrigger data-testid="select-loan-program">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-loan-program-select">Select</SelectItem>
+                              <div className="px-2 py-1.5 text-sm font-bold text-green-700 cursor-default">
+                                Fixed Rate
+                              </div>
+                              <SelectItem value="30-year-fixed" data-testid="select-loan-program-30-year-fixed" className="pl-6">30 Year Fixed</SelectItem>
+                              <SelectItem value="25-year-fixed" data-testid="select-loan-program-25-year-fixed" className="pl-6">25 Year Fixed</SelectItem>
+                              <SelectItem value="20-year-fixed" data-testid="select-loan-program-20-year-fixed" className="pl-6">20 Year Fixed</SelectItem>
+                              <SelectItem value="15-year-fixed" data-testid="select-loan-program-15-year-fixed" className="pl-6">15 Year Fixed</SelectItem>
+                              <SelectItem value="10-year-fixed" data-testid="select-loan-program-10-year-fixed" className="pl-6">10 Year Fixed</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
 
                         <div className="space-y-2">
