@@ -21681,7 +21681,7 @@ export default function AdminAddClient() {
                             <div className="flex items-center justify-end pr-4 gap-2">
                               <Info 
                                 className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
-                                onClick={() => setIsNewPaymentInfoOpen(true)}
+                                onClick={() => setIsEscrowInfoOpen(true)}
                                 data-testid="icon-info-monthly-payment" 
                               />
                               <Label className="text-base font-semibold text-right">New Monthly Payment:</Label>
