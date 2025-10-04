@@ -21926,7 +21926,7 @@ export default function AdminAddClient() {
               <Label htmlFor="new-mortgage-payments-savings" className="w-80 text-right">
                 New Mortgage Payments:
               </Label>
-              <div className="flex items-center border-2 border-green-500 bg-background px-3 rounded-md flex-1">
+              <div className="flex items-center border-2 border-green-700 bg-background px-3 rounded-md flex-1">
                 <span className="text-muted-foreground text-sm">$</span>
                 <Input
                   id="new-mortgage-payments-savings"
@@ -21948,7 +21948,7 @@ export default function AdminAddClient() {
               <Label htmlFor="calculated-monthly-savings" className="w-80 text-right">
                 Total Monthly Savings:
               </Label>
-              <div className="flex items-center bg-green-500 px-3 rounded-md flex-1 h-9">
+              <div className="flex items-center border-2 border-green-700 bg-green-600 px-3 rounded-md flex-1 h-9">
                 <span className="text-base font-bold text-white text-center w-full" data-testid="text-calculated-monthly-savings">
                   {calculatedMonthlySavings > 0 ? `$${calculatedMonthlySavings.toLocaleString('en-US')}` : ''}
                 </span>
