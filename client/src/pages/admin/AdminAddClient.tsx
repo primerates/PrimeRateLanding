@@ -1115,6 +1115,22 @@ export default function AdminAddClient() {
     });
   }, [rateColumnTotals, rateValues, loanTerm, customTerm, isCustomTerm, monthlyEscrow, escrowReserves, monthlyInsurance, monthlyPropertyTax]);
   
+  // Calculate Total Monthly Savings for each rate column
+  const calculatedTotalMonthlySavings = useMemo(() => {
+    return Array.from({ length: 5 }).map((_, index) => {
+      const totalExisting = calculatedTotalExistingPayments;
+      const newPayment = parseInt(calculatedMonthlyPayments[index] || '0', 10);
+      
+      // If either value is missing or zero, return empty string
+      if (!totalExisting || totalExisting <= 0 || !newPayment || newPayment <= 0) {
+        return '';
+      }
+      
+      const savings = totalExisting - newPayment;
+      return savings > 0 ? savings.toString() : '';
+    });
+  }, [calculatedTotalExistingPayments, calculatedMonthlyPayments]);
+  
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
   const [isReadOnlyCurrentLoanOpen, setIsReadOnlyCurrentLoanOpen] = useState(true);
@@ -21737,8 +21753,8 @@ export default function AdminAddClient() {
                               <Label className="text-base font-semibold text-right">Total Monthly Savings:</Label>
                             </div>
                           {selectedRateIds.map((rateId) => {
-                            const numVal = totalMonthlySavingsValues[rateId] ? totalMonthlySavingsValues[rateId].replace(/[^\d]/g, '') : '';
-                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            const calculatedSavings = calculatedTotalMonthlySavings[rateId];
+                            const displayValue = calculatedSavings ? parseInt(calculatedSavings, 10).toLocaleString('en-US') : '';
                             
                             return (
                               <div key={rateId} className="flex justify-center">
