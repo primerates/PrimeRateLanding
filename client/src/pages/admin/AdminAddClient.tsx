@@ -957,8 +957,14 @@ export default function AdminAddClient() {
   const [isEscrowInfoOpen, setIsEscrowInfoOpen] = useState(false);
   const [propertyInsurancePayment, setPropertyInsurancePayment] = useState('');
   const [propertyTaxPayment, setPropertyTaxPayment] = useState('');
-  const [totalMonthlyEscrow, setTotalMonthlyEscrow] = useState('');
   const [statementEscrowBalance, setStatementEscrowBalance] = useState('');
+  
+  // Auto-calculate Total Monthly Escrow
+  const calculatedTotalMonthlyEscrow = useMemo(() => {
+    const insurance = parseInt(propertyInsurancePayment || '0', 10);
+    const tax = parseInt(propertyTaxPayment || '0', 10);
+    return insurance + tax;
+  }, [propertyInsurancePayment, propertyTaxPayment]);
   
   // Calculate totals for each rate column using useMemo (like Income tab)
   const rateColumnTotals = useMemo(() => {
@@ -21595,11 +21601,11 @@ export default function AdminAddClient() {
 
       {/* Escrow Information Dialog */}
       <Dialog open={isEscrowInfoOpen} onOpenChange={setIsEscrowInfoOpen}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>Escrow Information</DialogTitle>
+        <DialogContent className="sm:max-w-[500px] p-0">
+          <DialogHeader className="bg-blue-500 text-white p-6 rounded-t-lg">
+            <DialogTitle className="text-white">Escrow Information</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-4">
+          <div className="space-y-4 py-4 px-6">
             {/* Property Insurance Payment */}
             <div className="flex items-center gap-4">
               <Label htmlFor="property-insurance" className="w-48 text-right">
@@ -21644,25 +21650,15 @@ export default function AdminAddClient() {
               </div>
             </div>
 
-            {/* Total Monthly Escrow */}
+            {/* Total Monthly Escrow - Display Only (Auto-calculated) */}
             <div className="flex items-center gap-4">
               <Label htmlFor="total-monthly-escrow" className="w-48 text-right">
                 Total Monthly Escrow:
               </Label>
-              <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
-                <span className="text-muted-foreground text-sm">$</span>
-                <Input
-                  id="total-monthly-escrow"
-                  type="text"
-                  placeholder=""
-                  value={totalMonthlyEscrow.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/[^\d]/g, '');
-                    setTotalMonthlyEscrow(value);
-                  }}
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
-                  data-testid="input-total-monthly-escrow"
-                />
+              <div className="flex items-center border border-input bg-muted px-3 rounded-md flex-1 h-9">
+                <span className="text-base font-bold text-center w-full" data-testid="text-total-monthly-escrow">
+                  {calculatedTotalMonthlyEscrow > 0 ? `$${calculatedTotalMonthlyEscrow.toLocaleString('en-US')}` : ''}
+                </span>
               </div>
             </div>
 
