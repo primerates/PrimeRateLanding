@@ -21598,23 +21598,13 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="purpose-select">Loan Purpose</Label>
-                          <Select>
-                            <SelectTrigger data-testid="select-purpose">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-purpose-select">Select</SelectItem>
-                              <SelectItem value="cash-out-appraisal" data-testid="select-purpose-cash-out-appraisal">Cash Out - Appraisal</SelectItem>
-                              <SelectItem value="cash-out-no-appraisal" data-testid="select-purpose-cash-out-no-appraisal">Cash Out - No Appraisal</SelectItem>
-                              <SelectItem value="purchase" data-testid="select-purpose-purchase">Purchase</SelectItem>
-                              <SelectItem value="rate-term-appraisal" data-testid="select-purpose-rate-term-appraisal">Rate & Term - Appraisal</SelectItem>
-                              <SelectItem value="rate-term-no-appraisal" data-testid="select-purpose-rate-term-no-appraisal">Rate & Term - No Appraisal</SelectItem>
-                              <SelectItem value="streamline-appraisal" data-testid="select-purpose-streamline-appraisal">Streamline - Appraisal</SelectItem>
-                              <SelectItem value="streamline-no-appraisal" data-testid="select-purpose-streamline-no-appraisal">Streamline - No Appraisal</SelectItem>
-                              <SelectItem value="irrrl" data-testid="select-purpose-irrrl">IRRRL</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <Label htmlFor="du-approval-input">DU Approval</Label>
+                          <Input
+                            id="du-approval-input"
+                            type="text"
+                            placeholder=""
+                            data-testid="input-du-approval"
+                          />
                         </div>
 
                         <div className="space-y-2">
