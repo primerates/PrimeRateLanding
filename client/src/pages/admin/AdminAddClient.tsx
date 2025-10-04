@@ -21614,8 +21614,7 @@ export default function AdminAddClient() {
                             )}
                           </div>
                           {selectedRateIds.map((rateId) => {
-                            const numVal = escrowReservesValues[rateId] ? escrowReservesValues[rateId].replace(/[^\d]/g, '') : '';
-                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            const displayValue = calculatedTotalMonthlyEscrow > 0 ? calculatedTotalMonthlyEscrow.toLocaleString('en-US') : '';
                             
                             return (
                               <div key={rateId} className="flex justify-center">
@@ -21625,12 +21624,7 @@ export default function AdminAddClient() {
                                     type="text"
                                     placeholder=""
                                     value={displayValue}
-                                    onChange={(e) => {
-                                      const value = e.target.value.replace(/[^\d]/g, '');
-                                      const newValues = [...escrowReservesValues];
-                                      newValues[rateId] = value;
-                                      setEscrowReservesValues(newValues);
-                                    }}
+                                    readOnly
                                     className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
                                     data-testid={`input-escrow-reserves-${rateId}`}
                                   />
