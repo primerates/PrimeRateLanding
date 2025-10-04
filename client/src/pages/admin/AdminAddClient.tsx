@@ -21088,7 +21088,13 @@ export default function AdminAddClient() {
                               type="text"
                               placeholder=""
                               value={customTerm}
-                              onChange={(e) => setCustomTerm(e.target.value)}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                // Only allow digits and max 2 characters
+                                if (value === '' || (/^\d{1,2}$/.test(value))) {
+                                  setCustomTerm(value);
+                                }
+                              }}
                               data-testid="input-custom-term"
                             />
                           )}
