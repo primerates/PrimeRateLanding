@@ -21546,22 +21546,6 @@ export default function AdminAddClient() {
                                         }`} />
                                         <span className="text-sm">Rate & Term</span>
                                       </div>
-                                      
-                                      <div 
-                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
-                                        onClick={() => {
-                                          setSelectedLoanCategory('Streamline');
-                                          setIsLoanCategoryPopoverOpen(false);
-                                        }}
-                                        data-testid="option-category-non-qm-streamline"
-                                      >
-                                        <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Streamline' 
-                                            ? 'bg-green-700 border-green-700' 
-                                            : 'border-current'
-                                        }`} />
-                                        <span className="text-sm">Streamline</span>
-                                      </div>
                                     </div>
                                   </div>
                                   
