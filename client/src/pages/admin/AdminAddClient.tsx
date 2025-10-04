@@ -20,7 +20,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator, StickyNote } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator, StickyNote, ChevronDown, ChevronUp } from 'lucide-react';
 import { SiZillow } from 'react-icons/si';
 import { MdRealEstateAgent } from 'react-icons/md';
 import { FaHome } from 'react-icons/fa';
@@ -972,6 +972,10 @@ export default function AdminAddClient() {
   
   // State for New Payment dialog
   const [isNewPaymentInfoOpen, setIsNewPaymentInfoOpen] = useState(false);
+  
+  // State for row collapse/expand in 3rd card
+  const [isMonthlyPaymentRowExpanded, setIsMonthlyPaymentRowExpanded] = useState(true);
+  const [isSavingsRowExpanded, setIsSavingsRowExpanded] = useState(true);
   const [newMortgagePayment, setNewMortgagePayment] = useState('');
   const [newEscrowPayment, setNewEscrowPayment] = useState('');
   const [monthlyInsurance, setMonthlyInsurance] = useState('');
@@ -21690,6 +21694,19 @@ export default function AdminAddClient() {
                         {/* New Est. Loan Amount Row - Auto-calculated */}
                         <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4 gap-2">
+                            {isMonthlyPaymentRowExpanded ? (
+                              <ChevronDown 
+                                className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                                onClick={() => setIsMonthlyPaymentRowExpanded(false)}
+                                data-testid="icon-collapse-monthly-payment" 
+                              />
+                            ) : (
+                              <ChevronUp 
+                                className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                                onClick={() => setIsMonthlyPaymentRowExpanded(true)}
+                                data-testid="icon-expand-monthly-payment" 
+                              />
+                            )}
                             <Info 
                               className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
                               onClick={() => setIsEstLoanAmountInfoOpen(true)}
@@ -21714,60 +21731,77 @@ export default function AdminAddClient() {
                         </div>
 
                         {/* New Monthly Payment Row - Auto-calculated */}
-                        <div className="border-t pt-6">
-                          <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                            <div className="flex items-center justify-end pr-4 gap-2">
-                              <Info 
-                                className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
-                                onClick={() => setIsNewPaymentInfoOpen(true)}
-                                data-testid="icon-info-monthly-payment" 
-                              />
-                              <Label className="text-base font-semibold text-right">New Monthly Payment:</Label>
-                            </div>
-                          {selectedRateIds.map((rateId) => {
-                            const calculatedPayment = calculatedMonthlyPayments[rateId];
-                            const displayValue = calculatedPayment ? parseInt(calculatedPayment, 10).toLocaleString('en-US') : '';
-                            
-                            return (
-                              <div key={rateId} className="flex justify-center">
-                                <div className="flex items-center px-3 rounded-md w-3/4">
-                                  <span className="text-base font-bold text-center w-full" data-testid={`text-new-monthly-payment-${rateId}`}>
-                                    {displayValue ? `$${displayValue}` : ''}
-                                  </span>
-                                </div>
+                        {isMonthlyPaymentRowExpanded && (
+                          <div className="border-t pt-6">
+                            <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
+                              <div className="flex items-center justify-end pr-4 gap-2">
+                                {isSavingsRowExpanded ? (
+                                  <ChevronDown 
+                                    className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                                    onClick={() => setIsSavingsRowExpanded(false)}
+                                    data-testid="icon-collapse-savings" 
+                                  />
+                                ) : (
+                                  <ChevronUp 
+                                    className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                                    onClick={() => setIsSavingsRowExpanded(true)}
+                                    data-testid="icon-expand-savings" 
+                                  />
+                                )}
+                                <Info 
+                                  className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                                  onClick={() => setIsNewPaymentInfoOpen(true)}
+                                  data-testid="icon-info-monthly-payment" 
+                                />
+                                <Label className="text-base font-semibold text-right">New Monthly Payment:</Label>
                               </div>
-                            );
-                          })}
+                              {selectedRateIds.map((rateId) => {
+                                const calculatedPayment = calculatedMonthlyPayments[rateId];
+                                const displayValue = calculatedPayment ? parseInt(calculatedPayment, 10).toLocaleString('en-US') : '';
+                                
+                                return (
+                                  <div key={rateId} className="flex justify-center">
+                                    <div className="flex items-center px-3 rounded-md w-3/4">
+                                      <span className="text-base font-bold text-center w-full" data-testid={`text-new-monthly-payment-${rateId}`}>
+                                        {displayValue ? `$${displayValue}` : ''}
+                                      </span>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
                           </div>
-                        </div>
+                        )}
 
                         {/* Total Monthly Savings Row */}
-                        <div className="border-t pt-6">
-                          <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                            <div className="flex items-center justify-end pr-4 gap-2">
-                              <Info 
-                                className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors -mr-0.5" 
-                                onClick={() => setIsMonthlySavingsInfoOpen(true)}
-                                data-testid="icon-info-monthly-savings" 
-                              />
-                              <Label className="text-base font-semibold text-right">Total Monthly Savings:</Label>
-                            </div>
-                          {selectedRateIds.map((rateId) => {
-                            const calculatedSavings = calculatedTotalMonthlySavings[rateId];
-                            const displayValue = calculatedSavings ? parseInt(calculatedSavings, 10).toLocaleString('en-US') : '';
-                            
-                            return (
-                              <div key={rateId} className="flex justify-center">
-                                <div className="flex items-center px-3 rounded-md w-3/4">
-                                  <span className="text-base font-bold text-center w-full" data-testid={`text-total-monthly-savings-${rateId}`}>
-                                    {displayValue ? `$${displayValue}` : ''}
-                                  </span>
-                                </div>
+                        {isMonthlyPaymentRowExpanded && isSavingsRowExpanded && (
+                          <div className="border-t pt-6">
+                            <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
+                              <div className="flex items-center justify-end pr-4 gap-2">
+                                <Info 
+                                  className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors -mr-0.5" 
+                                  onClick={() => setIsMonthlySavingsInfoOpen(true)}
+                                  data-testid="icon-info-monthly-savings" 
+                                />
+                                <Label className="text-base font-semibold text-right">Total Monthly Savings:</Label>
                               </div>
-                            );
-                          })}
+                            {selectedRateIds.map((rateId) => {
+                              const calculatedSavings = calculatedTotalMonthlySavings[rateId];
+                              const displayValue = calculatedSavings ? parseInt(calculatedSavings, 10).toLocaleString('en-US') : '';
+                              
+                              return (
+                                <div key={rateId} className="flex justify-center">
+                                  <div className="flex items-center px-3 rounded-md w-3/4">
+                                    <span className="text-base font-bold text-center w-full" data-testid={`text-total-monthly-savings-${rateId}`}>
+                                      {displayValue ? `$${displayValue}` : ''}
+                                    </span>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </CardContent>
                     </Card>
                   </>
