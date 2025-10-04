@@ -20887,18 +20887,18 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="type-select">Type</Label>
+                          <Label htmlFor="transaction-select">Transaction</Label>
                           <Select>
-                            <SelectTrigger data-testid="select-type">
+                            <SelectTrigger data-testid="select-transaction">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="select" data-testid="select-type-select">Select</SelectItem>
-                              <SelectItem value="refinance" data-testid="select-type-refinance">Refinance</SelectItem>
-                              <SelectItem value="purchase" data-testid="select-type-purchase">Purchase</SelectItem>
-                              <SelectItem value="second-loan" data-testid="select-type-second-loan">Second Loan</SelectItem>
-                              <SelectItem value="construction" data-testid="select-type-construction">Construction</SelectItem>
-                              <SelectItem value="bridge" data-testid="select-type-bridge">Bridge</SelectItem>
+                              <SelectItem value="select" data-testid="select-transaction-select">Select</SelectItem>
+                              <SelectItem value="refinance" data-testid="select-transaction-refinance">Refinance</SelectItem>
+                              <SelectItem value="purchase" data-testid="select-transaction-purchase">Purchase</SelectItem>
+                              <SelectItem value="second-loan" data-testid="select-transaction-second-loan">Second Loan</SelectItem>
+                              <SelectItem value="construction" data-testid="select-transaction-construction">Construction</SelectItem>
+                              <SelectItem value="bridge" data-testid="select-transaction-bridge">Bridge</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -20985,12 +20985,14 @@ export default function AdminAddClient() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="select" data-testid="select-purpose-select">Select</SelectItem>
-                              <SelectItem value="cash-out" data-testid="select-purpose-cash-out">Cash Out</SelectItem>
+                              <SelectItem value="cash-out-appraisal" data-testid="select-purpose-cash-out-appraisal">Cash Out - Appraisal</SelectItem>
+                              <SelectItem value="cash-out-no-appraisal" data-testid="select-purpose-cash-out-no-appraisal">Cash Out - No Appraisal</SelectItem>
                               <SelectItem value="purchase" data-testid="select-purpose-purchase">Purchase</SelectItem>
-                              <SelectItem value="rate-term" data-testid="select-purpose-rate-term">Rate & Term</SelectItem>
-                              <SelectItem value="program-change" data-testid="select-purpose-program-change">Program Change</SelectItem>
-                              <SelectItem value="streamline" data-testid="select-purpose-streamline">Streamline</SelectItem>
-                              <SelectItem value="va-irrrl" data-testid="select-purpose-va-irrrl">VA IRRRL</SelectItem>
+                              <SelectItem value="rate-term-appraisal" data-testid="select-purpose-rate-term-appraisal">Rate & Term - Appraisal</SelectItem>
+                              <SelectItem value="rate-term-no-appraisal" data-testid="select-purpose-rate-term-no-appraisal">Rate & Term - No Appraisal</SelectItem>
+                              <SelectItem value="streamline-appraisal" data-testid="select-purpose-streamline-appraisal">Streamline - Appraisal</SelectItem>
+                              <SelectItem value="streamline-no-appraisal" data-testid="select-purpose-streamline-no-appraisal">Streamline - No Appraisal</SelectItem>
+                              <SelectItem value="irrrl" data-testid="select-purpose-irrrl">IRRRL</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
