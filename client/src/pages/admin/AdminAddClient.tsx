@@ -976,6 +976,9 @@ export default function AdminAddClient() {
   // State for row collapse/expand in 3rd card
   const [isMonthlyPaymentRowExpanded, setIsMonthlyPaymentRowExpanded] = useState(true);
   const [isSavingsRowExpanded, setIsSavingsRowExpanded] = useState(true);
+  
+  // State for 3rd card collapse/expand
+  const [isThirdCardExpanded, setIsThirdCardExpanded] = useState(true);
   const [newMortgagePayment, setNewMortgagePayment] = useState('');
   const [newEscrowPayment, setNewEscrowPayment] = useState('');
   const [monthlyInsurance, setMonthlyInsurance] = useState('');
@@ -21645,6 +21648,19 @@ export default function AdminAddClient() {
                           <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                             <div className="flex flex-col items-end justify-center pr-4">
                               <div className="flex items-center gap-2">
+                                {isThirdCardExpanded ? (
+                                  <ChevronDown 
+                                    className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                                    onClick={() => setIsThirdCardExpanded(false)}
+                                    data-testid="icon-collapse-third-card" 
+                                  />
+                                ) : (
+                                  <ChevronUp 
+                                    className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                                    onClick={() => setIsThirdCardExpanded(true)}
+                                    data-testid="icon-expand-third-card" 
+                                  />
+                                )}
                                 <Info 
                                   className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
                                   data-testid="icon-info-escrow-reserves"
@@ -21686,10 +21702,11 @@ export default function AdminAddClient() {
                     </Card>
 
                     {/* New Est. Loan Amount & New Monthly Payment Card */}
-                    <Card 
-                      className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-blue-500 hover:border-2 hover:border-blue-500 transition-colors flex-none"
-                      style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
-                    >
+                    {isThirdCardExpanded && (
+                      <Card 
+                        className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-blue-500 hover:border-2 hover:border-blue-500 transition-colors flex-none"
+                        style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
+                      >
                       <CardContent className="pt-6 space-y-6">
                         {/* New Est. Loan Amount Row - Auto-calculated */}
                         <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
@@ -21803,7 +21820,8 @@ export default function AdminAddClient() {
                           </div>
                         )}
                       </CardContent>
-                    </Card>
+                      </Card>
+                    )}
                   </>
                 )}
               </div>
