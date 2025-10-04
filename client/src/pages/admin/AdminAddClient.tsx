@@ -1045,6 +1045,47 @@ export default function AdminAddClient() {
     escrowReservesValues
   ]);
   
+  // Calculate monthly mortgage payments for each rate using amortization formula
+  const calculatedMonthlyPayments = useMemo(() => {
+    return Array.from({ length: 5 }).map((_, index) => {
+      // Get the principal amount (loan amount)
+      const principal = rateColumnTotals[index];
+      
+      // Get the interest rate from the circle
+      const rateStr = rateValues[index];
+      const rate = parseFloat(rateStr || '0');
+      
+      // Get the loan term in years
+      let years = 0;
+      if (isCustomTerm && customTerm) {
+        years = parseInt(customTerm, 10);
+      } else if (loanTerm && loanTerm !== 'select') {
+        // Extract years from value like "30-years"
+        const match = loanTerm.match(/^(\d+)-years$/);
+        if (match) {
+          years = parseInt(match[1], 10);
+        }
+      }
+      
+      // If any required data is missing, return empty string
+      if (!principal || principal <= 0 || !rate || rate <= 0 || !years || years <= 0) {
+        return '';
+      }
+      
+      // Calculate monthly payment using amortization formula
+      // M = P * [r(1+r)^n] / [(1+r)^n - 1]
+      const monthlyRate = rate / 100 / 12;
+      const numberOfPayments = years * 12;
+      const onePlusR = 1 + monthlyRate;
+      const onePlusRToN = Math.pow(onePlusR, numberOfPayments);
+      
+      const monthlyPayment = principal * (monthlyRate * onePlusRToN) / (onePlusRToN - 1);
+      
+      // Round to nearest dollar and return as string
+      return Math.round(monthlyPayment).toString();
+    });
+  }, [rateColumnTotals, rateValues, loanTerm, customTerm, isCustomTerm]);
+  
   const [showCurrentLoan, setShowCurrentLoan] = useState(false);
   const [isCurrentLoanOpen, setIsCurrentLoanOpen] = useState(true);
   const [isReadOnlyCurrentLoanOpen, setIsReadOnlyCurrentLoanOpen] = useState(true);
@@ -21612,7 +21653,7 @@ export default function AdminAddClient() {
                           })}
                         </div>
 
-                        {/* New Monthly Payment Row */}
+                        {/* New Monthly Payment Row - Auto-calculated */}
                         <div className="border-t pt-6">
                           <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                             <div className="flex items-center justify-end pr-4 gap-2">
@@ -21624,8 +21665,8 @@ export default function AdminAddClient() {
                               <Label className="text-base font-semibold text-right">New Monthly Payment:</Label>
                             </div>
                           {selectedRateIds.map((rateId) => {
-                            const numVal = newMonthlyPaymentValues[rateId] ? newMonthlyPaymentValues[rateId].replace(/[^\d]/g, '') : '';
-                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            const calculatedPayment = calculatedMonthlyPayments[rateId];
+                            const displayValue = calculatedPayment ? parseInt(calculatedPayment, 10).toLocaleString('en-US') : '';
                             
                             return (
                               <div key={rateId} className="flex justify-center">
