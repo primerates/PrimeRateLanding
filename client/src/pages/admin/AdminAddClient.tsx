@@ -22309,7 +22309,7 @@ export default function AdminAddClient() {
                     <SelectTrigger id="page-font-size" className="h-8" data-testid="select-page-font-size">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[9999]">
                       <SelectItem value="12" data-testid="font-size-12">12px</SelectItem>
                       <SelectItem value="14" data-testid="font-size-14">14px</SelectItem>
                       <SelectItem value="16" data-testid="font-size-16">16px</SelectItem>
