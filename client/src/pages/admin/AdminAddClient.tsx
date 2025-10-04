@@ -21127,13 +21127,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Cash Out');
+                                          setSelectedLoanCategory('VA - Cash Out');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-va-cash-out"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Cash Out' 
+                                          selectedLoanCategory === 'VA - Cash Out' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21143,13 +21143,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Purchase');
+                                          setSelectedLoanCategory('VA - Purchase');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-va-purchase"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Purchase' 
+                                          selectedLoanCategory === 'VA - Purchase' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21159,13 +21159,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Rate & Term');
+                                          setSelectedLoanCategory('VA - Rate & Term');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-va-rate-term"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Rate & Term' 
+                                          selectedLoanCategory === 'VA - Rate & Term' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21175,13 +21175,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('IRRRL');
+                                          setSelectedLoanCategory('VA - IRRRL');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-va-irrrl"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'IRRRL' 
+                                          selectedLoanCategory === 'VA - IRRRL' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21202,13 +21202,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Cash Out');
+                                          setSelectedLoanCategory('VA Jumbo - Cash Out');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-va-jumbo-cash-out"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Cash Out' 
+                                          selectedLoanCategory === 'VA Jumbo - Cash Out' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21218,13 +21218,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Purchase');
+                                          setSelectedLoanCategory('VA Jumbo - Purchase');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-va-jumbo-purchase"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Purchase' 
+                                          selectedLoanCategory === 'VA Jumbo - Purchase' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21234,13 +21234,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Rate & Term');
+                                          setSelectedLoanCategory('VA Jumbo - Rate & Term');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-va-jumbo-rate-term"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Rate & Term' 
+                                          selectedLoanCategory === 'VA Jumbo - Rate & Term' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21250,13 +21250,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('IRRRL');
+                                          setSelectedLoanCategory('VA Jumbo - IRRRL');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-va-jumbo-irrrl"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'IRRRL' 
+                                          selectedLoanCategory === 'VA Jumbo - IRRRL' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21277,13 +21277,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Cash Out');
+                                          setSelectedLoanCategory('Fannie Conv - Cash Out');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-fannie-conv-cash-out"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Cash Out' 
+                                          selectedLoanCategory === 'Fannie Conv - Cash Out' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21293,13 +21293,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Purchase');
+                                          setSelectedLoanCategory('Fannie Conv - Purchase');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-fannie-conv-purchase"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Purchase' 
+                                          selectedLoanCategory === 'Fannie Conv - Purchase' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21309,13 +21309,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Rate & Term');
+                                          setSelectedLoanCategory('Fannie Conv - Rate & Term');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-fannie-conv-rate-term"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Rate & Term' 
+                                          selectedLoanCategory === 'Fannie Conv - Rate & Term' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21325,13 +21325,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Streamline');
+                                          setSelectedLoanCategory('Fannie Conv - Streamline');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-fannie-conv-streamline"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Streamline' 
+                                          selectedLoanCategory === 'Fannie Conv - Streamline' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21352,13 +21352,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Cash Out');
+                                          setSelectedLoanCategory('Fannie Jumbo - Cash Out');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-fannie-jumbo-cash-out"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Cash Out' 
+                                          selectedLoanCategory === 'Fannie Jumbo - Cash Out' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21368,13 +21368,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Purchase');
+                                          setSelectedLoanCategory('Fannie Jumbo - Purchase');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-fannie-jumbo-purchase"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Purchase' 
+                                          selectedLoanCategory === 'Fannie Jumbo - Purchase' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21384,13 +21384,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Rate & Term');
+                                          setSelectedLoanCategory('Fannie Jumbo - Rate & Term');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-fannie-jumbo-rate-term"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Rate & Term' 
+                                          selectedLoanCategory === 'Fannie Jumbo - Rate & Term' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21400,13 +21400,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Streamline');
+                                          setSelectedLoanCategory('Fannie Jumbo - Streamline');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-fannie-jumbo-streamline"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Streamline' 
+                                          selectedLoanCategory === 'Fannie Jumbo - Streamline' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21427,13 +21427,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Cash Out');
+                                          setSelectedLoanCategory('FHA - Cash Out');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-fha-cash-out"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Cash Out' 
+                                          selectedLoanCategory === 'FHA - Cash Out' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21443,13 +21443,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Purchase');
+                                          setSelectedLoanCategory('FHA - Purchase');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-fha-purchase"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Purchase' 
+                                          selectedLoanCategory === 'FHA - Purchase' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21459,13 +21459,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Rate & Term');
+                                          setSelectedLoanCategory('FHA - Rate & Term');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-fha-rate-term"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Rate & Term' 
+                                          selectedLoanCategory === 'FHA - Rate & Term' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21475,13 +21475,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Streamline');
+                                          setSelectedLoanCategory('FHA - Streamline');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-fha-streamline"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Streamline' 
+                                          selectedLoanCategory === 'FHA - Streamline' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21502,13 +21502,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Cash Out');
+                                          setSelectedLoanCategory('Non-QM - Cash Out');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-non-qm-cash-out"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Cash Out' 
+                                          selectedLoanCategory === 'Non-QM - Cash Out' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21518,13 +21518,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Purchase');
+                                          setSelectedLoanCategory('Non-QM - Purchase');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-non-qm-purchase"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Purchase' 
+                                          selectedLoanCategory === 'Non-QM - Purchase' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21534,13 +21534,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Rate & Term');
+                                          setSelectedLoanCategory('Non-QM - Rate & Term');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-non-qm-rate-term"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Rate & Term' 
+                                          selectedLoanCategory === 'Non-QM - Rate & Term' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21561,13 +21561,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('HELOC');
+                                          setSelectedLoanCategory('Second Loan - HELOC');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-second-loan-heloc"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'HELOC' 
+                                          selectedLoanCategory === 'Second Loan - HELOC' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
@@ -21577,13 +21577,13 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Fixed Second');
+                                          setSelectedLoanCategory('Second Loan - Fixed Second');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-second-loan-fixed-second"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Fixed Second' 
+                                          selectedLoanCategory === 'Second Loan - Fixed Second' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
