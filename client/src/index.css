@@ -546,18 +546,33 @@
 
   /* Make input field containers wider for printing */
   #quote-printable-content .w-3\/4 {
-    width: 95% !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
 
   /* Reduce padding in input containers for more space */
   #quote-printable-content .px-3 {
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
   }
 
-  /* Ensure text doesn't overflow */
+  /* Ensure text doesn't overflow and use smaller font if needed */
   #quote-printable-content input {
     overflow: visible !important;
     text-overflow: clip !important;
+    font-size: 0.95rem !important;
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+  }
+
+  /* Adjust dollar sign spacing */
+  #quote-printable-content .text-muted-foreground {
+    margin-right: 0.15rem !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* Ensure grid columns have enough space */
+  #quote-printable-content .grid {
+    gap: 0.5rem !important;
   }
 }
