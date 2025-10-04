@@ -20772,6 +20772,31 @@ export default function AdminAddClient() {
                             <PopoverContent className="w-[200px] p-3" align="start">
                               <div className="space-y-2">
                                 <div className="text-sm font-medium mb-3">Select Rates</div>
+                                
+                                {/* Select All Four Option */}
+                                <div className="flex items-center space-x-2 pb-2 border-b">
+                                  <Checkbox
+                                    id="rate-select-all"
+                                    checked={selectedRateIds.length === 4}
+                                    onCheckedChange={(checked) => {
+                                      if (checked) {
+                                        setSelectedRateIds([0, 1, 2, 3]);
+                                        setShowRateCircles(true);
+                                      } else {
+                                        setSelectedRateIds([]);
+                                        setShowRateCircles(false);
+                                      }
+                                    }}
+                                    data-testid="checkbox-rate-select-all"
+                                  />
+                                  <label
+                                    htmlFor="rate-select-all"
+                                    className="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                  >
+                                    Select All Four
+                                  </label>
+                                </div>
+
                                 {[3, 2, 1, 0].map((rateId) => (
                                   <div key={rateId} className="flex items-center space-x-2">
                                     <Checkbox
