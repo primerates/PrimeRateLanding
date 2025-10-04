@@ -21847,66 +21847,7 @@ export default function AdminAddClient() {
           <DialogHeader className="text-white p-6 rounded-t-lg" style={{ backgroundColor: '#1a3373' }}>
             <DialogTitle className="text-white">New Payment</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-4 px-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
-            {/* New Mortgage Payment */}
-            <div className="flex items-center gap-4">
-              <Label htmlFor="new-mortgage-payment" className="w-48 text-right">
-                New Mortgage Payment:
-              </Label>
-              <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
-                <span className="text-muted-foreground text-sm">$</span>
-                <Input
-                  id="new-mortgage-payment"
-                  type="text"
-                  placeholder=""
-                  value={newMortgagePayment.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/[^\d]/g, '');
-                    setNewMortgagePayment(value);
-                  }}
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
-                  data-testid="input-new-mortgage-payment"
-                />
-              </div>
-            </div>
-
-            {/* New Escrow Payment */}
-            <div className="flex items-center gap-4">
-              <Label htmlFor="new-escrow-payment" className="w-48 text-right">
-                New Escrow Payment:
-              </Label>
-              <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
-                <span className="text-muted-foreground text-sm">$</span>
-                <Input
-                  id="new-escrow-payment"
-                  type="text"
-                  placeholder=""
-                  value={newEscrowPayment.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/[^\d]/g, '');
-                    setNewEscrowPayment(value);
-                  }}
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
-                  data-testid="input-new-escrow-payment"
-                />
-              </div>
-            </div>
-
-            {/* Total New Payment - Display Only (Auto-calculated) */}
-            <div className="flex items-center gap-4">
-              <Label htmlFor="total-new-payment" className="w-48 text-right">
-                Total New Payment:
-              </Label>
-              <div className="flex items-center border border-input bg-muted px-3 rounded-md flex-1 h-9">
-                <span className="text-base font-bold text-center w-full" data-testid="text-total-new-payment">
-                  {calculatedTotalNewPayment > 0 ? `$${calculatedTotalNewPayment.toLocaleString('en-US')}` : ''}
-                </span>
-              </div>
-            </div>
-
-            {/* Spacing */}
-            <div className="h-8"></div>
-
+          <div className="space-y-4 py-6 px-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
             {/* Message */}
             <div className="text-lg text-muted-foreground">
               The initial new loan amount & payment is an estimate based on your mortgage statement, which may not reflect the most current balance. The final loan amount & payment will be confirmed once we receive the official payoff demand from your lender.
