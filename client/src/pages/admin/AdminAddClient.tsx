@@ -21116,7 +21116,7 @@ export default function AdminAddClient() {
                                 {/* VA, VA Jumbo, Fannie Conv, Fannie Jumbo, FHA, Non-QM, and Second Loan Side by Side */}
                                 <div className="grid grid-cols-7 gap-4 border-t pt-2">
                                   {/* VA Section */}
-                                  <div>
+                                  <div className="border-r pr-4">
                                     {/* VA Title - Non-clickable */}
                                     <div className="text-base font-bold text-green-700 px-2 py-1.5">
                                       VA
@@ -21191,7 +21191,7 @@ export default function AdminAddClient() {
                                   </div>
                                   
                                   {/* VA Jumbo Section */}
-                                  <div>
+                                  <div className="border-r pr-4">
                                     {/* VA Jumbo Title - Non-clickable */}
                                     <div className="text-base font-bold text-green-700 px-2 py-1.5">
                                       VA Jumbo
@@ -21266,7 +21266,7 @@ export default function AdminAddClient() {
                                   </div>
                                   
                                   {/* Fannie Conv Section */}
-                                  <div>
+                                  <div className="border-r pr-4">
                                     {/* Fannie Conv Title - Non-clickable */}
                                     <div className="text-base font-bold text-green-700 px-2 py-1.5">
                                       Fannie Conv
@@ -21341,7 +21341,7 @@ export default function AdminAddClient() {
                                   </div>
                                   
                                   {/* Fannie Jumbo Section */}
-                                  <div>
+                                  <div className="border-r pr-4">
                                     {/* Fannie Jumbo Title - Non-clickable */}
                                     <div className="text-base font-bold text-green-700 px-2 py-1.5">
                                       Fannie Jumbo
@@ -21416,7 +21416,7 @@ export default function AdminAddClient() {
                                   </div>
                                   
                                   {/* FHA Section */}
-                                  <div>
+                                  <div className="border-r pr-4">
                                     {/* FHA Title - Non-clickable */}
                                     <div className="text-base font-bold text-green-700 px-2 py-1.5">
                                       FHA
@@ -21491,7 +21491,7 @@ export default function AdminAddClient() {
                                   </div>
                                   
                                   {/* Non-QM Section */}
-                                  <div>
+                                  <div className="border-r pr-4">
                                     {/* Non-QM Title - Non-clickable */}
                                     <div className="text-base font-bold text-green-700 px-2 py-1.5">
                                       Non-QM
