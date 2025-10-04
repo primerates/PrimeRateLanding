@@ -21600,47 +21600,49 @@ export default function AdminAddClient() {
                         </div>
                       </div>
 
-                      {/* New Escrow Reserves Section */}
-                      <div className="border-t pt-6">
-                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                          <div className="flex flex-col items-end justify-center pr-4">
-                            <div className="flex items-center gap-2">
-                              <Info 
-                                className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
-                                data-testid="icon-info-escrow-reserves"
-                                onClick={() => setIsEscrowInfoOpen(true)}
-                              />
-                              <Label className="text-base font-bold text-right">New Escrow Reserves</Label>
-                            </div>
-                            {monthlyEscrow && monthlyEscrow !== 'select' && (
-                              <span className="text-sm text-muted-foreground text-right mt-1">
-                                {monthlyEscrow === 'includes-tax-insurance' && 'Includes Tax & Insurance'}
-                                {monthlyEscrow === 'includes-tax-only' && 'Includes Tax Only'}
-                                {monthlyEscrow === 'includes-insurance-only' && 'Includes Insurance Only'}
-                              </span>
-                            )}
-                          </div>
-                          {selectedRateIds.map((rateId) => {
-                            const displayValue = calculatedTotalMonthlyEscrow > 0 ? calculatedTotalMonthlyEscrow.toLocaleString('en-US') : '';
-                            
-                            return (
-                              <div key={rateId} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                  <span className="text-muted-foreground text-sm">$</span>
-                                  <Input
-                                    type="text"
-                                    placeholder=""
-                                    value={displayValue}
-                                    readOnly
-                                    className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-escrow-reserves-${rateId}`}
-                                  />
-                                </div>
+                      {/* New Escrow Reserves Section - Conditionally shown */}
+                      {escrowReserves !== 'escrow-not-included' && (
+                        <div className="border-t pt-6">
+                          <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
+                            <div className="flex flex-col items-end justify-center pr-4">
+                              <div className="flex items-center gap-2">
+                                <Info 
+                                  className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                                  data-testid="icon-info-escrow-reserves"
+                                  onClick={() => setIsEscrowInfoOpen(true)}
+                                />
+                                <Label className="text-base font-bold text-right">New Escrow Reserves</Label>
                               </div>
-                            );
-                          })}
+                              {monthlyEscrow && monthlyEscrow !== 'select' && (
+                                <span className="text-sm text-muted-foreground text-right mt-1">
+                                  {monthlyEscrow === 'includes-tax-insurance' && 'Includes Tax & Insurance'}
+                                  {monthlyEscrow === 'includes-tax-only' && 'Includes Tax Only'}
+                                  {monthlyEscrow === 'includes-insurance-only' && 'Includes Insurance Only'}
+                                </span>
+                              )}
+                            </div>
+                            {selectedRateIds.map((rateId) => {
+                              const displayValue = calculatedTotalMonthlyEscrow > 0 ? calculatedTotalMonthlyEscrow.toLocaleString('en-US') : '';
+                              
+                              return (
+                                <div key={rateId} className="flex justify-center">
+                                  <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
+                                    <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      readOnly
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
+                                      data-testid={`input-escrow-reserves-${rateId}`}
+                                    />
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
                         </div>
-                      </div>
+                      )}
                       </CardContent>
                     </Card>
 
