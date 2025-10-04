@@ -20923,22 +20923,22 @@ export default function AdminAddClient() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="hover:bg-orange-500 hover:text-white"
-                      onClick={() => setIsQuoteCardsMinimized(!isQuoteCardsMinimized)}
-                      title={isQuoteCardsMinimized ? 'Expand' : 'Minimize'}
-                      data-testid="button-toggle-quote-cards"
-                    >
-                      {isQuoteCardsMinimized ? <Plus className="h-4 w-4" /> : <Minus className="h-4 w-4" />}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
                       className="hover:bg-green-500 hover:text-white"
                       onClick={() => window.print()}
                       title="Print Quote Details"
                       data-testid="button-print-quote"
                     >
                       <Printer className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="hover:bg-orange-500 hover:text-white"
+                      onClick={() => setIsQuoteCardsMinimized(!isQuoteCardsMinimized)}
+                      title={isQuoteCardsMinimized ? 'Expand' : 'Minimize'}
+                      data-testid="button-toggle-quote-cards"
+                    >
+                      {isQuoteCardsMinimized ? <Plus className="h-4 w-4" /> : <Minus className="h-4 w-4" />}
                     </Button>
                   </div>
                   {!isQuoteCardsMinimized && (
