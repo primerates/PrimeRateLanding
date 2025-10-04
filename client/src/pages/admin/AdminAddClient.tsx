@@ -21055,7 +21055,6 @@ export default function AdminAddClient() {
                               <SelectItem value="includes-tax-insurance" data-testid="select-monthly-escrow-tax-insurance">Includes Tax & Insurance</SelectItem>
                               <SelectItem value="includes-tax-only" data-testid="select-monthly-escrow-tax-only">Includes Tax Only</SelectItem>
                               <SelectItem value="includes-insurance-only" data-testid="select-monthly-escrow-insurance-only">Includes Insurance Only</SelectItem>
-                              <SelectItem value="paid-directly" data-testid="select-monthly-escrow-paid-directly">Paid Directly</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -21618,7 +21617,6 @@ export default function AdminAddClient() {
                                 {monthlyEscrow === 'includes-tax-insurance' && 'Includes Tax & Insurance'}
                                 {monthlyEscrow === 'includes-tax-only' && 'Includes Tax Only'}
                                 {monthlyEscrow === 'includes-insurance-only' && 'Includes Insurance Only'}
-                                {monthlyEscrow === 'paid-directly' && 'Paid Directly'}
                               </span>
                             )}
                           </div>
