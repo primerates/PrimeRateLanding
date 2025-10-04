@@ -543,4 +543,21 @@
   .border-l-4 {
     page-break-inside: avoid;
   }
+
+  /* Make input field containers wider for printing */
+  #quote-printable-content .w-3\/4 {
+    width: 95% !important;
+  }
+
+  /* Reduce padding in input containers for more space */
+  #quote-printable-content .px-3 {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  /* Ensure text doesn't overflow */
+  #quote-printable-content input {
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
 }
