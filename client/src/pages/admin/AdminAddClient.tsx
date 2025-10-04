@@ -21442,7 +21442,10 @@ export default function AdminAddClient() {
                       <div className="border-t pt-6">
                         <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                           <div className="flex flex-col items-end justify-center pr-4">
-                            <Label className="text-base font-bold text-right">New Escrow Reserves</Label>
+                            <div className="flex items-center gap-2">
+                              <Info className="h-4 w-4 text-muted-foreground" data-testid="icon-info-escrow-reserves" />
+                              <Label className="text-base font-bold text-right">New Escrow Reserves</Label>
+                            </div>
                             {monthlyEscrow && monthlyEscrow !== 'select' && (
                               <span className="text-sm text-muted-foreground text-right mt-1">
                                 {monthlyEscrow === 'includes-tax-insurance' && 'Includes Tax & Insurance'}
