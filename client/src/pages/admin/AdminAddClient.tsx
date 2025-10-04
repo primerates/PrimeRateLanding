@@ -932,6 +932,9 @@ export default function AdminAddClient() {
   const [calculatorMemory, setCalculatorMemory] = useState('');
   const [calculatorOperator, setCalculatorOperator] = useState('');
   const [quoteLoanProgram, setQuoteLoanProgram] = useState('');
+  const [showLoanProgramControls, setShowLoanProgramControls] = useState(false);
+  const [loanProgramFontSize, setLoanProgramFontSize] = useState('text-3xl');
+  const [loanProgramColor, setLoanProgramColor] = useState('text-foreground');
   
   // State for Quote tab rate detail fields
   const [rateBuyDownValues, setRateBuyDownValues] = useState<string[]>(['', '', '', '', '']);
@@ -21262,15 +21265,67 @@ export default function AdminAddClient() {
                     <div className="animate-roll-down px-4" style={{ marginTop: '64px', width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}>
                       <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                         {/* Transparent text input for Loan Program */}
-                        <div className="flex items-center justify-center">
-                          <textarea
-                            placeholder="Loan Program"
-                            value={quoteLoanProgram}
-                            onChange={(e) => setQuoteLoanProgram(e.target.value)}
-                            rows={2}
-                            className="bg-transparent border-0 text-3xl font-semibold text-center focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/40 resize-none w-full"
-                            data-testid="input-quote-loan-program"
-                          />
+                        <div className="relative flex items-center justify-center">
+                          <div className="w-full">
+                            <textarea
+                              placeholder="Loan Program"
+                              value={quoteLoanProgram}
+                              onChange={(e) => setQuoteLoanProgram(e.target.value)}
+                              onFocus={() => setShowLoanProgramControls(true)}
+                              onBlur={(e) => {
+                                // Delay hiding to allow clicking controls
+                                setTimeout(() => {
+                                  if (!e.currentTarget.contains(document.activeElement)) {
+                                    setShowLoanProgramControls(false);
+                                  }
+                                }, 200);
+                              }}
+                              rows={2}
+                              className={`bg-transparent border-0 ${loanProgramFontSize} ${loanProgramColor} font-semibold text-center focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/40 resize-none w-full`}
+                              data-testid="input-quote-loan-program"
+                            />
+                            
+                            {/* Font controls - appear when focused */}
+                            {showLoanProgramControls && (
+                              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-card border border-border rounded-md shadow-lg p-3 z-50 flex gap-4">
+                                {/* Font Size Selector */}
+                                <div className="flex flex-col gap-1">
+                                  <Label className="text-xs text-muted-foreground">Font Size</Label>
+                                  <Select value={loanProgramFontSize} onValueChange={setLoanProgramFontSize}>
+                                    <SelectTrigger className="w-32 h-8" data-testid="select-loan-program-font-size">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="text-xl">Small</SelectItem>
+                                      <SelectItem value="text-2xl">Medium</SelectItem>
+                                      <SelectItem value="text-3xl">Large</SelectItem>
+                                      <SelectItem value="text-4xl">X-Large</SelectItem>
+                                      <SelectItem value="text-5xl">XX-Large</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                
+                                {/* Font Color Selector */}
+                                <div className="flex flex-col gap-1">
+                                  <Label className="text-xs text-muted-foreground">Font Color</Label>
+                                  <Select value={loanProgramColor} onValueChange={setLoanProgramColor}>
+                                    <SelectTrigger className="w-32 h-8" data-testid="select-loan-program-color">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="text-foreground">Default</SelectItem>
+                                      <SelectItem value="text-primary">Primary</SelectItem>
+                                      <SelectItem value="text-blue-600">Blue</SelectItem>
+                                      <SelectItem value="text-green-600">Green</SelectItem>
+                                      <SelectItem value="text-red-600">Red</SelectItem>
+                                      <SelectItem value="text-purple-600">Purple</SelectItem>
+                                      <SelectItem value="text-orange-600">Orange</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
                         {/* Circles aligned under Type, Property, Client, Source */}
                         {selectedRateIds.map((rateId) => (
