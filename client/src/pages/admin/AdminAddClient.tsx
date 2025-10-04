@@ -20,7 +20,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator, StickyNote, ChevronDown, ChevronUp, BookOpen } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator, StickyNote, ChevronDown, ChevronUp, BookOpen, FileText } from 'lucide-react';
 import { SiZillow } from 'react-icons/si';
 import { MdRealEstateAgent } from 'react-icons/md';
 import { FaHome } from 'react-icons/fa';
@@ -20823,6 +20823,15 @@ export default function AdminAddClient() {
               <div>
                 <Card className="mb-6 transition-all duration-700 animate-roll-down">
                   <div className="flex justify-end items-center gap-2 pt-4 px-4">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="hover:bg-purple-500 hover:text-white"
+                      title="Page"
+                      data-testid="button-page"
+                    >
+                      <FileText className="h-4 w-4" />
+                    </Button>
                     <Button
                       variant="ghost"
                       size="sm"
