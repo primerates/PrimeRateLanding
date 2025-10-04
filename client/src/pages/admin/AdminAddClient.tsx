@@ -920,6 +920,8 @@ export default function AdminAddClient() {
   const [customTerm, setCustomTerm] = useState('');
   const [monthlyEscrow, setMonthlyEscrow] = useState('');
   const [escrowReserves, setEscrowReserves] = useState('');
+  const [debtToIncomeRatio, setDebtToIncomeRatio] = useState('');
+  const [lenderCredit, setLenderCredit] = useState('');
   const [showCalculator, setShowCalculator] = useState(false);
   const [calculatorPosition, setCalculatorPosition] = useState({ x: 100, y: 100 });
   const [isDragging, setIsDragging] = useState(false);
@@ -20922,6 +20924,33 @@ export default function AdminAddClient() {
                               <SelectItem value="no-escrow-reserves" data-testid="select-escrow-reserves-no">No Escrow Reserves</SelectItem>
                             </SelectContent>
                           </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="debt-to-income-input">Debt To Income Ratio</Label>
+                          <Input
+                            id="debt-to-income-input"
+                            type="text"
+                            placeholder=""
+                            value={debtToIncomeRatio}
+                            onChange={(e) => setDebtToIncomeRatio(e.target.value)}
+                            data-testid="input-debt-to-income"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="lender-credit-input">Lender Credit</Label>
+                          <Input
+                            id="lender-credit-input"
+                            type="text"
+                            placeholder=""
+                            value={lenderCredit.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/[^\d]/g, '');
+                              setLenderCredit(value);
+                            }}
+                            data-testid="input-lender-credit"
+                          />
                         </div>
                       </div>
                     </CardContent>
