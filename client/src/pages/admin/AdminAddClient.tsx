@@ -21647,26 +21647,26 @@ export default function AdminAddClient() {
                         <div className="border-t pt-6">
                           <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                             <div className="flex flex-col items-end justify-center pr-4">
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-2 flex-shrink-0">
                                 {isThirdCardExpanded ? (
                                   <ChevronDown 
-                                    className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                                    className="h-4 w-4 flex-shrink-0 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
                                     onClick={() => setIsThirdCardExpanded(false)}
                                     data-testid="icon-collapse-third-card" 
                                   />
                                 ) : (
                                   <ChevronUp 
-                                    className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                                    className="h-4 w-4 flex-shrink-0 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
                                     onClick={() => setIsThirdCardExpanded(true)}
                                     data-testid="icon-expand-third-card" 
                                   />
                                 )}
                                 <Info 
-                                  className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                                  className="h-4 w-4 flex-shrink-0 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
                                   data-testid="icon-info-escrow-reserves"
                                   onClick={() => setIsEscrowInfoOpen(true)}
                                 />
-                                <Label className="text-base font-bold text-right">New Escrow Reserves</Label>
+                                <Label className="text-base font-bold text-right whitespace-nowrap">New Escrow Reserves</Label>
                               </div>
                               {monthlyEscrow && monthlyEscrow !== 'select' && (
                                 <span className="text-sm text-muted-foreground text-right mt-1">
@@ -21710,26 +21710,26 @@ export default function AdminAddClient() {
                       <CardContent className="pt-6 space-y-6">
                         {/* New Est. Loan Amount Row - Auto-calculated */}
                         <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                          <div className="flex items-center justify-end pr-4 gap-2">
+                          <div className="flex items-center justify-end pr-4 gap-2 flex-shrink-0">
                             {isMonthlyPaymentRowExpanded ? (
                               <ChevronDown 
-                                className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                                className="h-4 w-4 flex-shrink-0 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
                                 onClick={() => setIsMonthlyPaymentRowExpanded(false)}
                                 data-testid="icon-collapse-monthly-payment" 
                               />
                             ) : (
                               <ChevronUp 
-                                className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                                className="h-4 w-4 flex-shrink-0 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
                                 onClick={() => setIsMonthlyPaymentRowExpanded(true)}
                                 data-testid="icon-expand-monthly-payment" 
                               />
                             )}
                             <Info 
-                              className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                              className="h-4 w-4 flex-shrink-0 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
                               onClick={() => setIsEstLoanAmountInfoOpen(true)}
                               data-testid="icon-info-loan-amount" 
                             />
-                            <Label className="text-base font-semibold text-right">New Est. Loan Amount:</Label>
+                            <Label className="text-base font-semibold text-right whitespace-nowrap">New Est. Loan Amount:</Label>
                           </div>
                           {selectedRateIds.map((rateId) => {
                             const total = rateColumnTotals[rateId];
@@ -21751,26 +21751,26 @@ export default function AdminAddClient() {
                         {isMonthlyPaymentRowExpanded && (
                           <div className="border-t pt-6">
                             <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                              <div className="flex items-center justify-end pr-4 gap-2">
+                              <div className="flex items-center justify-end pr-4 gap-2 flex-shrink-0">
                                 {isSavingsRowExpanded ? (
                                   <ChevronDown 
-                                    className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                                    className="h-4 w-4 flex-shrink-0 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
                                     onClick={() => setIsSavingsRowExpanded(false)}
                                     data-testid="icon-collapse-savings" 
                                   />
                                 ) : (
                                   <ChevronUp 
-                                    className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                                    className="h-4 w-4 flex-shrink-0 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
                                     onClick={() => setIsSavingsRowExpanded(true)}
                                     data-testid="icon-expand-savings" 
                                   />
                                 )}
                                 <Info 
-                                  className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                                  className="h-4 w-4 flex-shrink-0 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
                                   onClick={() => setIsNewPaymentInfoOpen(true)}
                                   data-testid="icon-info-monthly-payment" 
                                 />
-                                <Label className="text-base font-semibold text-right">New Monthly Payment:</Label>
+                                <Label className="text-base font-semibold text-right whitespace-nowrap">New Monthly Payment:</Label>
                               </div>
                               {selectedRateIds.map((rateId) => {
                                 const calculatedPayment = calculatedMonthlyPayments[rateId];
@@ -21794,13 +21794,13 @@ export default function AdminAddClient() {
                         {isMonthlyPaymentRowExpanded && isSavingsRowExpanded && (
                           <div className="border-t pt-6">
                             <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                              <div className="flex items-center justify-end pr-4 gap-2">
+                              <div className="flex items-center justify-end pr-4 gap-2 flex-shrink-0">
                                 <Info 
-                                  className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors -mr-0.5" 
+                                  className="h-4 w-4 flex-shrink-0 text-muted-foreground cursor-pointer hover:text-foreground transition-colors -mr-0.5" 
                                   onClick={() => setIsMonthlySavingsInfoOpen(true)}
                                   data-testid="icon-info-monthly-savings" 
                                 />
-                                <Label className="text-base font-semibold text-right">Total Monthly Savings:</Label>
+                                <Label className="text-base font-semibold text-right whitespace-nowrap">Total Monthly Savings:</Label>
                               </div>
                             {selectedRateIds.map((rateId) => {
                               const calculatedSavings = calculatedTotalMonthlySavings[rateId];
