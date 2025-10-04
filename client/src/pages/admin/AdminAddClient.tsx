@@ -20893,12 +20893,11 @@ export default function AdminAddClient() {
 
                         <div className="space-y-2">
                           <Label htmlFor="mid-fico-input">Mid FICO</Label>
-                          <Input
-                            id="mid-fico-input"
-                            type="text"
-                            placeholder="Enter FICO score"
-                            data-testid="input-mid-fico"
-                          />
+                          <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm transition-colors items-center">
+                            <span className="font-medium" data-testid="text-mid-fico">
+                              {getAbcCalculatedMidFico()}
+                            </span>
+                          </div>
                         </div>
                       </div>
 
