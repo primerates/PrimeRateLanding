@@ -953,6 +953,13 @@ export default function AdminAddClient() {
   const [additionalRow1Values, setAdditionalRow1Values] = useState<string[]>(['', '', '', '', '']);
   const [additionalRow2Values, setAdditionalRow2Values] = useState<string[]>(['', '', '', '', '']);
   
+  // State for Escrow Information dialog
+  const [isEscrowInfoOpen, setIsEscrowInfoOpen] = useState(false);
+  const [propertyInsurancePayment, setPropertyInsurancePayment] = useState('');
+  const [propertyTaxPayment, setPropertyTaxPayment] = useState('');
+  const [totalMonthlyEscrow, setTotalMonthlyEscrow] = useState('');
+  const [statementEscrowBalance, setStatementEscrowBalance] = useState('');
+  
   // Calculate totals for each rate column using useMemo (like Income tab)
   const rateColumnTotals = useMemo(() => {
     return Array.from({ length: 5 }).map((_, index) => {
@@ -21443,7 +21450,11 @@ export default function AdminAddClient() {
                         <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                           <div className="flex flex-col items-end justify-center pr-4">
                             <div className="flex items-center gap-2">
-                              <Info className="h-4 w-4 text-muted-foreground" data-testid="icon-info-escrow-reserves" />
+                              <Info 
+                                className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                                data-testid="icon-info-escrow-reserves"
+                                onClick={() => setIsEscrowInfoOpen(true)}
+                              />
                               <Label className="text-base font-bold text-right">New Escrow Reserves</Label>
                             </div>
                             {monthlyEscrow && monthlyEscrow !== 'select' && (
@@ -21581,6 +21592,112 @@ export default function AdminAddClient() {
           </Tabs>
         </form>
       </div>
+
+      {/* Escrow Information Dialog */}
+      <Dialog open={isEscrowInfoOpen} onOpenChange={setIsEscrowInfoOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Escrow Information</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            {/* Property Insurance Payment */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="property-insurance" className="w-48 text-right">
+                Property Insurance Payment:
+              </Label>
+              <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
+                <span className="text-muted-foreground text-sm">$</span>
+                <Input
+                  id="property-insurance"
+                  type="text"
+                  placeholder=""
+                  value={propertyInsurancePayment.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    setPropertyInsurancePayment(value);
+                  }}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  data-testid="input-property-insurance"
+                />
+              </div>
+            </div>
+
+            {/* Property Tax Payment */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="property-tax" className="w-48 text-right">
+                Property Tax Payment:
+              </Label>
+              <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
+                <span className="text-muted-foreground text-sm">$</span>
+                <Input
+                  id="property-tax"
+                  type="text"
+                  placeholder=""
+                  value={propertyTaxPayment.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    setPropertyTaxPayment(value);
+                  }}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  data-testid="input-property-tax"
+                />
+              </div>
+            </div>
+
+            {/* Total Monthly Escrow */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="total-monthly-escrow" className="w-48 text-right">
+                Total Monthly Escrow:
+              </Label>
+              <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
+                <span className="text-muted-foreground text-sm">$</span>
+                <Input
+                  id="total-monthly-escrow"
+                  type="text"
+                  placeholder=""
+                  value={totalMonthlyEscrow.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    setTotalMonthlyEscrow(value);
+                  }}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  data-testid="input-total-monthly-escrow"
+                />
+              </div>
+            </div>
+
+            {/* Spacing */}
+            <div className="h-8"></div>
+
+            {/* Message */}
+            <div className="text-sm text-muted-foreground">
+              Your current monthly escrow balance, as shown on your latest mortgage statement, will be refunded to you once your new loan funds. Your new escrow reserve balance will be adjusted and updated to replace the previous balance.
+            </div>
+
+            {/* Statement Escrow Balance */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="statement-escrow-balance" className="w-48 text-right">
+                Statement Escrow Balance:
+              </Label>
+              <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
+                <span className="text-muted-foreground text-sm">$</span>
+                <Input
+                  id="statement-escrow-balance"
+                  type="text"
+                  placeholder=""
+                  value={statementEscrowBalance.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    setStatementEscrowBalance(value);
+                  }}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  data-testid="input-statement-escrow-balance"
+                />
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Draggable Calculator */}
       {showCalculator && (
