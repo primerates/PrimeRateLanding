@@ -1038,7 +1038,7 @@ export default function AdminAddClient() {
   const [pinPopupPosition, setPinPopupPosition] = useState({ x: 250, y: 100 });
   const [isPinDragging, setIsPinDragging] = useState(false);
   const [pinDragOffset, setPinDragOffset] = useState({ x: 0, y: 0 });
-  const [pinPopupSize, setPinPopupSize] = useState({ width: 400, height: 500 });
+  const [pinPopupSize, setPinPopupSize] = useState({ width: 600, height: 700 });
   const [pinContent, setPinContent] = useState<{ type: 'text' | 'image', data: string } | null>(null);
   
   // Calculate totals for each rate column using useMemo (like Income tab)
