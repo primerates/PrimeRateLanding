@@ -21301,7 +21301,10 @@ export default function AdminAddClient() {
                             
                             {/* Font controls - appear when focused */}
                             {showLoanProgramControls && (
-                              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-card border border-border rounded-md shadow-lg p-3 z-50 flex gap-4">
+                              <div 
+                                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-card border border-border rounded-md shadow-lg p-3 z-50 flex gap-4"
+                                onMouseDown={(e) => e.preventDefault()}
+                              >
                                 {/* Font Size Selector */}
                                 <div className="flex flex-col gap-1">
                                   <Label className="text-xs text-muted-foreground">Font Size</Label>
