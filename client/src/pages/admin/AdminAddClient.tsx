@@ -21132,7 +21132,7 @@ export default function AdminAddClient() {
                                     >
                                       <div className={`w-3 h-3 border flex-shrink-0 ${
                                         selectedLoanCategory === 'Cash Out Refi' 
-                                          ? 'bg-green-600 border-green-600' 
+                                          ? 'bg-green-700 border-green-700' 
                                           : 'border-current'
                                       }`} />
                                       <span className="text-sm">Cash Out Refi</span>
@@ -21148,7 +21148,7 @@ export default function AdminAddClient() {
                                     >
                                       <div className={`w-3 h-3 border flex-shrink-0 ${
                                         selectedLoanCategory === 'Purchase' 
-                                          ? 'bg-green-600 border-green-600' 
+                                          ? 'bg-green-700 border-green-700' 
                                           : 'border-current'
                                       }`} />
                                       <span className="text-sm">Purchase</span>
@@ -21164,7 +21164,7 @@ export default function AdminAddClient() {
                                     >
                                       <div className={`w-3 h-3 border flex-shrink-0 ${
                                         selectedLoanCategory === 'Rate & Term' 
-                                          ? 'bg-green-600 border-green-600' 
+                                          ? 'bg-green-700 border-green-700' 
                                           : 'border-current'
                                       }`} />
                                       <span className="text-sm">Rate & Term</span>
@@ -21180,7 +21180,7 @@ export default function AdminAddClient() {
                                     >
                                       <div className={`w-3 h-3 border flex-shrink-0 ${
                                         selectedLoanCategory === 'IRRRL' 
-                                          ? 'bg-green-600 border-green-600' 
+                                          ? 'bg-green-700 border-green-700' 
                                           : 'border-current'
                                       }`} />
                                       <span className="text-sm">IRRRL</span>
