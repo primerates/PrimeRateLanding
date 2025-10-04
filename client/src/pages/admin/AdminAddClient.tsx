@@ -21720,7 +21720,7 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="du-approval-input">DU Approval</Label>
+                          <Label htmlFor="du-approval-input">Loan Program</Label>
                           <Input
                             id="du-approval-input"
                             type="text"
