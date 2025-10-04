@@ -1024,6 +1024,15 @@ export default function AdminAddClient() {
   const [isStickyNotesOpen, setIsStickyNotesOpen] = useState(false);
   const [stickyNotes, setStickyNotes] = useState('');
   
+  // State for Page Popup
+  const [showPagePopup, setShowPagePopup] = useState(false);
+  const [pagePopupPosition, setPagePopupPosition] = useState({ x: 150, y: 150 });
+  const [isPageDragging, setIsPageDragging] = useState(false);
+  const [pageDragOffset, setPageDragOffset] = useState({ x: 0, y: 0 });
+  const [pageContent, setPageContent] = useState('');
+  const [pageFontSize, setPageFontSize] = useState('16');
+  const [pageFontColor, setPageFontColor] = useState('#000000');
+  
   // Calculate totals for each rate column using useMemo (like Income tab)
   const rateColumnTotals = useMemo(() => {
     return Array.from({ length: 5 }).map((_, index) => {
@@ -20827,6 +20836,7 @@ export default function AdminAddClient() {
                       variant="ghost"
                       size="sm"
                       className="hover:bg-purple-500 hover:text-white"
+                      onClick={() => setShowPagePopup(true)}
                       title="Page"
                       data-testid="button-page"
                     >
@@ -22237,6 +22247,128 @@ export default function AdminAddClient() {
                     {btn}
                   </Button>
                 ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Draggable Page Popup */}
+      {showPagePopup && (
+        <div
+          style={{
+            position: 'fixed',
+            left: `${pagePopupPosition.x}px`,
+            top: `${pagePopupPosition.y}px`,
+            zIndex: 1000,
+            cursor: isPageDragging ? 'grabbing' : 'grab'
+          }}
+          onMouseDown={(e) => {
+            if ((e.target as HTMLElement).closest('.page-body')) return;
+            setIsPageDragging(true);
+            setPageDragOffset({
+              x: e.clientX - pagePopupPosition.x,
+              y: e.clientY - pagePopupPosition.y
+            });
+          }}
+          onMouseMove={(e) => {
+            if (isPageDragging) {
+              setPagePopupPosition({
+                x: e.clientX - pageDragOffset.x,
+                y: e.clientY - pageDragOffset.y
+              });
+            }
+          }}
+          onMouseUp={() => setIsPageDragging(false)}
+          onMouseLeave={() => setIsPageDragging(false)}
+        >
+          <Card className="w-96 shadow-lg">
+            <CardHeader className="pb-3 bg-purple-600 text-white">
+              <div className="flex justify-between items-center">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Page Editor
+                </CardTitle>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowPagePopup(false)}
+                  className="h-6 w-6 p-0 text-white hover:bg-purple-700"
+                  data-testid="button-close-page-popup"
+                >
+                  <Minus className="h-3 w-3" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="page-body pt-4 space-y-4">
+              {/* Font Controls */}
+              <div className="flex gap-3 items-center">
+                <div className="flex-1">
+                  <Label htmlFor="page-font-size" className="text-xs mb-1 block">Font Size</Label>
+                  <Select value={pageFontSize} onValueChange={setPageFontSize}>
+                    <SelectTrigger id="page-font-size" className="h-8" data-testid="select-page-font-size">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="12" data-testid="font-size-12">12px</SelectItem>
+                      <SelectItem value="14" data-testid="font-size-14">14px</SelectItem>
+                      <SelectItem value="16" data-testid="font-size-16">16px</SelectItem>
+                      <SelectItem value="18" data-testid="font-size-18">18px</SelectItem>
+                      <SelectItem value="20" data-testid="font-size-20">20px</SelectItem>
+                      <SelectItem value="24" data-testid="font-size-24">24px</SelectItem>
+                      <SelectItem value="28" data-testid="font-size-28">28px</SelectItem>
+                      <SelectItem value="32" data-testid="font-size-32">32px</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex-1">
+                  <Label htmlFor="page-font-color" className="text-xs mb-1 block">Font Color</Label>
+                  <div className="flex gap-2 items-center">
+                    <input
+                      type="color"
+                      id="page-font-color"
+                      value={pageFontColor}
+                      onChange={(e) => setPageFontColor(e.target.value)}
+                      className="h-8 w-12 rounded border border-input cursor-pointer"
+                      data-testid="input-page-font-color"
+                    />
+                    <Input
+                      type="text"
+                      value={pageFontColor}
+                      onChange={(e) => setPageFontColor(e.target.value)}
+                      className="h-8 flex-1 font-mono text-xs"
+                      data-testid="input-page-font-color-text"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Text Display Area */}
+              <div className="border rounded-md p-3 min-h-[200px] bg-background">
+                <div
+                  style={{
+                    fontSize: `${pageFontSize}px`,
+                    color: pageFontColor,
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-word'
+                  }}
+                  data-testid="text-page-display"
+                >
+                  {pageContent || 'Start typing below...'}
+                </div>
+              </div>
+
+              {/* Text Input Area */}
+              <div>
+                <Label htmlFor="page-content-input" className="text-xs mb-1 block">Type your content</Label>
+                <textarea
+                  id="page-content-input"
+                  value={pageContent}
+                  onChange={(e) => setPageContent(e.target.value)}
+                  placeholder="Type your content here..."
+                  className="w-full min-h-[100px] p-3 border border-input rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm"
+                  data-testid="textarea-page-content"
+                />
               </div>
             </CardContent>
           </Card>
