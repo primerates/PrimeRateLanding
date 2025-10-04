@@ -21659,6 +21659,14 @@ export default function AdminAddClient() {
                               <SelectItem value="20-year-fixed" data-testid="select-loan-program-20-year-fixed" className="pl-6">20 Year Fixed</SelectItem>
                               <SelectItem value="15-year-fixed" data-testid="select-loan-program-15-year-fixed" className="pl-6">15 Year Fixed</SelectItem>
                               <SelectItem value="10-year-fixed" data-testid="select-loan-program-10-year-fixed" className="pl-6">10 Year Fixed</SelectItem>
+                              <div className="px-2 py-1.5 text-sm font-bold text-green-700 cursor-default">
+                                Adjustable Rate
+                              </div>
+                              <SelectItem value="10-1-arm" data-testid="select-loan-program-10-1-arm" className="pl-6">10/1 ARM</SelectItem>
+                              <SelectItem value="7-1-arm" data-testid="select-loan-program-7-1-arm" className="pl-6">7/1 ARM</SelectItem>
+                              <SelectItem value="5-1-arm" data-testid="select-loan-program-5-1-arm" className="pl-6">5/1 ARM</SelectItem>
+                              <SelectItem value="3-1-arm" data-testid="select-loan-program-3-1-arm" className="pl-6">3/1 ARM</SelectItem>
+                              <SelectItem value="1-1-arm" data-testid="select-loan-program-1-1-arm" className="pl-6">1/1 ARM</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
