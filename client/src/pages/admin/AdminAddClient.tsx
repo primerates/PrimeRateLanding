@@ -21941,42 +21941,6 @@ export default function AdminAddClient() {
               </div>
             </div>
 
-            {/* Horizontal Separator */}
-            <div className="border-t my-6"></div>
-
-            {/* New Mortgage Payments */}
-            <div className="flex items-center gap-4">
-              <Label htmlFor="new-mortgage-payments-savings" className="w-80 text-right">
-                New Mortgage Payments:
-              </Label>
-              <div className="flex items-center border-2 border-green-700 bg-background px-3 rounded-md flex-1">
-                <span className="text-muted-foreground text-sm">$</span>
-                <Input
-                  id="new-mortgage-payments-savings"
-                  type="text"
-                  placeholder=""
-                  value={newMortgagePaymentSavings.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/[^\d]/g, '');
-                    setNewMortgagePaymentSavings(value);
-                  }}
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
-                  data-testid="input-new-mortgage-payments-savings"
-                />
-              </div>
-            </div>
-
-            {/* Total Monthly Savings - Display Only (Auto-calculated) */}
-            <div className="flex items-center gap-4">
-              <Label htmlFor="calculated-monthly-savings" className="w-80 text-right">
-                Total Monthly Savings:
-              </Label>
-              <div className="flex items-center border-2 border-green-700 bg-green-600 px-3 rounded-md flex-1 h-9">
-                <span className="text-base font-bold text-white text-center w-full" data-testid="text-calculated-monthly-savings">
-                  {calculatedMonthlySavings > 0 ? `$${calculatedMonthlySavings.toLocaleString('en-US')}` : ''}
-                </span>
-              </div>
-            </div>
           </div>
         </DialogContent>
       </Dialog>
