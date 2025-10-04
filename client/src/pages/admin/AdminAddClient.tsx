@@ -20876,22 +20876,6 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="monthly-escrow-select">Monthly Escrow</Label>
-                          <Select value={monthlyEscrow} onValueChange={setMonthlyEscrow}>
-                            <SelectTrigger data-testid="select-monthly-escrow">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-monthly-escrow-select">Select</SelectItem>
-                              <SelectItem value="tax-insurance" data-testid="select-monthly-escrow-tax-insurance">Tax & Insurance</SelectItem>
-                              <SelectItem value="tax-only" data-testid="select-monthly-escrow-tax-only">Tax Only</SelectItem>
-                              <SelectItem value="insurance-only" data-testid="select-monthly-escrow-insurance-only">Insurance Only</SelectItem>
-                              <SelectItem value="no-escrow" data-testid="select-monthly-escrow-no-escrow">No Escrow</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        <div className="space-y-2">
                           <Label htmlFor="escrow-reserves-select">Escrow Reserves</Label>
                           <Select value={escrowReserves} onValueChange={setEscrowReserves}>
                             <SelectTrigger data-testid="select-escrow-reserves">
@@ -20900,7 +20884,23 @@ export default function AdminAddClient() {
                             <SelectContent>
                               <SelectItem value="select" data-testid="select-escrow-reserves-select">Select</SelectItem>
                               <SelectItem value="new-escrow-reserves" data-testid="select-escrow-reserves-new">New Escrow Reserves</SelectItem>
-                              <SelectItem value="no-escrow-reserves" data-testid="select-escrow-reserves-no">No Escrow Reserves</SelectItem>
+                              <SelectItem value="escrow-not-included" data-testid="select-escrow-reserves-not-included">Escrow Not Included</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="monthly-escrow-select">Monthly Escrow</Label>
+                          <Select value={monthlyEscrow} onValueChange={setMonthlyEscrow}>
+                            <SelectTrigger data-testid="select-monthly-escrow">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-monthly-escrow-select">Select</SelectItem>
+                              <SelectItem value="includes-tax-insurance" data-testid="select-monthly-escrow-tax-insurance">Includes Tax & Insurance</SelectItem>
+                              <SelectItem value="includes-tax-only" data-testid="select-monthly-escrow-tax-only">Includes Tax Only</SelectItem>
+                              <SelectItem value="includes-insurance-only" data-testid="select-monthly-escrow-insurance-only">Includes Insurance Only</SelectItem>
+                              <SelectItem value="paid-directly" data-testid="select-monthly-escrow-paid-directly">Paid Directly</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -21445,10 +21445,10 @@ export default function AdminAddClient() {
                             <Label className="text-base font-bold text-right">New Escrow Reserves</Label>
                             {monthlyEscrow && monthlyEscrow !== 'select' && (
                               <span className="text-sm text-muted-foreground text-right mt-1">
-                                {monthlyEscrow === 'tax-insurance' && 'Tax & Insurance'}
-                                {monthlyEscrow === 'tax-only' && 'Tax Only'}
-                                {monthlyEscrow === 'insurance-only' && 'Insurance Only'}
-                                {monthlyEscrow === 'no-escrow' && 'No Escrow'}
+                                {monthlyEscrow === 'includes-tax-insurance' && 'Includes Tax & Insurance'}
+                                {monthlyEscrow === 'includes-tax-only' && 'Includes Tax Only'}
+                                {monthlyEscrow === 'includes-insurance-only' && 'Includes Insurance Only'}
+                                {monthlyEscrow === 'paid-directly' && 'Paid Directly'}
                               </span>
                             )}
                           </div>
