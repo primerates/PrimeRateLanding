@@ -22460,7 +22460,7 @@ export default function AdminAddClient() {
             <CardContent className="pin-body flex-1 pt-4 overflow-auto">
               {!pinContent ? (
                 <div 
-                  className="border-2 border-dashed border-muted-foreground/30 rounded-md p-6 h-full flex flex-col items-center justify-center gap-4"
+                  className="border-2 border-dashed border-pink-300 rounded-md p-6 h-full flex flex-col items-center justify-center gap-4 hover:border-pink-400 hover:bg-pink-50/50 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
                   onPaste={(e) => {
                     e.preventDefault();
                     const items = e.clipboardData?.items;
@@ -22484,16 +22484,23 @@ export default function AdminAddClient() {
                       }
                     }
                   }}
+                  onClick={(e) => {
+                    (e.target as HTMLElement).focus();
+                  }}
                   tabIndex={0}
+                  autoFocus
                   data-testid="div-pin-paste-area"
                 >
-                  <Pin className="h-12 w-12 text-muted-foreground/40" />
+                  <Pin className="h-12 w-12 text-pink-400" />
                   <div className="text-center space-y-2">
                     <p className="text-sm text-muted-foreground font-medium">
-                      Click here and paste your image or text
+                      Click here, then paste your image or text
                     </p>
                     <p className="text-xs text-muted-foreground/70">
                       Ctrl+V (Windows) or Cmd+V (Mac)
+                    </p>
+                    <p className="text-xs text-pink-500 font-medium">
+                      Click this area to activate
                     </p>
                   </div>
                 </div>
