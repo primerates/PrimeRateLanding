@@ -213,7 +213,7 @@ export default function HeroSection() {
         {/* Mortgage Calculator Modal */}
         {showCalculator && (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-            <Card className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto" data-testid="card-mortgage-calculator">
+            <Card className="bg-white w-full max-w-lg max-h-[90vh] overflow-y-auto" data-testid="card-mortgage-calculator">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center">
