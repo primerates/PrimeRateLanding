@@ -21263,12 +21263,12 @@ export default function AdminAddClient() {
                       <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                         {/* Transparent text input for Loan Program */}
                         <div className="flex items-center justify-center">
-                          <Input
-                            type="text"
+                          <textarea
                             placeholder="Loan Program"
                             value={quoteLoanProgram}
                             onChange={(e) => setQuoteLoanProgram(e.target.value)}
-                            className="bg-transparent border-0 text-2xl font-semibold text-center focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/40"
+                            rows={2}
+                            className="bg-transparent border-0 text-4xl font-semibold text-center focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/40 resize-none w-full"
                             data-testid="input-quote-loan-program"
                           />
                         </div>
