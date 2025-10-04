@@ -20,7 +20,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator, StickyNote } from 'lucide-react';
 import { SiZillow } from 'react-icons/si';
 import { MdRealEstateAgent } from 'react-icons/md';
 import { FaHome } from 'react-icons/fa';
@@ -1002,6 +1002,10 @@ export default function AdminAddClient() {
     const newMortgage = parseInt(newMortgagePaymentSavings || '0', 10);
     return totalExisting - newMortgage;
   }, [calculatedTotalExistingPayments, newMortgagePaymentSavings]);
+  
+  // State for Sticky Notes
+  const [isStickyNotesOpen, setIsStickyNotesOpen] = useState(false);
+  const [stickyNotes, setStickyNotes] = useState('');
   
   // Calculate totals for each rate column using useMemo (like Income tab)
   const rateColumnTotals = useMemo(() => {
@@ -20729,6 +20733,16 @@ export default function AdminAddClient() {
                     <Button
                       variant="ghost"
                       size="sm"
+                      className="hover:bg-yellow-500 hover:text-white"
+                      onClick={() => setIsStickyNotesOpen(true)}
+                      title="Sticky Notes"
+                      data-testid="button-sticky-notes"
+                    >
+                      <StickyNote className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       className="hover:bg-blue-500 hover:text-white"
                       onClick={() => setShowCalculator(!showCalculator)}
                       title="Calculator"
@@ -21979,6 +21993,27 @@ export default function AdminAddClient() {
                 </span>
               </div>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Sticky Notes Dialog */}
+      <Dialog open={isStickyNotesOpen} onOpenChange={setIsStickyNotesOpen}>
+        <DialogContent className="sm:max-w-[500px] p-0 bg-yellow-100 border-yellow-300">
+          <DialogHeader className="p-6 pb-4">
+            <DialogTitle className="flex items-center gap-2 text-yellow-900">
+              <StickyNote className="h-5 w-5" />
+              Quick Notes
+            </DialogTitle>
+          </DialogHeader>
+          <div className="px-6 pb-6">
+            <textarea
+              value={stickyNotes}
+              onChange={(e) => setStickyNotes(e.target.value)}
+              placeholder="Type your quick notes here..."
+              className="w-full min-h-[300px] p-4 bg-yellow-50 border border-yellow-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-yellow-400 text-gray-800 placeholder:text-yellow-700/50"
+              data-testid="textarea-sticky-notes"
+            />
           </div>
         </DialogContent>
       </Dialog>
