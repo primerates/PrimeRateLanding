@@ -919,6 +919,7 @@ export default function AdminAddClient() {
   const [loanTerm, setLoanTerm] = useState('');
   const [customTerm, setCustomTerm] = useState('');
   const [monthlyEscrow, setMonthlyEscrow] = useState('');
+  const [isDuApproval, setIsDuApproval] = useState(false);
   const [escrowReserves, setEscrowReserves] = useState('');
   const [debtToIncomeRatio, setDebtToIncomeRatio] = useState('');
   const [lenderCredit, setLenderCredit] = useState('');
@@ -20921,16 +20922,19 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="client-select">Client</Label>
+                          <Label htmlFor="property-type-select">Property Type</Label>
                           <Select>
-                            <SelectTrigger data-testid="select-client">
+                            <SelectTrigger data-testid="select-property-type">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="select" data-testid="select-client-select">Select</SelectItem>
-                              <SelectItem value="new-client" data-testid="select-client-new">New Client</SelectItem>
-                              <SelectItem value="repeat-client" data-testid="select-client-repeat">Repeat Client</SelectItem>
-                              <SelectItem value="active-loan" data-testid="select-client-active-loan">Active Loan</SelectItem>
+                              <SelectItem value="select" data-testid="select-property-type-select">Select</SelectItem>
+                              <SelectItem value="single-family" data-testid="select-property-type-single-family">Single Family</SelectItem>
+                              <SelectItem value="condo" data-testid="select-property-type-condo">Condo</SelectItem>
+                              <SelectItem value="townhouse" data-testid="select-property-type-townhouse">Townhouse</SelectItem>
+                              <SelectItem value="duplex" data-testid="select-property-type-duplex">Duplex</SelectItem>
+                              <SelectItem value="multi-family" data-testid="select-property-type-multi-family">Multi-Family</SelectItem>
+                              <SelectItem value="other" data-testid="select-property-type-other">Other</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -20992,7 +20996,17 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="va-benefits-select">VA Benefits</Label>
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="va-benefits-select">
+                              {isDuApproval ? "DU Approval" : "VA Benefits"}
+                            </Label>
+                            <Switch
+                              checked={isDuApproval}
+                              onCheckedChange={setIsDuApproval}
+                              data-testid="switch-du-approval"
+                              className="scale-[0.8]"
+                            />
+                          </div>
                           <Select>
                             <SelectTrigger data-testid="select-va-benefits">
                               <SelectValue placeholder="Select" />
