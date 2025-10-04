@@ -969,6 +969,18 @@ export default function AdminAddClient() {
   // State for Estimated New Loan Amount dialog
   const [isEstLoanAmountInfoOpen, setIsEstLoanAmountInfoOpen] = useState(false);
   
+  // State for New Payment dialog
+  const [isNewPaymentInfoOpen, setIsNewPaymentInfoOpen] = useState(false);
+  const [newMortgagePayment, setNewMortgagePayment] = useState('');
+  const [newEscrowPayment, setNewEscrowPayment] = useState('');
+  
+  // Auto-calculate Total New Payment
+  const calculatedTotalNewPayment = useMemo(() => {
+    const mortgage = parseInt(newMortgagePayment || '0', 10);
+    const escrow = parseInt(newEscrowPayment || '0', 10);
+    return mortgage + escrow;
+  }, [newMortgagePayment, newEscrowPayment]);
+  
   // Calculate totals for each rate column using useMemo (like Income tab)
   const rateColumnTotals = useMemo(() => {
     return Array.from({ length: 5 }).map((_, index) => {
@@ -21541,7 +21553,11 @@ export default function AdminAddClient() {
                         <div className="border-t pt-6">
                           <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                             <div className="flex items-center justify-end pr-4 gap-2">
-                              <Info className="h-4 w-4 text-muted-foreground" data-testid="icon-info-monthly-payment" />
+                              <Info 
+                                className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                                onClick={() => setIsNewPaymentInfoOpen(true)}
+                                data-testid="icon-info-monthly-payment" 
+                              />
                               <Label className="text-base font-semibold text-right">New Monthly Payment:</Label>
                             </div>
                           {selectedRateIds.map((rateId) => {
@@ -21712,6 +21728,80 @@ export default function AdminAddClient() {
             {/* Message */}
             <div className="text-lg text-muted-foreground">
               The initial new loan amount is an estimate based on your mortgage statement, which may not reflect the most current balance. The final loan amount will be confirmed once we receive the official payoff demand from your lender.
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* New Payment Dialog */}
+      <Dialog open={isNewPaymentInfoOpen} onOpenChange={setIsNewPaymentInfoOpen}>
+        <DialogContent className="sm:max-w-[500px] p-0">
+          <DialogHeader className="text-white p-6 rounded-t-lg" style={{ backgroundColor: '#1a3373' }}>
+            <DialogTitle className="text-white">New Payment</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4 px-6">
+            {/* New Mortgage Payment */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="new-mortgage-payment" className="w-48 text-right">
+                New Mortgage Payment:
+              </Label>
+              <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
+                <span className="text-muted-foreground text-sm">$</span>
+                <Input
+                  id="new-mortgage-payment"
+                  type="text"
+                  placeholder=""
+                  value={newMortgagePayment.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    setNewMortgagePayment(value);
+                  }}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  data-testid="input-new-mortgage-payment"
+                />
+              </div>
+            </div>
+
+            {/* New Escrow Payment */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="new-escrow-payment" className="w-48 text-right">
+                New Escrow Payment:
+              </Label>
+              <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
+                <span className="text-muted-foreground text-sm">$</span>
+                <Input
+                  id="new-escrow-payment"
+                  type="text"
+                  placeholder=""
+                  value={newEscrowPayment.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    setNewEscrowPayment(value);
+                  }}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  data-testid="input-new-escrow-payment"
+                />
+              </div>
+            </div>
+
+            {/* Total New Payment - Display Only (Auto-calculated) */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="total-new-payment" className="w-48 text-right">
+                Total New Payment:
+              </Label>
+              <div className="flex items-center border border-input bg-muted px-3 rounded-md flex-1 h-9">
+                <span className="text-base font-bold text-center w-full" data-testid="text-total-new-payment">
+                  {calculatedTotalNewPayment > 0 ? `$${calculatedTotalNewPayment.toLocaleString('en-US')}` : ''}
+                </span>
+              </div>
+            </div>
+
+            {/* Spacing */}
+            <div className="h-8"></div>
+
+            {/* Message */}
+            <div className="text-lg text-muted-foreground">
+              The initial new loan amount & payment is an estimate based on your mortgage statement, which may not reflect the most current balance. The final loan amount & payment will be confirmed once we receive the official payoff demand from your lender.
             </div>
           </div>
         </DialogContent>
