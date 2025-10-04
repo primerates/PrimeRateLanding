@@ -21687,18 +21687,8 @@ export default function AdminAddClient() {
                         </div>
                       </div>
 
-                      {/* Row 3: DU Approval, Mid FICO, LTV Ratio */}
+                      {/* Row 3: Mid FICO, LTV Ratio, DTI Ratio, DU Approval, Lender Credit */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="du-approval-input">DU Approval</Label>
-                          <Input
-                            id="du-approval-input"
-                            type="text"
-                            placeholder=""
-                            data-testid="input-du-approval"
-                          />
-                        </div>
-
                         <div className="space-y-2">
                           <Label htmlFor="mid-fico-input">Mid FICO</Label>
                           <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm transition-colors items-center">
@@ -21726,6 +21716,16 @@ export default function AdminAddClient() {
                             value={debtToIncomeRatio}
                             onChange={(e) => setDebtToIncomeRatio(e.target.value)}
                             data-testid="input-dti-ratio"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="du-approval-input">DU Approval</Label>
+                          <Input
+                            id="du-approval-input"
+                            type="text"
+                            placeholder=""
+                            data-testid="input-du-approval"
                           />
                         </div>
 
