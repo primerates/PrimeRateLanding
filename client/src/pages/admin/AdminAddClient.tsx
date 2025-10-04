@@ -936,6 +936,8 @@ export default function AdminAddClient() {
   const [loanProgramFontSize, setLoanProgramFontSize] = useState('text-3xl');
   const [loanProgramColor, setLoanProgramColor] = useState('text-foreground');
   const loanProgramTextareaRef = useRef<HTMLTextAreaElement>(null);
+  const [isLoanCategoryPopoverOpen, setIsLoanCategoryPopoverOpen] = useState(false);
+  const [selectedLoanCategory, setSelectedLoanCategory] = useState('');
   
   // State for Quote tab rate detail fields
   const [rateBuyDownValues, setRateBuyDownValues] = useState<string[]>(['', '', '', '', '']);
@@ -21085,20 +21087,91 @@ export default function AdminAddClient() {
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="category-select">Loan Category</Label>
-                          <Select>
-                            <SelectTrigger data-testid="select-category">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-category-select">Select</SelectItem>
-                              <SelectItem value="va" data-testid="select-category-va">VA</SelectItem>
-                              <SelectItem value="va-jumbo" data-testid="select-category-va-jumbo">VA Jumbo</SelectItem>
-                              <SelectItem value="fha" data-testid="select-category-fha">FHA</SelectItem>
-                              <SelectItem value="conventional" data-testid="select-category-conventional">Conventional</SelectItem>
-                              <SelectItem value="conventional-jumbo" data-testid="select-category-conventional-jumbo">Conventional Jumbo</SelectItem>
-                              <SelectItem value="non-qm" data-testid="select-category-non-qm">Non-QM</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <Popover open={isLoanCategoryPopoverOpen} onOpenChange={setIsLoanCategoryPopoverOpen}>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                role="combobox"
+                                className="w-full justify-between"
+                                data-testid="button-category-select"
+                              >
+                                {selectedLoanCategory || "Select"}
+                                <Plus className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[200px] p-3" align="start">
+                              <div className="space-y-2">
+                                <div className="text-sm font-medium mb-3">Select Loan Category</div>
+                                
+                                {/* Select Option */}
+                                <div 
+                                  className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                  onClick={() => {
+                                    setSelectedLoanCategory('');
+                                    setIsLoanCategoryPopoverOpen(false);
+                                  }}
+                                  data-testid="option-category-select"
+                                >
+                                  <span className="text-sm">Select</span>
+                                </div>
+                                
+                                {/* VA Section */}
+                                <div className="border-t pt-2">
+                                  {/* VA Title - Non-clickable */}
+                                  <div className="text-sm font-semibold text-muted-foreground px-2 py-1.5">
+                                    VA
+                                  </div>
+                                  
+                                  {/* VA Sub-options */}
+                                  <div className="ml-3 space-y-1">
+                                    <div 
+                                      className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                      onClick={() => {
+                                        setSelectedLoanCategory('Cash Out Refi');
+                                        setIsLoanCategoryPopoverOpen(false);
+                                      }}
+                                      data-testid="option-category-va-cash-out-refi"
+                                    >
+                                      <span className="text-sm">Cash Out Refi</span>
+                                    </div>
+                                    
+                                    <div 
+                                      className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                      onClick={() => {
+                                        setSelectedLoanCategory('Purchase');
+                                        setIsLoanCategoryPopoverOpen(false);
+                                      }}
+                                      data-testid="option-category-va-purchase"
+                                    >
+                                      <span className="text-sm">Purchase</span>
+                                    </div>
+                                    
+                                    <div 
+                                      className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                      onClick={() => {
+                                        setSelectedLoanCategory('Rate & Term');
+                                        setIsLoanCategoryPopoverOpen(false);
+                                      }}
+                                      data-testid="option-category-va-rate-term"
+                                    >
+                                      <span className="text-sm">Rate & Term</span>
+                                    </div>
+                                    
+                                    <div 
+                                      className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                      onClick={() => {
+                                        setSelectedLoanCategory('IRRRL');
+                                        setIsLoanCategoryPopoverOpen(false);
+                                      }}
+                                      data-testid="option-category-va-irrrl"
+                                    >
+                                      <span className="text-sm">IRRRL</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </PopoverContent>
+                          </Popover>
                         </div>
 
                         <div className="space-y-2">
