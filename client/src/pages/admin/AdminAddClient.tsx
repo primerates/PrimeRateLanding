@@ -974,6 +974,8 @@ export default function AdminAddClient() {
   const [isNewPaymentInfoOpen, setIsNewPaymentInfoOpen] = useState(false);
   const [newMortgagePayment, setNewMortgagePayment] = useState('');
   const [newEscrowPayment, setNewEscrowPayment] = useState('');
+  const [monthlyInsurance, setMonthlyInsurance] = useState('');
+  const [monthlyPropertyTax, setMonthlyPropertyTax] = useState('');
   
   // Auto-calculate Total New Payment
   const calculatedTotalNewPayment = useMemo(() => {
@@ -981,6 +983,13 @@ export default function AdminAddClient() {
     const escrow = parseInt(newEscrowPayment || '0', 10);
     return mortgage + escrow;
   }, [newMortgagePayment, newEscrowPayment]);
+  
+  // Auto-calculate Total Monthly Escrow for New Payment dialog
+  const calculatedNewPaymentEscrow = useMemo(() => {
+    const insurance = parseInt(monthlyInsurance || '0', 10);
+    const tax = parseInt(monthlyPropertyTax || '0', 10);
+    return insurance + tax;
+  }, [monthlyInsurance, monthlyPropertyTax]);
   
   // State for New Monthly Savings dialog
   const [isMonthlySavingsInfoOpen, setIsMonthlySavingsInfoOpen] = useState(false);
@@ -21863,10 +21872,61 @@ export default function AdminAddClient() {
           <DialogHeader className="text-white p-6 rounded-t-lg" style={{ backgroundColor: '#1a3373' }}>
             <DialogTitle className="text-white">New Monthly Payment</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-6 px-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
-            {/* Message */}
-            <div className="text-lg text-muted-foreground">
-              The initial new loan amount & payment is an estimate based on your mortgage statement, which may not reflect the most current balance. The final loan amount & payment will be confirmed once we receive the official payoff demand from your lender.
+          <div className="space-y-4 py-4 px-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+            {/* Monthly Insurance */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="monthly-insurance" className="w-48 text-right">
+                Monthly Insurance:
+              </Label>
+              <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
+                <span className="text-muted-foreground text-sm">$</span>
+                <Input
+                  id="monthly-insurance"
+                  type="text"
+                  placeholder=""
+                  value={monthlyInsurance.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    setMonthlyInsurance(value);
+                  }}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  data-testid="input-monthly-insurance"
+                />
+              </div>
+            </div>
+
+            {/* Monthly Property Tax */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="monthly-property-tax" className="w-48 text-right">
+                Monthly Property Tax:
+              </Label>
+              <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
+                <span className="text-muted-foreground text-sm">$</span>
+                <Input
+                  id="monthly-property-tax"
+                  type="text"
+                  placeholder=""
+                  value={monthlyPropertyTax.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    setMonthlyPropertyTax(value);
+                  }}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  data-testid="input-monthly-property-tax"
+                />
+              </div>
+            </div>
+
+            {/* Total Monthly Escrow - Display Only (Auto-calculated) */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="total-monthly-escrow-payment" className="w-48 text-right">
+                Total Monthly Escrow:
+              </Label>
+              <div className="flex items-center border border-input bg-muted px-3 rounded-md flex-1 h-9">
+                <span className="text-base font-bold text-center w-full" data-testid="text-total-monthly-escrow-payment">
+                  {calculatedNewPaymentEscrow > 0 ? `$${calculatedNewPaymentEscrow.toLocaleString('en-US')}` : ''}
+                </span>
+              </div>
             </div>
           </div>
         </DialogContent>
