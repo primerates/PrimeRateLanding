@@ -21130,7 +21130,11 @@ export default function AdminAddClient() {
                                       }}
                                       data-testid="option-category-va-cash-out-refi"
                                     >
-                                      <div className="w-3 h-3 border border-current flex-shrink-0" />
+                                      <div className={`w-3 h-3 border flex-shrink-0 ${
+                                        selectedLoanCategory === 'Cash Out Refi' 
+                                          ? 'bg-green-600 border-green-600' 
+                                          : 'border-current'
+                                      }`} />
                                       <span className="text-sm">Cash Out Refi</span>
                                     </div>
                                     
@@ -21142,7 +21146,11 @@ export default function AdminAddClient() {
                                       }}
                                       data-testid="option-category-va-purchase"
                                     >
-                                      <div className="w-3 h-3 border border-current flex-shrink-0" />
+                                      <div className={`w-3 h-3 border flex-shrink-0 ${
+                                        selectedLoanCategory === 'Purchase' 
+                                          ? 'bg-green-600 border-green-600' 
+                                          : 'border-current'
+                                      }`} />
                                       <span className="text-sm">Purchase</span>
                                     </div>
                                     
@@ -21154,7 +21162,11 @@ export default function AdminAddClient() {
                                       }}
                                       data-testid="option-category-va-rate-term"
                                     >
-                                      <div className="w-3 h-3 border border-current flex-shrink-0" />
+                                      <div className={`w-3 h-3 border flex-shrink-0 ${
+                                        selectedLoanCategory === 'Rate & Term' 
+                                          ? 'bg-green-600 border-green-600' 
+                                          : 'border-current'
+                                      }`} />
                                       <span className="text-sm">Rate & Term</span>
                                     </div>
                                     
@@ -21166,7 +21178,11 @@ export default function AdminAddClient() {
                                       }}
                                       data-testid="option-category-va-irrrl"
                                     >
-                                      <div className="w-3 h-3 border border-current flex-shrink-0" />
+                                      <div className={`w-3 h-3 border flex-shrink-0 ${
+                                        selectedLoanCategory === 'IRRRL' 
+                                          ? 'bg-green-600 border-green-600' 
+                                          : 'border-current'
+                                      }`} />
                                       <span className="text-sm">IRRRL</span>
                                     </div>
                                   </div>
