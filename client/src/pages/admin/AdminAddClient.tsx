@@ -21127,17 +21127,17 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Cash Out - Appraisal');
+                                          setSelectedLoanCategory('Cash Out');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-va-cash-out"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Cash Out - Appraisal' 
+                                          selectedLoanCategory === 'Cash Out' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
-                                        <span className="text-sm">Cash Out - Appraisal</span>
+                                        <span className="text-sm">Cash Out</span>
                                       </div>
                                       
                                       <div 
@@ -21202,17 +21202,17 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Cash Out - Appraisal');
+                                          setSelectedLoanCategory('Cash Out');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-va-jumbo-cash-out"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Cash Out - Appraisal' 
+                                          selectedLoanCategory === 'Cash Out' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
-                                        <span className="text-sm">Cash Out - Appraisal</span>
+                                        <span className="text-sm">Cash Out</span>
                                       </div>
                                       
                                       <div 
@@ -21277,17 +21277,17 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Cash Out - Appraisal');
+                                          setSelectedLoanCategory('Cash Out');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-fannie-conv-cash-out"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Cash Out - Appraisal' 
+                                          selectedLoanCategory === 'Cash Out' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
-                                        <span className="text-sm">Cash Out - Appraisal</span>
+                                        <span className="text-sm">Cash Out</span>
                                       </div>
                                       
                                       <div 
@@ -21352,17 +21352,17 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Cash Out - Appraisal');
+                                          setSelectedLoanCategory('Cash Out');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-fannie-jumbo-cash-out"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Cash Out - Appraisal' 
+                                          selectedLoanCategory === 'Cash Out' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
-                                        <span className="text-sm">Cash Out - Appraisal</span>
+                                        <span className="text-sm">Cash Out</span>
                                       </div>
                                       
                                       <div 
@@ -21427,17 +21427,17 @@ export default function AdminAddClient() {
                                       <div 
                                         className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                         onClick={() => {
-                                          setSelectedLoanCategory('Cash Out - Appraisal');
+                                          setSelectedLoanCategory('Cash Out');
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-fha-cash-out"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
-                                          selectedLoanCategory === 'Cash Out - Appraisal' 
+                                          selectedLoanCategory === 'Cash Out' 
                                             ? 'bg-green-700 border-green-700' 
                                             : 'border-current'
                                         }`} />
-                                        <span className="text-sm">Cash Out - Appraisal</span>
+                                        <span className="text-sm">Cash Out</span>
                                       </div>
                                       
                                       <div 
