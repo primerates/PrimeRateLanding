@@ -922,6 +922,7 @@ export default function AdminAddClient() {
   const [escrowReserves, setEscrowReserves] = useState('');
   const [debtToIncomeRatio, setDebtToIncomeRatio] = useState('');
   const [lenderCredit, setLenderCredit] = useState('');
+  const [isSellerCredit, setIsSellerCredit] = useState(false);
   const [showCalculator, setShowCalculator] = useState(false);
   const [calculatorPosition, setCalculatorPosition] = useState({ x: 100, y: 100 });
   const [isDragging, setIsDragging] = useState(false);
@@ -20981,7 +20982,17 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="lender-credit-input">Lender Credit</Label>
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="lender-credit-input">
+                              {isSellerCredit ? "Seller Credit" : "Lender Credit"}
+                            </Label>
+                            <Switch
+                              checked={isSellerCredit}
+                              onCheckedChange={setIsSellerCredit}
+                              data-testid="switch-seller-credit"
+                              className="scale-[0.8]"
+                            />
+                          </div>
                           <Input
                             id="lender-credit-input"
                             type="text"
