@@ -21099,7 +21099,7 @@ export default function AdminAddClient() {
                                 <Plus className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                               </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[800px] p-3" align="start">
+                            <PopoverContent className="w-[1000px] p-3" align="start">
                               <div className="space-y-2">
                                 {/* Select Option */}
                                 <div 
@@ -21113,8 +21113,8 @@ export default function AdminAddClient() {
                                   <span className="text-sm">Select</span>
                                 </div>
                                 
-                                {/* VA, VA Jumbo, Fannie Conv, and Fannie Jumbo Side by Side */}
-                                <div className="grid grid-cols-4 gap-4 border-t pt-2">
+                                {/* VA, VA Jumbo, Fannie Conv, Fannie Jumbo, and FHA Side by Side */}
+                                <div className="grid grid-cols-5 gap-4 border-t pt-2">
                                   {/* VA Section */}
                                   <div>
                                     {/* VA Title - Non-clickable */}
@@ -21404,6 +21404,81 @@ export default function AdminAddClient() {
                                           setIsLoanCategoryPopoverOpen(false);
                                         }}
                                         data-testid="option-category-fannie-jumbo-streamline"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Streamline' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Streamline</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  {/* FHA Section */}
+                                  <div>
+                                    {/* FHA Title - Non-clickable */}
+                                    <div className="text-base font-bold text-green-700 px-2 py-1.5">
+                                      FHA
+                                    </div>
+                                    
+                                    {/* FHA Sub-options with squares */}
+                                    <div className="ml-3 space-y-1">
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Cash Out');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-fha-cash-out"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Cash Out' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Cash Out</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Purchase');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-fha-purchase"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Purchase' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Purchase</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Rate & Term');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-fha-rate-term"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Rate & Term' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Rate & Term</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Streamline');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-fha-streamline"
                                       >
                                         <div className={`w-3 h-3 border flex-shrink-0 ${
                                           selectedLoanCategory === 'Streamline' 
