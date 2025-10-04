@@ -20946,7 +20946,7 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="ltv-ratio-select">LTV Ratio</Label>
+                          <Label htmlFor="ltv-ratio-select">LTV</Label>
                           <Select>
                             <SelectTrigger data-testid="select-ltv-ratio">
                               <SelectValue placeholder="Select" />
@@ -20972,7 +20972,7 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="debt-to-income-input">DTI Ratio</Label>
+                          <Label htmlFor="debt-to-income-input">LTV Ratio</Label>
                           <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm transition-colors items-center">
                             <span className="font-medium" data-testid="text-debt-to-income">
                               {calculateEstimatedLTV()}
