@@ -2682,6 +2682,28 @@ export default function AdminAddClient() {
     }
   }, [form.watch('property.properties')]);
 
+  // Handle click outside loan program controls to hide them
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      // Check if click is outside both the textarea and the controls
+      if (showLoanProgramControls && 
+          !target.closest('[data-testid="input-quote-loan-program"]') &&
+          !target.closest('[data-testid="select-loan-program-font-size"]') &&
+          !target.closest('[data-testid="select-loan-program-color"]')) {
+        setShowLoanProgramControls(false);
+      }
+    };
+
+    if (showLoanProgramControls) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showLoanProgramControls]);
+
   // Auto-copy borrower residence address to primary residence property
   const autoCopyBorrowerAddressToPrimaryProperty = () => {
     const borrowerAddress = form.getValues('borrower.residenceAddress');
@@ -21272,14 +21294,6 @@ export default function AdminAddClient() {
                               value={quoteLoanProgram}
                               onChange={(e) => setQuoteLoanProgram(e.target.value)}
                               onFocus={() => setShowLoanProgramControls(true)}
-                              onBlur={(e) => {
-                                // Delay hiding to allow clicking controls
-                                setTimeout(() => {
-                                  if (!e.currentTarget.contains(document.activeElement)) {
-                                    setShowLoanProgramControls(false);
-                                  }
-                                }, 200);
-                              }}
                               rows={2}
                               className={`bg-transparent border-0 ${loanProgramFontSize} ${loanProgramColor} font-semibold text-center focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/40 resize-none w-full`}
                               data-testid="input-quote-loan-program"
