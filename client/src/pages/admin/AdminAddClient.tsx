@@ -20,7 +20,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator, StickyNote, ChevronDown, ChevronUp, BookOpen, FileText } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator, StickyNote, ChevronDown, ChevronUp, BookOpen, FileText, Pin } from 'lucide-react';
 import { SiZillow } from 'react-icons/si';
 import { MdRealEstateAgent } from 'react-icons/md';
 import { FaHome } from 'react-icons/fa';
@@ -1032,6 +1032,14 @@ export default function AdminAddClient() {
   const [pageContent, setPageContent] = useState('');
   const [pageFontSize, setPageFontSize] = useState('16');
   const [pageFontColor, setPageFontColor] = useState('#000000');
+  
+  // State for Pin Reference Popup
+  const [showPinPopup, setShowPinPopup] = useState(false);
+  const [pinPopupPosition, setPinPopupPosition] = useState({ x: 250, y: 100 });
+  const [isPinDragging, setIsPinDragging] = useState(false);
+  const [pinDragOffset, setPinDragOffset] = useState({ x: 0, y: 0 });
+  const [pinPopupSize, setPinPopupSize] = useState({ width: 400, height: 500 });
+  const [pinContent, setPinContent] = useState<{ type: 'text' | 'image', data: string } | null>(null);
   
   // Calculate totals for each rate column using useMemo (like Income tab)
   const rateColumnTotals = useMemo(() => {
@@ -20835,6 +20843,16 @@ export default function AdminAddClient() {
                     <Button
                       variant="ghost"
                       size="sm"
+                      className="hover:bg-pink-500 hover:text-white"
+                      onClick={() => setShowPinPopup(true)}
+                      title="Pin Reference"
+                      data-testid="button-pin"
+                    >
+                      <Pin className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       className="hover:bg-purple-500 hover:text-white"
                       onClick={() => setShowPagePopup(true)}
                       title="Page"
@@ -22371,6 +22389,159 @@ export default function AdminAddClient() {
                 />
               </div>
             </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Draggable & Resizable Pin Reference Popup */}
+      {showPinPopup && (
+        <div
+          style={{
+            position: 'fixed',
+            left: `${pinPopupPosition.x}px`,
+            top: `${pinPopupPosition.y}px`,
+            width: `${pinPopupSize.width}px`,
+            height: `${pinPopupSize.height}px`,
+            zIndex: 1000,
+            cursor: isPinDragging ? 'grabbing' : 'default',
+            resize: 'both',
+            overflow: 'hidden'
+          }}
+          onMouseDown={(e) => {
+            if ((e.target as HTMLElement).closest('.pin-body')) return;
+            if ((e.target as HTMLElement).closest('.pin-resize-handle')) return;
+            setIsPinDragging(true);
+            setPinDragOffset({
+              x: e.clientX - pinPopupPosition.x,
+              y: e.clientY - pinPopupPosition.y
+            });
+          }}
+          onMouseMove={(e) => {
+            if (isPinDragging) {
+              setPinPopupPosition({
+                x: e.clientX - pinDragOffset.x,
+                y: e.clientY - pinDragOffset.y
+              });
+            }
+          }}
+          onMouseUp={() => setIsPinDragging(false)}
+          onMouseLeave={() => setIsPinDragging(false)}
+        >
+          <Card className="w-full h-full shadow-lg flex flex-col">
+            <CardHeader className="pb-3 bg-pink-600 text-white flex-shrink-0" style={{ cursor: 'grab' }}>
+              <div className="flex justify-between items-center">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Pin className="h-4 w-4" />
+                  Reference Viewer
+                </CardTitle>
+                <div className="flex gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setPinContent(null)}
+                    className="h-6 w-6 p-0 text-white hover:bg-pink-700"
+                    title="Clear"
+                    data-testid="button-clear-pin-content"
+                  >
+                    <RotateCcw className="h-3 w-3" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowPinPopup(false)}
+                    className="h-6 w-6 p-0 text-white hover:bg-pink-700"
+                    data-testid="button-close-pin-popup"
+                  >
+                    <Minus className="h-3 w-3" />
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="pin-body flex-1 pt-4 overflow-auto">
+              {!pinContent ? (
+                <div 
+                  className="border-2 border-dashed border-muted-foreground/30 rounded-md p-6 h-full flex flex-col items-center justify-center gap-4"
+                  onPaste={(e) => {
+                    e.preventDefault();
+                    const items = e.clipboardData?.items;
+                    if (items) {
+                      for (let i = 0; i < items.length; i++) {
+                        if (items[i].type.indexOf('image') !== -1) {
+                          const blob = items[i].getAsFile();
+                          if (blob) {
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                              setPinContent({ type: 'image', data: event.target?.result as string });
+                            };
+                            reader.readAsDataURL(blob);
+                          }
+                          return;
+                        }
+                      }
+                      const text = e.clipboardData.getData('text');
+                      if (text) {
+                        setPinContent({ type: 'text', data: text });
+                      }
+                    }
+                  }}
+                  tabIndex={0}
+                  data-testid="div-pin-paste-area"
+                >
+                  <Pin className="h-12 w-12 text-muted-foreground/40" />
+                  <div className="text-center space-y-2">
+                    <p className="text-sm text-muted-foreground font-medium">
+                      Click here and paste your image or text
+                    </p>
+                    <p className="text-xs text-muted-foreground/70">
+                      Ctrl+V (Windows) or Cmd+V (Mac)
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="h-full w-full overflow-auto" data-testid="div-pin-content-display">
+                  {pinContent.type === 'image' ? (
+                    <img 
+                      src={pinContent.data} 
+                      alt="Reference" 
+                      className="max-w-full h-auto"
+                      data-testid="img-pin-reference"
+                    />
+                  ) : (
+                    <div className="whitespace-pre-wrap break-words p-2" data-testid="text-pin-reference">
+                      {pinContent.data}
+                    </div>
+                  )}
+                </div>
+              )}
+            </CardContent>
+            {/* Resize Handle */}
+            <div 
+              className="pin-resize-handle absolute bottom-0 right-0 w-4 h-4 cursor-se-resize"
+              onMouseDown={(e) => {
+                e.stopPropagation();
+                const startX = e.clientX;
+                const startY = e.clientY;
+                const startWidth = pinPopupSize.width;
+                const startHeight = pinPopupSize.height;
+                
+                const handleMouseMove = (moveEvent: MouseEvent) => {
+                  const newWidth = Math.max(300, startWidth + (moveEvent.clientX - startX));
+                  const newHeight = Math.max(200, startHeight + (moveEvent.clientY - startY));
+                  setPinPopupSize({ width: newWidth, height: newHeight });
+                };
+                
+                const handleMouseUp = () => {
+                  document.removeEventListener('mousemove', handleMouseMove);
+                  document.removeEventListener('mouseup', handleMouseUp);
+                };
+                
+                document.addEventListener('mousemove', handleMouseMove);
+                document.addEventListener('mouseup', handleMouseUp);
+              }}
+              data-testid="div-pin-resize-handle"
+            >
+              <div className="absolute bottom-0 right-0 w-0 h-0 border-b-8 border-r-8 border-b-muted-foreground/30 border-r-transparent" />
+            </div>
           </Card>
         </div>
       )}
