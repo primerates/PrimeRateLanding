@@ -21099,7 +21099,7 @@ export default function AdminAddClient() {
                                 <Plus className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                               </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[1200px] p-3" align="start">
+                            <PopoverContent className="w-[1400px] p-3" align="start">
                               <div className="space-y-2">
                                 {/* Select Option */}
                                 <div 
@@ -21113,8 +21113,8 @@ export default function AdminAddClient() {
                                   <span className="text-sm">Select</span>
                                 </div>
                                 
-                                {/* VA, VA Jumbo, Fannie Conv, Fannie Jumbo, FHA, and Non-QM Side by Side */}
-                                <div className="grid grid-cols-6 gap-4 border-t pt-2">
+                                {/* VA, VA Jumbo, Fannie Conv, Fannie Jumbo, FHA, Non-QM, and Second Loan Side by Side */}
+                                <div className="grid grid-cols-7 gap-4 border-t pt-2">
                                   {/* VA Section */}
                                   <div>
                                     {/* VA Title - Non-clickable */}
@@ -21561,6 +21561,49 @@ export default function AdminAddClient() {
                                             : 'border-current'
                                         }`} />
                                         <span className="text-sm">Streamline</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Second Loan Section */}
+                                  <div>
+                                    {/* Second Loan Title - Non-clickable */}
+                                    <div className="text-base font-bold text-green-700 px-2 py-1.5">
+                                      Second Loan
+                                    </div>
+                                    
+                                    {/* Second Loan Sub-options with squares */}
+                                    <div className="ml-3 space-y-1">
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('HELOC');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-second-loan-heloc"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'HELOC' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">HELOC</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Fixed Second');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-second-loan-fixed-second"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Fixed Second' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Fixed Second</span>
                                       </div>
                                     </div>
                                   </div>
