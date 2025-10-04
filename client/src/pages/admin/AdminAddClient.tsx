@@ -21000,7 +21000,7 @@ export default function AdminAddClient() {
                         <div className="space-y-2">
                           <div className="flex items-center justify-between mb-2">
                             <Label htmlFor={isCustomTerm ? "custom-term-input" : "loan-term-select"}>
-                              {isCustomTerm ? "Custom Term" : "Loan Term"}
+                              {isCustomTerm ? "Custom Term / Years" : "Loan Term / Years"}
                             </Label>
                             <Switch
                               checked={isCustomTerm}
@@ -21016,11 +21016,13 @@ export default function AdminAddClient() {
                               </SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="select" data-testid="select-loan-term-select">Select</SelectItem>
-                                <SelectItem value="30-years" data-testid="select-loan-term-30">30 Years</SelectItem>
-                                <SelectItem value="25-years" data-testid="select-loan-term-25">25 Years</SelectItem>
-                                <SelectItem value="20-years" data-testid="select-loan-term-20">20 Years</SelectItem>
-                                <SelectItem value="15-years" data-testid="select-loan-term-15">15 Years</SelectItem>
-                                <SelectItem value="10-years" data-testid="select-loan-term-10">10 Years</SelectItem>
+                                <SelectItem value="30-years" data-testid="select-loan-term-30">30</SelectItem>
+                                <SelectItem value="25-years" data-testid="select-loan-term-25">25</SelectItem>
+                                <SelectItem value="20-years" data-testid="select-loan-term-20">20</SelectItem>
+                                <SelectItem value="18-years" data-testid="select-loan-term-18">18</SelectItem>
+                                <SelectItem value="15-years" data-testid="select-loan-term-15">15</SelectItem>
+                                <SelectItem value="12-years" data-testid="select-loan-term-12">12</SelectItem>
+                                <SelectItem value="10-years" data-testid="select-loan-term-10">10</SelectItem>
                               </SelectContent>
                             </Select>
                           ) : (
