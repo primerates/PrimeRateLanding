@@ -21756,13 +21756,13 @@ export default function AdminAddClient() {
       <Dialog open={isEscrowInfoOpen} onOpenChange={setIsEscrowInfoOpen}>
         <DialogContent className="sm:max-w-[500px] p-0">
           <DialogHeader className="text-white p-6 rounded-t-lg" style={{ backgroundColor: '#1a3373' }}>
-            <DialogTitle className="text-white">Escrow Information</DialogTitle>
+            <DialogTitle className="text-white">New Escrow Reserves</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4 px-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
-            {/* Property Insurance Payment */}
+            {/* Property Insurance Reserves */}
             <div className="flex items-center gap-4">
               <Label htmlFor="property-insurance" className="w-48 text-right">
-                Property Insurance Payment:
+                Property Insurance Reserves:
               </Label>
               <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
                 <span className="text-muted-foreground text-sm">$</span>
@@ -21781,10 +21781,10 @@ export default function AdminAddClient() {
               </div>
             </div>
 
-            {/* Property Tax Payment */}
+            {/* Property Tax Reserves */}
             <div className="flex items-center gap-4">
               <Label htmlFor="property-tax" className="w-48 text-right">
-                Property Tax Payment:
+                Property Tax Reserves:
               </Label>
               <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
                 <span className="text-muted-foreground text-sm">$</span>
@@ -21803,10 +21803,10 @@ export default function AdminAddClient() {
               </div>
             </div>
 
-            {/* Total Monthly Escrow - Display Only (Auto-calculated) */}
+            {/* Total New Escrow Reserves - Display Only (Auto-calculated) */}
             <div className="flex items-center gap-4">
               <Label htmlFor="total-monthly-escrow" className="w-48 text-right">
-                Total Monthly Escrow:
+                Total New Escrow Reserves:
               </Label>
               <div className="flex items-center border border-input bg-muted px-3 rounded-md flex-1 h-9">
                 <span className="text-base font-bold text-center w-full" data-testid="text-total-monthly-escrow">
