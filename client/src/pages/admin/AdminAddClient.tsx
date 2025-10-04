@@ -20956,20 +20956,15 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="ltv-ratio-select">DTI Ratio</Label>
-                          <Select>
-                            <SelectTrigger data-testid="select-ltv-ratio">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-ltv-ratio-select">Select</SelectItem>
-                              <SelectItem value="90-100" data-testid="select-ltv-ratio-90-100">90% to 100%</SelectItem>
-                              <SelectItem value="80-90" data-testid="select-ltv-ratio-80-90">80% to 90%</SelectItem>
-                              <SelectItem value="70-80" data-testid="select-ltv-ratio-70-80">70% to 80%</SelectItem>
-                              <SelectItem value="60-70" data-testid="select-ltv-ratio-60-70">60% to 70%</SelectItem>
-                              <SelectItem value="below-60" data-testid="select-ltv-ratio-below-60">Below 60%</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <Label htmlFor="dti-ratio-input">DTI Ratio</Label>
+                          <Input
+                            id="dti-ratio-input"
+                            type="text"
+                            placeholder=""
+                            value={debtToIncomeRatio}
+                            onChange={(e) => setDebtToIncomeRatio(e.target.value)}
+                            data-testid="input-dti-ratio"
+                          />
                         </div>
 
                         <div className="space-y-2">
