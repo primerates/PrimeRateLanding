@@ -21187,6 +21187,81 @@ export default function AdminAddClient() {
                                     </div>
                                   </div>
                                 </div>
+                                
+                                {/* VA Jumbo Section */}
+                                <div className="border-t pt-2 mt-2">
+                                  {/* VA Jumbo Title - Non-clickable */}
+                                  <div className="text-base font-bold text-green-700 px-2 py-1.5">
+                                    VA Jumbo
+                                  </div>
+                                  
+                                  {/* VA Jumbo Sub-options with squares */}
+                                  <div className="ml-3 space-y-1">
+                                    <div 
+                                      className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                      onClick={() => {
+                                        setSelectedLoanCategory('Cash Out');
+                                        setIsLoanCategoryPopoverOpen(false);
+                                      }}
+                                      data-testid="option-category-va-jumbo-cash-out"
+                                    >
+                                      <div className={`w-3 h-3 border flex-shrink-0 ${
+                                        selectedLoanCategory === 'Cash Out' 
+                                          ? 'bg-green-700 border-green-700' 
+                                          : 'border-current'
+                                      }`} />
+                                      <span className="text-sm">Cash Out</span>
+                                    </div>
+                                    
+                                    <div 
+                                      className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                      onClick={() => {
+                                        setSelectedLoanCategory('Purchase');
+                                        setIsLoanCategoryPopoverOpen(false);
+                                      }}
+                                      data-testid="option-category-va-jumbo-purchase"
+                                    >
+                                      <div className={`w-3 h-3 border flex-shrink-0 ${
+                                        selectedLoanCategory === 'Purchase' 
+                                          ? 'bg-green-700 border-green-700' 
+                                          : 'border-current'
+                                      }`} />
+                                      <span className="text-sm">Purchase</span>
+                                    </div>
+                                    
+                                    <div 
+                                      className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                      onClick={() => {
+                                        setSelectedLoanCategory('Rate & Term');
+                                        setIsLoanCategoryPopoverOpen(false);
+                                      }}
+                                      data-testid="option-category-va-jumbo-rate-term"
+                                    >
+                                      <div className={`w-3 h-3 border flex-shrink-0 ${
+                                        selectedLoanCategory === 'Rate & Term' 
+                                          ? 'bg-green-700 border-green-700' 
+                                          : 'border-current'
+                                      }`} />
+                                      <span className="text-sm">Rate & Term</span>
+                                    </div>
+                                    
+                                    <div 
+                                      className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                      onClick={() => {
+                                        setSelectedLoanCategory('IRRRL');
+                                        setIsLoanCategoryPopoverOpen(false);
+                                      }}
+                                      data-testid="option-category-va-jumbo-irrrl"
+                                    >
+                                      <div className={`w-3 h-3 border flex-shrink-0 ${
+                                        selectedLoanCategory === 'IRRRL' 
+                                          ? 'bg-green-700 border-green-700' 
+                                          : 'border-current'
+                                      }`} />
+                                      <span className="text-sm">IRRRL</span>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             </PopoverContent>
                           </Popover>
