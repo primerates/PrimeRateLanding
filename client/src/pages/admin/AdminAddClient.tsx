@@ -21013,7 +21013,7 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="transaction-select">Transaction</Label>
+                          <Label htmlFor="transaction-select">Loan Purpose</Label>
                           <Select>
                             <SelectTrigger data-testid="select-transaction">
                               <SelectValue placeholder="Select" />
@@ -21608,17 +21608,7 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor="va-benefits-select">
-                              {isDuApproval ? "DU Approval" : "VA Benefits"}
-                            </Label>
-                            <Switch
-                              checked={isDuApproval}
-                              onCheckedChange={setIsDuApproval}
-                              data-testid="switch-du-approval"
-                              className="scale-[0.8]"
-                            />
-                          </div>
+                          <Label htmlFor="va-benefits-select">VA Benefits</Label>
                           <Select>
                             <SelectTrigger data-testid="select-va-benefits">
                               <SelectValue placeholder="Select" />
