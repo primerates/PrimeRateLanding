@@ -21125,17 +21125,17 @@ export default function AdminAddClient() {
                                     <div 
                                       className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
                                       onClick={() => {
-                                        setSelectedLoanCategory('Cash Out Refi');
+                                        setSelectedLoanCategory('Cash Out');
                                         setIsLoanCategoryPopoverOpen(false);
                                       }}
-                                      data-testid="option-category-va-cash-out-refi"
+                                      data-testid="option-category-va-cash-out"
                                     >
                                       <div className={`w-3 h-3 border flex-shrink-0 ${
-                                        selectedLoanCategory === 'Cash Out Refi' 
+                                        selectedLoanCategory === 'Cash Out' 
                                           ? 'bg-green-700 border-green-700' 
                                           : 'border-current'
                                       }`} />
-                                      <span className="text-sm">Cash Out Refi</span>
+                                      <span className="text-sm">Cash Out</span>
                                     </div>
                                     
                                     <div 
