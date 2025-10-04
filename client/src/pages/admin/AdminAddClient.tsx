@@ -21711,7 +21711,7 @@ export default function AdminAddClient() {
                         </div>
                       </div>
 
-                      {/* Row 3: Mid FICO, LTV Ratio, DTI Ratio, VA Benefits, Lender Credit */}
+                      {/* Row 3: Mid FICO, LTV Ratio, Lender, VA Benefits, Lender Credit */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="mid-fico-input">Mid FICO</Label>
@@ -21732,15 +21732,17 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="dti-ratio-input">DTI Ratio</Label>
-                          <Input
-                            id="dti-ratio-input"
-                            type="text"
-                            placeholder=""
-                            value={debtToIncomeRatio}
-                            onChange={(e) => setDebtToIncomeRatio(e.target.value)}
-                            data-testid="input-dti-ratio"
-                          />
+                          <Label htmlFor="lender-select">Lender</Label>
+                          <Select value={debtToIncomeRatio} onValueChange={setDebtToIncomeRatio}>
+                            <SelectTrigger data-testid="select-lender">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-lender-select">Select</SelectItem>
+                              <SelectItem value="uwm" data-testid="select-lender-uwm">UWM</SelectItem>
+                              <SelectItem value="pennymac" data-testid="select-lender-pennymac">Pennymac</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
 
                         <div className="space-y-2">
