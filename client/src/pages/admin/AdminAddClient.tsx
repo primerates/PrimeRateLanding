@@ -943,6 +943,14 @@ export default function AdminAddClient() {
   const [isLoanCategoryPopoverOpen, setIsLoanCategoryPopoverOpen] = useState(false);
   const [selectedLoanCategory, setSelectedLoanCategory] = useState('');
   
+  // State for custom loan program categories and programs
+  const [customLoanCategories, setCustomLoanCategories] = useState<Array<{ id: string; name: string; programs: Array<{ id: string; name: string }> }>>([]);
+  const [showAddCategoryDialog, setShowAddCategoryDialog] = useState(false);
+  const [showAddProgramDialog, setShowAddProgramDialog] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [newProgramName, setNewProgramName] = useState('');
+  const [selectedCategoryForProgram, setSelectedCategoryForProgram] = useState('');
+  
   // State for Quote tab rate detail fields
   const [rateBuyDownValues, setRateBuyDownValues] = useState<string[]>(['', '', '', '', '']);
   const [cashOutAmountValues, setCashOutAmountValues] = useState<string[]>(['', '', '', '', '']);
@@ -21665,6 +21673,30 @@ export default function AdminAddClient() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="select" data-testid="select-loan-program-select">Select</SelectItem>
+                              
+                              {/* Add Category and Add Program options */}
+                              <div 
+                                className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setShowAddCategoryDialog(true);
+                                }}
+                                data-testid="option-add-category"
+                              >
+                                + Add Category
+                              </div>
+                              <div 
+                                className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent mb-2"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setShowAddProgramDialog(true);
+                                }}
+                                data-testid="option-add-program"
+                              >
+                                + Add Program
+                              </div>
+                              
+                              {/* Default Fixed Rate category */}
                               <div className="px-2 py-1.5 text-sm font-bold text-green-700 cursor-default">
                                 Fixed Rate
                               </div>
@@ -21673,6 +21705,8 @@ export default function AdminAddClient() {
                               <SelectItem value="20-year-fixed" data-testid="select-loan-program-20-year-fixed" className="pl-6">20 Year Fixed</SelectItem>
                               <SelectItem value="15-year-fixed" data-testid="select-loan-program-15-year-fixed" className="pl-6">15 Year Fixed</SelectItem>
                               <SelectItem value="10-year-fixed" data-testid="select-loan-program-10-year-fixed" className="pl-6">10 Year Fixed</SelectItem>
+                              
+                              {/* Default Adjustable Rate category */}
                               <div className="px-2 py-1.5 text-sm font-bold text-green-700 cursor-default">
                                 Adjustable Rate
                               </div>
@@ -21681,6 +21715,25 @@ export default function AdminAddClient() {
                               <SelectItem value="5-1-arm" data-testid="select-loan-program-5-1-arm" className="pl-6">5/1 ARM</SelectItem>
                               <SelectItem value="3-1-arm" data-testid="select-loan-program-3-1-arm" className="pl-6">3/1 ARM</SelectItem>
                               <SelectItem value="1-1-arm" data-testid="select-loan-program-1-1-arm" className="pl-6">1/1 ARM</SelectItem>
+                              
+                              {/* Custom categories and programs */}
+                              {customLoanCategories.map((category) => (
+                                <React.Fragment key={category.id}>
+                                  <div className="px-2 py-1.5 text-sm font-bold text-green-700 cursor-default">
+                                    {category.name}
+                                  </div>
+                                  {category.programs.map((program) => (
+                                    <SelectItem 
+                                      key={program.id} 
+                                      value={program.id} 
+                                      className="pl-6"
+                                      data-testid={`select-loan-program-${program.id}`}
+                                    >
+                                      {program.name}
+                                    </SelectItem>
+                                  ))}
+                                </React.Fragment>
+                              ))}
                             </SelectContent>
                           </Select>
                         </div>
@@ -25482,6 +25535,155 @@ export default function AdminAddClient() {
               data-testid="button-save-rental-info"
             >
               Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Category Dialog */}
+      <Dialog open={showAddCategoryDialog} onOpenChange={setShowAddCategoryDialog}>
+        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-add-category">
+          <DialogHeader>
+            <DialogTitle>Add Loan Program Category</DialogTitle>
+            <DialogDescription>
+              Create a new category for loan programs. The category will be displayed in green.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="space-y-2">
+              <Label htmlFor="new-category-name">Category Name</Label>
+              <Input
+                id="new-category-name"
+                value={newCategoryName}
+                onChange={(e) => setNewCategoryName(e.target.value)}
+                placeholder="e.g., Government Loans"
+                data-testid="input-new-category-name"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowAddCategoryDialog(false);
+                setNewCategoryName('');
+              }}
+              data-testid="button-cancel-add-category"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (newCategoryName.trim()) {
+                  const newCategory = {
+                    id: nanoid(),
+                    name: newCategoryName.trim(),
+                    programs: []
+                  };
+                  setCustomLoanCategories(prev => [...prev, newCategory]);
+                  setShowAddCategoryDialog(false);
+                  setNewCategoryName('');
+                  toast({
+                    title: "Category Added",
+                    description: `"${newCategoryName.trim()}" has been added to loan programs.`
+                  });
+                }
+              }}
+              disabled={!newCategoryName.trim()}
+              data-testid="button-save-add-category"
+            >
+              Add Category
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Program Dialog */}
+      <Dialog open={showAddProgramDialog} onOpenChange={setShowAddProgramDialog}>
+        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-add-program">
+          <DialogHeader>
+            <DialogTitle>Add Loan Program</DialogTitle>
+            <DialogDescription>
+              Create a new loan program and assign it to a category.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="new-program-name">Program Name</Label>
+              <Input
+                id="new-program-name"
+                value={newProgramName}
+                onChange={(e) => setNewProgramName(e.target.value)}
+                placeholder="e.g., FHA 30 Year"
+                data-testid="input-new-program-name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="select-category">Category</Label>
+              <Select value={selectedCategoryForProgram} onValueChange={setSelectedCategoryForProgram}>
+                <SelectTrigger data-testid="select-category-for-program">
+                  <SelectValue placeholder="Select Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="fixed-rate" data-testid="select-category-fixed-rate">Fixed Rate</SelectItem>
+                  <SelectItem value="adjustable-rate" data-testid="select-category-adjustable-rate">Adjustable Rate</SelectItem>
+                  {customLoanCategories.map((category) => (
+                    <SelectItem 
+                      key={category.id} 
+                      value={category.id}
+                      data-testid={`select-category-${category.id}`}
+                    >
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowAddProgramDialog(false);
+                setNewProgramName('');
+                setSelectedCategoryForProgram('');
+              }}
+              data-testid="button-cancel-add-program"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (newProgramName.trim() && selectedCategoryForProgram) {
+                  const newProgram = {
+                    id: nanoid(),
+                    name: newProgramName.trim()
+                  };
+                  
+                  // Add to custom category if it's a custom one
+                  if (selectedCategoryForProgram !== 'fixed-rate' && selectedCategoryForProgram !== 'adjustable-rate') {
+                    setCustomLoanCategories(prev => 
+                      prev.map(cat => 
+                        cat.id === selectedCategoryForProgram 
+                          ? { ...cat, programs: [...cat.programs, newProgram] }
+                          : cat
+                      )
+                    );
+                  }
+                  
+                  setShowAddProgramDialog(false);
+                  setNewProgramName('');
+                  setSelectedCategoryForProgram('');
+                  toast({
+                    title: "Program Added",
+                    description: `"${newProgramName.trim()}" has been added.`
+                  });
+                }
+              }}
+              disabled={!newProgramName.trim() || !selectedCategoryForProgram}
+              data-testid="button-save-add-program"
+            >
+              Add Program
             </Button>
           </DialogFooter>
         </DialogContent>
