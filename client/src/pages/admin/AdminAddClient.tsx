@@ -21099,7 +21099,7 @@ export default function AdminAddClient() {
                                 <Plus className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                               </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[200px] p-3" align="start">
+                            <PopoverContent className="w-[400px] p-3" align="start">
                               <div className="space-y-2">
                                 {/* Select Option */}
                                 <div 
@@ -21113,152 +21113,155 @@ export default function AdminAddClient() {
                                   <span className="text-sm">Select</span>
                                 </div>
                                 
-                                {/* VA Section */}
-                                <div className="border-t pt-2">
-                                  {/* VA Title - Non-clickable */}
-                                  <div className="text-base font-bold text-green-700 px-2 py-1.5">
-                                    VA
+                                {/* VA and VA Jumbo Side by Side */}
+                                <div className="grid grid-cols-2 gap-4 border-t pt-2">
+                                  {/* VA Section */}
+                                  <div>
+                                    {/* VA Title - Non-clickable */}
+                                    <div className="text-base font-bold text-green-700 px-2 py-1.5">
+                                      VA
+                                    </div>
+                                    
+                                    {/* VA Sub-options with squares */}
+                                    <div className="ml-3 space-y-1">
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Cash Out');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-va-cash-out"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Cash Out' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Cash Out</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Purchase');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-va-purchase"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Purchase' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Purchase</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Rate & Term');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-va-rate-term"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Rate & Term' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Rate & Term</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('IRRRL');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-va-irrrl"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'IRRRL' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">IRRRL</span>
+                                      </div>
+                                    </div>
                                   </div>
                                   
-                                  {/* VA Sub-options with squares */}
-                                  <div className="ml-3 space-y-1">
-                                    <div 
-                                      className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
-                                      onClick={() => {
-                                        setSelectedLoanCategory('Cash Out');
-                                        setIsLoanCategoryPopoverOpen(false);
-                                      }}
-                                      data-testid="option-category-va-cash-out"
-                                    >
-                                      <div className={`w-3 h-3 border flex-shrink-0 ${
-                                        selectedLoanCategory === 'Cash Out' 
-                                          ? 'bg-green-700 border-green-700' 
-                                          : 'border-current'
-                                      }`} />
-                                      <span className="text-sm">Cash Out</span>
+                                  {/* VA Jumbo Section */}
+                                  <div>
+                                    {/* VA Jumbo Title - Non-clickable */}
+                                    <div className="text-base font-bold text-green-700 px-2 py-1.5">
+                                      VA Jumbo
                                     </div>
                                     
-                                    <div 
-                                      className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
-                                      onClick={() => {
-                                        setSelectedLoanCategory('Purchase');
-                                        setIsLoanCategoryPopoverOpen(false);
-                                      }}
-                                      data-testid="option-category-va-purchase"
-                                    >
-                                      <div className={`w-3 h-3 border flex-shrink-0 ${
-                                        selectedLoanCategory === 'Purchase' 
-                                          ? 'bg-green-700 border-green-700' 
-                                          : 'border-current'
-                                      }`} />
-                                      <span className="text-sm">Purchase</span>
-                                    </div>
-                                    
-                                    <div 
-                                      className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
-                                      onClick={() => {
-                                        setSelectedLoanCategory('Rate & Term');
-                                        setIsLoanCategoryPopoverOpen(false);
-                                      }}
-                                      data-testid="option-category-va-rate-term"
-                                    >
-                                      <div className={`w-3 h-3 border flex-shrink-0 ${
-                                        selectedLoanCategory === 'Rate & Term' 
-                                          ? 'bg-green-700 border-green-700' 
-                                          : 'border-current'
-                                      }`} />
-                                      <span className="text-sm">Rate & Term</span>
-                                    </div>
-                                    
-                                    <div 
-                                      className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
-                                      onClick={() => {
-                                        setSelectedLoanCategory('IRRRL');
-                                        setIsLoanCategoryPopoverOpen(false);
-                                      }}
-                                      data-testid="option-category-va-irrrl"
-                                    >
-                                      <div className={`w-3 h-3 border flex-shrink-0 ${
-                                        selectedLoanCategory === 'IRRRL' 
-                                          ? 'bg-green-700 border-green-700' 
-                                          : 'border-current'
-                                      }`} />
-                                      <span className="text-sm">IRRRL</span>
-                                    </div>
-                                  </div>
-                                </div>
-                                
-                                {/* VA Jumbo Section */}
-                                <div className="border-t pt-2 mt-2">
-                                  {/* VA Jumbo Title - Non-clickable */}
-                                  <div className="text-base font-bold text-green-700 px-2 py-1.5">
-                                    VA Jumbo
-                                  </div>
-                                  
-                                  {/* VA Jumbo Sub-options with squares */}
-                                  <div className="ml-3 space-y-1">
-                                    <div 
-                                      className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
-                                      onClick={() => {
-                                        setSelectedLoanCategory('Cash Out');
-                                        setIsLoanCategoryPopoverOpen(false);
-                                      }}
-                                      data-testid="option-category-va-jumbo-cash-out"
-                                    >
-                                      <div className={`w-3 h-3 border flex-shrink-0 ${
-                                        selectedLoanCategory === 'Cash Out' 
-                                          ? 'bg-green-700 border-green-700' 
-                                          : 'border-current'
-                                      }`} />
-                                      <span className="text-sm">Cash Out</span>
-                                    </div>
-                                    
-                                    <div 
-                                      className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
-                                      onClick={() => {
-                                        setSelectedLoanCategory('Purchase');
-                                        setIsLoanCategoryPopoverOpen(false);
-                                      }}
-                                      data-testid="option-category-va-jumbo-purchase"
-                                    >
-                                      <div className={`w-3 h-3 border flex-shrink-0 ${
-                                        selectedLoanCategory === 'Purchase' 
-                                          ? 'bg-green-700 border-green-700' 
-                                          : 'border-current'
-                                      }`} />
-                                      <span className="text-sm">Purchase</span>
-                                    </div>
-                                    
-                                    <div 
-                                      className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
-                                      onClick={() => {
-                                        setSelectedLoanCategory('Rate & Term');
-                                        setIsLoanCategoryPopoverOpen(false);
-                                      }}
-                                      data-testid="option-category-va-jumbo-rate-term"
-                                    >
-                                      <div className={`w-3 h-3 border flex-shrink-0 ${
-                                        selectedLoanCategory === 'Rate & Term' 
-                                          ? 'bg-green-700 border-green-700' 
-                                          : 'border-current'
-                                      }`} />
-                                      <span className="text-sm">Rate & Term</span>
-                                    </div>
-                                    
-                                    <div 
-                                      className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
-                                      onClick={() => {
-                                        setSelectedLoanCategory('IRRRL');
-                                        setIsLoanCategoryPopoverOpen(false);
-                                      }}
-                                      data-testid="option-category-va-jumbo-irrrl"
-                                    >
-                                      <div className={`w-3 h-3 border flex-shrink-0 ${
-                                        selectedLoanCategory === 'IRRRL' 
-                                          ? 'bg-green-700 border-green-700' 
-                                          : 'border-current'
-                                      }`} />
-                                      <span className="text-sm">IRRRL</span>
+                                    {/* VA Jumbo Sub-options with squares */}
+                                    <div className="ml-3 space-y-1">
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Cash Out');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-va-jumbo-cash-out"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Cash Out' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Cash Out</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Purchase');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-va-jumbo-purchase"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Purchase' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Purchase</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Rate & Term');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-va-jumbo-rate-term"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Rate & Term' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Rate & Term</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('IRRRL');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-va-jumbo-irrrl"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'IRRRL' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">IRRRL</span>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
