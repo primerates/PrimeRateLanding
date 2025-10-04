@@ -21713,7 +21713,7 @@ export default function AdminAddClient() {
                         </div>
                       </div>
 
-                      {/* Row 3: Mid FICO, LTV Ratio, VA Benefits, Lender, Lender Credit */}
+                      {/* Row 3: Mid FICO, LTV Ratio, VA Benefits, Lender, Title */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="mid-fico-input">Mid FICO</Label>
@@ -21790,28 +21790,17 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor="lender-credit-input">
-                              {isSellerCredit ? "Seller Credit" : "Lender Credit"}
-                            </Label>
-                            <Switch
-                              checked={isSellerCredit}
-                              onCheckedChange={setIsSellerCredit}
-                              data-testid="switch-seller-credit"
-                              className="scale-[0.8]"
-                            />
-                          </div>
-                          <Input
-                            id="lender-credit-input"
-                            type="text"
-                            placeholder=""
-                            value={lenderCredit.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                            onChange={(e) => {
-                              const value = e.target.value.replace(/[^\d]/g, '');
-                              setLenderCredit(value);
-                            }}
-                            data-testid="input-lender-credit"
-                          />
+                          <Label htmlFor="title-select">Title</Label>
+                          <Select value={lenderCredit} onValueChange={setLenderCredit}>
+                            <SelectTrigger data-testid="select-title">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-title-select">Select</SelectItem>
+                              <SelectItem value="first-american-title" data-testid="select-title-first-american">First American Title</SelectItem>
+                              <SelectItem value="reltco" data-testid="select-title-reltco">Reltco</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
                     </CardContent>
