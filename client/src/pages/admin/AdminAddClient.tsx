@@ -924,6 +924,8 @@ export default function AdminAddClient() {
   const [debtToIncomeRatio, setDebtToIncomeRatio] = useState('');
   const [lenderCredit, setLenderCredit] = useState('');
   const [isSellerCredit, setIsSellerCredit] = useState(false);
+  const [isLenderCreditMode, setIsLenderCreditMode] = useState(false);
+  const [lenderCreditAmount, setLenderCreditAmount] = useState('');
   const [showCalculator, setShowCalculator] = useState(false);
   const [calculatorPosition, setCalculatorPosition] = useState({ x: 100, y: 100 });
   const [isDragging, setIsDragging] = useState(false);
@@ -21746,17 +21748,45 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="lender-select">Lender</Label>
-                          <Select value={debtToIncomeRatio} onValueChange={setDebtToIncomeRatio}>
-                            <SelectTrigger data-testid="select-lender">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-lender-select">Select</SelectItem>
-                              <SelectItem value="uwm" data-testid="select-lender-uwm">UWM</SelectItem>
-                              <SelectItem value="pennymac" data-testid="select-lender-pennymac">Pennymac</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="lender-select">
+                              {isLenderCreditMode ? "Lender Credit" : "Lender"}
+                            </Label>
+                            <Switch
+                              checked={isLenderCreditMode}
+                              onCheckedChange={setIsLenderCreditMode}
+                              data-testid="switch-lender-credit-mode"
+                              className="scale-[0.8]"
+                            />
+                          </div>
+                          {isLenderCreditMode ? (
+                            <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                              <span className="text-muted-foreground text-sm">$</span>
+                              <Input
+                                id="lender-credit-amount-input"
+                                type="text"
+                                placeholder=""
+                                value={lenderCreditAmount.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                onChange={(e) => {
+                                  const value = e.target.value.replace(/[^\d]/g, '');
+                                  setLenderCreditAmount(value);
+                                }}
+                                className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                                data-testid="input-lender-credit-amount"
+                              />
+                            </div>
+                          ) : (
+                            <Select value={debtToIncomeRatio} onValueChange={setDebtToIncomeRatio}>
+                              <SelectTrigger data-testid="select-lender">
+                                <SelectValue placeholder="Select" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="select" data-testid="select-lender-select">Select</SelectItem>
+                                <SelectItem value="uwm" data-testid="select-lender-uwm">UWM</SelectItem>
+                                <SelectItem value="pennymac" data-testid="select-lender-pennymac">Pennymac</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          )}
                         </div>
 
                         <div className="space-y-2">
