@@ -21860,7 +21860,7 @@ export default function AdminAddClient() {
       <Dialog open={isMonthlySavingsInfoOpen} onOpenChange={setIsMonthlySavingsInfoOpen}>
         <DialogContent className="sm:max-w-[600px] p-0">
           <DialogHeader className="text-white p-6 rounded-t-lg" style={{ backgroundColor: '#1a3373' }}>
-            <DialogTitle className="text-white">New Monthly Savings</DialogTitle>
+            <DialogTitle className="text-white">Existing Monthly Payments</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4 px-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
             {/* Existing Mortgage Payment */}
