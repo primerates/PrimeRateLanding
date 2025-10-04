@@ -21598,13 +21598,49 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="du-approval-input">DU Approval</Label>
-                          <Input
-                            id="du-approval-input"
-                            type="text"
-                            placeholder=""
-                            data-testid="input-du-approval"
-                          />
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor={isCustomTerm ? "custom-term-input" : "loan-term-select"}>
+                              {isCustomTerm ? "Custom Term / Years" : "Loan Term / Years"}
+                            </Label>
+                            <Switch
+                              checked={isCustomTerm}
+                              onCheckedChange={setIsCustomTerm}
+                              data-testid="switch-custom-term"
+                              className="scale-[0.8]"
+                            />
+                          </div>
+                          {!isCustomTerm ? (
+                            <Select value={loanTerm} onValueChange={setLoanTerm}>
+                              <SelectTrigger data-testid="select-loan-term">
+                                <SelectValue placeholder="Select" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="select" data-testid="select-loan-term-select">Select</SelectItem>
+                                <SelectItem value="30-years" data-testid="select-loan-term-30">30</SelectItem>
+                                <SelectItem value="25-years" data-testid="select-loan-term-25">25</SelectItem>
+                                <SelectItem value="20-years" data-testid="select-loan-term-20">20</SelectItem>
+                                <SelectItem value="18-years" data-testid="select-loan-term-18">18</SelectItem>
+                                <SelectItem value="15-years" data-testid="select-loan-term-15">15</SelectItem>
+                                <SelectItem value="12-years" data-testid="select-loan-term-12">12</SelectItem>
+                                <SelectItem value="10-years" data-testid="select-loan-term-10">10</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          ) : (
+                            <Input
+                              id="custom-term-input"
+                              type="text"
+                              placeholder=""
+                              value={customTerm}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                // Only allow digits and max 2 characters
+                                if (value === '' || (/^\d{1,2}$/.test(value))) {
+                                  setCustomTerm(value);
+                                }
+                              }}
+                              data-testid="input-custom-term"
+                            />
+                          )}
                         </div>
 
                         <div className="space-y-2">
@@ -21651,52 +21687,16 @@ export default function AdminAddClient() {
                         </div>
                       </div>
 
-                      {/* Row 3: Loan Term with toggle switch, Monthly Escrow, and Escrow Reserves */}
+                      {/* Row 3: DU Approval, Mid FICO, LTV Ratio */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
-                          <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor={isCustomTerm ? "custom-term-input" : "loan-term-select"}>
-                              {isCustomTerm ? "Custom Term / Years" : "Loan Term / Years"}
-                            </Label>
-                            <Switch
-                              checked={isCustomTerm}
-                              onCheckedChange={setIsCustomTerm}
-                              data-testid="switch-custom-term"
-                              className="scale-[0.8]"
-                            />
-                          </div>
-                          {!isCustomTerm ? (
-                            <Select value={loanTerm} onValueChange={setLoanTerm}>
-                              <SelectTrigger data-testid="select-loan-term">
-                                <SelectValue placeholder="Select" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="select" data-testid="select-loan-term-select">Select</SelectItem>
-                                <SelectItem value="30-years" data-testid="select-loan-term-30">30</SelectItem>
-                                <SelectItem value="25-years" data-testid="select-loan-term-25">25</SelectItem>
-                                <SelectItem value="20-years" data-testid="select-loan-term-20">20</SelectItem>
-                                <SelectItem value="18-years" data-testid="select-loan-term-18">18</SelectItem>
-                                <SelectItem value="15-years" data-testid="select-loan-term-15">15</SelectItem>
-                                <SelectItem value="12-years" data-testid="select-loan-term-12">12</SelectItem>
-                                <SelectItem value="10-years" data-testid="select-loan-term-10">10</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          ) : (
-                            <Input
-                              id="custom-term-input"
-                              type="text"
-                              placeholder=""
-                              value={customTerm}
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                // Only allow digits and max 2 characters
-                                if (value === '' || (/^\d{1,2}$/.test(value))) {
-                                  setCustomTerm(value);
-                                }
-                              }}
-                              data-testid="input-custom-term"
-                            />
-                          )}
+                          <Label htmlFor="du-approval-input">DU Approval</Label>
+                          <Input
+                            id="du-approval-input"
+                            type="text"
+                            placeholder=""
+                            data-testid="input-du-approval"
+                          />
                         </div>
 
                         <div className="space-y-2">
