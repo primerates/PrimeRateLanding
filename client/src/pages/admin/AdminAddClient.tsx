@@ -926,6 +926,8 @@ export default function AdminAddClient() {
   const [isSellerCredit, setIsSellerCredit] = useState(false);
   const [isLenderCreditMode, setIsLenderCreditMode] = useState(false);
   const [lenderCreditAmount, setLenderCreditAmount] = useState('');
+  const [isTitleSellerCreditMode, setIsTitleSellerCreditMode] = useState(false);
+  const [titleSellerCreditAmount, setTitleSellerCreditAmount] = useState('');
   const [showCalculator, setShowCalculator] = useState(false);
   const [calculatorPosition, setCalculatorPosition] = useState({ x: 100, y: 100 });
   const [isDragging, setIsDragging] = useState(false);
@@ -21790,17 +21792,45 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="title-select">Title</Label>
-                          <Select value={lenderCredit} onValueChange={setLenderCredit}>
-                            <SelectTrigger data-testid="select-title">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-title-select">Select</SelectItem>
-                              <SelectItem value="first-american-title" data-testid="select-title-first-american">First American Title</SelectItem>
-                              <SelectItem value="reltco" data-testid="select-title-reltco">Reltco</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="title-select">
+                              {isTitleSellerCreditMode ? "Seller Credit" : "Title"}
+                            </Label>
+                            <Switch
+                              checked={isTitleSellerCreditMode}
+                              onCheckedChange={setIsTitleSellerCreditMode}
+                              data-testid="switch-title-seller-credit-mode"
+                              className="scale-[0.8]"
+                            />
+                          </div>
+                          {isTitleSellerCreditMode ? (
+                            <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                              <span className="text-muted-foreground text-sm">$</span>
+                              <Input
+                                id="title-seller-credit-amount-input"
+                                type="text"
+                                placeholder=""
+                                value={titleSellerCreditAmount.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                onChange={(e) => {
+                                  const value = e.target.value.replace(/[^\d]/g, '');
+                                  setTitleSellerCreditAmount(value);
+                                }}
+                                className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                                data-testid="input-title-seller-credit-amount"
+                              />
+                            </div>
+                          ) : (
+                            <Select value={lenderCredit} onValueChange={setLenderCredit}>
+                              <SelectTrigger data-testid="select-title">
+                                <SelectValue placeholder="Select" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="select" data-testid="select-title-select">Select</SelectItem>
+                                <SelectItem value="first-american-title" data-testid="select-title-first-american">First American Title</SelectItem>
+                                <SelectItem value="reltco" data-testid="select-title-reltco">Reltco</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          )}
                         </div>
                       </div>
                     </CardContent>
