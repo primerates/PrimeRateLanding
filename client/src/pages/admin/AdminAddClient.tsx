@@ -27454,8 +27454,8 @@ export default function AdminAddClient() {
                   <Label className="text-sm font-bold">{category.categoryName}</Label>
                   <div className="ml-4 space-y-2">
                     {category.services.map((service, serviceIndex) => (
-                      <div key={service.id} className="grid grid-cols-[1fr_auto] gap-2 items-center">
-                        <span className="text-sm text-muted-foreground">• {service.serviceName}</span>
+                      <div key={service.id} className="grid grid-cols-5 gap-2 items-center">
+                        <span className="text-sm text-muted-foreground col-span-3">• {service.serviceName}</span>
                         <div className="flex items-center gap-1">
                           <span className="text-sm text-muted-foreground">$</span>
                           <Input
@@ -27480,10 +27480,11 @@ export default function AdminAddClient() {
                                 return cat;
                               }));
                             }}
-                            className="w-32 h-8 text-sm"
+                            className="w-full h-8 text-sm"
                             data-testid={`input-tps-value-${service.id}`}
                           />
                         </div>
+                        <div></div>
                       </div>
                     ))}
                     {category.services.length === 0 && (
