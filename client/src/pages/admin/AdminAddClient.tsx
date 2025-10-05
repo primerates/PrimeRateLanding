@@ -1056,6 +1056,7 @@ export default function AdminAddClient() {
   
   // State for 3rd card collapse/expand
   const [isThirdCardExpanded, setIsThirdCardExpanded] = useState(true);
+  const [typeNotesText, setTypeNotesText] = useState('');
   const [newMortgagePayment, setNewMortgagePayment] = useState('');
   const [newEscrowPayment, setNewEscrowPayment] = useState('');
   const [monthlyInsurance, setMonthlyInsurance] = useState('');
@@ -22822,10 +22823,11 @@ export default function AdminAddClient() {
 
                     {/* New Est. Loan Amount & New Monthly Payment Card */}
                     {isThirdCardExpanded && (
-                      <Card 
-                        className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-blue-500 hover:border-2 hover:border-blue-500 transition-colors flex-none"
-                        style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
-                      >
+                      <>
+                        <Card 
+                          className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-blue-500 hover:border-2 hover:border-blue-500 transition-colors flex-none"
+                          style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
+                        >
                       <CardContent className="pt-6 space-y-6">
                         {/* New Est. Loan Amount Row - Auto-calculated */}
                         <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
@@ -22940,6 +22942,18 @@ export default function AdminAddClient() {
                         )}
                       </CardContent>
                       </Card>
+
+                        {/* Borderless Text Input Box Below 3rd Card */}
+                        <div className="mt-4">
+                          <Textarea
+                            value={typeNotesText}
+                            onChange={(e) => setTypeNotesText(e.target.value)}
+                            placeholder=""
+                            className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
+                            data-testid="textarea-type-notes"
+                          />
+                        </div>
+                      </>
                     )}
                   </div>
                 )}
