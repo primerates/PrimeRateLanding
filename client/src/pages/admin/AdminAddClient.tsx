@@ -27420,9 +27420,9 @@ export default function AdminAddClient() {
                   <Label className="text-sm font-bold">{category.categoryName}</Label>
                   <div className="ml-4 space-y-2">
                     {category.services.map((service, serviceIndex) => (
-                      <div key={service.id} className="flex items-center gap-3">
-                        <span className="text-sm text-muted-foreground flex-shrink-0">• {service.serviceName}</span>
-                        <div className="flex items-center gap-1 flex-shrink-0">
+                      <div key={service.id} className="grid grid-cols-[1fr_auto] gap-4 items-center">
+                        <span className="text-sm text-muted-foreground">• {service.serviceName}</span>
+                        <div className="flex items-center gap-1">
                           <span className="text-sm text-muted-foreground">$</span>
                           <Input
                             type="text"
