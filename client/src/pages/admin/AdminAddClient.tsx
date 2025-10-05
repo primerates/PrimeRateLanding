@@ -20,7 +20,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator, StickyNote, ChevronDown, ChevronUp, BookOpen, FileText, Pin, Printer, Settings } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator, StickyNote, ChevronDown, ChevronUp, BookOpen, FileText, Pin, Printer, Settings, Edit } from 'lucide-react';
 import { SiZillow } from 'react-icons/si';
 import { MdRealEstateAgent } from 'react-icons/md';
 import { FaHome } from 'react-icons/fa';
@@ -1091,10 +1091,13 @@ export default function AdminAddClient() {
   const [showAddServicesDialogTPS, setShowAddServicesDialogTPS] = useState(false);
   const [showRemoveCategoryDialogTPS, setShowRemoveCategoryDialogTPS] = useState(false);
   const [showRemoveServicesDialogTPS, setShowRemoveServicesDialogTPS] = useState(false);
+  const [showEditCategoryDialogTPS, setShowEditCategoryDialogTPS] = useState(false);
   const [newCategoryNameTPS, setNewCategoryNameTPS] = useState('');
   const [newServiceNameTPS, setNewServiceNameTPS] = useState('');
   const [selectedCategoryForServicesTPS, setSelectedCategoryForServicesTPS] = useState('');
   const [categoryToRemoveTPS, setCategoryToRemoveTPS] = useState('');
+  const [categoryToEditTPS, setCategoryToEditTPS] = useState('');
+  const [editedCategoryNameTPS, setEditedCategoryNameTPS] = useState('');
   const [serviceToRemoveTPS, setServiceToRemoveTPS] = useState('');
   const [selectedCategoryForRemoveTPS, setSelectedCategoryForRemoveTPS] = useState('');
   
@@ -1830,6 +1833,23 @@ export default function AdminAddClient() {
       }));
       setNewServiceNameTPS('');
       setShowAddServicesDialogTPS(false);
+    }
+  };
+  
+  const handleEditCategoryTPS = () => {
+    if (categoryToEditTPS && editedCategoryNameTPS.trim()) {
+      setTempThirdPartyServices(prev => prev.map(category => {
+        if (category.id === categoryToEditTPS) {
+          return {
+            ...category,
+            categoryName: editedCategoryNameTPS.trim()
+          };
+        }
+        return category;
+      }));
+      setCategoryToEditTPS('');
+      setEditedCategoryNameTPS('');
+      setShowEditCategoryDialogTPS(false);
     }
   };
   
@@ -27394,6 +27414,15 @@ export default function AdminAddClient() {
               </Button>
               <Button
                 variant="outline"
+                onClick={() => setShowEditCategoryDialogTPS(true)}
+                className="text-blue-600 border-border hover:bg-blue-600 hover:text-white hover:border-blue-600"
+                data-testid="button-edit-category-tps"
+              >
+                <Edit className="h-4 w-4 mr-2" />
+                Edit Category
+              </Button>
+              <Button
+                variant="outline"
                 onClick={() => setShowRemoveCategoryDialogTPS(true)}
                 className="text-red-600 border-border hover:bg-red-600 hover:text-white hover:border-red-600"
                 data-testid="button-remove-category-tps"
@@ -27595,6 +27624,78 @@ export default function AdminAddClient() {
               data-testid="button-confirm-add-service-tps"
             >
               Add Service
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Category Dialog for TPS */}
+      <Dialog open={showEditCategoryDialogTPS} onOpenChange={setShowEditCategoryDialogTPS}>
+        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-edit-category-tps">
+          <DialogHeader>
+            <DialogTitle>Edit Category Name</DialogTitle>
+            <DialogDescription>
+              Select a category and enter a new name.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="category-to-edit-tps">Category</Label>
+              <Select 
+                value={categoryToEditTPS} 
+                onValueChange={(value) => {
+                  setCategoryToEditTPS(value);
+                  const category = tempThirdPartyServices.find(cat => cat.id === value);
+                  setEditedCategoryNameTPS(category?.categoryName || '');
+                }}
+              >
+                <SelectTrigger data-testid="select-category-to-edit-tps">
+                  <SelectValue placeholder="Select Category to Edit" />
+                </SelectTrigger>
+                <SelectContent>
+                  {tempThirdPartyServices.map((category) => (
+                    <SelectItem 
+                      key={category.id} 
+                      value={category.id}
+                      data-testid={`select-edit-category-${category.id}`}
+                    >
+                      {category.categoryName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {categoryToEditTPS && (
+              <div className="space-y-2">
+                <Label htmlFor="edited-category-name-tps">New Category Name</Label>
+                <Input
+                  id="edited-category-name-tps"
+                  placeholder="Enter new category name"
+                  value={editedCategoryNameTPS}
+                  onChange={(e) => setEditedCategoryNameTPS(e.target.value)}
+                  data-testid="input-edited-category-name-tps"
+                />
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowEditCategoryDialogTPS(false);
+                setCategoryToEditTPS('');
+                setEditedCategoryNameTPS('');
+              }}
+              data-testid="button-cancel-edit-category-tps"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleEditCategoryTPS}
+              disabled={!categoryToEditTPS || !editedCategoryNameTPS.trim()}
+              data-testid="button-confirm-edit-category-tps"
+            >
+              Update Category
             </Button>
           </DialogFooter>
         </DialogContent>
