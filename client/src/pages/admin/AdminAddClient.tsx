@@ -21700,35 +21700,39 @@ export default function AdminAddClient() {
                                 + Add Program
                               </div>
                               
-                              {/* Remove Category and Remove Program options - only show if there are custom items */}
-                              {customLoanCategories.length > 0 && (
-                                <div 
-                                  className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent"
-                                  onClick={(e) => {
-                                    e.preventDefault();
+                              {/* Remove Category and Remove Program options - always visible */}
+                              <div 
+                                className={`px-2 py-1.5 text-sm font-semibold ${
+                                  customLoanCategories.length > 0 
+                                    ? 'text-red-600 cursor-pointer hover:bg-accent' 
+                                    : 'text-muted-foreground cursor-not-allowed opacity-50'
+                                }`}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  if (customLoanCategories.length > 0) {
                                     setShowRemoveCategoryDialog(true);
-                                  }}
-                                  data-testid="option-remove-category"
-                                >
-                                  - Remove Category
-                                </div>
-                              )}
-                              {customLoanCategories.some(cat => cat.programs.length > 0) && (
-                                <div 
-                                  className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent mb-2"
-                                  onClick={(e) => {
-                                    e.preventDefault();
+                                  }
+                                }}
+                                data-testid="option-remove-category"
+                              >
+                                - Remove Category
+                              </div>
+                              <div 
+                                className={`px-2 py-1.5 text-sm font-semibold mb-2 ${
+                                  customLoanCategories.some(cat => cat.programs.length > 0)
+                                    ? 'text-red-600 cursor-pointer hover:bg-accent' 
+                                    : 'text-muted-foreground cursor-not-allowed opacity-50'
+                                }`}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  if (customLoanCategories.some(cat => cat.programs.length > 0)) {
                                     setShowRemoveProgramDialog(true);
-                                  }}
-                                  data-testid="option-remove-program"
-                                >
-                                  - Remove Program
-                                </div>
-                              )}
-                              
-                              {(!customLoanCategories.length && !customLoanCategories.some(cat => cat.programs.length > 0)) && (
-                                <div className="mb-2"></div>
-                              )}
+                                  }
+                                }}
+                                data-testid="option-remove-program"
+                              >
+                                - Remove Program
+                              </div>
                               
                               {/* Default Fixed Rate category */}
                               <div className="px-2 py-1.5 text-sm font-bold text-green-700 cursor-default">
