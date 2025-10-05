@@ -22661,29 +22661,25 @@ export default function AdminAddClient() {
 
                       {/* Third Party Services Section */}
                       <div className={`${rateBuydownSelection !== 'no' ? 'border-t' : ''} pt-6`}>
-                        <div className="grid gap-4 mb-3" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                          <div className="flex items-center justify-end pr-4 gap-2">
-                            <Label className="text-base font-bold text-right">Third Party Services</Label>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              onClick={handleOpenThirdPartyServicesDialog}
-                              className="h-6 w-6"
-                              data-testid="button-customize-third-party-services"
-                            >
-                              <Settings className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-
                         {/* Dynamic Third Party Services - Render all categories and services */}
                         {currentThirdPartyServices.map((category, categoryIndex) => (
                           <div key={category.id} className={categoryIndex > 0 ? 'mt-4' : ''}>
                             {/* Category Header */}
                             <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                              <div className="flex items-center justify-end pr-4">
+                              <div className="flex items-center justify-end pr-4 gap-2">
                                 <Label className="text-sm font-semibold text-right">{category.categoryName}</Label>
+                                {categoryIndex === 0 && (
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={handleOpenThirdPartyServicesDialog}
+                                    className="h-6 w-6"
+                                    data-testid="button-customize-third-party-services"
+                                  >
+                                    <Settings className="h-4 w-4" />
+                                  </Button>
+                                )}
                               </div>
                               {selectedRateIds.map((rateId) => (
                                 <div key={rateId} className="flex justify-center">
