@@ -22663,7 +22663,7 @@ export default function AdminAddClient() {
                       <div className={`${rateBuydownSelection !== 'no' ? 'border-t' : ''} pt-6`}>
                         {/* Dynamic Third Party Services - Render all categories and services */}
                         {currentThirdPartyServices.map((category, categoryIndex) => (
-                          <div key={category.id} className={categoryIndex > 0 ? 'mt-4' : ''}>
+                          <div key={category.id} className={categoryIndex > 0 ? 'mt-6 pt-6 border-t border-border' : ''}>
                             {/* Category Header */}
                             <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                               <div className="flex items-center justify-end pr-4 gap-2">
