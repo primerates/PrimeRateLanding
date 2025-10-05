@@ -27511,7 +27511,7 @@ export default function AdminAddClient() {
             <Button
               size="sm"
               onClick={handleApplyThirdPartyServices}
-              className="text-xs px-2 w-full"
+              className="text-xs px-2 w-full hover:text-green-600"
               data-testid="button-apply-tps"
             >
               Apply to Rate
@@ -27519,7 +27519,7 @@ export default function AdminAddClient() {
             <Button
               size="sm"
               onClick={handleCopyForAllRatesTPS}
-              className="text-xs px-2 w-full"
+              className="text-xs px-2 w-full hover:text-green-600"
               data-testid="button-copy-for-all-rates-tps"
             >
               Apply to All Rates
@@ -27527,7 +27527,7 @@ export default function AdminAddClient() {
             <Button
               size="sm"
               onClick={handleSaveToLibraryTPS}
-              className="text-xs px-2 w-full"
+              className="text-xs px-2 w-full hover:text-green-600"
               data-testid="button-save-to-library-tps"
             >
               Save to Library
