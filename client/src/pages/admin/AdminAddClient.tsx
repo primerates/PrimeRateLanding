@@ -23443,9 +23443,10 @@ export default function AdminAddClient() {
       {/* VA Funding Fee Calculator Dialog */}
       <Dialog open={showVAFundingFeeDialog} onOpenChange={setShowVAFundingFeeDialog}>
         <DialogContent className="sm:max-w-[600px]" data-testid="dialog-va-funding-fee">
-          <DialogHeader>
-            <DialogTitle>VA Funding Fee Calculator</DialogTitle>
+          <DialogHeader className="bg-primary text-white -mx-6 -mt-6 px-6 py-4 rounded-t-lg">
+            <DialogTitle className="text-white">VA Funding Fee Calculator</DialogTitle>
           </DialogHeader>
+          <Separator className="mt-0 -mx-6 w-[calc(100%+3rem)]" />
           <div className="py-4 space-y-4">
             {/* First Time Cash Out Row */}
             <div className="grid grid-cols-[1fr_auto_1fr] gap-4 items-center">
@@ -23531,35 +23532,64 @@ export default function AdminAddClient() {
               />
             </div>
           </div>
+          <Separator className="-mx-6 w-[calc(100%+3rem)]" />
           <DialogFooter className="gap-2">
             <Button
               variant="outline"
+              size="sm"
               onClick={() => {
                 setShowVAFundingFeeDialog(false);
                 setVaFirstTimeCashOut('');
                 setVaSubsequentCashOut('');
                 setVaIRRRL('');
               }}
+              className="hover:text-green-600"
               data-testid="button-cancel-va-funding-fee"
             >
               Cancel
             </Button>
             <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                // TODO: Exempt logic
+              }}
+              className="hover:text-green-600"
+              data-testid="button-exempt-va-funding-fee"
+            >
+              Exempt
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                // TODO: Calculate logic
+              }}
+              className="hover:text-green-600"
+              data-testid="button-calculate-va-funding-fee"
+            >
+              Calculate
+            </Button>
+            <Button
               variant="default"
+              size="sm"
               onClick={() => {
                 // TODO: Apply to selected rate logic
                 setShowVAFundingFeeDialog(false);
               }}
+              className="hover:text-green-600"
               data-testid="button-apply-to-rate"
             >
               Apply to Rate
             </Button>
             <Button
               variant="default"
+              size="sm"
               onClick={() => {
                 // TODO: Apply to all rates logic
                 setShowVAFundingFeeDialog(false);
               }}
+              className="hover:text-green-600"
               data-testid="button-apply-to-all-rates"
             >
               Apply to All Rates
