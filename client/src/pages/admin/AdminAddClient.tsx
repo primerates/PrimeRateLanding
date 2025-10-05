@@ -947,9 +947,13 @@ export default function AdminAddClient() {
   const [customLoanCategories, setCustomLoanCategories] = useState<Array<{ id: string; name: string; programs: Array<{ id: string; name: string }> }>>([]);
   const [showAddCategoryDialog, setShowAddCategoryDialog] = useState(false);
   const [showAddProgramDialog, setShowAddProgramDialog] = useState(false);
+  const [showRemoveCategoryDialog, setShowRemoveCategoryDialog] = useState(false);
+  const [showRemoveProgramDialog, setShowRemoveProgramDialog] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newProgramName, setNewProgramName] = useState('');
   const [selectedCategoryForProgram, setSelectedCategoryForProgram] = useState('');
+  const [categoryToRemove, setCategoryToRemove] = useState('');
+  const [programToRemove, setProgramToRemove] = useState('');
   
   // State for Quote tab rate detail fields
   const [rateBuyDownValues, setRateBuyDownValues] = useState<string[]>(['', '', '', '', '']);
@@ -21686,7 +21690,7 @@ export default function AdminAddClient() {
                                 + Add Category
                               </div>
                               <div 
-                                className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent mb-2"
+                                className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
                                 onClick={(e) => {
                                   e.preventDefault();
                                   setShowAddProgramDialog(true);
@@ -21695,6 +21699,36 @@ export default function AdminAddClient() {
                               >
                                 + Add Program
                               </div>
+                              
+                              {/* Remove Category and Remove Program options - only show if there are custom items */}
+                              {customLoanCategories.length > 0 && (
+                                <div 
+                                  className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    setShowRemoveCategoryDialog(true);
+                                  }}
+                                  data-testid="option-remove-category"
+                                >
+                                  - Remove Category
+                                </div>
+                              )}
+                              {customLoanCategories.some(cat => cat.programs.length > 0) && (
+                                <div 
+                                  className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent mb-2"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    setShowRemoveProgramDialog(true);
+                                  }}
+                                  data-testid="option-remove-program"
+                                >
+                                  - Remove Program
+                                </div>
+                              )}
+                              
+                              {(!customLoanCategories.length && !customLoanCategories.some(cat => cat.programs.length > 0)) && (
+                                <div className="mb-2"></div>
+                              )}
                               
                               {/* Default Fixed Rate category */}
                               <div className="px-2 py-1.5 text-sm font-bold text-green-700 cursor-default">
@@ -25684,6 +25718,157 @@ export default function AdminAddClient() {
               data-testid="button-save-add-program"
             >
               Add Program
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Remove Category Dialog */}
+      <Dialog open={showRemoveCategoryDialog} onOpenChange={setShowRemoveCategoryDialog}>
+        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-remove-category">
+          <DialogHeader>
+            <DialogTitle>Remove Loan Program Category</DialogTitle>
+            <DialogDescription>
+              Select a category to remove. All programs within this category will also be removed.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="space-y-2">
+              <Label htmlFor="category-to-remove">Category</Label>
+              <Select value={categoryToRemove} onValueChange={setCategoryToRemove}>
+                <SelectTrigger data-testid="select-category-to-remove">
+                  <SelectValue placeholder="Select Category to Remove" />
+                </SelectTrigger>
+                <SelectContent>
+                  {customLoanCategories.map((category) => (
+                    <SelectItem 
+                      key={category.id} 
+                      value={category.id}
+                      data-testid={`select-remove-category-${category.id}`}
+                    >
+                      {category.name} {category.programs.length > 0 && `(${category.programs.length} program${category.programs.length !== 1 ? 's' : ''})`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowRemoveCategoryDialog(false);
+                setCategoryToRemove('');
+              }}
+              data-testid="button-cancel-remove-category"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (categoryToRemove) {
+                  const categoryName = customLoanCategories.find(cat => cat.id === categoryToRemove)?.name || '';
+                  setCustomLoanCategories(prev => prev.filter(cat => cat.id !== categoryToRemove));
+                  setShowRemoveCategoryDialog(false);
+                  setCategoryToRemove('');
+                  toast({
+                    title: "Category Removed",
+                    description: `"${categoryName}" has been removed.`
+                  });
+                }
+              }}
+              disabled={!categoryToRemove}
+              data-testid="button-confirm-remove-category"
+            >
+              Remove Category
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Remove Program Dialog */}
+      <Dialog open={showRemoveProgramDialog} onOpenChange={setShowRemoveProgramDialog}>
+        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-remove-program">
+          <DialogHeader>
+            <DialogTitle>Remove Loan Program</DialogTitle>
+            <DialogDescription>
+              Select a program to remove from your custom categories.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="space-y-2">
+              <Label htmlFor="program-to-remove">Program</Label>
+              <Select value={programToRemove} onValueChange={setProgramToRemove}>
+                <SelectTrigger data-testid="select-program-to-remove">
+                  <SelectValue placeholder="Select Program to Remove" />
+                </SelectTrigger>
+                <SelectContent>
+                  {customLoanCategories.map((category) => (
+                    category.programs.length > 0 && (
+                      <React.Fragment key={category.id}>
+                        <div className="px-2 py-1.5 text-sm font-bold text-green-700 cursor-default">
+                          {category.name}
+                        </div>
+                        {category.programs.map((program) => (
+                          <SelectItem 
+                            key={program.id} 
+                            value={`${category.id}::${program.id}`}
+                            className="pl-6"
+                            data-testid={`select-remove-program-${program.id}`}
+                          >
+                            {program.name}
+                          </SelectItem>
+                        ))}
+                      </React.Fragment>
+                    )
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowRemoveProgramDialog(false);
+                setProgramToRemove('');
+              }}
+              data-testid="button-cancel-remove-program"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (programToRemove) {
+                  const [categoryId, programId] = programToRemove.split('::');
+                  let programName = '';
+                  setCustomLoanCategories(prev => 
+                    prev.map(cat => {
+                      if (cat.id === categoryId) {
+                        const program = cat.programs.find(p => p.id === programId);
+                        if (program) programName = program.name;
+                        return {
+                          ...cat,
+                          programs: cat.programs.filter(p => p.id !== programId)
+                        };
+                      }
+                      return cat;
+                    })
+                  );
+                  setShowRemoveProgramDialog(false);
+                  setProgramToRemove('');
+                  toast({
+                    title: "Program Removed",
+                    description: `"${programName}" has been removed.`
+                  });
+                }
+              }}
+              disabled={!programToRemove}
+              data-testid="button-confirm-remove-program"
+            >
+              Remove Program
             </Button>
           </DialogFooter>
         </DialogContent>
