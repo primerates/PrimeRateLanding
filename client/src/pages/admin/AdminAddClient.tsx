@@ -954,6 +954,8 @@ export default function AdminAddClient() {
   const [selectedCategoryForProgram, setSelectedCategoryForProgram] = useState('');
   const [categoryToRemove, setCategoryToRemove] = useState('');
   const [programToRemove, setProgramToRemove] = useState('');
+  const [removedBuiltInCategories, setRemovedBuiltInCategories] = useState<string[]>([]);
+  const [removedBuiltInPrograms, setRemovedBuiltInPrograms] = useState<string[]>([]);
   
   // State for Quote tab rate detail fields
   const [rateBuyDownValues, setRateBuyDownValues] = useState<string[]>(['', '', '', '', '']);
@@ -21700,6 +21702,9 @@ export default function AdminAddClient() {
                                 + Add Program
                               </div>
                               
+                              {/* Separator line */}
+                              <div className="my-1 border-t border-border"></div>
+                              
                               {/* Remove Category and Remove Program options - always visible and clickable */}
                               <div 
                                 className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent"
@@ -21712,7 +21717,7 @@ export default function AdminAddClient() {
                                 - Remove Category
                               </div>
                               <div 
-                                className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent mb-2"
+                                className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent"
                                 onClick={(e) => {
                                   e.preventDefault();
                                   setShowRemoveProgramDialog(true);
@@ -21722,25 +21727,56 @@ export default function AdminAddClient() {
                                 - Remove Program
                               </div>
                               
-                              {/* Default Fixed Rate category */}
-                              <div className="px-2 py-1.5 text-sm font-bold text-green-700 cursor-default">
-                                Fixed Rate
-                              </div>
-                              <SelectItem value="30-year-fixed" data-testid="select-loan-program-30-year-fixed" className="pl-6">30 Year Fixed</SelectItem>
-                              <SelectItem value="25-year-fixed" data-testid="select-loan-program-25-year-fixed" className="pl-6">25 Year Fixed</SelectItem>
-                              <SelectItem value="20-year-fixed" data-testid="select-loan-program-20-year-fixed" className="pl-6">20 Year Fixed</SelectItem>
-                              <SelectItem value="15-year-fixed" data-testid="select-loan-program-15-year-fixed" className="pl-6">15 Year Fixed</SelectItem>
-                              <SelectItem value="10-year-fixed" data-testid="select-loan-program-10-year-fixed" className="pl-6">10 Year Fixed</SelectItem>
+                              {/* Separator line */}
+                              <div className="my-1 border-t border-border"></div>
                               
-                              {/* Default Adjustable Rate category */}
-                              <div className="px-2 py-1.5 text-sm font-bold text-green-700 cursor-default">
-                                Adjustable Rate
-                              </div>
-                              <SelectItem value="10-1-arm" data-testid="select-loan-program-10-1-arm" className="pl-6">10/1 ARM</SelectItem>
-                              <SelectItem value="7-1-arm" data-testid="select-loan-program-7-1-arm" className="pl-6">7/1 ARM</SelectItem>
-                              <SelectItem value="5-1-arm" data-testid="select-loan-program-5-1-arm" className="pl-6">5/1 ARM</SelectItem>
-                              <SelectItem value="3-1-arm" data-testid="select-loan-program-3-1-arm" className="pl-6">3/1 ARM</SelectItem>
-                              <SelectItem value="1-1-arm" data-testid="select-loan-program-1-1-arm" className="pl-6">1/1 ARM</SelectItem>
+                              {/* Default Fixed Rate category - only show if not removed */}
+                              {!removedBuiltInCategories.includes('fixed-rate') && (
+                                <>
+                                  <div className="px-2 py-1.5 text-sm font-bold text-green-700 cursor-default">
+                                    Fixed Rate
+                                  </div>
+                                  {!removedBuiltInPrograms.includes('30-year-fixed') && (
+                                    <SelectItem value="30-year-fixed" data-testid="select-loan-program-30-year-fixed" className="pl-6">30 Year Fixed</SelectItem>
+                                  )}
+                                  {!removedBuiltInPrograms.includes('25-year-fixed') && (
+                                    <SelectItem value="25-year-fixed" data-testid="select-loan-program-25-year-fixed" className="pl-6">25 Year Fixed</SelectItem>
+                                  )}
+                                  {!removedBuiltInPrograms.includes('20-year-fixed') && (
+                                    <SelectItem value="20-year-fixed" data-testid="select-loan-program-20-year-fixed" className="pl-6">20 Year Fixed</SelectItem>
+                                  )}
+                                  {!removedBuiltInPrograms.includes('15-year-fixed') && (
+                                    <SelectItem value="15-year-fixed" data-testid="select-loan-program-15-year-fixed" className="pl-6">15 Year Fixed</SelectItem>
+                                  )}
+                                  {!removedBuiltInPrograms.includes('10-year-fixed') && (
+                                    <SelectItem value="10-year-fixed" data-testid="select-loan-program-10-year-fixed" className="pl-6">10 Year Fixed</SelectItem>
+                                  )}
+                                </>
+                              )}
+                              
+                              {/* Default Adjustable Rate category - only show if not removed */}
+                              {!removedBuiltInCategories.includes('adjustable-rate') && (
+                                <>
+                                  <div className="px-2 py-1.5 text-sm font-bold text-green-700 cursor-default">
+                                    Adjustable Rate
+                                  </div>
+                                  {!removedBuiltInPrograms.includes('10-1-arm') && (
+                                    <SelectItem value="10-1-arm" data-testid="select-loan-program-10-1-arm" className="pl-6">10/1 ARM</SelectItem>
+                                  )}
+                                  {!removedBuiltInPrograms.includes('7-1-arm') && (
+                                    <SelectItem value="7-1-arm" data-testid="select-loan-program-7-1-arm" className="pl-6">7/1 ARM</SelectItem>
+                                  )}
+                                  {!removedBuiltInPrograms.includes('5-1-arm') && (
+                                    <SelectItem value="5-1-arm" data-testid="select-loan-program-5-1-arm" className="pl-6">5/1 ARM</SelectItem>
+                                  )}
+                                  {!removedBuiltInPrograms.includes('3-1-arm') && (
+                                    <SelectItem value="3-1-arm" data-testid="select-loan-program-3-1-arm" className="pl-6">3/1 ARM</SelectItem>
+                                  )}
+                                  {!removedBuiltInPrograms.includes('1-1-arm') && (
+                                    <SelectItem value="1-1-arm" data-testid="select-loan-program-1-1-arm" className="pl-6">1/1 ARM</SelectItem>
+                                  )}
+                                </>
+                              )}
                               
                               {/* Custom categories and programs */}
                               {customLoanCategories.map((category) => (
@@ -25721,78 +25757,94 @@ export default function AdminAddClient() {
           <DialogHeader>
             <DialogTitle>Remove Loan Program Category</DialogTitle>
             <DialogDescription>
-              {customLoanCategories.length > 0 
-                ? "Select a category to remove. All programs within this category will also be removed."
-                : "No custom categories available to remove. Add a category first using '+ Add Category'."}
+              Select a category to remove. All programs within this category will also be removed.
             </DialogDescription>
           </DialogHeader>
-          {customLoanCategories.length > 0 ? (
-            <>
-              <div className="py-4">
-                <div className="space-y-2">
-                  <Label htmlFor="category-to-remove">Category</Label>
-                  <Select value={categoryToRemove} onValueChange={setCategoryToRemove}>
-                    <SelectTrigger data-testid="select-category-to-remove">
-                      <SelectValue placeholder="Select Category to Remove" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {customLoanCategories.map((category) => (
-                        <SelectItem 
-                          key={category.id} 
-                          value={category.id}
-                          data-testid={`select-remove-category-${category.id}`}
-                        >
-                          {category.name} {category.programs.length > 0 && `(${category.programs.length} program${category.programs.length !== 1 ? 's' : ''})`}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setShowRemoveCategoryDialog(false);
-                    setCategoryToRemove('');
-                  }}
-                  data-testid="button-cancel-remove-category"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="destructive"
-                  onClick={() => {
-                    if (categoryToRemove) {
-                      const categoryName = customLoanCategories.find(cat => cat.id === categoryToRemove)?.name || '';
-                      setCustomLoanCategories(prev => prev.filter(cat => cat.id !== categoryToRemove));
-                      setShowRemoveCategoryDialog(false);
-                      setCategoryToRemove('');
-                      toast({
-                        title: "Category Removed",
-                        description: `"${categoryName}" has been removed.`
-                      });
+          <div className="py-4">
+            <div className="space-y-2">
+              <Label htmlFor="category-to-remove">Category</Label>
+              <Select value={categoryToRemove} onValueChange={setCategoryToRemove}>
+                <SelectTrigger data-testid="select-category-to-remove">
+                  <SelectValue placeholder="Select Category to Remove" />
+                </SelectTrigger>
+                <SelectContent>
+                  {/* Built-in categories */}
+                  {!removedBuiltInCategories.includes('fixed-rate') && (
+                    <SelectItem value="fixed-rate" data-testid="select-remove-category-fixed-rate">
+                      Fixed Rate
+                    </SelectItem>
+                  )}
+                  {!removedBuiltInCategories.includes('adjustable-rate') && (
+                    <SelectItem value="adjustable-rate" data-testid="select-remove-category-adjustable-rate">
+                      Adjustable Rate
+                    </SelectItem>
+                  )}
+                  
+                  {/* Custom categories */}
+                  {customLoanCategories.map((category) => (
+                    <SelectItem 
+                      key={category.id} 
+                      value={category.id}
+                      data-testid={`select-remove-category-${category.id}`}
+                    >
+                      {category.name} {category.programs.length > 0 && `(${category.programs.length} program${category.programs.length !== 1 ? 's' : ''})`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowRemoveCategoryDialog(false);
+                setCategoryToRemove('');
+              }}
+              data-testid="button-cancel-remove-category"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (categoryToRemove) {
+                  // Handle built-in category removal
+                  if (categoryToRemove === 'fixed-rate' || categoryToRemove === 'adjustable-rate') {
+                    setRemovedBuiltInCategories(prev => [...prev, categoryToRemove]);
+                    const categoryName = categoryToRemove === 'fixed-rate' ? 'Fixed Rate' : 'Adjustable Rate';
+                    
+                    // Also remove all programs in that category
+                    if (categoryToRemove === 'fixed-rate') {
+                      setRemovedBuiltInPrograms(prev => [...prev, '30-year-fixed', '25-year-fixed', '20-year-fixed', '15-year-fixed', '10-year-fixed']);
+                    } else {
+                      setRemovedBuiltInPrograms(prev => [...prev, '10-1-arm', '7-1-arm', '5-1-arm', '3-1-arm', '1-1-arm']);
                     }
-                  }}
-                  disabled={!categoryToRemove}
-                  data-testid="button-confirm-remove-category"
-                >
-                  Remove Category
-                </Button>
-              </DialogFooter>
-            </>
-          ) : (
-            <DialogFooter>
-              <Button
-                onClick={() => {
+                    
+                    toast({
+                      title: "Category Removed",
+                      description: `"${categoryName}" has been removed.`
+                    });
+                  } else {
+                    // Handle custom category removal
+                    const categoryName = customLoanCategories.find(cat => cat.id === categoryToRemove)?.name || '';
+                    setCustomLoanCategories(prev => prev.filter(cat => cat.id !== categoryToRemove));
+                    toast({
+                      title: "Category Removed",
+                      description: `"${categoryName}" has been removed.`
+                    });
+                  }
+                  
                   setShowRemoveCategoryDialog(false);
-                }}
-                data-testid="button-close-remove-category"
-              >
-                Close
-              </Button>
-            </DialogFooter>
-          )}
+                  setCategoryToRemove('');
+                }
+              }}
+              disabled={!categoryToRemove}
+              data-testid="button-confirm-remove-category"
+            >
+              Remove Category
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
@@ -25802,101 +25854,177 @@ export default function AdminAddClient() {
           <DialogHeader>
             <DialogTitle>Remove Loan Program</DialogTitle>
             <DialogDescription>
-              {customLoanCategories.some(cat => cat.programs.length > 0)
-                ? "Select a program to remove from your custom categories."
-                : "No custom programs available to remove. Add a program first using '+ Add Program'."}
+              Select a program to remove from the categories.
             </DialogDescription>
           </DialogHeader>
-          {customLoanCategories.some(cat => cat.programs.length > 0) ? (
-            <>
-              <div className="py-4">
-                <div className="space-y-2">
-                  <Label htmlFor="program-to-remove">Program</Label>
-                  <Select value={programToRemove} onValueChange={setProgramToRemove}>
-                    <SelectTrigger data-testid="select-program-to-remove">
-                      <SelectValue placeholder="Select Program to Remove" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {customLoanCategories.map((category) => (
-                        category.programs.length > 0 && (
-                          <React.Fragment key={category.id}>
-                            <div className="px-2 py-1.5 text-sm font-bold text-green-700 cursor-default">
-                              {category.name}
-                            </div>
-                            {category.programs.map((program) => (
-                              <SelectItem 
-                                key={program.id} 
-                                value={`${category.id}::${program.id}`}
-                                className="pl-6"
-                                data-testid={`select-remove-program-${program.id}`}
-                              >
-                                {program.name}
-                              </SelectItem>
-                            ))}
-                          </React.Fragment>
-                        )
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setShowRemoveProgramDialog(false);
-                    setProgramToRemove('');
-                  }}
-                  data-testid="button-cancel-remove-program"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="destructive"
-                  onClick={() => {
-                    if (programToRemove) {
-                      const [categoryId, programId] = programToRemove.split('::');
-                      let programName = '';
-                      setCustomLoanCategories(prev => 
-                        prev.map(cat => {
-                          if (cat.id === categoryId) {
-                            const program = cat.programs.find(p => p.id === programId);
-                            if (program) programName = program.name;
-                            return {
-                              ...cat,
-                              programs: cat.programs.filter(p => p.id !== programId)
-                            };
-                          }
-                          return cat;
-                        })
-                      );
-                      setShowRemoveProgramDialog(false);
-                      setProgramToRemove('');
-                      toast({
-                        title: "Program Removed",
-                        description: `"${programName}" has been removed.`
-                      });
-                    }
-                  }}
-                  disabled={!programToRemove}
-                  data-testid="button-confirm-remove-program"
-                >
-                  Remove Program
-                </Button>
-              </DialogFooter>
-            </>
-          ) : (
-            <DialogFooter>
-              <Button
-                onClick={() => {
+          <div className="py-4">
+            <div className="space-y-2">
+              <Label htmlFor="program-to-remove">Program</Label>
+              <Select value={programToRemove} onValueChange={setProgramToRemove}>
+                <SelectTrigger data-testid="select-program-to-remove">
+                  <SelectValue placeholder="Select Program to Remove" />
+                </SelectTrigger>
+                <SelectContent>
+                  {/* Built-in Fixed Rate programs */}
+                  {!removedBuiltInCategories.includes('fixed-rate') && (
+                    <>
+                      <div className="px-2 py-1.5 text-sm font-bold text-green-700 cursor-default">
+                        Fixed Rate
+                      </div>
+                      {!removedBuiltInPrograms.includes('30-year-fixed') && (
+                        <SelectItem value="builtin::30-year-fixed" className="pl-6" data-testid="select-remove-program-30-year-fixed">
+                          30 Year Fixed
+                        </SelectItem>
+                      )}
+                      {!removedBuiltInPrograms.includes('25-year-fixed') && (
+                        <SelectItem value="builtin::25-year-fixed" className="pl-6" data-testid="select-remove-program-25-year-fixed">
+                          25 Year Fixed
+                        </SelectItem>
+                      )}
+                      {!removedBuiltInPrograms.includes('20-year-fixed') && (
+                        <SelectItem value="builtin::20-year-fixed" className="pl-6" data-testid="select-remove-program-20-year-fixed">
+                          20 Year Fixed
+                        </SelectItem>
+                      )}
+                      {!removedBuiltInPrograms.includes('15-year-fixed') && (
+                        <SelectItem value="builtin::15-year-fixed" className="pl-6" data-testid="select-remove-program-15-year-fixed">
+                          15 Year Fixed
+                        </SelectItem>
+                      )}
+                      {!removedBuiltInPrograms.includes('10-year-fixed') && (
+                        <SelectItem value="builtin::10-year-fixed" className="pl-6" data-testid="select-remove-program-10-year-fixed">
+                          10 Year Fixed
+                        </SelectItem>
+                      )}
+                    </>
+                  )}
+                  
+                  {/* Built-in Adjustable Rate programs */}
+                  {!removedBuiltInCategories.includes('adjustable-rate') && (
+                    <>
+                      <div className="px-2 py-1.5 text-sm font-bold text-green-700 cursor-default">
+                        Adjustable Rate
+                      </div>
+                      {!removedBuiltInPrograms.includes('10-1-arm') && (
+                        <SelectItem value="builtin::10-1-arm" className="pl-6" data-testid="select-remove-program-10-1-arm">
+                          10/1 ARM
+                        </SelectItem>
+                      )}
+                      {!removedBuiltInPrograms.includes('7-1-arm') && (
+                        <SelectItem value="builtin::7-1-arm" className="pl-6" data-testid="select-remove-program-7-1-arm">
+                          7/1 ARM
+                        </SelectItem>
+                      )}
+                      {!removedBuiltInPrograms.includes('5-1-arm') && (
+                        <SelectItem value="builtin::5-1-arm" className="pl-6" data-testid="select-remove-program-5-1-arm">
+                          5/1 ARM
+                        </SelectItem>
+                      )}
+                      {!removedBuiltInPrograms.includes('3-1-arm') && (
+                        <SelectItem value="builtin::3-1-arm" className="pl-6" data-testid="select-remove-program-3-1-arm">
+                          3/1 ARM
+                        </SelectItem>
+                      )}
+                      {!removedBuiltInPrograms.includes('1-1-arm') && (
+                        <SelectItem value="builtin::1-1-arm" className="pl-6" data-testid="select-remove-program-1-1-arm">
+                          1/1 ARM
+                        </SelectItem>
+                      )}
+                    </>
+                  )}
+                  
+                  {/* Custom categories and programs */}
+                  {customLoanCategories.map((category) => (
+                    category.programs.length > 0 && (
+                      <React.Fragment key={category.id}>
+                        <div className="px-2 py-1.5 text-sm font-bold text-green-700 cursor-default">
+                          {category.name}
+                        </div>
+                        {category.programs.map((program) => (
+                          <SelectItem 
+                            key={program.id} 
+                            value={`${category.id}::${program.id}`}
+                            className="pl-6"
+                            data-testid={`select-remove-program-${program.id}`}
+                          >
+                            {program.name}
+                          </SelectItem>
+                        ))}
+                      </React.Fragment>
+                    )
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowRemoveProgramDialog(false);
+                setProgramToRemove('');
+              }}
+              data-testid="button-cancel-remove-program"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (programToRemove) {
+                  const [categoryId, programId] = programToRemove.split('::');
+                  
+                  // Handle built-in program removal
+                  if (categoryId === 'builtin') {
+                    setRemovedBuiltInPrograms(prev => [...prev, programId]);
+                    const programNames: Record<string, string> = {
+                      '30-year-fixed': '30 Year Fixed',
+                      '25-year-fixed': '25 Year Fixed',
+                      '20-year-fixed': '20 Year Fixed',
+                      '15-year-fixed': '15 Year Fixed',
+                      '10-year-fixed': '10 Year Fixed',
+                      '10-1-arm': '10/1 ARM',
+                      '7-1-arm': '7/1 ARM',
+                      '5-1-arm': '5/1 ARM',
+                      '3-1-arm': '3/1 ARM',
+                      '1-1-arm': '1/1 ARM'
+                    };
+                    toast({
+                      title: "Program Removed",
+                      description: `"${programNames[programId]}" has been removed.`
+                    });
+                  } else {
+                    // Handle custom program removal
+                    let programName = '';
+                    setCustomLoanCategories(prev => 
+                      prev.map(cat => {
+                        if (cat.id === categoryId) {
+                          const program = cat.programs.find(p => p.id === programId);
+                          if (program) programName = program.name;
+                          return {
+                            ...cat,
+                            programs: cat.programs.filter(p => p.id !== programId)
+                          };
+                        }
+                        return cat;
+                      })
+                    );
+                    toast({
+                      title: "Program Removed",
+                      description: `"${programName}" has been removed.`
+                    });
+                  }
+                  
                   setShowRemoveProgramDialog(false);
-                }}
-                data-testid="button-close-remove-program"
-              >
-                Close
-              </Button>
-            </DialogFooter>
-          )}
+                  setProgramToRemove('');
+                }
+              }}
+              disabled={!programToRemove}
+              data-testid="button-confirm-remove-program"
+            >
+              Remove Program
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
