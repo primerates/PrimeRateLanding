@@ -27554,7 +27554,7 @@ export default function AdminAddClient() {
 
           {/* Save to Library Card */}
           {showSaveToLibraryCard && (
-            <div className="mt-6 border-t pt-6" data-testid="card-save-to-library">
+            <div className="mt-6 border-t pt-6 pb-6 border-b" data-testid="card-save-to-library">
               <h3 className="text-lg font-semibold mb-4">Save Configuration to Library</h3>
               <div className="grid grid-cols-4 gap-3">
                 {/* Combined Loan Category & Purpose Popover */}
@@ -27858,7 +27858,7 @@ export default function AdminAddClient() {
               variant="outline"
               size="sm"
               onClick={() => setShowThirdPartyServicesDialog(false)}
-              className="text-xs px-2 w-full bg-gray-50 text-black border-gray-400 hover:text-blue-600 hover:bg-gray-50 hover:border-blue-600"
+              className="text-xs px-2 w-full bg-primary text-white border-primary hover:text-blue-600 hover:bg-primary hover:border-blue-600"
               data-testid="button-cancel-tps"
             >
               Cancel
@@ -27867,7 +27867,7 @@ export default function AdminAddClient() {
               variant="outline"
               size="sm"
               onClick={handleApplyThirdPartyServices}
-              className="text-xs px-2 w-full bg-gray-50 text-black border-gray-400 hover:text-blue-600 hover:bg-gray-50 hover:border-blue-600"
+              className="text-xs px-2 w-full bg-primary text-white border-primary hover:text-blue-600 hover:bg-primary hover:border-blue-600"
               data-testid="button-apply-tps"
             >
               Apply to Rate
@@ -27876,7 +27876,7 @@ export default function AdminAddClient() {
               variant="outline"
               size="sm"
               onClick={handleCopyForAllRatesTPS}
-              className="text-xs px-2 w-full bg-gray-50 text-black border-gray-400 hover:text-blue-600 hover:bg-gray-50 hover:border-blue-600"
+              className="text-xs px-2 w-full bg-primary text-white border-primary hover:text-blue-600 hover:bg-primary hover:border-blue-600"
               data-testid="button-copy-for-all-rates-tps"
             >
               Apply to All Rates
@@ -27885,7 +27885,7 @@ export default function AdminAddClient() {
               variant="outline"
               size="sm"
               onClick={handleSaveToLibraryTPS}
-              className="text-xs px-2 w-full bg-gray-50 text-black border-gray-400 hover:text-blue-600 hover:bg-gray-50 hover:border-blue-600"
+              className="text-xs px-2 w-full bg-primary text-white border-primary hover:text-blue-600 hover:bg-primary hover:border-blue-600"
               data-testid="button-save-to-library-tps"
             >
               Save to Library
