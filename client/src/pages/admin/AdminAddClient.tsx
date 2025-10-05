@@ -21826,126 +21826,6 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="property-select">Property Use</Label>
-                          <Select>
-                            <SelectTrigger data-testid="select-property">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-property-select">Select</SelectItem>
-                              
-                              <div 
-                                className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setShowAddPropertyUseDialog(true);
-                                }}
-                                data-testid="option-add-property-use"
-                              >
-                                + Add
-                              </div>
-                              <div 
-                                className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setShowRemovePropertyUseDialog(true);
-                                }}
-                                data-testid="option-remove-property-use"
-                              >
-                                - Remove
-                              </div>
-                              
-                              <div className="my-1 border-t border-border"></div>
-                              
-                              {!removedBuiltInPropertyUses.includes('primary-residence') && (
-                                <SelectItem value="primary-residence" data-testid="select-property-primary">Primary Residence</SelectItem>
-                              )}
-                              {!removedBuiltInPropertyUses.includes('second-home') && (
-                                <SelectItem value="second-home" data-testid="select-property-second-home">Second Home</SelectItem>
-                              )}
-                              {!removedBuiltInPropertyUses.includes('investment-property') && (
-                                <SelectItem value="investment-property" data-testid="select-property-investment">Investment Property</SelectItem>
-                              )}
-                              {!removedBuiltInPropertyUses.includes('home-purchase') && (
-                                <SelectItem value="home-purchase" data-testid="select-property-home-purchase">Home Purchase</SelectItem>
-                              )}
-                              {!removedBuiltInPropertyUses.includes('duplex') && (
-                                <SelectItem value="duplex" data-testid="select-property-duplex">Duplex</SelectItem>
-                              )}
-                              {!removedBuiltInPropertyUses.includes('multi-family') && (
-                                <SelectItem value="multi-family" data-testid="select-property-multi-family">Multi-Family</SelectItem>
-                              )}
-                              
-                              {customPropertyUses.map((use) => (
-                                <SelectItem key={use.id} value={use.id} data-testid={`select-property-${use.id}`}>
-                                  {use.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="property-type-select">Property Type</Label>
-                          <Select>
-                            <SelectTrigger data-testid="select-property-type">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-property-type-select">Select</SelectItem>
-                              
-                              <div 
-                                className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setShowAddPropertyTypeDialog(true);
-                                }}
-                                data-testid="option-add-property-type"
-                              >
-                                + Add
-                              </div>
-                              <div 
-                                className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setShowRemovePropertyTypeDialog(true);
-                                }}
-                                data-testid="option-remove-property-type"
-                              >
-                                - Remove
-                              </div>
-                              
-                              <div className="my-1 border-t border-border"></div>
-                              
-                              {!removedBuiltInPropertyTypes.includes('single-family') && (
-                                <SelectItem value="single-family" data-testid="select-property-type-single-family">Single Family</SelectItem>
-                              )}
-                              {!removedBuiltInPropertyTypes.includes('condo') && (
-                                <SelectItem value="condo" data-testid="select-property-type-condo">Condo</SelectItem>
-                              )}
-                              {!removedBuiltInPropertyTypes.includes('townhouse') && (
-                                <SelectItem value="townhouse" data-testid="select-property-type-townhouse">Townhouse</SelectItem>
-                              )}
-                              {!removedBuiltInPropertyTypes.includes('duplex') && (
-                                <SelectItem value="duplex" data-testid="select-property-type-duplex">Duplex</SelectItem>
-                              )}
-                              {!removedBuiltInPropertyTypes.includes('multi-family') && (
-                                <SelectItem value="multi-family" data-testid="select-property-type-multi-family">Multi-Family</SelectItem>
-                              )}
-                              {!removedBuiltInPropertyTypes.includes('other') && (
-                                <SelectItem value="other" data-testid="select-property-type-other">Other</SelectItem>
-                              )}
-                              
-                              {customPropertyTypes.map((type) => (
-                                <SelectItem key={type.id} value={type.id} data-testid={`select-property-type-${type.id}`}>
-                                  {type.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        <div className="space-y-2">
                           <Label htmlFor="loan-program-select">Loan Program</Label>
                           <Select>
                             <SelectTrigger data-testid="select-loan-program">
@@ -22069,6 +21949,126 @@ export default function AdminAddClient() {
                                     </SelectItem>
                                   ))}
                                 </React.Fragment>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="property-select">Property Use</Label>
+                          <Select>
+                            <SelectTrigger data-testid="select-property">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-property-select">Select</SelectItem>
+                              
+                              <div 
+                                className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setShowAddPropertyUseDialog(true);
+                                }}
+                                data-testid="option-add-property-use"
+                              >
+                                + Add
+                              </div>
+                              <div 
+                                className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setShowRemovePropertyUseDialog(true);
+                                }}
+                                data-testid="option-remove-property-use"
+                              >
+                                - Remove
+                              </div>
+                              
+                              <div className="my-1 border-t border-border"></div>
+                              
+                              {!removedBuiltInPropertyUses.includes('primary-residence') && (
+                                <SelectItem value="primary-residence" data-testid="select-property-primary">Primary Residence</SelectItem>
+                              )}
+                              {!removedBuiltInPropertyUses.includes('second-home') && (
+                                <SelectItem value="second-home" data-testid="select-property-second-home">Second Home</SelectItem>
+                              )}
+                              {!removedBuiltInPropertyUses.includes('investment-property') && (
+                                <SelectItem value="investment-property" data-testid="select-property-investment">Investment Property</SelectItem>
+                              )}
+                              {!removedBuiltInPropertyUses.includes('home-purchase') && (
+                                <SelectItem value="home-purchase" data-testid="select-property-home-purchase">Home Purchase</SelectItem>
+                              )}
+                              {!removedBuiltInPropertyUses.includes('duplex') && (
+                                <SelectItem value="duplex" data-testid="select-property-duplex">Duplex</SelectItem>
+                              )}
+                              {!removedBuiltInPropertyUses.includes('multi-family') && (
+                                <SelectItem value="multi-family" data-testid="select-property-multi-family">Multi-Family</SelectItem>
+                              )}
+                              
+                              {customPropertyUses.map((use) => (
+                                <SelectItem key={use.id} value={use.id} data-testid={`select-property-${use.id}`}>
+                                  {use.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="property-type-select">Property Type</Label>
+                          <Select>
+                            <SelectTrigger data-testid="select-property-type">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-property-type-select">Select</SelectItem>
+                              
+                              <div 
+                                className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setShowAddPropertyTypeDialog(true);
+                                }}
+                                data-testid="option-add-property-type"
+                              >
+                                + Add
+                              </div>
+                              <div 
+                                className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setShowRemovePropertyTypeDialog(true);
+                                }}
+                                data-testid="option-remove-property-type"
+                              >
+                                - Remove
+                              </div>
+                              
+                              <div className="my-1 border-t border-border"></div>
+                              
+                              {!removedBuiltInPropertyTypes.includes('single-family') && (
+                                <SelectItem value="single-family" data-testid="select-property-type-single-family">Single Family</SelectItem>
+                              )}
+                              {!removedBuiltInPropertyTypes.includes('condo') && (
+                                <SelectItem value="condo" data-testid="select-property-type-condo">Condo</SelectItem>
+                              )}
+                              {!removedBuiltInPropertyTypes.includes('townhouse') && (
+                                <SelectItem value="townhouse" data-testid="select-property-type-townhouse">Townhouse</SelectItem>
+                              )}
+                              {!removedBuiltInPropertyTypes.includes('duplex') && (
+                                <SelectItem value="duplex" data-testid="select-property-type-duplex">Duplex</SelectItem>
+                              )}
+                              {!removedBuiltInPropertyTypes.includes('multi-family') && (
+                                <SelectItem value="multi-family" data-testid="select-property-type-multi-family">Multi-Family</SelectItem>
+                              )}
+                              {!removedBuiltInPropertyTypes.includes('other') && (
+                                <SelectItem value="other" data-testid="select-property-type-other">Other</SelectItem>
+                              )}
+                              
+                              {customPropertyTypes.map((type) => (
+                                <SelectItem key={type.id} value={type.id} data-testid={`select-property-type-${type.id}`}>
+                                  {type.name}
+                                </SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
@@ -22230,63 +22230,6 @@ export default function AdminAddClient() {
                               {calculateEstimatedLTV()}
                             </span>
                           </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="source-select">Source</Label>
-                          <Select>
-                            <SelectTrigger data-testid="select-source">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-source-select">Select</SelectItem>
-                              
-                              <div 
-                                className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setShowAddSourceDialog(true);
-                                }}
-                                data-testid="option-add-source"
-                              >
-                                + Add
-                              </div>
-                              <div 
-                                className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setShowRemoveSourceDialog(true);
-                                }}
-                                data-testid="option-remove-source"
-                              >
-                                - Remove
-                              </div>
-                              
-                              <div className="my-1 border-t border-border"></div>
-                              
-                              {!removedBuiltInSources.includes('direct-mail') && (
-                                <SelectItem value="direct-mail" data-testid="select-source-direct-mail">Direct Mail</SelectItem>
-                              )}
-                              {!removedBuiltInSources.includes('social-media') && (
-                                <SelectItem value="social-media" data-testid="select-source-social-media">Social Media</SelectItem>
-                              )}
-                              {!removedBuiltInSources.includes('website') && (
-                                <SelectItem value="website" data-testid="select-source-website">Website</SelectItem>
-                              )}
-                              {!removedBuiltInSources.includes('referral') && (
-                                <SelectItem value="referral" data-testid="select-source-referral">Referral</SelectItem>
-                              )}
-                              {!removedBuiltInSources.includes('repeat-client') && (
-                                <SelectItem value="repeat-client" data-testid="select-source-repeat-client">Repeat Client</SelectItem>
-                              )}
-                              
-                              {customSources.map((source) => (
-                                <SelectItem key={source.id} value={source.id} data-testid={`select-source-${source.id}`}>
-                                  {source.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
                         </div>
 
                         <div className="space-y-2">
@@ -22455,6 +22398,63 @@ export default function AdminAddClient() {
                               </SelectContent>
                             </Select>
                           )}
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="source-select">Source</Label>
+                          <Select>
+                            <SelectTrigger data-testid="select-source">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-source-select">Select</SelectItem>
+                              
+                              <div 
+                                className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setShowAddSourceDialog(true);
+                                }}
+                                data-testid="option-add-source"
+                              >
+                                + Add
+                              </div>
+                              <div 
+                                className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setShowRemoveSourceDialog(true);
+                                }}
+                                data-testid="option-remove-source"
+                              >
+                                - Remove
+                              </div>
+                              
+                              <div className="my-1 border-t border-border"></div>
+                              
+                              {!removedBuiltInSources.includes('direct-mail') && (
+                                <SelectItem value="direct-mail" data-testid="select-source-direct-mail">Direct Mail</SelectItem>
+                              )}
+                              {!removedBuiltInSources.includes('social-media') && (
+                                <SelectItem value="social-media" data-testid="select-source-social-media">Social Media</SelectItem>
+                              )}
+                              {!removedBuiltInSources.includes('website') && (
+                                <SelectItem value="website" data-testid="select-source-website">Website</SelectItem>
+                              )}
+                              {!removedBuiltInSources.includes('referral') && (
+                                <SelectItem value="referral" data-testid="select-source-referral">Referral</SelectItem>
+                              )}
+                              {!removedBuiltInSources.includes('repeat-client') && (
+                                <SelectItem value="repeat-client" data-testid="select-source-repeat-client">Repeat Client</SelectItem>
+                              )}
+                              
+                              {customSources.map((source) => (
+                                <SelectItem key={source.id} value={source.id} data-testid={`select-source-${source.id}`}>
+                                  {source.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
                     </CardContent>
@@ -22743,7 +22743,6 @@ export default function AdminAddClient() {
                             {/* Category Header */}
                             <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                               <div className="flex items-center justify-end pr-4 gap-2">
-                                <Label className="text-base font-semibold text-right">{category.categoryName}</Label>
                                 {categoryIndex === 0 && (
                                   <Button
                                     type="button"
@@ -22756,6 +22755,7 @@ export default function AdminAddClient() {
                                     <Settings className="h-4 w-4" />
                                   </Button>
                                 )}
+                                <Label className="text-base font-semibold text-right">{category.categoryName}</Label>
                               </div>
                               {selectedRateIds.map((rateId) => (
                                 <div key={rateId} className="flex justify-center">
