@@ -27504,31 +27504,34 @@ export default function AdminAddClient() {
               variant="outline"
               size="sm"
               onClick={() => setShowThirdPartyServicesDialog(false)}
-              className="text-xs px-2 w-full"
+              className="text-xs px-2 w-full bg-white text-black hover:text-blue-600 hover:bg-white"
               data-testid="button-cancel-tps"
             >
               Cancel
             </Button>
             <Button
+              variant="outline"
               size="sm"
               onClick={handleApplyThirdPartyServices}
-              className="text-xs px-2 w-full hover:text-green-600"
+              className="text-xs px-2 w-full bg-white text-black hover:text-blue-600 hover:bg-white"
               data-testid="button-apply-tps"
             >
               Apply to Rate
             </Button>
             <Button
+              variant="outline"
               size="sm"
               onClick={handleCopyForAllRatesTPS}
-              className="text-xs px-2 w-full hover:text-green-600"
+              className="text-xs px-2 w-full bg-white text-black hover:text-blue-600 hover:bg-white"
               data-testid="button-copy-for-all-rates-tps"
             >
               Apply to All Rates
             </Button>
             <Button
+              variant="outline"
               size="sm"
               onClick={handleSaveToLibraryTPS}
-              className="text-xs px-2 w-full hover:text-green-600"
+              className="text-xs px-2 w-full bg-white text-black hover:text-blue-600 hover:bg-white"
               data-testid="button-save-to-library-tps"
             >
               Save to Library
