@@ -1116,6 +1116,11 @@ export default function AdminAddClient() {
     's7': ['', '', '', '', '']  // State Tax & Recording
   });
   
+  // State to track which categories are in "Same" mode
+  const [categorySameModes, setCategorySameModes] = useState<{
+    [categoryId: string]: boolean
+  }>({});
+  
   // State for Save to Library card
   const [showSaveToLibraryCard, setShowSaveToLibraryCard] = useState(false);
   const [saveLibraryLoanCategory, setSaveLibraryLoanCategory] = useState('');
@@ -22791,7 +22796,32 @@ export default function AdminAddClient() {
                                     <Settings className="h-4 w-4" />
                                   </Button>
                                 )}
-                                <Label className="text-base font-semibold text-right">{category.categoryName}</Label>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const isInSameMode = categorySameModes[category.id];
+                                    if (isInSameMode) {
+                                      // Copy first field value to all fields for ALL services in this category
+                                      category.services.forEach(service => {
+                                        const firstValue = thirdPartyServiceValues[service.id]?.[selectedRateIds[0]] || '';
+                                        const newValues = selectedRateIds.map(() => firstValue);
+                                        setThirdPartyServiceValues(prev => ({
+                                          ...prev,
+                                          [service.id]: newValues
+                                        }));
+                                      });
+                                    }
+                                    // Toggle the mode
+                                    setCategorySameModes(prev => ({
+                                      ...prev,
+                                      [category.id]: !isInSameMode
+                                    }));
+                                  }}
+                                  className="text-base font-semibold text-right hover:text-blue-600 cursor-pointer"
+                                  data-testid={`button-category-toggle-${category.id}`}
+                                >
+                                  {categorySameModes[category.id] ? 'Same' : category.categoryName}
+                                </button>
                               </div>
                               {selectedRateIds.map((rateId) => (
                                 <div key={rateId} className="flex justify-center">
