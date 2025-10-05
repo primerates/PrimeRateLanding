@@ -20,7 +20,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator, StickyNote, ChevronDown, ChevronUp, BookOpen, FileText, Pin, Printer } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator, StickyNote, ChevronDown, ChevronUp, BookOpen, FileText, Pin, Printer, Settings } from 'lucide-react';
 import { SiZillow } from 'react-icons/si';
 import { MdRealEstateAgent } from 'react-icons/md';
 import { FaHome } from 'react-icons/fa';
@@ -1062,6 +1062,55 @@ export default function AdminAddClient() {
   const [monthlyInsurance, setMonthlyInsurance] = useState('');
   const [monthlyPropertyTax, setMonthlyPropertyTax] = useState('');
   
+  // State for Third Party Services Customization
+  const [showThirdPartyServicesDialog, setShowThirdPartyServicesDialog] = useState(false);
+  const [thirdPartyServicesLibrary, setThirdPartyServicesLibrary] = useState<{
+    [key: string]: Array<{ id: string; categoryName: string; services: Array<{ id: string; serviceName: string }> }>
+  }>({});
+  const [currentThirdPartyServices, setCurrentThirdPartyServices] = useState<Array<{ 
+    id: string; 
+    categoryName: string; 
+    services: Array<{ id: string; serviceName: string }> 
+  }>>([
+    { id: '1', categoryName: 'Third Party Services', services: [
+      { id: 's1', serviceName: 'VA Funding Fee' },
+      { id: 's2', serviceName: 'VA Appraisal Inspection' },
+      { id: 's3', serviceName: 'VA Termite Report' },
+      { id: 's4', serviceName: 'VA Underwriting Services' },
+      { id: 's5', serviceName: 'Title & Escrow Services' },
+      { id: 's6', serviceName: 'Pay Off Interest' },
+      { id: 's7', serviceName: 'State Tax & Recording' }
+    ]}
+  ]);
+  const [tempThirdPartyServices, setTempThirdPartyServices] = useState<Array<{ 
+    id: string; 
+    categoryName: string; 
+    services: Array<{ id: string; serviceName: string }> 
+  }>>([]);
+  const [showAddCategoryDialogTPS, setShowAddCategoryDialogTPS] = useState(false);
+  const [showAddServicesDialogTPS, setShowAddServicesDialogTPS] = useState(false);
+  const [showRemoveCategoryDialogTPS, setShowRemoveCategoryDialogTPS] = useState(false);
+  const [showRemoveServicesDialogTPS, setShowRemoveServicesDialogTPS] = useState(false);
+  const [newCategoryNameTPS, setNewCategoryNameTPS] = useState('');
+  const [newServiceNameTPS, setNewServiceNameTPS] = useState('');
+  const [selectedCategoryForServicesTPS, setSelectedCategoryForServicesTPS] = useState('');
+  const [categoryToRemoveTPS, setCategoryToRemoveTPS] = useState('');
+  const [serviceToRemoveTPS, setServiceToRemoveTPS] = useState('');
+  const [selectedCategoryForRemoveTPS, setSelectedCategoryForRemoveTPS] = useState('');
+  
+  // Dynamic state for third party services values (per service per rate)
+  const [thirdPartyServiceValues, setThirdPartyServiceValues] = useState<{
+    [serviceId: string]: string[]
+  }>({
+    's1': ['', '', '', '', ''], // VA Funding Fee
+    's2': ['', '', '', '', ''], // VA Appraisal Inspection
+    's3': ['', '', '', '', ''], // VA Termite Report
+    's4': ['', '', '', '', ''], // VA Underwriting Services
+    's5': ['', '', '', '', ''], // Title & Escrow Services
+    's6': ['', '', '', '', ''], // Pay Off Interest
+    's7': ['', '', '', '', '']  // State Tax & Recording
+  });
+  
   // Auto-calculate Total New Payment
   const calculatedTotalNewPayment = useMemo(() => {
     const mortgage = parseInt(newMortgagePayment || '0', 10);
@@ -1735,6 +1784,89 @@ export default function AdminAddClient() {
 
   // Current Primary Loan cards state management (similar to property cards)
   const [currentPrimaryLoanCards, setCurrentPrimaryLoanCards] = useState<string[]>([]);
+  
+  // Handler functions for Third Party Services customization
+  const handleOpenThirdPartyServicesDialog = () => {
+    setTempThirdPartyServices(JSON.parse(JSON.stringify(currentThirdPartyServices)));
+    setShowThirdPartyServicesDialog(true);
+  };
+  
+  const handleAddCategoryTPS = () => {
+    if (newCategoryNameTPS.trim()) {
+      const newCategory = {
+        id: `cat-${Date.now()}`,
+        categoryName: newCategoryNameTPS.trim(),
+        services: []
+      };
+      setTempThirdPartyServices(prev => [...prev, newCategory]);
+      setNewCategoryNameTPS('');
+      setShowAddCategoryDialogTPS(false);
+    }
+  };
+  
+  const handleAddServicesTPS = () => {
+    if (newServiceNameTPS.trim() && selectedCategoryForServicesTPS) {
+      setTempThirdPartyServices(prev => prev.map(category => {
+        if (category.id === selectedCategoryForServicesTPS) {
+          return {
+            ...category,
+            services: [...category.services, {
+              id: `svc-${Date.now()}`,
+              serviceName: newServiceNameTPS.trim()
+            }]
+          };
+        }
+        return category;
+      }));
+      setNewServiceNameTPS('');
+      setShowAddServicesDialogTPS(false);
+    }
+  };
+  
+  const handleRemoveCategoryTPS = () => {
+    if (categoryToRemoveTPS) {
+      setTempThirdPartyServices(prev => prev.filter(cat => cat.id !== categoryToRemoveTPS));
+      setCategoryToRemoveTPS('');
+      setShowRemoveCategoryDialogTPS(false);
+    }
+  };
+  
+  const handleRemoveServiceTPS = () => {
+    if (serviceToRemoveTPS && selectedCategoryForRemoveTPS) {
+      setTempThirdPartyServices(prev => prev.map(category => {
+        if (category.id === selectedCategoryForRemoveTPS) {
+          return {
+            ...category,
+            services: category.services.filter(svc => svc.id !== serviceToRemoveTPS)
+          };
+        }
+        return category;
+      }));
+      setServiceToRemoveTPS('');
+      setShowRemoveServicesDialogTPS(false);
+    }
+  };
+  
+  const handleApplyThirdPartyServices = () => {
+    setCurrentThirdPartyServices(JSON.parse(JSON.stringify(tempThirdPartyServices)));
+    setShowThirdPartyServicesDialog(false);
+  };
+  
+  const handleSaveToLibraryTPS = () => {
+    if (selectedLoanCategory) {
+      setThirdPartyServicesLibrary(prev => ({
+        ...prev,
+        [selectedLoanCategory]: JSON.parse(JSON.stringify(tempThirdPartyServices))
+      }));
+      setShowThirdPartyServicesDialog(false);
+    }
+  };
+  
+  const handleCopyForAllRatesTPS = () => {
+    // This function would copy the dollar values across all rate columns
+    // For now, we'll just close the dialog after applying
+    handleApplyThirdPartyServices();
+  };
   
   // Current Primary Loan card data state
   const [currentPrimaryLoanData, setCurrentPrimaryLoanData] = useState<Record<string, {
@@ -22530,236 +22662,79 @@ export default function AdminAddClient() {
                       {/* Third Party Services Section */}
                       <div className={`${rateBuydownSelection !== 'no' ? 'border-t' : ''} pt-6`}>
                         <div className="grid gap-4 mb-3" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                          <div className="flex items-center justify-end pr-4">
+                          <div className="flex items-center justify-end pr-4 gap-2">
                             <Label className="text-base font-bold text-right">Third Party Services</Label>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              onClick={handleOpenThirdPartyServicesDialog}
+                              className="h-6 w-6"
+                              data-testid="button-customize-third-party-services"
+                            >
+                              <Settings className="h-4 w-4" />
+                            </Button>
                           </div>
                         </div>
 
-                        {/* VA Funding Fee */}
-                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                          <div className="flex items-center justify-end pr-4">
-                            <Label className="text-sm text-right text-muted-foreground">• VA Funding Fee</Label>
-                          </div>
-                          {selectedRateIds.map((rateId) => {
-                            const numVal = vaFundingFeeValues[rateId] ? vaFundingFeeValues[rateId].replace(/[^\d]/g, '') : '';
-                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                            const tabIndex = (4 * selectedRateIds.length) + rateId + 1; // After rate buy down
-                            
-                            return (
-                              <div key={rateId} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                  <span className="text-muted-foreground text-sm">$</span>
-                                  <Input
-                                    type="text"
-                                    placeholder=""
-                                    value={displayValue}
-                                    onChange={(e) => {
-                                      const value = e.target.value.replace(/[^\d]/g, '');
-                                      const newValues = [...vaFundingFeeValues];
-                                      newValues[rateId] = value;
-                                      setVaFundingFeeValues(newValues);
-                                    }}
-                                    tabIndex={tabIndex}
-                                    className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-va-funding-fee-${rateId}`}
-                                  />
+                        {/* Dynamic Third Party Services - Render all categories and services */}
+                        {currentThirdPartyServices.map((category) => (
+                          <React.Fragment key={category.id}>
+                            {category.services.map((service, serviceIndex) => (
+                              <div 
+                                key={service.id} 
+                                className={`grid gap-4 ${serviceIndex < category.services.length - 1 ? 'mb-2' : ''}`}
+                                style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}
+                              >
+                                <div className="flex items-center justify-end pr-4">
+                                  <Label className="text-sm text-right text-muted-foreground">• {service.serviceName}</Label>
                                 </div>
+                                {selectedRateIds.map((rateId) => {
+                                  // Initialize service values if not exist
+                                  if (!thirdPartyServiceValues[service.id]) {
+                                    setThirdPartyServiceValues(prev => ({
+                                      ...prev,
+                                      [service.id]: ['', '', '', '', '']
+                                    }));
+                                  }
+                                  
+                                  const numVal = thirdPartyServiceValues[service.id]?.[rateId] 
+                                    ? thirdPartyServiceValues[service.id][rateId].replace(/[^\d]/g, '') 
+                                    : '';
+                                  const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                                  
+                                  return (
+                                    <div key={rateId} className="flex justify-center">
+                                      <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
+                                        <span className="text-muted-foreground text-sm">$</span>
+                                        <Input
+                                          type="text"
+                                          placeholder=""
+                                          value={displayValue}
+                                          onChange={(e) => {
+                                            const value = e.target.value.replace(/[^\d]/g, '');
+                                            setThirdPartyServiceValues(prev => {
+                                              const newValues = { ...prev };
+                                              if (!newValues[service.id]) {
+                                                newValues[service.id] = ['', '', '', '', ''];
+                                              }
+                                              const updatedArray = [...newValues[service.id]];
+                                              updatedArray[rateId] = value;
+                                              newValues[service.id] = updatedArray;
+                                              return newValues;
+                                            });
+                                          }}
+                                          className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
+                                          data-testid={`input-service-${service.id}-${rateId}`}
+                                        />
+                                      </div>
+                                    </div>
+                                  );
+                                })}
                               </div>
-                            );
-                          })}
-                        </div>
-
-                        {/* VA Appraisal Inspection */}
-                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                          <div className="flex items-center justify-end pr-4">
-                            <Label className="text-sm text-right text-muted-foreground">• VA Appraisal Inspection</Label>
-                          </div>
-                          {selectedRateIds.map((rateId) => {
-                            const numVal = vaAppraisalValues[rateId] ? vaAppraisalValues[rateId].replace(/[^\d]/g, '') : '';
-                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                            
-                            return (
-                              <div key={rateId} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                  <span className="text-muted-foreground text-sm">$</span>
-                                  <Input
-                                    type="text"
-                                    placeholder=""
-                                    value={displayValue}
-                                    onChange={(e) => {
-                                      const value = e.target.value.replace(/[^\d]/g, '');
-                                      const newValues = [...vaAppraisalValues];
-                                      newValues[rateId] = value;
-                                      setVaAppraisalValues(newValues);
-                                    }}
-                                    className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-va-appraisal-${rateId}`}
-                                  />
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        {/* VA Termite Report */}
-                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                          <div className="flex items-center justify-end pr-4">
-                            <Label className="text-sm text-right text-muted-foreground">• VA Termite Report</Label>
-                          </div>
-                          {selectedRateIds.map((rateId) => {
-                            const numVal = vaTermiteValues[rateId] ? vaTermiteValues[rateId].replace(/[^\d]/g, '') : '';
-                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                            
-                            return (
-                              <div key={rateId} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                  <span className="text-muted-foreground text-sm">$</span>
-                                  <Input
-                                    type="text"
-                                    placeholder=""
-                                    value={displayValue}
-                                    onChange={(e) => {
-                                      const value = e.target.value.replace(/[^\d]/g, '');
-                                      const newValues = [...vaTermiteValues];
-                                      newValues[rateId] = value;
-                                      setVaTermiteValues(newValues);
-                                    }}
-                                    className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-va-termite-${rateId}`}
-                                  />
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        {/* VA Underwriting Services */}
-                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                          <div className="flex items-center justify-end pr-4">
-                            <Label className="text-sm text-right text-muted-foreground">• VA Underwriting Services</Label>
-                          </div>
-                          {selectedRateIds.map((rateId) => {
-                            const numVal = vaUnderwritingValues[rateId] ? vaUnderwritingValues[rateId].replace(/[^\d]/g, '') : '';
-                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                            
-                            return (
-                              <div key={rateId} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                  <span className="text-muted-foreground text-sm">$</span>
-                                  <Input
-                                    type="text"
-                                    placeholder=""
-                                    value={displayValue}
-                                    onChange={(e) => {
-                                      const value = e.target.value.replace(/[^\d]/g, '');
-                                      const newValues = [...vaUnderwritingValues];
-                                      newValues[rateId] = value;
-                                      setVaUnderwritingValues(newValues);
-                                    }}
-                                    className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-va-underwriting-${rateId}`}
-                                  />
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        {/* Title & Escrow Services */}
-                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                          <div className="flex items-center justify-end pr-4">
-                            <Label className="text-sm text-right text-muted-foreground">• Title & Escrow Services</Label>
-                          </div>
-                          {selectedRateIds.map((rateId) => {
-                            const numVal = titleEscrowValues[rateId] ? titleEscrowValues[rateId].replace(/[^\d]/g, '') : '';
-                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                            
-                            return (
-                              <div key={rateId} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                  <span className="text-muted-foreground text-sm">$</span>
-                                  <Input
-                                    type="text"
-                                    placeholder=""
-                                    value={displayValue}
-                                    onChange={(e) => {
-                                      const value = e.target.value.replace(/[^\d]/g, '');
-                                      const newValues = [...titleEscrowValues];
-                                      newValues[rateId] = value;
-                                      setTitleEscrowValues(newValues);
-                                    }}
-                                    className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-title-escrow-${rateId}`}
-                                  />
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        {/* Pay Off Interest */}
-                        <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                          <div className="flex items-center justify-end pr-4">
-                            <Label className="text-sm text-right text-muted-foreground">• Pay Off Interest</Label>
-                          </div>
-                          {selectedRateIds.map((rateId) => {
-                            const numVal = payOffInterestValues[rateId] ? payOffInterestValues[rateId].replace(/[^\d]/g, '') : '';
-                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                            
-                            return (
-                              <div key={rateId} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                  <span className="text-muted-foreground text-sm">$</span>
-                                  <Input
-                                    type="text"
-                                    placeholder=""
-                                    value={displayValue}
-                                    onChange={(e) => {
-                                      const value = e.target.value.replace(/[^\d]/g, '');
-                                      const newValues = [...payOffInterestValues];
-                                      newValues[rateId] = value;
-                                      setPayOffInterestValues(newValues);
-                                    }}
-                                    className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-pay-off-interest-${rateId}`}
-                                  />
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        {/* State Tax & Recording */}
-                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                          <div className="flex items-center justify-end pr-4">
-                            <Label className="text-sm text-right text-muted-foreground">• State Tax & Recording</Label>
-                          </div>
-                          {selectedRateIds.map((rateId) => {
-                            const numVal = stateTaxValues[rateId] ? stateTaxValues[rateId].replace(/[^\d]/g, '') : '';
-                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                            
-                            return (
-                              <div key={rateId} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                  <span className="text-muted-foreground text-sm">$</span>
-                                  <Input
-                                    type="text"
-                                    placeholder=""
-                                    value={displayValue}
-                                    onChange={(e) => {
-                                      const value = e.target.value.replace(/[^\d]/g, '');
-                                      const newValues = [...stateTaxValues];
-                                      newValues[rateId] = value;
-                                      setStateTaxValues(newValues);
-                                    }}
-                                    className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-state-tax-${rateId}`}
-                                  />
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
+                            ))}
+                          </React.Fragment>
+                        ))}
                       </div>
 
                       {/* New Escrow Reserves Section - Conditionally shown */}
@@ -27314,6 +27289,343 @@ export default function AdminAddClient() {
               data-testid="button-confirm-remove-source"
             >
               Remove Source
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Third Party Services Customization Dialog */}
+      <Dialog open={showThirdPartyServicesDialog} onOpenChange={setShowThirdPartyServicesDialog}>
+        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto" data-testid="dialog-third-party-services">
+          <DialogHeader className="bg-blue-500 text-white -mx-6 -mt-6 px-6 py-4 rounded-t-lg">
+            <DialogTitle className="text-white">Customize Third Party Services</DialogTitle>
+            <DialogDescription className="text-white/90">
+              Customize categories and services for "{selectedLoanCategory || 'this loan type'}"
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="py-4 space-y-4">
+            {/* Action Buttons */}
+            <div className="flex gap-2 flex-wrap">
+              <Button
+                variant="outline"
+                onClick={() => setShowAddCategoryDialogTPS(true)}
+                data-testid="button-add-category-tps"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Category
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowAddServicesDialogTPS(true)}
+                data-testid="button-add-services-tps"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Services
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowRemoveCategoryDialogTPS(true)}
+                data-testid="button-remove-category-tps"
+              >
+                <Minus className="h-4 w-4 mr-2" />
+                Remove Category
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowRemoveServicesDialogTPS(true)}
+                data-testid="button-remove-services-tps"
+              >
+                <Minus className="h-4 w-4 mr-2" />
+                Remove Services
+              </Button>
+            </div>
+
+            {/* Current Configuration Display */}
+            <div className="border rounded-lg p-4 space-y-4">
+              <Label className="text-base font-semibold">Current Configuration:</Label>
+              {tempThirdPartyServices.map((category) => (
+                <div key={category.id} className="space-y-2">
+                  <Label className="text-sm font-bold">{category.categoryName}</Label>
+                  <div className="ml-4 space-y-1">
+                    {category.services.map((service) => (
+                      <div key={service.id} className="text-sm text-muted-foreground">
+                        • {service.serviceName}
+                      </div>
+                    ))}
+                    {category.services.length === 0 && (
+                      <div className="text-sm text-muted-foreground italic">No services added yet</div>
+                    )}
+                  </div>
+                </div>
+              ))}
+              {tempThirdPartyServices.length === 0 && (
+                <div className="text-sm text-muted-foreground italic">No categories added yet</div>
+              )}
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowThirdPartyServicesDialog(false)}
+              data-testid="button-cancel-tps"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleApplyThirdPartyServices}
+              data-testid="button-apply-tps"
+            >
+              Apply
+            </Button>
+            <Button
+              onClick={handleSaveToLibraryTPS}
+              data-testid="button-save-to-library-tps"
+            >
+              Save to Library
+            </Button>
+            <Button
+              onClick={handleCopyForAllRatesTPS}
+              data-testid="button-copy-for-all-rates-tps"
+            >
+              Copy for All Rates
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Category Dialog for TPS */}
+      <Dialog open={showAddCategoryDialogTPS} onOpenChange={setShowAddCategoryDialogTPS}>
+        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-add-category-tps">
+          <DialogHeader>
+            <DialogTitle>Add New Category</DialogTitle>
+            <DialogDescription>
+              Enter a name for the new third party services category.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="space-y-2">
+              <Label htmlFor="new-category-tps">Category Name</Label>
+              <Input
+                id="new-category-tps"
+                placeholder="Enter category name"
+                value={newCategoryNameTPS}
+                onChange={(e) => setNewCategoryNameTPS(e.target.value)}
+                data-testid="input-new-category-tps"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowAddCategoryDialogTPS(false);
+                setNewCategoryNameTPS('');
+              }}
+              data-testid="button-cancel-add-category-tps"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleAddCategoryTPS}
+              disabled={!newCategoryNameTPS.trim()}
+              data-testid="button-confirm-add-category-tps"
+            >
+              Add Category
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Services Dialog for TPS */}
+      <Dialog open={showAddServicesDialogTPS} onOpenChange={setShowAddServicesDialogTPS}>
+        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-add-services-tps">
+          <DialogHeader>
+            <DialogTitle>Add New Service</DialogTitle>
+            <DialogDescription>
+              Select a category and enter a service name to add.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="category-for-service-tps">Category</Label>
+              <Select value={selectedCategoryForServicesTPS} onValueChange={setSelectedCategoryForServicesTPS}>
+                <SelectTrigger data-testid="select-category-for-service-tps">
+                  <SelectValue placeholder="Select Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {tempThirdPartyServices.map((category) => (
+                    <SelectItem 
+                      key={category.id} 
+                      value={category.id}
+                      data-testid={`select-category-${category.id}`}
+                    >
+                      {category.categoryName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="new-service-tps">Service Name</Label>
+              <Input
+                id="new-service-tps"
+                placeholder="Enter service name"
+                value={newServiceNameTPS}
+                onChange={(e) => setNewServiceNameTPS(e.target.value)}
+                data-testid="input-new-service-tps"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowAddServicesDialogTPS(false);
+                setNewServiceNameTPS('');
+                setSelectedCategoryForServicesTPS('');
+              }}
+              data-testid="button-cancel-add-service-tps"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleAddServicesTPS}
+              disabled={!newServiceNameTPS.trim() || !selectedCategoryForServicesTPS}
+              data-testid="button-confirm-add-service-tps"
+            >
+              Add Service
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Remove Category Dialog for TPS */}
+      <Dialog open={showRemoveCategoryDialogTPS} onOpenChange={setShowRemoveCategoryDialogTPS}>
+        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-remove-category-tps">
+          <DialogHeader>
+            <DialogTitle>Remove Category</DialogTitle>
+            <DialogDescription>
+              Select a category to remove from the list.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="space-y-2">
+              <Label htmlFor="category-to-remove-tps">Category</Label>
+              <Select value={categoryToRemoveTPS} onValueChange={setCategoryToRemoveTPS}>
+                <SelectTrigger data-testid="select-category-to-remove-tps">
+                  <SelectValue placeholder="Select Category to Remove" />
+                </SelectTrigger>
+                <SelectContent>
+                  {tempThirdPartyServices.map((category) => (
+                    <SelectItem 
+                      key={category.id} 
+                      value={category.id}
+                      data-testid={`select-remove-category-${category.id}`}
+                    >
+                      {category.categoryName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowRemoveCategoryDialogTPS(false);
+                setCategoryToRemoveTPS('');
+              }}
+              data-testid="button-cancel-remove-category-tps"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleRemoveCategoryTPS}
+              disabled={!categoryToRemoveTPS}
+              data-testid="button-confirm-remove-category-tps"
+            >
+              Remove Category
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Remove Services Dialog for TPS */}
+      <Dialog open={showRemoveServicesDialogTPS} onOpenChange={setShowRemoveServicesDialogTPS}>
+        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-remove-services-tps">
+          <DialogHeader>
+            <DialogTitle>Remove Service</DialogTitle>
+            <DialogDescription>
+              Select a category and service to remove.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="category-for-remove-tps">Category</Label>
+              <Select value={selectedCategoryForRemoveTPS} onValueChange={setSelectedCategoryForRemoveTPS}>
+                <SelectTrigger data-testid="select-category-for-remove-tps">
+                  <SelectValue placeholder="Select Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {tempThirdPartyServices.map((category) => (
+                    <SelectItem 
+                      key={category.id} 
+                      value={category.id}
+                      data-testid={`select-category-for-remove-${category.id}`}
+                    >
+                      {category.categoryName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {selectedCategoryForRemoveTPS && (
+              <div className="space-y-2">
+                <Label htmlFor="service-to-remove-tps">Service</Label>
+                <Select value={serviceToRemoveTPS} onValueChange={setServiceToRemoveTPS}>
+                  <SelectTrigger data-testid="select-service-to-remove-tps">
+                    <SelectValue placeholder="Select Service to Remove" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {tempThirdPartyServices
+                      .find(cat => cat.id === selectedCategoryForRemoveTPS)
+                      ?.services.map((service) => (
+                        <SelectItem 
+                          key={service.id} 
+                          value={service.id}
+                          data-testid={`select-remove-service-${service.id}`}
+                        >
+                          {service.serviceName}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowRemoveServicesDialogTPS(false);
+                setServiceToRemoveTPS('');
+                setSelectedCategoryForRemoveTPS('');
+              }}
+              data-testid="button-cancel-remove-service-tps"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleRemoveServiceTPS}
+              disabled={!serviceToRemoveTPS || !selectedCategoryForRemoveTPS}
+              data-testid="button-confirm-remove-service-tps"
+            >
+              Remove Service
             </Button>
           </DialogFooter>
         </DialogContent>
