@@ -27498,12 +27498,12 @@ export default function AdminAddClient() {
             </div>
           </div>
 
-          <DialogFooter className="flex justify-start gap-2">
+          <DialogFooter className="grid grid-cols-5 gap-2 w-full">
             <Button
               variant="outline"
               size="sm"
               onClick={() => setShowThirdPartyServicesDialog(false)}
-              className="text-xs px-2"
+              className="text-xs px-2 w-full"
               data-testid="button-cancel-tps"
             >
               Cancel
@@ -27511,7 +27511,7 @@ export default function AdminAddClient() {
             <Button
               size="sm"
               onClick={handleApplyThirdPartyServices}
-              className="text-xs px-2"
+              className="text-xs px-2 w-full"
               data-testid="button-apply-tps"
             >
               Apply to Rate
@@ -27519,7 +27519,7 @@ export default function AdminAddClient() {
             <Button
               size="sm"
               onClick={handleCopyForAllRatesTPS}
-              className="text-xs px-2"
+              className="text-xs px-2 w-full"
               data-testid="button-copy-for-all-rates-tps"
             >
               Apply to All Rates
@@ -27527,11 +27527,12 @@ export default function AdminAddClient() {
             <Button
               size="sm"
               onClick={handleSaveToLibraryTPS}
-              className="text-xs px-2"
+              className="text-xs px-2 w-full"
               data-testid="button-save-to-library-tps"
             >
               Save to Library
             </Button>
+            <div></div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
