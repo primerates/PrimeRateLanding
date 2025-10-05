@@ -957,6 +957,14 @@ export default function AdminAddClient() {
   const [removedBuiltInCategories, setRemovedBuiltInCategories] = useState<string[]>([]);
   const [removedBuiltInPrograms, setRemovedBuiltInPrograms] = useState<string[]>([]);
   
+  // State for custom lenders
+  const [customLenders, setCustomLenders] = useState<Array<{ id: string; name: string }>>([]);
+  const [showAddLenderDialog, setShowAddLenderDialog] = useState(false);
+  const [showRemoveLenderDialog, setShowRemoveLenderDialog] = useState(false);
+  const [newLenderName, setNewLenderName] = useState('');
+  const [lenderToRemove, setLenderToRemove] = useState('');
+  const [removedBuiltInLenders, setRemovedBuiltInLenders] = useState<string[]>([]);
+  
   // State for Quote tab rate detail fields
   const [rateBuyDownValues, setRateBuyDownValues] = useState<string[]>(['', '', '', '', '']);
   const [cashOutAmountValues, setCashOutAmountValues] = useState<string[]>(['', '', '', '', '']);
@@ -21899,8 +21907,50 @@ export default function AdminAddClient() {
                               </SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="select" data-testid="select-lender-select">Select</SelectItem>
-                                <SelectItem value="uwm" data-testid="select-lender-uwm">UWM</SelectItem>
-                                <SelectItem value="pennymac" data-testid="select-lender-pennymac">Pennymac</SelectItem>
+                                
+                                {/* Add and Remove options */}
+                                <div 
+                                  className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    setShowAddLenderDialog(true);
+                                  }}
+                                  data-testid="option-add-lender"
+                                >
+                                  + Add
+                                </div>
+                                <div 
+                                  className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    setShowRemoveLenderDialog(true);
+                                  }}
+                                  data-testid="option-remove-lender"
+                                >
+                                  - Remove
+                                </div>
+                                
+                                {/* Separator line */}
+                                <div className="my-1 border-t border-border"></div>
+                                
+                                {/* Built-in lenders - only show if not removed */}
+                                {!removedBuiltInLenders.includes('uwm') && (
+                                  <SelectItem value="uwm" data-testid="select-lender-uwm">UWM</SelectItem>
+                                )}
+                                {!removedBuiltInLenders.includes('pennymac') && (
+                                  <SelectItem value="pennymac" data-testid="select-lender-pennymac">Pennymac</SelectItem>
+                                )}
+                                
+                                {/* Custom lenders */}
+                                {customLenders.map((lender) => (
+                                  <SelectItem 
+                                    key={lender.id} 
+                                    value={lender.id}
+                                    data-testid={`select-lender-${lender.id}`}
+                                  >
+                                    {lender.name}
+                                  </SelectItem>
+                                ))}
                               </SelectContent>
                             </Select>
                           )}
@@ -26023,6 +26073,157 @@ export default function AdminAddClient() {
               data-testid="button-confirm-remove-program"
             >
               Remove Program
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Lender Dialog */}
+      <Dialog open={showAddLenderDialog} onOpenChange={setShowAddLenderDialog}>
+        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-add-lender">
+          <DialogHeader>
+            <DialogTitle>Add Lender</DialogTitle>
+            <DialogDescription>
+              Create a new lender option.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="space-y-2">
+              <Label htmlFor="new-lender-name">Lender Name</Label>
+              <Input
+                id="new-lender-name"
+                value={newLenderName}
+                onChange={(e) => setNewLenderName(e.target.value)}
+                placeholder="e.g., Rocket Mortgage"
+                data-testid="input-new-lender-name"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowAddLenderDialog(false);
+                setNewLenderName('');
+              }}
+              data-testid="button-cancel-add-lender"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (newLenderName.trim()) {
+                  const newLender = {
+                    id: nanoid(),
+                    name: newLenderName.trim()
+                  };
+                  setCustomLenders(prev => [...prev, newLender]);
+                  setShowAddLenderDialog(false);
+                  setNewLenderName('');
+                  toast({
+                    title: "Lender Added",
+                    description: `"${newLenderName.trim()}" has been added.`
+                  });
+                }
+              }}
+              disabled={!newLenderName.trim()}
+              data-testid="button-save-add-lender"
+            >
+              Add Lender
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Remove Lender Dialog */}
+      <Dialog open={showRemoveLenderDialog} onOpenChange={setShowRemoveLenderDialog}>
+        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-remove-lender">
+          <DialogHeader>
+            <DialogTitle>Remove Lender</DialogTitle>
+            <DialogDescription>
+              Select a lender to remove from the list.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="space-y-2">
+              <Label htmlFor="lender-to-remove">Lender</Label>
+              <Select value={lenderToRemove} onValueChange={setLenderToRemove}>
+                <SelectTrigger data-testid="select-lender-to-remove">
+                  <SelectValue placeholder="Select Lender to Remove" />
+                </SelectTrigger>
+                <SelectContent>
+                  {/* Built-in lenders */}
+                  {!removedBuiltInLenders.includes('uwm') && (
+                    <SelectItem value="builtin::uwm" data-testid="select-remove-lender-uwm">
+                      UWM
+                    </SelectItem>
+                  )}
+                  {!removedBuiltInLenders.includes('pennymac') && (
+                    <SelectItem value="builtin::pennymac" data-testid="select-remove-lender-pennymac">
+                      Pennymac
+                    </SelectItem>
+                  )}
+                  
+                  {/* Custom lenders */}
+                  {customLenders.map((lender) => (
+                    <SelectItem 
+                      key={lender.id} 
+                      value={`custom::${lender.id}`}
+                      data-testid={`select-remove-lender-${lender.id}`}
+                    >
+                      {lender.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowRemoveLenderDialog(false);
+                setLenderToRemove('');
+              }}
+              data-testid="button-cancel-remove-lender"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (lenderToRemove) {
+                  const [type, id] = lenderToRemove.split('::');
+                  
+                  // Handle built-in lender removal
+                  if (type === 'builtin') {
+                    setRemovedBuiltInLenders(prev => [...prev, id]);
+                    const lenderNames: Record<string, string> = {
+                      'uwm': 'UWM',
+                      'pennymac': 'Pennymac'
+                    };
+                    toast({
+                      title: "Lender Removed",
+                      description: `"${lenderNames[id]}" has been removed.`
+                    });
+                  } else {
+                    // Handle custom lender removal
+                    const lenderName = customLenders.find(l => l.id === id)?.name || '';
+                    setCustomLenders(prev => prev.filter(l => l.id !== id));
+                    toast({
+                      title: "Lender Removed",
+                      description: `"${lenderName}" has been removed.`
+                    });
+                  }
+                  
+                  setShowRemoveLenderDialog(false);
+                  setLenderToRemove('');
+                }
+              }}
+              disabled={!lenderToRemove}
+              data-testid="button-confirm-remove-lender"
+            >
+              Remove Lender
             </Button>
           </DialogFooter>
         </DialogContent>
