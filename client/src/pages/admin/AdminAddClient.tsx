@@ -1114,6 +1114,24 @@ export default function AdminAddClient() {
     's7': ['', '', '', '', '']  // State Tax & Recording
   });
   
+  // State for Save to Library card
+  const [showSaveToLibraryCard, setShowSaveToLibraryCard] = useState(false);
+  const [saveLibraryLoanCategory, setSaveLibraryLoanCategory] = useState('');
+  const [saveLibraryLoanPurpose, setSaveLibraryLoanPurpose] = useState('');
+  const [saveLibraryState, setSaveLibraryState] = useState('');
+  const [saveLibraryLender, setSaveLibraryLender] = useState('');
+  const [saveLibraryTitle, setSaveLibraryTitle] = useState('');
+  const [showLibraryDialog, setShowLibraryDialog] = useState(false);
+  
+  // US States for library save
+  const usStates = [
+    'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
+    'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
+    'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+    'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+    'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
+  ];
+  
   // Auto-calculate Total New Payment
   const calculatedTotalNewPayment = useMemo(() => {
     const mortgage = parseInt(newMortgagePayment || '0', 10);
@@ -1902,13 +1920,42 @@ export default function AdminAddClient() {
   };
   
   const handleSaveToLibraryTPS = () => {
-    if (selectedLoanCategory) {
-      setThirdPartyServicesLibrary(prev => ({
-        ...prev,
-        [selectedLoanCategory]: JSON.parse(JSON.stringify(tempThirdPartyServices))
-      }));
-      setShowThirdPartyServicesDialog(false);
-    }
+    // Show the save to library card
+    setShowSaveToLibraryCard(true);
+  };
+  
+  const handleCompleteSaveToLibrary = () => {
+    // Create a unique key for this library entry
+    const libraryKey = `${saveLibraryLoanCategory}::${saveLibraryLoanPurpose}::${saveLibraryState}::${saveLibraryLender}::${saveLibraryTitle}`;
+    
+    // Save the configuration with metadata
+    setThirdPartyServicesLibrary(prev => ({
+      ...prev,
+      [libraryKey]: {
+        categories: JSON.parse(JSON.stringify(tempThirdPartyServices)),
+        metadata: {
+          loanCategory: saveLibraryLoanCategory,
+          loanPurpose: saveLibraryLoanPurpose,
+          state: saveLibraryState,
+          lender: saveLibraryLender,
+          title: saveLibraryTitle
+        }
+      }
+    }));
+    
+    // Reset the save library form
+    setSaveLibraryLoanCategory('');
+    setSaveLibraryLoanPurpose('');
+    setSaveLibraryState('');
+    setSaveLibraryLender('');
+    setSaveLibraryTitle('');
+    setShowSaveToLibraryCard(false);
+    setShowThirdPartyServicesDialog(false);
+    
+    toast({
+      title: "Saved to Library",
+      description: "Configuration has been saved to your library.",
+    });
   };
   
   const handleCopyForAllRatesTPS = () => {
@@ -21164,6 +21211,7 @@ export default function AdminAddClient() {
                       variant="ghost"
                       size="sm"
                       className="hover:bg-teal-500 hover:text-white"
+                      onClick={() => setShowLibraryDialog(true)}
                       title="Open Book"
                       data-testid="button-open-book"
                     >
@@ -27541,6 +27589,152 @@ export default function AdminAddClient() {
         </DialogContent>
       </Dialog>
 
+      {/* Save to Library Card */}
+      {showSaveToLibraryCard && (
+        <Card className="mt-4" data-testid="card-save-to-library">
+          <CardHeader className="bg-primary text-white pb-3">
+            <CardTitle className="text-lg">Save Configuration to Library</CardTitle>
+          </CardHeader>
+          <CardContent className="pt-4">
+            <div className="grid grid-cols-5 gap-3">
+              {/* Loan Category */}
+              <div className="space-y-2">
+                <Label htmlFor="save-loan-category" className="text-sm font-medium">
+                  Loan Category
+                </Label>
+                <Select value={saveLibraryLoanCategory} onValueChange={setSaveLibraryLoanCategory}>
+                  <SelectTrigger id="save-loan-category" data-testid="select-save-loan-category">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="va" data-testid="option-va">VA</SelectItem>
+                    <SelectItem value="va-jumbo" data-testid="option-va-jumbo">VA Jumbo</SelectItem>
+                    <SelectItem value="fannie-conv" data-testid="option-fannie-conv">Fannie Conv</SelectItem>
+                    <SelectItem value="fannie-jumbo" data-testid="option-fannie-jumbo">Fannie Jumbo</SelectItem>
+                    <SelectItem value="fha" data-testid="option-fha">FHA</SelectItem>
+                    <SelectItem value="non-qm" data-testid="option-non-qm">Non-QM</SelectItem>
+                    <SelectItem value="second-loan" data-testid="option-second-loan">Second Loan</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Loan Purpose */}
+              <div className="space-y-2">
+                <Label htmlFor="save-loan-purpose" className="text-sm font-medium">
+                  Loan Purpose
+                </Label>
+                <Select value={saveLibraryLoanPurpose} onValueChange={setSaveLibraryLoanPurpose}>
+                  <SelectTrigger id="save-loan-purpose" data-testid="select-save-loan-purpose">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="cash-out" data-testid="option-cash-out">Cash Out</SelectItem>
+                    <SelectItem value="purchase" data-testid="option-purchase">Purchase</SelectItem>
+                    <SelectItem value="rate-term" data-testid="option-rate-term">Rate & Term</SelectItem>
+                    <SelectItem value="streamline" data-testid="option-streamline">Streamline</SelectItem>
+                    <SelectItem value="irrrl" data-testid="option-irrrl">IRRRL</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* State */}
+              <div className="space-y-2">
+                <Label htmlFor="save-state" className="text-sm font-medium">
+                  State
+                </Label>
+                <Select value={saveLibraryState} onValueChange={setSaveLibraryState}>
+                  <SelectTrigger id="save-state" data-testid="select-save-state">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-60">
+                    {usStates.map((state) => (
+                      <SelectItem key={state} value={state} data-testid={`option-state-${state}`}>
+                        {state}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Lender */}
+              <div className="space-y-2">
+                <Label htmlFor="save-lender" className="text-sm font-medium">
+                  Lender
+                </Label>
+                <Select value={saveLibraryLender} onValueChange={setSaveLibraryLender}>
+                  <SelectTrigger id="save-lender" data-testid="select-save-lender">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {!removedBuiltInLenders.includes('uwm') && (
+                      <SelectItem value="uwm" data-testid="option-lender-uwm">UWM</SelectItem>
+                    )}
+                    {!removedBuiltInLenders.includes('pennymac') && (
+                      <SelectItem value="pennymac" data-testid="option-lender-pennymac">Pennymac</SelectItem>
+                    )}
+                    {customLenders.map((lender) => (
+                      <SelectItem key={lender.id} value={lender.id} data-testid={`option-lender-${lender.id}`}>
+                        {lender.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Title */}
+              <div className="space-y-2">
+                <Label htmlFor="save-title" className="text-sm font-medium">
+                  Title
+                </Label>
+                <Select value={saveLibraryTitle} onValueChange={setSaveLibraryTitle}>
+                  <SelectTrigger id="save-title" data-testid="select-save-title">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {!removedBuiltInTitles.includes('first-american-title') && (
+                      <SelectItem value="first-american-title" data-testid="option-title-first-american">
+                        First American Title
+                      </SelectItem>
+                    )}
+                    {!removedBuiltInTitles.includes('reltco') && (
+                      <SelectItem value="reltco" data-testid="option-title-reltco">
+                        Reltco
+                      </SelectItem>
+                    )}
+                    {customTitles.map((title) => (
+                      <SelectItem key={title.id} value={title.id} data-testid={`option-title-${title.id}`}>
+                        {title.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Save Button */}
+            <div className="flex justify-end mt-4 gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowSaveToLibraryCard(false)}
+                data-testid="button-cancel-save-library"
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="default"
+                size="sm"
+                onClick={handleCompleteSaveToLibrary}
+                disabled={!saveLibraryLoanCategory || !saveLibraryLoanPurpose || !saveLibraryState || !saveLibraryLender || !saveLibraryTitle}
+                data-testid="button-complete-save-library"
+              >
+                Save
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Add Category Dialog for TPS */}
       <Dialog open={showAddCategoryDialogTPS} onOpenChange={setShowAddCategoryDialogTPS}>
         <DialogContent className="sm:max-w-[425px]" data-testid="dialog-add-category-tps">
@@ -27844,6 +28038,109 @@ export default function AdminAddClient() {
               data-testid="button-confirm-remove-service-tps"
             >
               Remove Service
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Library View Dialog */}
+      <Dialog open={showLibraryDialog} onOpenChange={setShowLibraryDialog}>
+        <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto" data-testid="dialog-library">
+          <DialogHeader className="bg-primary text-white -mx-6 -mt-6 px-6 py-4 rounded-t-lg">
+            <DialogTitle className="text-white">Closing Costs Library</DialogTitle>
+          </DialogHeader>
+          
+          <div className="py-4">
+            {Object.keys(thirdPartyServicesLibrary).length === 0 ? (
+              <div className="text-center text-muted-foreground py-8">
+                No saved configurations yet. Use "Save to Library" to save configurations.
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {Object.entries(thirdPartyServicesLibrary).map(([key, config]: [string, any]) => (
+                  <Card key={key} data-testid={`library-entry-${key}`}>
+                    <CardHeader className="pb-3">
+                      <div className="flex justify-between items-start">
+                        <div className="space-y-1">
+                          <CardTitle className="text-base">Configuration</CardTitle>
+                          <div className="text-sm text-muted-foreground space-y-1">
+                            <div className="flex gap-4 flex-wrap">
+                              <span><strong>Loan Category:</strong> {config.metadata?.loanCategory?.toUpperCase() || 'N/A'}</span>
+                              <span><strong>Purpose:</strong> {config.metadata?.loanPurpose?.replace('-', ' ') || 'N/A'}</span>
+                              <span><strong>State:</strong> {config.metadata?.state || 'N/A'}</span>
+                              <span><strong>Lender:</strong> {config.metadata?.lender?.toUpperCase() || 'N/A'}</span>
+                              <span><strong>Title:</strong> {config.metadata?.title?.replace('-', ' ') || 'N/A'}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => {
+                            setThirdPartyServicesLibrary(prev => {
+                              const updated = { ...prev };
+                              delete updated[key];
+                              return updated;
+                            });
+                            toast({
+                              title: "Deleted",
+                              description: "Configuration removed from library.",
+                            });
+                          }}
+                          data-testid={`button-delete-${key}`}
+                        >
+                          Delete
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {config.categories?.map((category: any) => (
+                          <div key={category.id} className="border rounded-lg p-3">
+                            <h4 className="font-medium text-sm mb-2">{category.categoryName}</h4>
+                            <div className="space-y-1 text-sm">
+                              {category.services.map((service: any) => (
+                                <div key={service.id} className="flex justify-between text-muted-foreground">
+                                  <span>{service.serviceName}</span>
+                                  <span className="font-mono">{service.value || '$0'}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="mt-4 flex justify-end">
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => {
+                            setTempThirdPartyServices(JSON.parse(JSON.stringify(config.categories)));
+                            setCurrentThirdPartyServices(JSON.parse(JSON.stringify(config.categories)));
+                            setShowLibraryDialog(false);
+                            toast({
+                              title: "Loaded",
+                              description: "Configuration loaded from library.",
+                            });
+                          }}
+                          data-testid={`button-load-${key}`}
+                        >
+                          Load Configuration
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+          
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowLibraryDialog(false)}
+              data-testid="button-close-library"
+            >
+              Close
             </Button>
           </DialogFooter>
         </DialogContent>
