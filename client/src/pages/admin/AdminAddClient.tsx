@@ -936,6 +936,12 @@ export default function AdminAddClient() {
   const [calculatorDisplay, setCalculatorDisplay] = useState('0');
   const [calculatorMemory, setCalculatorMemory] = useState('');
   const [calculatorOperator, setCalculatorOperator] = useState('');
+  
+  // VA Funding Fee Calculator state
+  const [showVAFundingFeeDialog, setShowVAFundingFeeDialog] = useState(false);
+  const [vaFirstTimeCashOut, setVaFirstTimeCashOut] = useState('');
+  const [vaSubsequentCashOut, setVaSubsequentCashOut] = useState('');
+  const [vaIRRRL, setVaIRRRL] = useState('');
   const [quoteLoanProgram, setQuoteLoanProgram] = useState('');
   const [showLoanProgramControls, setShowLoanProgramControls] = useState(false);
   const [loanProgramFontSize, setLoanProgramFontSize] = useState('text-3xl');
@@ -21246,6 +21252,7 @@ export default function AdminAddClient() {
                           variant="ghost"
                           size="sm"
                           className="hover:bg-amber-500 hover:text-white"
+                          onClick={() => setShowVAFundingFeeDialog(true)}
                           data-testid="button-va-funding-fee"
                         >
                           <Star className="h-4 w-4" />
@@ -23430,6 +23437,134 @@ export default function AdminAddClient() {
               data-testid="textarea-sticky-notes"
             />
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* VA Funding Fee Calculator Dialog */}
+      <Dialog open={showVAFundingFeeDialog} onOpenChange={setShowVAFundingFeeDialog}>
+        <DialogContent className="sm:max-w-[600px]" data-testid="dialog-va-funding-fee">
+          <DialogHeader>
+            <DialogTitle>VA Funding Fee Calculator</DialogTitle>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            {/* First Time Cash Out Row */}
+            <div className="grid grid-cols-[1fr_auto_1fr] gap-4 items-center">
+              <Label className="text-right">First Time Cash Out</Label>
+              <div className="px-4 py-2 bg-muted rounded-md min-w-[80px] text-center font-semibold">
+                2.15%
+              </div>
+              <Input
+                type="text"
+                value={vaFirstTimeCashOut}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^\d.]/g, '');
+                  setVaFirstTimeCashOut(value);
+                }}
+                onBlur={(e) => {
+                  const value = e.target.value;
+                  if (value) {
+                    const formatted = parseFloat(value).toLocaleString('en-US', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2
+                    });
+                    setVaFirstTimeCashOut(formatted);
+                  }
+                }}
+                placeholder="$0.00"
+                data-testid="input-va-first-time-cash-out"
+              />
+            </div>
+
+            {/* Subsequent Cash Out Row */}
+            <div className="grid grid-cols-[1fr_auto_1fr] gap-4 items-center">
+              <Label className="text-right">Subsequent Cash Out</Label>
+              <div className="px-4 py-2 bg-muted rounded-md min-w-[80px] text-center font-semibold">
+                3.3%
+              </div>
+              <Input
+                type="text"
+                value={vaSubsequentCashOut}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^\d.]/g, '');
+                  setVaSubsequentCashOut(value);
+                }}
+                onBlur={(e) => {
+                  const value = e.target.value;
+                  if (value) {
+                    const formatted = parseFloat(value).toLocaleString('en-US', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2
+                    });
+                    setVaSubsequentCashOut(formatted);
+                  }
+                }}
+                placeholder="$0.00"
+                data-testid="input-va-subsequent-cash-out"
+              />
+            </div>
+
+            {/* VA IRRRL Row */}
+            <div className="grid grid-cols-[1fr_auto_1fr] gap-4 items-center">
+              <Label className="text-right">VA IRRRL</Label>
+              <div className="px-4 py-2 bg-muted rounded-md min-w-[80px] text-center font-semibold">
+                0.5%
+              </div>
+              <Input
+                type="text"
+                value={vaIRRRL}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^\d.]/g, '');
+                  setVaIRRRL(value);
+                }}
+                onBlur={(e) => {
+                  const value = e.target.value;
+                  if (value) {
+                    const formatted = parseFloat(value).toLocaleString('en-US', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2
+                    });
+                    setVaIRRRL(formatted);
+                  }
+                }}
+                placeholder="$0.00"
+                data-testid="input-va-irrrl"
+              />
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowVAFundingFeeDialog(false);
+                setVaFirstTimeCashOut('');
+                setVaSubsequentCashOut('');
+                setVaIRRRL('');
+              }}
+              data-testid="button-cancel-va-funding-fee"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="default"
+              onClick={() => {
+                // TODO: Apply to selected rate logic
+                setShowVAFundingFeeDialog(false);
+              }}
+              data-testid="button-apply-to-rate"
+            >
+              Apply to Rate
+            </Button>
+            <Button
+              variant="default"
+              onClick={() => {
+                // TODO: Apply to all rates logic
+                setShowVAFundingFeeDialog(false);
+              }}
+              data-testid="button-apply-to-all-rates"
+            >
+              Apply to All Rates
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
