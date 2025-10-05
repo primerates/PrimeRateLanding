@@ -1929,7 +1929,7 @@ export default function AdminAddClient() {
   
   const handleCompleteSaveToLibrary = () => {
     // Create a unique key for this library entry
-    const libraryKey = `${saveLibraryLoanCategory}::${saveLibraryLoanPurpose}::${saveLibraryState}::${saveLibraryLender}::${saveLibraryTitle}`;
+    const libraryKey = `${saveLibraryLoanCategory}::${saveLibraryLoanPurpose}::${saveLibraryState}::${saveLibraryLender}::${saveLibraryTitle}::${saveLibraryEstLoanAmount}`;
     
     // Save the configuration with metadata
     setThirdPartyServicesLibrary(prev => ({
@@ -1941,7 +1941,8 @@ export default function AdminAddClient() {
           loanPurpose: saveLibraryLoanPurpose,
           state: saveLibraryState,
           lender: saveLibraryLender,
-          title: saveLibraryTitle
+          title: saveLibraryTitle,
+          estLoanAmount: saveLibraryEstLoanAmount
         }
       }
     }));
@@ -27858,7 +27859,7 @@ export default function AdminAddClient() {
               variant="outline"
               size="sm"
               onClick={() => setShowThirdPartyServicesDialog(false)}
-              className="text-xs px-2 w-full bg-primary text-white border-primary hover:text-blue-600 hover:bg-primary hover:border-blue-600"
+              className="text-xs px-2 w-full bg-primary text-white border-primary hover:text-green-500 hover:bg-primary hover:border-primary"
               data-testid="button-cancel-tps"
             >
               Cancel
@@ -27867,7 +27868,7 @@ export default function AdminAddClient() {
               variant="outline"
               size="sm"
               onClick={handleApplyThirdPartyServices}
-              className="text-xs px-2 w-full bg-primary text-white border-primary hover:text-blue-600 hover:bg-primary hover:border-blue-600"
+              className="text-xs px-2 w-full bg-primary text-white border-primary hover:text-green-500 hover:bg-primary hover:border-primary"
               data-testid="button-apply-tps"
             >
               Apply to Rate
@@ -27876,7 +27877,7 @@ export default function AdminAddClient() {
               variant="outline"
               size="sm"
               onClick={handleCopyForAllRatesTPS}
-              className="text-xs px-2 w-full bg-primary text-white border-primary hover:text-blue-600 hover:bg-primary hover:border-blue-600"
+              className="text-xs px-2 w-full bg-primary text-white border-primary hover:text-green-500 hover:bg-primary hover:border-primary"
               data-testid="button-copy-for-all-rates-tps"
             >
               Apply to All Rates
@@ -27885,7 +27886,7 @@ export default function AdminAddClient() {
               variant="outline"
               size="sm"
               onClick={handleSaveToLibraryTPS}
-              className="text-xs px-2 w-full bg-primary text-white border-primary hover:text-blue-600 hover:bg-primary hover:border-blue-600"
+              className="text-xs px-2 w-full bg-primary text-white border-primary hover:text-green-500 hover:bg-primary hover:border-primary"
               data-testid="button-save-to-library-tps"
             >
               Save to Library
