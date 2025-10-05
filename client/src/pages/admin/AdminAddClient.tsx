@@ -21946,221 +21946,6 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="source-select">Source</Label>
-                          <Select>
-                            <SelectTrigger data-testid="select-source">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-source-select">Select</SelectItem>
-                              
-                              <div 
-                                className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setShowAddSourceDialog(true);
-                                }}
-                                data-testid="option-add-source"
-                              >
-                                + Add
-                              </div>
-                              <div 
-                                className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setShowRemoveSourceDialog(true);
-                                }}
-                                data-testid="option-remove-source"
-                              >
-                                - Remove
-                              </div>
-                              
-                              <div className="my-1 border-t border-border"></div>
-                              
-                              {!removedBuiltInSources.includes('direct-mail') && (
-                                <SelectItem value="direct-mail" data-testid="select-source-direct-mail">Direct Mail</SelectItem>
-                              )}
-                              {!removedBuiltInSources.includes('social-media') && (
-                                <SelectItem value="social-media" data-testid="select-source-social-media">Social Media</SelectItem>
-                              )}
-                              {!removedBuiltInSources.includes('website') && (
-                                <SelectItem value="website" data-testid="select-source-website">Website</SelectItem>
-                              )}
-                              {!removedBuiltInSources.includes('referral') && (
-                                <SelectItem value="referral" data-testid="select-source-referral">Referral</SelectItem>
-                              )}
-                              {!removedBuiltInSources.includes('repeat-client') && (
-                                <SelectItem value="repeat-client" data-testid="select-source-repeat-client">Repeat Client</SelectItem>
-                              )}
-                              
-                              {customSources.map((source) => (
-                                <SelectItem key={source.id} value={source.id} data-testid={`select-source-${source.id}`}>
-                                  {source.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-
-                      {/* Row 2: Quote, State, Rate Buydown, Escrow Reserves, Monthly Escrow */}
-                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="quote-select">Quote</Label>
-                          <Popover open={isRatePopoverOpen} onOpenChange={setIsRatePopoverOpen}>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant="outline"
-                                role="combobox"
-                                className="w-full justify-between"
-                                data-testid="button-quote-select"
-                              >
-                                {selectedRateIds.length === 0 
-                                  ? "Select" 
-                                  : selectedRateIds.length === 1 
-                                    ? `Rate ${selectedRateIds[0] + 1}` 
-                                    : `${selectedRateIds.length} Rates (${selectedRateIds.map(id => id + 1).join(', ')})`}
-                                <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-[200px] p-3" align="start">
-                              <div className="space-y-2">
-                                {/* Select All Four checkbox */}
-                                <div className="flex items-center space-x-2">
-                                  <Checkbox
-                                    id="select-all-rates"
-                                    checked={selectedRateIds.length === 4 && selectedRateIds.includes(0) && selectedRateIds.includes(1) && selectedRateIds.includes(2) && selectedRateIds.includes(3)}
-                                    onCheckedChange={(checked) => {
-                                      if (checked) {
-                                        setSelectedRateIds([0, 1, 2, 3]);
-                                        setShowRateCircles(true);
-                                      } else {
-                                        setSelectedRateIds([]);
-                                        setShowRateCircles(false);
-                                      }
-                                    }}
-                                    data-testid="checkbox-select-all-rates"
-                                  />
-                                  <Label htmlFor="select-all-rates" className="text-sm font-medium cursor-pointer">
-                                    Select All Four
-                                  </Label>
-                                </div>
-                                
-                                {/* Individual rate checkboxes in reverse order */}
-                                {[3, 2, 1, 0].map((rateId) => (
-                                  <div key={rateId} className="flex items-center space-x-2">
-                                    <Checkbox
-                                      id={`rate-${rateId}`}
-                                      checked={selectedRateIds.includes(rateId)}
-                                      onCheckedChange={(checked) => {
-                                        if (checked) {
-                                          const newIds = [...selectedRateIds, rateId].sort((a, b) => a - b);
-                                          setSelectedRateIds(newIds);
-                                          if (newIds.length > 0) {
-                                            setShowRateCircles(true);
-                                          }
-                                        } else {
-                                          const newIds = selectedRateIds.filter(id => id !== rateId);
-                                          setSelectedRateIds(newIds);
-                                          if (newIds.length === 0) {
-                                            setShowRateCircles(false);
-                                          }
-                                        }
-                                      }}
-                                      data-testid={`checkbox-rate-${rateId + 1}`}
-                                    />
-                                    <Label htmlFor={`rate-${rateId}`} className="text-sm cursor-pointer">
-                                      Rate {rateId + 1}
-                                    </Label>
-                                  </div>
-                                ))}
-                              </div>
-                            </PopoverContent>
-                          </Popover>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="state-select">State</Label>
-                          <Select>
-                            <SelectTrigger data-testid="select-state">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent className="max-h-60">
-                              <SelectItem value="select" data-testid="select-state-select">Select</SelectItem>
-                              {usStates.map((state) => (
-                                <SelectItem key={state} value={state} data-testid={`select-state-${state}`}>
-                                  {state}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="rate-buydown-select">Rate Buydown</Label>
-                          <Select value={rateBuydownSelection} onValueChange={setRateBuydownSelection}>
-                            <SelectTrigger data-testid="select-rate-buydown">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-rate-buydown-select">Select</SelectItem>
-                              <SelectItem value="yes" data-testid="select-rate-buydown-yes">Yes</SelectItem>
-                              <SelectItem value="no" data-testid="select-rate-buydown-no">No</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="escrow-reserves-select">Escrow Reserves</Label>
-                          <Select value={escrowReserves} onValueChange={setEscrowReserves}>
-                            <SelectTrigger data-testid="select-escrow-reserves">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-escrow-reserves-select">Select</SelectItem>
-                              <SelectItem value="new-escrow-reserves" data-testid="select-escrow-reserves-new">New Escrow Reserves</SelectItem>
-                              <SelectItem value="escrow-not-included" data-testid="select-escrow-reserves-not-included">Escrow Not Included</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="monthly-escrow-select">Monthly Escrow</Label>
-                          <Select value={monthlyEscrow} onValueChange={setMonthlyEscrow}>
-                            <SelectTrigger data-testid="select-monthly-escrow">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-monthly-escrow-select">Select</SelectItem>
-                              <SelectItem value="includes-tax-insurance" data-testid="select-monthly-escrow-tax-insurance">Includes Tax & Insurance</SelectItem>
-                              <SelectItem value="includes-tax-only" data-testid="select-monthly-escrow-tax-only">Includes Tax Only</SelectItem>
-                              <SelectItem value="includes-insurance-only" data-testid="select-monthly-escrow-insurance-only">Includes Insurance Only</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-
-                      {/* Row 3: Mid FICO, LTV Ratio, Loan Program, Lender, Title */}
-                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="mid-fico-input">Mid FICO</Label>
-                          <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm transition-colors items-center">
-                            <span className="font-medium" data-testid="text-mid-fico">
-                              {getAbcCalculatedMidFico()}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="debt-to-income-input">LTV Ratio</Label>
-                          <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm transition-colors items-center">
-                            <span className="font-medium" data-testid="text-debt-to-income">
-                              {calculateEstimatedLTV()}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
                           <Label htmlFor="loan-program-select">Loan Program</Label>
                           <Select>
                             <SelectTrigger data-testid="select-loan-program">
@@ -22284,6 +22069,221 @@ export default function AdminAddClient() {
                                     </SelectItem>
                                   ))}
                                 </React.Fragment>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      {/* Row 2: Quote, State, Rate Buydown, Escrow Reserves, Monthly Escrow */}
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="quote-select">Quote</Label>
+                          <Popover open={isRatePopoverOpen} onOpenChange={setIsRatePopoverOpen}>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                role="combobox"
+                                className="w-full justify-between"
+                                data-testid="button-quote-select"
+                              >
+                                {selectedRateIds.length === 0 
+                                  ? "Select" 
+                                  : selectedRateIds.length === 1 
+                                    ? `Rate ${selectedRateIds[0] + 1}` 
+                                    : `${selectedRateIds.length} Rates (${selectedRateIds.map(id => id + 1).join(', ')})`}
+                                <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[200px] p-3" align="start">
+                              <div className="space-y-2">
+                                {/* Individual rate checkboxes in ascending order */}
+                                {[0, 1, 2, 3].map((rateId) => (
+                                  <div key={rateId} className="flex items-center space-x-2">
+                                    <Checkbox
+                                      id={`rate-${rateId}`}
+                                      checked={selectedRateIds.includes(rateId)}
+                                      onCheckedChange={(checked) => {
+                                        if (checked) {
+                                          const newIds = [...selectedRateIds, rateId].sort((a, b) => a - b);
+                                          setSelectedRateIds(newIds);
+                                          if (newIds.length > 0) {
+                                            setShowRateCircles(true);
+                                          }
+                                        } else {
+                                          const newIds = selectedRateIds.filter(id => id !== rateId);
+                                          setSelectedRateIds(newIds);
+                                          if (newIds.length === 0) {
+                                            setShowRateCircles(false);
+                                          }
+                                        }
+                                      }}
+                                      data-testid={`checkbox-rate-${rateId + 1}`}
+                                    />
+                                    <Label htmlFor={`rate-${rateId}`} className="text-sm cursor-pointer">
+                                      Rate {rateId + 1}
+                                    </Label>
+                                  </div>
+                                ))}
+                                
+                                {/* Select All Four checkbox */}
+                                <div className="flex items-center space-x-2">
+                                  <Checkbox
+                                    id="select-all-rates"
+                                    checked={selectedRateIds.length === 4 && selectedRateIds.includes(0) && selectedRateIds.includes(1) && selectedRateIds.includes(2) && selectedRateIds.includes(3)}
+                                    onCheckedChange={(checked) => {
+                                      if (checked) {
+                                        setSelectedRateIds([0, 1, 2, 3]);
+                                        setShowRateCircles(true);
+                                      } else {
+                                        setSelectedRateIds([]);
+                                        setShowRateCircles(false);
+                                      }
+                                    }}
+                                    data-testid="checkbox-select-all-rates"
+                                  />
+                                  <Label htmlFor="select-all-rates" className="text-sm font-medium cursor-pointer">
+                                    Select All Four
+                                  </Label>
+                                </div>
+                              </div>
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="state-select">State</Label>
+                          <Select>
+                            <SelectTrigger data-testid="select-state">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent className="max-h-60">
+                              <SelectItem value="select" data-testid="select-state-select">Select</SelectItem>
+                              {usStates.map((state) => (
+                                <SelectItem key={state} value={state} data-testid={`select-state-${state}`}>
+                                  {state}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="rate-buydown-select">Rate Buydown</Label>
+                          <Select value={rateBuydownSelection} onValueChange={setRateBuydownSelection}>
+                            <SelectTrigger data-testid="select-rate-buydown">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-rate-buydown-select">Select</SelectItem>
+                              <SelectItem value="yes" data-testid="select-rate-buydown-yes">Yes</SelectItem>
+                              <SelectItem value="no" data-testid="select-rate-buydown-no">No</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="escrow-reserves-select">Escrow Reserves</Label>
+                          <Select value={escrowReserves} onValueChange={setEscrowReserves}>
+                            <SelectTrigger data-testid="select-escrow-reserves">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-escrow-reserves-select">Select</SelectItem>
+                              <SelectItem value="new-escrow-reserves" data-testid="select-escrow-reserves-new">New Escrow Reserves</SelectItem>
+                              <SelectItem value="escrow-not-included" data-testid="select-escrow-reserves-not-included">Escrow Not Included</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="monthly-escrow-select">Monthly Escrow</Label>
+                          <Select value={monthlyEscrow} onValueChange={setMonthlyEscrow}>
+                            <SelectTrigger data-testid="select-monthly-escrow">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-monthly-escrow-select">Select</SelectItem>
+                              <SelectItem value="includes-tax-insurance" data-testid="select-monthly-escrow-tax-insurance">Includes Tax & Insurance</SelectItem>
+                              <SelectItem value="includes-tax-only" data-testid="select-monthly-escrow-tax-only">Includes Tax Only</SelectItem>
+                              <SelectItem value="includes-insurance-only" data-testid="select-monthly-escrow-insurance-only">Includes Insurance Only</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      {/* Row 3: Mid FICO, LTV Ratio, Source, Lender, Title */}
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="mid-fico-input">Mid FICO</Label>
+                          <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm transition-colors items-center">
+                            <span className="font-medium" data-testid="text-mid-fico">
+                              {getAbcCalculatedMidFico()}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="debt-to-income-input">LTV Ratio</Label>
+                          <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm transition-colors items-center">
+                            <span className="font-medium" data-testid="text-debt-to-income">
+                              {calculateEstimatedLTV()}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="source-select">Source</Label>
+                          <Select>
+                            <SelectTrigger data-testid="select-source">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-source-select">Select</SelectItem>
+                              
+                              <div 
+                                className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setShowAddSourceDialog(true);
+                                }}
+                                data-testid="option-add-source"
+                              >
+                                + Add
+                              </div>
+                              <div 
+                                className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setShowRemoveSourceDialog(true);
+                                }}
+                                data-testid="option-remove-source"
+                              >
+                                - Remove
+                              </div>
+                              
+                              <div className="my-1 border-t border-border"></div>
+                              
+                              {!removedBuiltInSources.includes('direct-mail') && (
+                                <SelectItem value="direct-mail" data-testid="select-source-direct-mail">Direct Mail</SelectItem>
+                              )}
+                              {!removedBuiltInSources.includes('social-media') && (
+                                <SelectItem value="social-media" data-testid="select-source-social-media">Social Media</SelectItem>
+                              )}
+                              {!removedBuiltInSources.includes('website') && (
+                                <SelectItem value="website" data-testid="select-source-website">Website</SelectItem>
+                              )}
+                              {!removedBuiltInSources.includes('referral') && (
+                                <SelectItem value="referral" data-testid="select-source-referral">Referral</SelectItem>
+                              )}
+                              {!removedBuiltInSources.includes('repeat-client') && (
+                                <SelectItem value="repeat-client" data-testid="select-source-repeat-client">Repeat Client</SelectItem>
+                              )}
+                              
+                              {customSources.map((source) => (
+                                <SelectItem key={source.id} value={source.id} data-testid={`select-source-${source.id}`}>
+                                  {source.name}
+                                </SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
