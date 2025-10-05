@@ -27319,34 +27319,31 @@ export default function AdminAddClient() {
       {/* Third Party Services Customization Dialog */}
       <Dialog open={showThirdPartyServicesDialog} onOpenChange={setShowThirdPartyServicesDialog}>
         <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto" data-testid="dialog-third-party-services">
-          <DialogHeader className="bg-blue-500 text-white -mx-6 -mt-6 px-6 py-4 rounded-t-lg">
+          <DialogHeader className="bg-orange-500 text-white -mx-6 -mt-6 px-6 py-4 rounded-t-lg">
             <DialogTitle className="text-white">Customize Third Party Services</DialogTitle>
-            <DialogDescription className="text-white/90">
-              Customize categories and services for "{selectedLoanCategory || 'this loan type'}"
-            </DialogDescription>
           </DialogHeader>
           
           <div className="py-4 space-y-4">
             {/* Action Buttons */}
             <div className="flex gap-2 flex-wrap">
               <Button
-                variant="outline"
                 onClick={() => setShowAddCategoryDialogTPS(true)}
+                className="bg-blue-500 hover:bg-blue-600 text-white"
                 data-testid="button-add-category-tps"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Category
               </Button>
               <Button
-                variant="outline"
                 onClick={() => setShowAddServicesDialogTPS(true)}
+                className="bg-blue-500 hover:bg-blue-600 text-white"
                 data-testid="button-add-services-tps"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Services
               </Button>
               <Button
-                variant="outline"
+                variant="destructive"
                 onClick={() => setShowRemoveCategoryDialogTPS(true)}
                 data-testid="button-remove-category-tps"
               >
@@ -27354,7 +27351,7 @@ export default function AdminAddClient() {
                 Remove Category
               </Button>
               <Button
-                variant="outline"
+                variant="destructive"
                 onClick={() => setShowRemoveServicesDialogTPS(true)}
                 data-testid="button-remove-services-tps"
               >
@@ -27399,7 +27396,13 @@ export default function AdminAddClient() {
               onClick={handleApplyThirdPartyServices}
               data-testid="button-apply-tps"
             >
-              Apply
+              Apply to Rate
+            </Button>
+            <Button
+              onClick={handleCopyForAllRatesTPS}
+              data-testid="button-copy-for-all-rates-tps"
+            >
+              Apply to All Rates
             </Button>
             <Button
               onClick={handleSaveToLibraryTPS}
@@ -27408,10 +27411,10 @@ export default function AdminAddClient() {
               Save to Library
             </Button>
             <Button
-              onClick={handleCopyForAllRatesTPS}
-              data-testid="button-copy-for-all-rates-tps"
+              onClick={() => {}}
+              data-testid="button-name-fee-card-tps"
             >
-              Copy for All Rates
+              Name this Fee Card
             </Button>
           </DialogFooter>
         </DialogContent>
