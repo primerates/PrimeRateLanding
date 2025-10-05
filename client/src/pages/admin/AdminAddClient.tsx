@@ -1122,6 +1122,8 @@ export default function AdminAddClient() {
   const [saveLibraryLender, setSaveLibraryLender] = useState('');
   const [saveLibraryTitle, setSaveLibraryTitle] = useState('');
   const [showLibraryDialog, setShowLibraryDialog] = useState(false);
+  const [isSaveLibraryPopoverOpen, setIsSaveLibraryPopoverOpen] = useState(false);
+  const [saveLibraryCombinedSelection, setSaveLibraryCombinedSelection] = useState('');
   
   // US States for library save
   const usStates = [
@@ -1944,6 +1946,7 @@ export default function AdminAddClient() {
     }));
     
     // Reset the save library form
+    setSaveLibraryCombinedSelection('');
     setSaveLibraryLoanCategory('');
     setSaveLibraryLoanPurpose('');
     setSaveLibraryState('');
@@ -27551,45 +27554,185 @@ export default function AdminAddClient() {
           {showSaveToLibraryCard && (
             <div className="mt-6 border-t pt-6" data-testid="card-save-to-library">
               <h3 className="text-lg font-semibold mb-4">Save Configuration to Library</h3>
-              <div className="grid grid-cols-5 gap-3">
-                {/* Loan Category */}
-                <div className="space-y-2">
-                  <Label htmlFor="save-loan-category" className="text-sm font-medium">
-                    Loan Category
-                  </Label>
-                  <Select value={saveLibraryLoanCategory} onValueChange={setSaveLibraryLoanCategory}>
-                    <SelectTrigger id="save-loan-category" data-testid="select-save-loan-category">
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="va" data-testid="option-va">VA</SelectItem>
-                      <SelectItem value="va-jumbo" data-testid="option-va-jumbo">VA Jumbo</SelectItem>
-                      <SelectItem value="fannie-conv" data-testid="option-fannie-conv">Fannie Conv</SelectItem>
-                      <SelectItem value="fannie-jumbo" data-testid="option-fannie-jumbo">Fannie Jumbo</SelectItem>
-                      <SelectItem value="fha" data-testid="option-fha">FHA</SelectItem>
-                      <SelectItem value="non-qm" data-testid="option-non-qm">Non-QM</SelectItem>
-                      <SelectItem value="second-loan" data-testid="option-second-loan">Second Loan</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Loan Purpose */}
-                <div className="space-y-2">
+              <div className="grid grid-cols-4 gap-3">
+                {/* Combined Loan Category & Purpose Popover */}
+                <div className="space-y-2 col-span-2">
                   <Label htmlFor="save-loan-purpose" className="text-sm font-medium">
                     Loan Purpose
                   </Label>
-                  <Select value={saveLibraryLoanPurpose} onValueChange={setSaveLibraryLoanPurpose}>
-                    <SelectTrigger id="save-loan-purpose" data-testid="select-save-loan-purpose">
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="cash-out" data-testid="option-cash-out">Cash Out</SelectItem>
-                      <SelectItem value="purchase" data-testid="option-purchase">Purchase</SelectItem>
-                      <SelectItem value="rate-term" data-testid="option-rate-term">Rate & Term</SelectItem>
-                      <SelectItem value="streamline" data-testid="option-streamline">Streamline</SelectItem>
-                      <SelectItem value="irrrl" data-testid="option-irrrl">IRRRL</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Popover open={isSaveLibraryPopoverOpen} onOpenChange={setIsSaveLibraryPopoverOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className="w-full justify-between"
+                        data-testid="button-save-loan-purpose-select"
+                      >
+                        {saveLibraryCombinedSelection || "Select"}
+                        <Plus className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[1000px] p-3" align="start">
+                      <div className="space-y-2">
+                        {/* Select Option */}
+                        <div 
+                          className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                          onClick={() => {
+                            setSaveLibraryCombinedSelection('');
+                            setSaveLibraryLoanCategory('');
+                            setSaveLibraryLoanPurpose('');
+                            setIsSaveLibraryPopoverOpen(false);
+                          }}
+                          data-testid="option-save-category-select"
+                        >
+                          <span className="text-sm">Select</span>
+                        </div>
+                        
+                        {/* Categories Side by Side */}
+                        <div className="grid grid-cols-5 gap-4 border-t pt-2">
+                          {/* VA */}
+                          <div className="border-r pr-4">
+                            <div className="text-base font-bold text-green-700 px-2 py-1.5">VA</div>
+                            <div className="ml-3 space-y-1">
+                              {['Cash Out', 'Purchase', 'Rate & Term', 'IRRRL'].map((purpose) => (
+                                <div 
+                                  key={`va-${purpose}`}
+                                  className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                  onClick={() => {
+                                    const combined = `VA - ${purpose}`;
+                                    setSaveLibraryCombinedSelection(combined);
+                                    setSaveLibraryLoanCategory('VA');
+                                    setSaveLibraryLoanPurpose(purpose);
+                                    setIsSaveLibraryPopoverOpen(false);
+                                  }}
+                                  data-testid={`option-save-category-va-${purpose.toLowerCase().replace(/\s/g, '-').replace(/&/g, 'and')}`}
+                                >
+                                  <div className={`w-3 h-3 border flex-shrink-0 ${
+                                    saveLibraryCombinedSelection === `VA - ${purpose}` 
+                                      ? 'bg-green-700 border-green-700' 
+                                      : 'border-current'
+                                  }`} />
+                                  <span className="text-sm">{purpose}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Fannie Conv */}
+                          <div className="border-r pr-4">
+                            <div className="text-base font-bold text-green-700 px-2 py-1.5">Fannie Conv</div>
+                            <div className="ml-3 space-y-1">
+                              {['Cash Out', 'Purchase', 'Rate & Term', 'Streamline'].map((purpose) => (
+                                <div 
+                                  key={`fannie-conv-${purpose}`}
+                                  className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                  onClick={() => {
+                                    const combined = `Fannie Conv - ${purpose}`;
+                                    setSaveLibraryCombinedSelection(combined);
+                                    setSaveLibraryLoanCategory('Fannie Conv');
+                                    setSaveLibraryLoanPurpose(purpose);
+                                    setIsSaveLibraryPopoverOpen(false);
+                                  }}
+                                  data-testid={`option-save-category-fannie-conv-${purpose.toLowerCase().replace(/\s/g, '-').replace(/&/g, 'and')}`}
+                                >
+                                  <div className={`w-3 h-3 border flex-shrink-0 ${
+                                    saveLibraryCombinedSelection === `Fannie Conv - ${purpose}` 
+                                      ? 'bg-green-700 border-green-700' 
+                                      : 'border-current'
+                                  }`} />
+                                  <span className="text-sm">{purpose}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* FHA */}
+                          <div className="border-r pr-4">
+                            <div className="text-base font-bold text-green-700 px-2 py-1.5">FHA</div>
+                            <div className="ml-3 space-y-1">
+                              {['Cash Out', 'Purchase', 'Rate & Term', 'Streamline'].map((purpose) => (
+                                <div 
+                                  key={`fha-${purpose}`}
+                                  className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                  onClick={() => {
+                                    const combined = `FHA - ${purpose}`;
+                                    setSaveLibraryCombinedSelection(combined);
+                                    setSaveLibraryLoanCategory('FHA');
+                                    setSaveLibraryLoanPurpose(purpose);
+                                    setIsSaveLibraryPopoverOpen(false);
+                                  }}
+                                  data-testid={`option-save-category-fha-${purpose.toLowerCase().replace(/\s/g, '-').replace(/&/g, 'and')}`}
+                                >
+                                  <div className={`w-3 h-3 border flex-shrink-0 ${
+                                    saveLibraryCombinedSelection === `FHA - ${purpose}` 
+                                      ? 'bg-green-700 border-green-700' 
+                                      : 'border-current'
+                                  }`} />
+                                  <span className="text-sm">{purpose}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Non-QM */}
+                          <div className="border-r pr-4">
+                            <div className="text-base font-bold text-green-700 px-2 py-1.5">Non-QM</div>
+                            <div className="ml-3 space-y-1">
+                              {['Cash Out', 'Purchase', 'Rate & Term'].map((purpose) => (
+                                <div 
+                                  key={`non-qm-${purpose}`}
+                                  className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                  onClick={() => {
+                                    const combined = `Non-QM - ${purpose}`;
+                                    setSaveLibraryCombinedSelection(combined);
+                                    setSaveLibraryLoanCategory('Non-QM');
+                                    setSaveLibraryLoanPurpose(purpose);
+                                    setIsSaveLibraryPopoverOpen(false);
+                                  }}
+                                  data-testid={`option-save-category-non-qm-${purpose.toLowerCase().replace(/\s/g, '-').replace(/&/g, 'and')}`}
+                                >
+                                  <div className={`w-3 h-3 border flex-shrink-0 ${
+                                    saveLibraryCombinedSelection === `Non-QM - ${purpose}` 
+                                      ? 'bg-green-700 border-green-700' 
+                                      : 'border-current'
+                                  }`} />
+                                  <span className="text-sm">{purpose}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Second Loan */}
+                          <div>
+                            <div className="text-base font-bold text-green-700 px-2 py-1.5">Second Loan</div>
+                            <div className="ml-3 space-y-1">
+                              {['Cash Out', 'Purchase'].map((purpose) => (
+                                <div 
+                                  key={`second-loan-${purpose}`}
+                                  className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                  onClick={() => {
+                                    const combined = `Second Loan - ${purpose}`;
+                                    setSaveLibraryCombinedSelection(combined);
+                                    setSaveLibraryLoanCategory('Second Loan');
+                                    setSaveLibraryLoanPurpose(purpose);
+                                    setIsSaveLibraryPopoverOpen(false);
+                                  }}
+                                  data-testid={`option-save-category-second-loan-${purpose.toLowerCase().replace(/\s/g, '-').replace(/&/g, 'and')}`}
+                                >
+                                  <div className={`w-3 h-3 border flex-shrink-0 ${
+                                    saveLibraryCombinedSelection === `Second Loan - ${purpose}` 
+                                      ? 'bg-green-700 border-green-700' 
+                                      : 'border-current'
+                                  }`} />
+                                  <span className="text-sm">{purpose}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                 </div>
 
                 {/* State */}
@@ -27680,7 +27823,7 @@ export default function AdminAddClient() {
                   variant="default"
                   size="sm"
                   onClick={handleCompleteSaveToLibrary}
-                  disabled={!saveLibraryLoanCategory || !saveLibraryLoanPurpose || !saveLibraryState || !saveLibraryLender || !saveLibraryTitle}
+                  disabled={!saveLibraryCombinedSelection || !saveLibraryState || !saveLibraryLender || !saveLibraryTitle}
                   data-testid="button-complete-save-library"
                 >
                   Save
