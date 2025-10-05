@@ -22613,8 +22613,8 @@ export default function AdminAddClient() {
                       </div>
                     </div>
 
-                    {/* Existing Loan Balance Card - Hide if HELOC or Fixed Second is selected */}
-                    {selectedLoanCategory !== 'Second Loan - HELOC' && selectedLoanCategory !== 'Second Loan - Fixed Second' && (
+                    {/* Existing Loan Balance Card - Hide if Purchase, HELOC, or Fixed Second is selected */}
+                    {selectedLoanCategory !== 'Second Loan - HELOC' && selectedLoanCategory !== 'Second Loan - Fixed Second' && !selectedLoanCategory.includes('Purchase') && (
                       <Card 
                         className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-green-500 hover:border-2 hover:border-green-500 transition-colors flex-none"
                         style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
