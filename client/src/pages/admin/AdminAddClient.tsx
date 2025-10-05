@@ -27368,7 +27368,7 @@ export default function AdminAddClient() {
       <Dialog open={showThirdPartyServicesDialog} onOpenChange={setShowThirdPartyServicesDialog}>
         <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto" data-testid="dialog-third-party-services">
           <DialogHeader className="bg-primary text-white -mx-6 -mt-6 px-6 py-4 rounded-t-lg">
-            <DialogTitle className="text-white">Customize Third Party Services</DialogTitle>
+            <DialogTitle className="text-white">Customize Closing Costs</DialogTitle>
           </DialogHeader>
           
           <div className="py-4 space-y-4">
