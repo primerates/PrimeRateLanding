@@ -22527,7 +22527,7 @@ export default function AdminAddClient() {
                         )}
 
                       {/* Third Party Services Section */}
-                      <div className="border-t pt-6">
+                      <div className={`${rateBuydownSelection !== 'no' ? 'border-t' : ''} pt-6`}>
                         <div className="grid gap-4 mb-3" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-base font-bold text-right">Third Party Services</Label>
