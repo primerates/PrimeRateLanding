@@ -921,6 +921,7 @@ export default function AdminAddClient() {
   const [monthlyEscrow, setMonthlyEscrow] = useState('');
   const [isDuApproval, setIsDuApproval] = useState(false);
   const [escrowReserves, setEscrowReserves] = useState('');
+  const [rateBuydownSelection, setRateBuydownSelection] = useState('select');
   const [debtToIncomeRatio, setDebtToIncomeRatio] = useState('');
   const [lenderCredit, setLenderCredit] = useState('');
   const [isSellerCredit, setIsSellerCredit] = useState(false);
@@ -22066,15 +22067,15 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="va-benefits-select">VA Benefits</Label>
-                          <Select>
-                            <SelectTrigger data-testid="select-va-benefits">
+                          <Label htmlFor="rate-buydown-select">Rate Buydown</Label>
+                          <Select value={rateBuydownSelection} onValueChange={setRateBuydownSelection}>
+                            <SelectTrigger data-testid="select-rate-buydown">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="select" data-testid="select-va-benefits-select">Select</SelectItem>
-                              <SelectItem value="yes-exempt" data-testid="select-va-benefits-yes-exempt">Yes - Exempt</SelectItem>
-                              <SelectItem value="no-not-exempt" data-testid="select-va-benefits-no-not-exempt">No - Not Exempt</SelectItem>
+                              <SelectItem value="select" data-testid="select-rate-buydown-select">Select</SelectItem>
+                              <SelectItem value="yes" data-testid="select-rate-buydown-yes">Yes</SelectItem>
+                              <SelectItem value="no" data-testid="select-rate-buydown-no">No</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -22484,44 +22485,46 @@ export default function AdminAddClient() {
                       style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
                     >
                       <CardContent className="pt-6 space-y-6">
-                        {/* Rate Buy Down Row */}
-                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                          <div className="flex items-center justify-end pr-4 gap-2">
-                            <Info 
-                              className="h-4 w-4 flex-shrink-0 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
-                              data-testid="icon-info-rate-buy-down"
-                              onClick={() => setIsRateBuyDownInfoOpen(true)}
-                            />
-                            <Label className="text-base font-semibold text-right">Rate Buy Down</Label>
-                          </div>
-                          {selectedRateIds.map((rateId) => {
-                            const numVal = rateBuyDownValues[rateId] ? rateBuyDownValues[rateId].replace(/[^\d]/g, '') : '';
-                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                            const tabIndex = (3 * selectedRateIds.length) + rateId + 1; // After cash out amount
-                            
-                            return (
-                              <div key={rateId} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                  <span className="text-muted-foreground text-sm">$</span>
-                                  <Input
-                                    type="text"
-                                    placeholder=""
-                                    value={displayValue}
-                                    onChange={(e) => {
-                                      const value = e.target.value.replace(/[^\d]/g, '');
-                                      const newValues = [...rateBuyDownValues];
-                                      newValues[rateId] = value;
-                                      setRateBuyDownValues(newValues);
-                                    }}
-                                    tabIndex={tabIndex}
-                                    className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-rate-buy-down-${rateId}`}
-                                  />
+                        {/* Rate Buy Down Row - Only show when rateBuydownSelection is not "no" */}
+                        {rateBuydownSelection !== 'no' && (
+                          <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
+                            <div className="flex items-center justify-end pr-4 gap-2">
+                              <Info 
+                                className="h-4 w-4 flex-shrink-0 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                                data-testid="icon-info-rate-buy-down"
+                                onClick={() => setIsRateBuyDownInfoOpen(true)}
+                              />
+                              <Label className="text-base font-semibold text-right">Rate Buy Down</Label>
+                            </div>
+                            {selectedRateIds.map((rateId) => {
+                              const numVal = rateBuyDownValues[rateId] ? rateBuyDownValues[rateId].replace(/[^\d]/g, '') : '';
+                              const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                              const tabIndex = (3 * selectedRateIds.length) + rateId + 1; // After cash out amount
+                              
+                              return (
+                                <div key={rateId} className="flex justify-center">
+                                  <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
+                                    <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      onChange={(e) => {
+                                        const value = e.target.value.replace(/[^\d]/g, '');
+                                        const newValues = [...rateBuyDownValues];
+                                        newValues[rateId] = value;
+                                        setRateBuyDownValues(newValues);
+                                      }}
+                                      tabIndex={tabIndex}
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
+                                      data-testid={`input-rate-buy-down-${rateId}`}
+                                    />
+                                  </div>
                                 </div>
-                              </div>
-                            );
-                          })}
-                        </div>
+                              );
+                            })}
+                          </div>
+                        )}
 
                       {/* Third Party Services Section */}
                       <div className="border-t pt-6">
