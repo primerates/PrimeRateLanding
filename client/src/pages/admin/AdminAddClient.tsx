@@ -22667,7 +22667,7 @@ export default function AdminAddClient() {
                             {/* Category Header */}
                             <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                               <div className="flex items-center justify-end pr-4 gap-2">
-                                <Label className="text-sm font-semibold text-right">{category.categoryName}</Label>
+                                <Label className="text-base font-semibold text-right">{category.categoryName}</Label>
                                 {categoryIndex === 0 && (
                                   <Button
                                     type="button"
