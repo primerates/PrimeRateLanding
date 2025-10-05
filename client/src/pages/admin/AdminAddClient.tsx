@@ -23063,7 +23063,7 @@ export default function AdminAddClient() {
           <div className="space-y-4 py-6 px-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
             {/* Message */}
             <div className="text-lg text-muted-foreground">
-              A rate buydown, often called "points," allows you to finance/roll in an upfront cost into your new loan to lower your interest rate below the current market rate. The cost of points can change until your rate is locked.
+              A rate buydown, often called "points," allows you to finance/roll in an upfront cost into your new loan to lower your interest rate below the current market rate. The cost of buydown (points) can change until your interest rate is locked.
             </div>
           </div>
         </DialogContent>
