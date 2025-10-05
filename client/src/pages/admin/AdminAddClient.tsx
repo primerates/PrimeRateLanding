@@ -1010,6 +1010,7 @@ export default function AdminAddClient() {
   const [rateBuyDownValues, setRateBuyDownValues] = useState<string[]>(['', '', '', '', '']);
   const [cashOutAmountValues, setCashOutAmountValues] = useState<string[]>(['', '', '', '', '']);
   const [isCashOutSameMode, setIsCashOutSameMode] = useState(false);
+  const [isExistingLoanBalanceSameMode, setIsExistingLoanBalanceSameMode] = useState(false);
   const [vaFundingFeeValues, setVaFundingFeeValues] = useState<string[]>(['', '', '', '', '']);
   const [vaAppraisalValues, setVaAppraisalValues] = useState<string[]>(['', '', '', '', '']);
   const [vaTermiteValues, setVaTermiteValues] = useState<string[]>(['', '', '', '', '']);
@@ -22623,7 +22624,22 @@ export default function AdminAddClient() {
                         <CardContent className="pt-6 space-y-6">
                           <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                             <div className="flex items-center justify-end pr-4">
-                              <Label className="text-base font-semibold text-right">Existing Loan Balance:</Label>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (isExistingLoanBalanceSameMode) {
+                                    // Copy first field value to all fields
+                                    const firstValue = existingLoanBalanceValues[selectedRateIds[0]] || '';
+                                    const newValues = selectedRateIds.map(() => firstValue);
+                                    setExistingLoanBalanceValues(newValues);
+                                  }
+                                  setIsExistingLoanBalanceSameMode(!isExistingLoanBalanceSameMode);
+                                }}
+                                className="text-base font-semibold text-right hover:text-blue-600 cursor-pointer"
+                                data-testid="button-existing-loan-balance-toggle"
+                              >
+                                {isExistingLoanBalanceSameMode ? 'Same' : 'Existing Loan Balance:'}
+                              </button>
                             </div>
                             {selectedRateIds.map((rateId) => {
                               const numVal = existingLoanBalanceValues[rateId] ? existingLoanBalanceValues[rateId].replace(/[^\d]/g, '') : '';
