@@ -1033,6 +1033,9 @@ export default function AdminAddClient() {
   const [propertyTaxPayment, setPropertyTaxPayment] = useState('');
   const [statementEscrowBalance, setStatementEscrowBalance] = useState('');
   
+  // State for Rate Buy Down Information dialog
+  const [isRateBuyDownInfoOpen, setIsRateBuyDownInfoOpen] = useState(false);
+  
   // Auto-calculate Total Monthly Escrow
   const calculatedTotalMonthlyEscrow = useMemo(() => {
     const insurance = parseInt(propertyInsurancePayment || '0', 10);
@@ -22483,7 +22486,12 @@ export default function AdminAddClient() {
                       <CardContent className="pt-6 space-y-6">
                         {/* Rate Buy Down Row */}
                         <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                          <div className="flex items-center justify-end pr-4">
+                          <div className="flex items-center justify-end pr-4 gap-2">
+                            <Info 
+                              className="h-4 w-4 flex-shrink-0 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+                              data-testid="icon-info-rate-buy-down"
+                              onClick={() => setIsRateBuyDownInfoOpen(true)}
+                            />
                             <Label className="text-base font-semibold text-right">Rate Buy Down</Label>
                           </div>
                           {selectedRateIds.map((rateId) => {
@@ -23041,6 +23049,21 @@ export default function AdminAddClient() {
                   data-testid="input-statement-escrow-balance"
                 />
               </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Rate Buy Down Information Dialog */}
+      <Dialog open={isRateBuyDownInfoOpen} onOpenChange={setIsRateBuyDownInfoOpen}>
+        <DialogContent className="sm:max-w-[500px] p-0" data-testid="dialog-rate-buy-down-info">
+          <DialogHeader className="text-white p-6 rounded-t-lg" style={{ backgroundColor: '#1a3373' }}>
+            <DialogTitle className="text-white">Rate Buy Down</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-6 px-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+            {/* Message */}
+            <div className="text-lg text-muted-foreground">
+              A rate buydown, often called "points," allows you to finance/roll in an upfront cost into your new loan to lower your interest rate below the current market rate. The cost of points can change until your rate is locked.
             </div>
           </div>
         </DialogContent>
