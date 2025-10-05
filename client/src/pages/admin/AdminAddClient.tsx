@@ -22613,80 +22613,84 @@ export default function AdminAddClient() {
                       </div>
                     </div>
 
-                    {/* Existing Loan Balance Card */}
-                    <Card 
-                      className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-green-500 hover:border-2 hover:border-green-500 transition-colors flex-none"
-                      style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
-                    >
-                      <CardContent className="pt-6 space-y-6">
-                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                          <div className="flex items-center justify-end pr-4">
-                            <Label className="text-base font-semibold text-right">Existing Loan Balance:</Label>
-                          </div>
-                          {selectedRateIds.map((rateId) => {
-                            const numVal = existingLoanBalanceValues[rateId] ? existingLoanBalanceValues[rateId].replace(/[^\d]/g, '') : '';
-                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                            const tabIndex = selectedRateIds.length + rateId + 1;
-                            
-                            return (
-                              <div key={rateId} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                  <span className="text-muted-foreground text-sm">$</span>
-                                  <Input
-                                    type="text"
-                                    placeholder=""
-                                    value={displayValue}
-                                    onChange={(e) => {
-                                      const value = e.target.value.replace(/[^\d]/g, '');
-                                      const newValues = [...existingLoanBalanceValues];
-                                      newValues[rateId] = value;
-                                      setExistingLoanBalanceValues(newValues);
-                                    }}
-                                    tabIndex={tabIndex}
-                                    className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-existing-loan-balance-${rateId}`}
-                                  />
+                    {/* Existing Loan Balance Card - Hide if HELOC or Fixed Second is selected */}
+                    {selectedLoanCategory !== 'Second Loan - HELOC' && selectedLoanCategory !== 'Second Loan - Fixed Second' && (
+                      <Card 
+                        className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-green-500 hover:border-2 hover:border-green-500 transition-colors flex-none"
+                        style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
+                      >
+                        <CardContent className="pt-6 space-y-6">
+                          <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
+                            <div className="flex items-center justify-end pr-4">
+                              <Label className="text-base font-semibold text-right">Existing Loan Balance:</Label>
+                            </div>
+                            {selectedRateIds.map((rateId) => {
+                              const numVal = existingLoanBalanceValues[rateId] ? existingLoanBalanceValues[rateId].replace(/[^\d]/g, '') : '';
+                              const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                              const tabIndex = selectedRateIds.length + rateId + 1;
+                              
+                              return (
+                                <div key={rateId} className="flex justify-center">
+                                  <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
+                                    <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      onChange={(e) => {
+                                        const value = e.target.value.replace(/[^\d]/g, '');
+                                        const newValues = [...existingLoanBalanceValues];
+                                        newValues[rateId] = value;
+                                        setExistingLoanBalanceValues(newValues);
+                                      }}
+                                      tabIndex={tabIndex}
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
+                                      data-testid={`input-existing-loan-balance-${rateId}`}
+                                    />
+                                  </div>
                                 </div>
-                              </div>
-                            );
-                          })}
-                        </div>
+                              );
+                            })}
+                          </div>
 
-                        {/* Cash Out Amount Row */}
-                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                          <div className="flex items-center justify-end pr-4">
-                            <Label className="text-base font-semibold text-right">Cash Out Amount</Label>
-                          </div>
-                          {selectedRateIds.map((rateId) => {
-                            const numVal = cashOutAmountValues[rateId] ? cashOutAmountValues[rateId].replace(/[^\d]/g, '') : '';
-                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                            const tabIndex = (2 * selectedRateIds.length) + rateId + 1; // After existing loan balance
-                            
-                            return (
-                              <div key={rateId} className="flex justify-center">
-                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                  <span className="text-muted-foreground text-sm">$</span>
-                                  <Input
-                                    type="text"
-                                    placeholder=""
-                                    value={displayValue}
-                                    onChange={(e) => {
-                                      const value = e.target.value.replace(/[^\d]/g, '');
-                                      const newValues = [...cashOutAmountValues];
-                                      newValues[rateId] = value;
-                                      setCashOutAmountValues(newValues);
-                                    }}
-                                    tabIndex={tabIndex}
-                                    className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    data-testid={`input-cash-out-amount-${rateId}`}
-                                  />
-                                </div>
+                          {/* Cash Out Amount Row - Only show if a "Cash Out" option is selected */}
+                          {selectedLoanCategory.includes('Cash Out') && (
+                            <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
+                              <div className="flex items-center justify-end pr-4">
+                                <Label className="text-base font-semibold text-right">Cash Out Amount</Label>
                               </div>
-                            );
-                          })}
-                        </div>
-                      </CardContent>
-                    </Card>
+                              {selectedRateIds.map((rateId) => {
+                                const numVal = cashOutAmountValues[rateId] ? cashOutAmountValues[rateId].replace(/[^\d]/g, '') : '';
+                                const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                                const tabIndex = (2 * selectedRateIds.length) + rateId + 1; // After existing loan balance
+                                
+                                return (
+                                  <div key={rateId} className="flex justify-center">
+                                    <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
+                                      <span className="text-muted-foreground text-sm">$</span>
+                                      <Input
+                                        type="text"
+                                        placeholder=""
+                                        value={displayValue}
+                                        onChange={(e) => {
+                                          const value = e.target.value.replace(/[^\d]/g, '');
+                                          const newValues = [...cashOutAmountValues];
+                                          newValues[rateId] = value;
+                                          setCashOutAmountValues(newValues);
+                                        }}
+                                        tabIndex={tabIndex}
+                                        className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
+                                        data-testid={`input-cash-out-amount-${rateId}`}
+                                      />
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    )}
 
                     {/* Rate Details Section */}
                     <Card 
