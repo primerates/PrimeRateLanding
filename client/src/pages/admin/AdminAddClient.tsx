@@ -22669,16 +22669,10 @@ export default function AdminAddClient() {
                                     }
                                     setIsCashOutSameMode(!isCashOutSameMode);
                                   }}
-                                  className="text-base font-semibold text-right hover:text-blue-600 transition-all duration-500 cursor-pointer"
-                                  style={{
-                                    transform: isCashOutSameMode ? 'rotateY(180deg)' : 'rotateY(0deg)',
-                                    transformStyle: 'preserve-3d',
-                                  }}
+                                  className="text-base font-semibold text-right hover:text-blue-600 cursor-pointer"
                                   data-testid="button-cash-out-toggle"
                                 >
-                                  <span style={{ display: 'block', backfaceVisibility: 'hidden' }}>
-                                    {isCashOutSameMode ? 'Same' : 'Cash Out Amount'}
-                                  </span>
+                                  {isCashOutSameMode ? 'Same' : 'Cash Out Amount'}
                                 </button>
                               </div>
                               {selectedRateIds.map((rateId) => {
