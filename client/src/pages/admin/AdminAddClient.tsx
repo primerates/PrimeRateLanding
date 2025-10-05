@@ -27319,7 +27319,7 @@ export default function AdminAddClient() {
       {/* Third Party Services Customization Dialog */}
       <Dialog open={showThirdPartyServicesDialog} onOpenChange={setShowThirdPartyServicesDialog}>
         <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto" data-testid="dialog-third-party-services">
-          <DialogHeader className="bg-orange-500 text-white -mx-6 -mt-6 px-6 py-4 rounded-t-lg">
+          <DialogHeader className="bg-primary text-white -mx-6 -mt-6 px-6 py-4 rounded-t-lg">
             <DialogTitle className="text-white">Customize Third Party Services</DialogTitle>
           </DialogHeader>
           
@@ -27327,32 +27327,36 @@ export default function AdminAddClient() {
             {/* Action Buttons */}
             <div className="flex gap-2 flex-wrap">
               <Button
+                variant="outline"
                 onClick={() => setShowAddCategoryDialogTPS(true)}
-                className="bg-blue-500 hover:bg-blue-600 text-white"
+                className="text-blue-600 border-border hover:bg-blue-600 hover:text-white hover:border-blue-600"
                 data-testid="button-add-category-tps"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Category
               </Button>
               <Button
+                variant="outline"
                 onClick={() => setShowAddServicesDialogTPS(true)}
-                className="bg-blue-500 hover:bg-blue-600 text-white"
+                className="text-blue-600 border-border hover:bg-blue-600 hover:text-white hover:border-blue-600"
                 data-testid="button-add-services-tps"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Services
               </Button>
               <Button
-                variant="destructive"
+                variant="outline"
                 onClick={() => setShowRemoveCategoryDialogTPS(true)}
+                className="text-red-600 border-border hover:bg-red-600 hover:text-white hover:border-red-600"
                 data-testid="button-remove-category-tps"
               >
                 <Minus className="h-4 w-4 mr-2" />
                 Remove Category
               </Button>
               <Button
-                variant="destructive"
+                variant="outline"
                 onClick={() => setShowRemoveServicesDialogTPS(true)}
+                className="text-red-600 border-border hover:bg-red-600 hover:text-white hover:border-red-600"
                 data-testid="button-remove-services-tps"
               >
                 <Minus className="h-4 w-4 mr-2" />
@@ -27409,12 +27413,6 @@ export default function AdminAddClient() {
               data-testid="button-save-to-library-tps"
             >
               Save to Library
-            </Button>
-            <Button
-              onClick={() => {}}
-              data-testid="button-name-fee-card-tps"
-            >
-              Name this Fee Card
             </Button>
           </DialogFooter>
         </DialogContent>
