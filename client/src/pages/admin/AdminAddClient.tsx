@@ -1009,6 +1009,7 @@ export default function AdminAddClient() {
   // State for Quote tab rate detail fields
   const [rateBuyDownValues, setRateBuyDownValues] = useState<string[]>(['', '', '', '', '']);
   const [cashOutAmountValues, setCashOutAmountValues] = useState<string[]>(['', '', '', '', '']);
+  const [isCashOutSameMode, setIsCashOutSameMode] = useState(false);
   const [vaFundingFeeValues, setVaFundingFeeValues] = useState<string[]>(['', '', '', '', '']);
   const [vaAppraisalValues, setVaAppraisalValues] = useState<string[]>(['', '', '', '', '']);
   const [vaTermiteValues, setVaTermiteValues] = useState<string[]>(['', '', '', '', '']);
@@ -22657,7 +22658,28 @@ export default function AdminAddClient() {
                           {selectedLoanCategory.includes('Cash Out') && (
                             <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                               <div className="flex items-center justify-end pr-4">
-                                <Label className="text-base font-semibold text-right">Cash Out Amount</Label>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (isCashOutSameMode) {
+                                      // Copy first field value to all fields
+                                      const firstValue = cashOutAmountValues[selectedRateIds[0]] || '';
+                                      const newValues = selectedRateIds.map(() => firstValue);
+                                      setCashOutAmountValues(newValues);
+                                    }
+                                    setIsCashOutSameMode(!isCashOutSameMode);
+                                  }}
+                                  className="text-base font-semibold text-right hover:text-blue-600 transition-all duration-500 cursor-pointer"
+                                  style={{
+                                    transform: isCashOutSameMode ? 'rotateY(180deg)' : 'rotateY(0deg)',
+                                    transformStyle: 'preserve-3d',
+                                  }}
+                                  data-testid="button-cash-out-toggle"
+                                >
+                                  <span style={{ display: 'block', backfaceVisibility: 'hidden' }}>
+                                    {isCashOutSameMode ? 'Same' : 'Cash Out Amount'}
+                                  </span>
+                                </button>
                               </div>
                               {selectedRateIds.map((rateId) => {
                                 const numVal = cashOutAmountValues[rateId] ? cashOutAmountValues[rateId].replace(/[^\d]/g, '') : '';
