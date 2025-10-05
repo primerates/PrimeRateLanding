@@ -21223,22 +21223,22 @@ export default function AdminAddClient() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="hover:bg-teal-500 hover:text-white"
-                      onClick={() => setShowLibraryDialog(true)}
-                      title="Open Book"
-                      data-testid="button-open-book"
-                    >
-                      <BookOpen className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
                       className="hover:bg-yellow-500 hover:text-white"
                       onClick={() => setIsStickyNotesOpen(true)}
                       title="Sticky Notes"
                       data-testid="button-sticky-notes"
                     >
                       <StickyNote className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="hover:bg-teal-500 hover:text-white"
+                      onClick={() => setShowLibraryDialog(true)}
+                      title="Open Book"
+                      data-testid="button-open-book"
+                    >
+                      <BookOpen className="h-4 w-4" />
                     </Button>
                     <Tooltip>
                       <TooltipTrigger asChild>
