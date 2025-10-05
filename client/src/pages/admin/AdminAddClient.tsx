@@ -27547,6 +27547,148 @@ export default function AdminAddClient() {
             </div>
           </div>
 
+          {/* Save to Library Card */}
+          {showSaveToLibraryCard && (
+            <div className="mt-6 border-t pt-6" data-testid="card-save-to-library">
+              <h3 className="text-lg font-semibold mb-4">Save Configuration to Library</h3>
+              <div className="grid grid-cols-5 gap-3">
+                {/* Loan Category */}
+                <div className="space-y-2">
+                  <Label htmlFor="save-loan-category" className="text-sm font-medium">
+                    Loan Category
+                  </Label>
+                  <Select value={saveLibraryLoanCategory} onValueChange={setSaveLibraryLoanCategory}>
+                    <SelectTrigger id="save-loan-category" data-testid="select-save-loan-category">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="va" data-testid="option-va">VA</SelectItem>
+                      <SelectItem value="va-jumbo" data-testid="option-va-jumbo">VA Jumbo</SelectItem>
+                      <SelectItem value="fannie-conv" data-testid="option-fannie-conv">Fannie Conv</SelectItem>
+                      <SelectItem value="fannie-jumbo" data-testid="option-fannie-jumbo">Fannie Jumbo</SelectItem>
+                      <SelectItem value="fha" data-testid="option-fha">FHA</SelectItem>
+                      <SelectItem value="non-qm" data-testid="option-non-qm">Non-QM</SelectItem>
+                      <SelectItem value="second-loan" data-testid="option-second-loan">Second Loan</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Loan Purpose */}
+                <div className="space-y-2">
+                  <Label htmlFor="save-loan-purpose" className="text-sm font-medium">
+                    Loan Purpose
+                  </Label>
+                  <Select value={saveLibraryLoanPurpose} onValueChange={setSaveLibraryLoanPurpose}>
+                    <SelectTrigger id="save-loan-purpose" data-testid="select-save-loan-purpose">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="cash-out" data-testid="option-cash-out">Cash Out</SelectItem>
+                      <SelectItem value="purchase" data-testid="option-purchase">Purchase</SelectItem>
+                      <SelectItem value="rate-term" data-testid="option-rate-term">Rate & Term</SelectItem>
+                      <SelectItem value="streamline" data-testid="option-streamline">Streamline</SelectItem>
+                      <SelectItem value="irrrl" data-testid="option-irrrl">IRRRL</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* State */}
+                <div className="space-y-2">
+                  <Label htmlFor="save-state" className="text-sm font-medium">
+                    State
+                  </Label>
+                  <Select value={saveLibraryState} onValueChange={setSaveLibraryState}>
+                    <SelectTrigger id="save-state" data-testid="select-save-state">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-60">
+                      {usStates.map((state) => (
+                        <SelectItem key={state} value={state} data-testid={`option-state-${state}`}>
+                          {state}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Lender */}
+                <div className="space-y-2">
+                  <Label htmlFor="save-lender" className="text-sm font-medium">
+                    Lender
+                  </Label>
+                  <Select value={saveLibraryLender} onValueChange={setSaveLibraryLender}>
+                    <SelectTrigger id="save-lender" data-testid="select-save-lender">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {!removedBuiltInLenders.includes('uwm') && (
+                        <SelectItem value="uwm" data-testid="option-lender-uwm">UWM</SelectItem>
+                      )}
+                      {!removedBuiltInLenders.includes('pennymac') && (
+                        <SelectItem value="pennymac" data-testid="option-lender-pennymac">Pennymac</SelectItem>
+                      )}
+                      {customLenders.map((lender) => (
+                        <SelectItem key={lender.id} value={lender.id} data-testid={`option-lender-${lender.id}`}>
+                          {lender.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Title */}
+                <div className="space-y-2">
+                  <Label htmlFor="save-title" className="text-sm font-medium">
+                    Title
+                  </Label>
+                  <Select value={saveLibraryTitle} onValueChange={setSaveLibraryTitle}>
+                    <SelectTrigger id="save-title" data-testid="select-save-title">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {!removedBuiltInTitles.includes('first-american-title') && (
+                        <SelectItem value="first-american-title" data-testid="option-title-first-american">
+                          First American Title
+                        </SelectItem>
+                      )}
+                      {!removedBuiltInTitles.includes('reltco') && (
+                        <SelectItem value="reltco" data-testid="option-title-reltco">
+                          Reltco
+                        </SelectItem>
+                      )}
+                      {customTitles.map((title) => (
+                        <SelectItem key={title.id} value={title.id} data-testid={`option-title-${title.id}`}>
+                          {title.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Save Button */}
+              <div className="flex justify-end mt-4 gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowSaveToLibraryCard(false)}
+                  data-testid="button-cancel-save-library"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={handleCompleteSaveToLibrary}
+                  disabled={!saveLibraryLoanCategory || !saveLibraryLoanPurpose || !saveLibraryState || !saveLibraryLender || !saveLibraryTitle}
+                  data-testid="button-complete-save-library"
+                >
+                  Save
+                </Button>
+              </div>
+            </div>
+          )}
+
           <DialogFooter className="grid grid-cols-5 gap-2 w-full">
             <Button
               variant="outline"
@@ -27588,152 +27730,6 @@ export default function AdminAddClient() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      {/* Save to Library Card */}
-      {showSaveToLibraryCard && (
-        <Card className="mt-4" data-testid="card-save-to-library">
-          <CardHeader className="bg-primary text-white pb-3">
-            <CardTitle className="text-lg">Save Configuration to Library</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-4">
-            <div className="grid grid-cols-5 gap-3">
-              {/* Loan Category */}
-              <div className="space-y-2">
-                <Label htmlFor="save-loan-category" className="text-sm font-medium">
-                  Loan Category
-                </Label>
-                <Select value={saveLibraryLoanCategory} onValueChange={setSaveLibraryLoanCategory}>
-                  <SelectTrigger id="save-loan-category" data-testid="select-save-loan-category">
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="va" data-testid="option-va">VA</SelectItem>
-                    <SelectItem value="va-jumbo" data-testid="option-va-jumbo">VA Jumbo</SelectItem>
-                    <SelectItem value="fannie-conv" data-testid="option-fannie-conv">Fannie Conv</SelectItem>
-                    <SelectItem value="fannie-jumbo" data-testid="option-fannie-jumbo">Fannie Jumbo</SelectItem>
-                    <SelectItem value="fha" data-testid="option-fha">FHA</SelectItem>
-                    <SelectItem value="non-qm" data-testid="option-non-qm">Non-QM</SelectItem>
-                    <SelectItem value="second-loan" data-testid="option-second-loan">Second Loan</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Loan Purpose */}
-              <div className="space-y-2">
-                <Label htmlFor="save-loan-purpose" className="text-sm font-medium">
-                  Loan Purpose
-                </Label>
-                <Select value={saveLibraryLoanPurpose} onValueChange={setSaveLibraryLoanPurpose}>
-                  <SelectTrigger id="save-loan-purpose" data-testid="select-save-loan-purpose">
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="cash-out" data-testid="option-cash-out">Cash Out</SelectItem>
-                    <SelectItem value="purchase" data-testid="option-purchase">Purchase</SelectItem>
-                    <SelectItem value="rate-term" data-testid="option-rate-term">Rate & Term</SelectItem>
-                    <SelectItem value="streamline" data-testid="option-streamline">Streamline</SelectItem>
-                    <SelectItem value="irrrl" data-testid="option-irrrl">IRRRL</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* State */}
-              <div className="space-y-2">
-                <Label htmlFor="save-state" className="text-sm font-medium">
-                  State
-                </Label>
-                <Select value={saveLibraryState} onValueChange={setSaveLibraryState}>
-                  <SelectTrigger id="save-state" data-testid="select-save-state">
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-60">
-                    {usStates.map((state) => (
-                      <SelectItem key={state} value={state} data-testid={`option-state-${state}`}>
-                        {state}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Lender */}
-              <div className="space-y-2">
-                <Label htmlFor="save-lender" className="text-sm font-medium">
-                  Lender
-                </Label>
-                <Select value={saveLibraryLender} onValueChange={setSaveLibraryLender}>
-                  <SelectTrigger id="save-lender" data-testid="select-save-lender">
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {!removedBuiltInLenders.includes('uwm') && (
-                      <SelectItem value="uwm" data-testid="option-lender-uwm">UWM</SelectItem>
-                    )}
-                    {!removedBuiltInLenders.includes('pennymac') && (
-                      <SelectItem value="pennymac" data-testid="option-lender-pennymac">Pennymac</SelectItem>
-                    )}
-                    {customLenders.map((lender) => (
-                      <SelectItem key={lender.id} value={lender.id} data-testid={`option-lender-${lender.id}`}>
-                        {lender.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Title */}
-              <div className="space-y-2">
-                <Label htmlFor="save-title" className="text-sm font-medium">
-                  Title
-                </Label>
-                <Select value={saveLibraryTitle} onValueChange={setSaveLibraryTitle}>
-                  <SelectTrigger id="save-title" data-testid="select-save-title">
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {!removedBuiltInTitles.includes('first-american-title') && (
-                      <SelectItem value="first-american-title" data-testid="option-title-first-american">
-                        First American Title
-                      </SelectItem>
-                    )}
-                    {!removedBuiltInTitles.includes('reltco') && (
-                      <SelectItem value="reltco" data-testid="option-title-reltco">
-                        Reltco
-                      </SelectItem>
-                    )}
-                    {customTitles.map((title) => (
-                      <SelectItem key={title.id} value={title.id} data-testid={`option-title-${title.id}`}>
-                        {title.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            {/* Save Button */}
-            <div className="flex justify-end mt-4 gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowSaveToLibraryCard(false)}
-                data-testid="button-cancel-save-library"
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="default"
-                size="sm"
-                onClick={handleCompleteSaveToLibrary}
-                disabled={!saveLibraryLoanCategory || !saveLibraryLoanPurpose || !saveLibraryState || !saveLibraryLender || !saveLibraryTitle}
-                data-testid="button-complete-save-library"
-              >
-                Save
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
       {/* Add Category Dialog for TPS */}
       <Dialog open={showAddCategoryDialogTPS} onOpenChange={setShowAddCategoryDialogTPS}>
