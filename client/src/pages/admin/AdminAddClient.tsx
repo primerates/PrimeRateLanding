@@ -22678,62 +22678,88 @@ export default function AdminAddClient() {
                         </div>
 
                         {/* Dynamic Third Party Services - Render all categories and services */}
-                        {currentThirdPartyServices.map((category) => (
-                          <React.Fragment key={category.id}>
-                            {category.services.map((service, serviceIndex) => (
-                              <div 
-                                key={service.id} 
-                                className={`grid gap-4 ${serviceIndex < category.services.length - 1 ? 'mb-2' : ''}`}
-                                style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}
-                              >
-                                <div className="flex items-center justify-end pr-4">
-                                  <Label className="text-sm text-right text-muted-foreground">• {service.serviceName}</Label>
-                                </div>
-                                {selectedRateIds.map((rateId) => {
-                                  // Initialize service values if not exist
-                                  if (!thirdPartyServiceValues[service.id]) {
-                                    setThirdPartyServiceValues(prev => ({
-                                      ...prev,
-                                      [service.id]: ['', '', '', '', '']
-                                    }));
-                                  }
-                                  
-                                  const numVal = thirdPartyServiceValues[service.id]?.[rateId] 
-                                    ? thirdPartyServiceValues[service.id][rateId].replace(/[^\d]/g, '') 
-                                    : '';
-                                  const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                                  
-                                  return (
-                                    <div key={rateId} className="flex justify-center">
-                                      <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                        <span className="text-muted-foreground text-sm">$</span>
-                                        <Input
-                                          type="text"
-                                          placeholder=""
-                                          value={displayValue}
-                                          onChange={(e) => {
-                                            const value = e.target.value.replace(/[^\d]/g, '');
-                                            setThirdPartyServiceValues(prev => {
-                                              const newValues = { ...prev };
-                                              if (!newValues[service.id]) {
-                                                newValues[service.id] = ['', '', '', '', ''];
-                                              }
-                                              const updatedArray = [...newValues[service.id]];
-                                              updatedArray[rateId] = value;
-                                              newValues[service.id] = updatedArray;
-                                              return newValues;
-                                            });
-                                          }}
-                                          className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
-                                          data-testid={`input-service-${service.id}-${rateId}`}
-                                        />
-                                      </div>
-                                    </div>
-                                  );
-                                })}
+                        {currentThirdPartyServices.map((category, categoryIndex) => (
+                          <div key={category.id} className={categoryIndex > 0 ? 'mt-4' : ''}>
+                            {/* Category Header */}
+                            <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
+                              <div className="flex items-center justify-end pr-4">
+                                <Label className="text-sm font-semibold text-right">{category.categoryName}</Label>
                               </div>
-                            ))}
-                          </React.Fragment>
+                              {selectedRateIds.map((rateId) => (
+                                <div key={rateId} className="flex justify-center">
+                                  <div className="w-3/4"></div>
+                                </div>
+                              ))}
+                            </div>
+                            
+                            {/* Services under this category */}
+                            {category.services.length === 0 ? (
+                              <div className="grid gap-4 mb-2" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
+                                <div className="flex items-center justify-end pr-4">
+                                  <Label className="text-xs text-right text-muted-foreground italic">No services added yet</Label>
+                                </div>
+                                {selectedRateIds.map((rateId) => (
+                                  <div key={rateId} className="flex justify-center">
+                                    <div className="w-3/4"></div>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              category.services.map((service, serviceIndex) => (
+                                <div 
+                                  key={service.id} 
+                                  className={`grid gap-4 ${serviceIndex < category.services.length - 1 ? 'mb-2' : ''}`}
+                                  style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}
+                                >
+                                  <div className="flex items-center justify-end pr-4">
+                                    <Label className="text-sm text-right text-muted-foreground">• {service.serviceName}</Label>
+                                  </div>
+                                  {selectedRateIds.map((rateId) => {
+                                    // Initialize service values if not exist
+                                    if (!thirdPartyServiceValues[service.id]) {
+                                      setThirdPartyServiceValues(prev => ({
+                                        ...prev,
+                                        [service.id]: ['', '', '', '', '']
+                                      }));
+                                    }
+                                    
+                                    const numVal = thirdPartyServiceValues[service.id]?.[rateId] 
+                                      ? thirdPartyServiceValues[service.id][rateId].replace(/[^\d]/g, '') 
+                                      : '';
+                                    const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                                    
+                                    return (
+                                      <div key={rateId} className="flex justify-center">
+                                        <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
+                                          <span className="text-muted-foreground text-sm">$</span>
+                                          <Input
+                                            type="text"
+                                            placeholder=""
+                                            value={displayValue}
+                                            onChange={(e) => {
+                                              const value = e.target.value.replace(/[^\d]/g, '');
+                                              setThirdPartyServiceValues(prev => {
+                                                const newValues = { ...prev };
+                                                if (!newValues[service.id]) {
+                                                  newValues[service.id] = ['', '', '', '', ''];
+                                                }
+                                                const updatedArray = [...newValues[service.id]];
+                                                updatedArray[rateId] = value;
+                                                newValues[service.id] = updatedArray;
+                                                return newValues;
+                                              });
+                                            }}
+                                            className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
+                                            data-testid={`input-service-${service.id}-${rateId}`}
+                                          />
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              ))
+                            )}
+                          </div>
                         ))}
                       </div>
 
