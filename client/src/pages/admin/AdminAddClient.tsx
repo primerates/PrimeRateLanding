@@ -1085,7 +1085,7 @@ export default function AdminAddClient() {
   const [tempThirdPartyServices, setTempThirdPartyServices] = useState<Array<{ 
     id: string; 
     categoryName: string; 
-    services: Array<{ id: string; serviceName: string }> 
+    services: Array<{ id: string; serviceName: string; value?: string }> 
   }>>([]);
   const [showAddCategoryDialogTPS, setShowAddCategoryDialogTPS] = useState(false);
   const [showAddServicesDialogTPS, setShowAddServicesDialogTPS] = useState(false);
@@ -1787,7 +1787,16 @@ export default function AdminAddClient() {
   
   // Handler functions for Third Party Services customization
   const handleOpenThirdPartyServicesDialog = () => {
-    setTempThirdPartyServices(JSON.parse(JSON.stringify(currentThirdPartyServices)));
+    // Load current categories and services with their values from the first rate
+    const firstRateIndex = 0;
+    const servicesWithValues = currentThirdPartyServices.map(category => ({
+      ...category,
+      services: category.services.map(service => ({
+        ...service,
+        value: thirdPartyServiceValues[service.id]?.[firstRateIndex] || ''
+      }))
+    }));
+    setTempThirdPartyServices(JSON.parse(JSON.stringify(servicesWithValues)));
     setShowThirdPartyServicesDialog(true);
   };
   
@@ -1812,7 +1821,8 @@ export default function AdminAddClient() {
             ...category,
             services: [...category.services, {
               id: `svc-${Date.now()}`,
-              serviceName: newServiceNameTPS.trim()
+              serviceName: newServiceNameTPS.trim(),
+              value: ''
             }]
           };
         }
@@ -1848,7 +1858,26 @@ export default function AdminAddClient() {
   };
   
   const handleApplyThirdPartyServices = () => {
+    // Update the category structure
     setCurrentThirdPartyServices(JSON.parse(JSON.stringify(tempThirdPartyServices)));
+    
+    // Apply the dollar values to the first selected rate (rate 0)
+    const firstRateIndex = 0;
+    const updatedValues = { ...thirdPartyServiceValues };
+    
+    tempThirdPartyServices.forEach(category => {
+      category.services.forEach(service => {
+        if (!updatedValues[service.id]) {
+          updatedValues[service.id] = ['', '', '', '', ''];
+        }
+        // Apply value to first rate
+        if (service.value) {
+          updatedValues[service.id][firstRateIndex] = service.value;
+        }
+      });
+    });
+    
+    setThirdPartyServiceValues(updatedValues);
     setShowThirdPartyServicesDialog(false);
   };
   
@@ -1863,9 +1892,28 @@ export default function AdminAddClient() {
   };
   
   const handleCopyForAllRatesTPS = () => {
-    // This function would copy the dollar values across all rate columns
-    // For now, we'll just close the dialog after applying
-    handleApplyThirdPartyServices();
+    // Update the category structure
+    setCurrentThirdPartyServices(JSON.parse(JSON.stringify(tempThirdPartyServices)));
+    
+    // Apply the dollar values to all selected rates
+    const updatedValues = { ...thirdPartyServiceValues };
+    
+    tempThirdPartyServices.forEach(category => {
+      category.services.forEach(service => {
+        if (!updatedValues[service.id]) {
+          updatedValues[service.id] = ['', '', '', '', ''];
+        }
+        // Apply value to all rates
+        if (service.value) {
+          selectedRateIds.forEach(rateId => {
+            updatedValues[service.id][rateId] = service.value || '';
+          });
+        }
+      });
+    });
+    
+    setThirdPartyServiceValues(updatedValues);
+    setShowThirdPartyServicesDialog(false);
   };
   
   // Current Primary Loan card data state
@@ -27367,13 +27415,41 @@ export default function AdminAddClient() {
             {/* Current Configuration Display */}
             <div className="border rounded-lg p-4 space-y-4">
               <Label className="text-base font-semibold">Current Configuration:</Label>
-              {tempThirdPartyServices.map((category) => (
+              {tempThirdPartyServices.map((category, categoryIndex) => (
                 <div key={category.id} className="space-y-2">
                   <Label className="text-sm font-bold">{category.categoryName}</Label>
-                  <div className="ml-4 space-y-1">
-                    {category.services.map((service) => (
-                      <div key={service.id} className="text-sm text-muted-foreground">
-                        • {service.serviceName}
+                  <div className="ml-4 space-y-2">
+                    {category.services.map((service, serviceIndex) => (
+                      <div key={service.id} className="flex items-center gap-3">
+                        <span className="text-sm text-muted-foreground flex-shrink-0">• {service.serviceName}</span>
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <span className="text-sm text-muted-foreground">$</span>
+                          <Input
+                            type="text"
+                            placeholder="0"
+                            value={service.value || ''}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/[^\d]/g, '');
+                              const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                              setTempThirdPartyServices(prev => prev.map((cat) => {
+                                if (cat.id === category.id) {
+                                  return {
+                                    ...cat,
+                                    services: cat.services.map(svc => {
+                                      if (svc.id === service.id) {
+                                        return { ...svc, value: formatted };
+                                      }
+                                      return svc;
+                                    })
+                                  };
+                                }
+                                return cat;
+                              }));
+                            }}
+                            className="w-32 h-8 text-sm"
+                            data-testid={`input-tps-value-${service.id}`}
+                          />
+                        </div>
                       </div>
                     ))}
                     {category.services.length === 0 && (
