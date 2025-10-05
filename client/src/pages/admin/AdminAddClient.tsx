@@ -27393,50 +27393,55 @@ export default function AdminAddClient() {
           
           <div className="py-4 space-y-4">
             {/* Action Buttons */}
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-2">
               <Button
                 variant="outline"
+                size="sm"
                 onClick={() => setShowAddCategoryDialogTPS(true)}
-                className="text-blue-600 border-border hover:bg-blue-600 hover:text-white hover:border-blue-600"
+                className="text-blue-600 border-border hover:bg-blue-600 hover:text-white hover:border-blue-600 text-xs px-2"
                 data-testid="button-add-category-tps"
               >
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="h-3 w-3 mr-1" />
                 Add Category
               </Button>
               <Button
                 variant="outline"
+                size="sm"
                 onClick={() => setShowAddServicesDialogTPS(true)}
-                className="text-blue-600 border-border hover:bg-blue-600 hover:text-white hover:border-blue-600"
+                className="text-blue-600 border-border hover:bg-blue-600 hover:text-white hover:border-blue-600 text-xs px-2"
                 data-testid="button-add-services-tps"
               >
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="h-3 w-3 mr-1" />
                 Add Services
               </Button>
               <Button
                 variant="outline"
+                size="sm"
                 onClick={() => setShowEditCategoryDialogTPS(true)}
-                className="text-blue-600 border-border hover:bg-blue-600 hover:text-white hover:border-blue-600"
+                className="text-blue-600 border-border hover:bg-blue-600 hover:text-white hover:border-blue-600 text-xs px-2"
                 data-testid="button-edit-category-tps"
               >
-                <Edit className="h-4 w-4 mr-2" />
+                <Edit className="h-3 w-3 mr-1" />
                 Edit Category
               </Button>
               <Button
                 variant="outline"
+                size="sm"
                 onClick={() => setShowRemoveCategoryDialogTPS(true)}
-                className="text-red-600 border-border hover:bg-red-600 hover:text-white hover:border-red-600"
+                className="text-red-600 border-border hover:bg-red-600 hover:text-white hover:border-red-600 text-xs px-2"
                 data-testid="button-remove-category-tps"
               >
-                <Minus className="h-4 w-4 mr-2" />
+                <Minus className="h-3 w-3 mr-1" />
                 Remove Category
               </Button>
               <Button
                 variant="outline"
+                size="sm"
                 onClick={() => setShowRemoveServicesDialogTPS(true)}
-                className="text-red-600 border-border hover:bg-red-600 hover:text-white hover:border-red-600"
+                className="text-red-600 border-border hover:bg-red-600 hover:text-white hover:border-red-600 text-xs px-2"
                 data-testid="button-remove-services-tps"
               >
-                <Minus className="h-4 w-4 mr-2" />
+                <Minus className="h-3 w-3 mr-1" />
                 Remove Services
               </Button>
             </div>
