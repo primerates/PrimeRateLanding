@@ -965,6 +965,46 @@ export default function AdminAddClient() {
   const [lenderToRemove, setLenderToRemove] = useState('');
   const [removedBuiltInLenders, setRemovedBuiltInLenders] = useState<string[]>([]);
   
+  // State for custom titles
+  const [customTitles, setCustomTitles] = useState<Array<{ id: string; name: string }>>([]);
+  const [showAddTitleDialog, setShowAddTitleDialog] = useState(false);
+  const [showRemoveTitleDialog, setShowRemoveTitleDialog] = useState(false);
+  const [newTitleName, setNewTitleName] = useState('');
+  const [titleToRemove, setTitleToRemove] = useState('');
+  const [removedBuiltInTitles, setRemovedBuiltInTitles] = useState<string[]>([]);
+  
+  // State for custom loan purposes
+  const [customLoanPurposes, setCustomLoanPurposes] = useState<Array<{ id: string; name: string }>>([]);
+  const [showAddLoanPurposeDialog, setShowAddLoanPurposeDialog] = useState(false);
+  const [showRemoveLoanPurposeDialog, setShowRemoveLoanPurposeDialog] = useState(false);
+  const [newLoanPurposeName, setNewLoanPurposeName] = useState('');
+  const [loanPurposeToRemove, setLoanPurposeToRemove] = useState('');
+  const [removedBuiltInLoanPurposes, setRemovedBuiltInLoanPurposes] = useState<string[]>([]);
+  
+  // State for custom property uses
+  const [customPropertyUses, setCustomPropertyUses] = useState<Array<{ id: string; name: string }>>([]);
+  const [showAddPropertyUseDialog, setShowAddPropertyUseDialog] = useState(false);
+  const [showRemovePropertyUseDialog, setShowRemovePropertyUseDialog] = useState(false);
+  const [newPropertyUseName, setNewPropertyUseName] = useState('');
+  const [propertyUseToRemove, setPropertyUseToRemove] = useState('');
+  const [removedBuiltInPropertyUses, setRemovedBuiltInPropertyUses] = useState<string[]>([]);
+  
+  // State for custom property types
+  const [customPropertyTypes, setCustomPropertyTypes] = useState<Array<{ id: string; name: string }>>([]);
+  const [showAddPropertyTypeDialog, setShowAddPropertyTypeDialog] = useState(false);
+  const [showRemovePropertyTypeDialog, setShowRemovePropertyTypeDialog] = useState(false);
+  const [newPropertyTypeName, setNewPropertyTypeName] = useState('');
+  const [propertyTypeToRemove, setPropertyTypeToRemove] = useState('');
+  const [removedBuiltInPropertyTypes, setRemovedBuiltInPropertyTypes] = useState<string[]>([]);
+  
+  // State for custom sources
+  const [customSources, setCustomSources] = useState<Array<{ id: string; name: string }>>([]);
+  const [showAddSourceDialog, setShowAddSourceDialog] = useState(false);
+  const [showRemoveSourceDialog, setShowRemoveSourceDialog] = useState(false);
+  const [newSourceName, setNewSourceName] = useState('');
+  const [sourceToRemove, setSourceToRemove] = useState('');
+  const [removedBuiltInSources, setRemovedBuiltInSources] = useState<string[]>([]);
+  
   // State for Quote tab rate detail fields
   const [rateBuyDownValues, setRateBuyDownValues] = useState<string[]>(['', '', '', '', '']);
   const [cashOutAmountValues, setCashOutAmountValues] = useState<string[]>(['', '', '', '', '']);
@@ -21056,11 +21096,51 @@ export default function AdminAddClient() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="select" data-testid="select-transaction-select">Select</SelectItem>
-                              <SelectItem value="refinance" data-testid="select-transaction-refinance">Refinance</SelectItem>
-                              <SelectItem value="purchase" data-testid="select-transaction-purchase">Purchase</SelectItem>
-                              <SelectItem value="second-loan" data-testid="select-transaction-second-loan">Second Loan</SelectItem>
-                              <SelectItem value="construction" data-testid="select-transaction-construction">Construction</SelectItem>
-                              <SelectItem value="bridge" data-testid="select-transaction-bridge">Bridge</SelectItem>
+                              
+                              <div 
+                                className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setShowAddLoanPurposeDialog(true);
+                                }}
+                                data-testid="option-add-loan-purpose"
+                              >
+                                + Add
+                              </div>
+                              <div 
+                                className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setShowRemoveLoanPurposeDialog(true);
+                                }}
+                                data-testid="option-remove-loan-purpose"
+                              >
+                                - Remove
+                              </div>
+                              
+                              <div className="my-1 border-t border-border"></div>
+                              
+                              {!removedBuiltInLoanPurposes.includes('refinance') && (
+                                <SelectItem value="refinance" data-testid="select-transaction-refinance">Refinance</SelectItem>
+                              )}
+                              {!removedBuiltInLoanPurposes.includes('purchase') && (
+                                <SelectItem value="purchase" data-testid="select-transaction-purchase">Purchase</SelectItem>
+                              )}
+                              {!removedBuiltInLoanPurposes.includes('second-loan') && (
+                                <SelectItem value="second-loan" data-testid="select-transaction-second-loan">Second Loan</SelectItem>
+                              )}
+                              {!removedBuiltInLoanPurposes.includes('construction') && (
+                                <SelectItem value="construction" data-testid="select-transaction-construction">Construction</SelectItem>
+                              )}
+                              {!removedBuiltInLoanPurposes.includes('bridge') && (
+                                <SelectItem value="bridge" data-testid="select-transaction-bridge">Bridge</SelectItem>
+                              )}
+                              
+                              {customLoanPurposes.map((purpose) => (
+                                <SelectItem key={purpose.id} value={purpose.id} data-testid={`select-transaction-${purpose.id}`}>
+                                  {purpose.name}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
                         </div>
@@ -21073,12 +21153,54 @@ export default function AdminAddClient() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="select" data-testid="select-property-select">Select</SelectItem>
-                              <SelectItem value="primary-residence" data-testid="select-property-primary">Primary Residence</SelectItem>
-                              <SelectItem value="second-home" data-testid="select-property-second-home">Second Home</SelectItem>
-                              <SelectItem value="investment-property" data-testid="select-property-investment">Investment Property</SelectItem>
-                              <SelectItem value="home-purchase" data-testid="select-property-home-purchase">Home Purchase</SelectItem>
-                              <SelectItem value="duplex" data-testid="select-property-duplex">Duplex</SelectItem>
-                              <SelectItem value="multi-family" data-testid="select-property-multi-family">Multi-Family</SelectItem>
+                              
+                              <div 
+                                className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setShowAddPropertyUseDialog(true);
+                                }}
+                                data-testid="option-add-property-use"
+                              >
+                                + Add
+                              </div>
+                              <div 
+                                className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setShowRemovePropertyUseDialog(true);
+                                }}
+                                data-testid="option-remove-property-use"
+                              >
+                                - Remove
+                              </div>
+                              
+                              <div className="my-1 border-t border-border"></div>
+                              
+                              {!removedBuiltInPropertyUses.includes('primary-residence') && (
+                                <SelectItem value="primary-residence" data-testid="select-property-primary">Primary Residence</SelectItem>
+                              )}
+                              {!removedBuiltInPropertyUses.includes('second-home') && (
+                                <SelectItem value="second-home" data-testid="select-property-second-home">Second Home</SelectItem>
+                              )}
+                              {!removedBuiltInPropertyUses.includes('investment-property') && (
+                                <SelectItem value="investment-property" data-testid="select-property-investment">Investment Property</SelectItem>
+                              )}
+                              {!removedBuiltInPropertyUses.includes('home-purchase') && (
+                                <SelectItem value="home-purchase" data-testid="select-property-home-purchase">Home Purchase</SelectItem>
+                              )}
+                              {!removedBuiltInPropertyUses.includes('duplex') && (
+                                <SelectItem value="duplex" data-testid="select-property-duplex">Duplex</SelectItem>
+                              )}
+                              {!removedBuiltInPropertyUses.includes('multi-family') && (
+                                <SelectItem value="multi-family" data-testid="select-property-multi-family">Multi-Family</SelectItem>
+                              )}
+                              
+                              {customPropertyUses.map((use) => (
+                                <SelectItem key={use.id} value={use.id} data-testid={`select-property-${use.id}`}>
+                                  {use.name}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
                         </div>
@@ -21091,12 +21213,54 @@ export default function AdminAddClient() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="select" data-testid="select-property-type-select">Select</SelectItem>
-                              <SelectItem value="single-family" data-testid="select-property-type-single-family">Single Family</SelectItem>
-                              <SelectItem value="condo" data-testid="select-property-type-condo">Condo</SelectItem>
-                              <SelectItem value="townhouse" data-testid="select-property-type-townhouse">Townhouse</SelectItem>
-                              <SelectItem value="duplex" data-testid="select-property-type-duplex">Duplex</SelectItem>
-                              <SelectItem value="multi-family" data-testid="select-property-type-multi-family">Multi-Family</SelectItem>
-                              <SelectItem value="other" data-testid="select-property-type-other">Other</SelectItem>
+                              
+                              <div 
+                                className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setShowAddPropertyTypeDialog(true);
+                                }}
+                                data-testid="option-add-property-type"
+                              >
+                                + Add
+                              </div>
+                              <div 
+                                className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setShowRemovePropertyTypeDialog(true);
+                                }}
+                                data-testid="option-remove-property-type"
+                              >
+                                - Remove
+                              </div>
+                              
+                              <div className="my-1 border-t border-border"></div>
+                              
+                              {!removedBuiltInPropertyTypes.includes('single-family') && (
+                                <SelectItem value="single-family" data-testid="select-property-type-single-family">Single Family</SelectItem>
+                              )}
+                              {!removedBuiltInPropertyTypes.includes('condo') && (
+                                <SelectItem value="condo" data-testid="select-property-type-condo">Condo</SelectItem>
+                              )}
+                              {!removedBuiltInPropertyTypes.includes('townhouse') && (
+                                <SelectItem value="townhouse" data-testid="select-property-type-townhouse">Townhouse</SelectItem>
+                              )}
+                              {!removedBuiltInPropertyTypes.includes('duplex') && (
+                                <SelectItem value="duplex" data-testid="select-property-type-duplex">Duplex</SelectItem>
+                              )}
+                              {!removedBuiltInPropertyTypes.includes('multi-family') && (
+                                <SelectItem value="multi-family" data-testid="select-property-type-multi-family">Multi-Family</SelectItem>
+                              )}
+                              {!removedBuiltInPropertyTypes.includes('other') && (
+                                <SelectItem value="other" data-testid="select-property-type-other">Other</SelectItem>
+                              )}
+                              
+                              {customPropertyTypes.map((type) => (
+                                <SelectItem key={type.id} value={type.id} data-testid={`select-property-type-${type.id}`}>
+                                  {type.name}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
                         </div>
@@ -21109,11 +21273,51 @@ export default function AdminAddClient() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="select" data-testid="select-source-select">Select</SelectItem>
-                              <SelectItem value="direct-mail" data-testid="select-source-direct-mail">Direct Mail</SelectItem>
-                              <SelectItem value="social-media" data-testid="select-source-social-media">Social Media</SelectItem>
-                              <SelectItem value="website" data-testid="select-source-website">Website</SelectItem>
-                              <SelectItem value="referral" data-testid="select-source-referral">Referral</SelectItem>
-                              <SelectItem value="repeat-client" data-testid="select-source-repeat-client">Repeat Client</SelectItem>
+                              
+                              <div 
+                                className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setShowAddSourceDialog(true);
+                                }}
+                                data-testid="option-add-source"
+                              >
+                                + Add
+                              </div>
+                              <div 
+                                className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setShowRemoveSourceDialog(true);
+                                }}
+                                data-testid="option-remove-source"
+                              >
+                                - Remove
+                              </div>
+                              
+                              <div className="my-1 border-t border-border"></div>
+                              
+                              {!removedBuiltInSources.includes('direct-mail') && (
+                                <SelectItem value="direct-mail" data-testid="select-source-direct-mail">Direct Mail</SelectItem>
+                              )}
+                              {!removedBuiltInSources.includes('social-media') && (
+                                <SelectItem value="social-media" data-testid="select-source-social-media">Social Media</SelectItem>
+                              )}
+                              {!removedBuiltInSources.includes('website') && (
+                                <SelectItem value="website" data-testid="select-source-website">Website</SelectItem>
+                              )}
+                              {!removedBuiltInSources.includes('referral') && (
+                                <SelectItem value="referral" data-testid="select-source-referral">Referral</SelectItem>
+                              )}
+                              {!removedBuiltInSources.includes('repeat-client') && (
+                                <SelectItem value="repeat-client" data-testid="select-source-repeat-client">Repeat Client</SelectItem>
+                              )}
+                              
+                              {customSources.map((source) => (
+                                <SelectItem key={source.id} value={source.id} data-testid={`select-source-${source.id}`}>
+                                  {source.name}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
                         </div>
@@ -21991,8 +22195,50 @@ export default function AdminAddClient() {
                               </SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="select" data-testid="select-title-select">Select</SelectItem>
-                                <SelectItem value="first-american-title" data-testid="select-title-first-american">First American Title</SelectItem>
-                                <SelectItem value="reltco" data-testid="select-title-reltco">Reltco</SelectItem>
+                                
+                                {/* Add and Remove options */}
+                                <div 
+                                  className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    setShowAddTitleDialog(true);
+                                  }}
+                                  data-testid="option-add-title"
+                                >
+                                  + Add
+                                </div>
+                                <div 
+                                  className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    setShowRemoveTitleDialog(true);
+                                  }}
+                                  data-testid="option-remove-title"
+                                >
+                                  - Remove
+                                </div>
+                                
+                                {/* Separator line */}
+                                <div className="my-1 border-t border-border"></div>
+                                
+                                {/* Built-in titles - only show if not removed */}
+                                {!removedBuiltInTitles.includes('first-american-title') && (
+                                  <SelectItem value="first-american-title" data-testid="select-title-first-american">First American Title</SelectItem>
+                                )}
+                                {!removedBuiltInTitles.includes('reltco') && (
+                                  <SelectItem value="reltco" data-testid="select-title-reltco">Reltco</SelectItem>
+                                )}
+                                
+                                {/* Custom titles */}
+                                {customTitles.map((title) => (
+                                  <SelectItem 
+                                    key={title.id} 
+                                    value={title.id}
+                                    data-testid={`select-title-${title.id}`}
+                                  >
+                                    {title.name}
+                                  </SelectItem>
+                                ))}
                               </SelectContent>
                             </Select>
                           )}
@@ -26224,6 +26470,810 @@ export default function AdminAddClient() {
               data-testid="button-confirm-remove-lender"
             >
               Remove Lender
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Title Dialog */}
+      <Dialog open={showAddTitleDialog} onOpenChange={setShowAddTitleDialog}>
+        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-add-title">
+          <DialogHeader>
+            <DialogTitle>Add New Title</DialogTitle>
+            <DialogDescription>
+              Enter a name for the new title company.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="space-y-2">
+              <Label htmlFor="new-title">Title Company Name</Label>
+              <Input
+                id="new-title"
+                placeholder="Enter title company name"
+                value={newTitleName}
+                onChange={(e) => setNewTitleName(e.target.value)}
+                data-testid="input-new-title"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowAddTitleDialog(false);
+                setNewTitleName('');
+              }}
+              data-testid="button-cancel-add-title"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (newTitleName.trim()) {
+                  const newTitle = {
+                    id: nanoid(),
+                    name: newTitleName.trim()
+                  };
+                  setCustomTitles(prev => [...prev, newTitle]);
+                  setShowAddTitleDialog(false);
+                  setNewTitleName('');
+                  toast({
+                    title: "Title Added",
+                    description: `"${newTitleName.trim()}" has been added.`
+                  });
+                }
+              }}
+              disabled={!newTitleName.trim()}
+              data-testid="button-save-add-title"
+            >
+              Add Title
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Remove Title Dialog */}
+      <Dialog open={showRemoveTitleDialog} onOpenChange={setShowRemoveTitleDialog}>
+        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-remove-title">
+          <DialogHeader>
+            <DialogTitle>Remove Title</DialogTitle>
+            <DialogDescription>
+              Select a title company to remove from the list.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="space-y-2">
+              <Label htmlFor="title-to-remove">Title Company</Label>
+              <Select value={titleToRemove} onValueChange={setTitleToRemove}>
+                <SelectTrigger data-testid="select-title-to-remove">
+                  <SelectValue placeholder="Select Title to Remove" />
+                </SelectTrigger>
+                <SelectContent>
+                  {!removedBuiltInTitles.includes('first-american-title') && (
+                    <SelectItem value="builtin::first-american-title" data-testid="select-remove-title-first-american">
+                      First American Title
+                    </SelectItem>
+                  )}
+                  {!removedBuiltInTitles.includes('reltco') && (
+                    <SelectItem value="builtin::reltco" data-testid="select-remove-title-reltco">
+                      Reltco
+                    </SelectItem>
+                  )}
+                  {customTitles.map((title) => (
+                    <SelectItem 
+                      key={title.id} 
+                      value={`custom::${title.id}`}
+                      data-testid={`select-remove-title-${title.id}`}
+                    >
+                      {title.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowRemoveTitleDialog(false);
+                setTitleToRemove('');
+              }}
+              data-testid="button-cancel-remove-title"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (titleToRemove) {
+                  const [type, id] = titleToRemove.split('::');
+                  if (type === 'builtin') {
+                    setRemovedBuiltInTitles(prev => [...prev, id]);
+                    const titleNames: Record<string, string> = {
+                      'first-american-title': 'First American Title',
+                      'reltco': 'Reltco'
+                    };
+                    toast({
+                      title: "Title Removed",
+                      description: `"${titleNames[id]}" has been removed.`
+                    });
+                  } else {
+                    const titleName = customTitles.find(t => t.id === id)?.name || '';
+                    setCustomTitles(prev => prev.filter(t => t.id !== id));
+                    toast({
+                      title: "Title Removed",
+                      description: `"${titleName}" has been removed.`
+                    });
+                  }
+                  setShowRemoveTitleDialog(false);
+                  setTitleToRemove('');
+                }
+              }}
+              disabled={!titleToRemove}
+              data-testid="button-confirm-remove-title"
+            >
+              Remove Title
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Loan Purpose Dialog */}
+      <Dialog open={showAddLoanPurposeDialog} onOpenChange={setShowAddLoanPurposeDialog}>
+        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-add-loan-purpose">
+          <DialogHeader>
+            <DialogTitle>Add New Loan Purpose</DialogTitle>
+            <DialogDescription>
+              Enter a name for the new loan purpose.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="space-y-2">
+              <Label htmlFor="new-loan-purpose">Loan Purpose Name</Label>
+              <Input
+                id="new-loan-purpose"
+                placeholder="Enter loan purpose name"
+                value={newLoanPurposeName}
+                onChange={(e) => setNewLoanPurposeName(e.target.value)}
+                data-testid="input-new-loan-purpose"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowAddLoanPurposeDialog(false);
+                setNewLoanPurposeName('');
+              }}
+              data-testid="button-cancel-add-loan-purpose"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (newLoanPurposeName.trim()) {
+                  const newPurpose = {
+                    id: nanoid(),
+                    name: newLoanPurposeName.trim()
+                  };
+                  setCustomLoanPurposes(prev => [...prev, newPurpose]);
+                  setShowAddLoanPurposeDialog(false);
+                  setNewLoanPurposeName('');
+                  toast({
+                    title: "Loan Purpose Added",
+                    description: `"${newLoanPurposeName.trim()}" has been added.`
+                  });
+                }
+              }}
+              disabled={!newLoanPurposeName.trim()}
+              data-testid="button-save-add-loan-purpose"
+            >
+              Add Loan Purpose
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Remove Loan Purpose Dialog */}
+      <Dialog open={showRemoveLoanPurposeDialog} onOpenChange={setShowRemoveLoanPurposeDialog}>
+        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-remove-loan-purpose">
+          <DialogHeader>
+            <DialogTitle>Remove Loan Purpose</DialogTitle>
+            <DialogDescription>
+              Select a loan purpose to remove from the list.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="space-y-2">
+              <Label htmlFor="loan-purpose-to-remove">Loan Purpose</Label>
+              <Select value={loanPurposeToRemove} onValueChange={setLoanPurposeToRemove}>
+                <SelectTrigger data-testid="select-loan-purpose-to-remove">
+                  <SelectValue placeholder="Select Loan Purpose to Remove" />
+                </SelectTrigger>
+                <SelectContent>
+                  {!removedBuiltInLoanPurposes.includes('refinance') && (
+                    <SelectItem value="builtin::refinance" data-testid="select-remove-loan-purpose-refinance">
+                      Refinance
+                    </SelectItem>
+                  )}
+                  {!removedBuiltInLoanPurposes.includes('purchase') && (
+                    <SelectItem value="builtin::purchase" data-testid="select-remove-loan-purpose-purchase">
+                      Purchase
+                    </SelectItem>
+                  )}
+                  {!removedBuiltInLoanPurposes.includes('second-loan') && (
+                    <SelectItem value="builtin::second-loan" data-testid="select-remove-loan-purpose-second-loan">
+                      Second Loan
+                    </SelectItem>
+                  )}
+                  {!removedBuiltInLoanPurposes.includes('construction') && (
+                    <SelectItem value="builtin::construction" data-testid="select-remove-loan-purpose-construction">
+                      Construction
+                    </SelectItem>
+                  )}
+                  {!removedBuiltInLoanPurposes.includes('bridge') && (
+                    <SelectItem value="builtin::bridge" data-testid="select-remove-loan-purpose-bridge">
+                      Bridge
+                    </SelectItem>
+                  )}
+                  {customLoanPurposes.map((purpose) => (
+                    <SelectItem 
+                      key={purpose.id} 
+                      value={`custom::${purpose.id}`}
+                      data-testid={`select-remove-loan-purpose-${purpose.id}`}
+                    >
+                      {purpose.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowRemoveLoanPurposeDialog(false);
+                setLoanPurposeToRemove('');
+              }}
+              data-testid="button-cancel-remove-loan-purpose"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (loanPurposeToRemove) {
+                  const [type, id] = loanPurposeToRemove.split('::');
+                  if (type === 'builtin') {
+                    setRemovedBuiltInLoanPurposes(prev => [...prev, id]);
+                    const purposeNames: Record<string, string> = {
+                      'refinance': 'Refinance',
+                      'purchase': 'Purchase',
+                      'second-loan': 'Second Loan',
+                      'construction': 'Construction',
+                      'bridge': 'Bridge'
+                    };
+                    toast({
+                      title: "Loan Purpose Removed",
+                      description: `"${purposeNames[id]}" has been removed.`
+                    });
+                  } else {
+                    const purposeName = customLoanPurposes.find(p => p.id === id)?.name || '';
+                    setCustomLoanPurposes(prev => prev.filter(p => p.id !== id));
+                    toast({
+                      title: "Loan Purpose Removed",
+                      description: `"${purposeName}" has been removed.`
+                    });
+                  }
+                  setShowRemoveLoanPurposeDialog(false);
+                  setLoanPurposeToRemove('');
+                }
+              }}
+              disabled={!loanPurposeToRemove}
+              data-testid="button-confirm-remove-loan-purpose"
+            >
+              Remove Loan Purpose
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Property Use Dialog */}
+      <Dialog open={showAddPropertyUseDialog} onOpenChange={setShowAddPropertyUseDialog}>
+        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-add-property-use">
+          <DialogHeader>
+            <DialogTitle>Add New Property Use</DialogTitle>
+            <DialogDescription>
+              Enter a name for the new property use.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="space-y-2">
+              <Label htmlFor="new-property-use">Property Use Name</Label>
+              <Input
+                id="new-property-use"
+                placeholder="Enter property use name"
+                value={newPropertyUseName}
+                onChange={(e) => setNewPropertyUseName(e.target.value)}
+                data-testid="input-new-property-use"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowAddPropertyUseDialog(false);
+                setNewPropertyUseName('');
+              }}
+              data-testid="button-cancel-add-property-use"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (newPropertyUseName.trim()) {
+                  const newUse = {
+                    id: nanoid(),
+                    name: newPropertyUseName.trim()
+                  };
+                  setCustomPropertyUses(prev => [...prev, newUse]);
+                  setShowAddPropertyUseDialog(false);
+                  setNewPropertyUseName('');
+                  toast({
+                    title: "Property Use Added",
+                    description: `"${newPropertyUseName.trim()}" has been added.`
+                  });
+                }
+              }}
+              disabled={!newPropertyUseName.trim()}
+              data-testid="button-save-add-property-use"
+            >
+              Add Property Use
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Remove Property Use Dialog */}
+      <Dialog open={showRemovePropertyUseDialog} onOpenChange={setShowRemovePropertyUseDialog}>
+        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-remove-property-use">
+          <DialogHeader>
+            <DialogTitle>Remove Property Use</DialogTitle>
+            <DialogDescription>
+              Select a property use to remove from the list.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="space-y-2">
+              <Label htmlFor="property-use-to-remove">Property Use</Label>
+              <Select value={propertyUseToRemove} onValueChange={setPropertyUseToRemove}>
+                <SelectTrigger data-testid="select-property-use-to-remove">
+                  <SelectValue placeholder="Select Property Use to Remove" />
+                </SelectTrigger>
+                <SelectContent>
+                  {!removedBuiltInPropertyUses.includes('primary-residence') && (
+                    <SelectItem value="builtin::primary-residence" data-testid="select-remove-property-use-primary-residence">
+                      Primary Residence
+                    </SelectItem>
+                  )}
+                  {!removedBuiltInPropertyUses.includes('second-home') && (
+                    <SelectItem value="builtin::second-home" data-testid="select-remove-property-use-second-home">
+                      Second Home
+                    </SelectItem>
+                  )}
+                  {!removedBuiltInPropertyUses.includes('investment-property') && (
+                    <SelectItem value="builtin::investment-property" data-testid="select-remove-property-use-investment-property">
+                      Investment Property
+                    </SelectItem>
+                  )}
+                  {!removedBuiltInPropertyUses.includes('home-purchase') && (
+                    <SelectItem value="builtin::home-purchase" data-testid="select-remove-property-use-home-purchase">
+                      Home Purchase
+                    </SelectItem>
+                  )}
+                  {!removedBuiltInPropertyUses.includes('duplex') && (
+                    <SelectItem value="builtin::duplex" data-testid="select-remove-property-use-duplex">
+                      Duplex
+                    </SelectItem>
+                  )}
+                  {!removedBuiltInPropertyUses.includes('multi-family') && (
+                    <SelectItem value="builtin::multi-family" data-testid="select-remove-property-use-multi-family">
+                      Multi-Family
+                    </SelectItem>
+                  )}
+                  {customPropertyUses.map((use) => (
+                    <SelectItem 
+                      key={use.id} 
+                      value={`custom::${use.id}`}
+                      data-testid={`select-remove-property-use-${use.id}`}
+                    >
+                      {use.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowRemovePropertyUseDialog(false);
+                setPropertyUseToRemove('');
+              }}
+              data-testid="button-cancel-remove-property-use"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (propertyUseToRemove) {
+                  const [type, id] = propertyUseToRemove.split('::');
+                  if (type === 'builtin') {
+                    setRemovedBuiltInPropertyUses(prev => [...prev, id]);
+                    const useNames: Record<string, string> = {
+                      'primary-residence': 'Primary Residence',
+                      'second-home': 'Second Home',
+                      'investment-property': 'Investment Property',
+                      'home-purchase': 'Home Purchase',
+                      'duplex': 'Duplex',
+                      'multi-family': 'Multi-Family'
+                    };
+                    toast({
+                      title: "Property Use Removed",
+                      description: `"${useNames[id]}" has been removed.`
+                    });
+                  } else {
+                    const useName = customPropertyUses.find(u => u.id === id)?.name || '';
+                    setCustomPropertyUses(prev => prev.filter(u => u.id !== id));
+                    toast({
+                      title: "Property Use Removed",
+                      description: `"${useName}" has been removed.`
+                    });
+                  }
+                  setShowRemovePropertyUseDialog(false);
+                  setPropertyUseToRemove('');
+                }
+              }}
+              disabled={!propertyUseToRemove}
+              data-testid="button-confirm-remove-property-use"
+            >
+              Remove Property Use
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Property Type Dialog */}
+      <Dialog open={showAddPropertyTypeDialog} onOpenChange={setShowAddPropertyTypeDialog}>
+        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-add-property-type">
+          <DialogHeader>
+            <DialogTitle>Add New Property Type</DialogTitle>
+            <DialogDescription>
+              Enter a name for the new property type.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="space-y-2">
+              <Label htmlFor="new-property-type">Property Type Name</Label>
+              <Input
+                id="new-property-type"
+                placeholder="Enter property type name"
+                value={newPropertyTypeName}
+                onChange={(e) => setNewPropertyTypeName(e.target.value)}
+                data-testid="input-new-property-type"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowAddPropertyTypeDialog(false);
+                setNewPropertyTypeName('');
+              }}
+              data-testid="button-cancel-add-property-type"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (newPropertyTypeName.trim()) {
+                  const newType = {
+                    id: nanoid(),
+                    name: newPropertyTypeName.trim()
+                  };
+                  setCustomPropertyTypes(prev => [...prev, newType]);
+                  setShowAddPropertyTypeDialog(false);
+                  setNewPropertyTypeName('');
+                  toast({
+                    title: "Property Type Added",
+                    description: `"${newPropertyTypeName.trim()}" has been added.`
+                  });
+                }
+              }}
+              disabled={!newPropertyTypeName.trim()}
+              data-testid="button-save-add-property-type"
+            >
+              Add Property Type
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Remove Property Type Dialog */}
+      <Dialog open={showRemovePropertyTypeDialog} onOpenChange={setShowRemovePropertyTypeDialog}>
+        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-remove-property-type">
+          <DialogHeader>
+            <DialogTitle>Remove Property Type</DialogTitle>
+            <DialogDescription>
+              Select a property type to remove from the list.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="space-y-2">
+              <Label htmlFor="property-type-to-remove">Property Type</Label>
+              <Select value={propertyTypeToRemove} onValueChange={setPropertyTypeToRemove}>
+                <SelectTrigger data-testid="select-property-type-to-remove">
+                  <SelectValue placeholder="Select Property Type to Remove" />
+                </SelectTrigger>
+                <SelectContent>
+                  {!removedBuiltInPropertyTypes.includes('single-family') && (
+                    <SelectItem value="builtin::single-family" data-testid="select-remove-property-type-single-family">
+                      Single Family
+                    </SelectItem>
+                  )}
+                  {!removedBuiltInPropertyTypes.includes('condo') && (
+                    <SelectItem value="builtin::condo" data-testid="select-remove-property-type-condo">
+                      Condo
+                    </SelectItem>
+                  )}
+                  {!removedBuiltInPropertyTypes.includes('townhouse') && (
+                    <SelectItem value="builtin::townhouse" data-testid="select-remove-property-type-townhouse">
+                      Townhouse
+                    </SelectItem>
+                  )}
+                  {!removedBuiltInPropertyTypes.includes('duplex') && (
+                    <SelectItem value="builtin::duplex" data-testid="select-remove-property-type-duplex">
+                      Duplex
+                    </SelectItem>
+                  )}
+                  {!removedBuiltInPropertyTypes.includes('multi-family') && (
+                    <SelectItem value="builtin::multi-family" data-testid="select-remove-property-type-multi-family">
+                      Multi-Family
+                    </SelectItem>
+                  )}
+                  {!removedBuiltInPropertyTypes.includes('other') && (
+                    <SelectItem value="builtin::other" data-testid="select-remove-property-type-other">
+                      Other
+                    </SelectItem>
+                  )}
+                  {customPropertyTypes.map((type) => (
+                    <SelectItem 
+                      key={type.id} 
+                      value={`custom::${type.id}`}
+                      data-testid={`select-remove-property-type-${type.id}`}
+                    >
+                      {type.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowRemovePropertyTypeDialog(false);
+                setPropertyTypeToRemove('');
+              }}
+              data-testid="button-cancel-remove-property-type"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (propertyTypeToRemove) {
+                  const [type, id] = propertyTypeToRemove.split('::');
+                  if (type === 'builtin') {
+                    setRemovedBuiltInPropertyTypes(prev => [...prev, id]);
+                    const typeNames: Record<string, string> = {
+                      'single-family': 'Single Family',
+                      'condo': 'Condo',
+                      'townhouse': 'Townhouse',
+                      'duplex': 'Duplex',
+                      'multi-family': 'Multi-Family',
+                      'other': 'Other'
+                    };
+                    toast({
+                      title: "Property Type Removed",
+                      description: `"${typeNames[id]}" has been removed.`
+                    });
+                  } else {
+                    const typeName = customPropertyTypes.find(t => t.id === id)?.name || '';
+                    setCustomPropertyTypes(prev => prev.filter(t => t.id !== id));
+                    toast({
+                      title: "Property Type Removed",
+                      description: `"${typeName}" has been removed.`
+                    });
+                  }
+                  setShowRemovePropertyTypeDialog(false);
+                  setPropertyTypeToRemove('');
+                }
+              }}
+              disabled={!propertyTypeToRemove}
+              data-testid="button-confirm-remove-property-type"
+            >
+              Remove Property Type
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Source Dialog */}
+      <Dialog open={showAddSourceDialog} onOpenChange={setShowAddSourceDialog}>
+        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-add-source">
+          <DialogHeader>
+            <DialogTitle>Add New Source</DialogTitle>
+            <DialogDescription>
+              Enter a name for the new source.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="space-y-2">
+              <Label htmlFor="new-source">Source Name</Label>
+              <Input
+                id="new-source"
+                placeholder="Enter source name"
+                value={newSourceName}
+                onChange={(e) => setNewSourceName(e.target.value)}
+                data-testid="input-new-source"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowAddSourceDialog(false);
+                setNewSourceName('');
+              }}
+              data-testid="button-cancel-add-source"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (newSourceName.trim()) {
+                  const newSource = {
+                    id: nanoid(),
+                    name: newSourceName.trim()
+                  };
+                  setCustomSources(prev => [...prev, newSource]);
+                  setShowAddSourceDialog(false);
+                  setNewSourceName('');
+                  toast({
+                    title: "Source Added",
+                    description: `"${newSourceName.trim()}" has been added.`
+                  });
+                }
+              }}
+              disabled={!newSourceName.trim()}
+              data-testid="button-save-add-source"
+            >
+              Add Source
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Remove Source Dialog */}
+      <Dialog open={showRemoveSourceDialog} onOpenChange={setShowRemoveSourceDialog}>
+        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-remove-source">
+          <DialogHeader>
+            <DialogTitle>Remove Source</DialogTitle>
+            <DialogDescription>
+              Select a source to remove from the list.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="space-y-2">
+              <Label htmlFor="source-to-remove">Source</Label>
+              <Select value={sourceToRemove} onValueChange={setSourceToRemove}>
+                <SelectTrigger data-testid="select-source-to-remove">
+                  <SelectValue placeholder="Select Source to Remove" />
+                </SelectTrigger>
+                <SelectContent>
+                  {!removedBuiltInSources.includes('direct-mail') && (
+                    <SelectItem value="builtin::direct-mail" data-testid="select-remove-source-direct-mail">
+                      Direct Mail
+                    </SelectItem>
+                  )}
+                  {!removedBuiltInSources.includes('social-media') && (
+                    <SelectItem value="builtin::social-media" data-testid="select-remove-source-social-media">
+                      Social Media
+                    </SelectItem>
+                  )}
+                  {!removedBuiltInSources.includes('website') && (
+                    <SelectItem value="builtin::website" data-testid="select-remove-source-website">
+                      Website
+                    </SelectItem>
+                  )}
+                  {!removedBuiltInSources.includes('referral') && (
+                    <SelectItem value="builtin::referral" data-testid="select-remove-source-referral">
+                      Referral
+                    </SelectItem>
+                  )}
+                  {!removedBuiltInSources.includes('repeat-client') && (
+                    <SelectItem value="builtin::repeat-client" data-testid="select-remove-source-repeat-client">
+                      Repeat Client
+                    </SelectItem>
+                  )}
+                  {customSources.map((source) => (
+                    <SelectItem 
+                      key={source.id} 
+                      value={`custom::${source.id}`}
+                      data-testid={`select-remove-source-${source.id}`}
+                    >
+                      {source.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowRemoveSourceDialog(false);
+                setSourceToRemove('');
+              }}
+              data-testid="button-cancel-remove-source"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (sourceToRemove) {
+                  const [type, id] = sourceToRemove.split('::');
+                  if (type === 'builtin') {
+                    setRemovedBuiltInSources(prev => [...prev, id]);
+                    const sourceNames: Record<string, string> = {
+                      'direct-mail': 'Direct Mail',
+                      'social-media': 'Social Media',
+                      'website': 'Website',
+                      'referral': 'Referral',
+                      'repeat-client': 'Repeat Client'
+                    };
+                    toast({
+                      title: "Source Removed",
+                      description: `"${sourceNames[id]}" has been removed.`
+                    });
+                  } else {
+                    const sourceName = customSources.find(s => s.id === id)?.name || '';
+                    setCustomSources(prev => prev.filter(s => s.id !== id));
+                    toast({
+                      title: "Source Removed",
+                      description: `"${sourceName}" has been removed.`
+                    });
+                  }
+                  setShowRemoveSourceDialog(false);
+                  setSourceToRemove('');
+                }
+              }}
+              disabled={!sourceToRemove}
+              data-testid="button-confirm-remove-source"
+            >
+              Remove Source
             </Button>
           </DialogFooter>
         </DialogContent>
