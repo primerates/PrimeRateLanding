@@ -1121,6 +1121,7 @@ export default function AdminAddClient() {
   const [saveLibraryState, setSaveLibraryState] = useState('');
   const [saveLibraryLender, setSaveLibraryLender] = useState('');
   const [saveLibraryTitle, setSaveLibraryTitle] = useState('');
+  const [saveLibraryEstLoanAmount, setSaveLibraryEstLoanAmount] = useState('');
   const [showLibraryDialog, setShowLibraryDialog] = useState(false);
   const [isSaveLibraryPopoverOpen, setIsSaveLibraryPopoverOpen] = useState(false);
   const [saveLibraryCombinedSelection, setSaveLibraryCombinedSelection] = useState('');
@@ -1952,6 +1953,7 @@ export default function AdminAddClient() {
     setSaveLibraryState('');
     setSaveLibraryLender('');
     setSaveLibraryTitle('');
+    setSaveLibraryEstLoanAmount('');
     setShowSaveToLibraryCard(false);
     setShowThirdPartyServicesDialog(false);
     
@@ -27779,8 +27781,8 @@ export default function AdminAddClient() {
                   </Select>
                 </div>
 
-                {/* Title */}
-                <div className="space-y-2">
+                {/* Title - spans 2 columns */}
+                <div className="space-y-2 col-span-2">
                   <Label htmlFor="save-title" className="text-sm font-medium">
                     Title
                   </Label>
@@ -27807,27 +27809,46 @@ export default function AdminAddClient() {
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
 
-              {/* Save Button */}
-              <div className="flex justify-end mt-4 gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowSaveToLibraryCard(false)}
-                  data-testid="button-cancel-save-library"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={handleCompleteSaveToLibrary}
-                  disabled={!saveLibraryCombinedSelection || !saveLibraryState || !saveLibraryLender || !saveLibraryTitle}
-                  data-testid="button-complete-save-library"
-                >
-                  Save
-                </Button>
+                {/* Est. Loan Amount */}
+                <div className="space-y-2">
+                  <Label htmlFor="save-est-loan-amount" className="text-sm font-medium">
+                    Est. Loan Amount
+                  </Label>
+                  <Input
+                    id="save-est-loan-amount"
+                    value={saveLibraryEstLoanAmount}
+                    onChange={(e) => setSaveLibraryEstLoanAmount(e.target.value)}
+                    placeholder="$"
+                    data-testid="input-save-est-loan-amount"
+                  />
+                </div>
+
+                {/* Buttons - aligned below Lender */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium invisible">Actions</Label>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowSaveToLibraryCard(false)}
+                      className="flex-1"
+                      data-testid="button-cancel-save-library"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={handleCompleteSaveToLibrary}
+                      disabled={!saveLibraryCombinedSelection || !saveLibraryState || !saveLibraryLender || !saveLibraryTitle}
+                      className="flex-1"
+                      data-testid="button-complete-save-library"
+                    >
+                      Save
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
           )}
