@@ -23447,31 +23447,34 @@ export default function AdminAddClient() {
           onMouseUp={() => setIsDragging(false)}
           onMouseLeave={() => setIsDragging(false)}
         >
-          <Card className="w-64 shadow-lg">
-            <CardHeader className="pb-3">
+          <Card className="w-80 shadow-2xl border-2 border-primary/20">
+            <CardHeader className="pb-3 bg-gradient-to-r from-blue-500 to-purple-600">
               <div className="flex justify-between items-center">
-                <CardTitle className="text-sm">Calculator</CardTitle>
+                <CardTitle className="text-base font-bold text-white flex items-center gap-2">
+                  <Calculator className="h-5 w-5" />
+                  Calculator
+                </CardTitle>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowCalculator(false)}
-                  className="h-6 w-6 p-0"
+                  className="h-7 w-7 p-0 text-white hover:bg-white/20"
                   data-testid="button-close-calculator"
                 >
-                  <Minus className="h-3 w-3" />
+                  <Minus className="h-4 w-4" />
                 </Button>
               </div>
             </CardHeader>
-            <CardContent className="calculator-body">
-              <div className="bg-muted p-3 rounded-md mb-3 text-right font-mono text-xl font-bold">
+            <CardContent className="calculator-body pt-4">
+              <div className="bg-gradient-to-br from-slate-900 to-slate-800 p-4 rounded-lg mb-4 text-right font-mono text-2xl font-bold text-green-400 shadow-inner border border-slate-700">
                 {calculatorDisplay}
               </div>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-4 gap-3">
                 {['7', '8', '9', '/', '4', '5', '6', '*', '1', '2', '3', '-', 'C', '0', '=', '+'].map((btn) => (
                   <Button
                     key={btn}
                     variant={btn === '=' ? 'default' : 'outline'}
-                    size="sm"
+                    size="default"
                     onClick={() => {
                       if (btn === 'C') {
                         setCalculatorDisplay('0');
@@ -23500,7 +23503,12 @@ export default function AdminAddClient() {
                         setCalculatorDisplay(calculatorDisplay === '0' ? btn : calculatorDisplay + btn);
                       }
                     }}
-                    className="h-10"
+                    className={`h-14 text-lg font-semibold ${
+                      btn === 'C' ? 'bg-red-500 hover:bg-red-600 text-white border-red-600' :
+                      btn === '=' ? 'bg-green-500 hover:bg-green-600 text-white border-green-600' :
+                      ['+', '-', '*', '/'].includes(btn) ? 'bg-blue-500 hover:bg-blue-600 text-white border-blue-600' :
+                      ''
+                    }`}
                     data-testid={`calculator-btn-${btn}`}
                   >
                     {btn}
