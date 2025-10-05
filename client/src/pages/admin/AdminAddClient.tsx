@@ -21269,139 +21269,560 @@ export default function AdminAddClient() {
                       {/* Row 1: 5 Fields with titles above */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="quote-select">Quote</Label>
-                          <Popover open={isRatePopoverOpen} onOpenChange={setIsRatePopoverOpen}>
+                          <Label htmlFor="category-select">Loan Category</Label>
+                          <Popover open={isLoanCategoryPopoverOpen} onOpenChange={setIsLoanCategoryPopoverOpen}>
                             <PopoverTrigger asChild>
                               <Button
                                 variant="outline"
                                 role="combobox"
                                 className="w-full justify-between"
-                                data-testid="button-quote-select"
+                                data-testid="button-category-select"
                               >
-                                {selectedRateIds.length === 0
-                                  ? "Select"
-                                  : selectedRateIds.length === 1
-                                  ? `Rate ${selectedRateIds[0] + 1}`
-                                  : `${selectedRateIds.length} Rates (${selectedRateIds.map(id => id + 1).join(', ')})`}
+                                {selectedLoanCategory || "Select"}
                                 <Plus className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                               </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[200px] p-3" align="start">
+                            <PopoverContent className="w-[1400px] p-3" align="start">
                               <div className="space-y-2">
-                                <div className="text-sm font-medium mb-3">Select Rates</div>
-                                
-                                {/* Select All Four Option */}
-                                <div className="flex items-center space-x-2 pb-2 border-b">
-                                  <Checkbox
-                                    id="rate-select-all"
-                                    checked={selectedRateIds.length === 4}
-                                    onCheckedChange={(checked) => {
-                                      if (checked) {
-                                        setSelectedRateIds([0, 1, 2, 3]);
-                                        setShowRateCircles(true);
-                                      } else {
-                                        setSelectedRateIds([]);
-                                        setShowRateCircles(false);
-                                      }
-                                    }}
-                                    data-testid="checkbox-rate-select-all"
-                                  />
-                                  <label
-                                    htmlFor="rate-select-all"
-                                    className="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-                                  >
-                                    Select All Four
-                                  </label>
+                                {/* Select Option */}
+                                <div 
+                                  className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                  onClick={() => {
+                                    setSelectedLoanCategory('');
+                                    setIsLoanCategoryPopoverOpen(false);
+                                  }}
+                                  data-testid="option-category-select"
+                                >
+                                  <span className="text-sm">Select</span>
                                 </div>
-
-                                {[3, 2, 1, 0].map((rateId) => (
-                                  <div key={rateId} className="flex items-center space-x-2">
-                                    <Checkbox
-                                      id={`rate-${rateId}`}
-                                      checked={selectedRateIds.includes(rateId)}
-                                      onCheckedChange={(checked) => {
-                                        if (checked) {
-                                          const newIds = [...selectedRateIds, rateId].sort((a, b) => a - b);
-                                          setSelectedRateIds(newIds);
-                                          setShowRateCircles(true);
-                                        } else {
-                                          const newIds = selectedRateIds.filter(id => id !== rateId);
-                                          setSelectedRateIds(newIds);
-                                          if (newIds.length === 0) {
-                                            setShowRateCircles(false);
-                                          }
-                                        }
-                                      }}
-                                      data-testid={`checkbox-rate-${rateId + 1}`}
-                                    />
-                                    <label
-                                      htmlFor={`rate-${rateId}`}
-                                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-                                    >
-                                      Rate {rateId + 1}
-                                    </label>
+                                
+                                {/* VA, VA Jumbo, Fannie Conv, Fannie Jumbo, FHA, Non-QM, and Second Loan Side by Side */}
+                                <div className="grid grid-cols-7 gap-4 border-t pt-2">
+                                  {/* VA Section */}
+                                  <div className="border-r pr-4">
+                                    {/* VA Title - Non-clickable */}
+                                    <div className="text-base font-bold text-green-700 px-2 py-1.5">
+                                      VA
+                                    </div>
+                                    
+                                    {/* VA Sub-options with squares */}
+                                    <div className="ml-3 space-y-1">
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('VA - Cash Out');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-va-cash-out"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'VA - Cash Out' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Cash Out</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('VA - Purchase');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-va-purchase"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'VA - Purchase' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Purchase</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('VA - Rate & Term');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-va-rate-term"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'VA - Rate & Term' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Rate & Term</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('VA - IRRRL');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-va-irrrl"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'VA - IRRRL' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">IRRRL</span>
+                                      </div>
+                                    </div>
                                   </div>
-                                ))}
+                                  
+                                  {/* VA Jumbo Section */}
+                                  <div className="border-r pr-4">
+                                    {/* VA Jumbo Title - Non-clickable */}
+                                    <div className="text-base font-bold text-green-700 px-2 py-1.5">
+                                      VA Jumbo
+                                    </div>
+                                    
+                                    {/* VA Jumbo Sub-options with squares */}
+                                    <div className="ml-3 space-y-1">
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('VA Jumbo - Cash Out');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-va-jumbo-cash-out"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'VA Jumbo - Cash Out' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Cash Out</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('VA Jumbo - Purchase');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-va-jumbo-purchase"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'VA Jumbo - Purchase' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Purchase</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('VA Jumbo - Rate & Term');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-va-jumbo-rate-term"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'VA Jumbo - Rate & Term' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Rate & Term</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('VA Jumbo - IRRRL');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-va-jumbo-irrrl"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'VA Jumbo - IRRRL' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">IRRRL</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Fannie Conv Section */}
+                                  <div className="border-r pr-4">
+                                    {/* Fannie Conv Title - Non-clickable */}
+                                    <div className="text-base font-bold text-green-700 px-2 py-1.5">
+                                      Fannie Conv
+                                    </div>
+                                    
+                                    {/* Fannie Conv Sub-options with squares */}
+                                    <div className="ml-3 space-y-1">
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Fannie Conv - Cash Out');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-fannie-conv-cash-out"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Fannie Conv - Cash Out' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Cash Out</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Fannie Conv - Purchase');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-fannie-conv-purchase"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Fannie Conv - Purchase' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Purchase</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Fannie Conv - Rate & Term');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-fannie-conv-rate-term"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Fannie Conv - Rate & Term' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Rate & Term</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Fannie Conv - Streamline');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-fannie-conv-streamline"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Fannie Conv - Streamline' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Streamline</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Fannie Jumbo Section */}
+                                  <div className="border-r pr-4">
+                                    {/* Fannie Jumbo Title - Non-clickable */}
+                                    <div className="text-base font-bold text-green-700 px-2 py-1.5">
+                                      Fannie Jumbo
+                                    </div>
+                                    
+                                    {/* Fannie Jumbo Sub-options with squares */}
+                                    <div className="ml-3 space-y-1">
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Fannie Jumbo - Cash Out');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-fannie-jumbo-cash-out"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Fannie Jumbo - Cash Out' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Cash Out</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Fannie Jumbo - Purchase');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-fannie-jumbo-purchase"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Fannie Jumbo - Purchase' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Purchase</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Fannie Jumbo - Rate & Term');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-fannie-jumbo-rate-term"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Fannie Jumbo - Rate & Term' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Rate & Term</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Fannie Jumbo - Streamline');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-fannie-jumbo-streamline"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Fannie Jumbo - Streamline' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Streamline</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  {/* FHA Section */}
+                                  <div className="border-r pr-4">
+                                    {/* FHA Title - Non-clickable */}
+                                    <div className="text-base font-bold text-green-700 px-2 py-1.5">
+                                      FHA
+                                    </div>
+                                    
+                                    {/* FHA Sub-options with squares */}
+                                    <div className="ml-3 space-y-1">
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('FHA - Cash Out');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-fha-cash-out"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'FHA - Cash Out' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Cash Out</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('FHA - Purchase');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-fha-purchase"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'FHA - Purchase' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Purchase</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('FHA - Rate & Term');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-fha-rate-term"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'FHA - Rate & Term' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Rate & Term</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('FHA - Streamline');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-fha-streamline"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'FHA - Streamline' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Streamline</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Non-QM Section */}
+                                  <div className="border-r pr-4">
+                                    {/* Non-QM Title - Non-clickable */}
+                                    <div className="text-base font-bold text-green-700 px-2 py-1.5">
+                                      Non-QM
+                                    </div>
+                                    
+                                    {/* Non-QM Sub-options with squares */}
+                                    <div className="ml-3 space-y-1">
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Non-QM - Cash Out');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-non-qm-cash-out"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Non-QM - Cash Out' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Cash Out</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Non-QM - Purchase');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-non-qm-purchase"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Non-QM - Purchase' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Purchase</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Non-QM - Rate & Term');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-non-qm-rate-term"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Non-QM - Rate & Term' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Rate & Term</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Second Loan Section */}
+                                  <div>
+                                    {/* Second Loan Title - Non-clickable */}
+                                    <div className="text-base font-bold text-green-700 px-2 py-1.5">
+                                      Second Loan
+                                    </div>
+                                    
+                                    {/* Second Loan Sub-options with squares */}
+                                    <div className="ml-3 space-y-1">
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Second Loan - HELOC');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-second-loan-heloc"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Second Loan - HELOC' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">HELOC</span>
+                                      </div>
+                                      
+                                      <div 
+                                        className="flex items-center space-x-2 py-1.5 px-2 hover-elevate rounded-md cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedLoanCategory('Second Loan - Fixed Second');
+                                          setIsLoanCategoryPopoverOpen(false);
+                                        }}
+                                        data-testid="option-category-second-loan-fixed-second"
+                                      >
+                                        <div className={`w-3 h-3 border flex-shrink-0 ${
+                                          selectedLoanCategory === 'Second Loan - Fixed Second' 
+                                            ? 'bg-green-700 border-green-700' 
+                                            : 'border-current'
+                                        }`} />
+                                        <span className="text-sm">Fixed Second</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             </PopoverContent>
                           </Popover>
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="transaction-select">Loan Purpose</Label>
-                          <Select>
-                            <SelectTrigger data-testid="select-transaction">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-transaction-select">Select</SelectItem>
-                              
-                              <div 
-                                className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setShowAddLoanPurposeDialog(true);
-                                }}
-                                data-testid="option-add-loan-purpose"
-                              >
-                                + Add
-                              </div>
-                              <div 
-                                className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setShowRemoveLoanPurposeDialog(true);
-                                }}
-                                data-testid="option-remove-loan-purpose"
-                              >
-                                - Remove
-                              </div>
-                              
-                              <div className="my-1 border-t border-border"></div>
-                              
-                              {!removedBuiltInLoanPurposes.includes('refinance') && (
-                                <SelectItem value="refinance" data-testid="select-transaction-refinance">Refinance</SelectItem>
-                              )}
-                              {!removedBuiltInLoanPurposes.includes('purchase') && (
-                                <SelectItem value="purchase" data-testid="select-transaction-purchase">Purchase</SelectItem>
-                              )}
-                              {!removedBuiltInLoanPurposes.includes('second-loan') && (
-                                <SelectItem value="second-loan" data-testid="select-transaction-second-loan">Second Loan</SelectItem>
-                              )}
-                              {!removedBuiltInLoanPurposes.includes('construction') && (
-                                <SelectItem value="construction" data-testid="select-transaction-construction">Construction</SelectItem>
-                              )}
-                              {!removedBuiltInLoanPurposes.includes('bridge') && (
-                                <SelectItem value="bridge" data-testid="select-transaction-bridge">Bridge</SelectItem>
-                              )}
-                              
-                              {customLoanPurposes.map((purpose) => (
-                                <SelectItem key={purpose.id} value={purpose.id} data-testid={`select-transaction-${purpose.id}`}>
-                                  {purpose.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor={isCustomTerm ? "custom-term-input" : "loan-term-select"}>
+                              {isCustomTerm ? "Custom Term / Years" : "Loan Term / Years"}
+                            </Label>
+                            <Switch
+                              checked={isCustomTerm}
+                              onCheckedChange={setIsCustomTerm}
+                              data-testid="switch-custom-term"
+                              className="scale-[0.8]"
+                            />
+                          </div>
+                          {!isCustomTerm ? (
+                            <Select value={loanTerm} onValueChange={setLoanTerm}>
+                              <SelectTrigger data-testid="select-loan-term">
+                                <SelectValue placeholder="Select" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="select" data-testid="select-loan-term-select">Select</SelectItem>
+                                <SelectItem value="30-years" data-testid="select-loan-term-30">30</SelectItem>
+                                <SelectItem value="25-years" data-testid="select-loan-term-25">25</SelectItem>
+                                <SelectItem value="20-years" data-testid="select-loan-term-20">20</SelectItem>
+                                <SelectItem value="18-years" data-testid="select-loan-term-18">18</SelectItem>
+                                <SelectItem value="15-years" data-testid="select-loan-term-15">15</SelectItem>
+                                <SelectItem value="12-years" data-testid="select-loan-term-12">12</SelectItem>
+                                <SelectItem value="10-years" data-testid="select-loan-term-10">10</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          ) : (
+                            <Input
+                              id="custom-term-input"
+                              type="text"
+                              placeholder=""
+                              value={customTerm}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (value === '' || (/^\d{1,2}$/.test(value))) {
+                                  setCustomTerm(value);
+                                }
+                              }}
+                              data-testid="input-custom-term"
+                            />
+                          )}
                         </div>
 
                         <div className="space-y-2">
