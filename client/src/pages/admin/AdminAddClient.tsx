@@ -23554,7 +23554,7 @@ export default function AdminAddClient() {
               onClick={() => {
                 // TODO: Exempt logic
               }}
-              className="hover:text-green-600"
+              className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:text-white"
               data-testid="button-exempt-va-funding-fee"
             >
               Exempt
