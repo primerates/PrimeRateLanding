@@ -27504,7 +27504,7 @@ export default function AdminAddClient() {
               variant="outline"
               size="sm"
               onClick={() => setShowThirdPartyServicesDialog(false)}
-              className="text-xs px-2 w-full bg-white text-black hover:text-blue-600 hover:bg-white"
+              className="text-xs px-2 w-full bg-white text-black hover:text-blue-600 hover:bg-white hover:border-blue-600"
               data-testid="button-cancel-tps"
             >
               Cancel
@@ -27513,7 +27513,7 @@ export default function AdminAddClient() {
               variant="outline"
               size="sm"
               onClick={handleApplyThirdPartyServices}
-              className="text-xs px-2 w-full bg-white text-black hover:text-blue-600 hover:bg-white"
+              className="text-xs px-2 w-full bg-white text-black hover:text-blue-600 hover:bg-white hover:border-blue-600"
               data-testid="button-apply-tps"
             >
               Apply to Rate
@@ -27522,7 +27522,7 @@ export default function AdminAddClient() {
               variant="outline"
               size="sm"
               onClick={handleCopyForAllRatesTPS}
-              className="text-xs px-2 w-full bg-white text-black hover:text-blue-600 hover:bg-white"
+              className="text-xs px-2 w-full bg-white text-black hover:text-blue-600 hover:bg-white hover:border-blue-600"
               data-testid="button-copy-for-all-rates-tps"
             >
               Apply to All Rates
@@ -27531,7 +27531,7 @@ export default function AdminAddClient() {
               variant="outline"
               size="sm"
               onClick={handleSaveToLibraryTPS}
-              className="text-xs px-2 w-full bg-white text-black hover:text-blue-600 hover:bg-white"
+              className="text-xs px-2 w-full bg-white text-black hover:text-blue-600 hover:bg-white hover:border-blue-600"
               data-testid="button-save-to-library-tps"
             >
               Save to Library
