@@ -23565,7 +23565,7 @@ export default function AdminAddClient() {
               onClick={() => {
                 // TODO: Calculate logic
               }}
-              className="hover:text-green-600"
+              className="border-green-500 hover:border-green-500 hover:text-green-600"
               data-testid="button-calculate-va-funding-fee"
             >
               Calculate
