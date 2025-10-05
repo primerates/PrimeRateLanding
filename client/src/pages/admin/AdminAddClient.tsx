@@ -28153,52 +28153,38 @@ export default function AdminAddClient() {
           <DialogHeader>
             <DialogTitle>Remove Service</DialogTitle>
             <DialogDescription>
-              Select a category and service to remove.
+              Select a service to remove.
             </DialogDescription>
           </DialogHeader>
           <div className="py-4 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="category-for-remove-tps">Category</Label>
-              <Select value={selectedCategoryForRemoveTPS} onValueChange={setSelectedCategoryForRemoveTPS}>
-                <SelectTrigger data-testid="select-category-for-remove-tps">
-                  <SelectValue placeholder="Select Category" />
+              <Label htmlFor="service-to-remove-tps">Service</Label>
+              <Select value={serviceToRemoveTPS} onValueChange={(value) => {
+                setServiceToRemoveTPS(value);
+                // Find which category this service belongs to
+                const categoryId = tempThirdPartyServices.find(cat => 
+                  cat.services.some(service => service.id === value)
+                )?.id;
+                setSelectedCategoryForRemoveTPS(categoryId || '');
+              }}>
+                <SelectTrigger data-testid="select-service-to-remove-tps">
+                  <SelectValue placeholder="Select Service to Remove" />
                 </SelectTrigger>
                 <SelectContent>
-                  {tempThirdPartyServices.map((category) => (
-                    <SelectItem 
-                      key={category.id} 
-                      value={category.id}
-                      data-testid={`select-category-for-remove-${category.id}`}
-                    >
-                      {category.categoryName}
-                    </SelectItem>
-                  ))}
+                  {tempThirdPartyServices.map((category) => 
+                    category.services.map((service) => (
+                      <SelectItem 
+                        key={service.id} 
+                        value={service.id}
+                        data-testid={`select-remove-service-${service.id}`}
+                      >
+                        • {service.serviceName}
+                      </SelectItem>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
             </div>
-            {selectedCategoryForRemoveTPS && (
-              <div className="space-y-2">
-                <Label htmlFor="service-to-remove-tps">Service</Label>
-                <Select value={serviceToRemoveTPS} onValueChange={setServiceToRemoveTPS}>
-                  <SelectTrigger data-testid="select-service-to-remove-tps">
-                    <SelectValue placeholder="Select Service to Remove" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {tempThirdPartyServices
-                      .find(cat => cat.id === selectedCategoryForRemoveTPS)
-                      ?.services.map((service) => (
-                        <SelectItem 
-                          key={service.id} 
-                          value={service.id}
-                          data-testid={`select-remove-service-${service.id}`}
-                        >
-                          {service.serviceName}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
           </div>
           <DialogFooter>
             <Button
