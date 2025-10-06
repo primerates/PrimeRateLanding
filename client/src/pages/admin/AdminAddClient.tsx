@@ -22477,12 +22477,21 @@ export default function AdminAddClient() {
                             <Label htmlFor="lender-select">
                               {isLenderCreditMode ? "Lender Credit" : "Lender"}
                             </Label>
-                            <Switch
-                              checked={isLenderCreditMode}
-                              onCheckedChange={setIsLenderCreditMode}
-                              data-testid="switch-lender-credit-mode"
-                              className="scale-[0.8]"
-                            />
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div>
+                                  <Switch
+                                    checked={isLenderCreditMode}
+                                    onCheckedChange={setIsLenderCreditMode}
+                                    data-testid="switch-lender-credit-mode"
+                                    className="scale-[0.8] hover:border-blue-600 hover:border-2"
+                                  />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{isLenderCreditMode ? "Lender" : "Lender Credit"}</p>
+                              </TooltipContent>
+                            </Tooltip>
                           </div>
                           {isLenderCreditMode ? (
                             <div className="flex items-center border border-input bg-background px-3 rounded-md">
