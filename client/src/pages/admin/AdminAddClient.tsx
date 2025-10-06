@@ -21343,7 +21343,12 @@ export default function AdminAddClient() {
                           variant="ghost"
                           size="sm"
                           className="hover:bg-amber-500 hover:text-white"
-                          onClick={() => setShowVAFundingFeeDialog(true)}
+                          onClick={() => {
+                            if (!(isVAExempt || isVAJumboExempt)) {
+                              setShowVAFundingFeeDialog(true);
+                            }
+                          }}
+                          disabled={isVAExempt || isVAJumboExempt}
                           data-testid="button-va-funding-fee"
                         >
                           <Star className={`h-4 w-4 ${
@@ -21395,7 +21400,10 @@ export default function AdminAddClient() {
                       {/* Row 1: 5 Fields with titles above */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="category-select">Loan Category</Label>
+                          <Label htmlFor="category-select">
+                            Loan Category
+                            {(isVAExempt || isVAJumboExempt) && <span className="text-green-600 ml-2">- Exempt</span>}
+                          </Label>
                           <Popover open={isLoanCategoryPopoverOpen} onOpenChange={setIsLoanCategoryPopoverOpen}>
                             <PopoverTrigger asChild>
                               <Button
@@ -22966,7 +22974,15 @@ export default function AdminAddClient() {
                                 ))}
                               </div>
                             ) : (
-                              category.services.map((service, serviceIndex) => (
+                              category.services
+                                .filter(service => {
+                                  // Hide VA Funding Fee (s1) when exempt is enabled
+                                  if (service.id === 's1' && (isVAExempt || isVAJumboExempt)) {
+                                    return false;
+                                  }
+                                  return true;
+                                })
+                                .map((service, serviceIndex) => (
                                 <div 
                                   key={service.id} 
                                   className={`grid gap-4 ${serviceIndex < category.services.length - 1 ? 'mb-2' : ''}`}
