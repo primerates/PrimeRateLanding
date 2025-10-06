@@ -918,9 +918,10 @@ export default function AdminAddClient() {
   const [isCustomTerm, setIsCustomTerm] = useState(false);
   const [loanTerm, setLoanTerm] = useState('');
   const [customTerm, setCustomTerm] = useState('');
-  const [monthlyEscrow, setMonthlyEscrow] = useState('');
+  const [monthlyEscrow, setMonthlyEscrow] = useState('includes-tax-insurance');
   const [isDuApproval, setIsDuApproval] = useState(false);
-  const [escrowReserves, setEscrowReserves] = useState('');
+  const [escrowReserves, setEscrowReserves] = useState('new-escrow-reserves');
+  const [underwriting, setUnderwriting] = useState('financed');
   const [rateBuydownSelection, setRateBuydownSelection] = useState('select');
   const [debtToIncomeRatio, setDebtToIncomeRatio] = useState('');
   const [lenderCredit, setLenderCredit] = useState('');
@@ -22314,10 +22315,9 @@ export default function AdminAddClient() {
                           <Label htmlFor="escrow-reserves-select">Escrow Reserves</Label>
                           <Select value={escrowReserves} onValueChange={setEscrowReserves}>
                             <SelectTrigger data-testid="select-escrow-reserves">
-                              <SelectValue placeholder="Select" />
+                              <SelectValue placeholder="New Escrow Reserves" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="select" data-testid="select-escrow-reserves-select">Select</SelectItem>
                               <SelectItem value="new-escrow-reserves" data-testid="select-escrow-reserves-new">New Escrow Reserves</SelectItem>
                               <SelectItem value="escrow-not-included" data-testid="select-escrow-reserves-not-included">Escrow Not Included</SelectItem>
                             </SelectContent>
@@ -22328,10 +22328,9 @@ export default function AdminAddClient() {
                           <Label htmlFor="monthly-escrow-select">Monthly Escrow</Label>
                           <Select value={monthlyEscrow} onValueChange={setMonthlyEscrow}>
                             <SelectTrigger data-testid="select-monthly-escrow">
-                              <SelectValue placeholder="Select" />
+                              <SelectValue placeholder="Includes Tax & Insurance" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="select" data-testid="select-monthly-escrow-select">Select</SelectItem>
                               <SelectItem value="includes-tax-insurance" data-testid="select-monthly-escrow-tax-insurance">Includes Tax & Insurance</SelectItem>
                               <SelectItem value="includes-tax-only" data-testid="select-monthly-escrow-tax-only">Includes Tax Only</SelectItem>
                               <SelectItem value="includes-insurance-only" data-testid="select-monthly-escrow-insurance-only">Includes Insurance Only</SelectItem>
@@ -22529,58 +22528,14 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="source-select">Source</Label>
-                          <Select>
-                            <SelectTrigger data-testid="select-source">
-                              <SelectValue placeholder="Select" />
+                          <Label htmlFor="underwriting-select">Underwriting</Label>
+                          <Select value={underwriting} onValueChange={setUnderwriting}>
+                            <SelectTrigger data-testid="select-underwriting">
+                              <SelectValue placeholder="Financed" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="select" data-testid="select-source-select">Select</SelectItem>
-                              
-                              <div 
-                                className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setShowAddSourceDialog(true);
-                                }}
-                                data-testid="option-add-source"
-                              >
-                                + Add
-                              </div>
-                              <div 
-                                className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setShowRemoveSourceDialog(true);
-                                }}
-                                data-testid="option-remove-source"
-                              >
-                                - Remove
-                              </div>
-                              
-                              <div className="my-1 border-t border-border"></div>
-                              
-                              {!removedBuiltInSources.includes('direct-mail') && (
-                                <SelectItem value="direct-mail" data-testid="select-source-direct-mail">Direct Mail</SelectItem>
-                              )}
-                              {!removedBuiltInSources.includes('social-media') && (
-                                <SelectItem value="social-media" data-testid="select-source-social-media">Social Media</SelectItem>
-                              )}
-                              {!removedBuiltInSources.includes('website') && (
-                                <SelectItem value="website" data-testid="select-source-website">Website</SelectItem>
-                              )}
-                              {!removedBuiltInSources.includes('referral') && (
-                                <SelectItem value="referral" data-testid="select-source-referral">Referral</SelectItem>
-                              )}
-                              {!removedBuiltInSources.includes('repeat-client') && (
-                                <SelectItem value="repeat-client" data-testid="select-source-repeat-client">Repeat Client</SelectItem>
-                              )}
-                              
-                              {customSources.map((source) => (
-                                <SelectItem key={source.id} value={source.id} data-testid={`select-source-${source.id}`}>
-                                  {source.name}
-                                </SelectItem>
-                              ))}
+                              <SelectItem value="financed" data-testid="select-underwriting-financed">Financed</SelectItem>
+                              <SelectItem value="rate" data-testid="select-underwriting-rate">Rate</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
