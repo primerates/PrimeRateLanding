@@ -1971,10 +1971,27 @@ export default function AdminAddClient() {
   };
   
   const handleCompleteSaveToLibrary = () => {
-    // Create a unique key for this library entry
-    const libraryKey = `${saveLibraryLoanCategory}::${saveLibraryLoanPurpose}::${saveLibraryState}::${saveLibraryLender}::${saveLibraryTitle}::${saveLibraryEstLoanAmount}`;
+    // Create a unique ID for this configuration
+    const configId = `config_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
-    // Save the configuration with metadata
+    // Create the configuration object
+    const newConfig = {
+      id: configId,
+      timestamp: Date.now(),
+      loanCategory: saveLibraryLoanCategory,
+      loanPurpose: saveLibraryLoanPurpose,
+      state: saveLibraryState,
+      lender: saveLibraryLender,
+      title: saveLibraryTitle,
+      estLoanAmount: saveLibraryEstLoanAmount,
+      thirdPartyServices: JSON.parse(JSON.stringify(tempThirdPartyServices))
+    };
+    
+    // Add to library configurations
+    setSavedLibraryConfigurations(prev => [...prev, newConfig]);
+    
+    // Also save to old thirdPartyServicesLibrary for backwards compatibility
+    const libraryKey = `${saveLibraryLoanCategory}::${saveLibraryLoanPurpose}::${saveLibraryState}::${saveLibraryLender}::${saveLibraryTitle}::${saveLibraryEstLoanAmount}`;
     setThirdPartyServicesLibrary(prev => ({
       ...prev,
       [libraryKey]: {
