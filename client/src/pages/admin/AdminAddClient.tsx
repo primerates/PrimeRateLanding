@@ -23749,8 +23749,7 @@ export default function AdminAddClient() {
                 // This button displays the exempt state but doesn't toggle it
                 // Exempt can only be toggled from the Loan Category dropdown
               }}
-              disabled={true}
-              className={`${(isVAExempt || isVAJumboExempt) ? 'bg-green-600 text-white border-green-600 hover:bg-green-700 hover:text-white' : 'bg-transparent text-gray-400 border-gray-300'}`}
+              className={`${(isVAExempt || isVAJumboExempt) ? 'bg-green-600 text-white border-green-600 hover:bg-green-700 hover:text-white cursor-default' : 'bg-transparent text-gray-400 border-gray-300 cursor-default'}`}
               data-testid="button-exempt-va-funding-fee"
             >
               Exempt
