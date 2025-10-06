@@ -22997,6 +22997,10 @@ export default function AdminAddClient() {
                                       (selectedLoanCategory?.includes('Rate & Term') || selectedLoanCategory?.includes('Streamline'))) {
                                     return false;
                                   }
+                                  // Hide Underwriting Services (s4) when Underwriting field is set to "Rate"
+                                  if (service.id === 's4' && underwriting === 'rate') {
+                                    return false;
+                                  }
                                   return true;
                                 })
                                 .map((service, serviceIndex) => {
