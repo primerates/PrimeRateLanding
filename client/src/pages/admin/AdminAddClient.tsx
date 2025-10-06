@@ -22977,6 +22977,7 @@ export default function AdminAddClient() {
                               category.services
                                 .filter(service => {
                                   const isVACategory = selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ');
+                                  const isFHACategory = selectedLoanCategory?.startsWith('FHA - ');
                                   
                                   // Hide VA Funding Fee (s1) when exempt is enabled OR not a VA category
                                   if (service.id === 's1' && ((isVAExempt || isVAJumboExempt) || !isVACategory)) {
@@ -22986,9 +22987,14 @@ export default function AdminAddClient() {
                                   if (service.id === 's3' && !isVACategory) {
                                     return false;
                                   }
-                                  // Hide VA Appraisal Inspection (s2) and VA Termite Report (s3) when Rate & Term or IRRRL is selected
+                                  // Hide VA Appraisal Inspection (s2) and VA Termite Report (s3) when VA Rate & Term or IRRRL is selected
                                   if ((service.id === 's2' || service.id === 's3') && 
                                       (selectedLoanCategory?.includes('Rate & Term') || selectedLoanCategory?.includes('IRRRL'))) {
+                                    return false;
+                                  }
+                                  // Hide Appraisal Inspection (s2) when FHA Rate & Term or Streamline is selected
+                                  if (service.id === 's2' && isFHACategory && 
+                                      (selectedLoanCategory?.includes('Rate & Term') || selectedLoanCategory?.includes('Streamline'))) {
                                     return false;
                                   }
                                   return true;
