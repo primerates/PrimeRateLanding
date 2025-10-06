@@ -23591,10 +23591,19 @@ export default function AdminAddClient() {
               variant="outline"
               size="sm"
               onClick={() => {
-                // Get New Est. Loan Amount from the first rate column
-                const newEstLoanAmount = parseFloat(newEstLoanAmountValues[0]?.replace(/[^\d.]/g, '') || '0');
-                // Get VA Funding Fee from the first rate column
-                const vaFundingFee = parseFloat(vaFundingFeeValues[0]?.replace(/[^\d.]/g, '') || '0');
+                // Get the first selected rate ID
+                const firstRateId = selectedRateIds[0];
+                
+                if (firstRateId === undefined) {
+                  console.error('No rate selected');
+                  return;
+                }
+                
+                // Get New Est. Loan Amount from rateColumnTotals (this is the calculated total)
+                const newEstLoanAmount = rateColumnTotals[firstRateId] || 0;
+                
+                // Get VA Funding Fee from the first selected rate column
+                const vaFundingFee = parseFloat(vaFundingFeeValues[firstRateId]?.replace(/[^\d.]/g, '') || '0');
                 
                 // Calculate base amount: New Est. Loan Amount - VA Funding Fee
                 const baseAmount = newEstLoanAmount - vaFundingFee;
