@@ -21347,9 +21347,11 @@ export default function AdminAddClient() {
                           data-testid="button-va-funding-fee"
                         >
                           <Star className={`h-4 w-4 ${
-                            (selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ')) 
-                              ? 'text-purple-500 fill-purple-500' 
-                              : ''
+                            (isVAExempt || isVAJumboExempt)
+                              ? 'text-green-600 fill-green-600'
+                              : (selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ')) 
+                                ? 'text-purple-500 fill-purple-500' 
+                                : ''
                           }`} />
                         </Button>
                       </TooltipTrigger>
