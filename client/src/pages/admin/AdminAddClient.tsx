@@ -2024,6 +2024,23 @@ export default function AdminAddClient() {
     });
   };
   
+  const handleLoadLibraryConfiguration = (configId: string) => {
+    // Find the configuration
+    const config = savedLibraryConfigurations.find(c => c.id === configId);
+    if (!config) return;
+    
+    // Load the configuration into tempThirdPartyServices
+    setTempThirdPartyServices(JSON.parse(JSON.stringify(config.thirdPartyServices)));
+    
+    // Close the library dialog
+    setShowLibraryDialog(false);
+    
+    toast({
+      title: "Configuration Loaded",
+      description: `Loaded: ${config.loanCategory} - ${config.loanPurpose}`,
+    });
+  };
+  
   const handleCopyForAllRatesTPS = () => {
     // Update the category structure
     setCurrentThirdPartyServices(JSON.parse(JSON.stringify(tempThirdPartyServices)));
@@ -28485,6 +28502,103 @@ export default function AdminAddClient() {
               data-testid="button-see-library-tps"
             >
               See Library
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Library Dialog */}
+      <Dialog open={showLibraryDialog} onOpenChange={setShowLibraryDialog}>
+        <DialogContent className="sm:max-w-[900px] max-h-[80vh] overflow-y-auto" data-testid="dialog-library">
+          <DialogHeader className="bg-primary text-white -mx-6 -mt-6 px-6 py-4 rounded-t-lg">
+            <DialogTitle className="text-white">Configuration Library</DialogTitle>
+          </DialogHeader>
+          
+          <div className="py-4">
+            {savedLibraryConfigurations.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <p className="text-base">No saved configurations yet.</p>
+                <p className="text-sm mt-2">Click "Save to Library" to save your first configuration.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <Label className="text-base font-semibold">
+                  Saved Configurations ({savedLibraryConfigurations.length})
+                </Label>
+                <div className="space-y-2">
+                  {savedLibraryConfigurations.map((config) => {
+                    // Format the timestamp
+                    const date = new Date(config.timestamp);
+                    const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                    
+                    // Get lender display name
+                    const lenderDisplay = config.lender === 'uwm' ? 'UWM' : 
+                                         config.lender === 'pennymac' ? 'Pennymac' :
+                                         config.lender;
+                    
+                    // Get title display name
+                    const titleDisplay = config.title === 'first-american-title' ? 'First American Title' :
+                                        config.title === 'reltco' ? 'Reltco' :
+                                        config.title;
+                    
+                    return (
+                      <div
+                        key={config.id}
+                        className="border rounded-lg p-4 hover-elevate cursor-pointer"
+                        onClick={() => handleLoadLibraryConfiguration(config.id)}
+                        data-testid={`library-config-${config.id}`}
+                      >
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <div>
+                              <Label className="text-xs text-muted-foreground">Loan Type</Label>
+                              <p className="text-sm font-semibold">{config.loanCategory} - {config.loanPurpose}</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs text-muted-foreground">State</Label>
+                              <p className="text-sm">{config.state}</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs text-muted-foreground">Lender</Label>
+                              <p className="text-sm">{lenderDisplay}</p>
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <div>
+                              <Label className="text-xs text-muted-foreground">Title</Label>
+                              <p className="text-sm">{titleDisplay}</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs text-muted-foreground">Est. Loan Amount</Label>
+                              <p className="text-sm">{config.estLoanAmount ? `$${config.estLoanAmount}` : 'N/A'}</p>
+                            </div>
+                            <div>
+                              <Label className="text-xs text-muted-foreground">Saved</Label>
+                              <p className="text-sm">{formattedDate}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="mt-3 pt-3 border-t">
+                          <Label className="text-xs text-muted-foreground">Categories: </Label>
+                          <span className="text-sm">
+                            {config.thirdPartyServices.map(cat => cat.categoryName).join(', ')}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowLibraryDialog(false)}
+              data-testid="button-close-library"
+            >
+              Close
             </Button>
           </DialogFooter>
         </DialogContent>
