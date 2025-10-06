@@ -922,6 +922,7 @@ export default function AdminAddClient() {
   const [isDuApproval, setIsDuApproval] = useState(false);
   const [escrowReserves, setEscrowReserves] = useState('new-escrow-reserves');
   const [underwriting, setUnderwriting] = useState('financed');
+  const [isProcessingMode, setIsProcessingMode] = useState(false);
   const [rateBuydownSelection, setRateBuydownSelection] = useState('select');
   const [debtToIncomeRatio, setDebtToIncomeRatio] = useState('');
   const [lenderCredit, setLenderCredit] = useState('');
@@ -22585,14 +22586,28 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="underwriting-select">Underwriting</Label>
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="underwriting-select">{isProcessingMode ? 'Processing' : 'Underwriting'}</Label>
+                            <Switch
+                              checked={isProcessingMode}
+                              onCheckedChange={(checked) => {
+                                setIsProcessingMode(checked);
+                                setUnderwriting('financed'); // Reset to default when toggling
+                              }}
+                              data-testid="switch-processing-mode"
+                            />
+                          </div>
                           <Select value={underwriting} onValueChange={setUnderwriting}>
                             <SelectTrigger data-testid="select-underwriting">
                               <SelectValue placeholder="Financed" />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="financed" data-testid="select-underwriting-financed">Financed</SelectItem>
-                              <SelectItem value="rate" data-testid="select-underwriting-rate">Rate</SelectItem>
+                              {isProcessingMode ? (
+                                <SelectItem value="excluded" data-testid="select-processing-excluded">Excluded</SelectItem>
+                              ) : (
+                                <SelectItem value="rate" data-testid="select-underwriting-rate">Rate</SelectItem>
+                              )}
                             </SelectContent>
                           </Select>
                         </div>
@@ -23001,6 +23016,10 @@ export default function AdminAddClient() {
                                   }
                                   // Hide Underwriting Services (s4) when Underwriting field is set to "Rate"
                                   if (service.id === 's4' && underwriting === 'rate') {
+                                    return false;
+                                  }
+                                  // Hide Processing Services (s8) when Processing mode is on and "Excluded" is selected
+                                  if (service.id === 's8' && isProcessingMode && underwriting === 'excluded') {
                                     return false;
                                   }
                                   return true;
