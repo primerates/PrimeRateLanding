@@ -21343,15 +21343,20 @@ export default function AdminAddClient() {
                           variant="ghost"
                           size="sm"
                           className="hover:bg-amber-500 hover:text-white"
-                          onClick={() => setShowVAFundingFeeDialog(true)}
+                          onClick={() => {
+                            const isVACategory = selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ');
+                            if (isVACategory) {
+                              setShowVAFundingFeeDialog(true);
+                            }
+                          }}
                           data-testid="button-va-funding-fee"
                         >
                           <Star className={`h-4 w-4 ${
-                            (isVAExempt || isVAJumboExempt)
-                              ? 'text-green-600 fill-green-600'
-                              : (selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ')) 
-                                ? 'text-purple-500 fill-purple-500' 
-                                : ''
+                            (selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - '))
+                              ? (isVAExempt || isVAJumboExempt)
+                                ? 'text-green-600 fill-green-600'
+                                : 'text-purple-500 fill-purple-500'
+                              : 'text-muted-foreground'
                           }`} />
                         </Button>
                       </TooltipTrigger>
@@ -22971,8 +22976,14 @@ export default function AdminAddClient() {
                             ) : (
                               category.services
                                 .filter(service => {
-                                  // Hide VA Funding Fee (s1) when exempt is enabled
-                                  if (service.id === 's1' && (isVAExempt || isVAJumboExempt)) {
+                                  const isVACategory = selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ');
+                                  
+                                  // Hide VA Funding Fee (s1) when exempt is enabled OR not a VA category
+                                  if (service.id === 's1' && ((isVAExempt || isVAJumboExempt) || !isVACategory)) {
+                                    return false;
+                                  }
+                                  // Hide VA Termite Report (s3) when not a VA category
+                                  if (service.id === 's3' && !isVACategory) {
                                     return false;
                                   }
                                   // Hide VA Appraisal Inspection (s2) and VA Termite Report (s3) when Rate & Term or IRRRL is selected
@@ -22982,16 +22993,25 @@ export default function AdminAddClient() {
                                   }
                                   return true;
                                 })
-                                .map((service, serviceIndex) => (
-                                <div 
-                                  key={service.id} 
-                                  className={`grid gap-4 ${serviceIndex < category.services.length - 1 ? 'mb-2' : ''}`}
-                                  style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}
-                                >
-                                  <div className="flex items-center justify-end pr-4">
-                                    <Label className="text-sm text-right text-muted-foreground">• {service.serviceName}</Label>
-                                  </div>
-                                  {selectedRateIds.map((rateId) => {
+                                .map((service, serviceIndex) => {
+                                  const isVACategory = selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ');
+                                  // Dynamically change service names for non-VA categories
+                                  let displayName = service.serviceName;
+                                  if (!isVACategory) {
+                                    if (service.id === 's2') displayName = 'Appraisal Inspection';
+                                    if (service.id === 's4') displayName = 'Underwriting Services';
+                                  }
+                                  
+                                  return (
+                                    <div 
+                                      key={service.id} 
+                                      className={`grid gap-4 ${serviceIndex < category.services.length - 1 ? 'mb-2' : ''}`}
+                                      style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}
+                                    >
+                                      <div className="flex items-center justify-end pr-4">
+                                        <Label className="text-sm text-right text-muted-foreground">• {displayName}</Label>
+                                      </div>
+                                      {selectedRateIds.map((rateId) => {
                                     // Initialize service values if not exist
                                     if (!thirdPartyServiceValues[service.id]) {
                                       setThirdPartyServiceValues(prev => ({
@@ -23033,8 +23053,9 @@ export default function AdminAddClient() {
                                       </div>
                                     );
                                   })}
-                                </div>
-                              ))
+                                    </div>
+                                  );
+                                })
                             )}
                           </div>
                         ))}
