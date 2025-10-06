@@ -3067,6 +3067,17 @@ export default function AdminAddClient() {
     }
   }, [showVAFundingFeeDialog, selectedLoanCategory]);
 
+  // Auto-populate 0.00 in VA Funding Fee Calculator when exempt is enabled
+  useEffect(() => {
+    if (isVAExempt || isVAJumboExempt) {
+      setVaFirstTimeCashOut('0.00');
+      setVaSubsequentCashOut('0.00');
+      setVaRateTerm('0.00');
+      setVaIRRRL('0.00');
+      setIsVACalculated(true);
+    }
+  }, [isVAExempt, isVAJumboExempt]);
+
   // Auto-copy borrower residence address to primary residence property
   const autoCopyBorrowerAddressToPrimaryProperty = () => {
     const borrowerAddress = form.getValues('borrower.residenceAddress');
@@ -21293,7 +21304,7 @@ export default function AdminAddClient() {
                           onClick={() => setShowVAFundingFeeDialog(true)}
                           data-testid="button-va-funding-fee"
                         >
-                          <Star className="h-4 w-4" />
+                          <Star className={`h-4 w-4 ${(selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ')) ? 'text-yellow-400' : ''}`} />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>
@@ -23733,9 +23744,11 @@ export default function AdminAddClient() {
               variant="outline"
               size="sm"
               onClick={() => {
-                // TODO: Exempt logic
+                // This button displays the exempt state but doesn't toggle it
+                // Exempt can only be toggled from the Loan Category dropdown
               }}
-              className="bg-green-500 text-white border-green-500 hover:bg-green-600 hover:text-white"
+              disabled={true}
+              className={`${(isVAExempt || isVAJumboExempt) ? 'bg-green-600 text-white border-green-600 hover:bg-green-600 hover:text-white' : 'bg-transparent text-gray-400 border-gray-300'}`}
               data-testid="button-exempt-va-funding-fee"
             >
               Exempt
