@@ -21358,11 +21358,15 @@ export default function AdminAddClient() {
                                         size="sm"
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          if (isVAJumboExempt) {
-                                            setIsVAJumboExempt(false);
+                                          const isVASelected = selectedLoanCategory?.startsWith('VA - ');
+                                          if (isVASelected) {
+                                            if (isVAJumboExempt) {
+                                              setIsVAJumboExempt(false);
+                                            }
+                                            setIsVAExempt(!isVAExempt);
                                           }
-                                          setIsVAExempt(!isVAExempt);
                                         }}
+                                        disabled={!selectedLoanCategory?.startsWith('VA - ')}
                                         className={`h-4 px-1.5 text-[0.625rem] leading-none ${
                                           isVAExempt 
                                             ? 'bg-green-600 text-white hover:bg-green-700 hover:text-white border-green-600' 
@@ -21454,11 +21458,15 @@ export default function AdminAddClient() {
                                         size="sm"
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          if (isVAExempt) {
-                                            setIsVAExempt(false);
+                                          const isVAJumboSelected = selectedLoanCategory?.startsWith('VA Jumbo - ');
+                                          if (isVAJumboSelected) {
+                                            if (isVAExempt) {
+                                              setIsVAExempt(false);
+                                            }
+                                            setIsVAJumboExempt(!isVAJumboExempt);
                                           }
-                                          setIsVAJumboExempt(!isVAJumboExempt);
                                         }}
+                                        disabled={!selectedLoanCategory?.startsWith('VA Jumbo - ')}
                                         className={`h-4 px-1.5 text-[0.625rem] leading-none ${
                                           isVAJumboExempt 
                                             ? 'bg-green-600 text-white hover:bg-green-700 hover:text-white border-green-600' 
