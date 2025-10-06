@@ -21346,7 +21346,13 @@ export default function AdminAddClient() {
                           onClick={() => setShowVAFundingFeeDialog(true)}
                           data-testid="button-va-funding-fee"
                         >
-                          <Star className={`h-4 w-4 ${(selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ')) ? 'text-yellow-400' : ''}`} />
+                          <Star className={`h-4 w-4 ${
+                            (isVAExempt || isVAJumboExempt) 
+                              ? 'text-purple-500 fill-purple-500' 
+                              : (selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ')) 
+                                ? 'text-yellow-400' 
+                                : ''
+                          }`} />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>
@@ -23744,7 +23750,7 @@ export default function AdminAddClient() {
                 // Exempt can only be toggled from the Loan Category dropdown
               }}
               disabled={true}
-              className={`${(isVAExempt || isVAJumboExempt) ? 'bg-green-600 text-white border-green-600 hover:bg-green-600 hover:text-white' : 'bg-transparent text-gray-400 border-gray-300'}`}
+              className={`${(isVAExempt || isVAJumboExempt) ? 'bg-green-600 text-white border-green-600 hover:bg-green-700 hover:text-white' : 'bg-transparent text-gray-400 border-gray-300'}`}
               data-testid="button-exempt-va-funding-fee"
             >
               Exempt
