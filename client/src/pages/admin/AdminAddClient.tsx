@@ -1856,12 +1856,45 @@ export default function AdminAddClient() {
   const handleOpenThirdPartyServicesDialog = () => {
     // Load current categories and services with their values from the first rate
     const firstRateIndex = 0;
+    const isVACategory = selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ');
+    const isFHACategory = selectedLoanCategory?.startsWith('FHA - ');
+    
     const servicesWithValues = currentThirdPartyServices.map(category => ({
       ...category,
-      services: category.services.map(service => ({
-        ...service,
-        value: thirdPartyServiceValues[service.id]?.[firstRateIndex] || ''
-      }))
+      services: category.services
+        .filter(service => {
+          // Hide VA Funding Fee (s1) when exempt is enabled OR not a VA category
+          if (service.id === 's1' && ((isVAExempt || isVAJumboExempt) || !isVACategory)) {
+            return false;
+          }
+          // Hide VA Termite Report (s3) when not a VA category
+          if (service.id === 's3' && !isVACategory) {
+            return false;
+          }
+          // Hide VA Appraisal Inspection (s2) and VA Termite Report (s3) when VA Rate & Term or IRRRL is selected
+          if ((service.id === 's2' || service.id === 's3') && 
+              (selectedLoanCategory?.includes('Rate & Term') || selectedLoanCategory?.includes('IRRRL'))) {
+            return false;
+          }
+          // Hide Appraisal Inspection (s2) when FHA Rate & Term or Streamline is selected
+          if (service.id === 's2' && isFHACategory && 
+              (selectedLoanCategory?.includes('Rate & Term') || selectedLoanCategory?.includes('Streamline'))) {
+            return false;
+          }
+          // Hide Underwriting Services (s4) when Underwriting field is set to "Not Financed"
+          if (service.id === 's4' && underwriting === 'not-financed') {
+            return false;
+          }
+          // Hide Processing Services (s8) when Processing mode is on and "Not Financed" is selected
+          if (service.id === 's8' && isProcessingMode && underwriting === 'not-financed') {
+            return false;
+          }
+          return true;
+        })
+        .map(service => ({
+          ...service,
+          value: thirdPartyServiceValues[service.id]?.[firstRateIndex] || ''
+        }))
     }));
     setTempThirdPartyServices(JSON.parse(JSON.stringify(servicesWithValues)));
     setShowThirdPartyServicesDialog(true);
