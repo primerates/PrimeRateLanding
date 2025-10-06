@@ -21360,7 +21360,7 @@ export default function AdminAddClient() {
                                           e.stopPropagation();
                                           setIsVAExempt(!isVAExempt);
                                         }}
-                                        className={`h-3 px-1 text-[0.5rem] leading-none ${
+                                        className={`h-4 px-1.5 text-[0.625rem] leading-none ${
                                           isVAExempt 
                                             ? 'bg-green-600 text-white hover:bg-green-700 hover:text-white border-green-600' 
                                             : ''
@@ -21453,7 +21453,7 @@ export default function AdminAddClient() {
                                           e.stopPropagation();
                                           setIsVAJumboExempt(!isVAJumboExempt);
                                         }}
-                                        className={`h-3 px-1 text-[0.5rem] leading-none ${
+                                        className={`h-4 px-1.5 text-[0.625rem] leading-none ${
                                           isVAJumboExempt 
                                             ? 'bg-green-600 text-white hover:bg-green-700 hover:text-white border-green-600' 
                                             : ''
