@@ -944,6 +944,8 @@ export default function AdminAddClient() {
   const [vaIRRRL, setVaIRRRL] = useState('');
   const [isVACalculated, setIsVACalculated] = useState(false);
   const [selectedVARow, setSelectedVARow] = useState<'firstTime' | 'subsequent' | 'irrrl' | null>(null);
+  const [isVAExempt, setIsVAExempt] = useState(false);
+  const [isVAJumboExempt, setIsVAJumboExempt] = useState(false);
   const [quoteLoanProgram, setQuoteLoanProgram] = useState('');
   const [showLoanProgramControls, setShowLoanProgramControls] = useState(false);
   const [loanProgramFontSize, setLoanProgramFontSize] = useState('text-3xl');
@@ -21346,9 +21348,27 @@ export default function AdminAddClient() {
                                 <div className="grid grid-cols-7 gap-4 border-t pt-2">
                                   {/* VA Section */}
                                   <div className="border-r pr-4">
-                                    {/* VA Title - Non-clickable */}
-                                    <div className="text-base font-bold text-green-700 px-2 py-1.5">
-                                      VA
+                                    {/* VA Title with Exempt Button */}
+                                    <div className="flex items-center justify-between px-2 py-1.5">
+                                      <div className="text-base font-bold text-green-700">
+                                        VA
+                                      </div>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setIsVAExempt(!isVAExempt);
+                                        }}
+                                        className={`h-6 px-2 text-xs ${
+                                          isVAExempt 
+                                            ? 'bg-green-600 text-black hover:bg-green-700 hover:text-black border-green-600' 
+                                            : ''
+                                        }`}
+                                        data-testid="button-va-exempt"
+                                      >
+                                        Exempt
+                                      </Button>
                                     </div>
                                     
                                     {/* VA Sub-options with squares */}
@@ -21421,9 +21441,27 @@ export default function AdminAddClient() {
                                   
                                   {/* VA Jumbo Section */}
                                   <div className="border-r pr-4">
-                                    {/* VA Jumbo Title - Non-clickable */}
-                                    <div className="text-base font-bold text-green-700 px-2 py-1.5">
-                                      VA Jumbo
+                                    {/* VA Jumbo Title with Exempt Button */}
+                                    <div className="flex items-center justify-between px-2 py-1.5">
+                                      <div className="text-base font-bold text-green-700">
+                                        VA <span className="text-sm">Jumbo</span>
+                                      </div>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setIsVAJumboExempt(!isVAJumboExempt);
+                                        }}
+                                        className={`h-6 px-2 text-xs ${
+                                          isVAJumboExempt 
+                                            ? 'bg-green-600 text-black hover:bg-green-700 hover:text-black border-green-600' 
+                                            : ''
+                                        }`}
+                                        data-testid="button-va-jumbo-exempt"
+                                      >
+                                        Exempt
+                                      </Button>
                                     </div>
                                     
                                     {/* VA Jumbo Sub-options with squares */}
