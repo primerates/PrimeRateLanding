@@ -1091,6 +1091,7 @@ export default function AdminAddClient() {
       { id: 's2', serviceName: 'VA Appraisal Inspection' },
       { id: 's3', serviceName: 'VA Termite Report' },
       { id: 's4', serviceName: 'VA Underwriting Services' },
+      { id: 's8', serviceName: 'Processing Services' },
       { id: 's5', serviceName: 'Title & Escrow Services' },
       { id: 's6', serviceName: 'Pay Off Interest' },
       { id: 's7', serviceName: 'State Tax & Recording' }
@@ -1123,6 +1124,7 @@ export default function AdminAddClient() {
     's2': ['', '', '', '', ''], // VA Appraisal Inspection
     's3': ['', '', '', '', ''], // VA Termite Report
     's4': ['', '', '', '', ''], // VA Underwriting Services
+    's8': ['', '', '', '', ''], // Processing Services
     's5': ['', '', '', '', ''], // Title & Escrow Services
     's6': ['', '', '', '', ''], // Pay Off Interest
     's7': ['', '', '', '', '']  // State Tax & Recording
