@@ -1148,6 +1148,27 @@ export default function AdminAddClient() {
   const [isSaveLibraryPopoverOpen, setIsSaveLibraryPopoverOpen] = useState(false);
   const [saveLibraryCombinedSelection, setSaveLibraryCombinedSelection] = useState('');
   
+  // Library configurations storage
+  const [savedLibraryConfigurations, setSavedLibraryConfigurations] = useState<Array<{
+    id: string;
+    timestamp: number;
+    loanCategory: string;
+    loanPurpose: string;
+    state: string;
+    lender: string;
+    title: string;
+    estLoanAmount: string;
+    thirdPartyServices: Array<{
+      id: string;
+      categoryName: string;
+      services: Array<{
+        id: string;
+        serviceName: string;
+        value: string;
+      }>;
+    }>;
+  }>>([]);
+  
   // US States for library save
   const usStates = [
     'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
