@@ -943,6 +943,7 @@ export default function AdminAddClient() {
   const [vaSubsequentCashOut, setVaSubsequentCashOut] = useState('');
   const [vaIRRRL, setVaIRRRL] = useState('');
   const [isVACalculated, setIsVACalculated] = useState(false);
+  const [selectedVARow, setSelectedVARow] = useState<'firstTime' | 'subsequent' | 'irrrl' | null>(null);
   const [quoteLoanProgram, setQuoteLoanProgram] = useState('');
   const [showLoanProgramControls, setShowLoanProgramControls] = useState(false);
   const [loanProgramFontSize, setLoanProgramFontSize] = useState('text-3xl');
@@ -23464,6 +23465,7 @@ export default function AdminAddClient() {
           setVaSubsequentCashOut('');
           setVaIRRRL('');
           setIsVACalculated(false);
+          setSelectedVARow(null);
         }
       }}>
         <DialogContent className="sm:max-w-[600px]" data-testid="dialog-va-funding-fee">
@@ -23473,7 +23475,16 @@ export default function AdminAddClient() {
           <Separator className="mt-0 -mx-6 w-[calc(100%+3rem)]" />
           <div className="py-4 space-y-4">
             {/* First Time Cash Out Row */}
-            <div className="grid grid-cols-[1fr_auto_1fr] gap-4 items-center">
+            <div className="grid grid-cols-[auto_1fr_auto_1fr] gap-4 items-center">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setSelectedVARow(selectedVARow === 'firstTime' ? null : 'firstTime')}
+                className={selectedVARow === 'firstTime' ? 'bg-yellow-400 text-black hover:bg-yellow-500 hover:text-black' : ''}
+                data-testid="button-select-first-time"
+              >
+                Select
+              </Button>
               <Label className="text-right">First Time Cash Out</Label>
               <div className="px-4 py-2 bg-muted rounded-md min-w-[80px] text-center font-semibold">
                 2.15%
@@ -23497,12 +23508,22 @@ export default function AdminAddClient() {
                 }}
                 placeholder="$0.00"
                 disabled={isVACalculated}
+                className="text-black"
                 data-testid="input-va-first-time-cash-out"
               />
             </div>
 
             {/* Subsequent Cash Out Row */}
-            <div className="grid grid-cols-[1fr_auto_1fr] gap-4 items-center">
+            <div className="grid grid-cols-[auto_1fr_auto_1fr] gap-4 items-center">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setSelectedVARow(selectedVARow === 'subsequent' ? null : 'subsequent')}
+                className={selectedVARow === 'subsequent' ? 'bg-yellow-400 text-black hover:bg-yellow-500 hover:text-black' : ''}
+                data-testid="button-select-subsequent"
+              >
+                Select
+              </Button>
               <Label className="text-right">Subsequent Cash Out</Label>
               <div className="px-4 py-2 bg-muted rounded-md min-w-[80px] text-center font-semibold">
                 3.3%
@@ -23526,12 +23547,22 @@ export default function AdminAddClient() {
                 }}
                 placeholder="$0.00"
                 disabled={isVACalculated}
+                className="text-black"
                 data-testid="input-va-subsequent-cash-out"
               />
             </div>
 
             {/* VA IRRRL Row */}
-            <div className="grid grid-cols-[1fr_auto_1fr] gap-4 items-center">
+            <div className="grid grid-cols-[auto_1fr_auto_1fr] gap-4 items-center">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setSelectedVARow(selectedVARow === 'irrrl' ? null : 'irrrl')}
+                className={selectedVARow === 'irrrl' ? 'bg-yellow-400 text-black hover:bg-yellow-500 hover:text-black' : ''}
+                data-testid="button-select-irrrl"
+              >
+                Select
+              </Button>
               <Label className="text-right">VA IRRRL</Label>
               <div className="px-4 py-2 bg-muted rounded-md min-w-[80px] text-center font-semibold">
                 0.5%
@@ -23555,6 +23586,7 @@ export default function AdminAddClient() {
                 }}
                 placeholder="$0.00"
                 disabled={isVACalculated}
+                className="text-black"
                 data-testid="input-va-irrrl"
               />
             </div>
@@ -23570,6 +23602,7 @@ export default function AdminAddClient() {
                 setVaSubsequentCashOut('');
                 setVaIRRRL('');
                 setIsVACalculated(false);
+                setSelectedVARow(null);
               }}
               className="hover:text-green-600"
               data-testid="button-cancel-va-funding-fee"
