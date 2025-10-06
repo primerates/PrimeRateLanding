@@ -3049,6 +3049,24 @@ export default function AdminAddClient() {
     };
   }, [showLoanProgramControls]);
 
+  // Auto-select VA Funding Fee row when only one category is displayed
+  useEffect(() => {
+    if (showVAFundingFeeDialog && selectedLoanCategory) {
+      // Check if only Rate & Term is selected (single row scenario)
+      if (selectedLoanCategory.includes('Rate & Term') && !selectedLoanCategory.includes('Cash Out')) {
+        setSelectedVARow('rateTerm');
+      }
+      // Check if only IRRRL is selected (single row scenario)
+      else if (selectedLoanCategory.includes('IRRRL') && !selectedLoanCategory.includes('Cash Out')) {
+        setSelectedVARow('irrrl');
+      }
+      // For Cash Out (two rows), don't auto-select - let user choose
+      else if (selectedLoanCategory.includes('Cash Out')) {
+        setSelectedVARow(null);
+      }
+    }
+  }, [showVAFundingFeeDialog, selectedLoanCategory]);
+
   // Auto-copy borrower residence address to primary residence property
   const autoCopyBorrowerAddressToPrimaryProperty = () => {
     const borrowerAddress = form.getValues('borrower.residenceAddress');
@@ -23746,6 +23764,7 @@ export default function AdminAddClient() {
                 // Calculate each row
                 const firstTimeCashOut = (baseAmount * 0.0215).toFixed(2);
                 const subsequentCashOut = (baseAmount * 0.033).toFixed(2);
+                const rateTerm = (baseAmount * 0.005).toFixed(2);
                 const irrrl = (baseAmount * 0.005).toFixed(2);
                 
                 // Set calculated values with formatting
@@ -23757,6 +23776,10 @@ export default function AdminAddClient() {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2
                 }));
+                setVaRateTerm(parseFloat(rateTerm).toLocaleString('en-US', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2
+                }));
                 setVaIRRRL(parseFloat(irrrl).toLocaleString('en-US', {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2
@@ -23765,7 +23788,7 @@ export default function AdminAddClient() {
                 // Mark as calculated to make fields read-only
                 setIsVACalculated(true);
               }}
-              className="border-green-500 hover:border-green-500 hover:text-green-600"
+              className={selectedVARow ? 'bg-yellow-400 text-black border-yellow-400 hover:bg-yellow-500 hover:text-black hover:border-yellow-500' : 'border-green-500 hover:border-green-500 hover:text-green-600'}
               data-testid="button-calculate-va-funding-fee"
             >
               Calculate
