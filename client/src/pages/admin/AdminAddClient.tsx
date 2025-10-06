@@ -22586,7 +22586,7 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <div className="flex items-center justify-between">
+                          <div className="flex items-center justify-between mb-2">
                             <Label htmlFor="underwriting-select">{isProcessingMode ? 'Processing' : 'Underwriting'}</Label>
                             <Switch
                               checked={isProcessingMode}
@@ -22595,6 +22595,7 @@ export default function AdminAddClient() {
                                 setUnderwriting('financed'); // Reset to default when toggling
                               }}
                               data-testid="switch-processing-mode"
+                              className="scale-[0.8]"
                             />
                           </div>
                           <Select value={underwriting} onValueChange={setUnderwriting}>
