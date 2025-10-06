@@ -941,9 +941,10 @@ export default function AdminAddClient() {
   const [showVAFundingFeeDialog, setShowVAFundingFeeDialog] = useState(false);
   const [vaFirstTimeCashOut, setVaFirstTimeCashOut] = useState('');
   const [vaSubsequentCashOut, setVaSubsequentCashOut] = useState('');
+  const [vaRateTerm, setVaRateTerm] = useState('');
   const [vaIRRRL, setVaIRRRL] = useState('');
   const [isVACalculated, setIsVACalculated] = useState(false);
-  const [selectedVARow, setSelectedVARow] = useState<'firstTime' | 'subsequent' | 'irrrl' | null>(null);
+  const [selectedVARow, setSelectedVARow] = useState<'firstTime' | 'subsequent' | 'rateTerm' | 'irrrl' | null>(null);
   const [isVAExempt, setIsVAExempt] = useState(false);
   const [isVAJumboExempt, setIsVAJumboExempt] = useState(false);
   const [quoteLoanProgram, setQuoteLoanProgram] = useState('');
@@ -23526,7 +23527,9 @@ export default function AdminAddClient() {
           </DialogHeader>
           <Separator className="mt-0 -mx-6 w-[calc(100%+3rem)]" />
           <div className="py-4 space-y-4">
-            {/* First Time Cash Out Row */}
+            {/* Conditional display based on selected loan category */}
+            {/* First Time Cash Out Row - Only show for Cash Out */}
+            {(selectedLoanCategory?.includes('Cash Out')) && (
             <div className="grid grid-cols-[auto_1fr_auto_1fr] gap-4 items-center">
               <Button
                 variant="outline"
@@ -23564,8 +23567,10 @@ export default function AdminAddClient() {
                 data-testid="input-va-first-time-cash-out"
               />
             </div>
+            )}
 
-            {/* Subsequent Cash Out Row */}
+            {/* Subsequent Cash Out Row - Only show for Cash Out */}
+            {(selectedLoanCategory?.includes('Cash Out')) && (
             <div className="grid grid-cols-[auto_1fr_auto_1fr] gap-4 items-center">
               <Button
                 variant="outline"
@@ -23603,8 +23608,51 @@ export default function AdminAddClient() {
                 data-testid="input-va-subsequent-cash-out"
               />
             </div>
+            )}
 
-            {/* VA IRRRL Row */}
+            {/* Rate & Term Row - Only show if Rate & Term is selected */}
+            {selectedLoanCategory?.includes('Rate & Term') && (
+            <div className="grid grid-cols-[auto_1fr_auto_1fr] gap-4 items-center">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setSelectedVARow(selectedVARow === 'rateTerm' ? null : 'rateTerm')}
+                className={selectedVARow === 'rateTerm' ? 'bg-yellow-400 text-black hover:bg-yellow-500 hover:text-black' : ''}
+                data-testid="button-select-rate-term"
+              >
+                Select
+              </Button>
+              <Label className="text-right">Rate & Term</Label>
+              <div className="px-4 py-2 bg-muted rounded-md min-w-[80px] text-center font-semibold">
+                0.5%
+              </div>
+              <Input
+                type="text"
+                value={vaRateTerm}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^\d.]/g, '');
+                  setVaRateTerm(value);
+                }}
+                onBlur={(e) => {
+                  const value = e.target.value;
+                  if (value) {
+                    const formatted = parseFloat(value).toLocaleString('en-US', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2
+                    });
+                    setVaRateTerm(formatted);
+                  }
+                }}
+                placeholder="$0.00"
+                disabled={isVACalculated}
+                className="text-black"
+                data-testid="input-va-rate-term"
+              />
+            </div>
+            )}
+
+            {/* VA IRRRL Row - Only show if IRRRL is selected */}
+            {selectedLoanCategory?.includes('IRRRL') && (
             <div className="grid grid-cols-[auto_1fr_auto_1fr] gap-4 items-center">
               <Button
                 variant="outline"
@@ -23642,6 +23690,7 @@ export default function AdminAddClient() {
                 data-testid="input-va-irrrl"
               />
             </div>
+            )}
           </div>
           <Separator className="-mx-6 w-[calc(100%+3rem)]" />
           <DialogFooter className="gap-2">
@@ -23652,6 +23701,7 @@ export default function AdminAddClient() {
                 setShowVAFundingFeeDialog(false);
                 setVaFirstTimeCashOut('');
                 setVaSubsequentCashOut('');
+                setVaRateTerm('');
                 setVaIRRRL('');
                 setIsVACalculated(false);
                 setSelectedVARow(null);
