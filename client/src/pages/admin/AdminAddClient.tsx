@@ -942,6 +942,7 @@ export default function AdminAddClient() {
   const [vaFirstTimeCashOut, setVaFirstTimeCashOut] = useState('');
   const [vaSubsequentCashOut, setVaSubsequentCashOut] = useState('');
   const [vaIRRRL, setVaIRRRL] = useState('');
+  const [isVACalculated, setIsVACalculated] = useState(false);
   const [quoteLoanProgram, setQuoteLoanProgram] = useState('');
   const [showLoanProgramControls, setShowLoanProgramControls] = useState(false);
   const [loanProgramFontSize, setLoanProgramFontSize] = useState('text-3xl');
@@ -23456,7 +23457,15 @@ export default function AdminAddClient() {
       </Dialog>
 
       {/* VA Funding Fee Calculator Dialog */}
-      <Dialog open={showVAFundingFeeDialog} onOpenChange={setShowVAFundingFeeDialog}>
+      <Dialog open={showVAFundingFeeDialog} onOpenChange={(open) => {
+        setShowVAFundingFeeDialog(open);
+        if (!open) {
+          setVaFirstTimeCashOut('');
+          setVaSubsequentCashOut('');
+          setVaIRRRL('');
+          setIsVACalculated(false);
+        }
+      }}>
         <DialogContent className="sm:max-w-[600px]" data-testid="dialog-va-funding-fee">
           <DialogHeader className="bg-primary text-white -mx-6 -mt-6 px-6 py-4 rounded-t-lg">
             <DialogTitle className="text-white">VA Funding Fee Calculator</DialogTitle>
@@ -23487,6 +23496,7 @@ export default function AdminAddClient() {
                   }
                 }}
                 placeholder="$0.00"
+                disabled={isVACalculated}
                 data-testid="input-va-first-time-cash-out"
               />
             </div>
@@ -23515,6 +23525,7 @@ export default function AdminAddClient() {
                   }
                 }}
                 placeholder="$0.00"
+                disabled={isVACalculated}
                 data-testid="input-va-subsequent-cash-out"
               />
             </div>
@@ -23543,6 +23554,7 @@ export default function AdminAddClient() {
                   }
                 }}
                 placeholder="$0.00"
+                disabled={isVACalculated}
                 data-testid="input-va-irrrl"
               />
             </div>
@@ -23557,6 +23569,7 @@ export default function AdminAddClient() {
                 setVaFirstTimeCashOut('');
                 setVaSubsequentCashOut('');
                 setVaIRRRL('');
+                setIsVACalculated(false);
               }}
               className="hover:text-green-600"
               data-testid="button-cancel-va-funding-fee"
@@ -23578,7 +23591,35 @@ export default function AdminAddClient() {
               variant="outline"
               size="sm"
               onClick={() => {
-                // TODO: Calculate logic
+                // Get New Est. Loan Amount from the first rate column
+                const newEstLoanAmount = parseFloat(newEstLoanAmountValues[0]?.replace(/[^\d.]/g, '') || '0');
+                // Get VA Funding Fee from the first rate column
+                const vaFundingFee = parseFloat(vaFundingFeeValues[0]?.replace(/[^\d.]/g, '') || '0');
+                
+                // Calculate base amount: New Est. Loan Amount - VA Funding Fee
+                const baseAmount = newEstLoanAmount - vaFundingFee;
+                
+                // Calculate each row
+                const firstTimeCashOut = (baseAmount * 0.0215).toFixed(2);
+                const subsequentCashOut = (baseAmount * 0.033).toFixed(2);
+                const irrrl = (baseAmount * 0.005).toFixed(2);
+                
+                // Set calculated values with formatting
+                setVaFirstTimeCashOut(parseFloat(firstTimeCashOut).toLocaleString('en-US', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2
+                }));
+                setVaSubsequentCashOut(parseFloat(subsequentCashOut).toLocaleString('en-US', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2
+                }));
+                setVaIRRRL(parseFloat(irrrl).toLocaleString('en-US', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2
+                }));
+                
+                // Mark as calculated to make fields read-only
+                setIsVACalculated(true);
               }}
               className="border-green-500 hover:border-green-500 hover:text-green-600"
               data-testid="button-calculate-va-funding-fee"
