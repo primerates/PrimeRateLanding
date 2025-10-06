@@ -21343,20 +21343,13 @@ export default function AdminAddClient() {
                           variant="ghost"
                           size="sm"
                           className="hover:bg-amber-500 hover:text-white"
-                          onClick={() => {
-                            if (!(isVAExempt || isVAJumboExempt)) {
-                              setShowVAFundingFeeDialog(true);
-                            }
-                          }}
-                          disabled={isVAExempt || isVAJumboExempt}
+                          onClick={() => setShowVAFundingFeeDialog(true)}
                           data-testid="button-va-funding-fee"
                         >
                           <Star className={`h-4 w-4 ${
-                            (isVAExempt || isVAJumboExempt) 
+                            (selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ')) 
                               ? 'text-purple-500 fill-purple-500' 
-                              : (selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ')) 
-                                ? 'text-yellow-400' 
-                                : ''
+                              : ''
                           }`} />
                         </Button>
                       </TooltipTrigger>
@@ -23581,7 +23574,11 @@ export default function AdminAddClient() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setSelectedVARow(selectedVARow === 'firstTime' ? null : 'firstTime')}
+                onClick={() => {
+                  if (!(isVAExempt || isVAJumboExempt)) {
+                    setSelectedVARow(selectedVARow === 'firstTime' ? null : 'firstTime');
+                  }
+                }}
                 className={selectedVARow === 'firstTime' ? 'bg-yellow-400 text-black hover:bg-yellow-500 hover:text-black' : ''}
                 data-testid="button-select-first-time"
               >
@@ -23622,7 +23619,11 @@ export default function AdminAddClient() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setSelectedVARow(selectedVARow === 'subsequent' ? null : 'subsequent')}
+                onClick={() => {
+                  if (!(isVAExempt || isVAJumboExempt)) {
+                    setSelectedVARow(selectedVARow === 'subsequent' ? null : 'subsequent');
+                  }
+                }}
                 className={selectedVARow === 'subsequent' ? 'bg-yellow-400 text-black hover:bg-yellow-500 hover:text-black' : ''}
                 data-testid="button-select-subsequent"
               >
@@ -23663,7 +23664,11 @@ export default function AdminAddClient() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setSelectedVARow(selectedVARow === 'rateTerm' ? null : 'rateTerm')}
+                onClick={() => {
+                  if (!(isVAExempt || isVAJumboExempt)) {
+                    setSelectedVARow(selectedVARow === 'rateTerm' ? null : 'rateTerm');
+                  }
+                }}
                 className={selectedVARow === 'rateTerm' ? 'bg-yellow-400 text-black hover:bg-yellow-500 hover:text-black' : ''}
                 data-testid="button-select-rate-term"
               >
@@ -23704,7 +23709,11 @@ export default function AdminAddClient() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setSelectedVARow(selectedVARow === 'irrrl' ? null : 'irrrl')}
+                onClick={() => {
+                  if (!(isVAExempt || isVAJumboExempt)) {
+                    setSelectedVARow(selectedVARow === 'irrrl' ? null : 'irrrl');
+                  }
+                }}
                 className={selectedVARow === 'irrrl' ? 'bg-yellow-400 text-black hover:bg-yellow-500 hover:text-black' : ''}
                 data-testid="button-select-irrrl"
               >
@@ -23774,6 +23783,9 @@ export default function AdminAddClient() {
               variant="outline"
               size="sm"
               onClick={() => {
+                if (isVAExempt || isVAJumboExempt) {
+                  return; // Don't allow clicking when exempt
+                }
                 // Get the first selected rate ID
                 const firstRateId = selectedRateIds[0];
                 
@@ -23827,6 +23839,9 @@ export default function AdminAddClient() {
               variant="default"
               size="sm"
               onClick={() => {
+                if (isVAExempt || isVAJumboExempt) {
+                  return; // Don't allow clicking when exempt
+                }
                 // TODO: Apply to selected rate logic
                 setShowVAFundingFeeDialog(false);
               }}
@@ -23839,6 +23854,9 @@ export default function AdminAddClient() {
               variant="default"
               size="sm"
               onClick={() => {
+                if (isVAExempt || isVAJumboExempt) {
+                  return; // Don't allow clicking when exempt
+                }
                 // TODO: Apply to all rates logic
                 setShowVAFundingFeeDialog(false);
               }}
