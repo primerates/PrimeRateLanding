@@ -22643,15 +22643,24 @@ export default function AdminAddClient() {
                         <div className="space-y-2">
                           <div className="flex items-center justify-between mb-2">
                             <Label htmlFor="underwriting-select">{isProcessingMode ? 'Processing' : 'Underwriting'}</Label>
-                            <Switch
-                              checked={isProcessingMode}
-                              onCheckedChange={(checked) => {
-                                setIsProcessingMode(checked);
-                                setUnderwriting('financed'); // Reset to default when toggling
-                              }}
-                              data-testid="switch-processing-mode"
-                              className="scale-[0.8]"
-                            />
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div>
+                                  <Switch
+                                    checked={isProcessingMode}
+                                    onCheckedChange={(checked) => {
+                                      setIsProcessingMode(checked);
+                                      setUnderwriting('financed'); // Reset to default when toggling
+                                    }}
+                                    data-testid="switch-processing-mode"
+                                    className="scale-[0.8] hover:border-blue-600 hover:border-2"
+                                  />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{isProcessingMode ? 'Underwriting' : 'Processing'}</p>
+                              </TooltipContent>
+                            </Tooltip>
                           </div>
                           <Select value={underwriting} onValueChange={setUnderwriting}>
                             <SelectTrigger data-testid="select-underwriting">
@@ -22659,11 +22668,7 @@ export default function AdminAddClient() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="financed" data-testid="select-underwriting-financed">Financed</SelectItem>
-                              {isProcessingMode ? (
-                                <SelectItem value="excluded" data-testid="select-processing-excluded">Excluded</SelectItem>
-                              ) : (
-                                <SelectItem value="rate" data-testid="select-underwriting-rate">Rate</SelectItem>
-                              )}
+                              <SelectItem value="not-financed" data-testid="select-underwriting-not-financed">Not Financed</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -23070,12 +23075,12 @@ export default function AdminAddClient() {
                                       (selectedLoanCategory?.includes('Rate & Term') || selectedLoanCategory?.includes('Streamline'))) {
                                     return false;
                                   }
-                                  // Hide Underwriting Services (s4) when Underwriting field is set to "Rate"
-                                  if (service.id === 's4' && underwriting === 'rate') {
+                                  // Hide Underwriting Services (s4) when Underwriting field is set to "Not Financed"
+                                  if (service.id === 's4' && underwriting === 'not-financed') {
                                     return false;
                                   }
-                                  // Hide Processing Services (s8) when Processing mode is on and "Excluded" is selected
-                                  if (service.id === 's8' && isProcessingMode && underwriting === 'excluded') {
+                                  // Hide Processing Services (s8) when Processing mode is on and "Not Financed" is selected
+                                  if (service.id === 's8' && isProcessingMode && underwriting === 'not-financed') {
                                     return false;
                                   }
                                   return true;
