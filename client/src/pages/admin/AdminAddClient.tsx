@@ -21358,6 +21358,9 @@ export default function AdminAddClient() {
                                         size="sm"
                                         onClick={(e) => {
                                           e.stopPropagation();
+                                          if (isVAJumboExempt) {
+                                            setIsVAJumboExempt(false);
+                                          }
                                           setIsVAExempt(!isVAExempt);
                                         }}
                                         className={`h-4 px-1.5 text-[0.625rem] leading-none ${
@@ -21451,6 +21454,9 @@ export default function AdminAddClient() {
                                         size="sm"
                                         onClick={(e) => {
                                           e.stopPropagation();
+                                          if (isVAExempt) {
+                                            setIsVAExempt(false);
+                                          }
                                           setIsVAJumboExempt(!isVAJumboExempt);
                                         }}
                                         className={`h-4 px-1.5 text-[0.625rem] leading-none ${
