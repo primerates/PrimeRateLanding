@@ -7933,18 +7933,59 @@ export default function AdminAddClient() {
                   <div className="space-y-2 max-w-[75%]">
                     <Label htmlFor="borrower-source">Source</Label>
                     <Select
-                      value={form.watch('borrower.source') || 'Select'}
+                      value={form.watch('borrower.source') || 'select'}
                       onValueChange={(value) => form.setValue('borrower.source', value as any)}
                     >
                       <SelectTrigger data-testid="select-borrower-source">
                         <SelectValue placeholder="Select" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Select">Select</SelectItem>
-                        <SelectItem value="Direct Mail">Direct Mail</SelectItem>
-                        <SelectItem value="Social Media">Social Media</SelectItem>
-                        <SelectItem value="Client Referral">Client Referral</SelectItem>
-                        <SelectItem value="Other">Other</SelectItem>
+                        <SelectItem value="select" data-testid="select-borrower-source-select">Select</SelectItem>
+                        
+                        <div 
+                          className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setShowAddSourceDialog(true);
+                          }}
+                          data-testid="option-add-source-borrower"
+                        >
+                          + Add
+                        </div>
+                        <div 
+                          className="px-2 py-1.5 text-sm font-semibold text-red-600 cursor-pointer hover:bg-accent"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setShowRemoveSourceDialog(true);
+                          }}
+                          data-testid="option-remove-source-borrower"
+                        >
+                          - Remove
+                        </div>
+                        
+                        <div className="my-1 border-t border-border"></div>
+                        
+                        {!removedBuiltInSources.includes('direct-mail') && (
+                          <SelectItem value="direct-mail" data-testid="select-borrower-source-direct-mail">Direct Mail</SelectItem>
+                        )}
+                        {!removedBuiltInSources.includes('social-media') && (
+                          <SelectItem value="social-media" data-testid="select-borrower-source-social-media">Social Media</SelectItem>
+                        )}
+                        {!removedBuiltInSources.includes('website') && (
+                          <SelectItem value="website" data-testid="select-borrower-source-website">Website</SelectItem>
+                        )}
+                        {!removedBuiltInSources.includes('referral') && (
+                          <SelectItem value="referral" data-testid="select-borrower-source-referral">Referral</SelectItem>
+                        )}
+                        {!removedBuiltInSources.includes('repeat-client') && (
+                          <SelectItem value="repeat-client" data-testid="select-borrower-source-repeat-client">Repeat Client</SelectItem>
+                        )}
+                        
+                        {customSources.map((source) => (
+                          <SelectItem key={source.id} value={source.id} data-testid={`select-borrower-source-${source.id}`}>
+                            {source.name}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
