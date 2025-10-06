@@ -21360,9 +21360,9 @@ export default function AdminAddClient() {
                                           e.stopPropagation();
                                           setIsVAExempt(!isVAExempt);
                                         }}
-                                        className={`h-6 px-2 text-xs ${
+                                        className={`h-3 px-1 text-[0.5rem] leading-none ${
                                           isVAExempt 
-                                            ? 'bg-green-600 text-black hover:bg-green-700 hover:text-black border-green-600' 
+                                            ? 'bg-green-600 text-white hover:bg-green-700 hover:text-white border-green-600' 
                                             : ''
                                         }`}
                                         data-testid="button-va-exempt"
@@ -21453,9 +21453,9 @@ export default function AdminAddClient() {
                                           e.stopPropagation();
                                           setIsVAJumboExempt(!isVAJumboExempt);
                                         }}
-                                        className={`h-6 px-2 text-xs ${
+                                        className={`h-3 px-1 text-[0.5rem] leading-none ${
                                           isVAJumboExempt 
-                                            ? 'bg-green-600 text-black hover:bg-green-700 hover:text-black border-green-600' 
+                                            ? 'bg-green-600 text-white hover:bg-green-700 hover:text-white border-green-600' 
                                             : ''
                                         }`}
                                         data-testid="button-va-jumbo-exempt"
