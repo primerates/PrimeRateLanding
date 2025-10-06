@@ -28430,7 +28430,15 @@ export default function AdminAddClient() {
             >
               Save to Library
             </Button>
-            <div></div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowLibraryDialog(true)}
+              className="text-xs px-2 w-full bg-primary text-white border-primary hover:text-green-500 hover:bg-primary hover:border-primary"
+              data-testid="button-see-library-tps"
+            >
+              See Library
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
