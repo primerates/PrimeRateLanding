@@ -28355,13 +28355,22 @@ export default function AdminAddClient() {
                   <Label htmlFor="save-est-loan-amount" className="text-sm font-medium">
                     Est. Loan Amount
                   </Label>
-                  <Input
-                    id="save-est-loan-amount"
-                    value={saveLibraryEstLoanAmount}
-                    onChange={(e) => setSaveLibraryEstLoanAmount(e.target.value)}
-                    placeholder="$"
-                    data-testid="input-save-est-loan-amount"
-                  />
+                  <div className="flex items-center gap-1">
+                    <span className="text-sm text-muted-foreground">$</span>
+                    <Input
+                      id="save-est-loan-amount"
+                      type="text"
+                      placeholder="0"
+                      value={saveLibraryEstLoanAmount}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^\d]/g, '');
+                        const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                        setSaveLibraryEstLoanAmount(formatted);
+                      }}
+                      className="w-full"
+                      data-testid="input-save-est-loan-amount"
+                    />
+                  </div>
                 </div>
 
                 {/* Buttons - aligned below Lender */}
