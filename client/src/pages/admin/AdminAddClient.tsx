@@ -22973,6 +22973,11 @@ export default function AdminAddClient() {
                                   if (service.id === 's1' && (isVAExempt || isVAJumboExempt)) {
                                     return false;
                                   }
+                                  // Hide VA Appraisal Inspection (s2) and VA Termite Report (s3) when Rate & Term or IRRRL is selected
+                                  if ((service.id === 's2' || service.id === 's3') && 
+                                      (selectedLoanCategory?.includes('Rate & Term') || selectedLoanCategory?.includes('IRRRL'))) {
+                                    return false;
+                                  }
                                   return true;
                                 })
                                 .map((service, serviceIndex) => (
