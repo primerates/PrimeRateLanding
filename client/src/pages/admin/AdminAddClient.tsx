@@ -21548,7 +21548,7 @@ export default function AdminAddClient() {
                           className="hover:bg-emerald-500 hover:text-white"
                           data-testid="button-closing-costs"
                         >
-                          <Home className="h-4 w-4" />
+                          <Home className={`h-4 w-4 ${selectedLoanCategory?.startsWith('FHA - ') ? 'text-yellow-500' : ''}`} />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>
