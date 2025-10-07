@@ -19296,20 +19296,7 @@ export default function AdminAddClient() {
                   
                   <div className="space-y-2">
                     <Label className="text-lg font-semibold">
-                      Loan Category{(() => {
-                        const hasRefinanceCards = (newRefinanceLoanCards || []).length > 0;
-                        const hasPurchaseCards = (newPurchaseLoanCards || []).length > 0;
-                        
-                        let loanCategory = '';
-                        if (hasRefinanceCards) {
-                          loanCategory = form.watch('abc.loanCategory');
-                        } else if (hasPurchaseCards) {
-                          loanCategory = form.watch('bbb.loanCategory');
-                        }
-                        
-                        if (loanCategory === 'fha') return ' - Update MIP';
-                        return '';
-                      })()}
+                      Loan Category{selectedLoanCategory?.startsWith('FHA - ') ? ' - Update MIP' : ''}
                     </Label>
                     <div className="min-h-[40px] flex items-center">
                       <div
