@@ -23918,7 +23918,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
           <div className="py-4 space-y-6">
             {/* Section Title */}
             <div>
-              <h3 className="text-base font-semibold text-purple-600">Existing FHA MIP Refund Estimate</h3>
+              <h3 className="text-base font-semibold text-purple-600">Existing FHA Upfront MIP Refund Estimate</h3>
             </div>
 
             {/* Loan Start Month/Year */}
@@ -24045,7 +24045,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
             {/* Estimated MIP Credit/Refund */}
             <div className="flex items-center gap-4 justify-end">
               <Label htmlFor="fha-mip-estimated-credit" className="text-left">
-                Estimated MIP Refund:
+                Est. Prior FHA Upfront MIP Refund:
               </Label>
               <div className="flex items-center border border-input px-3 rounded-md w-64 bg-background">
                 <span className="text-muted-foreground text-sm">$</span>
@@ -24136,7 +24136,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                 {/* Adjusted New FHA MIP */}
                 <div className="flex items-center gap-4 justify-end">
                   <Label htmlFor="adjusted-new-fha-mip" className="text-left">
-                    Adj. New Upfront FHA MIP:
+                    Adj. New Upfront FHA MIP Cost:
                   </Label>
                   <div className="flex items-center border border-input px-3 rounded-md w-64 bg-background">
                     <span className="text-muted-foreground text-sm">$</span>
