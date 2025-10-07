@@ -24143,30 +24143,6 @@ const calculatedNewFhaMipCost = useMemo(() => {
                   </div>
                 </div>
 
-
-                {/* New Loan Amount */}
-                <div className="flex items-center gap-4 justify-end">
-                  <Label htmlFor="fha-mip-new-loan-amount" className="text-left">
-                    New Loan Amount:
-                  </Label>
-                  <div className="flex items-center border border-input px-3 rounded-md w-64 bg-background">
-                    <span className="text-muted-foreground text-sm">$</span>
-                    <Input
-                      id="fha-mip-new-loan-amount"
-                      type="text"
-                      placeholder="0"
-                      value={fhaMipNewLoanAmount}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/[^\d]/g, '');
-                        const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                        setFhaMipNewLoanAmount(formatted);
-                      }}
-                      className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
-                      data-testid="input-fha-mip-new-loan-amount"
-                    />
-                  </div>
-                </div>
-                {/* Separator */}
                 <div className="border-t my-6"></div>
 
                 <p className="text-xs text-muted-foreground italic mb-4">* after crediting prior loan Upront MIP balance.</p>
