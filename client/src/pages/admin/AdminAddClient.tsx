@@ -1038,6 +1038,8 @@ export default function AdminAddClient() {
   const [titleEscrowValues, setTitleEscrowValues] = useState<string[]>(['', '', '', '', '']);
   const [payOffInterestValues, setPayOffInterestValues] = useState<string[]>(['', '', '', '', '']);
   const [stateTaxValues, setStateTaxValues] = useState<string[]>(['', '', '', '', '']);
+  const [processingValues, setProcessingValues] = useState<string[]>(['', '', '', '', '']);
+  const [creditReportValues, setCreditReportValues] = useState<string[]>(['', '', '', '', '']);
   const [escrowReservesValues, setEscrowReservesValues] = useState<string[]>(['', '', '', '', '']);
   const [existingLoanBalanceValues, setExistingLoanBalanceValues] = useState<string[]>(['', '', '', '', '']);
   
@@ -1261,6 +1263,8 @@ export default function AdminAddClient() {
         titleEscrowValues[index],
         payOffInterestValues[index],
         stateTaxValues[index],
+        processingValues[index],
+        creditReportValues[index],
         escrowReservesValues[index]
       ];
       
@@ -1282,6 +1286,8 @@ export default function AdminAddClient() {
     titleEscrowValues,
     payOffInterestValues,
     stateTaxValues,
+    processingValues,
+    creditReportValues,
     escrowReservesValues
   ]);
   
@@ -3270,6 +3276,14 @@ export default function AdminAddClient() {
     // s7 = State Tax & Recording
     if (thirdPartyServiceValues['s7']) {
       setStateTaxValues(thirdPartyServiceValues['s7']);
+    }
+    // s8 = Processing Services
+    if (thirdPartyServiceValues['s8']) {
+      setProcessingValues(thirdPartyServiceValues['s8']);
+    }
+    // s9 = Credit Report Services
+    if (thirdPartyServiceValues['s9']) {
+      setCreditReportValues(thirdPartyServiceValues['s9']);
     }
   }, [thirdPartyServiceValues]);
 
