@@ -17,7 +17,7 @@ export default function AdminLogin() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: boolean}>({});
   const { toast } = useToast();
-  const { getLoginBackgroundStyle } = useBackground();
+  const { getLoginBackgroundStyle, loginBackground } = useBackground();
 
   const validateForm = () => {
     const newErrors: {[key: string]: boolean} = {};
@@ -213,21 +213,23 @@ export default function AdminLogin() {
         className="hidden lg:block lg:w-1/2 relative bg-white"
         style={getLoginBackgroundStyle()}
       >
-        <div 
-          className="absolute inset-0 flex flex-col items-center justify-center"
-        >
-          <img 
-            src={primeRateLogo} 
-            alt="Prime Rate Logo" 
-            className="w-1/2 h-auto object-contain"
-          />
-          <h1 
-            className="mt-12 text-4xl font-black italic tracking-tight" 
-            style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }}
+        {loginBackground === 'default' && (
+          <div 
+            className="absolute inset-0 flex flex-col items-center justify-center"
           >
-            PRIME RATE
-          </h1>
-        </div>
+            <img 
+              src={primeRateLogo} 
+              alt="Prime Rate Logo" 
+              className="w-1/2 h-auto object-contain"
+            />
+            <h1 
+              className="mt-12 text-4xl font-black italic tracking-tight" 
+              style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }}
+            >
+              PRIME RATE
+            </h1>
+          </div>
+        )}
       </div>
     </div>
   );
