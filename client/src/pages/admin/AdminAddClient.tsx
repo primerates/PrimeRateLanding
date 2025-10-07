@@ -1087,15 +1087,6 @@ export default function AdminAddClient() {
     // Formula: 80% for month 1, decreasing by 2% for each additional month
     const percentage = 80 - ((months - 1) * 2);
     return percentage >= 10 ? percentage.toString() : '10';
-
-  // Auto-calculate Estimated MIP Refund (FHA MIP Cost × Remaining Refund Value %)
-  const calculatedEstimatedMipRefund = useMemo(() => {
-    const mipCost = parseFloat(calculatedFhaMipCost.replace(/,/g, '') || '0');
-    const refundValue = parseFloat(calculatedRemainingRefundValue || '0');
-    if (mipCost === 0 || refundValue === 0) return '';
-    const refund = mipCost * (refundValue / 100);
-    return Math.round(refund).toLocaleString('en-US');
-  }, [calculatedFhaMipCost, calculatedRemainingRefundValue]);
   }, [fhaMipRemainingMonths]);
   
   // Auto-calculate Total Monthly Escrow
@@ -24048,15 +24039,17 @@ export default function AdminAddClient() {
               <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
                 <span className="text-muted-foreground text-sm">$</span>
                 <Input
-                <Input
                   id="fha-mip-estimated-credit"
                   type="text"
                   placeholder="0"
-                  value={calculatedEstimatedMipRefund}
-                  disabled
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                  value={fhaMipEstimatedCredit}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                    setFhaMipEstimatedCredit(formatted);
+                  }}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
                   data-testid="input-fha-mip-estimated-credit"
-                />
                 />
               </div>
             </div>
