@@ -28589,26 +28589,35 @@ export default function AdminAddClient() {
                     <Label htmlFor="save-est-loan-amount" className="text-sm font-medium">
                       Loan Amount
                     </Label>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        // Get the first selected rate's loan amount
-                        const firstRateId = selectedRateIds[0];
-                        const total = rateColumnTotals[firstRateId];
-                        if (total > 0) {
-                          const formattedValue = total.toLocaleString('en-US');
-                          setSaveLibraryEstLoanAmount(formattedValue);
-                          setCopiedLoanAmount(true);
-                          setTimeout(() => setCopiedLoanAmount(false), 1000);
-                        }
-                      }}
-                      className={`text-sm font-bold transition-colors ${
-                        copiedLoanAmount ? 'text-green-500' : 'text-muted-foreground hover:text-foreground'
-                      }`}
-                      data-testid="button-copy-loan-amount"
-                    >
-                      C
-                    </button>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            // Get the first selected rate's loan amount
+                            const firstRateId = selectedRateIds[0];
+                            const total = rateColumnTotals[firstRateId];
+                            if (total > 0) {
+                              const formattedValue = total.toLocaleString('en-US');
+                              setSaveLibraryEstLoanAmount(formattedValue);
+                              setCopiedLoanAmount(true);
+                              setTimeout(() => setCopiedLoanAmount(false), 1000);
+                            }
+                          }}
+                          className={`flex items-center justify-center w-6 h-6 rounded-full border-2 text-sm font-bold transition-all ${
+                            copiedLoanAmount 
+                              ? 'bg-green-500 text-white border-green-500' 
+                              : 'bg-muted text-muted-foreground border-muted-foreground hover:bg-primary hover:text-white hover:border-primary'
+                          }`}
+                          data-testid="button-copy-loan-amount"
+                        >
+                          C
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Copy New Est. Loan Amount</p>
+                      </TooltipContent>
+                    </Tooltip>
                   </div>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
