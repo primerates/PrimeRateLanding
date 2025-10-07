@@ -21562,7 +21562,7 @@ export default function AdminAddClient() {
                     const completedFieldsCount = getCompletedFieldsCountExcludingQuote() + (selectedRateIds.length > 0 ? 1 : 0);
                     
                     return (
-                      <div className="px-4 pt-2 pb-2">
+                      <div className="px-4 pt-3 pb-2">
                         <div className="relative flex gap-0 h-px">
                           {Array.from({ length: 15 }).map((_, index) => (
                             <div
