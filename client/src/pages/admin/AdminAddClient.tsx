@@ -23878,9 +23878,6 @@ export default function AdminAddClient() {
         </DialogContent>
       </Dialog>
 
-      {/* Estimated New Loan Amount Dialog */}
-      <Dialog open={isEstLoanAmountInfoOpen} onOpenChange={setIsEstLoanAmountInfoOpen}>
-        <DialogContent className="sm:max-w-[500px] p-0">
 
       {/* FHA Upfront MIP Settings Dialog */}
       <Dialog open={isFhaMipDialogOpen} onOpenChange={setIsFhaMipDialogOpen}>
@@ -24046,6 +24043,9 @@ export default function AdminAddClient() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {/* Estimated New Loan Amount Dialog */}
+      <Dialog open={isEstLoanAmountInfoOpen} onOpenChange={setIsEstLoanAmountInfoOpen}>
+        <DialogContent className="sm:max-w-[500px] p-0">
           <DialogHeader className="text-white p-6 rounded-t-lg" style={{ backgroundColor: '#1a3373' }}>
             <DialogTitle className="text-white">Estimated New Loan Amount</DialogTitle>
           </DialogHeader>
