@@ -1070,6 +1070,7 @@ export default function AdminAddClient() {
   const [fhaMipRemainingMonths, setFhaMipRemainingMonths] = useState('');
   const [fhaMipEstimatedCredit, setFhaMipEstimatedCredit] = useState('');
   const [fhaMipRemainingRefundValue, setFhaMipRemainingRefundValue] = useState('');
+  const [fhaMipNewLoanAmount, setFhaMipNewLoanAmount] = useState('');
 
 // State for New FHA MIP Estimate section
 const [newLoanAmount, setNewLoanAmount] = useState('');
@@ -1108,6 +1109,13 @@ const calculatedNewFhaMipCost = useMemo(() => {
   return cost > 0 ? Math.round(cost).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
 }, [newLoanAmount, newFhaMipCostFactor]);
   
+  // Auto-calculate Adjusted New FHA MIP (New Loan Amount × Cost Factor)
+  const calculatedAdjustedNewFhaMip = useMemo(() => {
+    const newLoanAmount = parseInt(fhaMipNewLoanAmount.replace(/[^\d]/g, '') || '0', 10);
+    const factor = parseFloat(fhaMipCostFactor || '0');
+    const mip = newLoanAmount * (factor / 100);
+    return mip > 0 ? Math.round(mip).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+  }, [fhaMipNewLoanAmount, fhaMipCostFactor]);
 
 // Auto-calculate Adjusted New FHA MIP Cost (New FHA MIP Cost - Est. Prior FHA Upfront MIP Refund)
   // Auto-calculate Total Monthly Escrow
@@ -11364,7 +11372,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                               <div className="space-y-2 md:col-span-1">
                                 <Label htmlFor="template-employer-state">State</Label>
                                 <Select
-                                  value=""
+                                  value={calculatedAdjustedNewFhaMip}
                                   onValueChange={() => {}}
                                 >
                                   <SelectTrigger data-testid="select-template-employer-state">
@@ -11399,7 +11407,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                               <div className="space-y-2 md:col-span-2">
                                 <Label htmlFor="template-employer-employment-type">Full-Time / Part-Time</Label>
                                 <Select
-                                  value=""
+                                  value={calculatedAdjustedNewFhaMip}
                                   onValueChange={() => {}}
                                 >
                                   <SelectTrigger data-testid="select-template-employer-employment-type">
@@ -13385,7 +13393,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                               <div className="space-y-2 md:col-span-1">
                                 <Label htmlFor="template-employer-state">State</Label>
                                 <Select
-                                  value=""
+                                  value={calculatedAdjustedNewFhaMip}
                                   onValueChange={() => {}}
                                 >
                                   <SelectTrigger data-testid="select-template-employer-state">
@@ -13420,7 +13428,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                               <div className="space-y-2 md:col-span-2">
                                 <Label htmlFor="template-employer-employment-type">Full-Time / Part-Time</Label>
                                 <Select
-                                  value=""
+                                  value={calculatedAdjustedNewFhaMip}
                                   onValueChange={() => {}}
                                 >
                                   <SelectTrigger data-testid="select-template-employer-employment-type">
@@ -24135,6 +24143,29 @@ const calculatedNewFhaMipCost = useMemo(() => {
                   </div>
                 </div>
 
+
+                {/* New Loan Amount */}
+                <div className="flex items-center gap-4 justify-end">
+                  <Label htmlFor="fha-mip-new-loan-amount" className="text-left">
+                    New Loan Amount:
+                  </Label>
+                  <div className="flex items-center border border-input px-3 rounded-md w-64 bg-background">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="fha-mip-new-loan-amount"
+                      type="text"
+                      placeholder="0"
+                      value={fhaMipNewLoanAmount}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^\d]/g, '');
+                        const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                        setFhaMipNewLoanAmount(formatted);
+                      }}
+                      className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                      data-testid="input-fha-mip-new-loan-amount"
+                    />
+                  </div>
+                </div>
                 {/* Separator */}
                 <div className="border-t my-6"></div>
 
@@ -24151,7 +24182,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                       id="adjusted-new-fha-mip"
                       type="text"
                       placeholder="0"
-                      value=""
+                      value={calculatedAdjustedNewFhaMip}
                       disabled
                       className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-white placeholder:text-white/50 disabled:cursor-not-allowed disabled:opacity-100"
                       data-testid="input-adjusted-new-fha-mip"
