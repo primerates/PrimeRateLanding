@@ -1265,9 +1265,7 @@ export default function AdminAddClient() {
       ];
       
       const total = values.reduce((sum, val) => {
-        // Clean the value: remove $, commas, and other non-numeric characters except decimal point
-        const cleaned = (val || '0').replace(/[^\d.]/g, '');
-        const num = parseFloat(cleaned) || 0;
+        const num = parseInt(val || '0', 10);
         return sum + num;
       }, 0);
       
