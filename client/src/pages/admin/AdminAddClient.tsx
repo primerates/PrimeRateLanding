@@ -23456,7 +23456,7 @@ export default function AdminAddClient() {
                     >
                       <CardContent className="pt-6 space-y-6">
                       {/* Pay Off Interest Section - Standalone */}
-                      <div className="pt-6">
+                      <div className="border-t pt-6">
                         <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                           <div className="flex items-center justify-end pr-4">
                             <Label className="text-base font-bold text-right whitespace-nowrap">Pay Off Interest</Label>
@@ -23597,7 +23597,7 @@ export default function AdminAddClient() {
 
                         {/* New Monthly Payment Row - Auto-calculated */}
                         {isMonthlyPaymentRowExpanded && (
-                          <div className="pt-6">
+                          <div className="border-t pt-6">
                             <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                               <div className="flex items-center justify-end pr-4 gap-2 flex-shrink-0">
                                 {isSavingsRowExpanded ? (
@@ -23640,7 +23640,7 @@ export default function AdminAddClient() {
 
                         {/* Total Monthly Savings Row */}
                         {isMonthlyPaymentRowExpanded && isSavingsRowExpanded && (
-                          <div className="pt-6">
+                          <div className="border-t pt-6">
                             <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                               <div className="flex items-center justify-end pr-4 gap-2 flex-shrink-0">
                                 <Info 
