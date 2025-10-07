@@ -1038,6 +1038,8 @@ export default function AdminAddClient() {
   const [titleEscrowValues, setTitleEscrowValues] = useState<string[]>(['', '', '', '', '']);
   const [payOffInterestValues, setPayOffInterestValues] = useState<string[]>(['', '', '', '', '']);
   const [stateTaxValues, setStateTaxValues] = useState<string[]>(['', '', '', '', '']);
+  const [processingValues, setProcessingValues] = useState<string[]>(['', '', '', '', '']);
+  const [creditReportValues, setCreditReportValues] = useState<string[]>(['', '', '', '', '']);
   const [escrowReservesValues, setEscrowReservesValues] = useState<string[]>(['', '', '', '', '']);
   const [existingLoanBalanceValues, setExistingLoanBalanceValues] = useState<string[]>(['', '', '', '', '']);
   
@@ -1065,6 +1067,16 @@ export default function AdminAddClient() {
     const tax = parseInt(propertyTaxPayment || '0', 10);
     return insurance + tax;
   }, [propertyInsurancePayment, propertyTaxPayment]);
+
+  // Sync calculatedTotalMonthlyEscrow to escrowReservesValues for calculation
+  useEffect(() => {
+    if (escrowReserves !== 'escrow-not-included' && calculatedTotalMonthlyEscrow > 0) {
+      const valueStr = calculatedTotalMonthlyEscrow.toString();
+      setEscrowReservesValues([valueStr, valueStr, valueStr, valueStr, valueStr]);
+    } else {
+      setEscrowReservesValues(['', '', '', '', '']);
+    }
+  }, [calculatedTotalMonthlyEscrow, escrowReserves]);
   
   // State for Estimated New Loan Amount dialog
   const [isEstLoanAmountInfoOpen, setIsEstLoanAmountInfoOpen] = useState(false);
@@ -1261,6 +1273,8 @@ export default function AdminAddClient() {
         titleEscrowValues[index],
         payOffInterestValues[index],
         stateTaxValues[index],
+        processingValues[index],
+        creditReportValues[index],
         escrowReservesValues[index]
       ];
       
@@ -1282,6 +1296,8 @@ export default function AdminAddClient() {
     titleEscrowValues,
     payOffInterestValues,
     stateTaxValues,
+    processingValues,
+    creditReportValues,
     escrowReservesValues
   ]);
   
@@ -1863,34 +1879,6 @@ export default function AdminAddClient() {
 
   // Current Primary Loan cards state management (similar to property cards)
   const [currentPrimaryLoanCards, setCurrentPrimaryLoanCards] = useState<string[]>([]);
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      type="button"
-                                      variant="ghost"
-                                      size="icon"
-                                      className="h-6 w-6 hover:bg-amber-500 hover:text-white"
-                                      onClick={() => {
-                                        const isVACategory = selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ');
-                                        if (isVACategory) {
-                                          setShowVAFundingFeeDialog(true);
-                                        }
-                                      }}
-                                      data-testid="button-va-funding-fee"
-                                    >
-                                      <Star className={`h-4 w-4 ${
-                                        (selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - '))
-                                          ? (isVAExempt || isVAJumboExempt)
-                                            ? 'text-green-600 fill-green-600'
-                                            : 'text-purple-500 fill-purple-500'
-                                          : 'text-muted-foreground'
-                                      }`} />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>VA Funding Fee</p>
-                                  </TooltipContent>
-                                </Tooltip>
   
   // Handler functions for Third Party Services customization
   const handleOpenThirdPartyServicesDialog = () => {
@@ -3298,6 +3286,14 @@ export default function AdminAddClient() {
     // s7 = State Tax & Recording
     if (thirdPartyServiceValues['s7']) {
       setStateTaxValues(thirdPartyServiceValues['s7']);
+    }
+    // s8 = Processing Services
+    if (thirdPartyServiceValues['s8']) {
+      setProcessingValues(thirdPartyServiceValues['s8']);
+    }
+    // s9 = Credit Report Services
+    if (thirdPartyServiceValues['s9']) {
+      setCreditReportValues(thirdPartyServiceValues['s9']);
     }
   }, [thirdPartyServiceValues]);
 
@@ -21559,6 +21555,33 @@ export default function AdminAddClient() {
                         <p>Closing Costs</p>
                       </TooltipContent>
                     </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="hover:bg-amber-500 hover:text-white"
+                          onClick={() => {
+                            const isVACategory = selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ');
+                            if (isVACategory) {
+                              setShowVAFundingFeeDialog(true);
+                            }
+                          }}
+                          data-testid="button-va-funding-fee"
+                        >
+                          <Star className={`h-4 w-4 ${
+                            (selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - '))
+                              ? (isVAExempt || isVAJumboExempt)
+                                ? 'text-green-600 fill-green-600'
+                                : 'text-purple-500 fill-purple-500'
+                              : 'text-muted-foreground'
+                          }`} />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>VA Funding Fee</p>
+                      </TooltipContent>
+                    </Tooltip>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -23772,7 +23795,7 @@ export default function AdminAddClient() {
             {/* Monthly Insurance */}
             <div className="flex items-center gap-4">
               <Label htmlFor="monthly-insurance" className="w-48 text-right">
-                Monthly Insurance:
+                Monthly Home Insurance:
               </Label>
               <div className={`flex items-center border border-input px-3 rounded-md flex-1 ${escrowReserves === 'escrow-not-included' ? 'bg-muted' : 'bg-background'}`}>
                 <span className="text-muted-foreground text-sm">$</span>
