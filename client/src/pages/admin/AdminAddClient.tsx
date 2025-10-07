@@ -994,45 +994,6 @@ export default function AdminAddClient() {
   const [titleToRemove, setTitleToRemove] = useState('');
   const [removedBuiltInTitles, setRemovedBuiltInTitles] = useState<string[]>([]);
   
-  // Calculate completion count (excluding Quote field) to determine if Quote selection should be enabled
-  const completedFieldsCountExcludingQuote = useMemo(() => {
-    return [
-      !!selectedLoanCategory && selectedLoanCategory !== '',  // 1. Loan Category
-      (isCustomTerm && !!customTerm) || (!isCustomTerm && !!loanTerm && loanTerm !== 'select'),  // 2. Loan Term/Years
-      true,  // 3. Loan Program (counted as complete by default)
-      !!selectedPropertyUse && selectedPropertyUse !== 'select',  // 4. Property Use
-      !!selectedPropertyType && selectedPropertyType !== 'select',  // 5. Property Type
-      // Quote field excluded here - will be added separately for display
-      !!selectedState && selectedState !== 'select',  // 6. State
-      true,  // 7. Rate Buydown (has default 'yes')
-      true,  // 8. Escrow Reserves (has default)
-      true,  // 9. Monthly Escrow (has default)
-      (isMidFicoEstimateMode && !!estimatedFicoValue) || (!isMidFicoEstimateMode && !!getAbcCalculatedMidFico()),  // 10. Mid FICO
-      (isLtvEstimateMode && !!estimatedLtvValue) || (!isLtvEstimateMode && !!calculateEstimatedLTV()),  // 11. LTV Ratio
-      (isLenderCreditMode && !!lenderCreditAmount) || (!isLenderCreditMode && !!debtToIncomeRatio && debtToIncomeRatio !== 'select'),  // 12. Lender
-      (isTitleSellerCreditMode && !!titleSellerCreditAmount) || (!isTitleSellerCreditMode && !!lenderCredit && lenderCredit !== 'select'),  // 13. Title
-      true,  // 14. Underwriting (has default)
-    ].filter(Boolean).length;
-  }, [
-    selectedLoanCategory,
-    isCustomTerm,
-    customTerm,
-    loanTerm,
-    selectedPropertyUse,
-    selectedPropertyType,
-    selectedState,
-    isMidFicoEstimateMode,
-    estimatedFicoValue,
-    isLtvEstimateMode,
-    estimatedLtvValue,
-    isLenderCreditMode,
-    lenderCreditAmount,
-    debtToIncomeRatio,
-    isTitleSellerCreditMode,
-    titleSellerCreditAmount,
-    lenderCredit,
-  ]);
-  
   // State for custom loan purposes
   const [customLoanPurposes, setCustomLoanPurposes] = useState<Array<{ id: string; name: string }>>([]);
   const [showAddLoanPurposeDialog, setShowAddLoanPurposeDialog] = useState(false);
@@ -3033,6 +2994,27 @@ export default function AdminAddClient() {
     // Calculate LTV percentage
     const ltv = (loanNum / valueNum) * 100;
     return Math.round(ltv).toString() + '%';
+  };
+
+  // Function to calculate completion count (excluding Quote field) to determine if Quote selection should be enabled
+  const getCompletedFieldsCountExcludingQuote = () => {
+    return [
+      !!selectedLoanCategory && selectedLoanCategory !== '',  // 1. Loan Category
+      (isCustomTerm && !!customTerm) || (!isCustomTerm && !!loanTerm && loanTerm !== 'select'),  // 2. Loan Term/Years
+      true,  // 3. Loan Program (counted as complete by default)
+      !!selectedPropertyUse && selectedPropertyUse !== 'select',  // 4. Property Use
+      !!selectedPropertyType && selectedPropertyType !== 'select',  // 5. Property Type
+      // Quote field excluded here - will be added separately for display
+      !!selectedState && selectedState !== 'select',  // 6. State
+      true,  // 7. Rate Buydown (has default 'yes')
+      true,  // 8. Escrow Reserves (has default)
+      true,  // 9. Monthly Escrow (has default)
+      (isMidFicoEstimateMode && !!estimatedFicoValue) || (!isMidFicoEstimateMode && !!getAbcCalculatedMidFico()),  // 10. Mid FICO
+      (isLtvEstimateMode && !!estimatedLtvValue) || (!isLtvEstimateMode && !!calculateEstimatedLTV()),  // 11. LTV Ratio
+      (isLenderCreditMode && !!lenderCreditAmount) || (!isLenderCreditMode && !!debtToIncomeRatio && debtToIncomeRatio !== 'select'),  // 12. Lender
+      (isTitleSellerCreditMode && !!titleSellerCreditAmount) || (!isTitleSellerCreditMode && !!lenderCredit && lenderCredit !== 'select'),  // 13. Title
+      true,  // 14. Underwriting (has default)
+    ].filter(Boolean).length;
   };
 
   const addClientMutation = useMutation({
@@ -21577,7 +21559,7 @@ export default function AdminAddClient() {
                   {/* Completion Bar - 15 segments */}
                   {!isQuoteCardsMinimized && (() => {
                     // Add Quote to the count for display purposes only
-                    const completedFieldsCount = completedFieldsCountExcludingQuote + (selectedRateIds.length > 0 ? 1 : 0);
+                    const completedFieldsCount = getCompletedFieldsCountExcludingQuote() + (selectedRateIds.length > 0 ? 1 : 0);
                     
                     return (
                       <div className="px-4 pt-2 pb-2">
@@ -22498,7 +22480,7 @@ export default function AdminAddClient() {
                             </PopoverTrigger>
                             <PopoverContent className="w-[200px] p-3" align="start">
                               <div className="space-y-2">
-                                {completedFieldsCountExcludingQuote === 14 ? (
+                                {getCompletedFieldsCountExcludingQuote() === 14 ? (
                                   <>
                                     {/* Individual rate checkboxes in ascending order */}
                                     {[0, 1, 2, 3].map((rateId) => (
