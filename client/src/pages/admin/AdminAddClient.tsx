@@ -22213,59 +22213,46 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <div className="flex items-center justify-between gap-2">
-                            <Label htmlFor={isCustomTerm ? "custom-term-input" : "loan-term-select"}>
-                              {isCustomTerm ? "Custom Term / Years" : "Loan Term / Years"}
-                            </Label>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <div>
-                                  <Switch
-                                    checked={isCustomTerm}
-                                    onCheckedChange={setIsCustomTerm}
-                                    data-testid="switch-custom-term"
-                                    className="scale-[0.8] hover:border-blue-600 hover:border-2"
-                                  />
-                                </div>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>{isCustomTerm ? "Loan Term / Years" : "Custom Term / Years"}</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </div>
-                          {!isCustomTerm ? (
-                            <Select value={loanTerm} onValueChange={setLoanTerm}>
-                              <SelectTrigger data-testid="select-loan-term">
-                                <SelectValue placeholder="Select" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="select" data-testid="select-loan-term-select">Select</SelectItem>
-                                <SelectItem value="30-years" data-testid="select-loan-term-30">30</SelectItem>
-                                <SelectItem value="25-years" data-testid="select-loan-term-25">25</SelectItem>
-                                <SelectItem value="20-years" data-testid="select-loan-term-20">20</SelectItem>
-                                <SelectItem value="18-years" data-testid="select-loan-term-18">18</SelectItem>
-                                <SelectItem value="15-years" data-testid="select-loan-term-15">15</SelectItem>
-                                <SelectItem value="12-years" data-testid="select-loan-term-12">12</SelectItem>
-                                <SelectItem value="10-years" data-testid="select-loan-term-10">10</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          ) : (
-                            <Input
-                              id="custom-term-input"
-                              type="text"
-                              placeholder=""
-                              value={customTerm}
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                if (value === '' || (/^\d{1,2}$/.test(value))) {
-                                  setCustomTerm(value);
-                                }
-                              }}
-                              data-testid="input-custom-term"
-                            />
-                          )}
+                          <Label htmlFor="loan-term-select">Loan Term / Years</Label>
+                          <Select value={loanTerm} onValueChange={setLoanTerm}>
+                            <SelectTrigger data-testid="select-loan-term">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="select" data-testid="select-loan-term-select">Select</SelectItem>
+                              
+                              {/* Add Term option */}
+                              <div 
+                                className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setShowAddTermDialog(true);
+                                }}
+                                data-testid="option-add-term"
+                              >
+                                + Add Term
+                              </div>
+                              
+                              {/* Separator line */}
+                              <div className="my-1 border-t border-border"></div>
+                              
+                              <SelectItem value="30-years" data-testid="select-loan-term-30">30</SelectItem>
+                              <SelectItem value="25-years" data-testid="select-loan-term-25">25</SelectItem>
+                              <SelectItem value="20-years" data-testid="select-loan-term-20">20</SelectItem>
+                              <SelectItem value="18-years" data-testid="select-loan-term-18">18</SelectItem>
+                              <SelectItem value="15-years" data-testid="select-loan-term-15">15</SelectItem>
+                              <SelectItem value="12-years" data-testid="select-loan-term-12">12</SelectItem>
+                              <SelectItem value="10-years" data-testid="select-loan-term-10">10</SelectItem>
+                              
+                              {/* Display custom loan terms */}
+                              {customLoanTerms.map((term) => (
+                                <SelectItem key={term.id} value={term.value} data-testid={`select-loan-term-${term.value}`}>
+                                  {term.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </div>
-
                         <div className="space-y-2">
                           <Label htmlFor="loan-program-select">Loan Program</Label>
                           <Select>
