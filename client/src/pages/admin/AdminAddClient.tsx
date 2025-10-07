@@ -21555,7 +21555,7 @@ export default function AdminAddClient() {
                     
                     return (
                       <div className="px-4 pb-2">
-                        <div className="flex gap-0.5 h-1">
+                        <div className="flex gap-0.5 h-0.5">
                           {fieldsCompleted.map((isCompleted, index) => (
                             <div
                               key={index}
