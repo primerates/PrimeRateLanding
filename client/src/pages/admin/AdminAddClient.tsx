@@ -22702,12 +22702,21 @@ export default function AdminAddClient() {
                             <Label htmlFor="title-select">
                               {isTitleSellerCreditMode ? "Seller Credit" : "Title"}
                             </Label>
-                            <Switch
-                              checked={isTitleSellerCreditMode}
-                              onCheckedChange={setIsTitleSellerCreditMode}
-                              data-testid="switch-title-seller-credit-mode"
-                              className="scale-[0.8]"
-                            />
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div>
+                                  <Switch
+                                    checked={isTitleSellerCreditMode}
+                                    onCheckedChange={setIsTitleSellerCreditMode}
+                                    data-testid="switch-title-seller-credit-mode"
+                                    className="scale-[0.8] hover:border-blue-600 hover:border-2"
+                                  />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{isTitleSellerCreditMode ? "Title" : "Seller Credit"}</p>
+                              </TooltipContent>
+                            </Tooltip>
                           </div>
                           {isTitleSellerCreditMode ? (
                             <div className="flex items-center border border-input bg-background px-3 rounded-md">
