@@ -1067,6 +1067,16 @@ export default function AdminAddClient() {
     const tax = parseInt(propertyTaxPayment || '0', 10);
     return insurance + tax;
   }, [propertyInsurancePayment, propertyTaxPayment]);
+
+  // Sync calculatedTotalMonthlyEscrow to escrowReservesValues for calculation
+  useEffect(() => {
+    if (escrowReserves !== 'escrow-not-included' && calculatedTotalMonthlyEscrow > 0) {
+      const valueStr = calculatedTotalMonthlyEscrow.toString();
+      setEscrowReservesValues([valueStr, valueStr, valueStr, valueStr, valueStr]);
+    } else {
+      setEscrowReservesValues(['', '', '', '', '']);
+    }
+  }, [calculatedTotalMonthlyEscrow, escrowReserves]);
   
   // State for Estimated New Loan Amount dialog
   const [isEstLoanAmountInfoOpen, setIsEstLoanAmountInfoOpen] = useState(false);
