@@ -28271,22 +28271,19 @@ export default function AdminAddClient() {
             <div className="mt-6 border-t pt-6 pb-6 border-b" data-testid="card-save-to-library">
               <h3 className="text-lg font-semibold mb-4">Save Configuration to Library</h3>
               <div className="grid grid-cols-5 gap-3">
-                {/* Combined Loan Category & Purpose Popover */}
+                {/* Loan Category Display (Read-only) */}
                 <div className="space-y-2 col-span-2">
-                  <Label htmlFor="save-loan-purpose" className="text-sm font-medium">
-                    Loan Purpose
+                  <Label htmlFor="save-loan-category" className="text-sm font-medium">
+                    Loan Category
                   </Label>
-                  <Popover open={isSaveLibraryPopoverOpen} onOpenChange={setIsSaveLibraryPopoverOpen}>
+                  <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm transition-colors items-center opacity-70">
+                    <span className="font-medium" data-testid="text-save-loan-category">
+                      {selectedLoanCategory || "Not selected"}
+                    </span>
+                  </div>
+                  <Popover open={false} onOpenChange={() => {}}>
                     <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        className="w-full justify-between"
-                        data-testid="button-save-loan-purpose-select"
-                      >
-                        {saveLibraryCombinedSelection || "Select"}
-                        <Plus className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
+                      <div className="hidden"></div>
                     </PopoverTrigger>
                     <PopoverContent className="w-[1000px] p-3" align="start">
                       <div className="space-y-2">
@@ -28451,57 +28448,60 @@ export default function AdminAddClient() {
                   </Popover>
                 </div>
 
-                {/* State */}
+                {/* State - Read-only, displaying actual property state */}
                 <div className="space-y-2">
                   <Label htmlFor="save-state" className="text-sm font-medium">
                     State
                   </Label>
-                  <Select value={saveLibraryState} onValueChange={setSaveLibraryState}>
-                    <SelectTrigger id="save-state" data-testid="select-save-state">
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-60">
-                      {usStates.map((state) => (
-                        <SelectItem key={state} value={state} data-testid={`option-state-${state}`}>
-                          {state}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm transition-colors items-center opacity-70">
+                    <span className="font-medium" data-testid="text-save-state">
+                      {(() => {
+                        const properties = form.watch('property.properties') || [];
+                        const primaryResidence = properties.find((p: any) => p.use === 'primary');
+                        return primaryResidence?.address?.state || "Not selected";
+                      })()}
+                    </span>
+                  </div>
                 </div>
 
-                {/* Lender */}
+                {/* Lender - Read-only, displaying actual lender */}
                 <div className="space-y-2">
                   <Label htmlFor="save-lender" className="text-sm font-medium">
                     Lender
                   </Label>
-                  <Select value={saveLibraryLender} onValueChange={setSaveLibraryLender}>
-                    <SelectTrigger id="save-lender" data-testid="select-save-lender">
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {!removedBuiltInLenders.includes('uwm') && (
-                        <SelectItem value="uwm" data-testid="option-lender-uwm">UWM</SelectItem>
-                      )}
-                      {!removedBuiltInLenders.includes('pennymac') && (
-                        <SelectItem value="pennymac" data-testid="option-lender-pennymac">Pennymac</SelectItem>
-                      )}
-                      {customLenders.map((lender) => (
-                        <SelectItem key={lender.id} value={lender.id} data-testid={`option-lender-${lender.id}`}>
-                          {lender.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm transition-colors items-center opacity-70">
+                    <span className="font-medium" data-testid="text-save-lender">
+                      {(() => {
+                        if (isLenderCreditMode) return "Lender Credit";
+                        if (debtToIncomeRatio === 'select') return "Select";
+                        if (debtToIncomeRatio === 'uwm') return "UWM";
+                        if (debtToIncomeRatio === 'pennymac') return "Pennymac";
+                        const lender = customLenders.find(l => l.id === debtToIncomeRatio);
+                        return lender?.name || debtToIncomeRatio || "Not selected";
+                      })()}
+                    </span>
+                  </div>
                 </div>
 
-                {/* Title - spans 2 columns */}
+                {/* Title - Read-only, displaying actual title - spans 2 columns */}
                 <div className="space-y-2 col-span-2">
                   <Label htmlFor="save-title" className="text-sm font-medium">
                     Title
                   </Label>
-                  <Select value={saveLibraryTitle} onValueChange={setSaveLibraryTitle}>
-                    <SelectTrigger id="save-title" data-testid="select-save-title">
+                  <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm transition-colors items-center opacity-70">
+                    <span className="font-medium" data-testid="text-save-title">
+                      {(() => {
+                        if (isTitleSellerCreditMode) return "Seller Credit";
+                        if (lenderCredit === 'select') return "Select";
+                        if (lenderCredit === 'first-american-title') return "First American Title";
+                        if (lenderCredit === 'reltco') return "Reltco";
+                        const title = customTitles.find(t => t.id === lenderCredit);
+                        return title?.name || lenderCredit || "Not selected";
+                      })()}
+                    </span>
+                  </div>
+                  <Select value={saveLibraryTitle} onValueChange={setSaveLibraryTitle} className="hidden">
+                    <SelectTrigger id="save-title" data-testid="select-save-title" className="hidden">
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
