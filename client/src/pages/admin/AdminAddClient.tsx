@@ -22218,26 +22218,22 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <div className="flex items-center justify-between gap-2">
-                            <Label htmlFor={isCustomTerm ? "custom-term-input" : "loan-term-select"}>
-                              {isCustomTerm ? "Custom Term / Years" : "Loan Term / Years"}
-                            </Label>
+                          <Label htmlFor={isCustomTerm ? "custom-term-input" : "loan-term-select"} className="flex items-center justify-between">
+                            <span>{isCustomTerm ? "Custom Term / Years" : "Loan Term / Years"}</span>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <div>
-                                  <Switch
-                                    checked={isCustomTerm}
-                                    onCheckedChange={setIsCustomTerm}
-                                    data-testid="switch-custom-term"
-                                    className="scale-[0.8] hover:border-blue-600 hover:border-2"
-                                  />
-                                </div>
+                                <Switch
+                                  checked={isCustomTerm}
+                                  onCheckedChange={setIsCustomTerm}
+                                  data-testid="switch-custom-term"
+                                  className="scale-[0.8] hover:border-blue-600 hover:border-2"
+                                />
                               </TooltipTrigger>
                               <TooltipContent>
                                 <p>{isCustomTerm ? "Loan Term / Years" : "Custom Term / Years"}</p>
                               </TooltipContent>
                             </Tooltip>
-                          </div>
+                          </Label>
                           {!isCustomTerm ? (
                             <Select value={loanTerm} onValueChange={setLoanTerm}>
                               <SelectTrigger data-testid="select-loan-term">
