@@ -23795,7 +23795,7 @@ export default function AdminAddClient() {
             {/* Monthly Insurance */}
             <div className="flex items-center gap-4">
               <Label htmlFor="monthly-insurance" className="w-48 text-right">
-                Monthly Insurance:
+                Monthly Home Insurance:
               </Label>
               <div className={`flex items-center border border-input px-3 rounded-md flex-1 ${escrowReserves === 'escrow-not-included' ? 'bg-muted' : 'bg-background'}`}>
                 <span className="text-muted-foreground text-sm">$</span>
