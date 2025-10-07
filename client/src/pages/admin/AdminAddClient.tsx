@@ -960,6 +960,9 @@ export default function AdminAddClient() {
   const loanProgramTextareaRef = useRef<HTMLTextAreaElement>(null);
   const [isLoanCategoryPopoverOpen, setIsLoanCategoryPopoverOpen] = useState(false);
   const [selectedLoanCategory, setSelectedLoanCategory] = useState('');
+  const [selectedPropertyUse, setSelectedPropertyUse] = useState('');
+  const [selectedPropertyType, setSelectedPropertyType] = useState('');
+  const [selectedState, setSelectedState] = useState('');
   
   // State for custom loan program categories and programs
   const [customLoanCategories, setCustomLoanCategories] = useState<Array<{ id: string; name: string; programs: Array<{ id: string; name: string }> }>>([]);
@@ -21539,10 +21542,10 @@ export default function AdminAddClient() {
                       !!selectedLoanCategory && selectedLoanCategory !== '',  // 1. Loan Category
                       (isCustomTerm && !!customTerm) || (!isCustomTerm && !!loanTerm && loanTerm !== 'select'),  // 2. Loan Term/Years
                       !!quoteLoanProgram && quoteLoanProgram.trim() !== '',  // 3. Loan Program
-                      false, // 4. Property Use (no state variable found, placeholder)
-                      false, // 5. Property Type (no state variable found, placeholder)
+                      !!selectedPropertyUse && selectedPropertyUse !== 'select',  // 4. Property Use
+                      !!selectedPropertyType && selectedPropertyType !== 'select',  // 5. Property Type
                       selectedRateIds.length > 0,  // 6. Quote
-                      false, // 7. State (no state variable found, placeholder)
+                      !!selectedState && selectedState !== 'select',  // 7. State
                       true,  // 8. Rate Buydown (has default 'yes')
                       true,  // 9. Escrow Reserves (has default)
                       true,  // 10. Monthly Escrow (has default)
@@ -22322,7 +22325,7 @@ export default function AdminAddClient() {
 
                         <div className="space-y-2">
                           <Label htmlFor="property-select">Property Use</Label>
-                          <Select>
+                          <Select value={selectedPropertyUse} onValueChange={setSelectedPropertyUse}>
                             <SelectTrigger data-testid="select-property">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
@@ -22382,7 +22385,7 @@ export default function AdminAddClient() {
 
                         <div className="space-y-2">
                           <Label htmlFor="property-type-select">Property Type</Label>
-                          <Select>
+                          <Select value={selectedPropertyType} onValueChange={setSelectedPropertyType}>
                             <SelectTrigger data-testid="select-property-type">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
@@ -22519,7 +22522,7 @@ export default function AdminAddClient() {
 
                         <div className="space-y-2">
                           <Label htmlFor="state-select">State</Label>
-                          <Select>
+                          <Select value={selectedState} onValueChange={setSelectedState}>
                             <SelectTrigger data-testid="select-state">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
