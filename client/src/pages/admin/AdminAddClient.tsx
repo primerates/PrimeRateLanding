@@ -21557,7 +21557,7 @@ export default function AdminAddClient() {
                     ].filter(Boolean).length;
                     
                     return (
-                      <div className="px-4 pb-2">
+                      <div className="px-4 pt-2 pb-2">
                         <div className="flex gap-0.5 h-0.5">
                           {Array.from({ length: 15 }).map((_, index) => (
                             <div
