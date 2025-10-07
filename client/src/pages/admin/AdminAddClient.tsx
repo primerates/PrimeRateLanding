@@ -22617,7 +22617,7 @@ export default function AdminAddClient() {
                               placeholder=""
                               value={estimatedFicoValue}
                               onChange={(e) => {
-                                const value = e.target.value.replace(/[^\d]/g, '');
+                                const value = e.target.value.replace(/[^\d]/g, '').slice(0, 3);
                                 setEstimatedFicoValue(value);
                               }}
                               className="w-full"
@@ -22658,9 +22658,9 @@ export default function AdminAddClient() {
                               id="estimated-ltv-input"
                               type="text"
                               placeholder=""
-                              value={estimatedLtvValue}
+                              value={estimatedLtvValue ? `${estimatedLtvValue}%` : ''}
                               onChange={(e) => {
-                                const value = e.target.value.replace(/[^\d]/g, '');
+                                const value = e.target.value.replace(/[^\d]/g, '').slice(0, 3);
                                 setEstimatedLtvValue(value);
                               }}
                               className="w-full"
