@@ -23923,7 +23923,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
 
             {/* Loan Start Month/Year */}
             <div className="flex items-center gap-4">
-              <Label htmlFor="fha-mip-loan-start" className="w-48 text-left">
+              <Label htmlFor="fha-mip-loan-start" className="text-left">
                 Loan Start Month/Year:
               </Label>
               <Input
@@ -23939,7 +23939,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
 
             {/* Starting Existing Loan Balance */}
             <div className="flex items-center gap-4">
-              <Label htmlFor="fha-mip-starting-balance" className="w-48 text-left">
+              <Label htmlFor="fha-mip-starting-balance" className="text-left">
                 Starting Loan Balance:
               </Label>
               <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
@@ -23962,8 +23962,8 @@ const calculatedNewFhaMipCost = useMemo(() => {
 
             {/* FHA MIP Cost Factor */}
             <div className="flex items-center gap-4">
-              <Label htmlFor="fha-mip-cost-factor" className="w-48 text-left">
-                FHA MIP Cost Factor:
+              <Label htmlFor="fha-mip-cost-factor" className="text-left">
+                Prior FHA MIP Cost Factor:
               </Label>
               <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
                 <Input
@@ -23984,8 +23984,8 @@ const calculatedNewFhaMipCost = useMemo(() => {
 
             {/* FHA MIP Cost */}
             <div className="flex items-center gap-4">
-              <Label htmlFor="fha-mip-cost" className="w-48 text-left">
-                FHA MIP Cost:
+              <Label htmlFor="fha-mip-cost" className="text-left">
+                Prior FHA MIP Cost:
               </Label>
               <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
                 <span className="text-muted-foreground text-sm">$</span>
@@ -24003,7 +24003,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
 
             {/* Remaining Months */}
             <div className="flex items-center gap-4">
-              <Label htmlFor="fha-mip-remaining-months" className="w-48 text-left">
+              <Label htmlFor="fha-mip-remaining-months" className="text-left">
                 Remaining Months:
               </Label>
               <Input
@@ -24025,7 +24025,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
 
             {/* Remaining Refund Value */}
             <div className="flex items-center gap-4">
-              <Label htmlFor="fha-mip-remaining-refund-value" className="w-48 text-left">
+              <Label htmlFor="fha-mip-remaining-refund-value" className="text-left">
                 Remaining Refund Value:
               </Label>
               <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
@@ -24044,7 +24044,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
 
             {/* Estimated MIP Credit/Refund */}
             <div className="flex items-center gap-4">
-              <Label htmlFor="fha-mip-estimated-credit" className="w-48 text-left">
+              <Label htmlFor="fha-mip-estimated-credit" className="text-left">
                 Estimated MIP Refund:
               </Label>
               <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
@@ -24059,18 +24059,19 @@ const calculatedNewFhaMipCost = useMemo(() => {
                   data-testid="input-fha-mip-estimated-credit"
                 />
               </div>
+          </div>
 
             {/* New FHA MIP Estimate Section */}
             <div className="border-t pt-6 mt-6">
               {/* Section Title */}
               <div>
-                <h3 className="text-base font-semibold">New FHA MIP Estimate</h3>
+                <h3 className="text-base font-semibold">New FHA Upfront MIP Estimate</h3>
               </div>
 
               <div className="space-y-6 mt-6">
                 {/* New Loan Amount */}
                 <div className="flex items-center gap-4">
-                  <Label htmlFor="new-loan-amount" className="w-48 text-left">
+                  <Label htmlFor="new-loan-amount" className="text-left">
                     New Loan Amount:
                   </Label>
                   <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
@@ -24093,7 +24094,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
 
                 {/* New FHA MIP Cost Factor */}
                 <div className="flex items-center gap-4">
-                  <Label htmlFor="new-fha-mip-cost-factor" className="w-48 text-left">
+                  <Label htmlFor="new-fha-mip-cost-factor" className="text-left">
                     New FHA MIP Cost Factor:
                   </Label>
                   <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
@@ -24115,7 +24116,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
 
                 {/* New FHA MIP Cost */}
                 <div className="flex items-center gap-4">
-                  <Label htmlFor="new-fha-mip-cost" className="w-48 text-left">
+                  <Label htmlFor="new-fha-mip-cost" className="text-left">
                     New FHA MIP Cost:
                   </Label>
                   <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
@@ -24134,8 +24135,8 @@ const calculatedNewFhaMipCost = useMemo(() => {
 
                 {/* Adjusted New FHA MIP */}
                 <div className="flex items-center gap-4">
-                  <Label htmlFor="adjusted-new-fha-mip" className="w-48 text-left">
-                    Adjusted New FHA MIP:
+                  <Label htmlFor="adjusted-new-fha-mip" className="text-left">
+                    Adj. New Upfront FHA MIP:
                   </Label>
                   <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
                     <span className="text-muted-foreground text-sm">$</span>
@@ -24157,8 +24158,6 @@ const calculatedNewFhaMipCost = useMemo(() => {
               </div>
             </div>
             </div>
-          </div>
-
           <DialogFooter className="mt-4">
             <Button
               variant="outline"
