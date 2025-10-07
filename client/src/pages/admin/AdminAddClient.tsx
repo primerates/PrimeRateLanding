@@ -22218,7 +22218,7 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center justify-between ">
                             <Label htmlFor={isCustomTerm ? "custom-term-input" : "loan-term-select"}>
                               {isCustomTerm ? "Custom Term / Years" : "Loan Term / Years"}
                             </Label>
