@@ -18498,15 +18498,11 @@ export default function AdminAddClient() {
                       </CollapsibleContent>
                     </Collapsible>
                   </Card>
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                );
+              })}
             </TabsContent>
           </Tabs>
         </form>
-    </div>
+      </div>
   );
 }
