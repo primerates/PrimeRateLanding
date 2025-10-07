@@ -21538,7 +21538,7 @@ export default function AdminAddClient() {
                     const completedFieldsCount = [
                       !!selectedLoanCategory && selectedLoanCategory !== '',  // 1. Loan Category
                       (isCustomTerm && !!customTerm) || (!isCustomTerm && !!loanTerm && loanTerm !== 'select'),  // 2. Loan Term/Years
-                      false, // 3. Loan Program (no state variable found, placeholder)
+                      !!quoteLoanProgram && quoteLoanProgram.trim() !== '',  // 3. Loan Program
                       false, // 4. Property Use (no state variable found, placeholder)
                       false, // 5. Property Type (no state variable found, placeholder)
                       selectedRateIds.length > 0,  // 6. Quote
