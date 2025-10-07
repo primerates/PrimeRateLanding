@@ -20,7 +20,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator, StickyNote, ChevronDown, ChevronUp, BookOpen, FileText, Pin, Printer, Settings, Edit, Star, Coins } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator, StickyNote, ChevronDown, ChevronUp, BookOpen, FileText, Pin, Printer, Settings, Edit, Star } from 'lucide-react';
 import { SiZillow } from 'react-icons/si';
 import { MdRealEstateAgent } from 'react-icons/md';
 import { FaHome } from 'react-icons/fa';
@@ -1039,6 +1039,8 @@ export default function AdminAddClient() {
   const [payOffInterestValues, setPayOffInterestValues] = useState<string[]>(['', '', '', '', '']);
   const [stateTaxValues, setStateTaxValues] = useState<string[]>(['', '', '', '', '']);
   const [fhaUpfrontMipValues, setFhaUpfrontMipValues] = useState<string[]>(['', '', '', '', '']);
+  const [processingValues, setProcessingValues] = useState<string[]>(['', '', '', '', '']);
+  const [creditReportValues, setCreditReportValues] = useState<string[]>(['', '', '', '', '']);
   const [escrowReservesValues, setEscrowReservesValues] = useState<string[]>(['', '', '', '', '']);
   const [existingLoanBalanceValues, setExistingLoanBalanceValues] = useState<string[]>(['', '', '', '', '']);
   
@@ -1066,6 +1068,16 @@ export default function AdminAddClient() {
     const tax = parseInt(propertyTaxPayment || '0', 10);
     return insurance + tax;
   }, [propertyInsurancePayment, propertyTaxPayment]);
+
+  // Sync calculatedTotalMonthlyEscrow to escrowReservesValues for calculation
+  useEffect(() => {
+    if (escrowReserves !== 'escrow-not-included' && calculatedTotalMonthlyEscrow > 0) {
+      const valueStr = calculatedTotalMonthlyEscrow.toString();
+      setEscrowReservesValues([valueStr, valueStr, valueStr, valueStr, valueStr]);
+    } else {
+      setEscrowReservesValues(['', '', '', '', '']);
+    }
+  }, [calculatedTotalMonthlyEscrow, escrowReserves]);
   
   // State for Estimated New Loan Amount dialog
   const [isEstLoanAmountInfoOpen, setIsEstLoanAmountInfoOpen] = useState(false);
@@ -1103,7 +1115,7 @@ export default function AdminAddClient() {
       { id: 's8', serviceName: 'Processing Services' },
       { id: 's9', serviceName: 'Credit Report Services' },
       { id: 's5', serviceName: 'Title & Escrow Services' },
-      { id: 's6', serviceName: 'Pay Off Interest' },
+      
       { id: 's7', serviceName: 'State Tax & Recording' }
     ]}
   ]);
@@ -1262,6 +1274,8 @@ export default function AdminAddClient() {
         titleEscrowValues[index],
         payOffInterestValues[index],
         stateTaxValues[index],
+        processingValues[index],
+        creditReportValues[index],
         escrowReservesValues[index]
       ];
       
@@ -1283,6 +1297,8 @@ export default function AdminAddClient() {
     titleEscrowValues,
     payOffInterestValues,
     stateTaxValues,
+    processingValues,
+    creditReportValues,
     escrowReservesValues
   ]);
   
@@ -3271,6 +3287,14 @@ export default function AdminAddClient() {
     // s7 = State Tax & Recording
     if (thirdPartyServiceValues['s7']) {
       setStateTaxValues(thirdPartyServiceValues['s7']);
+    }
+    // s8 = Processing Services
+    if (thirdPartyServiceValues['s8']) {
+      setProcessingValues(thirdPartyServiceValues['s8']);
+    }
+    // s9 = Credit Report Services
+    if (thirdPartyServiceValues['s9']) {
+      setCreditReportValues(thirdPartyServiceValues['s9']);
     }
   }, [thirdPartyServiceValues]);
 
@@ -21525,11 +21549,11 @@ export default function AdminAddClient() {
                           className="hover:bg-emerald-500 hover:text-white"
                           data-testid="button-closing-costs"
                         >
-                          <Coins className="h-4 w-4" />
+                          <Home className={`h-4 w-4 ${selectedLoanCategory?.startsWith('FHA - ') ? 'text-red-500' : ''}`} />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Closing Costs</p>
+                        <p>FHA MIP</p>
                       </TooltipContent>
                     </Tooltip>
                     <Tooltip>
@@ -23459,6 +23483,49 @@ export default function AdminAddClient() {
                         ))}
                       </div>
 
+                      </CardContent>
+                    </Card>
+
+                    {/* New Card Between Second and Third Cards */}
+                    <Card 
+                      className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-violet-400 hover:border-2 hover:border-violet-400 transition-colors flex-none"
+                      style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
+                    >
+                      <CardContent className="pt-6 space-y-6">
+                      {/* Pay Off Interest Section - Standalone */}
+                      <div className="">
+                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
+                          <div className="flex items-center justify-end pr-4">
+                            <Label className="text-base font-bold text-right whitespace-nowrap">Pay Off Interest</Label>
+                          </div>
+                          {selectedRateIds.map((rateId) => {
+                            const numVal = payOffInterestValues[rateId] ? payOffInterestValues[rateId].replace(/[^\d]/g, '') : '';
+                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            
+                            return (
+                              <div key={rateId} className="flex justify-center">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
+                                  <span className="text-muted-foreground text-sm">$</span>
+                                  <Input
+                                    type="text"
+                                    placeholder=""
+                                    value={displayValue}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^\d]/g, '');
+                                      const newValues = [...payOffInterestValues];
+                                      newValues[rateId] = value;
+                                      setPayOffInterestValues(newValues);
+                                    }}
+                                    className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    data-testid={`input-payoff-interest-${rateId}`}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
                       {/* New Escrow Reserves Section - Conditionally shown */}
                       {escrowReserves !== 'escrow-not-included' && (
                         <div className="border-t pt-6">
@@ -23650,6 +23717,15 @@ export default function AdminAddClient() {
                             data-testid="textarea-type-notes"
                           />
                         </div>
+
+
+
+
+
+
+
+
+
                       </>
                     )}
                   </div>
@@ -23808,7 +23884,7 @@ export default function AdminAddClient() {
             {/* Monthly Insurance */}
             <div className="flex items-center gap-4">
               <Label htmlFor="monthly-insurance" className="w-48 text-right">
-                Monthly Insurance:
+                Monthly Home Insurance:
               </Label>
               <div className={`flex items-center border border-input px-3 rounded-md flex-1 ${escrowReserves === 'escrow-not-included' ? 'bg-muted' : 'bg-background'}`}>
                 <span className="text-muted-foreground text-sm">$</span>
