@@ -21559,9 +21559,8 @@ export default function AdminAddClient() {
                           {fieldsCompleted.map((isCompleted, index) => (
                             <div
                               key={index}
-                              className={`flex-1 transition-colors duration-300 ${
-                                isCompleted ? 'bg-blue-500' : 'bg-gray-300'
-                              }`}
+                              className={`flex-1 transition-colors duration-300`}
+                              style={{ backgroundColor: isCompleted ? '#1a3373' : '#D1D5DB' }}
                             />
                           ))}
                         </div>
