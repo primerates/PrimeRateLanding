@@ -1152,6 +1152,8 @@ export default function AdminAddClient() {
   const [isSaveLibraryPopoverOpen, setIsSaveLibraryPopoverOpen] = useState(false);
   const [saveLibraryCombinedSelection, setSaveLibraryCombinedSelection] = useState('');
   const [showValidationAlert, setShowValidationAlert] = useState(false);
+  const [showLoanAmountValidationAlert, setShowLoanAmountValidationAlert] = useState(false);
+  const [copiedLoanAmount, setCopiedLoanAmount] = useState(false);
   
   // Library configurations storage
   const [savedLibraryConfigurations, setSavedLibraryConfigurations] = useState<Array<{
@@ -2004,6 +2006,18 @@ export default function AdminAddClient() {
   };
   
   const handleSaveToLibraryTPS = () => {
+    // If the card is already showing, validate the loan amount
+    if (showSaveToLibraryCard) {
+      const loanAmountValue = parseFloat(saveLibraryEstLoanAmount.replace(/[$,]/g, ''));
+      if (isNaN(loanAmountValue) || loanAmountValue <= 0) {
+        // Show loan amount validation alert
+        setShowLoanAmountValidationAlert(true);
+        return;
+      }
+      // If loan amount is valid, proceed with saving (you can add save logic here)
+      return;
+    }
+    
     // Validate that all dollar value fields have a value greater than $0
     let hasInvalidValues = false;
     
@@ -28571,11 +28585,33 @@ export default function AdminAddClient() {
 
                 {/* Loan Amount */}
                 <div className="space-y-2">
-                  <Label htmlFor="save-est-loan-amount" className="text-sm font-medium">
-                    Loan Amount
-                  </Label>
-                  <div className="flex items-center gap-1">
-                    <span className="text-sm text-muted-foreground">$</span>
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="save-est-loan-amount" className="text-sm font-medium">
+                      Loan Amount
+                    </Label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        // Get the first selected rate's loan amount
+                        const firstRateId = selectedRateIds[0];
+                        const total = rateColumnTotals[firstRateId];
+                        if (total > 0) {
+                          const formattedValue = total.toLocaleString('en-US');
+                          setSaveLibraryEstLoanAmount(formattedValue);
+                          setCopiedLoanAmount(true);
+                          setTimeout(() => setCopiedLoanAmount(false), 1000);
+                        }
+                      }}
+                      className={`text-sm font-bold transition-colors ${
+                        copiedLoanAmount ? 'text-green-500' : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                      data-testid="button-copy-loan-amount"
+                    >
+                      C
+                    </button>
+                  </div>
+                  <div className="flex items-center border border-input bg-background px-3 rounded-md">
+                    <span className="text-muted-foreground text-sm">$</span>
                     <Input
                       id="save-est-loan-amount"
                       type="text"
@@ -28586,7 +28622,7 @@ export default function AdminAddClient() {
                         const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
                         setSaveLibraryEstLoanAmount(formatted);
                       }}
-                      className="w-full"
+                      className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
                       data-testid="input-save-est-loan-amount"
                     />
                   </div>
@@ -29081,6 +29117,25 @@ export default function AdminAddClient() {
           </div>
           <DialogFooter className="px-6 pb-6">
             <Button onClick={() => setShowValidationAlert(false)} data-testid="button-validation-ok">
+              OK
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Loan Amount Validation Alert Dialog */}
+      <Dialog open={showLoanAmountValidationAlert} onOpenChange={setShowLoanAmountValidationAlert}>
+        <DialogContent className="sm:max-w-[500px] p-0" data-testid="dialog-loan-amount-validation-alert">
+          <DialogHeader className="text-white p-6 rounded-t-lg" style={{ backgroundColor: '#1a3373' }}>
+            <DialogTitle className="text-white">Validation Error</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-6 px-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+            <div className="text-lg text-muted-foreground">
+              Please enter an amount greater than $0 for loan amount before saving the template to the library.
+            </div>
+          </div>
+          <DialogFooter className="px-6 pb-6">
+            <Button onClick={() => setShowLoanAmountValidationAlert(false)} data-testid="button-loan-amount-validation-ok">
               OK
             </Button>
           </DialogFooter>
