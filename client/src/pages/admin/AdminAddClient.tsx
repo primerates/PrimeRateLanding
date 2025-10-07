@@ -1088,6 +1088,14 @@ export default function AdminAddClient() {
     const percentage = 80 - ((months - 1) * 2);
     return percentage >= 10 ? percentage.toString() : '10';
   }, [fhaMipRemainingMonths]);
+
+  // Auto-calculate Estimated MIP Refund
+  const calculatedEstimatedMipRefund = useMemo(() => {
+    const cost = parseInt(calculatedFhaMipCost.replace(/[^\d]/g, '') || '0', 10);
+    const percentage = parseInt(calculatedRemainingRefundValue || '0', 10);
+    const refund = cost * (percentage / 100);
+    return refund > 0 ? Math.round(refund).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+  }, [calculatedFhaMipCost, calculatedRemainingRefundValue]);
   
   // Auto-calculate Total Monthly Escrow
   const calculatedTotalMonthlyEscrow = useMemo(() => {
@@ -24042,13 +24050,9 @@ export default function AdminAddClient() {
                   id="fha-mip-estimated-credit"
                   type="text"
                   placeholder="0"
-                  value={fhaMipEstimatedCredit}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/[^\d]/g, '');
-                    const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                    setFhaMipEstimatedCredit(formatted);
-                  }}
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  value={calculatedEstimatedMipRefund}
+                  disabled
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
                   data-testid="input-fha-mip-estimated-credit"
                 />
               </div>

@@ -1,0 +1,207 @@
+Looking at your code, I can see several issues. Here's the fixed version and the list of problems:
+Fixed Code
+jsx{/* FHA Upfront MIP Settings Dialog */}
+<Dialog open={isFhaMipDialogOpen} onOpenChange={setIsFhaMipDialogOpen}>
+  <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto" data-testid="dialog-fha-mip">
+    <DialogHeader className="bg-primary text-white -mx-6 -mt-6 px-6 py-4 rounded-t-lg">
+      <DialogTitle className="text-white">FHA Upfront Mortgage Insurance Premium</DialogTitle>
+    </DialogHeader>
+    
+    <div className="py-4 space-y-6">
+      {/* Section Title */}
+      <div>
+        <h3 className="text-base font-semibold">Existing FHA MIP Refund Estimate</h3>
+      </div>
+
+      {/* Loan Start Month/Year */}
+      <div className="flex items-center gap-4">
+        <Label htmlFor="fha-mip-loan-start" className="w-48 text-left">
+          Loan Start Month/Year:
+        </Label>
+        <Input
+          id="fha-mip-loan-start"
+          type="text"
+          placeholder="MM/YYYY"
+          value={fhaMipLoanStartMonthYear}
+          onChange={(e) => setFhaMipLoanStartMonthYear(e.target.value)}
+          className="flex-1"
+          data-testid="input-fha-mip-loan-start"
+        />
+      </div>
+
+      {/* Starting Existing Loan Balance */}
+      <div className="flex items-center gap-4">
+        <Label htmlFor="fha-mip-starting-balance" className="w-48 text-left">
+          Starting Loan Balance:
+        </Label>
+        <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
+          <span className="text-muted-foreground text-sm">$</span>
+          <Input
+            id="fha-mip-starting-balance"
+            type="text"
+            placeholder="0"
+            value={fhaMipStartingLoanBalance}
+            onChange={(e) => {
+              const value = e.target.value.replace(/[^\d]/g, '');
+              const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+              setFhaMipStartingLoanBalance(formatted);
+            }}
+            className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+            data-testid="input-fha-mip-starting-balance"
+          />
+        </div>
+      </div>
+
+      {/* FHA MIP Cost Factor */}
+      <div className="flex items-center gap-4">
+        <Label htmlFor="fha-mip-cost-factor" className="w-48 text-left">
+          FHA MIP Cost Factor:
+        </Label>
+        <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
+          <Input
+            id="fha-mip-cost-factor"
+            type="text"
+            placeholder="0.00"
+            value={fhaMipCostFactor}
+            onChange={(e) => {
+              const value = e.target.value.replace(/[^\d.]/g, '');
+              setFhaMipCostFactor(value);
+            }}
+            className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+            data-testid="input-fha-mip-cost-factor"
+          />
+          <span className="text-muted-foreground text-sm">%</span>
+        </div>
+      </div>
+
+      {/* FHA MIP Cost */}
+      <div className="flex items-center gap-4">
+        <Label htmlFor="fha-mip-cost" className="w-48 text-left">
+          FHA MIP Cost:
+        </Label>
+        <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
+          <span className="text-muted-foreground text-sm">$</span>
+          <Input
+            id="fha-mip-cost"
+            type="text"
+            placeholder="0"
+            value={calculatedFhaMipCost}
+            disabled
+            className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+            data-testid="input-fha-mip-cost"
+          />
+        </div>
+      </div>
+
+      {/* Remaining Months */}
+      <div className="flex items-center gap-4">
+        <Label htmlFor="fha-mip-remaining-months" className="w-48 text-left">
+          Remaining Months:
+        </Label>
+        <Input
+          id="fha-mip-remaining-months"
+          type="text"
+          placeholder="0"
+          value={fhaMipRemainingMonths}
+          onChange={(e) => {
+            let value = e.target.value.replace(/[^\d]/g, '').slice(0, 2);
+            const numValue = parseInt(value || '0', 10);
+            if (numValue > 36) value = '36';
+            setFhaMipRemainingMonths(value);
+          }}
+          maxLength={2}
+          className="flex-1"
+          data-testid="input-fha-mip-remaining-months"
+        />
+      </div>
+
+      {/* Remaining Refund Value */}
+      <div className="flex items-center gap-4">
+        <Label htmlFor="fha-mip-remaining-refund-value" className="w-48 text-left">
+          Remaining Refund Value:
+        </Label>
+        <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
+          <Input
+            id="fha-mip-remaining-refund-value"
+            type="text"
+            placeholder="0"
+            value={calculatedRemainingRefundValue}
+            disabled
+            className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+            data-testid="input-fha-mip-remaining-refund-value"
+          />
+          <span className="text-muted-foreground text-sm">%</span>
+        </div>
+      </div>
+
+      {/* Estimated MIP Credit/Refund */}
+      <div className="flex items-center gap-4">
+        <Label htmlFor="fha-mip-estimated-credit" className="w-48 text-left">
+          Estimated MIP Refund:
+        </Label>
+        <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
+          <span className="text-muted-foreground text-sm">$</span>
+          <Input
+            id="fha-mip-estimated-credit"
+            type="text"
+            placeholder="0"
+            value={fhaMipEstimatedCredit}
+            onChange={(e) => {
+              const value = e.target.value.replace(/[^\d]/g, '');
+              const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+              setFhaMipEstimatedCredit(formatted);
+            }}
+            className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+            data-testid="input-fha-mip-estimated-credit"
+          />
+        </div>
+      </div>
+    </div>
+
+    <DialogFooter className="mt-4">
+      <Button
+        variant="outline"
+        onClick={() => setIsFhaMipDialogOpen(false)}
+        data-testid="button-cancel-fha-mip"
+      >
+        Cancel
+      </Button>
+      <Button
+        onClick={() => {
+          setIsFhaMipDialogOpen(false);
+          toast({
+            title: "Settings Saved",
+            description: "FHA MIP settings have been updated."
+          });
+        }}
+        data-testid="button-save-fha-mip"
+      >
+        Save
+      </Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+List of Fixes Applied
+
+Removed missing calculation for calculatedEstimatedMipRefund - You need to add this useMemo calculation to your state variables section, or change the "Estimated MIP Credit/Refund" field to use fhaMipEstimatedCredit instead (which I did in the fix)
+Logic Issue: The "Estimated MIP Refund" field should be auto-calculated based on FHA MIP Cost × Remaining Refund Value percentage. Currently it's editable, but it should probably be disabled and calculated automatically.
+
+Missing Calculation You Need to Add
+Add this to your state variables section (around line 1090):
+javascript// Auto-calculate Estimated MIP Refund
+const calculatedEstimatedMipRefund = useMemo(() => {
+  const cost = parseInt(calculatedFhaMipCost.replace(/[^\d]/g, '') || '0', 10);
+  const percentage = parseInt(calculatedRemainingRefundValue || '0', 10);
+  const refund = cost * (percentage / 100);
+  return refund > 0 ? Math.round(refund).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+}, [calculatedFhaMipCost, calculatedRemainingRefundValue]);
+Then update the "Estimated MIP Refund" field to be disabled and use the calculated value:
+jsx<Input
+  id="fha-mip-estimated-credit"
+  type="text"
+  placeholder="0"
+  value={calculatedEstimatedMipRefund}
+  disabled
+  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+  data-testid="input-fha-mip-estimated-credit"
+/>
