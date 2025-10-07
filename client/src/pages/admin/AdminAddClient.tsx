@@ -21531,6 +21531,44 @@ export default function AdminAddClient() {
                       {isQuoteCardsMinimized ? <Plus className="h-4 w-4" /> : <Minus className="h-4 w-4" />}
                     </Button>
                   </div>
+                  
+                  {/* Completion Bar - 15 segments */}
+                  {!isQuoteCardsMinimized && (() => {
+                    // Calculate completion for each of the 15 fields
+                    const fieldsCompleted = [
+                      !!selectedLoanCategory && selectedLoanCategory !== '',  // 1. Loan Category
+                      (isCustomTerm && !!customTerm) || (!isCustomTerm && !!loanTerm && loanTerm !== 'select'),  // 2. Loan Term/Years
+                      false, // 3. Loan Program (no state variable found, placeholder)
+                      false, // 4. Property Use (no state variable found, placeholder)
+                      false, // 5. Property Type (no state variable found, placeholder)
+                      selectedRateIds.length > 0,  // 6. Quote
+                      false, // 7. State (no state variable found, placeholder)
+                      !!rateBuydownSelection && rateBuydownSelection !== 'select',  // 8. Rate Buydown
+                      true,  // 9. Escrow Reserves (has default)
+                      true,  // 10. Monthly Escrow (has default)
+                      (isMidFicoEstimateMode && !!estimatedFicoValue) || (!isMidFicoEstimateMode && !!getAbcCalculatedMidFico()),  // 11. Mid FICO
+                      (isLtvEstimateMode && !!estimatedLtvValue) || (!isLtvEstimateMode && !!calculateEstimatedLTV()),  // 12. LTV Ratio
+                      (isLenderCreditMode && !!lenderCreditAmount) || (!isLenderCreditMode && !!debtToIncomeRatio && debtToIncomeRatio !== 'select'),  // 13. Lender
+                      (isTitleSellerCreditMode && !!titleSellerCreditAmount) || (!isTitleSellerCreditMode && !!lenderCredit && lenderCredit !== 'select'),  // 14. Title
+                      true,  // 15. Underwriting (has default)
+                    ];
+                    
+                    return (
+                      <div className="px-4 pb-2">
+                        <div className="flex gap-0.5 h-1">
+                          {fieldsCompleted.map((isCompleted, index) => (
+                            <div
+                              key={index}
+                              className={`flex-1 transition-colors duration-300 ${
+                                isCompleted ? 'bg-blue-500' : 'bg-gray-300'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })()}
+                  
                   {!isQuoteCardsMinimized && (
                     <CardContent className="pt-6 space-y-6">
                       {/* Row 1: 5 Fields with titles above */}
