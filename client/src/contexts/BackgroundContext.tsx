@@ -74,13 +74,29 @@ interface BackgroundProviderProps {
 }
 
 export function BackgroundProvider({ children }: BackgroundProviderProps) {
-  const [selectedBackground, setSelectedBackground] = useState('cubes-animated');
-  const [loginBackground, setLoginBackground] = useState('cubes-animated');
+  const [selectedBackground, setSelectedBackground] = useState(() => {
+    const saved = localStorage.getItem('dashboardBackground');
+    return saved || 'cubes-animated';
+  });
+  
+  const [loginBackground, setLoginBackgroundState] = useState(() => {
+    const saved = localStorage.getItem('loginBackground');
+    return saved || 'cubes-animated';
+  });
 
   const setBackground = (backgroundId: string) => {
     const preset = backgroundPresets.find(p => p.id === backgroundId);
     if (preset) {
       setSelectedBackground(backgroundId);
+      localStorage.setItem('dashboardBackground', backgroundId);
+    }
+  };
+
+  const setLoginBackground = (backgroundId: string) => {
+    const preset = backgroundPresets.find(p => p.id === backgroundId);
+    if (preset) {
+      setLoginBackgroundState(backgroundId);
+      localStorage.setItem('loginBackground', backgroundId);
     }
   };
 
