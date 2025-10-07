@@ -24147,7 +24147,7 @@ const calculatedAdjustedNewFhaMip = useMemo(() => {
                 {/* Adjusted New FHA MIP */}
                 <div className="flex items-center gap-4 justify-end">
                   <Label htmlFor="adjusted-new-fha-mip" className="text-left">
-                    New Est. Upfront FHA MIP Cost:
+                    New FHA Upfront MIP Estimate:
                   </Label>
                   <div className="flex items-center border border-input px-3 rounded-md w-64 bg-green-600">
                     <span className="text-white text-sm">$</span>
@@ -24161,6 +24161,7 @@ const calculatedAdjustedNewFhaMip = useMemo(() => {
                       data-testid="input-adjusted-new-fha-mip"
                     />
                   </div>
+                <p className="text-xs text-muted-foreground italic mt-1">* after crediting prior loan Upront MIP balance.</p>
                 </div>
               </div>
             </div>
