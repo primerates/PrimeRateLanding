@@ -1114,7 +1114,7 @@ export default function AdminAddClient() {
       { id: 's8', serviceName: 'Processing Services' },
       { id: 's9', serviceName: 'Credit Report Services' },
       { id: 's5', serviceName: 'Title & Escrow Services' },
-      { id: 's6', serviceName: 'Pay Off Interest' },
+      
       { id: 's7', serviceName: 'State Tax & Recording' }
     ]}
   ]);
@@ -23455,6 +23455,40 @@ export default function AdminAddClient() {
                       style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
                     >
                       <CardContent className="pt-6 space-y-6">
+                      {/* Pay Off Interest Section - Standalone */}
+                      <div className="border-t pt-6">
+                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
+                          <div className="flex items-center justify-end pr-4">
+                            <Label className="text-sm text-right text-muted-foreground">• Pay Off Interest</Label>
+                          </div>
+                          {selectedRateIds.map((rateId) => {
+                            const numVal = payOffInterestValues[rateId] ? payOffInterestValues[rateId].replace(/[^\d]/g, '') : '';
+                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            
+                            return (
+                              <div key={rateId} className="flex justify-center">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
+                                  <span className="text-muted-foreground text-sm">$</span>
+                                  <Input
+                                    type="text"
+                                    placeholder=""
+                                    value={displayValue}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^\d]/g, '');
+                                      const newValues = [...payOffInterestValues];
+                                      newValues[rateId] = value;
+                                      setPayOffInterestValues(newValues);
+                                    }}
+                                    className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    data-testid={`input-payoff-interest-${rateId}`}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
                       {/* New Escrow Reserves Section - Conditionally shown */}
                       {escrowReserves !== 'escrow-not-included' && (
                         <div className="border-t pt-6">
