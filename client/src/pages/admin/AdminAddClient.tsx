@@ -1062,6 +1062,15 @@ export default function AdminAddClient() {
   // State for Rate Buy Down Information dialog
   const [isRateBuyDownInfoOpen, setIsRateBuyDownInfoOpen] = useState(false);
   
+  // State for FHA Upfront MIP dialog
+  const [isFhaMipDialogOpen, setIsFhaMipDialogOpen] = useState(false);
+  const [fhaMipLoanStartMonthYear, setFhaMipLoanStartMonthYear] = useState('');
+  const [fhaMipStartingLoanBalance, setFhaMipStartingLoanBalance] = useState('');
+  const [fhaMipCostFactor, setFhaMipCostFactor] = useState('');
+  const [fhaMipCost, setFhaMipCost] = useState('');
+  const [fhaMipRemainingMonths, setFhaMipRemainingMonths] = useState('');
+  const [fhaMipEstimatedCredit, setFhaMipEstimatedCredit] = useState('');
+  
   // Auto-calculate Total Monthly Escrow
   const calculatedTotalMonthlyEscrow = useMemo(() => {
     const insurance = parseInt(propertyInsurancePayment || '0', 10);
@@ -23289,6 +23298,7 @@ export default function AdminAddClient() {
                                 type="button"
                                 variant="ghost"
                                 size="icon"
+                                onClick={() => setIsFhaMipDialogOpen(true)}
                                 className="h-6 w-6"
                                 data-testid="button-fha-upfront-mip-settings"
                               >
@@ -23871,6 +23881,171 @@ export default function AdminAddClient() {
       {/* Estimated New Loan Amount Dialog */}
       <Dialog open={isEstLoanAmountInfoOpen} onOpenChange={setIsEstLoanAmountInfoOpen}>
         <DialogContent className="sm:max-w-[500px] p-0">
+
+      {/* FHA Upfront MIP Settings Dialog */}
+      <Dialog open={isFhaMipDialogOpen} onOpenChange={setIsFhaMipDialogOpen}>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto" data-testid="dialog-fha-mip">
+          <DialogHeader className="bg-primary text-white -mx-6 -mt-6 px-6 py-4 rounded-t-lg">
+            <DialogTitle className="text-white">FHA Upfront Mortgage Insurance Premium</DialogTitle>
+          </DialogHeader>
+          
+          <div className="py-4 space-y-6">
+            {/* Section Title */}
+            <div>
+              <h3 className="text-base font-semibold">Existing FHA MIP Refund Estimate</h3>
+            </div>
+
+            {/* Loan Start Month/Year */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="fha-mip-loan-start" className="w-48 text-left">
+                Loan Start Month/Year:
+              </Label>
+              <Input
+                id="fha-mip-loan-start"
+                type="text"
+                placeholder="MM/YYYY"
+                value={fhaMipLoanStartMonthYear}
+                onChange={(e) => setFhaMipLoanStartMonthYear(e.target.value)}
+                className="flex-1"
+                data-testid="input-fha-mip-loan-start"
+              />
+            </div>
+
+            {/* Starting Existing Loan Balance */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="fha-mip-starting-balance" className="w-48 text-left">
+                Starting Existing Loan Balance:
+              </Label>
+              <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
+                <span className="text-muted-foreground text-sm">$</span>
+                <Input
+                  id="fha-mip-starting-balance"
+                  type="text"
+                  placeholder="0"
+                  value={fhaMipStartingLoanBalance}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                    setFhaMipStartingLoanBalance(formatted);
+                  }}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  data-testid="input-fha-mip-starting-balance"
+                />
+              </div>
+            </div>
+
+            {/* FHA MIP Cost Factor */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="fha-mip-cost-factor" className="w-48 text-left">
+                FHA MIP Cost Factor:
+              </Label>
+              <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
+                <Input
+                  id="fha-mip-cost-factor"
+                  type="text"
+                  placeholder="0.00"
+                  value={fhaMipCostFactor}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d.]/g, '');
+                    setFhaMipCostFactor(value);
+                  }}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  data-testid="input-fha-mip-cost-factor"
+                />
+                <span className="text-muted-foreground text-sm">%</span>
+              </div>
+            </div>
+
+            {/* FHA MIP Cost */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="fha-mip-cost" className="w-48 text-left">
+                FHA MIP Cost:
+              </Label>
+              <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
+                <span className="text-muted-foreground text-sm">$</span>
+                <Input
+                  id="fha-mip-cost"
+                  type="text"
+                  placeholder="0"
+                  value={fhaMipCost}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                    setFhaMipCost(formatted);
+                  }}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  data-testid="input-fha-mip-cost"
+                />
+              </div>
+            </div>
+
+            {/* Remaining Months */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="fha-mip-remaining-months" className="w-48 text-left">
+                Remaining Months:
+              </Label>
+              <Input
+                id="fha-mip-remaining-months"
+                type="text"
+                placeholder="0"
+                value={fhaMipRemainingMonths}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^\d]/g, '').slice(0, 2);
+                  setFhaMipRemainingMonths(value);
+                }}
+                maxLength={2}
+                className="flex-1"
+                data-testid="input-fha-mip-remaining-months"
+              />
+            </div>
+
+            {/* Estimated MIP Credit/Refund */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="fha-mip-estimated-credit" className="w-48 text-left">
+                Estimated MIP Credit/Refund:
+              </Label>
+              <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
+                <span className="text-muted-foreground text-sm">$</span>
+                <Input
+                  id="fha-mip-estimated-credit"
+                  type="text"
+                  placeholder="0"
+                  value={fhaMipEstimatedCredit}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                    setFhaMipEstimatedCredit(formatted);
+                  }}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  data-testid="input-fha-mip-estimated-credit"
+                />
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setIsFhaMipDialogOpen(false)}
+              data-testid="button-cancel-fha-mip"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                setIsFhaMipDialogOpen(false);
+                toast({
+                  title: "Settings Saved",
+                  description: "FHA MIP settings have been updated."
+                });
+              }}
+              data-testid="button-save-fha-mip"
+            >
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
           <DialogHeader className="text-white p-6 rounded-t-lg" style={{ backgroundColor: '#1a3373' }}>
             <DialogTitle className="text-white">Estimated New Loan Amount</DialogTitle>
           </DialogHeader>
