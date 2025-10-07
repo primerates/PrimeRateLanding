@@ -20,7 +20,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator, StickyNote, ChevronDown, ChevronUp, BookOpen, FileText, Pin, Printer, Settings, Edit, Star, Coins } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Minus, Home, Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator, StickyNote, ChevronDown, ChevronUp, BookOpen, FileText, Pin, Printer, Settings, Edit, Star } from 'lucide-react';
 import { SiZillow } from 'react-icons/si';
 import { MdRealEstateAgent } from 'react-icons/md';
 import { FaHome } from 'react-icons/fa';
@@ -921,11 +921,6 @@ export default function AdminAddClient() {
   const [monthlyEscrow, setMonthlyEscrow] = useState('includes-tax-insurance');
   const [isDuApproval, setIsDuApproval] = useState(false);
   const [escrowReserves, setEscrowReserves] = useState('new-escrow-reserves');
-
-  // State for custom loan terms
-  const [customLoanTerms, setCustomLoanTerms] = useState<Array<{ id: string; value: string; label: string }>>([]);
-  const [showAddTermDialog, setShowAddTermDialog] = useState(false);
-  const [newTermValue, setNewTermValue] = useState('');
   const [underwriting, setUnderwriting] = useState('financed');
   const [isProcessingMode, setIsProcessingMode] = useState(false);
   const [rateBuydownSelection, setRateBuydownSelection] = useState('yes');
@@ -1043,6 +1038,8 @@ export default function AdminAddClient() {
   const [titleEscrowValues, setTitleEscrowValues] = useState<string[]>(['', '', '', '', '']);
   const [payOffInterestValues, setPayOffInterestValues] = useState<string[]>(['', '', '', '', '']);
   const [stateTaxValues, setStateTaxValues] = useState<string[]>(['', '', '', '', '']);
+  const [processingValues, setProcessingValues] = useState<string[]>(['', '', '', '', '']);
+  const [creditReportValues, setCreditReportValues] = useState<string[]>(['', '', '', '', '']);
   const [escrowReservesValues, setEscrowReservesValues] = useState<string[]>(['', '', '', '', '']);
   const [existingLoanBalanceValues, setExistingLoanBalanceValues] = useState<string[]>(['', '', '', '', '']);
   
@@ -1070,6 +1067,16 @@ export default function AdminAddClient() {
     const tax = parseInt(propertyTaxPayment || '0', 10);
     return insurance + tax;
   }, [propertyInsurancePayment, propertyTaxPayment]);
+
+  // Sync calculatedTotalMonthlyEscrow to escrowReservesValues for calculation
+  useEffect(() => {
+    if (escrowReserves !== 'escrow-not-included' && calculatedTotalMonthlyEscrow > 0) {
+      const valueStr = calculatedTotalMonthlyEscrow.toString();
+      setEscrowReservesValues([valueStr, valueStr, valueStr, valueStr, valueStr]);
+    } else {
+      setEscrowReservesValues(['', '', '', '', '']);
+    }
+  }, [calculatedTotalMonthlyEscrow, escrowReserves]);
   
   // State for Estimated New Loan Amount dialog
   const [isEstLoanAmountInfoOpen, setIsEstLoanAmountInfoOpen] = useState(false);
@@ -1107,7 +1114,7 @@ export default function AdminAddClient() {
       { id: 's8', serviceName: 'Processing Services' },
       { id: 's9', serviceName: 'Credit Report Services' },
       { id: 's5', serviceName: 'Title & Escrow Services' },
-      { id: 's6', serviceName: 'Pay Off Interest' },
+      
       { id: 's7', serviceName: 'State Tax & Recording' }
     ]}
   ]);
@@ -1266,6 +1273,8 @@ export default function AdminAddClient() {
         titleEscrowValues[index],
         payOffInterestValues[index],
         stateTaxValues[index],
+        processingValues[index],
+        creditReportValues[index],
         escrowReservesValues[index]
       ];
       
@@ -1287,6 +1296,8 @@ export default function AdminAddClient() {
     titleEscrowValues,
     payOffInterestValues,
     stateTaxValues,
+    processingValues,
+    creditReportValues,
     escrowReservesValues
   ]);
   
@@ -3275,6 +3286,14 @@ export default function AdminAddClient() {
     // s7 = State Tax & Recording
     if (thirdPartyServiceValues['s7']) {
       setStateTaxValues(thirdPartyServiceValues['s7']);
+    }
+    // s8 = Processing Services
+    if (thirdPartyServiceValues['s8']) {
+      setProcessingValues(thirdPartyServiceValues['s8']);
+    }
+    // s9 = Credit Report Services
+    if (thirdPartyServiceValues['s9']) {
+      setCreditReportValues(thirdPartyServiceValues['s9']);
     }
   }, [thirdPartyServiceValues]);
 
@@ -21529,11 +21548,11 @@ export default function AdminAddClient() {
                           className="hover:bg-emerald-500 hover:text-white"
                           data-testid="button-closing-costs"
                         >
-                          <Coins className="h-4 w-4" />
+                          <Home className={`h-4 w-4 ${selectedLoanCategory?.startsWith('FHA - ') ? 'text-red-500' : ''}`} />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Closing Costs</p>
+                        <p>FHA MIP</p>
                       </TooltipContent>
                     </Tooltip>
                     <Tooltip>
@@ -22192,47 +22211,61 @@ export default function AdminAddClient() {
                             </PopoverContent>
                           </Popover>
                         </div>
+
                         <div className="space-y-2">
-                          <Label htmlFor="loan-term-select">Loan Term / Years</Label>
-                          <Select value={loanTerm} onValueChange={setLoanTerm}>
-                            <SelectTrigger data-testid="select-loan-term">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="select" data-testid="select-loan-term-select">Select</SelectItem>
-                              
-                              {/* Add Term option */}
-                              <div 
-                                className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setShowAddTermDialog(true);
-                                }}
-                                data-testid="option-add-term"
-                              >
-                                + Add Term
-                              </div>
-                              
-                              {/* Separator line */}
-                              <div className="my-1 border-t border-border"></div>
-                              
-                              <SelectItem value="30-years" data-testid="select-loan-term-30">30</SelectItem>
-                              <SelectItem value="25-years" data-testid="select-loan-term-25">25</SelectItem>
-                              <SelectItem value="20-years" data-testid="select-loan-term-20">20</SelectItem>
-                              <SelectItem value="18-years" data-testid="select-loan-term-18">18</SelectItem>
-                              <SelectItem value="15-years" data-testid="select-loan-term-15">15</SelectItem>
-                              <SelectItem value="12-years" data-testid="select-loan-term-12">12</SelectItem>
-                              <SelectItem value="10-years" data-testid="select-loan-term-10">10</SelectItem>
-                              
-                              {/* Display custom loan terms */}
-                              {customLoanTerms.map((term) => (
-                                <SelectItem key={term.id} value={term.value} data-testid={`select-loan-term-${term.value}`}>
-                                  {term.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor={isCustomTerm ? "custom-term-input" : "loan-term-select"}>
+                              {isCustomTerm ? "Custom Term / Years" : "Loan Term / Years"}
+                            </Label>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div>
+                                  <Switch
+                                    checked={isCustomTerm}
+                                    onCheckedChange={setIsCustomTerm}
+                                    data-testid="switch-custom-term"
+                                    className="scale-[0.8] hover:border-blue-600 hover:border-2"
+                                  />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{isCustomTerm ? "Loan Term / Years" : "Custom Term / Years"}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
+                          {!isCustomTerm ? (
+                            <Select value={loanTerm} onValueChange={setLoanTerm}>
+                              <SelectTrigger data-testid="select-loan-term">
+                                <SelectValue placeholder="Select" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="select" data-testid="select-loan-term-select">Select</SelectItem>
+                                <SelectItem value="30-years" data-testid="select-loan-term-30">30</SelectItem>
+                                <SelectItem value="25-years" data-testid="select-loan-term-25">25</SelectItem>
+                                <SelectItem value="20-years" data-testid="select-loan-term-20">20</SelectItem>
+                                <SelectItem value="18-years" data-testid="select-loan-term-18">18</SelectItem>
+                                <SelectItem value="15-years" data-testid="select-loan-term-15">15</SelectItem>
+                                <SelectItem value="12-years" data-testid="select-loan-term-12">12</SelectItem>
+                                <SelectItem value="10-years" data-testid="select-loan-term-10">10</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          ) : (
+                            <Input
+                              id="custom-term-input"
+                              type="text"
+                              placeholder=""
+                              value={customTerm}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (value === '' || (/^\d{1,2}$/.test(value))) {
+                                  setCustomTerm(value);
+                                }
+                              }}
+                              data-testid="input-custom-term"
+                            />
+                          )}
                         </div>
+
                         <div className="space-y-2">
                           <Label htmlFor="loan-program-select">Loan Program</Label>
                           <Select>
@@ -23416,14 +23449,49 @@ export default function AdminAddClient() {
                       </CardContent>
                     </Card>
 
-                    {/* New Escrow Reserves Card - Conditionally shown */}
-                    {escrowReserves !== 'escrow-not-included' && (
-                      <Card 
-                        className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-violet-400 hover:border-2 hover:border-violet-400 transition-colors flex-none"
-                        style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
-                        data-testid="card-new-escrow-reserves"
-                      >
-                        <CardContent className="p-6">
+                    {/* New Card Between Second and Third Cards */}
+                    <Card 
+                      className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-violet-400 hover:border-2 hover:border-violet-400 transition-colors flex-none"
+                      style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
+                    >
+                      <CardContent className="pt-6 space-y-6">
+                      {/* Pay Off Interest Section - Standalone */}
+                      <div className="">
+                        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
+                          <div className="flex items-center justify-end pr-4">
+                            <Label className="text-base font-bold text-right whitespace-nowrap">Pay Off Interest</Label>
+                          </div>
+                          {selectedRateIds.map((rateId) => {
+                            const numVal = payOffInterestValues[rateId] ? payOffInterestValues[rateId].replace(/[^\d]/g, '') : '';
+                            const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                            
+                            return (
+                              <div key={rateId} className="flex justify-center">
+                                <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
+                                  <span className="text-muted-foreground text-sm">$</span>
+                                  <Input
+                                    type="text"
+                                    placeholder=""
+                                    value={displayValue}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^\d]/g, '');
+                                      const newValues = [...payOffInterestValues];
+                                      newValues[rateId] = value;
+                                      setPayOffInterestValues(newValues);
+                                    }}
+                                    className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    data-testid={`input-payoff-interest-${rateId}`}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* New Escrow Reserves Section - Conditionally shown */}
+                      {escrowReserves !== 'escrow-not-included' && (
+                        <div className="border-t pt-6">
                           <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                             <div className="flex flex-col items-end justify-center pr-4">
                               <div className="flex items-center gap-2 flex-shrink-0">
@@ -23475,9 +23543,12 @@ export default function AdminAddClient() {
                               );
                             })}
                           </div>
-                        </CardContent>
-                      </Card>
-                    )}
+                        </div>
+                      )}
+                      </CardContent>
+                    </Card>
+
+                    {/* New Est. Loan Amount & New Monthly Payment Card */}
                     {isThirdCardExpanded && (
                       <>
                         <Card 
@@ -23609,6 +23680,15 @@ export default function AdminAddClient() {
                             data-testid="textarea-type-notes"
                           />
                         </div>
+
+
+
+
+
+
+
+
+
                       </>
                     )}
                   </div>
@@ -23767,7 +23847,7 @@ export default function AdminAddClient() {
             {/* Monthly Insurance */}
             <div className="flex items-center gap-4">
               <Label htmlFor="monthly-insurance" className="w-48 text-right">
-                Monthly Insurance:
+                Monthly Home Insurance:
               </Label>
               <div className={`flex items-center border border-input px-3 rounded-md flex-1 ${escrowReserves === 'escrow-not-included' ? 'bg-muted' : 'bg-background'}`}>
                 <span className="text-muted-foreground text-sm">$</span>
@@ -26916,67 +26996,6 @@ export default function AdminAddClient() {
               data-testid="button-save-rental-info"
             >
               Save
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Add Term Dialog */}
-      <Dialog open={showAddTermDialog} onOpenChange={setShowAddTermDialog}>
-        <DialogContent className="sm:max-w-[425px]" data-testid="dialog-add-term">
-          <DialogHeader>
-            <DialogTitle>Add custom loan term / years</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <div className="space-y-2">
-              <Input
-                id="new-term-value"
-                value={newTermValue}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (value === '' || /^\d{1,2}$/.test(value)) {
-                    setNewTermValue(value);
-                  }
-                }}
-                placeholder="e.g., 40"
-                maxLength={2}
-                data-testid="input-new-term-value"
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setShowAddTermDialog(false);
-                setNewTermValue('');
-              }}
-              data-testid="button-cancel-add-term"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={() => {
-                if (newTermValue.trim() && /^\d{1,2}$/.test(newTermValue.trim())) {
-                  const newTerm = {
-                    id: nanoid(),
-                    value: `${newTermValue}-years`,
-                    label: newTermValue
-                  };
-                  setCustomLoanTerms(prev => { const updated = [...prev, newTerm]; return updated.sort((a, b) => parseInt(b.label) - parseInt(a.label)); });
-                  setLoanTerm(`${newTermValue}-years`);
-                  setShowAddTermDialog(false);
-                  setNewTermValue('');
-                  toast({
-                    title: "Term Added",
-                    description: `${newTermValue} years has been added to loan terms.`
-                  });
-                }
-              }}
-              disabled={!newTermValue.trim() || !/^\d{1,2}$/.test(newTermValue.trim())}
-              data-testid="button-save-add-term"
-            >
-              Add Term
             </Button>
           </DialogFooter>
         </DialogContent>
