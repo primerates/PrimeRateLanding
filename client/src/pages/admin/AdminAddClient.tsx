@@ -23918,11 +23918,11 @@ const calculatedNewFhaMipCost = useMemo(() => {
           <div className="py-4 space-y-6">
             {/* Section Title */}
             <div>
-              <h3 className="text-base font-semibold">Existing FHA MIP Refund Estimate</h3>
+              <h3 className="text-base font-semibold text-purple-600">Existing FHA MIP Refund Estimate</h3>
             </div>
 
             {/* Loan Start Month/Year */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 justify-end">
               <Label htmlFor="fha-mip-loan-start" className="text-left">
                 Loan Start Month/Year:
               </Label>
@@ -23938,7 +23938,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
             </div>
 
             {/* Starting Existing Loan Balance */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 justify-end">
               <Label htmlFor="fha-mip-starting-balance" className="text-left">
                 Starting Loan Balance:
               </Label>
@@ -23961,7 +23961,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
             </div>
 
             {/* FHA MIP Cost Factor */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 justify-end">
               <Label htmlFor="fha-mip-cost-factor" className="text-left">
                 Prior FHA MIP Cost Factor:
               </Label>
@@ -23983,7 +23983,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
             </div>
 
             {/* FHA MIP Cost */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 justify-end">
               <Label htmlFor="fha-mip-cost" className="text-left">
                 Prior FHA MIP Cost:
               </Label>
@@ -24002,7 +24002,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
             </div>
 
             {/* Remaining Months */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 justify-end">
               <Label htmlFor="fha-mip-remaining-months" className="text-left">
                 Remaining Months:
               </Label>
@@ -24024,7 +24024,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
             </div>
 
             {/* Remaining Refund Value */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 justify-end">
               <Label htmlFor="fha-mip-remaining-refund-value" className="text-left">
                 Remaining Refund Value:
               </Label>
@@ -24043,7 +24043,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
             </div>
 
             {/* Estimated MIP Credit/Refund */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 justify-end">
               <Label htmlFor="fha-mip-estimated-credit" className="text-left">
                 Estimated MIP Refund:
               </Label>
@@ -24062,15 +24062,15 @@ const calculatedNewFhaMipCost = useMemo(() => {
           </div>
 
             {/* New FHA MIP Estimate Section */}
-            <div className="border-t pt-6 mt-6">
+            <div className="border-t pt-12 mt-6">
               {/* Section Title */}
               <div>
-                <h3 className="text-base font-semibold">New FHA Upfront MIP Estimate</h3>
+                <h3 className="text-base font-semibold text-green-600">New FHA Upfront MIP Estimate</h3>
               </div>
 
               <div className="space-y-6 mt-6">
                 {/* New Loan Amount */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 justify-end">
                   <Label htmlFor="new-loan-amount" className="text-left">
                     New Loan Amount:
                   </Label>
@@ -24093,7 +24093,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                 </div>
 
                 {/* New FHA MIP Cost Factor */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 justify-end">
                   <Label htmlFor="new-fha-mip-cost-factor" className="text-left">
                     New FHA MIP Cost Factor:
                   </Label>
@@ -24115,7 +24115,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                 </div>
 
                 {/* New FHA MIP Cost */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 justify-end">
                   <Label htmlFor="new-fha-mip-cost" className="text-left">
                     New FHA MIP Cost:
                   </Label>
@@ -24134,7 +24134,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                 </div>
 
                 {/* Adjusted New FHA MIP */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 justify-end">
                   <Label htmlFor="adjusted-new-fha-mip" className="text-left">
                     Adj. New Upfront FHA MIP:
                   </Label>
