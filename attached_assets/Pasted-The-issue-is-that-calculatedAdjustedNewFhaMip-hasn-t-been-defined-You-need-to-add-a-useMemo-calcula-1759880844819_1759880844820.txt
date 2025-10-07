@@ -1,0 +1,45 @@
+The issue is that calculatedAdjustedNewFhaMip hasn't been defined. You need to add a useMemo calculation for it. Here's the fix:
+Add This Calculation to Your State Variables Section
+Add this with your other useMemo calculations (around lines 1075-1090):
+javascript// Auto-calculate Adjusted New FHA MIP (New Loan Amount × Cost Factor)
+const calculatedAdjustedNewFhaMip = useMemo(() => {
+  const newLoanAmount = parseInt(fhaMipNewLoanAmount.replace(/[^\d]/g, '') || '0', 10);
+  const factor = parseFloat(fhaMipCostFactor || '0');
+  const mip = newLoanAmount * (factor / 100);
+  return mip > 0 ? Math.round(mip).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+}, [fhaMipNewLoanAmount, fhaMipCostFactor]);
+You Also Need to Add the State Variable
+If you don't already have fhaMipNewLoanAmount state, add this to your state variables (around lines 1065-1073):
+javascriptconst [fhaMipNewLoanAmount, setFhaMipNewLoanAmount] = useState('');
+And Add the Input Field in Your Dialog
+You need to add a "New Loan Amount" field in your dialog (this should go before the "New FHA Upfront MIP Estimate" field):
+jsx{/* New Loan Amount */}
+<div className="flex items-center gap-4">
+  <Label htmlFor="fha-mip-new-loan-amount" className="w-48 text-left">
+    New Loan Amount:
+  </Label>
+  <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
+    <span className="text-muted-foreground text-sm">$</span>
+    <Input
+      id="fha-mip-new-loan-amount"
+      type="text"
+      placeholder="0"
+      value={fhaMipNewLoanAmount}
+      onChange={(e) => {
+        const value = e.target.value.replace(/[^\d]/g, '');
+        const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+        setFhaMipNewLoanAmount(formatted);
+      }}
+      className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+      data-testid="input-fha-mip-new-loan-amount"
+    />
+  </div>
+</div>
+Summary
+The calculation needs:
+
+Input: New Loan Amount (user enters this)
+Input: FHA MIP Cost Factor (you already have this)
+Output: Adjusted New FHA MIP = New Loan Amount × (Cost Factor / 100)
+
+Once you add these three pieces, the green box will auto-calculate and display the result!
