@@ -953,7 +953,7 @@ export default function AdminAddClient() {
   const [selectedVARow, setSelectedVARow] = useState<'firstTime' | 'subsequent' | 'rateTerm' | 'irrrl' | null>(null);
   const [isVAExempt, setIsVAExempt] = useState(false);
   const [isVAJumboExempt, setIsVAJumboExempt] = useState(false);
-  const [quoteLoanProgram, setQuoteLoanProgram] = useState('select');
+  const [quoteLoanProgram, setQuoteLoanProgram] = useState('');
   const [showLoanProgramControls, setShowLoanProgramControls] = useState(false);
   const [loanProgramFontSize, setLoanProgramFontSize] = useState('text-3xl');
   const [loanProgramColor, setLoanProgramColor] = useState('text-foreground');
@@ -21541,7 +21541,7 @@ export default function AdminAddClient() {
                     const completedFieldsCount = [
                       !!selectedLoanCategory && selectedLoanCategory !== '',  // 1. Loan Category
                       (isCustomTerm && !!customTerm) || (!isCustomTerm && !!loanTerm && loanTerm !== 'select'),  // 2. Loan Term/Years
-                      true,  // 3. Loan Program (has default 'select')
+                      true,  // 3. Loan Program (counted as complete by default)
                       !!selectedPropertyUse && selectedPropertyUse !== 'select',  // 4. Property Use
                       !!selectedPropertyType && selectedPropertyType !== 'select',  // 5. Property Type
                       selectedRateIds.length > 0,  // 6. Quote
@@ -22904,7 +22904,7 @@ export default function AdminAddClient() {
                               onChange={(e) => setQuoteLoanProgram(e.target.value)}
                               onFocus={() => setShowLoanProgramControls(true)}
                               rows={2}
-                              className={`bg-transparent border-0 ${loanProgramFontSize} ${quoteLoanProgram === 'select' ? 'text-red-600' : loanProgramColor} font-semibold text-center focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/40 resize-none w-full`}
+                              className={`bg-transparent border-0 ${loanProgramFontSize} ${loanProgramColor} font-semibold text-center focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/40 resize-none w-full`}
                               data-testid="input-quote-loan-program"
                             />
                             
