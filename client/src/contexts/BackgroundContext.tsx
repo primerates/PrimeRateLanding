@@ -55,12 +55,16 @@ export const backgroundPresets: BackgroundPreset[] = [
 
 interface BackgroundContextType {
   selectedBackground: string;
+  loginBackground: string;
   setBackground: (backgroundId: string) => void;
+  setLoginBackground: (backgroundId: string) => void;
   getCurrentPreset: () => BackgroundPreset | undefined;
+  getLoginPreset: () => BackgroundPreset | undefined;
   isAnimated: () => boolean;
   isPulsing: () => boolean;
   isDarkBackground: () => boolean;
   getBackgroundStyle: () => React.CSSProperties;
+  getLoginBackgroundStyle: () => React.CSSProperties;
 }
 
 const BackgroundContext = createContext<BackgroundContextType | undefined>(undefined);
@@ -71,6 +75,7 @@ interface BackgroundProviderProps {
 
 export function BackgroundProvider({ children }: BackgroundProviderProps) {
   const [selectedBackground, setSelectedBackground] = useState('cubes-animated');
+  const [loginBackground, setLoginBackground] = useState('cubes-animated');
 
   const setBackground = (backgroundId: string) => {
     const preset = backgroundPresets.find(p => p.id === backgroundId);
@@ -81,6 +86,10 @@ export function BackgroundProvider({ children }: BackgroundProviderProps) {
 
   const getCurrentPreset = () => {
     return backgroundPresets.find(p => p.id === selectedBackground);
+  };
+
+  const getLoginPreset = () => {
+    return backgroundPresets.find(p => p.id === loginBackground);
   };
 
   const isAnimated = () => {
@@ -96,6 +105,19 @@ export function BackgroundProvider({ children }: BackgroundProviderProps) {
   const isDarkBackground = () => {
     const preset = getCurrentPreset();
     return preset?.isDark ?? false;
+  };
+
+  const getLoginBackgroundStyle = (): React.CSSProperties => {
+    const preset = getLoginPreset();
+    if (!preset) return {};
+
+    // For login page, always use the background as a cover on the right side
+    return {
+      backgroundImage: `url(${preset.assetPath})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat'
+    };
   };
 
   const getBackgroundStyle = (): React.CSSProperties => {
@@ -163,12 +185,16 @@ export function BackgroundProvider({ children }: BackgroundProviderProps) {
 
   const value: BackgroundContextType = {
     selectedBackground,
+    loginBackground,
     setBackground,
+    setLoginBackground,
     getCurrentPreset,
+    getLoginPreset,
     isAnimated,
     isPulsing,
     isDarkBackground,
-    getBackgroundStyle
+    getBackgroundStyle,
+    getLoginBackgroundStyle
   };
 
   return (

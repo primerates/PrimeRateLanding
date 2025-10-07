@@ -17,7 +17,7 @@ export default function AdminLogin() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: boolean}>({});
   const { toast } = useToast();
-  const { getCurrentPreset } = useBackground();
+  const { getLoginBackgroundStyle } = useBackground();
 
   const validateForm = () => {
     const newErrors: {[key: string]: boolean} = {};
@@ -211,6 +211,7 @@ export default function AdminLogin() {
       {/* Right Side - Background Artwork */}
       <div 
         className="hidden lg:block lg:w-1/2 relative bg-white"
+        style={getLoginBackgroundStyle()}
       >
         <div 
           className="absolute inset-0 flex flex-col items-center justify-center"

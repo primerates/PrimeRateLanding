@@ -28,7 +28,7 @@ import primeRateLogo from '@assets/Prime Rate Logo PNG_1759280639082.png';
 export default function AdminDashboard() {
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
-  const { getBackgroundStyle, isAnimated, isPulsing, isDarkBackground, selectedBackground, setBackground, getCurrentPreset } = useBackground();
+  const { getBackgroundStyle, isAnimated, isPulsing, isDarkBackground, selectedBackground, loginBackground, setBackground, setLoginBackground, getCurrentPreset } = useBackground();
   
   // Check if current background is a glowing cube animated type
   const isGlowingCubeAnimated = () => {
@@ -38,6 +38,7 @@ export default function AdminDashboard() {
   const [backgroundFocusProgress, setBackgroundFocusProgress] = useState(0);
   const [showUsername, setShowUsername] = useState(false);
   const [isBackgroundSelectorOpen, setIsBackgroundSelectorOpen] = useState(false);
+  const [backgroundMode, setBackgroundMode] = useState<'dashboard' | 'login'>('dashboard');
   const animationRef = useRef<number | null>(null);
   const timerRefs = useRef<{ start?: NodeJS.Timeout }>({});
   const isMountedRef = useRef(true);
@@ -227,59 +228,95 @@ export default function AdminDashboard() {
                     size="sm"
                     className="text-primary-foreground"
                     data-testid="button-background-selector"
-                    aria-label="Change Dashboard Background"
+                    aria-label="Change Background"
                   >
                     <Monitor className="h-4 w-4" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-80 p-4" align="end">
                   <div className="space-y-4">
+                    {/* Mode Selection */}
+                    <div className="flex gap-2 p-1 bg-muted rounded-lg">
+                      <Button
+                        variant={backgroundMode === 'dashboard' ? 'default' : 'ghost'}
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => setBackgroundMode('dashboard')}
+                        data-testid="button-background-mode-dashboard"
+                      >
+                        Dashboard Background
+                      </Button>
+                      <Button
+                        variant={backgroundMode === 'login' ? 'default' : 'ghost'}
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => setBackgroundMode('login')}
+                        data-testid="button-background-mode-login"
+                      >
+                        Log In Page
+                      </Button>
+                    </div>
+
                     <div className="space-y-2">
-                      <h4 className="text-sm font-medium">Dashboard Background</h4>
+                      <h4 className="text-sm font-medium">
+                        {backgroundMode === 'dashboard' ? 'Dashboard Background' : 'Login Page Background'}
+                      </h4>
                       <p className="text-xs text-muted-foreground">
-                        Choose your preferred background for the dashboard
+                        {backgroundMode === 'dashboard' 
+                          ? 'Choose your preferred background for the dashboard' 
+                          : 'Choose background for the login page (right side)'}
                       </p>
                     </div>
                     
                     <div className="grid grid-cols-1 gap-3">
-                      {backgroundPresets.map((preset) => (
-                        <Button
-                          key={preset.id}
-                          variant="ghost"
-                          size="lg"
-                          className={`justify-start transition-all duration-200 ${
-                            selectedBackground === preset.id 
-                              ? 'ring-2 ring-primary ring-offset-2 bg-accent' 
-                              : ''
-                          }`}
-                          onClick={() => {
-                            setBackground(preset.id);
-                          }}
-                          data-testid={`button-background-${preset.id}`}
-                          aria-label={`Select ${preset.label} background`}
-                        >
-                          <div className="flex items-center space-x-3 w-full">
-                            <div 
-                              className="w-12 h-8 rounded-md border bg-cover bg-center flex-shrink-0"
-                              style={{ backgroundImage: `url(${preset.assetPath})` }}
-                            />
-                            <div className="flex-1 min-w-0 text-left">
-                              <p className="text-sm font-medium truncate">{preset.label}</p>
-                              <p className="text-xs text-muted-foreground truncate">{preset.description}</p>
-                              {preset.type === 'animated' && (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 mt-1">
-                                  Focus Effect
-                                </span>
-                              )}
-                              {preset.type === 'pulsing' && (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800 mt-1">
-                                  Pulsing Glow
-                                </span>
-                              )}
+                      {backgroundPresets.map((preset) => {
+                        const isSelected = backgroundMode === 'dashboard' 
+                          ? selectedBackground === preset.id 
+                          : loginBackground === preset.id;
+                        
+                        return (
+                          <Button
+                            key={preset.id}
+                            variant="ghost"
+                            size="lg"
+                            className={`justify-start transition-all duration-200 ${
+                              isSelected 
+                                ? 'ring-2 ring-primary ring-offset-2 bg-accent' 
+                                : ''
+                            }`}
+                            onClick={() => {
+                              if (backgroundMode === 'dashboard') {
+                                setBackground(preset.id);
+                              } else {
+                                setLoginBackground(preset.id);
+                              }
+                            }}
+                            data-testid={`button-background-${preset.id}`}
+                            aria-label={`Select ${preset.label} background`}
+                          >
+                            <div className="flex items-center space-x-3 w-full">
+                              <div 
+                                className="w-12 h-8 rounded-md border bg-cover bg-center flex-shrink-0"
+                                style={{ backgroundImage: `url(${preset.assetPath})` }}
+                              />
+                              <div className="flex-1 min-w-0 text-left">
+                                <p className="text-sm font-medium truncate">{preset.label}</p>
+                                <p className="text-xs text-muted-foreground truncate">{preset.description}</p>
+                                {preset.type === 'animated' && (
+                                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 mt-1">
+                                    Focus Effect
+                                  </span>
+                                )}
+                                {preset.type === 'pulsing' && (
+                                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800 mt-1">
+                                    Pulsing Glow
+                                  </span>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        </Button>
-                      ))}
+                          </Button>
+                        );
+                      })}
                     </div>
                   </div>
                 </PopoverContent>
