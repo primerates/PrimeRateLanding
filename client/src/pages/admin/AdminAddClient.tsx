@@ -1067,11 +1067,14 @@ export default function AdminAddClient() {
   const [fhaMipLoanStartMonthYear, setFhaMipLoanStartMonthYear] = useState('');
   const [fhaMipStartingLoanBalance, setFhaMipStartingLoanBalance] = useState('');
   const [fhaMipCostFactor, setFhaMipCostFactor] = useState('1.75');
+  const [fhaMipCost, setFhaMipCost] = useState('');
   const [fhaMipRemainingMonths, setFhaMipRemainingMonths] = useState('');
+  const [fhaMipEstimatedCredit, setFhaMipEstimatedCredit] = useState('');
   const [fhaMipRemainingRefundValue, setFhaMipRemainingRefundValue] = useState('');
+
   // Auto-calculate FHA MIP Cost
   const calculatedFhaMipCost = useMemo(() => {
-    const balance = parseFloat(fhaMipStartingLoanBalance.replace(/[^\d.]/g, '') || '0');
+    const balance = parseInt(fhaMipStartingLoanBalance.replace(/[^\d]/g, '') || '0', 10);
     const factor = parseFloat(fhaMipCostFactor || '0');
     const cost = balance * (factor / 100);
     return cost > 0 ? Math.round(cost).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
@@ -1085,14 +1088,6 @@ export default function AdminAddClient() {
     const percentage = 80 - ((months - 1) * 2);
     return percentage >= 10 ? percentage.toString() : '10';
   }, [fhaMipRemainingMonths]);
-
-  // Auto-calculate Estimated MIP Refund
-  const calculatedEstimatedMipRefund = useMemo(() => {
-    const cost = parseFloat(calculatedFhaMipCost.replace(/[^\d.]/g, '') || '0');
-    const refundPercent = parseFloat(calculatedRemainingRefundValue || '0');
-    const refund = (cost * refundPercent) / 100;
-    return refund > 0 ? Math.round(refund).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-  }, [calculatedFhaMipCost, calculatedRemainingRefundValue]);
   
   // Auto-calculate Total Monthly Escrow
   const calculatedTotalMonthlyEscrow = useMemo(() => {
@@ -24047,9 +24042,13 @@ export default function AdminAddClient() {
                   id="fha-mip-estimated-credit"
                   type="text"
                   placeholder="0"
-                  value={calculatedEstimatedMipRefund}
-                  disabled
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                  value={fhaMipEstimatedCredit}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                    setFhaMipEstimatedCredit(formatted);
+                  }}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
                   data-testid="input-fha-mip-estimated-credit"
                 />
               </div>
