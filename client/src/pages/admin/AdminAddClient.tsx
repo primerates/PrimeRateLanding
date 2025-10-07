@@ -1110,12 +1110,6 @@ const calculatedNewFhaMipCost = useMemo(() => {
   
 
 // Auto-calculate Adjusted New FHA MIP Cost (New FHA MIP Cost - Est. Prior FHA Upfront MIP Refund)
-const calculatedAdjustedNewFhaMip = useMemo(() => {
-  const newCost = parseInt(calculatedNewFhaMipCost.replace(/[^d]/g, "") || "0", 10);
-  const refund = parseInt(calculatedEstimatedMipRefund.replace(/[^d]/g, "") || "0", 10);
-  const adjusted = newCost - refund;
-  return adjusted > 0 ? Math.round(adjusted).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "0";
-}, [calculatedNewFhaMipCost, calculatedEstimatedMipRefund]);
   // Auto-calculate Total Monthly Escrow
   const calculatedTotalMonthlyEscrow = useMemo(() => {
     const insurance = parseInt(propertyInsurancePayment || '0', 10);
@@ -24157,7 +24151,7 @@ const calculatedAdjustedNewFhaMip = useMemo(() => {
                       id="adjusted-new-fha-mip"
                       type="text"
                       placeholder="0"
-                      value={calculatedAdjustedNewFhaMip}
+                      value=""
                       disabled
                       className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-white placeholder:text-white/50 disabled:cursor-not-allowed disabled:opacity-100"
                       data-testid="input-adjusted-new-fha-mip"
