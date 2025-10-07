@@ -23446,6 +23446,15 @@ export default function AdminAddClient() {
                         ))}
                       </div>
 
+                      </CardContent>
+                    </Card>
+
+                    {/* New Card Between Second and Third Cards */}
+                    <Card 
+                      className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-blue-500 hover:border-2 hover:border-blue-500 transition-colors flex-none"
+                      style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
+                    >
+                      <CardContent className="pt-6 space-y-6">
                       {/* New Escrow Reserves Section - Conditionally shown */}
                       {escrowReserves !== 'escrow-not-included' && (
                         <div className="border-t pt-6">
@@ -23502,16 +23511,6 @@ export default function AdminAddClient() {
                           </div>
                         </div>
                       )}
-                      </CardContent>
-                    </Card>
-
-                    {/* New Card Between Second and Third Cards */}
-                    <Card 
-                      className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-blue-500 hover:border-2 hover:border-blue-500 transition-colors flex-none"
-                      style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
-                    >
-                      <CardContent className="pt-6 space-y-6">
-                        {/* Card content will go here */}
                       </CardContent>
                     </Card>
 
