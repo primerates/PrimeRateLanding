@@ -2587,9 +2587,9 @@ export default function AdminAddClient() {
     const borrowerMidFico = borrowerCreditScoresDialog.midFico;
     const coBorrowerMidFico = coBorrowerCreditScoresDialog.midFico;
 
-    // If no Co-Borrower, return Borrower Mid FICO value or "Pending"
+    // If no Co-Borrower, return Borrower Mid FICO value or empty string
     if (!hasCoBorrower) {
-      return borrowerMidFico || "Pending";
+      return borrowerMidFico || "";
     }
 
     // If Co-Borrower exists, both scores must be present to calculate
@@ -2601,8 +2601,8 @@ export default function AdminAddClient() {
       return Math.min(borrowerScore, coBorrowerScore).toString();
     }
 
-    // If either score is missing, return "Pending"
-    return "Pending";
+    // If either score is missing, return empty string
+    return "";
   };
 
   // BBB card FICO label and type cycling functions
