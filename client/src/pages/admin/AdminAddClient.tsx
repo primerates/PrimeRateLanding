@@ -1096,6 +1096,16 @@ export default function AdminAddClient() {
     const refund = cost * (percentage / 100);
     return refund > 0 ? Math.round(refund).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
   }, [calculatedFhaMipCost, calculatedRemainingRefundValue]);
+
+  // Sync calculatedEstimatedMipRefund to fhaUpfrontMipValues
+  useEffect(() => {
+    if (calculatedEstimatedMipRefund) {
+      const valueStr = calculatedEstimatedMipRefund.replace(/[^\d]/g, '');
+      setFhaUpfrontMipValues([valueStr, valueStr, valueStr, valueStr, valueStr]);
+    } else {
+      setFhaUpfrontMipValues(['', '', '', '', '']);
+    }
+  }, [calculatedEstimatedMipRefund]);
   
   // Auto-calculate Total Monthly Escrow
   const calculatedTotalMonthlyEscrow = useMemo(() => {
@@ -4414,6 +4424,14 @@ export default function AdminAddClient() {
         <Label htmlFor="currentLoan-newField2">Total Monthly Payment</Label>
         <div className="flex items-center border border-input bg-background px-3 rounded-md">
           <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
           <Input
             id="currentLoan-newField2"
             type="text"
@@ -4641,6 +4659,14 @@ export default function AdminAddClient() {
                       return (
                         <div className="flex items-center border border-input bg-background px-3 rounded-md">
                           <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                           <Input
                             id="currentLoan-currentBalance"
                             type="text"
@@ -4760,6 +4786,14 @@ export default function AdminAddClient() {
                     render={({ field }) => (
                       <div className="flex items-center border border-input bg-background px-3 rounded-md">
                         <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                         <Input
                           id="currentLoan-principalInterestPayment"
                           type="text"
@@ -4791,6 +4825,14 @@ export default function AdminAddClient() {
                     render={({ field }) => (
                       <div className="flex items-center border border-input bg-background px-3 rounded-md">
                         <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                         <Input
                           id="currentLoan-newField1"
                           type="text"
@@ -5114,6 +5156,14 @@ export default function AdminAddClient() {
                       return (
                         <div className="flex items-center border border-input bg-background px-3 rounded-md">
                           <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                           <Input
                             id={`${cardId}-principalInterestPayment`}
                             type="text"
@@ -5145,6 +5195,14 @@ export default function AdminAddClient() {
                       return (
                         <div className="flex items-center border border-input bg-background px-3 rounded-md">
                           <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                           <Input
                             id={`${cardId}-monthlyEscrow`}
                             type="text"
@@ -5483,6 +5541,14 @@ export default function AdminAddClient() {
                       return (
                         <div className="flex items-center border border-input bg-background px-3 rounded-md">
                           <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                           <Input
                             id={`${cardId}-principalInterestPayment`}
                             type="text"
@@ -5514,6 +5580,14 @@ export default function AdminAddClient() {
                       return (
                         <div className="flex items-center border border-input bg-background px-3 rounded-md">
                           <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                           <Input
                             id={`${cardId}-monthlyEscrow`}
                             type="text"
@@ -5782,6 +5856,14 @@ export default function AdminAddClient() {
                   <Label htmlFor={`${loanId}-currentBalance`}>Loan Balance</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                     <Input
                       id={`${loanId}-currentBalance`}
                       {...targetForm.register(`${loanId}.currentBalance`)}
@@ -5810,6 +5892,14 @@ export default function AdminAddClient() {
                   <Label htmlFor={`${loanId}-monthlyPayment`}>Monthly Payment</Label>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                     <Input
                       id={`${loanId}-monthlyPayment`}
                       {...targetForm.register(`${loanId}.monthlyPayment`)}
@@ -19824,6 +19914,14 @@ export default function AdminAddClient() {
                           return (
                             <div className="flex items-center border border-input bg-background px-3 rounded-md">
                               <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                               <Input
                                 id="abc-loanBalance"
                                 type="text"
@@ -19915,6 +20013,14 @@ export default function AdminAddClient() {
                           return (
                             <div className="flex items-center border border-input bg-background px-3 rounded-md">
                               <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                               <Input
                                 id="abc-cashOutAmount"
                                 type="text"
@@ -19963,6 +20069,14 @@ export default function AdminAddClient() {
                           return (
                             <div className="flex items-center border border-input bg-background px-3 rounded-md">
                               <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                               <Input
                                 id="abc-totalDebtPayOff"
                                 type="text"
@@ -20237,6 +20351,14 @@ export default function AdminAddClient() {
                               return (
                                 <div className="flex items-center border border-input bg-background px-3 rounded-md">
                                   <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                                   <Input
                                     id="abc-lenderCredit"
                                     type="text"
@@ -20322,6 +20444,14 @@ export default function AdminAddClient() {
                         render={({ field }) => (
                           <div className="flex items-center border border-input bg-background px-3 rounded-md">
                             <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                             <Input
                               id="abc-principalInterestPayment"
                               type="text"
@@ -20383,6 +20513,14 @@ export default function AdminAddClient() {
                         render={({ field }) => (
                           <div className="flex items-center border border-input bg-background px-3 rounded-md">
                             <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                             <Input
                               id="abc-taxInsurancePayment"
                               type="text"
@@ -20423,6 +20561,14 @@ export default function AdminAddClient() {
                           return (
                             <div className="flex items-center border border-input bg-muted px-3 rounded-md">
                               <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                               <Input
                                 id="abc-totalMonthlyPayment"
                                 type="text"
@@ -20451,6 +20597,14 @@ export default function AdminAddClient() {
                           return (
                             <div className="flex items-center border border-input bg-background px-3 rounded-md">
                               <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                               <Input
                                 id="abc-hoa"
                                 type="text"
@@ -20687,6 +20841,14 @@ export default function AdminAddClient() {
                           return (
                             <div className="flex items-center border border-input bg-background px-3 rounded-md">
                               <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                               <Input
                                 id="bbb-loanBalance"
                                 type="text"
@@ -20785,6 +20947,14 @@ export default function AdminAddClient() {
                           return (
                             <div className="flex items-center border border-input bg-background px-3 rounded-md">
                               <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                               <Input
                                 id="bbb-lenderCredit"
                                 type="text"
@@ -20842,6 +21012,14 @@ export default function AdminAddClient() {
                             return (
                               <div className="flex items-center border border-input bg-background px-3 rounded-md">
                                 <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                                 <Input
                                   id="bbb-cashOutAmount"
                                   type="text"
@@ -21131,6 +21309,14 @@ export default function AdminAddClient() {
                         render={({ field }) => (
                           <div className="flex items-center border border-input bg-background px-3 rounded-md">
                             <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                             <Input
                               id="bbb-principalInterestPayment"
                               type="text"
@@ -21192,6 +21378,14 @@ export default function AdminAddClient() {
                         render={({ field }) => (
                           <div className="flex items-center border border-input bg-background px-3 rounded-md">
                             <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                             <Input
                               id="bbb-taxInsurancePayment"
                               type="text"
@@ -21232,6 +21426,14 @@ export default function AdminAddClient() {
                           return (
                             <div className="flex items-center border border-input bg-muted px-3 rounded-md">
                               <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                               <Input
                                 id="bbb-totalMonthlyPayment"
                                 type="text"
@@ -21260,6 +21462,14 @@ export default function AdminAddClient() {
                           return (
                             <div className="flex items-center border border-input bg-background px-3 rounded-md">
                               <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                               <Input
                                 id="bbb-hoa"
                                 type="text"
@@ -22806,6 +23016,14 @@ export default function AdminAddClient() {
                           {isLenderCreditMode ? (
                             <div className="flex items-center border border-input bg-background px-3 rounded-md">
                               <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                               <Input
                                 id="lender-credit-amount-input"
                                 type="text"
@@ -22899,6 +23117,14 @@ export default function AdminAddClient() {
                           {isTitleSellerCreditMode ? (
                             <div className="flex items-center border border-input bg-background px-3 rounded-md">
                               <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                               <Input
                                 id="title-seller-credit-amount-input"
                                 type="text"
@@ -23196,6 +23422,14 @@ export default function AdminAddClient() {
                                       type="text"
                                       placeholder=""
                                       value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
                                       onChange={(e) => {
                                         const value = e.target.value.replace(/[^\d]/g, '');
                                         const newValues = [...existingLoanBalanceValues];
@@ -23242,6 +23476,14 @@ export default function AdminAddClient() {
                                   <div key={rateId} className="flex justify-center">
                                     <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                       <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                                       <Input
                                         type="text"
                                         placeholder=""
@@ -23297,6 +23539,14 @@ export default function AdminAddClient() {
                                       type="text"
                                       placeholder=""
                                       value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
                                       onChange={(e) => {
                                         const value = e.target.value.replace(/[^\d]/g, '');
                                         const newValues = [...rateBuyDownValues];
@@ -23344,6 +23594,14 @@ export default function AdminAddClient() {
                                       type="text"
                                       placeholder=""
                                       value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
                                       onChange={(e) => {
                                         const value = e.target.value.replace(/[^\d]/g, '');
                                         const newValues = [...fhaUpfrontMipValues];
@@ -23351,17 +23609,6 @@ export default function AdminAddClient() {
                                         setFhaUpfrontMipValues(newValues);
                                       }}
                                       className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
-                                      data-testid={`input-fha-upfront-mip-${rateId}`}
-                                    />
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-                      {/* Third Party Services Section */}
-                      <div className={`${rateBuydownSelection !== 'no' ? 'border-t' : ''} pt-6`}>
                         {/* Dynamic Third Party Services - Render all categories and services */}
                         {currentThirdPartyServices.map((category, categoryIndex) => (
                           <div key={category.id} className={categoryIndex > 0 ? 'mt-6 pt-6 border-t border-border' : ''}>
@@ -23496,6 +23743,14 @@ export default function AdminAddClient() {
                                       <div key={rateId} className="flex justify-center">
                                         <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                           <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                                           <Input
                                             type="text"
                                             placeholder=""
@@ -23551,6 +23806,14 @@ export default function AdminAddClient() {
                               <div key={rateId} className="flex justify-center">
                                 <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                   <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                                   <Input
                                     type="text"
                                     placeholder=""
@@ -23612,6 +23875,14 @@ export default function AdminAddClient() {
                                 <div key={rateId} className="flex justify-center">
                                   <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                     <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                                     <Input
                                       type="text"
                                       placeholder=""
@@ -23807,6 +24078,14 @@ export default function AdminAddClient() {
               </Label>
               <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
                 <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                 <Input
                   id="property-insurance"
                   type="text"
@@ -23829,6 +24108,14 @@ export default function AdminAddClient() {
               </Label>
               <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
                 <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                 <Input
                   id="property-tax"
                   type="text"
@@ -23871,6 +24158,14 @@ export default function AdminAddClient() {
               </Label>
               <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
                 <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                 <Input
                   id="statement-escrow-balance"
                   type="text"
@@ -23941,6 +24236,14 @@ export default function AdminAddClient() {
               </Label>
               <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
                 <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                 <Input
                   id="fha-mip-starting-balance"
                   type="text"
@@ -23986,6 +24289,14 @@ export default function AdminAddClient() {
               </Label>
               <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
                 <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                 <Input
                   id="fha-mip-cost"
                   type="text"
@@ -24046,6 +24357,14 @@ export default function AdminAddClient() {
               </Label>
               <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
                 <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                 <Input
                   id="fha-mip-estimated-credit"
                   type="text"
@@ -24111,6 +24430,14 @@ export default function AdminAddClient() {
               </Label>
               <div className={`flex items-center border border-input px-3 rounded-md flex-1 ${escrowReserves === 'escrow-not-included' ? 'bg-muted' : 'bg-background'}`}>
                 <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                 <Input
                   id="monthly-insurance"
                   type="text"
@@ -24134,6 +24461,14 @@ export default function AdminAddClient() {
               </Label>
               <div className={`flex items-center border border-input px-3 rounded-md flex-1 ${escrowReserves === 'escrow-not-included' ? 'bg-muted' : 'bg-background'}`}>
                 <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                 <Input
                   id="monthly-property-tax"
                   type="text"
@@ -24179,6 +24514,14 @@ export default function AdminAddClient() {
               </Label>
               <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
                 <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                 <Input
                   id="existing-mortgage-payment"
                   type="text"
@@ -24201,6 +24544,14 @@ export default function AdminAddClient() {
               </Label>
               <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
                 <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                 <Input
                   id="debts-payoff"
                   type="text"
@@ -24223,6 +24574,14 @@ export default function AdminAddClient() {
               </Label>
               <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
                 <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                 <Input
                   id="other-debts"
                   type="text"
@@ -29053,6 +29412,14 @@ export default function AdminAddClient() {
                   </div>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
                     <span className="text-muted-foreground text-sm">$</span>
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      value={displayValue}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                    />
                     <Input
                       id="save-est-loan-amount"
                       type="text"
