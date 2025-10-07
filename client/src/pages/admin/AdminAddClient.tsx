@@ -23285,6 +23285,15 @@ export default function AdminAddClient() {
                         <div className="border-t pt-6">
                           <div className="grid gap-4 mb-6" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                             <div className="flex items-center justify-end pr-4 gap-2">
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6"
+                                data-testid="button-fha-upfront-mip-settings"
+                              >
+                                <Settings className="h-4 w-4" />
+                              </Button>
                               <Label className="text-base font-semibold text-right">FHA Upfront MIP</Label>
                             </div>
                             {selectedRateIds.map((rateId) => {
