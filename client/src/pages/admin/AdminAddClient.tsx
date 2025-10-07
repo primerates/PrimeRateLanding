@@ -28198,7 +28198,7 @@ export default function AdminAddClient() {
           {showSaveToLibraryCard && (
             <div className="mt-6 border-t pt-6 pb-6 border-b" data-testid="card-save-to-library">
               <h3 className="text-lg font-semibold mb-4">Save Configuration to Library</h3>
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-5 gap-3">
                 {/* Combined Loan Category & Purpose Popover */}
                 <div className="space-y-2 col-span-2">
                   <Label htmlFor="save-loan-purpose" className="text-sm font-medium">
@@ -28475,30 +28475,35 @@ export default function AdminAddClient() {
                   </div>
                 </div>
 
-                {/* Buttons - aligned below Lender */}
+                {/* Underwriting Display */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium invisible">Actions</Label>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setShowSaveToLibraryCard(false)}
-                      className="flex-1"
-                      data-testid="button-cancel-save-library"
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      variant="default"
-                      size="sm"
-                      onClick={handleCompleteSaveToLibrary}
-                      disabled={!saveLibraryCombinedSelection || !saveLibraryState || !saveLibraryLender || !saveLibraryTitle}
-                      className="flex-1"
-                      data-testid="button-complete-save-library"
-                    >
-                      Save
-                    </Button>
+                  <div className="flex items-center justify-between mb-2">
+                    <Label htmlFor="underwriting-display" className="text-sm font-medium">{isProcessingMode ? 'Processing' : 'Underwriting'}</Label>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div>
+                          <Switch
+                            checked={isProcessingMode}
+                            disabled={true}
+                            className="opacity-50 cursor-not-allowed"
+                            data-testid="switch-processing-display"
+                          />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{isProcessingMode ? 'Underwriting' : 'Processing'}</p>
+                      </TooltipContent>
+                    </Tooltip>
                   </div>
+                  <Select value={underwriting} disabled>
+                    <SelectTrigger className="opacity-50 cursor-not-allowed" data-testid="select-underwriting-display">
+                      <SelectValue placeholder="Financed" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="financed" data-testid="select-underwriting-display-financed">Financed</SelectItem>
+                      <SelectItem value="not-financed" data-testid="select-underwriting-display-not-financed">Not Financed</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>
