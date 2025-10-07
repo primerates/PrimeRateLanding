@@ -1066,7 +1066,7 @@ export default function AdminAddClient() {
   const [isFhaMipDialogOpen, setIsFhaMipDialogOpen] = useState(false);
   const [fhaMipLoanStartMonthYear, setFhaMipLoanStartMonthYear] = useState('');
   const [fhaMipStartingLoanBalance, setFhaMipStartingLoanBalance] = useState('');
-  const [fhaMipCostFactor, setFhaMipCostFactor] = useState('');
+  const [fhaMipCostFactor, setFhaMipCostFactor] = useState('1.75');
   const [fhaMipCost, setFhaMipCost] = useState('');
   const [fhaMipRemainingMonths, setFhaMipRemainingMonths] = useState('');
   const [fhaMipEstimatedCredit, setFhaMipEstimatedCredit] = useState('');
@@ -1083,6 +1083,29 @@ export default function AdminAddClient() {
     } else {
       setFhaMipCost('');
     }
+
+  // Auto-calculate Estimated MIP Credit based on Remaining Months
+  useEffect(() => {
+    const months = parseInt(fhaMipRemainingMonths) || 0;
+    const cost = parseFloat(fhaMipCost.replace(/,/g, '')) || 0;
+    
+    // Percentage table for months 1-36
+    const percentageMap: Record<number, number> = {
+      1: 80, 2: 78, 3: 76, 4: 74, 5: 72, 6: 70, 7: 68, 8: 66, 9: 64, 10: 62,
+      11: 60, 12: 58, 13: 56, 14: 54, 15: 52, 16: 50, 17: 48, 18: 46, 19: 44, 20: 42,
+      21: 40, 22: 38, 23: 36, 24: 34, 25: 32, 26: 30, 27: 28, 28: 26, 29: 24, 30: 22,
+      31: 20, 32: 18, 33: 16, 34: 14, 35: 12, 36: 10
+    };
+    
+    if (months >= 1 && months <= 36 && cost > 0) {
+      const percentage = percentageMap[months];
+      const calculatedCredit = Math.round(cost * (percentage / 100));
+      const formatted = calculatedCredit.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      setFhaMipEstimatedCredit(formatted);
+    } else {
+      setFhaMipEstimatedCredit('');
+    }
+  }, [fhaMipRemainingMonths, fhaMipCost]);
   }, [fhaMipStartingLoanBalance, fhaMipCostFactor]);
   
   // Auto-calculate Total Monthly Escrow
@@ -23925,7 +23948,7 @@ export default function AdminAddClient() {
             {/* Starting Existing Loan Balance */}
             <div className="flex items-center gap-4">
               <Label htmlFor="fha-mip-starting-balance" className="w-48 text-left">
-                Starting Existing Loan Balance:
+                Starting Loan Balance:
               </Label>
               <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
                 <span className="text-muted-foreground text-sm">$</span>
@@ -23980,13 +24003,11 @@ export default function AdminAddClient() {
                   placeholder="0"
                   value={fhaMipCost}
                   data-testid="input-fha-mip-cost"
+                  className="text-xl font-bold text-black dark:text-white disabled:opacity-100"
                   disabled
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
                 />
-              </div>
-            </div>
-
             {/* Remaining Months */}
+            </div>
             <div className="flex items-center gap-4">
               <Label htmlFor="fha-mip-remaining-months" className="w-48 text-left">
                 Remaining Months:
@@ -23995,19 +24016,18 @@ export default function AdminAddClient() {
                 id="fha-mip-remaining-months"
                 type="text"
                 placeholder="0"
-                value={fhaMipRemainingMonths}
                 onChange={(e) => {
-                  const value = e.target.value.replace(/[^\d]/g, '').slice(0, 2);
-                  setFhaMipRemainingMonths(value);
+                  const value = e.target.value.replace(/[^\d]/g, '');
+                  const numValue = parseInt(value) || 0;
+                  if (numValue <= 36) {
+                    setFhaMipRemainingMonths(value.slice(0, 2));
+                  }
                 }}
                 maxLength={2}
                 className="flex-1"
                 data-testid="input-fha-mip-remaining-months"
               />
             </div>
-
-            {/* Estimated MIP Credit/Refund */}
-            <div className="flex items-center gap-4">
               <Label htmlFor="fha-mip-estimated-credit" className="w-48 text-left">
                 Estimated MIP Credit:
               </Label>
