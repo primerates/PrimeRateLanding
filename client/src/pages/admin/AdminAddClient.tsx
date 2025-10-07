@@ -21540,23 +21540,21 @@ export default function AdminAddClient() {
                     >
                       <BookOpen className="h-4 w-4" />
                     </Button>
-                    {!['FHA - Cash Out', 'FHA - Purchase', 'FHA - Rate & Term', 'FHA - Streamline'].includes(selectedLoanCategory || '') && (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="hover:bg-emerald-500 hover:text-white"
-                            data-testid="button-closing-costs"
-                          >
-                            <Home className={`h-4 w-4 ${selectedLoanCategory?.startsWith('FHA - ') ? 'text-red-500' : ''}`} />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>FHA MIP</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    )}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="hover:bg-emerald-500 hover:text-white"
+                          data-testid="button-closing-costs"
+                        >
+                          <Home className={`h-4 w-4 ${selectedLoanCategory?.startsWith('FHA - ') ? 'text-red-500' : ''}`} />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>FHA MIP</p>
+                      </TooltipContent>
+                    </Tooltip>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Button
@@ -21650,11 +21648,8 @@ export default function AdminAddClient() {
                       {/* Row 1: 5 Fields with titles above */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="category-select" className="flex items-center gap-2">
+                          <Label htmlFor="category-select">
                             Loan Category
-                            {['FHA - Cash Out', 'FHA - Purchase', 'FHA - Rate & Term', 'FHA - Streamline'].includes(selectedLoanCategory || '') && (
-                              <Home className="h-4 w-4 text-red-500" />
-                            )}
                             {(isVAExempt || isVAJumboExempt) && <span className="text-green-600 ml-2">- Exempt</span>}
                           </Label>
                           <Popover open={isLoanCategoryPopoverOpen} onOpenChange={setIsLoanCategoryPopoverOpen}>
@@ -22218,22 +22213,26 @@ export default function AdminAddClient() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor={isCustomTerm ? "custom-term-input" : "loan-term-select"} className="flex items-center justify-between">
-                            <span>{isCustomTerm ? "Custom Term / Years" : "Loan Term / Years"}</span>
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor={isCustomTerm ? "custom-term-input" : "loan-term-select"}>
+                              {isCustomTerm ? "Custom Term / Years" : "Loan Term / Years"}
+                            </Label>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <Switch
-                                  checked={isCustomTerm}
-                                  onCheckedChange={setIsCustomTerm}
-                                  data-testid="switch-custom-term"
-                                  className="scale-[0.8] hover:border-blue-600 hover:border-2"
-                                />
+                                <div>
+                                  <Switch
+                                    checked={isCustomTerm}
+                                    onCheckedChange={setIsCustomTerm}
+                                    data-testid="switch-custom-term"
+                                    className="scale-[0.8] hover:border-blue-600 hover:border-2"
+                                  />
+                                </div>
                               </TooltipTrigger>
                               <TooltipContent>
                                 <p>{isCustomTerm ? "Loan Term / Years" : "Custom Term / Years"}</p>
                               </TooltipContent>
                             </Tooltip>
-                          </Label>
+                          </div>
                           {!isCustomTerm ? (
                             <Select value={loanTerm} onValueChange={setLoanTerm}>
                               <SelectTrigger data-testid="select-loan-term">
