@@ -1088,15 +1088,6 @@ export default function AdminAddClient() {
     const percentage = 80 - ((months - 1) * 2);
     return percentage >= 10 ? percentage.toString() : '10';
   }, [fhaMipRemainingMonths]);
-
-  // Auto-calculate Estimated MIP Refund
-  const calculatedEstimatedMipRefund = useMemo(() => {
-    const refundPercentage = parseFloat(calculatedRemainingRefundValue || '0');
-    const mipCost = parseInt(calculatedFhaMipCost.replace(/[^\d]/g, '') || '0', 10);
-    const refund = (refundPercentage / 100) * mipCost;
-    return refund > 0 ? Math.round(refund).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-  }, [calculatedRemainingRefundValue, calculatedFhaMipCost]);
-
   
   // Auto-calculate Total Monthly Escrow
   const calculatedTotalMonthlyEscrow = useMemo(() => {
@@ -24045,15 +24036,19 @@ export default function AdminAddClient() {
               <Label htmlFor="fha-mip-estimated-credit" className="w-48 text-left">
                 Estimated MIP Refund:
               </Label>
-              <div className="flex items-center border border-green-600 px-3 rounded-md flex-1 bg-green-600">
-                <span className="text-white text-sm">$</span>
+              <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
+                <span className="text-muted-foreground text-sm">$</span>
                 <Input
                   id="fha-mip-estimated-credit"
                   type="text"
                   placeholder="0"
-                  value={calculatedEstimatedMipRefund}
-                  disabled
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100 text-white placeholder:text-white/70"
+                  value={fhaMipEstimatedCredit}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                    setFhaMipEstimatedCredit(formatted);
+                  }}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
                   data-testid="input-fha-mip-estimated-credit"
                 />
               </div>
@@ -24157,17 +24152,9 @@ export default function AdminAddClient() {
                 Total Monthly Escrow:
               </Label>
               <div className="flex items-center border border-input bg-muted px-3 rounded-md flex-1 h-9">
-              <div className="flex items-center border border-green-600 px-3 rounded-md flex-1 bg-green-600">
-                <span className="text-white text-sm">$</span>
-                <Input
-                  id="fha-mip-estimated-credit"
-                  type="text"
-                  placeholder="0"
-                  value={calculatedEstimatedMipRefund}
-                  disabled
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100 text-white placeholder:text-white/70"
-                  data-testid="input-fha-mip-estimated-credit"
-                />
+                <span className="text-base font-bold text-center w-full" data-testid="text-total-monthly-escrow-payment">
+                  {calculatedNewPaymentEscrow > 0 ? `$${calculatedNewPaymentEscrow.toLocaleString('en-US')}` : ''}
+                </span>
               </div>
             </div>
           </div>
@@ -24187,18 +24174,6 @@ export default function AdminAddClient() {
                 Existing Mortgage Payment:
               </Label>
               <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
-              <div className="flex items-center border border-green-600 px-3 rounded-md flex-1 bg-green-600">
-                <span className="text-white text-sm">$</span>
-                <Input
-                  id="fha-mip-estimated-credit"
-                  type="text"
-                  placeholder="0"
-                  value={calculatedEstimatedMipRefund}
-                  disabled
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100 text-white placeholder:text-white/70"
-                  data-testid="input-fha-mip-estimated-credit"
-                />
-              </div>
                 <span className="text-muted-foreground text-sm">$</span>
                 <Input
                   id="existing-mortgage-payment"
@@ -24212,6 +24187,7 @@ export default function AdminAddClient() {
                   className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
                   data-testid="input-existing-mortgage-payment"
                 />
+              </div>
             </div>
 
             {/* Monthly Payment of Debts Marked for Pay Off */}
@@ -24220,18 +24196,6 @@ export default function AdminAddClient() {
                 Monthly Payment of Debts Marked for Pay Off:
               </Label>
               <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
-              <div className="flex items-center border border-green-600 px-3 rounded-md flex-1 bg-green-600">
-                <span className="text-white text-sm">$</span>
-                <Input
-                  id="fha-mip-estimated-credit"
-                  type="text"
-                  placeholder="0"
-                  value={calculatedEstimatedMipRefund}
-                  disabled
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100 text-white placeholder:text-white/70"
-                  data-testid="input-fha-mip-estimated-credit"
-                />
-              </div>
                 <span className="text-muted-foreground text-sm">$</span>
                 <Input
                   id="debts-payoff"
@@ -24245,6 +24209,7 @@ export default function AdminAddClient() {
                   className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
                   data-testid="input-debts-payoff"
                 />
+              </div>
             </div>
 
             {/* Monthly Payment of Other Debts with Remaining Cash Out Deployed */}
@@ -24253,18 +24218,6 @@ export default function AdminAddClient() {
                 Monthly Payment of Other Debts with Remaining Cash Out Deployed:
               </Label>
               <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
-              <div className="flex items-center border border-green-600 px-3 rounded-md flex-1 bg-green-600">
-                <span className="text-white text-sm">$</span>
-                <Input
-                  id="fha-mip-estimated-credit"
-                  type="text"
-                  placeholder="0"
-                  value={calculatedEstimatedMipRefund}
-                  disabled
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100 text-white placeholder:text-white/70"
-                  data-testid="input-fha-mip-estimated-credit"
-                />
-              </div>
                 <span className="text-muted-foreground text-sm">$</span>
                 <Input
                   id="other-debts"
@@ -24278,6 +24231,7 @@ export default function AdminAddClient() {
                   className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
                   data-testid="input-other-debts"
                 />
+              </div>
             </div>
 
             {/* Total Existing Monthly Payments - Display Only (Auto-calculated) */}
@@ -24286,21 +24240,10 @@ export default function AdminAddClient() {
                 Total Existing Monthly Payments:
               </Label>
               <div className="flex items-center border border-input bg-muted px-3 rounded-md flex-1 h-9">
-              <div className="flex items-center border border-green-600 px-3 rounded-md flex-1 bg-green-600">
-                <span className="text-white text-sm">$</span>
-                <Input
-                  id="fha-mip-estimated-credit"
-                  type="text"
-                  placeholder="0"
-                  value={calculatedEstimatedMipRefund}
-                  disabled
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100 text-white placeholder:text-white/70"
-                  data-testid="input-fha-mip-estimated-credit"
-                />
-              </div>
                 <span className="text-base font-bold text-center w-full" data-testid="text-total-existing-payments">
                   {calculatedTotalExistingPayments > 0 ? `$${calculatedTotalExistingPayments.toLocaleString('en-US')}` : ''}
                 </span>
+              </div>
             </div>
 
           </div>
@@ -29105,18 +29048,6 @@ export default function AdminAddClient() {
                     </Tooltip>
                   </div>
                   <div className="flex items-center border border-input bg-background px-3 rounded-md">
-              <div className="flex items-center border border-green-600 px-3 rounded-md flex-1 bg-green-600">
-                <span className="text-white text-sm">$</span>
-                <Input
-                  id="fha-mip-estimated-credit"
-                  type="text"
-                  placeholder="0"
-                  value={calculatedEstimatedMipRefund}
-                  disabled
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100 text-white placeholder:text-white/70"
-                  data-testid="input-fha-mip-estimated-credit"
-                />
-              </div>
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
                       id="save-est-loan-amount"
@@ -29131,6 +29062,7 @@ export default function AdminAddClient() {
                       className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
                       data-testid="input-save-est-loan-amount"
                     />
+                  </div>
                 </div>
 
                 {/* Underwriting Display */}
