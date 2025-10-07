@@ -1079,6 +1079,15 @@ export default function AdminAddClient() {
     const cost = balance * (factor / 100);
     return cost > 0 ? Math.round(cost).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
   }, [fhaMipStartingLoanBalance, fhaMipCostFactor]);
+
+  // Auto-calculate Remaining Refund Value based on Remaining Months
+  const calculatedRemainingRefundValue = useMemo(() => {
+    const months = parseInt(fhaMipRemainingMonths || '0', 10);
+    if (months >= 1 && months <= 15) {
+      return (82 - (2 * months)).toString();
+    }
+    return '';
+  }, [fhaMipRemainingMonths]);
   
   // Auto-calculate Total Monthly Escrow
   const calculatedTotalMonthlyEscrow = useMemo(() => {
@@ -24010,13 +24019,10 @@ export default function AdminAddClient() {
                 <Input
                   id="fha-mip-remaining-refund-value"
                   type="text"
-                  placeholder="0.00"
-                  value={fhaMipRemainingRefundValue}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/[^\d.]/g, '');
-                    setFhaMipRemainingRefundValue(value);
-                  }}
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  placeholder="0"
+                  value={calculatedRemainingRefundValue}
+                  disabled
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
                   data-testid="input-fha-mip-remaining-refund-value"
                 />
                 <span className="text-muted-foreground text-sm">%</span>
