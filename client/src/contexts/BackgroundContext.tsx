@@ -19,6 +19,15 @@ export interface BackgroundPreset {
 // Background presets configuration
 export const backgroundPresets: BackgroundPreset[] = [
   {
+    id: 'default',
+    label: 'Default',
+    type: 'static',
+    assetPath: '',
+    description: 'Clean white background with logo',
+    credits: 'Default',
+    isDark: false
+  },
+  {
     id: 'cubes-animated',
     label: 'Geometric Cubes (Animated)',
     type: 'animated',
@@ -126,6 +135,13 @@ export function BackgroundProvider({ children }: BackgroundProviderProps) {
   const getLoginBackgroundStyle = (): React.CSSProperties => {
     const preset = getLoginPreset();
     if (!preset) return {};
+
+    // Default option - no background image, just white
+    if (preset.id === 'default' || !preset.assetPath) {
+      return {
+        backgroundColor: '#ffffff'
+      };
+    }
 
     // For login page, always use the background as a cover on the right side
     return {

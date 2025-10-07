@@ -297,7 +297,10 @@ export default function AdminDashboard() {
                             <div className="flex items-center space-x-3 w-full">
                               <div 
                                 className="w-12 h-8 rounded-md border bg-cover bg-center flex-shrink-0"
-                                style={{ backgroundImage: `url(${preset.assetPath})` }}
+                                style={{ 
+                                  backgroundImage: preset.assetPath ? `url(${preset.assetPath})` : 'none',
+                                  backgroundColor: preset.assetPath ? 'transparent' : '#ffffff'
+                                }}
                               />
                               <div className="flex-1 min-w-0 text-left">
                                 <p className="text-sm font-medium truncate">{preset.label}</p>
