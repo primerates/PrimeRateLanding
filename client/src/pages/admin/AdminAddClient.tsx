@@ -923,7 +923,7 @@ export default function AdminAddClient() {
   const [escrowReserves, setEscrowReserves] = useState('new-escrow-reserves');
   const [underwriting, setUnderwriting] = useState('financed');
   const [isProcessingMode, setIsProcessingMode] = useState(false);
-  const [rateBuydownSelection, setRateBuydownSelection] = useState('select');
+  const [rateBuydownSelection, setRateBuydownSelection] = useState('yes');
   const [isMidFicoEstimateMode, setIsMidFicoEstimateMode] = useState(false);
   const [estimatedFicoValue, setEstimatedFicoValue] = useState('');
   const [isLtvEstimateMode, setIsLtvEstimateMode] = useState(false);
@@ -21543,7 +21543,7 @@ export default function AdminAddClient() {
                       false, // 5. Property Type (no state variable found, placeholder)
                       selectedRateIds.length > 0,  // 6. Quote
                       false, // 7. State (no state variable found, placeholder)
-                      !!rateBuydownSelection && rateBuydownSelection !== 'select',  // 8. Rate Buydown
+                      true,  // 8. Rate Buydown (has default 'yes')
                       true,  // 9. Escrow Reserves (has default)
                       true,  // 10. Monthly Escrow (has default)
                       (isMidFicoEstimateMode && !!estimatedFicoValue) || (!isMidFicoEstimateMode && !!getAbcCalculatedMidFico()),  // 11. Mid FICO
@@ -22539,10 +22539,9 @@ export default function AdminAddClient() {
                           <Label htmlFor="rate-buydown-select">Rate Buydown</Label>
                           <Select value={rateBuydownSelection} onValueChange={setRateBuydownSelection}>
                             <SelectTrigger data-testid="select-rate-buydown">
-                              <SelectValue placeholder="Select" />
+                              <SelectValue placeholder="Yes" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="select" data-testid="select-rate-buydown-select">Select</SelectItem>
                               <SelectItem value="yes" data-testid="select-rate-buydown-yes">Yes</SelectItem>
                               <SelectItem value="no" data-testid="select-rate-buydown-no">No</SelectItem>
                             </SelectContent>
