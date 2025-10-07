@@ -18425,4 +18425,24 @@ export default function AdminAddClient() {
                                         <Label htmlFor={`subject-no-${propertyId}`}>No</Label>
                                       </div>
                                     </div>
-                       
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </div>
+                        </CardContent>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  </Card>
+                );
+              })}
+            </TabsContent>
+            </Tabs>
+          </form>
+        </TooltipProvider>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
