@@ -1071,6 +1071,10 @@ export default function AdminAddClient() {
   const [fhaMipEstimatedCredit, setFhaMipEstimatedCredit] = useState('');
   const [fhaMipRemainingRefundValue, setFhaMipRemainingRefundValue] = useState('');
 
+// State for New FHA MIP Estimate section
+const [newLoanAmount, setNewLoanAmount] = useState('');
+const [newFhaMipCostFactor, setNewFhaMipCostFactor] = useState('1.75');
+const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
   // Auto-calculate FHA MIP Cost
   const calculatedFhaMipCost = useMemo(() => {
     const balance = parseInt(fhaMipStartingLoanBalance.replace(/[^\d]/g, '') || '0', 10);
@@ -1095,6 +1099,14 @@ export default function AdminAddClient() {
     const refund = cost * (percentage / 100);
     return refund > 0 ? Math.round(refund).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
   }, [calculatedFhaMipCost, calculatedRemainingRefundValue]);
+
+// Auto-calculate New FHA MIP Cost
+const calculatedNewFhaMipCost = useMemo(() => {
+  const balance = parseInt(newLoanAmount.replace(/[^\d]/g, '') || '0', 10);
+  const factor = parseFloat(newFhaMipCostFactor || '0');
+  const cost = balance * (factor / 100);
+  return cost > 0 ? Math.round(cost).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+}, [newLoanAmount, newFhaMipCostFactor]);
   
   // Auto-calculate Total Monthly Escrow
   const calculatedTotalMonthlyEscrow = useMemo(() => {
@@ -24047,6 +24059,103 @@ export default function AdminAddClient() {
                   data-testid="input-fha-mip-estimated-credit"
                 />
               </div>
+
+            {/* New FHA MIP Estimate Section */}
+            <div className="border-t pt-6 mt-6">
+              {/* Section Title */}
+              <div>
+                <h3 className="text-base font-semibold">New FHA MIP Estimate</h3>
+              </div>
+
+              <div className="space-y-6 mt-6">
+                {/* New Loan Amount */}
+                <div className="flex items-center gap-4">
+                  <Label htmlFor="new-loan-amount" className="w-48 text-left">
+                    New Loan Amount:
+                  </Label>
+                  <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="new-loan-amount"
+                      type="text"
+                      placeholder="0"
+                      value={newLoanAmount}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^\d]/g, '');
+                        const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                        setNewLoanAmount(formatted);
+                      }}
+                      className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                      data-testid="input-new-loan-amount"
+                    />
+                  </div>
+                </div>
+
+                {/* New FHA MIP Cost Factor */}
+                <div className="flex items-center gap-4">
+                  <Label htmlFor="new-fha-mip-cost-factor" className="w-48 text-left">
+                    New FHA MIP Cost Factor:
+                  </Label>
+                  <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
+                    <Input
+                      id="new-fha-mip-cost-factor"
+                      type="text"
+                      placeholder="0.00"
+                      value={newFhaMipCostFactor}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^\d.]/g, '');
+                        setNewFhaMipCostFactor(value);
+                      }}
+                      className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                      data-testid="input-new-fha-mip-cost-factor"
+                    />
+                    <span className="text-muted-foreground text-sm">%</span>
+                  </div>
+                </div>
+
+                {/* New FHA MIP Cost */}
+                <div className="flex items-center gap-4">
+                  <Label htmlFor="new-fha-mip-cost" className="w-48 text-left">
+                    New FHA MIP Cost:
+                  </Label>
+                  <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="new-fha-mip-cost"
+                      type="text"
+                      placeholder="0"
+                      value={calculatedNewFhaMipCost}
+                      disabled
+                      className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                      data-testid="input-new-fha-mip-cost"
+                    />
+                  </div>
+                </div>
+
+                {/* Adjusted New FHA MIP */}
+                <div className="flex items-center gap-4">
+                  <Label htmlFor="adjusted-new-fha-mip" className="w-48 text-left">
+                    Adjusted New FHA MIP:
+                  </Label>
+                  <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="adjusted-new-fha-mip"
+                      type="text"
+                      placeholder="0"
+                      value={adjustedNewFhaMip}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^\d]/g, '');
+                        const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                        setAdjustedNewFhaMip(formatted);
+                      }}
+                      className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                      data-testid="input-adjusted-new-fha-mip"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
             </div>
           </div>
 
