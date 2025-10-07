@@ -17,7 +17,8 @@ import {
   BarChart3,
   UserCheck,
   Handshake,
-  Monitor
+  Monitor,
+  Settings
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
@@ -111,11 +112,11 @@ export default function AdminDashboard() {
     { id: 'stats', label: 'Leads', icon: UserPlus, path: '/admin/add-client' },
     { id: 'search', label: 'Marketing', icon: Search, path: '/admin/search' },
     // Line 2
-    { id: 'add-client', label: 'Add Client', icon: UserPlus, path: '/admin/add-client' },
-    { id: 'add-comment', label: 'Add Comment', icon: MessageSquare, path: '/admin/add-comment' },
-    { id: 'add-staff', label: 'Add Staff', icon: UserCheck, path: '/admin/add-staff' },
-    { id: 'add-vendor', label: 'Add Vendor', icon: Building2, path: '/admin/add-vendor' },
-    { id: 'add-partner', label: 'Add Partner', icon: Handshake, path: '/admin/add-partner' },
+    { id: 'settings', label: 'Settings', icon: Settings, path: '/admin/settings' },
+    { id: 'add-comment', label: 'Comments', icon: MessageSquare, path: '/admin/add-comment' },
+    { id: 'add-staff', label: 'Staff', icon: UserCheck, path: '/admin/add-staff' },
+    { id: 'add-vendor', label: 'Vendor', icon: Building2, path: '/admin/add-vendor' },
+    { id: 'add-partner', label: 'Partner', icon: Handshake, path: '/admin/add-partner' },
   ];
 
   const handleLogout = async () => {
@@ -134,6 +135,13 @@ export default function AdminDashboard() {
   };
 
   const handleMenuClick = (path: string) => {
+    if (path === '/admin/settings') {
+      toast({
+        title: "Coming Soon",
+        description: "Settings page is under development.",
+      });
+      return;
+    }
     setLocation(path);
   };
 
