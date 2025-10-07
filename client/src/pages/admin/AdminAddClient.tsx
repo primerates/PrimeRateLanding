@@ -21541,7 +21541,7 @@ export default function AdminAddClient() {
                     const completedFieldsCount = [
                       !!selectedLoanCategory && selectedLoanCategory !== '',  // 1. Loan Category
                       (isCustomTerm && !!customTerm) || (!isCustomTerm && !!loanTerm && loanTerm !== 'select'),  // 2. Loan Term/Years
-                      !!quoteLoanProgram && quoteLoanProgram.trim() !== '',  // 3. Loan Program
+                      !!quoteLoanProgram && quoteLoanProgram.length > 0,  // 3. Loan Program
                       !!selectedPropertyUse && selectedPropertyUse !== 'select',  // 4. Property Use
                       !!selectedPropertyType && selectedPropertyType !== 'select',  // 5. Property Type
                       selectedRateIds.length > 0,  // 6. Quote
