@@ -21534,8 +21534,8 @@ export default function AdminAddClient() {
                   
                   {/* Completion Bar - 15 segments */}
                   {!isQuoteCardsMinimized && (() => {
-                    // Calculate completion for each of the 15 fields
-                    const fieldsCompleted = [
+                    // Count total completed fields
+                    const completedFieldsCount = [
                       !!selectedLoanCategory && selectedLoanCategory !== '',  // 1. Loan Category
                       (isCustomTerm && !!customTerm) || (!isCustomTerm && !!loanTerm && loanTerm !== 'select'),  // 2. Loan Term/Years
                       false, // 3. Loan Program (no state variable found, placeholder)
@@ -21551,16 +21551,16 @@ export default function AdminAddClient() {
                       (isLenderCreditMode && !!lenderCreditAmount) || (!isLenderCreditMode && !!debtToIncomeRatio && debtToIncomeRatio !== 'select'),  // 13. Lender
                       (isTitleSellerCreditMode && !!titleSellerCreditAmount) || (!isTitleSellerCreditMode && !!lenderCredit && lenderCredit !== 'select'),  // 14. Title
                       true,  // 15. Underwriting (has default)
-                    ];
+                    ].filter(Boolean).length;
                     
                     return (
                       <div className="px-4 pb-2">
                         <div className="flex gap-0.5 h-0.5">
-                          {fieldsCompleted.map((isCompleted, index) => (
+                          {Array.from({ length: 15 }).map((_, index) => (
                             <div
                               key={index}
                               className={`flex-1 transition-colors duration-300`}
-                              style={{ backgroundColor: isCompleted ? '#1a3373' : '#D1D5DB' }}
+                              style={{ backgroundColor: index < completedFieldsCount ? '#1a3373' : '#D1D5DB' }}
                             />
                           ))}
                         </div>
