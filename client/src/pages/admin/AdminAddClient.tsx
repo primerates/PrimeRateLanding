@@ -22220,22 +22220,6 @@ export default function AdminAddClient() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="select" data-testid="select-loan-term-select">Select</SelectItem>
-                              
-                              {/* Add Term option */}
-                              <div 
-                                className="px-2 py-1.5 text-sm font-semibold text-blue-600 cursor-pointer hover:bg-accent"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setShowAddTermDialog(true);
-                                }}
-                                data-testid="option-add-term"
-                              >
-                                + Add Term
-                              </div>
-                              
-                              {/* Separator line */}
-                              <div className="my-1 border-t border-border"></div>
-                              
                               <SelectItem value="30-years" data-testid="select-loan-term-30">30</SelectItem>
                               <SelectItem value="25-years" data-testid="select-loan-term-25">25</SelectItem>
                               <SelectItem value="20-years" data-testid="select-loan-term-20">20</SelectItem>
@@ -22243,13 +22227,6 @@ export default function AdminAddClient() {
                               <SelectItem value="15-years" data-testid="select-loan-term-15">15</SelectItem>
                               <SelectItem value="12-years" data-testid="select-loan-term-12">12</SelectItem>
                               <SelectItem value="10-years" data-testid="select-loan-term-10">10</SelectItem>
-                              
-                              {/* Display custom loan terms */}
-                              {customLoanTerms.map((term) => (
-                                <SelectItem key={term.id} value={term.value} data-testid={`select-loan-term-${term.value}`}>
-                                  {term.label}
-                                </SelectItem>
-                              ))}
                             </SelectContent>
                           </Select>
                         </div>
