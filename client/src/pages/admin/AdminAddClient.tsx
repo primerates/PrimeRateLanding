@@ -1030,7 +1030,6 @@ export default function AdminAddClient() {
   const [rateBuyDownValues, setRateBuyDownValues] = useState<string[]>(['', '', '', '', '']);
   const [cashOutAmountValues, setCashOutAmountValues] = useState<string[]>(['', '', '', '', '']);
   const [isCashOutSameMode, setIsCashOutSameMode] = useState(false);
-  const [creditReportServicesValues, setCreditReportServicesValues] = useState<string[]>(['', '', '', '', '']);
   const [isExistingLoanBalanceSameMode, setIsExistingLoanBalanceSameMode] = useState(false);
   const [vaFundingFeeValues, setVaFundingFeeValues] = useState<string[]>(['', '', '', '', '']);
   const [vaAppraisalValues, setVaAppraisalValues] = useState<string[]>(['', '', '', '', '']);
@@ -1101,6 +1100,7 @@ export default function AdminAddClient() {
       { id: 's3', serviceName: 'VA Termite Report' },
       { id: 's4', serviceName: 'VA Underwriting Services' },
       { id: 's8', serviceName: 'Processing Services' },
+      { id: 's9', serviceName: 'Credit Report Services' },
       { id: 's5', serviceName: 'Title & Escrow Services' },
       { id: 's6', serviceName: 'Pay Off Interest' },
       { id: 's7', serviceName: 'State Tax & Recording' }
@@ -1134,6 +1134,7 @@ export default function AdminAddClient() {
     's3': ['', '', '', '', ''], // VA Termite Report
     's4': ['', '', '', '', ''], // VA Underwriting Services
     's8': ['', '', '', '', ''], // Processing Services
+    's9': ['', '', '', '', ''], // Credit Report Services
     's5': ['', '', '', '', ''], // Title & Escrow Services
     's6': ['', '', '', '', ''], // Pay Off Interest
     's7': ['', '', '', '', '']  // State Tax & Recording
@@ -23170,39 +23171,6 @@ export default function AdminAddClient() {
                             </div>
                           )}
 
-                          {/* Credit Report Services Row */}
-                          <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
-                            <div className="flex items-center justify-end pr-4">
-                              <Label className="text-base font-semibold text-right">Credit Report Services</Label>
-                            </div>
-                            {selectedRateIds.map((rateId) => {
-                              const numVal = creditReportServicesValues[rateId] ? creditReportServicesValues[rateId].replace(/[^\d]/g, '') : '';
-                              const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                              const tabIndex = (3 * selectedRateIds.length) + rateId + 1;
-                              
-                              return (
-                                <div key={rateId} className="flex justify-center">
-                                  <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
-                                    <span className="text-muted-foreground text-sm">$</span>
-                                    <Input
-                                      type="text"
-                                      placeholder=""
-                                      value={displayValue}
-                                      onChange={(e) => {
-                                        const value = e.target.value.replace(/[^\d]/g, '');
-                                        const newValues = [...creditReportServicesValues];
-                                        newValues[rateId] = value;
-                                        setCreditReportServicesValues(newValues);
-                                      }}
-                                      tabIndex={tabIndex}
-                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
-                                      data-testid={`input-credit-report-services-${rateId}`}
-                                    />
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
                         </CardContent>
                       </Card>
                     )}
