@@ -23451,7 +23451,7 @@ export default function AdminAddClient() {
 
                     {/* New Card Between Second and Third Cards */}
                     <Card 
-                      className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-purple-500 hover:border-2 hover:border-purple-500 transition-colors flex-none"
+                      className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-violet-400 hover:border-2 hover:border-violet-400 transition-colors flex-none"
                       style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
                     >
                       <CardContent className="pt-6 space-y-6">
