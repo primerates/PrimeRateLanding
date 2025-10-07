@@ -1,0 +1,71 @@
+Suggested Improvements
+1. Better Variable Naming
+The label says "FHA Upfront MIP" but you're showing the refund, which can be confusing. Consider:
+jsx<Label className="text-base font-semibold text-right">FHA Upfront MIP Refund</Label>
+2. Handle Empty/Zero Values
+Add a fallback for when the refund hasn't been calculated yet:
+jsxvalue={calculatedEstimatedMipRefund || '0'}
+3. Consider Adding a Visual Indicator
+Since the same value appears in multiple columns, users might think it's editable per column. Add a tooltip or helper text:
+jsx<div className="flex items-center justify-end pr-4 gap-2">
+  <Button
+    type="button"
+    variant="ghost"
+    size="icon"
+    onClick={() => setIsFhaMipDialogOpen(true)}
+    className="h-6 w-6"
+    data-testid="button-fha-upfront-mip-settings"
+  >
+    <Settings className="h-4 w-4" />
+  </Button>
+  <div className="flex flex-col items-end">
+    <Label className="text-base font-semibold text-right">FHA Upfront MIP Refund</Label>
+    <span className="text-xs text-muted-foreground">Same for all scenarios</span>
+  </div>
+</div>
+Final Recommended Code
+jsx{/* FHA Upfront MIP Section - Only show when FHA loan category is selected */}
+{selectedLoanCategory?.startsWith('FHA - ') && (
+  <div className="border-t pt-6">
+    <div className="grid gap-4 mb-6" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
+      <div className="flex items-center justify-end pr-4 gap-2">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          onClick={() => setIsFhaMipDialogOpen(true)}
+          className="h-6 w-6"
+          data-testid="button-fha-upfront-mip-settings"
+        >
+          <Settings className="h-4 w-4" />
+        </Button>
+        <Label className="text-base font-semibold text-right">FHA MIP Refund</Label>
+      </div>
+      {selectedRateIds.map((rateId) => {
+        return (
+          <div key={rateId} className="flex justify-center">
+            <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
+              <span className="text-muted-foreground text-sm">$</span>
+              <Input
+                type="text"
+                placeholder="0"
+                value={calculatedEstimatedMipRefund || '0'}
+                disabled
+                className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                data-testid={`input-fha-upfront-mip-${rateId}`}
+              />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+)}
+What You Can Remove
+Since you're no longer using editable values per rate, you can also remove from your state variables:
+
+fhaUpfrontMipValues state array
+Any code that initializes or updates fhaUpfrontMipValues
+
+This will clean up your code and prevent confusion.
+Your proposed code is fundamentally sound - these are just polish improvements! You're good to proceed with it in Replit.

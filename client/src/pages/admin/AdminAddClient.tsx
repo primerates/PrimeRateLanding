@@ -1038,7 +1038,6 @@ export default function AdminAddClient() {
   const [titleEscrowValues, setTitleEscrowValues] = useState<string[]>(['', '', '', '', '']);
   const [payOffInterestValues, setPayOffInterestValues] = useState<string[]>(['', '', '', '', '']);
   const [stateTaxValues, setStateTaxValues] = useState<string[]>(['', '', '', '', '']);
-  const [fhaUpfrontMipValues, setFhaUpfrontMipValues] = useState<string[]>(['', '', '', '', '']);
   const [processingValues, setProcessingValues] = useState<string[]>(['', '', '', '', '']);
   const [creditReportValues, setCreditReportValues] = useState<string[]>(['', '', '', '', '']);
   const [escrowReservesValues, setEscrowReservesValues] = useState<string[]>(['', '', '', '', '']);
@@ -23330,27 +23329,19 @@ export default function AdminAddClient() {
                               >
                                 <Settings className="h-4 w-4" />
                               </Button>
-                              <Label className="text-base font-semibold text-right">FHA Upfront MIP</Label>
+                              <Label className="text-base font-semibold text-right">FHA MIP Refund</Label>
                             </div>
                             {selectedRateIds.map((rateId) => {
-                              const numVal = fhaUpfrontMipValues[rateId] ? fhaUpfrontMipValues[rateId].replace(/[^\d]/g, '') : '';
-                              const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                              
                               return (
                                 <div key={rateId} className="flex justify-center">
                                   <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
                                     <span className="text-muted-foreground text-sm">$</span>
                                     <Input
                                       type="text"
-                                      placeholder=""
-                                      value={displayValue}
-                                      onChange={(e) => {
-                                        const value = e.target.value.replace(/[^\d]/g, '');
-                                        const newValues = [...fhaUpfrontMipValues];
-                                        newValues[rateId] = value;
-                                        setFhaUpfrontMipValues(newValues);
-                                      }}
-                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
+                                      placeholder="0"
+                                      value={calculatedEstimatedMipRefund || '0'}
+                                      disabled
+                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
                                       data-testid={`input-fha-upfront-mip-${rateId}`}
                                     />
                                   </div>
