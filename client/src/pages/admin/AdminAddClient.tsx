@@ -924,6 +924,10 @@ export default function AdminAddClient() {
   const [underwriting, setUnderwriting] = useState('financed');
   const [isProcessingMode, setIsProcessingMode] = useState(false);
   const [rateBuydownSelection, setRateBuydownSelection] = useState('select');
+  const [isMidFicoEstimateMode, setIsMidFicoEstimateMode] = useState(false);
+  const [estimatedFicoValue, setEstimatedFicoValue] = useState('');
+  const [isLtvEstimateMode, setIsLtvEstimateMode] = useState(false);
+  const [estimatedLtvValue, setEstimatedLtvValue] = useState('');
   const [debtToIncomeRatio, setDebtToIncomeRatio] = useState('');
   const [lenderCredit, setLenderCredit] = useState('');
   const [isSellerCredit, setIsSellerCredit] = useState(false);
@@ -22488,21 +22492,89 @@ export default function AdminAddClient() {
                       {/* Row 3: Mid FICO, LTV Ratio, Source, Lender, Title */}
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="mid-fico-input">Mid FICO</Label>
-                          <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm transition-colors items-center">
-                            <span className="font-medium" data-testid="text-mid-fico">
-                              {getAbcCalculatedMidFico()}
-                            </span>
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="mid-fico-input">
+                              {isMidFicoEstimateMode ? "Estimated FICO" : "Mid FICO"}
+                            </Label>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div>
+                                  <Switch
+                                    checked={isMidFicoEstimateMode}
+                                    onCheckedChange={setIsMidFicoEstimateMode}
+                                    data-testid="switch-mid-fico-estimate-mode"
+                                    className="scale-[0.8] hover:border-blue-600 hover:border-2"
+                                  />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{isMidFicoEstimateMode ? "Mid FICO" : "Estimated FICO"}</p>
+                              </TooltipContent>
+                            </Tooltip>
                           </div>
+                          {isMidFicoEstimateMode ? (
+                            <Input
+                              id="estimated-fico-input"
+                              type="text"
+                              placeholder=""
+                              value={estimatedFicoValue}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/[^\d]/g, '');
+                                setEstimatedFicoValue(value);
+                              }}
+                              className="w-full"
+                              data-testid="input-estimated-fico"
+                            />
+                          ) : (
+                            <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm transition-colors items-center">
+                              <span className="font-medium" data-testid="text-mid-fico">
+                                {getAbcCalculatedMidFico()}
+                              </span>
+                            </div>
+                          )}
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="debt-to-income-input">LTV Ratio</Label>
-                          <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm transition-colors items-center">
-                            <span className="font-medium" data-testid="text-debt-to-income">
-                              {calculateEstimatedLTV()}
-                            </span>
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="ltv-ratio-input">
+                              {isLtvEstimateMode ? "Estimated LTV" : "LTV Ratio"}
+                            </Label>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div>
+                                  <Switch
+                                    checked={isLtvEstimateMode}
+                                    onCheckedChange={setIsLtvEstimateMode}
+                                    data-testid="switch-ltv-estimate-mode"
+                                    className="scale-[0.8] hover:border-blue-600 hover:border-2"
+                                  />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{isLtvEstimateMode ? "LTV Ratio" : "Estimated LTV"}</p>
+                              </TooltipContent>
+                            </Tooltip>
                           </div>
+                          {isLtvEstimateMode ? (
+                            <Input
+                              id="estimated-ltv-input"
+                              type="text"
+                              placeholder=""
+                              value={estimatedLtvValue}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/[^\d]/g, '');
+                                setEstimatedLtvValue(value);
+                              }}
+                              className="w-full"
+                              data-testid="input-estimated-ltv"
+                            />
+                          ) : (
+                            <div className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm transition-colors items-center">
+                              <span className="font-medium" data-testid="text-debt-to-income">
+                                {calculateEstimatedLTV()}
+                              </span>
+                            </div>
+                          )}
                         </div>
 
                         <div className="space-y-2">
@@ -28485,7 +28557,7 @@ export default function AdminAddClient() {
                           <Switch
                             checked={isProcessingMode}
                             disabled={true}
-                            className="opacity-50 cursor-not-allowed"
+                            className="opacity-50 cursor-not-allowed scale-[0.8] hover:border-blue-600 hover:border-2"
                             data-testid="switch-processing-display"
                           />
                         </div>
