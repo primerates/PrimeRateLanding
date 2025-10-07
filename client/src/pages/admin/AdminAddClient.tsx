@@ -1066,7 +1066,7 @@ export default function AdminAddClient() {
   const [isFhaMipDialogOpen, setIsFhaMipDialogOpen] = useState(false);
   const [fhaMipLoanStartMonthYear, setFhaMipLoanStartMonthYear] = useState('');
   const [fhaMipStartingLoanBalance, setFhaMipStartingLoanBalance] = useState('');
-  const [fhaMipCostFactor, setFhaMipCostFactor] = useState('');
+  const [fhaMipCostFactor, setFhaMipCostFactor] = useState('1.75');
   const [fhaMipCost, setFhaMipCost] = useState('');
   const [fhaMipRemainingMonths, setFhaMipRemainingMonths] = useState('');
   const [fhaMipEstimatedCredit, setFhaMipEstimatedCredit] = useState('');
@@ -23911,7 +23911,7 @@ export default function AdminAddClient() {
             {/* Starting Existing Loan Balance */}
             <div className="flex items-center gap-4">
               <Label htmlFor="fha-mip-starting-balance" className="w-48 text-left">
-                Starting Existing Loan Balance:
+                Starting Loan Balance:
               </Label>
               <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
                 <span className="text-muted-foreground text-sm">$</span>
@@ -23999,7 +23999,7 @@ export default function AdminAddClient() {
             {/* Estimated MIP Credit/Refund */}
             <div className="flex items-center gap-4">
               <Label htmlFor="fha-mip-estimated-credit" className="w-48 text-left">
-                Estimated MIP Credit/Refund:
+                Estimated MIP Refund:
               </Label>
               <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
                 <span className="text-muted-foreground text-sm">$</span>
