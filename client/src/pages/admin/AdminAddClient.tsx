@@ -23639,14 +23639,23 @@ export default function AdminAddClient() {
                         </div>
 
                         {/* New Grey Card Below Third Card */}
-                        <div 
-                          className="mt-8 bg-muted/30 rounded-lg p-6 flex-none"
+                        <Card 
+                          className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-blue-500 hover:border-2 hover:border-blue-500 transition-colors flex-none"
                           style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
                         >
-                          <div className="space-y-4">
+                          <CardContent className="pt-6 space-y-6">
                             {/* Card content will go here */}
-                          </div>
-                        </div>
+                          </CardContent>
+                        </Card>
+
+
+
+
+
+
+
+
+
                       </>
                     )}
                   </div>
