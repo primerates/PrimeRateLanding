@@ -1151,6 +1151,7 @@ export default function AdminAddClient() {
   const [showLibraryDialog, setShowLibraryDialog] = useState(false);
   const [isSaveLibraryPopoverOpen, setIsSaveLibraryPopoverOpen] = useState(false);
   const [saveLibraryCombinedSelection, setSaveLibraryCombinedSelection] = useState('');
+  const [showValidationAlert, setShowValidationAlert] = useState(false);
   
   // Library configurations storage
   const [savedLibraryConfigurations, setSavedLibraryConfigurations] = useState<Array<{
@@ -2003,8 +2004,34 @@ export default function AdminAddClient() {
   };
   
   const handleSaveToLibraryTPS = () => {
-    // Show the save to library card
-    setShowSaveToLibraryCard(true);
+    // Validate that all dollar value fields have a value greater than $0
+    let hasInvalidValues = false;
+    
+    for (const category of tempThirdPartyServices) {
+      for (const service of category.services) {
+        if (service.value) {
+          // Parse the value (remove $ and commas)
+          const numValue = parseFloat(service.value.replace(/[$,]/g, ''));
+          if (isNaN(numValue) || numValue <= 0) {
+            hasInvalidValues = true;
+            break;
+          }
+        } else {
+          // Empty value is also invalid
+          hasInvalidValues = true;
+          break;
+        }
+      }
+      if (hasInvalidValues) break;
+    }
+    
+    if (hasInvalidValues) {
+      // Show validation alert instead of save to library card
+      setShowValidationAlert(true);
+    } else {
+      // All values are valid, show the save to library card
+      setShowSaveToLibraryCard(true);
+    }
   };
   
   const handleCompleteSaveToLibrary = () => {
@@ -28524,10 +28551,10 @@ export default function AdminAddClient() {
                   </Select>
                 </div>
 
-                {/* Est. Loan Amount */}
+                {/* Loan Amount */}
                 <div className="space-y-2">
                   <Label htmlFor="save-est-loan-amount" className="text-sm font-medium">
-                    Est. Loan Amount
+                    Loan Amount
                   </Label>
                   <div className="flex items-center gap-1">
                     <span className="text-sm text-muted-foreground">$</span>
@@ -29023,6 +29050,25 @@ export default function AdminAddClient() {
       </Dialog>
 
       {/* Library View Dialog */}
+      {/* Validation Alert Dialog */}
+      <Dialog open={showValidationAlert} onOpenChange={setShowValidationAlert}>
+        <DialogContent className="sm:max-w-[500px] p-0" data-testid="dialog-validation-alert">
+          <DialogHeader className="text-white p-6 rounded-t-lg" style={{ backgroundColor: '#1a3373' }}>
+            <DialogTitle className="text-white">Validation Error</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-6 px-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+            <div className="text-lg text-muted-foreground">
+              Please enter amounts greater than $0 in all fields before saving the template to the library.
+            </div>
+          </div>
+          <DialogFooter className="px-6 pb-6">
+            <Button onClick={() => setShowValidationAlert(false)} data-testid="button-validation-ok">
+              OK
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={showLibraryDialog} onOpenChange={setShowLibraryDialog}>
         <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto" data-testid="dialog-library">
           <DialogHeader className="bg-primary text-white -mx-6 -mt-6 px-6 py-4 rounded-t-lg">
