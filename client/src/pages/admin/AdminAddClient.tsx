@@ -24055,7 +24055,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                   placeholder="0"
                   value={calculatedEstimatedMipRefund}
                   disabled
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100 font-bold text-purple-600"
                   data-testid="input-fha-mip-estimated-credit"
                 />
               </div>
@@ -24127,19 +24127,22 @@ const calculatedNewFhaMipCost = useMemo(() => {
                       placeholder="0"
                       value={calculatedNewFhaMipCost}
                       disabled
-                      className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                      className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100 font-bold text-green-600"
                       data-testid="input-new-fha-mip-cost"
                     />
                   </div>
                 </div>
 
+                {/* Separator */}
+                <div className="border-t my-6"></div>
+
                 {/* Adjusted New FHA MIP */}
                 <div className="flex items-center gap-4 justify-end">
                   <Label htmlFor="adjusted-new-fha-mip" className="text-left">
-                    Adj. New Upfront FHA MIP Cost:
+                    New Est. Upfront FHA MIP Cost:
                   </Label>
-                  <div className="flex items-center border border-input px-3 rounded-md w-64 bg-background">
-                    <span className="text-muted-foreground text-sm">$</span>
+                  <div className="flex items-center border border-input px-3 rounded-md w-64 bg-green-600">
+                    <span className="text-white text-sm">$</span>
                     <Input
                       id="adjusted-new-fha-mip"
                       type="text"
@@ -24150,7 +24153,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                         const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
                         setAdjustedNewFhaMip(formatted);
                       }}
-                      className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                      className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-white placeholder:text-white/50"
                       data-testid="input-adjusted-new-fha-mip"
                     />
                   </div>
