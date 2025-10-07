@@ -1070,6 +1070,15 @@ export default function AdminAddClient() {
   const [fhaMipCost, setFhaMipCost] = useState('');
   const [fhaMipRemainingMonths, setFhaMipRemainingMonths] = useState('');
   const [fhaMipEstimatedCredit, setFhaMipEstimatedCredit] = useState('');
+  const [fhaMipRemainingRefundValue, setFhaMipRemainingRefundValue] = useState('');
+
+  // Auto-calculate FHA MIP Cost
+  const calculatedFhaMipCost = useMemo(() => {
+    const balance = parseInt(fhaMipStartingLoanBalance.replace(/[^\d]/g, '') || '0', 10);
+    const factor = parseFloat(fhaMipCostFactor || '0');
+    const cost = balance * (factor / 100);
+    return cost > 0 ? Math.round(cost).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+  }, [fhaMipStartingLoanBalance, fhaMipCostFactor]);
   
   // Auto-calculate Total Monthly Escrow
   const calculatedTotalMonthlyEscrow = useMemo(() => {
@@ -23964,13 +23973,9 @@ export default function AdminAddClient() {
                   id="fha-mip-cost"
                   type="text"
                   placeholder="0"
-                  value={fhaMipCost}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/[^\d]/g, '');
-                    const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                    setFhaMipCost(formatted);
-                  }}
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  value={calculatedFhaMipCost}
+                  disabled
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
                   data-testid="input-fha-mip-cost"
                 />
               </div>
@@ -23994,6 +23999,28 @@ export default function AdminAddClient() {
                 className="flex-1"
                 data-testid="input-fha-mip-remaining-months"
               />
+            </div>
+
+            {/* Remaining Refund Value */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="fha-mip-remaining-refund-value" className="w-48 text-left">
+                Remaining Refund Value:
+              </Label>
+              <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
+                <Input
+                  id="fha-mip-remaining-refund-value"
+                  type="text"
+                  placeholder="0.00"
+                  value={fhaMipRemainingRefundValue}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d.]/g, '');
+                    setFhaMipRemainingRefundValue(value);
+                  }}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                  data-testid="input-fha-mip-remaining-refund-value"
+                />
+                <span className="text-muted-foreground text-sm">%</span>
+              </div>
             </div>
 
             {/* Estimated MIP Credit/Refund */}
