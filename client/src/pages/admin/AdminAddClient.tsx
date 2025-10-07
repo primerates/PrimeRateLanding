@@ -21558,7 +21558,7 @@ export default function AdminAddClient() {
                     
                     return (
                       <div className="px-4 pt-2 pb-2">
-                        <div className="flex gap-0 h-px">
+                        <div className="relative flex gap-0 h-px">
                           {Array.from({ length: 15 }).map((_, index) => (
                             <div
                               key={index}
@@ -21566,6 +21566,15 @@ export default function AdminAddClient() {
                               style={{ backgroundColor: index < completedFieldsCount ? '#1a3373' : '#D1D5DB' }}
                             />
                           ))}
+                          {completedFieldsCount > 0 && completedFieldsCount < 15 && (
+                            <div 
+                              className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full transition-all duration-300"
+                              style={{ 
+                                backgroundColor: '#1a3373',
+                                left: `calc(${(completedFieldsCount / 15) * 100}% - 4px)`
+                              }}
+                            />
+                          )}
                         </div>
                       </div>
                     );
