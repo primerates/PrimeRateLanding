@@ -23598,17 +23598,15 @@ export default function AdminAddClient() {
                                       className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
                                       data-testid={`input-fha-upfront-mip-${rateId}`}
                                     />
-                                    <Input
-                                      type="text"
-                                      placeholder=""
-                                      value={displayValue}
-                                      onChange={(e) => {
-                                        const value = e.target.value.replace(/[^\d]/g, '');
-                                        const newValues = [...fhaUpfrontMipValues];
-                                        newValues[rateId] = value;
-                                        setFhaUpfrontMipValues(newValues);
-                                      }}
-                                      className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                      {/* Third Party Services Section */}
+                      <div className={`${rateBuydownSelection !== 'no' ? 'border-t' : ''} pt-6`}>
                         {/* Dynamic Third Party Services - Render all categories and services */}
                         {currentThirdPartyServices.map((category, categoryIndex) => (
                           <div key={category.id} className={categoryIndex > 0 ? 'mt-6 pt-6 border-t border-border' : ''}>
