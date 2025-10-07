@@ -1070,6 +1070,20 @@ export default function AdminAddClient() {
   const [fhaMipCost, setFhaMipCost] = useState('');
   const [fhaMipRemainingMonths, setFhaMipRemainingMonths] = useState('');
   const [fhaMipEstimatedCredit, setFhaMipEstimatedCredit] = useState('');
+
+  // Auto-calculate FHA MIP Cost
+  useEffect(() => {
+    const balance = parseFloat(fhaMipStartingLoanBalance.replace(/,/g, '')) || 0;
+    const factor = parseFloat(fhaMipCostFactor) || 0;
+    
+    if (balance > 0 && factor > 0) {
+      const calculatedCost = Math.round(balance * (factor / 100));
+      const formatted = calculatedCost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      setFhaMipCost(formatted);
+    } else {
+      setFhaMipCost('');
+    }
+  }, [fhaMipStartingLoanBalance, fhaMipCostFactor]);
   
   // Auto-calculate Total Monthly Escrow
   const calculatedTotalMonthlyEscrow = useMemo(() => {
@@ -23958,20 +23972,16 @@ export default function AdminAddClient() {
               <Label htmlFor="fha-mip-cost" className="w-48 text-left">
                 FHA MIP Cost:
               </Label>
-              <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
+              <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-muted">
                 <span className="text-muted-foreground text-sm">$</span>
                 <Input
                   id="fha-mip-cost"
                   type="text"
                   placeholder="0"
                   value={fhaMipCost}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/[^\d]/g, '');
-                    const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                    setFhaMipCost(formatted);
-                  }}
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
                   data-testid="input-fha-mip-cost"
+                  disabled
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
                 />
               </div>
             </div>
@@ -23999,7 +24009,7 @@ export default function AdminAddClient() {
             {/* Estimated MIP Credit/Refund */}
             <div className="flex items-center gap-4">
               <Label htmlFor="fha-mip-estimated-credit" className="w-48 text-left">
-                Estimated MIP Credit/Refund:
+                Estimated MIP Credit:
               </Label>
               <div className="flex items-center border border-input px-3 rounded-md flex-1 bg-background">
                 <span className="text-muted-foreground text-sm">$</span>
