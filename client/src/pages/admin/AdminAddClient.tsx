@@ -23413,9 +23413,17 @@ export default function AdminAddClient() {
                         ))}
                       </div>
 
-                      {/* New Escrow Reserves Section - Conditionally shown */}
-                      {escrowReserves !== 'escrow-not-included' && (
-                        <div className="border-t pt-6">
+                      </CardContent>
+                    </Card>
+
+                    {/* New Escrow Reserves Card - Conditionally shown */}
+                    {escrowReserves !== 'escrow-not-included' && (
+                      <Card 
+                        className="mt-8 transition-all duration-700 animate-roll-down border-l-4 border-l-violet-400 hover:border-2 hover:border-violet-400 transition-colors flex-none"
+                        style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
+                        data-testid="card-new-escrow-reserves"
+                      >
+                        <CardContent className="p-6">
                           <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                             <div className="flex flex-col items-end justify-center pr-4">
                               <div className="flex items-center gap-2 flex-shrink-0">
@@ -23467,12 +23475,9 @@ export default function AdminAddClient() {
                               );
                             })}
                           </div>
-                        </div>
-                      )}
-                      </CardContent>
-                    </Card>
-
-                    {/* New Est. Loan Amount & New Monthly Payment Card */}
+                        </CardContent>
+                      </Card>
+                    )}
                     {isThirdCardExpanded && (
                       <>
                         <Card 
