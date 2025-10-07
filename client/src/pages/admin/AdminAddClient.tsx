@@ -22091,12 +22091,21 @@ export default function AdminAddClient() {
                             <Label htmlFor={isCustomTerm ? "custom-term-input" : "loan-term-select"}>
                               {isCustomTerm ? "Custom Term / Years" : "Loan Term / Years"}
                             </Label>
-                            <Switch
-                              checked={isCustomTerm}
-                              onCheckedChange={setIsCustomTerm}
-                              data-testid="switch-custom-term"
-                              className="scale-[0.8]"
-                            />
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div>
+                                  <Switch
+                                    checked={isCustomTerm}
+                                    onCheckedChange={setIsCustomTerm}
+                                    data-testid="switch-custom-term"
+                                    className="scale-[0.8] hover:border-blue-600 hover:border-2"
+                                  />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{isCustomTerm ? "Loan Term / Years" : "Custom Term / Years"}</p>
+                              </TooltipContent>
+                            </Tooltip>
                           </div>
                           {!isCustomTerm ? (
                             <Select value={loanTerm} onValueChange={setLoanTerm}>
