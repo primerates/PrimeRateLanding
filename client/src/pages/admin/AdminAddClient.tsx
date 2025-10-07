@@ -23637,6 +23637,16 @@ export default function AdminAddClient() {
                             data-testid="textarea-type-notes"
                           />
                         </div>
+
+                        {/* New Grey Card Below Third Card */}
+                        <div 
+                          className="mt-8 bg-muted/30 rounded-lg p-6 flex-none"
+                          style={{ width: `${250 * (selectedRateIds.length + 1)}px`, maxWidth: '100%' }}
+                        >
+                          <div className="space-y-4">
+                            {/* Card content will go here */}
+                          </div>
+                        </div>
                       </>
                     )}
                   </div>
