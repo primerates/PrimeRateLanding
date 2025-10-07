@@ -2181,11 +2181,6 @@ export default function AdminAddClient() {
   // Current Third Loan cards state management (similar to property cards and other loan cards)
   const [currentThirdLoanCards, setCurrentThirdLoanCards] = useState<string[]>([]);
   
-  // New Fourth Card state management
-  const [newFourthCards, setNewFourthCards] = useState<string[]>(['fourth-card-default']);
-  const [fourthCardStates, setFourthCardStates] = useState<{ [key: string]: boolean }>({ 'fourth-card-default': true });
-  const [showFourthCardAnimation, setShowFourthCardAnimation] = useState<{ [key: string]: boolean }>({});
-  const [deleteFourthCardDialog, setDeleteFourthCardDialog] = useState<{ isOpen: boolean; cardId: string | null }>({ isOpen: false, cardId: null });
   // Current Third Loan card data state
   const [currentThirdLoanData, setCurrentThirdLoanData] = useState<Record<string, {
     isDefaultCard: boolean | null; // null = not selected, true = default card created
@@ -5242,81 +5237,6 @@ export default function AdminAddClient() {
   };
 
   // CurrentThirdLoanCard component - using Current Third Loan structure with multiple card support
-
-  // New Fourth Card Component - between second and third cards
-  const NewFourthCard = ({ 
-    cardId,
-    idPrefix = '',
-    borderVariant = 'orange',
-    isOpen,
-    setIsOpen,
-    onRemove,
-    onAddAdditionalLoan,
-    onAutoCopyAddress,
-    formInstance
-  }: {
-    cardId: string;
-    idPrefix?: string;
-    borderVariant?: string;
-    isOpen: boolean;
-    setIsOpen: (open: boolean) => void;
-    onRemove?: () => void;
-    onAddAdditionalLoan?: () => void;
-    onAutoCopyAddress?: () => void;
-    formInstance?: any;
-  }) => {
-    const { toast } = useToast();
-    const contextForm = useFormContext();
-    const targetForm = formInstance || contextForm;
-    
-    const cardClassName = 'border-l-4 border-l-orange-500 hover:border-orange-500 focus-within:border-orange-500 transition-colors duration-200';
-    
-    return (
-      <Card className={cardClassName}>
-        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>New Fourth Card</CardTitle>
-              <div className="flex items-center gap-2">
-                {onRemove && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={onRemove}
-                    className="hover:bg-red-500 hover:text-white"
-                    data-testid={`button-remove-fourth-card-${cardId}`}
-                    title="Delete"
-                  >
-                    <Minus className="h-4 w-4" />
-                  </Button>
-                )}
-                <CollapsibleTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="hover:bg-orange-500 hover:text-white" 
-                    data-testid={`button-toggle-fourth-card-${cardId}`}
-                    title={isOpen ? 'Minimize' : 'Expand'}
-                  >
-                    {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                  </Button>
-                </CollapsibleTrigger>
-              </div>
-            </div>
-          </CardHeader>
-          <CollapsibleContent>
-            <CardContent className="space-y-4">
-              {/* Placeholder content */}
-              <div className="text-center text-muted-foreground py-8">
-                Fourth Card Content
-              </div>
-            </CardContent>
-          </CollapsibleContent>
-        </Collapsible>
-      </Card>
-    );
-  };
   const CurrentThirdLoanCard = ({ 
     cardId,
     idPrefix = '', 
@@ -21452,31 +21372,6 @@ export default function AdminAddClient() {
               ))}
 
               {/* Current Third Loan Cards - Dynamic multiple card system like Primary and Second Loan */}
-
-              {/* New Fourth Card - between second and third cards */}
-              {(newFourthCards || []).map((cardId, index) => {
-                const isOpen = fourthCardStates[cardId] ?? true;
-                
-                return (
-                  <NewFourthCard
-                    key={cardId}
-                    cardId={cardId}
-                    idPrefix={`fourth-card-${index}-`}
-                    borderVariant="orange"
-                    isOpen={isOpen}
-                    setIsOpen={(open) => {
-                      setFourthCardStates(prev => ({ ...prev, [cardId]: open }));
-                    }}
-                    onRemove={() => {
-                      setDeleteFourthCardDialog({
-                        isOpen: true,
-                        cardId: cardId
-                      });
-                    }}
-                    formInstance={form}
-                  />
-                );
-              })}
               {(currentThirdLoanCards || []).map((cardId, index) => {
                 const isOpen = thirdLoanCardStates[cardId] ?? true; // Per-card state like Property cards
                 
