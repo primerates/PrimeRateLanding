@@ -3319,6 +3319,19 @@ const calculatedNewFhaMipCost = useMemo(() => {
         ...prev,
         's1': ['0', '0', '0', '0', '0']
       }));
+    } else {
+      // When exempt is turned off, clear the values
+      setVaFirstTimeCashOut('');
+      setVaSubsequentCashOut('');
+      setVaRateTerm('');
+      setVaIRRRL('');
+      setIsVACalculated(false);
+      
+      // Clear VA funding fee values
+      setThirdPartyServiceValues(prev => ({
+        ...prev,
+        's1': ['', '', '', '', '']
+      }));
     }
   }, [isVAExempt, isVAJumboExempt]);
 
