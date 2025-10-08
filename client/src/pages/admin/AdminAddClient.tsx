@@ -24763,67 +24763,52 @@ const calculatedNewFhaMipCost = useMemo(() => {
               variant="outline"
               size="sm"
               onClick={() => {
-                setShowVAFundingFeeDialog(false);
-                setVaFirstTimeCashOut('');
-                setVaSubsequentCashOut('');
-                setVaRateTerm('');
-                setVaIRRRL('');
+                // Clear all VA calculator values to $0.00
+                setVaFirstTimeCashOut('0.00');
+                setVaSubsequentCashOut('0.00');
+                setVaRateTerm('0.00');
+                setVaIRRRL('0.00');
+                
+                // Clear VA Funding Fee row values
+                setThirdPartyServiceValues(prev => ({
+                  ...prev,
+                  's1': selectedRateIds.map(() => '')
+                }));
+                
+                // Reset calculated state to allow new calculation
                 setIsVACalculated(false);
-                setSelectedVARow(null);
               }}
-              className="hover:text-green-600"
-              data-testid="button-cancel-va-funding-fee"
+              className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+              data-testid="button-clear-va-funding-fee"
             >
-              Cancel
+              Clear
             </Button>
             <Button
               variant="outline"
               size="sm"
               onClick={() => {
-                // This button displays the exempt state but doesn't toggle it
-                // Exempt can only be toggled from the Loan Category dropdown
-              }}
-              className={`${(isVAExempt || isVAJumboExempt) ? 'bg-green-600 text-white border-green-600 hover:bg-green-700 hover:text-white cursor-default' : 'bg-transparent text-gray-400 border-gray-300 cursor-default'}`}
-              data-testid="button-exempt-va-funding-fee"
-            >
-              Exempt
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                if (isVAExempt || isVAJumboExempt) {
-                  return; // Don't allow clicking when exempt
-                }
-                // Get the first selected rate ID
-                const firstRateId = selectedRateIds[0];
+                // Calculate VA funding fee for each category
+                const downPaymentVal = parseFloat(vaDownPayment.replace(/[^\d.]/g, '')) || 0;
+                const loanAmountVal = parseFloat(loanAmount.replace(/[^\d.]/g, '')) || 0;
                 
-                if (firstRateId === undefined) {
-                  console.error('No rate selected');
-                  return;
-                }
+                // First Time Cash Out: 3.3% of loan amount
+                const firstTime = (loanAmountVal * 0.033).toFixed(2);
                 
-                // Get New Est. Loan Amount from rateColumnTotals (this is the calculated total)
-                const newEstLoanAmount = rateColumnTotals[firstRateId] || 0;
+                // Subsequent Cash Out: 3.3% of loan amount
+                const subsequent = (loanAmountVal * 0.033).toFixed(2);
                 
-                // Get VA Funding Fee from the first selected rate column
-                const vaFundingFee = parseFloat(vaFundingFeeValues[firstRateId]?.replace(/[^\d.]/g, '') || '0');
+                // Rate/Term: 2.15% of loan amount
+                const rateTerm = (loanAmountVal * 0.0215).toFixed(2);
                 
-                // Calculate base amount: New Est. Loan Amount - VA Funding Fee
-                const baseAmount = newEstLoanAmount - vaFundingFee;
+                // IRRRL: 0.5% of loan amount
+                const irrrl = (loanAmountVal * 0.005).toFixed(2);
                 
-                // Calculate each row
-                const firstTimeCashOut = (baseAmount * 0.0215).toFixed(2);
-                const subsequentCashOut = (baseAmount * 0.033).toFixed(2);
-                const rateTerm = (baseAmount * 0.005).toFixed(2);
-                const irrrl = (baseAmount * 0.005).toFixed(2);
-                
-                // Set calculated values with formatting
-                setVaFirstTimeCashOut(parseFloat(firstTimeCashOut).toLocaleString('en-US', {
+                // Format and set values
+                setVaFirstTimeCashOut(parseFloat(firstTime).toLocaleString('en-US', {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2
                 }));
-                setVaSubsequentCashOut(parseFloat(subsequentCashOut).toLocaleString('en-US', {
+                setVaSubsequentCashOut(parseFloat(subsequent).toLocaleString('en-US', {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2
                 }));
@@ -24839,6 +24824,100 @@ const calculatedNewFhaMipCost = useMemo(() => {
                 // Mark as calculated to make fields read-only
                 setIsVACalculated(true);
               }}
+              disabled={
+                // Disable if any values exist and are greater than 0
+                (vaFirstTimeCashOut && parseFloat(vaFirstTimeCashOut.replace(/[^\d.]/g, '')) > 0) ||
+                (vaSubsequentCashOut && parseFloat(vaSubsequentCashOut.replace(/[^\d.]/g, '')) > 0) ||
+                (vaRateTerm && parseFloat(vaRateTerm.replace(/[^\d.]/g, '')) > 0) ||
+                (vaIRRRL && parseFloat(vaIRRRL.replace(/[^\d.]/g, '')) > 0)
+              }
+              className={selectedVARow ? 'bg-yellow-400 text-black border-yellow-400 hover:bg-yellow-500 hover:text-black hover:border-yellow-500' : 'border-green-500 hover:border-green-500 hover:text-green-600'}
+              data-testid="button-calculate-va-funding-fee"
+            >
+              Calculate
+            </Button>
+              variant="default"
+              size="sm"
+              onClick={() => {
+                if (isVAExempt || isVAJumboExempt) {
+                  return; // Don't allow clicking when exempt
+                }
+                
+                // Apply selected VA category value to all rates
+                if (selectedVARow) {
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                // Clear all VA calculator values to $0.00
+                setVaFirstTimeCashOut('0.00');
+                setVaSubsequentCashOut('0.00');
+                setVaRateTerm('0.00');
+                setVaIRRRL('0.00');
+                
+                // Clear VA Funding Fee row values
+                setThirdPartyServiceValues(prev => ({
+                  ...prev,
+                  's1': selectedRateIds.map(() => '')
+                }));
+                
+                // Reset calculated state to allow new calculation
+                setIsVACalculated(false);
+              }}
+              className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+              data-testid="button-clear-va-funding-fee"
+            >
+              Clear
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                // Calculate VA funding fee for each category
+                const downPaymentVal = parseFloat(vaDownPayment.replace(/[^\d.]/g, '')) || 0;
+                const loanAmountVal = parseFloat(loanAmount.replace(/[^\d.]/g, '')) || 0;
+                
+                // First Time Cash Out: 3.3% of loan amount
+                const firstTime = (loanAmountVal * 0.033).toFixed(2);
+                
+                // Subsequent Cash Out: 3.3% of loan amount
+                const subsequent = (loanAmountVal * 0.033).toFixed(2);
+                
+                // Rate/Term: 2.15% of loan amount
+                const rateTerm = (loanAmountVal * 0.0215).toFixed(2);
+                
+                // IRRRL: 0.5% of loan amount
+                const irrrl = (loanAmountVal * 0.005).toFixed(2);
+                
+                // Format and set values
+                setVaFirstTimeCashOut(parseFloat(firstTime).toLocaleString('en-US', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2
+                }));
+                setVaSubsequentCashOut(parseFloat(subsequent).toLocaleString('en-US', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2
+                }));
+                setVaRateTerm(parseFloat(rateTerm).toLocaleString('en-US', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2
+                }));
+                setVaIRRRL(parseFloat(irrrl).toLocaleString('en-US', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2
+                }));
+                
+                // Mark as calculated to make fields read-only
+                setIsVACalculated(true);
+              }}
+              disabled={
+                // Disable if any values exist and are greater than 0
+                (vaFirstTimeCashOut && parseFloat(vaFirstTimeCashOut.replace(/[^\d.]/g, '')) > 0) ||
+                (vaSubsequentCashOut && parseFloat(vaSubsequentCashOut.replace(/[^\d.]/g, '')) > 0) ||
+                (vaRateTerm && parseFloat(vaRateTerm.replace(/[^\d.]/g, '')) > 0) ||
+                (vaIRRRL && parseFloat(vaIRRRL.replace(/[^\d.]/g, '')) > 0)
+              }
               className={selectedVARow ? 'bg-yellow-400 text-black border-yellow-400 hover:bg-yellow-500 hover:text-black hover:border-yellow-500' : 'border-green-500 hover:border-green-500 hover:text-green-600'}
               data-testid="button-calculate-va-funding-fee"
             >
@@ -24888,7 +24967,6 @@ const calculatedNewFhaMipCost = useMemo(() => {
               Apply to Rate
             </Button>
           </DialogFooter>
-        </DialogContent>
       </Dialog>
 
       {/* Draggable Calculator */}
