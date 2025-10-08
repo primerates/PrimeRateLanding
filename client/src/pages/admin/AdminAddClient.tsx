@@ -24261,7 +24261,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
               </div>
             </div>
             {/* Separation Line */}
-            <div className="border-t border-border my-4"></div>
+            <div className="border-t border-border mt-8 mb-8"></div>
 
             {/* Annual & Monthly FHA MIP Section */}
             <div className="space-y-3">
@@ -24334,6 +24334,23 @@ const calculatedNewFhaMipCost = useMemo(() => {
                   />
                 </div>
               </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex justify-end gap-3 mt-8">
+              <Button
+                variant="outline"
+                onClick={() => setIsNewPaymentInfoOpen(false)}
+                data-testid="button-cancel-fha-mip"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => setIsNewPaymentInfoOpen(false)}
+                data-testid="button-save-fha-mip"
+              >
+                Save
+              </Button>
             </div>
           </div>
         </DialogContent>
