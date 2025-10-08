@@ -1151,8 +1151,6 @@ const calculatedNewFhaMipCost = useMemo(() => {
   const [newEscrowPayment, setNewEscrowPayment] = useState('');
   const [monthlyInsurance, setMonthlyInsurance] = useState('');
   const [monthlyPropertyTax, setMonthlyPropertyTax] = useState('');
-  const [newLoanAmountMip, setNewLoanAmountMip] = useState('');
-  const [monthlyFhaMip, setMonthlyFhaMip] = useState('');
   
   // State for Third Party Services Customization
   const [showThirdPartyServicesDialog, setShowThirdPartyServicesDialog] = useState(false);
@@ -24278,11 +24276,6 @@ const calculatedNewFhaMipCost = useMemo(() => {
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
                   <Input
                     id="new-loan-amount-mip"
-                    value={newLoanAmountMip.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/[^\d]/g, '');
-                      setNewLoanAmountMip(value);
-                    }}
                     type="text"
                     className="pl-6 h-9"
                     placeholder="0"
@@ -24334,11 +24327,6 @@ const calculatedNewFhaMipCost = useMemo(() => {
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
                   <Input
                     id="monthly-fha-mip"
-                    value={monthlyFhaMip.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/[^\d]/g, '');
-                      setMonthlyFhaMip(value);
-                    }}
                     type="text"
                     className="pl-6 h-9"
                     placeholder="0"
