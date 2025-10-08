@@ -1329,10 +1329,10 @@ const calculatedNewFhaMipCost = useMemo(() => {
         titleEscrowValues[index],
         payOffInterestValues[index],
         stateTaxValues[index],
-        calculatedAdjustedNewFhaMip,
         processingValues[index],
         creditReportValues[index],
-        escrowReservesValues[index]
+        escrowReservesValues[index],
+        calculatedAdjustedNewFhaMip
       ];
       
       const total = values.reduce((sum, val) => {
@@ -1349,9 +1349,8 @@ const calculatedNewFhaMipCost = useMemo(() => {
     vaFundingFeeValues,
     vaAppraisalValues,
     vaTermiteValues,
-    vaUnderwritingValues,
     titleEscrowValues,
-    calculatedAdjustedNewFhaMip
+    calculatedAdjustedNewFhaMip,
     payOffInterestValues,
     stateTaxValues,
     processingValues,
