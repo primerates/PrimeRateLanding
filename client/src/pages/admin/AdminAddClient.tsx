@@ -23370,10 +23370,17 @@ const calculatedNewFhaMipCost = useMemo(() => {
                               
                               // For VA loans: display-only input showing calculated values
                               if (isVALoan) {
-                                const numVal = thirdPartyServiceValues['s1']?.[index] 
-                                  ? thirdPartyServiceValues['s1'][index].replace(/[^\d]/g, '') 
-                                  : '';
-                                const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                                // Preserve decimal point when formatting
+                                const rawVal = thirdPartyServiceValues['s1']?.[index] || '';
+                                const cleanVal = rawVal.replace(/[^\d.]/g, ''); // Keep digits and decimal
+                                
+                                // Format with commas while preserving decimals
+                                let displayValue = '';
+                                if (cleanVal) {
+                                  const parts = cleanVal.split('.');
+                                  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                                  displayValue = parts.join('.');
+                                }
                                 
                                 return (
                                   <div key={rateId} className="flex justify-center">
