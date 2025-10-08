@@ -18428,10 +18428,6 @@ const calculatedNewFhaMipCost = useMemo(() => {
                   }`}>
                     <Collapsible 
                       open={isOpen} 
-                      onOpenChange={(open) => setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }))}
-                    >
-                      <CardHeader>
-                        <div className="flex items-center justify-between">
                           <div className="flex items-center gap-8">
                             <CardTitle className="flex items-center gap-2">
                               {getPropertyTitle()}
@@ -18474,9 +18470,6 @@ const calculatedNewFhaMipCost = useMemo(() => {
                                 type="button"
                                 variant="outline"
                                 size="sm"
-                                onClick={() => setDeleteHomePurchaseDialog({ isOpen: true, cardId: propertyId })}
-                                className="hover:bg-red-500 hover:text-white"
-                                data-testid="button-delete-home-purchase-property"
                                 title="Delete Home Purchase"
                               >
                                 <Minus className="h-4 w-4 mr-2" />
