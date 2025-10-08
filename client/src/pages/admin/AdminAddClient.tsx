@@ -23374,7 +23374,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                                     className="h-6 w-6"
                                     data-testid="button-customize-third-party-services"
                                   >
-                                    <Settings className="h-4 w-4" />
+                                    <Settings className={`h-4 w-4 ${Object.values(thirdPartyServiceValues).every(arr => arr.every(val => !val || val === '0')) ? 'text-red-500' : ''}`} />
                                   </Button>
                                 )}
                                 <button
