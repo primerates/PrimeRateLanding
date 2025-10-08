@@ -18457,4 +18457,4 @@ const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
                           </div>
                           <div className="flex items-center gap-2">
                             {/* Add/Remove buttons for multi-property types */}
-                            {(property.use === 'second-home' || p
+                            {(property.use === 'second-home' || property.use === 'investment') && (
