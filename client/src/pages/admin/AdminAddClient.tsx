@@ -23870,7 +23870,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
             </div>
 
             {/* Statement Escrow Balance */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4" style={{ marginBottom: '32px', borderBottom: '3px solid red' }}>
               <Label htmlFor="statement-escrow-balance" className="w-48 text-right">
                 Statement Escrow Balance:
               </Label>
