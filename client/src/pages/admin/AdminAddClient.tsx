@@ -20,7 +20,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Save, Minus,  Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator, StickyNote, ChevronDown, ChevronUp, BookOpen, FileText, Pin, Printer, Settings, Edit, Star } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Minus,  Building, RefreshCw, Loader2, Monitor, Info, DollarSign, RotateCcw, Calculator, StickyNote, ChevronDown, ChevronUp, BookOpen, FileText, Pin, Printer, Settings, Edit, Star, Home } from 'lucide-react';
 import { SiZillow } from 'react-icons/si';
 import { MdRealEstateAgent } from 'react-icons/md';
 import { FaHome } from 'react-icons/fa';
@@ -23327,7 +23327,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                                   className="h-6 w-6"
                                   data-testid="button-fha-upfront-mip-settings"
                                 >
-                                  <Settings className={`h-4 w-4 ${!calculatedAdjustedNewFhaMip || calculatedAdjustedNewFhaMip === '0' ? 'text-red-500' : ''}`} />
+                                  <Home className={`h-4 w-4 ${!calculatedAdjustedNewFhaMip || calculatedAdjustedNewFhaMip === '0' ? 'text-red-500' : ''}`} />
                                 </Button>
                               )}
                               {/* Star icon for VA loans only */}
