@@ -23862,7 +23862,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
             </div>
 
             {/* Spacing */}
-            <div className="h-8"></div>
+            <div className="h-4"></div>
 
             {/* Message */}
             <div className="text-lg text-muted-foreground" style={{ borderTop: '1px solid hsl(var(--border))', paddingTop: '24px' }}>
