@@ -1071,9 +1071,9 @@ export default function AdminAddClient() {
   const [fhaMipEstimatedCredit, setFhaMipEstimatedCredit] = useState('');
   const [fhaMipRemainingRefundValue, setFhaMipRemainingRefundValue] = useState('');
   const [fhaMipNewLoanAmount, setFhaMipNewLoanAmount] = useState('');
-const [newLoanAmount, setNewLoanAmount] = useState('');
 
 // State for New FHA MIP Estimate section
+const [newLoanAmount, setNewLoanAmount] = useState('');
 const [newFhaMipCostFactor, setNewFhaMipCostFactor] = useState('1.75');
   const [savedFhaMipEstimate, setSavedFhaMipEstimate] = useState('0');
 const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
@@ -1342,16 +1342,34 @@ const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
     creditReportValues,
     escrowReservesValues
   ]);
+  
 
-  // Auto-sync first rate column total to newLoanAmount for popup
+  // Auto-populate newLoanAmount from rateColumnTotals (first rate column)
+
+  // Auto-calculate New FHA MIP Cost (uses newLoanAmount from useEffect)
+  const calculatedNewFhaMipCost = useMemo(() => {
+    const balance = parseInt(newLoanAmount.replace(/[^\d]/g, '') || '0', 10);
+    const factor = parseFloat(newFhaMipCostFactor || '0');
+    const cost = balance * (factor / 100);
+    return cost > 0 ? Math.round(cost).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+  }, [newLoanAmount, newFhaMipCostFactor]);
   useEffect(() => {
-    if (selectedRateIds.length > 0 && rateColumnTotals.length > 0) {
-      const total = rateColumnTotals[0];
+    const firstRateId = selectedRateIds[0];
+    if (firstRateId && rateColumnTotals[firstRateId]) {
+      const total = rateColumnTotals[firstRateId];
       const formatted = total > 0 ? Math.round(total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
       setNewLoanAmount(formatted);
     }
   }, [selectedRateIds, rateColumnTotals]);
-  
+
+  // Auto-calculate New FHA Upfront MIP Estimate (New MIP Cost - Prior MIP Refund)
+  const calculatedAdjustedNewFhaMip = useMemo(() => {
+    const newMipCost = parseInt(calculatedNewFhaMipCost.replace(/[^\d]/g, '') || '0', 10);
+    const priorRefund = parseInt(calculatedEstimatedMipRefund.replace(/[^\d]/g, '') || '0', 10);
+    const estimate = newMipCost - priorRefund;
+    return estimate > 0 ? estimate.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0';
+  }, [calculatedNewFhaMipCost, calculatedEstimatedMipRefund]);
+  // Calculate monthly mortgage payments for each rate using amortization formula
 
   const calculatedMonthlyPayments = useMemo(() => {
     return Array.from({ length: 5 }).map((_, index) => {
@@ -11336,8 +11354,9 @@ const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
                                 />
                               </div>
                             </div>
+
                             {/* Employer Address Row */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                               <div className="space-y-2 md:col-span-3">
                                 <Label htmlFor="template-employer-street">Street Address</Label>
                                 <Input
@@ -11347,11 +11366,141 @@ const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
                               </div>
                               
                               <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor="template-employer-unit">Unit/Suite</Label>
+                                <Input
                                   id="template-employer-unit"
                                   data-testid="input-template-employer-unit"
                                 />
                               </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor="template-employer-city">City</Label>
+                                <Input
+                                  id="template-employer-city"
+                                  data-testid="input-template-employer-city"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor="template-employer-state">State</Label>
+                                <Select
+                                  value={calculatedAdjustedNewFhaMip}
+                                  onValueChange={() => {}}
+                                >
+                                  <SelectTrigger data-testid="select-template-employer-state">
+                                    <SelectValue placeholder="State" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {US_STATES.map((state) => (
+                                      <SelectItem key={state.value} value={state.value}>
+                                        {state.value}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-1">
+                                <Label htmlFor="template-employer-zip">ZIP Code</Label>
+                                <Input
+                                  id="template-employer-zip"
+                                  data-testid="input-template-employer-zip"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor="template-employer-county">County</Label>
+                                <Input
+                                  id="template-employer-county"
+                                  data-testid="input-template-employer-county"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor="template-employer-employment-type">Full-Time / Part-Time</Label>
+                                <Select
+                                  value={calculatedAdjustedNewFhaMip}
+                                  onValueChange={() => {}}
+                                >
+                                  <SelectTrigger data-testid="select-template-employer-employment-type">
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="Full-Time">Full-Time</SelectItem>
+                                    <SelectItem value="Part-Time">Part-Time</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
                             </div>
+
+                          </div>
+                        </CardContent>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  </Card>
+                );
+              })}
+
+              {/* Borrower Second Employment Cards */}
+              {form.watch('income.incomeTypes.secondEmployment') && (borrowerSecondEmployerCards || ['default']).map((cardId, index) => {
+                const propertyId = cardId === 'default' ? 'second-template-card' : cardId;
+                const isOpen = propertyCardStates[propertyId] ?? true;
+                
+                return (
+                  <Card key={cardId} className="transition-colors duration-200">
+                    <Collapsible 
+                      open={isOpen} 
+                      onOpenChange={(open) => {
+                        setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }));
+                        if (open) {
+                          setTimeout(() => {
+                            setShowIncomeCardAnimation(prev => ({ ...prev, 'borrower-second-employment': true }));
+                            setTimeout(() => {
+                              setShowIncomeCardAnimation(prev => ({ ...prev, 'borrower-second-employment': false }));
+                            }, 800);
+                          }, 200);
+                        }
+                      }}
+                    >
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-8">
+                            <CardTitle className="flex items-center gap-2">
+                              Borrower - Second Employer
+                            </CardTitle>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {/* Add Employer Button */}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                const newId = `second-employer-${Date.now()}`;
+                                setBorrowerSecondEmployerCards(prev => [...(prev || ['default']), newId]);
+                              }}
+                              className="hover:bg-blue-500 hover:text-white"
+                              data-testid="button-add-second-employer"
+                              title="Add New Employer"
+                            >
+                              <Plus className="h-4 w-4 mr-2" />
+                              Add Employer
+                            </Button>
+                            
+                            {/* Delete Employer Button */}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setDeleteSecondEmployerDialog({ isOpen: true, cardId: propertyId })}
+                              className="hover:bg-red-500 hover:text-white"
+                              data-testid="button-delete-second-employer"
+                              title="Delete Employer"
+                            >
+                              <Minus className="h-4 w-4 mr-2" />
+                              Remove
+                            </Button>
+                            
                             <CollapsibleTrigger asChild>
                               <Button 
                                 variant="ghost" 
@@ -13256,6 +13405,17 @@ const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
                               <div className="space-y-2 md:col-span-1">
                                 <Label htmlFor="template-employer-state">State</Label>
                                 <Select
+                                  value={calculatedAdjustedNewFhaMip}
+                                  onValueChange={() => {}}
+                                >
+                                  <SelectTrigger data-testid="select-template-employer-state">
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {US_STATES.map((state) => (
+                                      <SelectItem key={state.value} value={state.value}>
+                                        {state.value}
+                                      </SelectItem>
                                     ))}
                                   </SelectContent>
                                 </Select>
@@ -13264,6 +13424,121 @@ const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
                               <div className="space-y-2 md:col-span-1">
                                 <Label htmlFor="template-employer-zip">ZIP Code</Label>
                                 <Input
+                                  id="template-employer-zip"
+                                  data-testid="input-template-employer-zip"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor="template-employer-county">County</Label>
+                                <Input
+                                  id="template-employer-county"
+                                  data-testid="input-template-employer-county"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2 md:col-span-2">
+                                <Label htmlFor="template-employer-employment-type">Full-Time / Part-Time</Label>
+                                <Select
+                                  value={calculatedAdjustedNewFhaMip}
+                                  onValueChange={() => {}}
+                                >
+                                  <SelectTrigger data-testid="select-template-employer-employment-type">
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="Full-Time">Full-Time</SelectItem>
+                                    <SelectItem value="Part-Time">Part-Time</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+
+                          </div>
+                        </CardContent>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  </Card>
+                );
+              })}
+
+
+              {/* Co-borrower Second Employment Cards */}
+              {hasCoBorrower && form.watch('coBorrowerIncome.incomeTypes.secondEmployment') && (coBorrowerSecondEmployerCards || ['default']).map((cardId, index) => {
+                const propertyId = cardId === 'default' ? 'coborrower-second-template-card' : cardId;
+                const isOpen = propertyCardStates[propertyId] ?? true;
+                
+                return (
+                  <Card key={cardId} className="transition-colors duration-200">
+                    <Collapsible 
+                      open={isOpen} 
+                      onOpenChange={(open) => {
+                        setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }));
+                        if (open) {
+                          setTimeout(() => {
+                            setShowIncomeCardAnimation(prev => ({ ...prev, 'co-borrower-second-employment': true }));
+                            setTimeout(() => {
+                              setShowIncomeCardAnimation(prev => ({ ...prev, 'co-borrower-second-employment': false }));
+                            }, 800);
+                          }, 200);
+                        }
+                      }}
+                    >
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-8">
+                            <CardTitle className="flex items-center gap-2">
+                              Co-borrower - Second Employer
+                            </CardTitle>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {/* Add Employer Button */}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                const newId = `coborrower-second-employer-${Date.now()}`;
+                                setCoBorrowerSecondEmployerCards(prev => [...(prev || ['default']), newId]);
+                              }}
+                              className="hover:bg-blue-500 hover:text-white"
+                              data-testid="button-add-coborrower-second-employer"
+                              title="Add New Employer"
+                            >
+                              <Plus className="h-4 w-4 mr-2" />
+                              Add Employer
+                            </Button>
+                            
+                            {/* Delete Employer Button */}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setDeleteCoBorrowerSecondEmployerDialog({ isOpen: true, cardId: propertyId })}
+                              className="hover:bg-red-500 hover:text-white"
+                              data-testid="button-delete-coborrower-second-employer"
+                              title="Delete Employer"
+                            >
+                              <Minus className="h-4 w-4 mr-2" />
+                              Remove
+                            </Button>
+                            
+                            <CollapsibleTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="hover:bg-orange-500 hover:text-white" 
+                                data-testid={`button-toggle-coborrower-second-employment-income-${propertyId}`}
+                                title={isOpen ? 'Minimize' : 'Expand'}
+                                key={`coborrower-second-employment-income-${propertyId}-${isOpen}`}
+                              >
+                                {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </div>
+                        </div>
+                      </CardHeader>
+                    
                     <CollapsibleContent>
                       <CardContent>
                         <div className="space-y-6">
@@ -23811,23 +24086,211 @@ const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
                     <Input
                       id="new-loan-amount"
                       type="text"
+                      placeholder="0"
+                      value={newLoanAmount || '0'}
+                      disabled
+                      className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                      data-testid="input-new-loan-amount"
+                    />
+                  </div>
+                </div>
+
+                {/* New FHA MIP Cost Factor */}
+                <div className="flex items-center gap-4 justify-end">
+                  <Label htmlFor="new-fha-mip-cost-factor" className="text-left">
+                    New FHA MIP Cost Factor:
+                  </Label>
+                  <div className="flex items-center border border-input px-3 rounded-md w-64 bg-background">
+                    <Input
+                      id="new-fha-mip-cost-factor"
+                      type="text"
+                      placeholder="0.00"
+                      value={newFhaMipCostFactor}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^\d.]/g, '');
+                        setNewFhaMipCostFactor(value);
+                      }}
                       className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
                       data-testid="input-new-fha-mip-cost-factor"
                     />
+                    <span className="text-muted-foreground text-sm">%</span>
+                  </div>
+                </div>
+
+                {/* New FHA MIP Cost */}
+                <div className="flex items-center gap-4 justify-end">
+                  <Label htmlFor="new-fha-mip-cost" className="text-left">
+                    New FHA MIP Cost:
+                  </Label>
+                  <div className="flex items-center border border-input px-3 rounded-md w-64 bg-background">
+                    <span className="text-muted-foreground text-sm">$</span>
+                    <Input
+                      id="new-fha-mip-cost"
+                      type="text"
+                      placeholder="0"
+                      value={calculatedNewFhaMipCost}
+                      disabled
+                      className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100 font-bold text-green-600"
+                      data-testid="input-new-fha-mip-cost"
+                    />
+                  </div>
+                </div>
+
+                <div className="border-t my-6"></div>
+
 
                 <div className="flex items-center gap-4 justify-end">
                   <Label htmlFor="adjusted-new-fha-mip" className="text-left">
                     New FHA Upfront MIP Estimate:
                   </Label>
                   <div className="flex items-center border border-input px-3 rounded-md w-64 bg-green-600">
+                    <span className="text-white text-sm">$</span>
+                    <Input
+                      id="adjusted-new-fha-mip"
+                      type="text"
+                      placeholder="0"
+                      value={calculatedAdjustedNewFhaMip}
+                      disabled
+                      className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-white placeholder:text-white/50 disabled:cursor-not-allowed disabled:opacity-100"
+                      data-testid="input-adjusted-new-fha-mip"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+          <div className="border-t border-border mb-2"></div>
+          <p className="text-sm text-muted-foreground italic mb-3 text-right">* after crediting prior loan Upront MIP balance.</p>
+          <DialogFooter className="mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setIsFhaMipDialogOpen(false)}
+              data-testid="button-cancel-fha-mip"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                setSavedFhaMipEstimate(calculatedAdjustedNewFhaMip || '0');
+                setIsFhaMipDialogOpen(false);
+                toast({
+                  title: "Settings Saved",
+                  description: "FHA MIP settings have been updated."
+                });
+              }}
+              data-testid="button-save-fha-mip"
+            >
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* Estimated New Loan Amount Dialog */}
+      <Dialog open={isEstLoanAmountInfoOpen} onOpenChange={setIsEstLoanAmountInfoOpen}>
+        <DialogContent className="sm:max-w-[500px] p-0">
+          <DialogHeader className="text-white p-6 rounded-t-lg" style={{ backgroundColor: '#1a3373' }}>
+            <DialogTitle className="text-white">Estimated New Loan Amount</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-6 px-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+            {/* Message */}
+            <div className="text-lg text-muted-foreground">
+              The initial new loan amount is an estimate based on your mortgage statement, which may not reflect the most current balance. The final loan amount will be confirmed once we receive the official payoff demand from your lender.
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* New Payment Dialog */}
+      <Dialog open={isNewPaymentInfoOpen} onOpenChange={setIsNewPaymentInfoOpen}>
+        <DialogContent className="sm:max-w-[500px] p-0">
+          <DialogHeader className="text-white p-6 rounded-t-lg" style={{ backgroundColor: '#1a3373' }}>
+            <DialogTitle className="text-white">New Monthly Payment</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4 px-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+            {/* Monthly Insurance */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="monthly-insurance" className="w-48 text-right">
+                Monthly Home Insurance:
+              </Label>
+              <div className={`flex items-center border border-input px-3 rounded-md flex-1 ${escrowReserves === 'escrow-not-included' ? 'bg-muted' : 'bg-background'}`}>
+                <span className="text-muted-foreground text-sm">$</span>
+                <Input
+                  id="monthly-insurance"
+                  type="text"
+                  placeholder=""
+                  value={monthlyInsurance.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    setMonthlyInsurance(value);
+                  }}
+                  disabled={escrowReserves === 'escrow-not-included'}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
                   data-testid="input-monthly-insurance"
                 />
               </div>
             </div>
 
             {/* Monthly Property Tax */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="monthly-property-tax" className="w-48 text-right">
+                Monthly Property Tax:
+              </Label>
+              <div className={`flex items-center border border-input px-3 rounded-md flex-1 ${escrowReserves === 'escrow-not-included' ? 'bg-muted' : 'bg-background'}`}>
+                <span className="text-muted-foreground text-sm">$</span>
+                <Input
+                  id="monthly-property-tax"
+                  type="text"
+                  placeholder=""
+                  value={monthlyPropertyTax.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    setMonthlyPropertyTax(value);
+                  }}
+                  disabled={escrowReserves === 'escrow-not-included'}
+                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
+                  data-testid="input-monthly-property-tax"
+                />
+              </div>
+            </div>
+
+            {/* Total Monthly Escrow - Display Only (Auto-calculated) */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="total-monthly-escrow-payment" className="w-48 text-right">
+                Total Monthly Escrow:
+              </Label>
+              <div className="flex items-center border border-input bg-muted px-3 rounded-md flex-1 h-9">
+                <span className="text-base font-bold text-center w-full" data-testid="text-total-monthly-escrow-payment">
+                  {calculatedNewPaymentEscrow > 0 ? `$${calculatedNewPaymentEscrow.toLocaleString('en-US')}` : ''}
+                </span>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* New Monthly Savings Dialog */}
+      <Dialog open={isMonthlySavingsInfoOpen} onOpenChange={setIsMonthlySavingsInfoOpen}>
+        <DialogContent className="sm:max-w-[600px] p-0">
+          <DialogHeader className="text-white p-6 rounded-t-lg" style={{ backgroundColor: '#1a3373' }}>
+            <DialogTitle className="text-white">Existing Monthly Payments</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4 px-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+            {/* Existing Mortgage Payment */}
+            <div className="flex items-center gap-4">
+              <Label htmlFor="existing-mortgage-payment" className="w-80 text-right">
                 Existing Mortgage Payment:
               </Label>
+              <div className="flex items-center border border-input bg-background px-3 rounded-md flex-1">
+                <span className="text-muted-foreground text-sm">$</span>
+                <Input
+                  id="existing-mortgage-payment"
+                  type="text"
+                  placeholder=""
+                  value={existingMortgagePayment.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    setExistingMortgagePayment(value);
+                  }}
                   className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
                   data-testid="input-existing-mortgage-payment"
                 />
