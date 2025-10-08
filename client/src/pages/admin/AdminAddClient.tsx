@@ -1075,6 +1075,7 @@ export default function AdminAddClient() {
 // State for New FHA MIP Estimate section
 const [newLoanAmount, setNewLoanAmount] = useState('');
 const [newFhaMipCostFactor, setNewFhaMipCostFactor] = useState('1.75');
+  const [savedFhaMipEstimate, setSavedFhaMipEstimate] = useState('0');
 const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
   // Auto-calculate FHA MIP Cost
   const calculatedFhaMipCost = useMemo(() => {
@@ -23345,7 +23346,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                                     <Input
                                       type="text"
                                       placeholder="0"
-                                      value={calculatedAdjustedNewFhaMip || '0'}
+                                      value={savedFhaMipEstimate || '0'}
                                       disabled
                                       className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
                                       data-testid={`input-fha-upfront-mip-${rateId}`}
@@ -24162,6 +24163,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
             </Button>
             <Button
               onClick={() => {
+                setSavedFhaMipEstimate(calculatedAdjustedNewFhaMip || '0');
                 setIsFhaMipDialogOpen(false);
                 toast({
                   title: "Settings Saved",
