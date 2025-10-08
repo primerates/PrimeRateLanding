@@ -24354,6 +24354,16 @@ const calculatedNewFhaMipCost = useMemo(() => {
               </div>
             </div>
 
+
+            {/* Separation Line */}
+            <div 
+              className="border-t border-border" 
+              style={{ 
+                marginTop: '48px',
+                marginBottom: '32px'
+              }}
+            ></div>
+
             {/* Action Buttons */}
             <div className="flex justify-end gap-3 mt-8">
               <Button
