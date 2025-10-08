@@ -23865,7 +23865,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
             <div className="h-8"></div>
 
             {/* Message */}
-            <div className="text-lg text-muted-foreground">
+            <div className="text-lg text-muted-foreground" style={{ borderTop: '1px solid hsl(var(--border))', paddingTop: '24px' }}>
               Your current monthly escrow balance, as shown on your latest mortgage statement, will be refunded to you once your new loan funds. Your new escrow reserve balance will be adjusted and updated to replace the previous balance.
             </div>
 
