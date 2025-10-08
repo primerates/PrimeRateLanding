@@ -24458,7 +24458,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
             </div>
 
             {/* Total Existing Monthly Payments - Display Only (Auto-calculated) */}
-            <div className="flex items-center gap-4" style={{ marginBottom: '48px', borderBottom: '3px solid red' }}>
+            <div className="flex items-center gap-4" style={{ marginBottom: '48px' }}>
               <Label htmlFor="total-existing-payments" className="w-80 text-right">
                 Total Existing Monthly Payments:
               </Label>
