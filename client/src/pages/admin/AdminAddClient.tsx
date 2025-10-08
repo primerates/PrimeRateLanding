@@ -1336,7 +1336,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
       ];
       
       const total = values.reduce((sum, val) => {
-        const num = parseInt(val || '0', 10);
+        const num = parseInt((val || '0').replace(/[^\d]/g, ''), 10);
         return sum + num;
       }, 0);
       
