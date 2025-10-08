@@ -23350,7 +23350,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                               >
                                 <Settings className="h-4 w-4" />
                               </Button>
-                              <Label className="text-base font-semibold text-right">FHA MIP Refund</Label>
+                              <Label className="text-base font-semibold text-right">New FHA MIP (After Refund)</Label>
                             </div>
                             {selectedRateIds.map((rateId) => {
                               return (
