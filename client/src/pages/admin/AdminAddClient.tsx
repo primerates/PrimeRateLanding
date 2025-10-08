@@ -24260,6 +24260,81 @@ const calculatedNewFhaMipCost = useMemo(() => {
                 </span>
               </div>
             </div>
+            {/* Separation Line */}
+            <div className="border-t border-border my-4"></div>
+
+            {/* Annual & Monthly FHA MIP Section */}
+            <div className="space-y-3">
+              <h3 className="text-base font-semibold">Annual & Monthly FHA MIP</h3>
+              
+              {/* New Loan Amount */}
+              <div className="flex items-center gap-4">
+                <Label htmlFor="new-loan-amount-mip" className="w-48 text-right">
+                  New Loan Amount:
+                </Label>
+                <div className="relative flex-1">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                  <Input
+                    id="new-loan-amount-mip"
+                    type="text"
+                    className="pl-6 h-9"
+                    placeholder="0"
+                    data-testid="input-new-loan-amount-mip"
+                  />
+                </div>
+              </div>
+
+              {/* Estimated LTV */}
+              <div className="flex items-center gap-4">
+                <Label htmlFor="estimated-ltv" className="w-48 text-right">
+                  Estimated LTV:
+                </Label>
+                <div className="relative flex-1">
+                  <Input
+                    id="estimated-ltv"
+                    type="text"
+                    className="pr-6 h-9"
+                    placeholder="0"
+                    data-testid="input-estimated-ltv"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
+                </div>
+              </div>
+
+              {/* Annual FHA MIP */}
+              <div className="flex items-center gap-4">
+                <Label htmlFor="annual-fha-mip" className="w-48 text-right">
+                  Annual FHA MIP:
+                </Label>
+                <div className="relative flex-1">
+                  <Input
+                    id="annual-fha-mip"
+                    type="text"
+                    className="pr-6 h-9"
+                    placeholder="0"
+                    data-testid="input-annual-fha-mip"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
+                </div>
+              </div>
+
+              {/* Monthly FHA MIP */}
+              <div className="flex items-center gap-4">
+                <Label htmlFor="monthly-fha-mip" className="w-48 text-right">
+                  Monthly FHA MIP:
+                </Label>
+                <div className="relative flex-1">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                  <Input
+                    id="monthly-fha-mip"
+                    type="text"
+                    className="pl-6 h-9"
+                    placeholder="0"
+                    data-testid="input-monthly-fha-mip"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
