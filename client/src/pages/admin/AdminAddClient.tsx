@@ -23333,7 +23333,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                                 className="h-6 w-6"
                                 data-testid="button-fha-upfront-mip-settings"
                               >
-                                <Settings className="h-4 w-4" />
+                                <Settings className={`h-4 w-4 ${!calculatedAdjustedNewFhaMip || calculatedAdjustedNewFhaMip === '0' ? 'text-red-500' : ''}`} />
                               </Button>
                               <Label className="text-base font-semibold text-right">New FHA Upfront MIP</Label>
                             </div>
