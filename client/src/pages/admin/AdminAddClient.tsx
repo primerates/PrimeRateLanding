@@ -24167,7 +24167,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
               </div>
             </div>
             </div>
-          <div className="border-t mt-6"></div>
+          <div className="border-t border-border my-4 pt-4"></div>
           <DialogFooter className="mt-4">
             <Button
               variant="outline"
