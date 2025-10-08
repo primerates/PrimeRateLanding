@@ -1075,7 +1075,6 @@ export default function AdminAddClient() {
 // State for New FHA MIP Estimate section
 const [newLoanAmount, setNewLoanAmount] = useState('');
 const [newFhaMipCostFactor, setNewFhaMipCostFactor] = useState('1.75');
-  const [savedFhaMipEstimate, setSavedFhaMipEstimate] = useState('0');
 const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
   // Auto-calculate FHA MIP Cost
   const calculatedFhaMipCost = useMemo(() => {
@@ -1102,6 +1101,21 @@ const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
     return refund > 0 ? Math.round(refund).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
   }, [calculatedFhaMipCost, calculatedRemainingRefundValue]);
 
+// Auto-calculate New FHA MIP Cost
+const calculatedNewFhaMipCost = useMemo(() => {
+  const balance = parseInt(newLoanAmount.replace(/[^\d]/g, '') || '0', 10);
+  const factor = parseFloat(newFhaMipCostFactor || '0');
+  const cost = balance * (factor / 100);
+  return cost > 0 ? Math.round(cost).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+}, [newLoanAmount, newFhaMipCostFactor]);
+  
+  // Auto-calculate New FHA Upfront MIP Estimate (New MIP Cost - Prior MIP Refund)
+  const calculatedAdjustedNewFhaMip = useMemo(() => {
+    const newMipCost = parseInt(calculatedNewFhaMipCost.replace(/[^\d]/g, '') || '0', 10);
+    const priorRefund = parseInt(calculatedEstimatedMipRefund.replace(/[^\d]/g, '') || '0', 10);
+    const estimate = newMipCost - priorRefund;
+    return estimate > 0 ? estimate.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0';
+  }, [calculatedNewFhaMipCost, calculatedEstimatedMipRefund]);
 // Auto-calculate Adjusted New FHA MIP Cost (New FHA MIP Cost - Est. Prior FHA Upfront MIP Refund)
   // Auto-calculate Total Monthly Escrow
   const calculatedTotalMonthlyEscrow = useMemo(() => {
@@ -1337,40 +1351,13 @@ const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
     vaUnderwritingValues,
     titleEscrowValues,
     payOffInterestValues,
-
+    stateTaxValues,
     processingValues,
     creditReportValues,
     escrowReservesValues
   ]);
   
-
-  // Auto-populate newLoanAmount from rateColumnTotals (first rate column)
-
-  // Auto-calculate New FHA MIP Cost (uses newLoanAmount from useEffect)
-  const calculatedNewFhaMipCost = useMemo(() => {
-    const balance = parseInt(newLoanAmount.replace(/[^\d]/g, '') || '0', 10);
-    const factor = parseFloat(newFhaMipCostFactor || '0');
-    const cost = balance * (factor / 100);
-    return cost > 0 ? Math.round(cost).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-  }, [newLoanAmount, newFhaMipCostFactor]);
-  useEffect(() => {
-    const firstRateId = selectedRateIds[0];
-    if (firstRateId && rateColumnTotals[firstRateId]) {
-      const total = rateColumnTotals[firstRateId];
-      const formatted = total > 0 ? Math.round(total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-      setNewLoanAmount(formatted);
-    }
-  }, [selectedRateIds, rateColumnTotals]);
-
-  // Auto-calculate New FHA Upfront MIP Estimate (New MIP Cost - Prior MIP Refund)
-  const calculatedAdjustedNewFhaMip = useMemo(() => {
-    const newMipCost = parseInt(calculatedNewFhaMipCost.replace(/[^\d]/g, '') || '0', 10);
-    const priorRefund = parseInt(calculatedEstimatedMipRefund.replace(/[^\d]/g, '') || '0', 10);
-    const estimate = newMipCost - priorRefund;
-    return estimate > 0 ? estimate.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0';
-  }, [calculatedNewFhaMipCost, calculatedEstimatedMipRefund]);
   // Calculate monthly mortgage payments for each rate using amortization formula
-
   const calculatedMonthlyPayments = useMemo(() => {
     return Array.from({ length: 5 }).map((_, index) => {
       // Get the principal amount (loan amount)
@@ -23358,7 +23345,7 @@ const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
                                     <Input
                                       type="text"
                                       placeholder="0"
-                                      value={savedFhaMipEstimate || '0'}
+                                      value={calculatedAdjustedNewFhaMip || '0'}
                                       disabled
                                       className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
                                       data-testid={`input-fha-upfront-mip-${rateId}`}
@@ -24087,9 +24074,13 @@ const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
                       id="new-loan-amount"
                       type="text"
                       placeholder="0"
-                      value={newLoanAmount || '0'}
-                      disabled
-                      className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
+                      value={newLoanAmount}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^\d]/g, '');
+                        const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                        setNewLoanAmount(formatted);
+                      }}
+                      className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
                       data-testid="input-new-loan-amount"
                     />
                   </div>
@@ -24171,7 +24162,6 @@ const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
             </Button>
             <Button
               onClick={() => {
-                setSavedFhaMipEstimate(calculatedAdjustedNewFhaMip || '0');
                 setIsFhaMipDialogOpen(false);
                 toast({
                   title: "Settings Saved",
