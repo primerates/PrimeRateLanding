@@ -23323,24 +23323,33 @@ const calculatedNewFhaMipCost = useMemo(() => {
                         )}
 
 
-                      {/* FHA Upfront MIP Section - Only show when FHA loan category is selected */}
-                      {selectedLoanCategory?.startsWith('FHA - ') && (
+                      {/* FHA Upfront MIP / VA Funding Fee Section */}
+                      {(selectedLoanCategory?.startsWith('FHA - ') || selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ')) && (
                         <div className="border-t pt-6">
                           <div className="grid gap-4 mb-6" style={{ gridTemplateColumns: `repeat(${selectedRateIds.length + 1}, minmax(0, 1fr))` }}>
                             <div className="flex items-center justify-end pr-4 gap-2">
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => setIsFhaMipDialogOpen(true)}
-                                className="h-6 w-6"
-                                data-testid="button-fha-upfront-mip-settings"
-                              >
-                                <Settings className={`h-4 w-4 ${!calculatedAdjustedNewFhaMip || calculatedAdjustedNewFhaMip === '0' ? 'text-red-500' : ''}`} />
-                              </Button>
-                              <Label className="text-base font-semibold text-right">New FHA Upfront MIP</Label>
+                              {selectedLoanCategory?.startsWith('FHA - ') && (
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => setIsFhaMipDialogOpen(true)}
+                                  className="h-6 w-6"
+                                  data-testid="button-fha-upfront-mip-settings"
+                                >
+                                  <Settings className={`h-4 w-4 ${!calculatedAdjustedNewFhaMip || calculatedAdjustedNewFhaMip === '0' ? 'text-red-500' : ''}`} />
+                                </Button>
+                              )}
+                              <Label className="text-base font-semibold text-right">
+                                {selectedLoanCategory?.startsWith('FHA - ') ? 'New FHA Upfront MIP' : 'VA Funding Fee'}
+                              </Label>
                             </div>
-                            {selectedRateIds.map((rateId) => {
+                            {selectedRateIds.map((rateId, index) => {
+                              const isVALoan = selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ');
+                              const displayValue = isVALoan 
+                                ? (thirdPartyServiceValues['s1']?.[index] || '0')
+                                : (calculatedAdjustedNewFhaMip || '0');
+                              
                               return (
                                 <div key={rateId} className="flex justify-center">
                                   <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
@@ -23348,10 +23357,10 @@ const calculatedNewFhaMipCost = useMemo(() => {
                                     <Input
                                       type="text"
                                       placeholder="0"
-                                      value={calculatedAdjustedNewFhaMip || '0'}
+                                      value={displayValue}
                                       disabled
                                       className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
-                                      data-testid={`input-fha-upfront-mip-${rateId}`}
+                                      data-testid={`input-${isVALoan ? 'va-funding-fee' : 'fha-upfront-mip'}-${rateId}`}
                                     />
                                   </div>
                                 </div>
