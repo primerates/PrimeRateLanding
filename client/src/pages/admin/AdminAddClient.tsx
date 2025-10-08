@@ -1338,7 +1338,8 @@ const calculatedNewFhaMipCost = useMemo(() => {
       ];
       
       const total = values.reduce((sum, val) => {
-        const num = parseInt((val || '0').replace(/[^\d]/g, ''), 10);
+        const cleanValue = (val || '0').replace(/[^\d.]/g, '');
+        const num = parseFloat(cleanValue) || 0;
         return sum + num;
       }, 0);
       
@@ -18464,8 +18465,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                               )}
                             </CardTitle>
                           </div>
-                          <div className="flex items-center gap-2">
-                            {/* Add/Remove buttons for multi-property types */}
+                                                   {/* Add/Remove buttons for multi-property types */}
                             {(property.use === 'second-home' || property.use === 'investment') && (
                               <div className="flex gap-1">
                                 <Button
