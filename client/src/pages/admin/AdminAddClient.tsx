@@ -1103,12 +1103,20 @@ const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
   }, [calculatedFhaMipCost, calculatedRemainingRefundValue]);
 
 // Auto-calculate New FHA MIP Cost
+  // Auto-populate New Loan Amount from New Est. Loan Amount (fourth card)
+  const calculatedNewLoanAmountFromCard = useMemo(() => {
+    const firstRateId = selectedRateIds[0];
+    if (!firstRateId) return '';
+    const total = rateColumnTotals[firstRateId] || 0;
+    return total > 0 ? Math.round(total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+  }, [selectedRateIds, rateColumnTotals]);
+
 const calculatedNewFhaMipCost = useMemo(() => {
-  const balance = parseInt(newLoanAmount.replace(/[^\d]/g, '') || '0', 10);
+  const balance = parseInt(calculatedNewLoanAmountFromCard.replace(/[^\d]/g, '') || '0', 10);
   const factor = parseFloat(newFhaMipCostFactor || '0');
   const cost = balance * (factor / 100);
   return cost > 0 ? Math.round(cost).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-}, [newLoanAmount, newFhaMipCostFactor]);
+}, [calculatedNewLoanAmountFromCard, newFhaMipCostFactor]);
   
   // Auto-calculate New FHA Upfront MIP Estimate (New MIP Cost - Prior MIP Refund)
   const calculatedAdjustedNewFhaMip = useMemo(() => {
@@ -24075,13 +24083,9 @@ const calculatedNewFhaMipCost = useMemo(() => {
                       id="new-loan-amount"
                       type="text"
                       placeholder="0"
-                      value={newLoanAmount}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/[^\d]/g, '');
-                        const formatted = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-                        setNewLoanAmount(formatted);
-                      }}
-                      className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                      value={calculatedNewLoanAmountFromCard || '0'}
+                      disabled
+                      className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
                       data-testid="input-new-loan-amount"
                     />
                   </div>
