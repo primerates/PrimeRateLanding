@@ -24262,7 +24262,9 @@ const calculatedNewFhaMipCost = useMemo(() => {
                 </span>
               </div>
             </div>
-            {/* Separation Line */}
+            {isFHACategory && (
+            <>
+              {/* Separation Line */}
             <div 
               className="border-t border-border" 
               style={{ 
@@ -24353,6 +24355,8 @@ const calculatedNewFhaMipCost = useMemo(() => {
                 </div>
               </div>
             </div>
+            </>
+            )}
 
 
             {/* Separation Line */}
