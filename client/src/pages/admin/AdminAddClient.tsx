@@ -1071,6 +1071,7 @@ export default function AdminAddClient() {
   const [fhaMipEstimatedCredit, setFhaMipEstimatedCredit] = useState('');
   const [fhaMipRemainingRefundValue, setFhaMipRemainingRefundValue] = useState('');
   const [fhaMipNewLoanAmount, setFhaMipNewLoanAmount] = useState('');
+const [newLoanAmount, setNewLoanAmount] = useState('');
 
 // State for New FHA MIP Estimate section
 const [newFhaMipCostFactor, setNewFhaMipCostFactor] = useState('1.75');
@@ -1341,6 +1342,15 @@ const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
     creditReportValues,
     escrowReservesValues
   ]);
+
+  // Auto-sync first rate column total to newLoanAmount for popup
+  useEffect(() => {
+    if (selectedRateIds.length > 0 && rateColumnTotals.length > 0) {
+      const total = rateColumnTotals[0];
+      const formatted = total > 0 ? Math.round(total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+      setNewLoanAmount(formatted);
+    }
+  }, [selectedRateIds, rateColumnTotals]);
   
 
   const calculatedMonthlyPayments = useMemo(() => {
@@ -11337,13 +11347,11 @@ const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
                               </div>
                               
                               <div className="space-y-2 md:col-span-1">
-                                <Label htmlFor="template-employer-unit">Unit/Suite</Label>
-                                <Input
                                   id="template-employer-unit"
-              </div>
-            </div>
-
-                            
+                                  data-testid="input-template-employer-unit"
+                                />
+                              </div>
+                            </div>
                             <CollapsibleTrigger asChild>
                               <Button 
                                 variant="ghost" 
