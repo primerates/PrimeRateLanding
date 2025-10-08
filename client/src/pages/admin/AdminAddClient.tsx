@@ -1329,6 +1329,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
         titleEscrowValues[index],
         payOffInterestValues[index],
         stateTaxValues[index],
+        calculatedAdjustedNewFhaMip,
         processingValues[index],
         creditReportValues[index],
         escrowReservesValues[index]
@@ -1350,6 +1351,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
     vaTermiteValues,
     vaUnderwritingValues,
     titleEscrowValues,
+    calculatedAdjustedNewFhaMip
     payOffInterestValues,
     stateTaxValues,
     processingValues,
