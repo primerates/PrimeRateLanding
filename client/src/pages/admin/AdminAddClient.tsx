@@ -1150,8 +1150,6 @@ const calculatedNewFhaMipCost = useMemo(() => {
   const [newMortgagePayment, setNewMortgagePayment] = useState('');
   const [newEscrowPayment, setNewEscrowPayment] = useState('');
   const [monthlyInsurance, setMonthlyInsurance] = useState('');
-  const [newLoanAmountMip, setNewLoanAmountMip] = useState('');
-  const [monthlyFhaMip, setMonthlyFhaMip] = useState('');
   const [monthlyPropertyTax, setMonthlyPropertyTax] = useState('');
   
   // State for Third Party Services Customization
@@ -24263,7 +24261,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
               </div>
             </div>
             {/* Separation Line */}
-            <div className="border-t border-border mt-20 mb-8"></div>
+            <div className="border-t border-border mt-8 mb-8"></div>
 
             {/* Annual & Monthly FHA MIP Section */}
             <div className="space-y-3">
@@ -24274,18 +24272,13 @@ const calculatedNewFhaMipCost = useMemo(() => {
                 <Label htmlFor="new-loan-amount-mip" className="w-48 text-right">
                   New Loan Amount:
                 </Label>
-                <div className="flex items-center border border-input px-3 rounded-md flex-1">
-                  <span className="text-muted-foreground text-sm">$</span>
+                <div className="relative flex-1">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
                   <Input
                     id="new-loan-amount-mip"
                     type="text"
+                    className="pl-6 h-9"
                     placeholder="0"
-                    value={newLoanAmountMip.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/[^\d]/g, '');
-                      setNewLoanAmountMip(value);
-                    }}
-                    className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
                     data-testid="input-new-loan-amount-mip"
                   />
                 </div>
@@ -24330,18 +24323,13 @@ const calculatedNewFhaMipCost = useMemo(() => {
                 <Label htmlFor="monthly-fha-mip" className="w-48 text-right">
                   Monthly FHA MIP:
                 </Label>
-                <div className="flex items-center border border-input px-3 rounded-md flex-1">
-                  <span className="text-muted-foreground text-sm">$</span>
+                <div className="relative flex-1">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
                   <Input
                     id="monthly-fha-mip"
                     type="text"
+                    className="pl-6 h-9"
                     placeholder="0"
-                    value={monthlyFhaMip.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/[^\d]/g, '');
-                      setMonthlyFhaMip(value);
-                    }}
-                    className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
                     data-testid="input-monthly-fha-mip"
                   />
                 </div>
@@ -24365,27 +24353,9 @@ const calculatedNewFhaMipCost = useMemo(() => {
               </Button>
             </div>
           </div>
-
-            {/* Action Buttons */}
-            <div className="flex justify-end gap-3 mt-8">
-              <Button
-                variant="outline"
-                onClick={() => setIsNewPaymentInfoOpen(false)}
-                data-testid="button-cancel-fha-mip"
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={() => setIsNewPaymentInfoOpen(false)}
-                data-testid="button-save-fha-mip"
-              >
-                Save
-              </Button>
-            </div>
-            </div>
-          </div>
         </DialogContent>
       </Dialog>
+
       {/* New Monthly Savings Dialog */}
       <Dialog open={isMonthlySavingsInfoOpen} onOpenChange={setIsMonthlySavingsInfoOpen}>
         <DialogContent className="sm:max-w-[600px] p-0">
