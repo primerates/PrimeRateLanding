@@ -23666,7 +23666,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                           </div>
                           {selectedRateIds.map((rateId) => {
                             const total = rateColumnTotals[rateId];
-                            const displayValue = total > 0 ? total.toLocaleString('en-US') : '';
+                            const displayValue = total > 0 ? total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '';
                             
                             return (
                               <div key={rateId} className="flex justify-center">

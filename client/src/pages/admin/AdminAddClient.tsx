@@ -1338,7 +1338,8 @@ const calculatedNewFhaMipCost = useMemo(() => {
       ];
       
       const total = values.reduce((sum, val) => {
-        const num = parseInt((val || '0').replace(/[^\d]/g, ''), 10);
+      const cleanValue = (val || '0').replace(/[^\d.]/g, '');
+      const num = parseFloat(cleanValue) || 0;
         return sum + num;
       }, 0);
       
@@ -23729,7 +23730,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                           </div>
                           {selectedRateIds.map((rateId) => {
                             const total = rateColumnTotals[rateId];
-                            const displayValue = total > 0 ? total.toLocaleString('en-US') : '';
+                            const displayValue = total > 0 ? total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '';
                             
                             return (
                               <div key={rateId} className="flex justify-center">
