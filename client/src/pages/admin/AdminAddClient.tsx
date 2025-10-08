@@ -18474,9 +18474,11 @@ const calculatedNewFhaMipCost = useMemo(() => {
                           </div>
                         </div>
                       </CardHeader>
+                      <CollapsibleContent>
+                      </CollapsibleContent>
                     </Collapsible>
-                      </Card>
-                    ))}
+                  </Card>
+                ))}
                   </TabsContent>
                 </Tabs>
               </CardContent>
