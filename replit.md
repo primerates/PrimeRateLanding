@@ -98,3 +98,13 @@ The admin interface (`/admin/add-client`) manages client loan applications with 
 #### Labels & Naming
 - **Preference**: "New FHA Upfront MIP" chosen for clarity over alternatives
 - **Default Tab**: "client" (Borrower) is default, Quote tab design preserved
+
+#### FHA/VA Conditional Row (New FHA Upfront MIP / VA Funding Fee)
+- **Implementation**: Independent row that displays different content based on loan category
+- **FHA Loans**: Shows "New FHA Upfront MIP" with settings icon and disabled inputs displaying calculated values
+- **VA Loans**: Shows "VA Funding Fee" (no settings icon) with editable inputs connected to `thirdPartyServiceValues['s1']`
+- **Data Flow**: 
+  - VA Funding Fee values stored in `thirdPartyServiceValues['s1']` array (one value per rate column)
+  - These values are included in auto-sum calculations at the bottom of the page
+  - Service ID 's1' (VA Funding Fee) is always hidden from Third Party Services section to prevent duplication
+- **Conditional Logic**: Uses direct check `selectedLoanCategory?.startsWith('VA - ')` or `selectedLoanCategory?.startsWith('VA Jumbo - ')` to determine display mode

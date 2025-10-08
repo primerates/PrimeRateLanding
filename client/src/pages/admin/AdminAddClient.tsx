@@ -23346,9 +23346,53 @@ const calculatedNewFhaMipCost = useMemo(() => {
                             </div>
                             {selectedRateIds.map((rateId, index) => {
                               const isVALoan = selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ');
-                              const displayValue = isVALoan 
-                                ? (thirdPartyServiceValues['s1']?.[index] || '0')
-                                : (calculatedAdjustedNewFhaMip || '0');
+                              
+                              // For VA loans: editable input from thirdPartyServiceValues
+                              if (isVALoan) {
+                                // Initialize service values if not exist
+                                if (!thirdPartyServiceValues['s1']) {
+                                  setThirdPartyServiceValues(prev => ({
+                                    ...prev,
+                                    's1': ['', '', '', '', '']
+                                  }));
+                                }
+                                
+                                const numVal = thirdPartyServiceValues['s1']?.[index] 
+                                  ? thirdPartyServiceValues['s1'][index].replace(/[^\d]/g, '') 
+                                  : '';
+                                const displayValue = numVal ? numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+                                
+                                return (
+                                  <div key={rateId} className="flex justify-center">
+                                    <div className="flex items-center border border-input bg-background px-3 rounded-md w-3/4">
+                                      <span className="text-muted-foreground text-sm">$</span>
+                                      <Input
+                                        type="text"
+                                        placeholder=""
+                                        value={displayValue}
+                                        onChange={(e) => {
+                                          const value = e.target.value.replace(/[^\d]/g, '');
+                                          setThirdPartyServiceValues(prev => {
+                                            const newValues = { ...prev };
+                                            if (!newValues['s1']) {
+                                              newValues['s1'] = ['', '', '', '', ''];
+                                            }
+                                            const updatedArray = [...newValues['s1']];
+                                            updatedArray[index] = value;
+                                            newValues['s1'] = updatedArray;
+                                            return newValues;
+                                          });
+                                        }}
+                                        className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
+                                        data-testid={`input-va-funding-fee-${rateId}`}
+                                      />
+                                    </div>
+                                  </div>
+                                );
+                              }
+                              
+                              // For FHA loans: disabled input showing calculated value
+                              const displayValue = calculatedAdjustedNewFhaMip || '0';
                               
                               return (
                                 <div key={rateId} className="flex justify-center">
@@ -23360,7 +23404,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                                       value={displayValue}
                                       disabled
                                       className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
-                                      data-testid={`input-${isVALoan ? 'va-funding-fee' : 'fha-upfront-mip'}-${rateId}`}
+                                      data-testid={`input-fha-upfront-mip-${rateId}`}
                                     />
                                   </div>
                                 </div>
@@ -23441,8 +23485,8 @@ const calculatedNewFhaMipCost = useMemo(() => {
                                   const isVACategory = selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ');
                                   const isFHACategory = selectedLoanCategory?.startsWith('FHA - ');
                                   
-                                  // Hide VA Funding Fee (s1) when exempt is enabled OR not a VA category
-                                  if (service.id === 's1' && ((isVAExempt || isVAJumboExempt) || !isVACategory)) {
+                                  // Hide VA Funding Fee (s1) - it now has its own independent row
+                                  if (service.id === 's1') {
                                     return false;
                                   }
                                   // Hide VA Termite Report (s3) when not a VA category
