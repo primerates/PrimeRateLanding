@@ -24264,10 +24264,9 @@ const calculatedNewFhaMipCost = useMemo(() => {
             </div>
             {/* Separation Line */}
             <div 
-              className="border-t border-red-500" 
+              className="border-t border-border" 
               style={{ 
-                borderTopWidth: '3px',
-                marginTop: '96px',
+                marginTop: '48px',
                 marginBottom: '32px'
               }}
             ></div>
