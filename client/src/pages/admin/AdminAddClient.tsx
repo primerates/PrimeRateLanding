@@ -1102,15 +1102,6 @@ const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
     return refund > 0 ? Math.round(refund).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
   }, [calculatedFhaMipCost, calculatedRemainingRefundValue]);
 
-// Auto-calculate New FHA MIP Cost
-  
-  // Auto-calculate New FHA Upfront MIP Estimate (New MIP Cost - Prior MIP Refund)
-  const calculatedAdjustedNewFhaMip = useMemo(() => {
-    const newMipCost = parseInt(calculatedNewFhaMipCost.replace(/[^\d]/g, '') || '0', 10);
-    const priorRefund = parseInt(calculatedEstimatedMipRefund.replace(/[^\d]/g, '') || '0', 10);
-    const estimate = newMipCost - priorRefund;
-    return estimate > 0 ? estimate.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0';
-  }, [calculatedNewFhaMipCost, calculatedEstimatedMipRefund]);
 // Auto-calculate Adjusted New FHA MIP Cost (New FHA MIP Cost - Est. Prior FHA Upfront MIP Refund)
   // Auto-calculate Total Monthly Escrow
   const calculatedTotalMonthlyEscrow = useMemo(() => {
@@ -1354,8 +1345,24 @@ const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
   
 
   // Auto-populate newLoanAmount from rateColumnTotals (first rate column)
+
+  // Auto-calculate New FHA MIP Cost (uses newLoanAmount from useEffect)
+  const calculatedNewFhaMipCost = useMemo(() => {
+    const balance = parseInt(newLoanAmount.replace(/[^\d]/g, '') || '0', 10);
+    const factor = parseFloat(newFhaMipCostFactor || '0');
+    const cost = balance * (factor / 100);
+    return cost > 0 ? Math.round(cost).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+  }, [newLoanAmount, newFhaMipCostFactor]);
   useEffect(() => {
     const firstRateId = selectedRateIds[0];
+
+  // Auto-calculate New FHA Upfront MIP Estimate (New MIP Cost - Prior MIP Refund)
+  const calculatedAdjustedNewFhaMip = useMemo(() => {
+    const newMipCost = parseInt(calculatedNewFhaMipCost.replace(/[^\d]/g, '') || '0', 10);
+    const priorRefund = parseInt(calculatedEstimatedMipRefund.replace(/[^\d]/g, '') || '0', 10);
+    const estimate = newMipCost - priorRefund;
+    return estimate > 0 ? estimate.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0';
+  }, [calculatedNewFhaMipCost, calculatedEstimatedMipRefund]);
     if (firstRateId && rateColumnTotals[firstRateId]) {
       const total = rateColumnTotals[firstRateId];
       const formatted = total > 0 ? Math.round(total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
@@ -1364,13 +1371,6 @@ const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
   }, [selectedRateIds, rateColumnTotals]);
   // Calculate monthly mortgage payments for each rate using amortization formula
 
-  // Auto-calculate New FHA MIP Cost
-  const calculatedNewFhaMipCost = useMemo(() => {
-    const balance = parseInt(newLoanAmount.replace(/[^\d]/g, '') || '0', 10);
-    const factor = parseFloat(newFhaMipCostFactor || '0');
-    const cost = balance * (factor / 100);
-    return cost > 0 ? Math.round(cost).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-  }, [newLoanAmount, newFhaMipCostFactor]);
   const calculatedMonthlyPayments = useMemo(() => {
     return Array.from({ length: 5 }).map((_, index) => {
       // Get the principal amount (loan amount)
