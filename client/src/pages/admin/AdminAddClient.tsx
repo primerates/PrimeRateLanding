@@ -1150,6 +1150,8 @@ const calculatedNewFhaMipCost = useMemo(() => {
   const [newMortgagePayment, setNewMortgagePayment] = useState('');
   const [newEscrowPayment, setNewEscrowPayment] = useState('');
   const [monthlyInsurance, setMonthlyInsurance] = useState('');
+  const [newLoanAmountMip, setNewLoanAmountMip] = useState('');
+  const [monthlyFhaMip, setMonthlyFhaMip] = useState('');
   const [monthlyPropertyTax, setMonthlyPropertyTax] = useState('');
   
   // State for Third Party Services Customization
@@ -24277,8 +24279,13 @@ const calculatedNewFhaMipCost = useMemo(() => {
                   <Input
                     id="new-loan-amount-mip"
                     type="text"
-                    className="pl-6 h-9"
+                    className="pl-6 h-9 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
                     placeholder="0"
+                    value={newLoanAmountMip.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^\d]/g, '');
+                      setNewLoanAmountMip(value);
+                    }}
                     data-testid="input-new-loan-amount-mip"
                   />
                 </div>
@@ -24328,8 +24335,13 @@ const calculatedNewFhaMipCost = useMemo(() => {
                   <Input
                     id="monthly-fha-mip"
                     type="text"
-                    className="pl-6 h-9"
+                    className="pl-6 h-9 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
                     placeholder="0"
+                    value={monthlyFhaMip.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^\d]/g, '');
+                      setMonthlyFhaMip(value);
+                    }}
                     data-testid="input-monthly-fha-mip"
                   />
                 </div>
