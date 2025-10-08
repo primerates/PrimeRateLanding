@@ -1103,12 +1103,6 @@ const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
   }, [calculatedFhaMipCost, calculatedRemainingRefundValue]);
 
 // Auto-calculate New FHA MIP Cost
-const calculatedNewFhaMipCost = useMemo(() => {
-  const balance = parseInt(calculatedNewLoanAmountFromCard.replace(/[^\d]/g, '') || '0', 10);
-  const factor = parseFloat(newFhaMipCostFactor || '0');
-  const cost = balance * (factor / 100);
-  return cost > 0 ? Math.round(cost).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-}, [calculatedNewLoanAmountFromCard, newFhaMipCostFactor]);
   
   // Auto-calculate New FHA Upfront MIP Estimate (New MIP Cost - Prior MIP Refund)
   const calculatedAdjustedNewFhaMip = useMemo(() => {
@@ -1358,15 +1352,25 @@ const calculatedNewFhaMipCost = useMemo(() => {
     escrowReservesValues
   ]);
   
-  // Calculate monthly mortgage payments for each rate using amortization formula
-  // Auto-populate New Loan Amount from New Est. Loan Amount (fourth card)
-  const calculatedNewLoanAmountFromCard = useMemo(() => {
+
+  // Auto-populate newLoanAmount from rateColumnTotals (first rate column)
+  useEffect(() => {
     const firstRateId = selectedRateIds[0];
-    if (!firstRateId) return '';
-    const total = rateColumnTotals[firstRateId] || 0;
-    return total > 0 ? Math.round(total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+    if (firstRateId && rateColumnTotals[firstRateId]) {
+      const total = rateColumnTotals[firstRateId];
+      const formatted = total > 0 ? Math.round(total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+      setNewLoanAmount(formatted);
+    }
   }, [selectedRateIds, rateColumnTotals]);
-  
+  // Calculate monthly mortgage payments for each rate using amortization formula
+
+  // Auto-calculate New FHA MIP Cost
+  const calculatedNewFhaMipCost = useMemo(() => {
+    const balance = parseInt(newLoanAmount.replace(/[^\d]/g, '') || '0', 10);
+    const factor = parseFloat(newFhaMipCostFactor || '0');
+    const cost = balance * (factor / 100);
+    return cost > 0 ? Math.round(cost).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+  }, [newLoanAmount, newFhaMipCostFactor]);
   const calculatedMonthlyPayments = useMemo(() => {
     return Array.from({ length: 5 }).map((_, index) => {
       // Get the principal amount (loan amount)
@@ -24083,7 +24087,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                       id="new-loan-amount"
                       type="text"
                       placeholder="0"
-                      value={calculatedNewLoanAmountFromCard || '0'}
+                      value={newLoanAmount || '0'}
                       disabled
                       className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
                       data-testid="input-new-loan-amount"
