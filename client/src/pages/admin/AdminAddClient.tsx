@@ -24436,7 +24436,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
             </div>
 
             {/* Monthly Payment of Other Debts with Remaining Cash Out Deployed */}
-            <div className="flex items-center gap-4" style={{ marginBottom: '48px', borderBottom: '3px solid red' }}>
+            <div className="flex items-center gap-4" >
               <Label htmlFor="other-debts" className="w-80 text-right">
                 Monthly Payment of Other Debts with Remaining Cash Out Deployed:
               </Label>
@@ -24458,7 +24458,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
             </div>
 
             {/* Total Existing Monthly Payments - Display Only (Auto-calculated) */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4" style={{ marginTop: '48px', borderTop: '3px solid red' }}>
               <Label htmlFor="total-existing-payments" className="w-80 text-right">
                 Total Existing Monthly Payments:
               </Label>
