@@ -3313,6 +3313,12 @@ const calculatedNewFhaMipCost = useMemo(() => {
       setVaRateTerm('0.00');
       setVaIRRRL('0.00');
       setIsVACalculated(true);
+      
+      // Also populate VA funding fee values with "0"
+      setThirdPartyServiceValues(prev => ({
+        ...prev,
+        's1': ['0', '0', '0', '0', '0']
+      }));
     }
   }, [isVAExempt, isVAJumboExempt]);
 
@@ -18453,8 +18459,6 @@ const calculatedNewFhaMipCost = useMemo(() => {
                                   type="button"
                                   variant="outline"
                                   size="sm"
-                                  onClick={() => setAddPropertyDialog({ isOpen: true, propertyType: property.use as 'second-home' | 'investment' })}
-                                  data-testid={`button-add-${property.use}`}
                                   title="add"
                                 >
                                   <Plus className="h-3 w-3" />
@@ -23314,21 +23318,36 @@ const calculatedNewFhaMipCost = useMemo(() => {
                                 </Button>
                               )}
                               {/* Star icon for VA loans only */}
-                              {(selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ')) && (
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-6 w-6 hover:bg-amber-500 hover:text-white"
-                                  onClick={() => setShowVAFundingFeeDialog(true)}
-                                  data-testid="button-va-funding-fee"
-                                >
-                                  <Star className={`h-4 w-4 ${
-                                    (isVAExempt || isVAJumboExempt)
-                                      ? 'text-green-600 fill-green-600'
-                                      : 'text-purple-500 fill-purple-500'
-                                  }`} />
-                                </Button>
-                              )}
+                              {(selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ')) && (() => {
+                                // Determine star color based on VA Funding Fee values
+                                const vaFeeValues = thirdPartyServiceValues['s1'] || ['', '', '', '', ''];
+                                const hasAnyValue = vaFeeValues.some(val => val && val.trim() !== '');
+                                const allZero = vaFeeValues.every(val => !val || val.trim() === '' || val === '0');
+                                
+                                let starColor = '';
+                                if (!hasAnyValue) {
+                                  // Red: No values entered
+                                  starColor = 'text-red-600 fill-red-600';
+                                } else if (allZero) {
+                                  // Green: All values are $0
+                                  starColor = 'text-green-600 fill-green-600';
+                                } else {
+                                  // Grey: Values entered (non-zero)
+                                  starColor = 'text-gray-500 fill-gray-500';
+                                }
+                                
+                                return (
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-6 w-6 hover:bg-amber-500 hover:text-white"
+                                    onClick={() => setShowVAFundingFeeDialog(true)}
+                                    data-testid="button-va-funding-fee"
+                                  >
+                                    <Star className={`h-4 w-4 ${starColor}`} />
+                                  </Button>
+                                );
+                              })()}
                               <Label className="text-base font-semibold text-right">
                                 {selectedLoanCategory?.startsWith('FHA - ') ? 'New FHA Upfront MIP' : 'VA Funding Fee'}
                               </Label>
