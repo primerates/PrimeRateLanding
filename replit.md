@@ -49,3 +49,40 @@ Preferred communication style: Simple, everyday language.
 ### Asset Management
 - **Vite asset handling**: Optimized asset bundling.
 - **Image assets**: Stored in `attached_assets` directory.
+
+## Admin Loan Management System
+
+### Overview
+The admin interface (`/admin/add-client`) manages client loan applications with support for multiple loan categories (Conventional, FHA, VA, etc.), rate configurations, third-party services, and quote generation.
+
+### Key Technical Patterns
+
+#### FHA Upfront MIP Calculations
+- **Design Pattern**: Purple title/fields for existing/prior FHA data; Green title/fields for new FHA estimates
+- **Display Fields**: Use `disabled` attribute with `disabled:cursor-not-allowed disabled:opacity-100` classes
+- **Calculation Logic**: 
+  ```
+  New FHA Upfront MIP Estimate = calculatedNewFhaMipCost - calculatedEstimatedMipRefund
+  Stored in: calculatedAdjustedNewFhaMip (single string value with comma formatting)
+  ```
+- **Visual Indicators**: Settings icon displays in red when values empty, returns to default when populated
+
+#### Rate Column Totals System
+- **Architecture**: 5 rate columns with auto-calculated totals
+- **Data Structure**: Most values are arrays (one per column), but some like `calculatedAdjustedNewFhaMip` are single values applied to all columns
+- **Critical Fix**: Always strip commas before parseInt: `.replace(/[^\d]/g, '')` before `parseInt()` for accurate numeric conversion
+- **Implementation**:
+  ```javascript
+  const total = values.reduce((sum, val) => {
+    const num = parseInt((val || '0').replace(/[^\d]/g, ''), 10);
+    return sum + num;
+  }, 0);
+  ```
+
+#### Value Synchronization
+- **Pay Off Interest**: Updates both `payOffInterestValues` and `thirdPartyServiceValues['s6']` for consistency
+- **Escrow Reserves**: Syncs `calculatedTotalMonthlyEscrow` to `escrowReservesValues` for calculations
+
+#### Labels & Naming
+- **Preference**: "New FHA Upfront MIP" chosen for clarity over alternatives
+- **Default Tab**: "client" (Borrower) is default, Quote tab design preserved
