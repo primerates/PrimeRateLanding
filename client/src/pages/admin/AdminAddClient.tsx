@@ -24870,7 +24870,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
               className="hover:text-green-600"
               data-testid="button-apply-to-all-rates"
             >
-              Apply to All Rates
+              Apply to Rate
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -29411,7 +29411,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
               className="text-xs px-2 w-full bg-primary text-white border-primary hover:text-green-500 hover:bg-primary hover:border-primary"
               data-testid="button-copy-for-all-rates-tps"
             >
-              Apply to All Rates
+              Apply to Rate
             </Button>
             <Button
               variant="outline"
