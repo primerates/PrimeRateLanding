@@ -24864,21 +24864,6 @@ const calculatedNewFhaMipCost = useMemo(() => {
                 if (isVAExempt || isVAJumboExempt) {
                   return; // Don't allow clicking when exempt
                 }
-                // TODO: Apply to selected rate logic
-                setShowVAFundingFeeDialog(false);
-              }}
-              className="hover:text-green-600"
-              data-testid="button-apply-to-rate"
-            >
-              Apply to Rate
-            </Button>
-            <Button
-              variant="default"
-              size="sm"
-              onClick={() => {
-                if (isVAExempt || isVAJumboExempt) {
-                  return; // Don't allow clicking when exempt
-                }
                 // TODO: Apply to all rates logic
                 setShowVAFundingFeeDialog(false);
               }}
