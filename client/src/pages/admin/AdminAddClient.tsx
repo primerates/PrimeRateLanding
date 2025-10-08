@@ -8104,7 +8104,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
       {/* Main Content */}
       <div className="container mx-auto px-6 py-8">
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <Tabs defaultValue="client" className="space-y-6" onValueChange={(value) => {
+          <Tabs defaultValue="quote" className="space-y-6" onValueChange={(value) => {
             if (value === 'client' && !showEntryAnimation) {
               // Only trigger borrower animation if not on initial page load
               // Reset to false first to ensure animation can retrigger
