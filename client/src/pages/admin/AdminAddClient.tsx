@@ -23557,6 +23557,11 @@ const calculatedNewFhaMipCost = useMemo(() => {
                                       const newValues = [...payOffInterestValues];
                                       newValues[rateId] = value;
                                       setPayOffInterestValues(newValues);
+                                      // Also update thirdPartyServiceValues['s6'] to keep them in sync
+                                      setThirdPartyServiceValues(prev => ({
+                                        ...prev,
+                                        's6': newValues
+                                      }));
                                     }}
                                     className="border-0 bg-transparent text-center text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
                                     data-testid={`input-payoff-interest-${rateId}`}
