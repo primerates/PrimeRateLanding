@@ -6,6 +6,18 @@ This project is a professional mortgage lending landing page for Prime Rate Home
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 
+### Admin Popup Dialog Spacing Pattern (Default Standard)
+When creating popup dialogs in the admin interface, use this spacing approach to ensure visual consistency:
+
+**Key Spacing Rules**:
+1. **Section Separation (below fields)**: Use inline style `marginBottom: '32px'` on the last field div before a new section
+2. **Separation Lines**: Use inline style `borderTop: '1px solid hsl(var(--border))', paddingTop: '24px'` on paragraph/text divs
+3. **Spacing above separation lines**: Use `<div className="h-4"></div>` (16px) for compact spacing
+
+**Technical Note**: Parent containers with `space-y-4` class override child margin Tailwind classes. Always use inline styles with explicit pixel values (e.g., `style={{ marginBottom: '32px' }}`) to ensure spacing renders correctly.
+
+**Testing Pattern**: Use thick red borders (`borderBottom: '3px solid red'`) as temporary visual indicators when testing spacing, then remove once confirmed.
+
 ## System Architecture
 
 ### Frontend Architecture
