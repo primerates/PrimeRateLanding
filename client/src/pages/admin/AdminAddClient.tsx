@@ -24252,7 +24252,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
             </div>
 
             {/* Total Monthly Escrow - Display Only (Auto-calculated) */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 mb-24">
               <Label htmlFor="total-monthly-escrow-payment" className="w-48 text-right">
                 Total Monthly Escrow:
               </Label>
@@ -24263,7 +24263,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
               </div>
             </div>
             {/* Separation Line */}
-            <div className="border-t border-border mt-24 mb-8"></div>
+            <div className="border-t border-border  mb-8"></div>
 
             {/* Annual & Monthly FHA MIP Section */}
             <div className="space-y-3">
