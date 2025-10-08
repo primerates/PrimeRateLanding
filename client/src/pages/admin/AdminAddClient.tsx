@@ -23360,7 +23360,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                                     <Input
                                       type="text"
                                       placeholder="0"
-                                      value={calculatedEstimatedMipRefund || '0'}
+                                      value={calculatedAdjustedNewFhaMip || '0'}
                                       disabled
                                       className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
                                       data-testid={`input-fha-upfront-mip-${rateId}`}
