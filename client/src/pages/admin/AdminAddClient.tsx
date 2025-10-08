@@ -23368,16 +23368,8 @@ const calculatedNewFhaMipCost = useMemo(() => {
                             {selectedRateIds.map((rateId, index) => {
                               const isVALoan = selectedLoanCategory?.startsWith('VA - ') || selectedLoanCategory?.startsWith('VA Jumbo - ');
                               
-                              // For VA loans: editable input from thirdPartyServiceValues
+                              // For VA loans: display-only input showing calculated values
                               if (isVALoan) {
-                                // Initialize service values if not exist
-                                if (!thirdPartyServiceValues['s1']) {
-                                  setThirdPartyServiceValues(prev => ({
-                                    ...prev,
-                                    's1': ['', '', '', '', '']
-                                  }));
-                                }
-                                
                                 const numVal = thirdPartyServiceValues['s1']?.[index] 
                                   ? thirdPartyServiceValues['s1'][index].replace(/[^\d]/g, '') 
                                   : '';
@@ -23391,20 +23383,8 @@ const calculatedNewFhaMipCost = useMemo(() => {
                                         type="text"
                                         placeholder=""
                                         value={displayValue}
-                                        onChange={(e) => {
-                                          const value = e.target.value.replace(/[^\d]/g, '');
-                                          setThirdPartyServiceValues(prev => {
-                                            const newValues = { ...prev };
-                                            if (!newValues['s1']) {
-                                              newValues['s1'] = ['', '', '', '', ''];
-                                            }
-                                            const updatedArray = [...newValues['s1']];
-                                            updatedArray[index] = value;
-                                            newValues['s1'] = updatedArray;
-                                            return newValues;
-                                          });
-                                        }}
-                                        className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0"
+                                        disabled
+                                        className="border-0 bg-transparent text-center font-medium text-xl focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-100"
                                         data-testid={`input-va-funding-fee-${rateId}`}
                                       />
                                     </div>
@@ -24864,10 +24844,38 @@ const calculatedNewFhaMipCost = useMemo(() => {
                 if (isVAExempt || isVAJumboExempt) {
                   return; // Don't allow clicking when exempt
                 }
-                // TODO: Apply to all rates logic
+                
+                // Apply selected VA category value to all rates
+                if (selectedVARow) {
+                  let valueToApply = '';
+                  
+                  switch (selectedVARow) {
+                    case 'firstTime':
+                      valueToApply = vaFirstTimeCashOut;
+                      break;
+                    case 'subsequent':
+                      valueToApply = vaSubsequentCashOut;
+                      break;
+                    case 'rateTerm':
+                      valueToApply = vaRateTerm;
+                      break;
+                    case 'irrrl':
+                      valueToApply = vaIRRRL;
+                      break;
+                  }
+                  
+                  // Populate all rate fields with the selected value
+                  if (valueToApply) {
+                    setThirdPartyServiceValues(prev => ({
+                      ...prev,
+                      's1': selectedRateIds.map(() => valueToApply)
+                    }));
+                  }
+                }
+                
                 setShowVAFundingFeeDialog(false);
               }}
-              className="hover:text-green-600"
+              className={selectedVARow ? 'bg-yellow-400 text-black border-yellow-400 hover:bg-yellow-500 hover:text-black hover:border-yellow-500' : 'border-green-500 hover:border-green-500 hover:text-green-600'}
               data-testid="button-apply-to-all-rates"
             >
               Apply to Rate
