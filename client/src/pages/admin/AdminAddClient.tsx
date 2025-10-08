@@ -1103,14 +1103,6 @@ const [adjustedNewFhaMip, setAdjustedNewFhaMip] = useState('');
   }, [calculatedFhaMipCost, calculatedRemainingRefundValue]);
 
 // Auto-calculate New FHA MIP Cost
-  // Auto-populate New Loan Amount from New Est. Loan Amount (fourth card)
-  const calculatedNewLoanAmountFromCard = useMemo(() => {
-    const firstRateId = selectedRateIds[0];
-    if (!firstRateId) return '';
-    const total = rateColumnTotals[firstRateId] || 0;
-    return total > 0 ? Math.round(total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-  }, [selectedRateIds, rateColumnTotals]);
-
 const calculatedNewFhaMipCost = useMemo(() => {
   const balance = parseInt(calculatedNewLoanAmountFromCard.replace(/[^\d]/g, '') || '0', 10);
   const factor = parseFloat(newFhaMipCostFactor || '0');
@@ -1360,13 +1352,21 @@ const calculatedNewFhaMipCost = useMemo(() => {
     vaUnderwritingValues,
     titleEscrowValues,
     payOffInterestValues,
-    stateTaxValues,
+
     processingValues,
     creditReportValues,
     escrowReservesValues
   ]);
   
   // Calculate monthly mortgage payments for each rate using amortization formula
+  // Auto-populate New Loan Amount from New Est. Loan Amount (fourth card)
+  const calculatedNewLoanAmountFromCard = useMemo(() => {
+    const firstRateId = selectedRateIds[0];
+    if (!firstRateId) return '';
+    const total = rateColumnTotals[firstRateId] || 0;
+    return total > 0 ? Math.round(total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+  }, [selectedRateIds, rateColumnTotals]);
+  
   const calculatedMonthlyPayments = useMemo(() => {
     return Array.from({ length: 5 }).map((_, index) => {
       // Get the principal amount (loan amount)
