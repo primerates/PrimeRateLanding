@@ -18454,7 +18454,8 @@ const calculatedNewFhaMipCost = useMemo(() => {
                                   variant="outline"
                                   size="sm"
                                   onClick={() => setAddPropertyDialog({ isOpen: true, propertyType: property.use as 'second-home' | 'investment' })}
-                                  data-testid="button-add-property"/>                                >
+                                  data-testid="button-add-property"
+                                >
                                   <Plus className="h-3 w-3" />
                                 </Button>
                               </div>
