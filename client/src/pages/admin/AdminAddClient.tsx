@@ -18454,6 +18454,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                                   size="sm"
                                   onClick={() => setAddPropertyDialog({ isOpen: true, propertyType: property.use as 'second-home' | 'investment' })}
                                   data-testid={`button-add-${property.use}`}
+                                  title="Add Property"
 >
                                   <Plus className="h-4 w-4 mr-2" />
                                   Add Property
@@ -18471,7 +18472,9 @@ const calculatedNewFhaMipCost = useMemo(() => {
                               </div>
                             )}
                           </div>
-                        </CardHeader>
+                        </div>
+                      </CardHeader>
+                    </Collapsible>
                       </Card>
                     ))}
                   </TabsContent>
