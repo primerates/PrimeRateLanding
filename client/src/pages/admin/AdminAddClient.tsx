@@ -24165,7 +24165,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
               </div>
             </div>
             </div>
-          <div className="border-t border-border mt-4 mb-2"></div>
+          <div className="border-t border-border mt-2 mb-2"></div>
           <p className="text-sm text-muted-foreground italic mb-3">* after crediting prior loan Upront MIP balance.</p>
           <DialogFooter className="mt-4">
             <Button
