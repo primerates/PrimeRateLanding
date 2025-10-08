@@ -24792,6 +24792,38 @@ const calculatedNewFhaMipCost = useMemo(() => {
               variant="outline"
               size="sm"
               onClick={() => {
+                // Clear all VA popup values
+                setVaFirstTimeCashOut('0.00');
+                setVaSubsequentCashOut('0.00');
+                setVaRateTerm('0.00');
+                setVaIRRRL('0.00');
+                setIsVACalculated(false);
+                setSelectedVARow(null);
+                
+                // Clear VA funding fee values in the table
+                setThirdPartyServiceValues(prev => ({
+                  ...prev,
+                  's1': selectedRateIds.map(() => '0.00')
+                }));
+              }}
+              disabled={(() => {
+                const parseValue = (val: string) => parseFloat(val.replace(/[^\d.]/g, '') || '0');
+                const hasNonZeroValues = 
+                  parseValue(vaFirstTimeCashOut) > 0 ||
+                  parseValue(vaSubsequentCashOut) > 0 ||
+                  parseValue(vaRateTerm) > 0 ||
+                  parseValue(vaIRRRL) > 0;
+                return !hasNonZeroValues;
+              })()}
+              className="hover:text-blue-600"
+              data-testid="button-clear-va-funding-fee"
+            >
+              Clear
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
                 if (isVAExempt || isVAJumboExempt) {
                   return; // Don't allow clicking when exempt
                 }
@@ -24839,6 +24871,15 @@ const calculatedNewFhaMipCost = useMemo(() => {
                 // Mark as calculated to make fields read-only
                 setIsVACalculated(true);
               }}
+              disabled={(() => {
+                const parseValue = (val: string) => parseFloat(val.replace(/[^\d.]/g, '') || '0');
+                const hasNonZeroValues = 
+                  parseValue(vaFirstTimeCashOut) > 0 ||
+                  parseValue(vaSubsequentCashOut) > 0 ||
+                  parseValue(vaRateTerm) > 0 ||
+                  parseValue(vaIRRRL) > 0;
+                return hasNonZeroValues;
+              })()}
               className={selectedVARow ? 'bg-yellow-400 text-black border-yellow-400 hover:bg-yellow-500 hover:text-black hover:border-yellow-500' : 'border-green-500 hover:border-green-500 hover:text-green-600'}
               data-testid="button-calculate-va-funding-fee"
             >
