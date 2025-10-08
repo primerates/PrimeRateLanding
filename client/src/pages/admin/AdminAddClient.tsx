@@ -1109,14 +1109,13 @@ const calculatedNewFhaMipCost = useMemo(() => {
   return cost > 0 ? Math.round(cost).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
 }, [newLoanAmount, newFhaMipCostFactor]);
   
-  // Auto-calculate Adjusted New FHA MIP (New Loan Amount × Cost Factor)
+  // Auto-calculate New FHA Upfront MIP Estimate (New MIP Cost - Prior MIP Refund)
   const calculatedAdjustedNewFhaMip = useMemo(() => {
-    const newLoanAmount = parseInt(fhaMipNewLoanAmount.replace(/[^\d]/g, '') || '0', 10);
-    const factor = parseFloat(fhaMipCostFactor || '0');
-    const mip = newLoanAmount * (factor / 100);
-    return mip > 0 ? Math.round(mip).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-  }, [fhaMipNewLoanAmount, fhaMipCostFactor]);
-
+    const newMipCost = parseInt(calculatedNewFhaMipCost.replace(/[^\d]/g, '') || '0', 10);
+    const priorRefund = parseInt(calculatedEstimatedMipRefund.replace(/[^\d]/g, '') || '0', 10);
+    const estimate = newMipCost - priorRefund;
+    return estimate > 0 ? estimate.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0';
+  }, [calculatedNewFhaMipCost, calculatedEstimatedMipRefund]);
 // Auto-calculate Adjusted New FHA MIP Cost (New FHA MIP Cost - Est. Prior FHA Upfront MIP Refund)
   // Auto-calculate Total Monthly Escrow
   const calculatedTotalMonthlyEscrow = useMemo(() => {
