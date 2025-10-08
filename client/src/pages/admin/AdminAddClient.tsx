@@ -24263,7 +24263,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
               </div>
             </div>
             {/* Separation Line */}
-            <div className="border-t border-border mt-16 mb-8"></div>
+            <div className="border-t border-border mt-8 mb-8"></div>
 
             {/* Annual & Monthly FHA MIP Section */}
             <div className="space-y-3">
