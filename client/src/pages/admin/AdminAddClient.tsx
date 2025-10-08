@@ -24262,7 +24262,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                 </span>
               </div>
             </div>
-            {isFHACategory && (
+            {selectedLoanCategory?.startsWith('FHA - ') && (
             <>
               {/* Separation Line */}
             <div 
