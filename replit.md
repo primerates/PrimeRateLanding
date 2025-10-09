@@ -62,6 +62,45 @@ When creating popup dialogs in the admin interface, use this spacing approach to
 - **Vite asset handling**: Optimized asset bundling.
 - **Image assets**: Stored in `attached_assets` directory.
 
+## Admin Comments & Posts Management System
+
+### Overview
+The Comments & Posts Management system (`/admin/add-comment`) provides a comprehensive interface for managing two types of content:
+1. **Client Testimonials**: Featured in the homepage "What Our Clients Say" section
+2. **Company Posts (Insights)**: Internal staff messages for company communication
+
+### System Features
+- **5-Tab Navigation**: Client Comment, All Comments, Company Post, All Posts, Notes
+- **Preview Functionality**: Real-time preview matching exact website design
+- **Statistics Tracking**: Total comments, last comment date, unique states
+- **localStorage Persistence**: Seamless connection between admin panel and public homepage
+- **Sortable Tables**: All Comments and All Posts tabs with column sorting (chronological for dates, numeric for ratings, alphabetical for text)
+
+### All Posts Tab
+- **Table Columns** (left to right): Post Date, Post By, Category, Author, Post Content
+- **Sortable Columns**: Post Date, Post By, Category, Author (Post Content is not sortable)
+- **Sorting Implementation**: 
+  - Uses `useMemo` for performance optimization
+  - Dates parsed with `new Date().getTime()` for chronological sorting
+  - String columns use lowercase comparison for case-insensitive sorting
+  - Returns 0 for equality to ensure stable sorting
+- **Row Click Functionality**: Opens dialog with view/edit modes
+- **Dialog Features**: 
+  - View mode: Displays all post fields (Post By, Category, Author, Date, Content, Font Size/Type/Color)
+  - Edit mode: All fields editable with appropriate controls
+  - Delete button removes post from localStorage
+  - Edit/Save functionality updates localStorage
+
+### Category Dropdown
+- **Location**: Company Post tab, first row after "Post by" field
+- **Options**: Select, I wish I had said that, Policy, Events, Announcement
+- **Integration**: Category displayed in All Posts table and saved with post data
+
+### Technical Implementation
+- **Data Storage**: Company posts stored in localStorage key `'postedCompanyPosts'`
+- **State Management**: Dedicated sorting state (`sortPostColumn`, `sortPostDirection`) and dialog state for posts
+- **Index Mapping**: Sorted arrays use `findIndex()` to map back to original array indices for edit/delete operations
+
 ## Admin Loan Management System
 
 ### Overview
