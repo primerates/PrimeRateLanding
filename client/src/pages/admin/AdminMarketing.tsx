@@ -1087,7 +1087,8 @@ export default function AdminMarketing() {
                           }).length;
                           
                           // Format category display
-                          const getCategoryDisplay = (cat: string) => {
+                          const getCategoryDisplay = (cat: string | undefined) => {
+                            if (!cat) return '-';
                             switch(cat) {
                               case 'va': return 'VA';
                               case 'va-jumbo': return 'VA Jumbo';
@@ -1099,7 +1100,8 @@ export default function AdminMarketing() {
                           };
                           
                           // Format data speed display
-                          const getDataSpeedDisplay = (speed: string) => {
+                          const getDataSpeedDisplay = (speed: string | undefined) => {
+                            if (!speed) return '-';
                             switch(speed) {
                               case 'trigger': return 'Trigger';
                               case 'monthly': return 'Monthly';
@@ -1108,7 +1110,8 @@ export default function AdminMarketing() {
                           };
                           
                           // Format delivery display
-                          const getDeliveryDisplay = (del: string) => {
+                          const getDeliveryDisplay = (del: string | undefined) => {
+                            if (!del) return '-';
                             switch(del) {
                               case 'first-class': return 'First Class';
                               case 'standard': return 'Standard';
@@ -1138,8 +1141,8 @@ export default function AdminMarketing() {
                                   {batch.batchTitle}
                                 </button>
                               </td>
-                              <td className="p-3 whitespace-nowrap">{getCategoryDisplay(batch.category)}</td>
-                              <td className="p-3 whitespace-nowrap">{getDataSpeedDisplay(batch.dataType)}</td>
+                              <td className="p-3 whitespace-nowrap">{batch.category ? getCategoryDisplay(batch.category) : '-'}</td>
+                              <td className="p-3 whitespace-nowrap">{batch.dataType ? getDataSpeedDisplay(batch.dataType) : '-'}</td>
                               <td className="p-3 whitespace-nowrap">{getDeliveryDisplay(batch.delivery)}</td>
                               <td className="p-3 whitespace-nowrap">{batch.tenYearBond || '-'}</td>
                               <td className="p-3 whitespace-nowrap">{batch.parRate || '-'}</td>
@@ -1303,7 +1306,7 @@ export default function AdminMarketing() {
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Category</Label>
                                   <p className="font-medium">
-                                    {(() => {
+                                    {selectedBatch.category ? (() => {
                                       switch(selectedBatch.category) {
                                         case 'va': return 'VA';
                                         case 'va-jumbo': return 'VA Jumbo';
@@ -1312,19 +1315,19 @@ export default function AdminMarketing() {
                                         case 'fha': return 'FHA';
                                         default: return selectedBatch.category;
                                       }
-                                    })()}
+                                    })() : '-'}
                                   </p>
                                 </div>
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Data Speed</Label>
                                   <p className="font-medium">
-                                    {selectedBatch.dataType === 'trigger' ? 'Trigger' : 'Monthly'}
+                                    {selectedBatch.dataType ? (selectedBatch.dataType === 'trigger' ? 'Trigger' : 'Monthly') : '-'}
                                   </p>
                                 </div>
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Delivery</Label>
                                   <p className="font-medium">
-                                    {selectedBatch.delivery.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                                    {selectedBatch.delivery ? selectedBatch.delivery.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : '-'}
                                   </p>
                                 </div>
                                 <div>
@@ -1337,24 +1340,24 @@ export default function AdminMarketing() {
                               <div className="grid grid-cols-4 gap-4">
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Data Vendor</Label>
-                                  <p className="font-medium">{selectedBatch.dataSource === 'dlx' ? 'DLX' : selectedBatch.dataSource || '-'}</p>
+                                  <p className="font-medium">{selectedBatch.dataSource ? (selectedBatch.dataSource === 'dlx' ? 'DLX' : selectedBatch.dataSource) : '-'}</p>
                                 </div>
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Mail Vendor</Label>
                                   <p className="font-medium">
-                                    {selectedBatch.mailVendor === 'in-house' ? 'In House' : selectedBatch.mailVendor === 'tbd' ? 'TBD' : selectedBatch.mailVendor || '-'}
+                                    {selectedBatch.mailVendor ? (selectedBatch.mailVendor === 'in-house' ? 'In House' : selectedBatch.mailVendor === 'tbd' ? 'TBD' : selectedBatch.mailVendor) : '-'}
                                   </p>
                                 </div>
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Print Vendor</Label>
                                   <p className="font-medium">
-                                    {selectedBatch.printVendor === 'in-house' ? 'In House' : selectedBatch.printVendor === 'tbd' ? 'TBD' : selectedBatch.printVendor || '-'}
+                                    {selectedBatch.printVendor ? (selectedBatch.printVendor === 'in-house' ? 'In House' : selectedBatch.printVendor === 'tbd' ? 'TBD' : selectedBatch.printVendor) : '-'}
                                   </p>
                                 </div>
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Supply Vendor</Label>
                                   <p className="font-medium">
-                                    {selectedBatch.supplyVendor === 'in-house' ? 'In House' : selectedBatch.supplyVendor === 'tbd' ? 'TBD' : selectedBatch.supplyVendor || '-'}
+                                    {selectedBatch.supplyVendor ? (selectedBatch.supplyVendor === 'in-house' ? 'In House' : selectedBatch.supplyVendor === 'tbd' ? 'TBD' : selectedBatch.supplyVendor) : '-'}
                                   </p>
                                 </div>
                               </div>
@@ -1364,25 +1367,25 @@ export default function AdminMarketing() {
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Data Cost</Label>
                                   <p className="font-medium">
-                                    {selectedBatch.dataCost ? `$${parseInt(selectedBatch.dataCost).toLocaleString()}` : '-'}
+                                    {selectedBatch.dataCost && parseInt(selectedBatch.dataCost) ? `$${parseInt(selectedBatch.dataCost).toLocaleString()}` : '-'}
                                   </p>
                                 </div>
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Mail Cost</Label>
                                   <p className="font-medium">
-                                    {selectedBatch.mailCost ? `$${parseInt(selectedBatch.mailCost).toLocaleString()}` : '-'}
+                                    {selectedBatch.mailCost && parseInt(selectedBatch.mailCost) ? `$${parseInt(selectedBatch.mailCost).toLocaleString()}` : '-'}
                                   </p>
                                 </div>
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Print Cost</Label>
                                   <p className="font-medium">
-                                    {selectedBatch.printCost ? `$${parseInt(selectedBatch.printCost).toLocaleString()}` : '-'}
+                                    {selectedBatch.printCost && parseInt(selectedBatch.printCost) ? `$${parseInt(selectedBatch.printCost).toLocaleString()}` : '-'}
                                   </p>
                                 </div>
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Supply Cost</Label>
                                   <p className="font-medium">
-                                    {selectedBatch.supplyCost ? `$${parseInt(selectedBatch.supplyCost).toLocaleString()}` : '-'}
+                                    {selectedBatch.supplyCost && parseInt(selectedBatch.supplyCost) ? `$${parseInt(selectedBatch.supplyCost).toLocaleString()}` : '-'}
                                   </p>
                                 </div>
                               </div>
