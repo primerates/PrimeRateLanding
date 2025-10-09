@@ -46,7 +46,7 @@ const testimonials = [
 
 export default function TestimonialsSection() {
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
-  const testimonialsPerPage = 4;
+  const testimonialsPerPage = 2;
   const maxIndex = Math.ceil(testimonials.length / testimonialsPerPage) - 1;
 
   const nextTestimonials = () => {
@@ -97,7 +97,7 @@ export default function TestimonialsSection() {
           <div className="relative">
             {/* Testimonials Container */}
             <div className="px-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {currentTestimonials.map((testimonial, index) => (
                   <Card 
                     key={`${currentTestimonialIndex}-${index}`}

@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RotateCcw, Monitor, Save, Plus, ArrowUpDown } from 'lucide-react';
+import { RotateCcw, Monitor, Save, Plus, ArrowUpDown, Star } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 
@@ -417,52 +418,52 @@ export default function AdminAddComment() {
 
               {/* Preview Card */}
               {showPreview && (
-                <Card className="mt-8">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                    <CardTitle>Preview</CardTitle>
+                <div className="mt-8">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold">Preview</h3>
                     <Button data-testid="button-post-client-comment">
                       Post Comment
                     </Button>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div>
-                          <p className="text-sm text-muted-foreground">Name</p>
-                          <p className="font-medium">{clientFirstName} {clientLastName}</p>
+                  </div>
+                  
+                  {/* Testimonial Style Preview - Matching Website Design */}
+                  <div className="max-w-2xl mx-auto">
+                    <Card className="hover-elevate">
+                      <CardContent className="p-6">
+                        <div className="flex items-center mb-4">
+                          <div className="flex items-center mr-4">
+                            {[...Array(parseInt(clientRating) || 0)].map((_, i) => (
+                              <Star key={i} className="w-4 h-4 fill-warning text-warning" />
+                            ))}
+                          </div>
+                          <Badge variant="secondary">
+                            {clientRating || '0'} stars
+                          </Badge>
                         </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">State</p>
-                          <p className="font-medium">{clientState || '-'}</p>
+                        <p className="text-muted-foreground mb-4 italic">
+                          "{clientComment || 'No comment provided'}"
+                        </p>
+                        <div className="flex items-center">
+                          <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                            <span className="text-primary font-semibold">
+                              {clientFirstName && clientLastName 
+                                ? `${clientFirstName[0]}${clientLastName[0]}` 
+                                : '--'}
+                            </span>
+                          </div>
+                          <div>
+                            <div className="font-semibold">
+                              {clientFirstName} {clientLastName}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              {clientState ? `${clientState}` : 'Location not specified'}
+                            </div>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">Source</p>
-                          <p className="font-medium capitalize">{clientSource ? clientSource.replace('-', ' ') : '-'}</p>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div>
-                          <p className="text-sm text-muted-foreground">Loan Purpose</p>
-                          <p className="font-medium capitalize">{clientLoanPurpose || '-'}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">Rating</p>
-                          <p className="font-medium">{clientRating || '-'}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">Comment Date</p>
-                          <p className="font-medium">{clientDate || '-'}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">Loan Date</p>
-                          <p className="font-medium">{clientLoanDate || '-'}</p>
-                        </div>
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground mb-2">Comment</p>
-                        <p className="text-base">{clientComment || '-'}</p>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
               )}
             </TabsContent>
 
