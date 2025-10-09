@@ -39,6 +39,7 @@ export default function AdminDashboard() {
   const [showUsername, setShowUsername] = useState(false);
   const [isBackgroundSelectorOpen, setIsBackgroundSelectorOpen] = useState(false);
   const [backgroundMode, setBackgroundMode] = useState<'dashboard' | 'login'>('dashboard');
+  const [companyPosts, setCompanyPosts] = useState<any[]>([]);
   const animationRef = useRef<number | null>(null);
   const timerRefs = useRef<{ start?: NodeJS.Timeout }>({});
   const isMountedRef = useRef(true);
@@ -52,6 +53,15 @@ export default function AdminDashboard() {
     }, 100);
     
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    // Load company posts from localStorage
+    const storedPosts = localStorage.getItem('postedCompanyPosts');
+    if (storedPosts) {
+      const parsed = JSON.parse(storedPosts);
+      setCompanyPosts(parsed);
+    }
   }, []);
 
   useEffect(() => {
@@ -434,6 +444,71 @@ export default function AdminDashboard() {
             );
           })}
         </div>
+
+        {/* Company Posts Display - Centered below tiles */}
+        {companyPosts.length > 0 && (
+          <div className="mt-16 flex justify-center">
+            <div className="max-w-3xl w-full">
+              <h3 className={`text-xl font-bold mb-6 text-center ${
+                isDarkBackground() ? 'text-white' : 'text-foreground'
+              }`} data-testid="text-company-posts-header">
+                Company Posts
+              </h3>
+              <div className="space-y-4">
+                {companyPosts.map((post, index) => (
+                  <Card 
+                    key={index}
+                    className="hover-elevate"
+                    data-testid={`card-company-post-${index}`}
+                  >
+                    <CardContent className="p-6">
+                      <div className="space-y-4">
+                        {/* Header with Author */}
+                        <div className="flex items-center gap-3 border-b pb-3">
+                          <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                            <span className="text-primary font-semibold">
+                              {post.postAuthor ? post.postAuthor[0].toUpperCase() : 'A'}
+                            </span>
+                          </div>
+                          <div>
+                            <div className="font-semibold">{post.postAuthor || 'Anonymous'}</div>
+                            <div className="text-sm text-muted-foreground">
+                              {post.date || 'No date'}
+                              {post.category && post.category !== 'Select' && (
+                                <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">
+                                  {post.category}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Post Content */}
+                        <div 
+                          className="whitespace-pre-wrap"
+                          style={{
+                            fontSize: post.fontSize || '16px',
+                            fontFamily: post.fontType || 'inherit',
+                            color: post.colorTheme || 'inherit'
+                          }}
+                        >
+                          {post.comment}
+                        </div>
+
+                        {/* Footer with Post By */}
+                        {post.postBy && (
+                          <div className="text-sm text-muted-foreground border-t pt-3">
+                            Posted by: {post.postBy}
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
     </div>
