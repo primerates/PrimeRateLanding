@@ -112,6 +112,8 @@ The Comments & Posts Management system (`/admin/add-comment`) provides a compreh
 - **Data Storage**: Company posts stored in localStorage key `'postedCompanyPosts'`
 - **State Management**: Dedicated sorting state (`sortPostColumn`, `sortPostDirection`) and dialog state for posts
 - **Index Mapping**: Sorted arrays use `findIndex()` to map back to original array indices for edit/delete operations
+- **Dashboard Display**: Only the most recent post (last in array) is displayed on AdminDashboard, not all posts
+- **Republish Feature**: "Publish" button in All Posts table updates post date to today, making it the most recent
 
 ## Admin Loan Management System
 

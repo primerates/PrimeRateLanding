@@ -446,44 +446,44 @@ export default function AdminDashboard() {
         </div>
 
         {/* Company Posts Display - Centered below tiles */}
-        {companyPosts.length > 0 && (
-          <div className="mt-48 flex justify-center">
-            <div className="max-w-3xl w-full">
-              <div className="space-y-8">
-                {companyPosts.map((post, index) => (
+        {companyPosts.length > 0 && (() => {
+          // Get the most recent post (last one in the array)
+          const mostRecentPost = companyPosts[companyPosts.length - 1];
+          
+          return (
+            <div className="mt-48 flex justify-center">
+              <div className="max-w-3xl w-full">
+                <div 
+                  data-testid="company-post-0"
+                >
+                  {/* Post Content */}
                   <div 
-                    key={index}
-                    data-testid={`company-post-${index}`}
+                    className={`
+                      whitespace-pre-wrap mb-2
+                      ${mostRecentPost.fontType === 'sans' ? 'font-sans' : ''}
+                      ${mostRecentPost.fontType === 'serif' ? 'font-serif' : ''}
+                      ${mostRecentPost.fontType === 'mono' ? 'font-mono' : ''}
+                      ${mostRecentPost.fontType === 'cursive' ? 'font-[cursive]' : ''}
+                      ${mostRecentPost.fontType === 'italic' ? 'italic' : ''}
+                      ${isDarkBackground() ? 'text-white' : 'text-foreground'}
+                    `}
+                    style={{
+                      fontSize: mostRecentPost.fontSize || '16px',
+                      color: mostRecentPost.colorTheme || 'inherit'
+                    }}
                   >
-                    {/* Post Content */}
-                    <div 
-                      className={`
-                        whitespace-pre-wrap mb-2
-                        ${post.fontType === 'sans' ? 'font-sans' : ''}
-                        ${post.fontType === 'serif' ? 'font-serif' : ''}
-                        ${post.fontType === 'mono' ? 'font-mono' : ''}
-                        ${post.fontType === 'cursive' ? 'font-[cursive]' : ''}
-                        ${post.fontType === 'italic' ? 'italic' : ''}
-                        ${isDarkBackground() ? 'text-white' : 'text-foreground'}
-                      `}
-                      style={{
-                        fontSize: post.fontSize || '16px',
-                        color: post.colorTheme || 'inherit'
-                      }}
-                    >
-                      {post.comment}
-                    </div>
-
-                    {/* Author at bottom left */}
-                    <div className={`text-sm ${isDarkBackground() ? 'text-white/70' : 'text-muted-foreground'}`}>
-                      — {post.postAuthor || 'Anonymous'}
-                    </div>
+                    {mostRecentPost.comment}
                   </div>
-                ))}
+
+                  {/* Author at bottom left */}
+                  <div className={`text-sm ${isDarkBackground() ? 'text-white/70' : 'text-muted-foreground'}`}>
+                    — {mostRecentPost.postAuthor || 'Anonymous'}
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
       </div>
     </div>
