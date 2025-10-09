@@ -1,0 +1,404 @@
+import React, { useState } from 'react';
+import { Upload, FileText, CheckCircle, AlertCircle, X, ChevronDown, ChevronUp } from 'lucide-react';
+import Papa from 'papaparse';
+
+export default function DirectMailBatchCreator() {
+  const [batchNumber, setBatchNumber] = useState('');
+  const [batchTitle, setBatchTitle] = useState('');
+  const [csvData, setCsvData] = useState(null);
+  const [detectedColumns, setDetectedColumns] = useState([]);
+  const [previewData, setPreviewData] = useState([]);
+  const [columnMapping, setColumnMapping] = useState({
+    reference: '',
+    firstName: '',
+    streetAddress: '',
+    city: '',
+    state: '',
+    zip: ''
+  });
+  const [uploadStage, setUploadStage] = useState('upload'); // upload, mapping, preview, success
+  const [error, setError] = useState('');
+  const [showPreview, setShowPreview] = useState(true);
+
+  const requiredFields = [
+    { key: 'reference', label: 'Reference Number', description: 'Unique identifier for tracking' },
+    { key: 'firstName', label: 'Client Name', description: 'First name or full name' },
+    { key: 'streetAddress', label: 'Street Address', description: 'Mailing address' },
+    { key: 'city', label: 'City', description: 'City name' },
+    { key: 'state', label: 'State', description: 'State abbreviation' },
+    { key: 'zip', label: 'Zip Code', description: 'Postal code' }
+  ];
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setError('');
+    
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => {
+        if (results.errors.length > 0) {
+          setError('Error parsing CSV file. Please check the file format.');
+          return;
+        }
+
+        if (results.data.length === 0) {
+          setError('CSV file is empty.');
+          return;
+        }
+
+        // Get column headers
+        const columns = Object.keys(results.data[0]);
+        setDetectedColumns(columns);
+        setCsvData(results.data);
+        setPreviewData(results.data.slice(0, 5));
+
+        // Auto-detect columns with fuzzy matching
+        autoMapColumns(columns);
+        
+        setUploadStage('mapping');
+      },
+      error: (error) => {
+        setError(`Failed to read file: ${error.message}`);
+      }
+    });
+  };
+
+  const autoMapColumns = (columns) => {
+    const mapping = {};
+    
+    const matchPatterns = {
+      reference: ['reference', 'ref', 'ref#', 'reference number', 'refnum'],
+      firstName: ['first name', 'firstname', 'name', 'client name', 'clientname'],
+      streetAddress: ['street address', 'streetaddress', 'address', 'street'],
+      city: ['city'],
+      state: ['state'],
+      zip: ['zip', 'zipcode', 'zip code', 'postal']
+    };
+
+    Object.entries(matchPatterns).forEach(([field, patterns]) => {
+      const match = columns.find(col => {
+        const normalized = col.toLowerCase().trim();
+        return patterns.some(pattern => normalized.includes(pattern));
+      });
+      mapping[field] = match || '';
+    });
+
+    setColumnMapping(mapping);
+  };
+
+  const handleMappingChange = (field, value) => {
+    setColumnMapping(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const validateMapping = () => {
+    const missing = requiredFields.filter(field => !columnMapping[field.key]);
+    if (missing.length > 0) {
+      setError(`Please map the following required fields: ${missing.map(f => f.label).join(', ')}`);
+      return false;
+    }
+    setError('');
+    return true;
+  };
+
+  const handleConfirmMapping = () => {
+    if (validateMapping()) {
+      setUploadStage('preview');
+    }
+  };
+
+  const handleCreateBatch = () => {
+    if (!batchNumber.trim()) {
+      setError('Please enter a batch number');
+      return;
+    }
+    if (!batchTitle.trim()) {
+      setError('Please enter a batch title');
+      return;
+    }
+
+    // Here you would save the batch with mapped data
+    // For now, we'll just show success
+    setUploadStage('success');
+    
+    // Reset after 3 seconds
+    setTimeout(() => {
+      resetForm();
+    }, 3000);
+  };
+
+  const resetForm = () => {
+    setBatchNumber('');
+    setBatchTitle('');
+    setCsvData(null);
+    setDetectedColumns([]);
+    setPreviewData([]);
+    setColumnMapping({
+      reference: '',
+      firstName: '',
+      streetAddress: '',
+      city: '',
+      state: '',
+      zip: ''
+    });
+    setUploadStage('upload');
+    setError('');
+  };
+
+  const handleCancel = () => {
+    resetForm();
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+          <h1 className="text-2xl font-semibold text-gray-900">Create New Direct Mail Batch</h1>
+          <p className="text-gray-600 mt-1">Upload and configure your direct mail campaign batch</p>
+        </div>
+
+        {/* Main Content */}
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          {/* Stage: Upload */}
+          {uploadStage === 'upload' && (
+            <>
+              <div className="grid grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Batch Number <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={batchNumber}
+                    onChange={(e) => setBatchNumber(e.target.value)}
+                    placeholder="e.g., DM-2024-001"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Batch Title <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={batchTitle}
+                    onChange={(e) => setBatchTitle(e.target.value)}
+                    placeholder="Enter descriptive title"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Upload Excel File (CSV Format) <span className="text-red-500">*</span>
+                </label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors">
+                  <input
+                    type="file"
+                    accept=".csv"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    id="csv-upload"
+                  />
+                  <label htmlFor="csv-upload" className="cursor-pointer">
+                    <Upload className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                    <p className="text-gray-600 mb-1">Click to upload or drag and drop</p>
+                    <p className="text-sm text-gray-500">CSV files only</p>
+                  </label>
+                </div>
+                <p className="text-sm text-gray-500 mt-2">
+                  Any CSV format accepted - you'll map columns in the next step
+                </p>
+              </div>
+            </>
+          )}
+
+          {/* Stage: Column Mapping */}
+          {uploadStage === 'mapping' && (
+            <>
+              <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-start">
+                  <FileText className="w-5 h-5 text-blue-600 mt-0.5 mr-3" />
+                  <div>
+                    <h3 className="text-sm font-medium text-blue-900">
+                      {detectedColumns.length} columns detected • {csvData.length} records
+                    </h3>
+                    <p className="text-sm text-blue-700 mt-1">
+                      Map your CSV columns to required fields. We've auto-detected some matches.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4 mb-6">
+                {requiredFields.map(field => (
+                  <div key={field.key} className="border border-gray-200 rounded-lg p-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-900">
+                          {field.label} <span className="text-red-500">*</span>
+                        </label>
+                        <p className="text-xs text-gray-500 mt-0.5">{field.description}</p>
+                      </div>
+                      {columnMapping[field.key] && (
+                        <CheckCircle className="w-5 h-5 text-green-500" />
+                      )}
+                    </div>
+                    <select
+                      value={columnMapping[field.key]}
+                      onChange={(e) => handleMappingChange(field.key, e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      <option value="">-- Select Column --</option>
+                      {detectedColumns.map(col => (
+                        <option key={col} value={col}>{col}</option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+              </div>
+
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+                <h4 className="text-sm font-medium text-gray-900 mb-2">Additional Columns</h4>
+                <p className="text-xs text-gray-600 mb-3">
+                  All other columns will be preserved: {detectedColumns.filter(col => !Object.values(columnMapping).includes(col)).join(', ')}
+                </p>
+              </div>
+
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center text-sm text-red-800">
+                  <AlertCircle className="w-4 h-4 mr-2" />
+                  {error}
+                </div>
+              )}
+
+              <div className="flex gap-3">
+                <button
+                  onClick={handleConfirmMapping}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Continue to Preview
+                </button>
+                <button
+                  onClick={handleCancel}
+                  className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
+
+          {/* Stage: Preview */}
+          {uploadStage === 'preview' && (
+            <>
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">Preview Mapped Data</h3>
+                  <button
+                    onClick={() => setShowPreview(!showPreview)}
+                    className="flex items-center text-sm text-gray-600 hover:text-gray-900"
+                  >
+                    {showPreview ? <ChevronUp className="w-4 h-4 mr-1" /> : <ChevronDown className="w-4 h-4 mr-1" />}
+                    {showPreview ? 'Hide' : 'Show'} Preview
+                  </button>
+                </div>
+
+                {showPreview && (
+                  <div className="overflow-x-auto border border-gray-200 rounded-lg">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          {requiredFields.map(field => (
+                            <th key={field.key} className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">
+                              {field.label}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {previewData.map((row, idx) => (
+                          <tr key={idx}>
+                            {requiredFields.map(field => (
+                              <td key={field.key} className="px-4 py-3 text-sm text-gray-900">
+                                {row[columnMapping[field.key]] || '-'}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                <p className="text-sm text-gray-600 mt-3">
+                  Showing first 5 of {csvData.length} records
+                </p>
+              </div>
+
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                <div className="flex items-start">
+                  <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 mr-3" />
+                  <div>
+                    <h4 className="text-sm font-medium text-green-900">Ready to Create Batch</h4>
+                    <p className="text-sm text-green-700 mt-1">
+                      Batch: {batchNumber} - {batchTitle} • {csvData.length} records mapped successfully
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center text-sm text-red-800">
+                  <AlertCircle className="w-4 h-4 mr-2" />
+                  {error}
+                </div>
+              )}
+
+              <div className="flex gap-3">
+                <button
+                  onClick={handleCreateBatch}
+                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center"
+                >
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Create Batch
+                </button>
+                <button
+                  onClick={() => setUploadStage('mapping')}
+                  className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Back to Mapping
+                </button>
+                <button
+                  onClick={handleCancel}
+                  className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
+
+          {/* Stage: Success */}
+          {uploadStage === 'success' && (
+            <div className="text-center py-12">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+                <CheckCircle className="w-8 h-8 text-green-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Batch Created Successfully!</h3>
+              <p className="text-gray-600 mb-1">{batchNumber} - {batchTitle}</p>
+              <p className="text-sm text-gray-500">{csvData.length} records imported</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

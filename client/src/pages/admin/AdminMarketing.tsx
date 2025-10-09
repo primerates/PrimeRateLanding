@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { ArrowLeft, Upload, Plus, BarChart3, FileSpreadsheet, Trash2, Eye, ArrowUpDown } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ArrowLeft, Upload, Plus, BarChart3, FileText, Trash2, Eye, ArrowUpDown, CheckCircle, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Papa from 'papaparse';
 
@@ -34,6 +35,22 @@ interface BatchData {
 
 type SortColumn = 'createdDate' | 'batchNumber' | 'batchTitle';
 type SortDirection = 'asc' | 'desc';
+type UploadStage = 'upload' | 'mapping' | 'preview' | 'success';
+
+interface ColumnMapping {
+  reference: string;
+  firstName: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  zip: string;
+}
+
+interface RequiredField {
+  key: keyof ColumnMapping;
+  label: string;
+  description: string;
+}
 
 export default function AdminMarketing() {
   const [location, setLocation] = useLocation();
@@ -47,6 +64,31 @@ export default function AdminMarketing() {
   const [selectedBatch, setSelectedBatch] = useState<BatchData | null>(null);
   const [sortColumn, setSortColumn] = useState<SortColumn>('createdDate');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  
+  // Column Mapping States
+  const [uploadStage, setUploadStage] = useState<UploadStage>('upload');
+  const [csvData, setCsvData] = useState<any[] | null>(null);
+  const [detectedColumns, setDetectedColumns] = useState<string[]>([]);
+  const [previewData, setPreviewData] = useState<any[]>([]);
+  const [columnMapping, setColumnMapping] = useState<ColumnMapping>({
+    reference: '',
+    firstName: '',
+    streetAddress: '',
+    city: '',
+    state: '',
+    zip: ''
+  });
+  const [error, setError] = useState('');
+  const [showPreview, setShowPreview] = useState(true);
+
+  const requiredFields: RequiredField[] = [
+    { key: 'reference', label: 'Reference Number', description: 'Unique identifier for tracking' },
+    { key: 'firstName', label: 'Client Name', description: 'First name or full name' },
+    { key: 'streetAddress', label: 'Street Address', description: 'Mailing address' },
+    { key: 'city', label: 'City', description: 'City name' },
+    { key: 'state', label: 'State', description: 'State abbreviation' },
+    { key: 'zip', label: 'Zip Code', description: 'Postal code' }
+  ];
 
   // Load batches from localStorage
   useEffect(() => {
@@ -56,200 +98,198 @@ export default function AdminMarketing() {
     }
   }, []);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
-    }
+  const autoMapColumns = (columns: string[]) => {
+    const mapping: Partial<ColumnMapping> = {};
+    
+    const matchPatterns: Record<keyof ColumnMapping, string[]> = {
+      reference: ['reference', 'ref', 'ref#', 'reference number', 'refnum'],
+      firstName: ['first name', 'firstname', 'name', 'client name', 'clientname', 'last name', 'lastname'],
+      streetAddress: ['street address', 'streetaddress', 'address', 'street'],
+      city: ['city'],
+      state: ['state'],
+      zip: ['zip', 'zipcode', 'zip code', 'postal']
+    };
+
+    Object.entries(matchPatterns).forEach(([field, patterns]) => {
+      const match = columns.find(col => {
+        const normalized = col.toLowerCase().trim();
+        return patterns.some(pattern => normalized.includes(pattern));
+      });
+      mapping[field as keyof ColumnMapping] = match || '';
+    });
+
+    setColumnMapping(mapping as ColumnMapping);
   };
 
-  const parseExcelFile = async (file: File): Promise<Array<any>> => {
-    return new Promise((resolve, reject) => {
-      Papa.parse(file, {
-        header: true,
-        skipEmptyLines: true,
-        dynamicTyping: false,
-        transformHeader: (header) => header.trim(),
-        quoteChar: '"',
-        escapeChar: '"',
-        delimiter: ',',
-        newline: '\n',
-        complete: (results) => {
-          // Be very lenient - only fail if we have no data at all
-          // Skip ALL parsing errors and just try to import what we can
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-          if (!results.data || results.data.length === 0) {
-            reject(new Error('Empty file or no data found'));
-            return;
-          }
-
-          // Filter out completely empty rows
-          const validData = results.data.filter((row: any) => {
-            const values = Object.values(row);
-            return values.some(val => val && val.toString().trim() !== '');
-          });
-
-          if (validData.length === 0) {
-            reject(new Error('No valid data rows found in file'));
-            return;
-          }
-
-          // Validate required columns - be flexible with column names
-          const firstRow = validData[0] as any;
-          const headers = Object.keys(firstRow);
-          
-          const hasReference = headers.some(h => 
-            h.toLowerCase().includes('reference')
-          );
-          const hasName = headers.some(h => 
-            h.toLowerCase().includes('name') || 
-            h.toLowerCase().includes('first')
-          );
-          const hasAddress = headers.some(h => 
-            h.toLowerCase().includes('address') || 
-            h.toLowerCase().includes('street') || 
-            h.toLowerCase().includes('city')
-          );
-
-          if (!hasReference || !hasName || !hasAddress) {
-            reject(new Error(
-              `Missing required columns. Your file has: ${headers.slice(0, 10).join(', ')}... Please ensure you have Reference, First Name, and Street Address/City columns.`
-            ));
-            return;
-          }
-
-          // Show warning if there were parsing errors but still proceed
-          if (results.errors.length > 0) {
-            console.warn(`CSV had ${results.errors.length} parsing warnings, but ${validData.length} rows were imported successfully`);
-          }
-
-          resolve(validData);
-        },
-        error: (error) => {
-          reject(new Error(`Failed to parse CSV: ${error.message}`));
+    setError('');
+    
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => {
+        if (results.errors.length > 0 && results.data.length === 0) {
+          setError('Error parsing CSV file. Please check the file format.');
+          return;
         }
-      });
+
+        if (results.data.length === 0) {
+          setError('CSV file is empty.');
+          return;
+        }
+
+        // Get column headers
+        const columns = Object.keys(results.data[0] as any);
+        setDetectedColumns(columns);
+        setCsvData(results.data);
+        setPreviewData(results.data.slice(0, 5));
+
+        // Auto-detect columns with fuzzy matching
+        autoMapColumns(columns);
+        
+        setUploadStage('mapping');
+      },
+      error: (error) => {
+        setError(`Failed to read file: ${error.message}`);
+      }
     });
   };
 
-  const handleCreateBatch = async () => {
-    if (!batchNumber.trim() || !batchTitle.trim()) {
-      toast({
-        title: "Missing Information",
-        description: "Please enter both batch number and batch title.",
-        variant: "destructive"
-      });
-      return;
+  const handleMappingChange = (field: keyof ColumnMapping, value: string) => {
+    setColumnMapping(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const validateMapping = () => {
+    const missing = requiredFields.filter(field => !columnMapping[field.key]);
+    if (missing.length > 0) {
+      setError(`Please map the following required fields: ${missing.map(f => f.label).join(', ')}`);
+      return false;
     }
+    setError('');
+    return true;
+  };
 
-    if (!selectedFile) {
-      toast({
-        title: "No File Selected",
-        description: "Please upload an Excel CSV file.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    try {
-      const excelData = await parseExcelFile(selectedFile);
-      
-      // Ensure data has required fields - handle various column name formats
-      const formattedData = excelData.map(row => {
-        // Reference Number
-        const refNum = row['Reference Number'] || row['referenceNumber'] || row['reference number'] || 
-                       row['Ref Number'] || row['ref number'] || row['RefNumber'] || 
-                       row['Reference'] || row['reference'] || '';
-        
-        // Client Name - combine Last Name and First Name
-        const firstName = row['First Name'] || row['firstName'] || row['first name'] || '';
-        const lastName = row['Last Name'] || row['lastName'] || row['last name'] || '';
-        const clientName = lastName && firstName 
-          ? `${lastName}, ${firstName}` 
-          : (firstName || lastName || row['Client Name'] || row['Name'] || '');
-        
-        // Address - combine street, unit, city, state, zip if needed
-        let address = row['Address'] || row['address'] || row['Street Address'] || 
-                     row['street address'] || '';
-        
-        // If no combined address, build from parts
-        if (!address) {
-          const street = row['Street Address'] || row['street address'] || '';
-          const unit = row['Unit'] || row['unit'] || '';
-          const city = row['City'] || row['city'] || '';
-          const state = row['State'] || row['state'] || '';
-          const zip = row['Zip'] || row['zip'] || '';
-          const zip4 = row['Zip4'] || row['zip4'] || '';
-          
-          const fullZip = zip4 ? `${zip}-${zip4}` : zip;
-          const parts = [
-            street,
-            unit ? `Unit ${unit}` : '',
-            city,
-            state,
-            fullZip
-          ].filter(p => p).join(', ');
-          
-          address = parts;
-        }
-        
-        return {
-          referenceNumber: refNum,
-          clientName: clientName,
-          address: address,
-          ...row
-        };
-      });
-
-      const newBatch: BatchData = {
-        id: Date.now().toString(),
-        batchNumber: batchNumber.trim(),
-        batchTitle: batchTitle.trim(),
-        createdDate: new Date().toLocaleDateString(),
-        excelData: formattedData,
-        stats: {
-          totalLeads: 0,
-          totalQuotes: 0,
-          totalLoanPreps: 0,
-          totalLoans: 0,
-          totalFunded: 0,
-          totalCancelled: 0,
-          totalWithdrawn: 0
-        }
-      };
-
-      const updatedBatches = [...batches, newBatch];
-      setBatches(updatedBatches);
-      localStorage.setItem('directMailBatches', JSON.stringify(updatedBatches));
-
-      toast({
-        title: "Batch Created",
-        description: `Batch ${batchNumber} created successfully with ${formattedData.length} records.`,
-      });
-
-      // Reset form
-      setBatchNumber('');
-      setBatchTitle('');
-      setSelectedFile(null);
-      const fileInput = document.getElementById('excel-upload') as HTMLInputElement;
-      if (fileInput) fileInput.value = '';
-
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to parse file.";
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive"
-      });
+  const handleConfirmMapping = () => {
+    if (validateMapping()) {
+      setUploadStage('preview');
     }
   };
 
-  const handleDeleteBatch = (batchId: string) => {
-    const updatedBatches = batches.filter(b => b.id !== batchId);
+  const handleCreateBatch = () => {
+    if (!batchNumber.trim()) {
+      setError('Please enter a batch number');
+      return;
+    }
+    if (!batchTitle.trim()) {
+      setError('Please enter a batch title');
+      return;
+    }
+    if (!csvData) {
+      setError('No data to import');
+      return;
+    }
+
+    // Map the CSV data to our format
+    const mappedData = csvData.map((row: any) => {
+      // Get address components
+      const streetAddress = row[columnMapping.streetAddress] || '';
+      const city = row[columnMapping.city] || '';
+      const state = row[columnMapping.state] || '';
+      const zip = row[columnMapping.zip] || '';
+      
+      // Combine address
+      const addressParts = [streetAddress, city, state, zip].filter(Boolean);
+      const fullAddress = addressParts.join(', ');
+
+      // Get client name (handle both first/last name separately or combined)
+      let clientName = row[columnMapping.firstName] || '';
+      
+      // Check if there's a Last Name column that wasn't mapped
+      const lastNameCol = detectedColumns.find(col => 
+        col.toLowerCase().includes('last') && col !== columnMapping.firstName
+      );
+      if (lastNameCol && row[lastNameCol]) {
+        clientName = row[lastNameCol] + ', ' + clientName;
+      }
+
+      return {
+        referenceNumber: row[columnMapping.reference] || '',
+        clientName: clientName,
+        address: fullAddress,
+        ...row // Preserve all original columns
+      };
+    });
+
+    const newBatch: BatchData = {
+      id: Date.now().toString(),
+      batchNumber: batchNumber,
+      batchTitle: batchTitle,
+      createdDate: new Date().toISOString(),
+      excelData: mappedData,
+      stats: {
+        totalLeads: mappedData.length,
+        totalQuotes: 0,
+        totalLoanPreps: 0,
+        totalLoans: 0,
+        totalFunded: 0,
+        totalCancelled: 0,
+        totalWithdrawn: 0
+      }
+    };
+
+    const updatedBatches = [...batches, newBatch];
+    setBatches(updatedBatches);
+    localStorage.setItem('directMailBatches', JSON.stringify(updatedBatches));
+
+    setUploadStage('success');
+    
+    toast({
+      title: "Batch Created Successfully",
+      description: `${batchNumber} - ${batchTitle} with ${mappedData.length} records`,
+    });
+
+    // Reset after 3 seconds
+    setTimeout(() => {
+      resetForm();
+    }, 3000);
+  };
+
+  const resetForm = () => {
+    setBatchNumber('');
+    setBatchTitle('');
+    setCsvData(null);
+    setDetectedColumns([]);
+    setPreviewData([]);
+    setColumnMapping({
+      reference: '',
+      firstName: '',
+      streetAddress: '',
+      city: '',
+      state: '',
+      zip: ''
+    });
+    setUploadStage('upload');
+    setError('');
+    setSelectedFile(null);
+  };
+
+  const handleCancel = () => {
+    resetForm();
+  };
+
+  const handleDeleteBatch = (id: string) => {
+    const updatedBatches = batches.filter(b => b.id !== id);
     setBatches(updatedBatches);
     localStorage.setItem('directMailBatches', JSON.stringify(updatedBatches));
     toast({
       title: "Batch Deleted",
-      description: "The batch has been removed.",
+      description: "The batch has been removed successfully.",
     });
   };
 
@@ -264,212 +304,368 @@ export default function AdminMarketing() {
 
   const sortedBatches = useMemo(() => {
     return [...batches].sort((a, b) => {
-      let comparison = 0;
-      
+      let aVal: any = a[sortColumn];
+      let bVal: any = b[sortColumn];
+
       if (sortColumn === 'createdDate') {
-        const dateA = new Date(a.createdDate).getTime();
-        const dateB = new Date(b.createdDate).getTime();
-        comparison = dateA - dateB;
-      } else if (sortColumn === 'batchNumber') {
-        comparison = a.batchNumber.localeCompare(b.batchNumber, undefined, { numeric: true });
-      } else if (sortColumn === 'batchTitle') {
-        comparison = a.batchTitle.toLowerCase().localeCompare(b.batchTitle.toLowerCase());
+        aVal = new Date(aVal).getTime();
+        bVal = new Date(bVal).getTime();
+      } else {
+        aVal = aVal.toLowerCase();
+        bVal = bVal.toLowerCase();
       }
-      
-      return sortDirection === 'asc' ? comparison : -comparison;
+
+      if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
     });
   }, [batches, sortColumn, sortDirection]);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-primary text-primary-foreground shadow-lg border-b transition-shadow duration-300 hover:shadow-2xl hover:shadow-primary/20">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setLocation('/admin/dashboard')}
-                className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/10"
-                data-testid="button-back-to-dashboard"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Dashboard
-              </Button>
-              <h1 className="text-xl font-black italic" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }}>
-                MARKETING - DIRECT MAIL CAMPAIGNS
-              </h1>
-            </div>
+    <div className="min-h-screen bg-background p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setLocation('/admin')}
+            data-testid="button-back-to-dashboard"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold">Marketing - Direct Mail</h1>
+            <p className="text-muted-foreground">Manage your direct mail campaigns and track leads</p>
           </div>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-6 py-8">
         <Tabs defaultValue="create" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="create" data-testid="tab-create-batch">Create Batch</TabsTrigger>
             <TabsTrigger value="all-batches" data-testid="tab-all-batches">All Batches</TabsTrigger>
-            <TabsTrigger value="stats-overview" data-testid="tab-stats-overview">Stats Overview</TabsTrigger>
+            <TabsTrigger value="stats" data-testid="tab-stats-overview">Stats Overview</TabsTrigger>
           </TabsList>
 
-          {/* Create Batch Tab */}
-          <TabsContent value="create" className="mt-8">
-            <Card className="border-l-4 border-l-green-500">
+          {/* CREATE BATCH TAB */}
+          <TabsContent value="create" className="mt-6">
+            <Card>
               <CardHeader>
                 <CardTitle>Create New Direct Mail Batch</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="batch-number">Batch Number *</Label>
-                    <Input
-                      id="batch-number"
-                      value={batchNumber}
-                      onChange={(e) => setBatchNumber(e.target.value)}
-                      placeholder="Enter batch number (e.g., DM-2024-001)"
-                      data-testid="input-batch-number"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="batch-title">Batch Title *</Label>
-                    <Input
-                      id="batch-title"
-                      value={batchTitle}
-                      onChange={(e) => setBatchTitle(e.target.value)}
-                      placeholder="Enter descriptive title"
-                      data-testid="input-batch-title"
-                    />
-                  </div>
-                </div>
+              <CardContent>
+                {/* Stage: Upload */}
+                {uploadStage === 'upload' && (
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="batch-number">
+                          Batch Number <span className="text-destructive">*</span>
+                        </Label>
+                        <Input
+                          id="batch-number"
+                          value={batchNumber}
+                          onChange={(e) => setBatchNumber(e.target.value)}
+                          placeholder="e.g., DM-2024-001"
+                          data-testid="input-batch-number"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="batch-title">
+                          Batch Title <span className="text-destructive">*</span>
+                        </Label>
+                        <Input
+                          id="batch-title"
+                          value={batchTitle}
+                          onChange={(e) => setBatchTitle(e.target.value)}
+                          placeholder="Enter descriptive title"
+                          data-testid="input-batch-title"
+                        />
+                      </div>
+                    </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="excel-upload">Upload Excel File (CSV Format) *</Label>
-                  <div className="flex items-center gap-4">
-                    <Input
-                      id="excel-upload"
-                      type="file"
-                      accept=".csv,.xlsx,.xls"
-                      onChange={handleFileChange}
-                      data-testid="input-excel-upload"
-                    />
-                    {selectedFile && (
-                      <span className="text-sm text-muted-foreground">
-                        {selectedFile.name}
-                      </span>
+                    <div className="space-y-2">
+                      <Label htmlFor="csv-upload">
+                        Upload Excel File (CSV Format) <span className="text-destructive">*</span>
+                      </Label>
+                      <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary transition-colors">
+                        <input
+                          type="file"
+                          accept=".csv"
+                          onChange={handleFileUpload}
+                          className="hidden"
+                          id="csv-upload"
+                          data-testid="input-csv-file"
+                        />
+                        <label htmlFor="csv-upload" className="cursor-pointer">
+                          <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                          <p className="text-foreground mb-1">Click to upload or drag and drop</p>
+                          <p className="text-sm text-muted-foreground">CSV files only</p>
+                        </label>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Any CSV format accepted - you'll map columns in the next step
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Stage: Column Mapping */}
+                {uploadStage === 'mapping' && (
+                  <div className="space-y-6">
+                    <div className="p-4 bg-primary/10 border border-primary/20 rounded-lg">
+                      <div className="flex items-start">
+                        <FileText className="w-5 h-5 text-primary mt-0.5 mr-3" />
+                        <div>
+                          <h3 className="text-sm font-medium">
+                            {detectedColumns.length} columns detected • {csvData?.length} records
+                          </h3>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Map your CSV columns to required fields. We've auto-detected some matches.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      {requiredFields.map(field => (
+                        <Card key={field.key}>
+                          <CardContent className="pt-4">
+                            <div className="flex items-start justify-between mb-2">
+                              <div>
+                                <Label className="text-sm font-medium">
+                                  {field.label} <span className="text-destructive">*</span>
+                                </Label>
+                                <p className="text-xs text-muted-foreground mt-0.5">{field.description}</p>
+                              </div>
+                              {columnMapping[field.key] && (
+                                <CheckCircle className="w-5 h-5 text-green-500" />
+                              )}
+                            </div>
+                            <Select
+                              value={columnMapping[field.key]}
+                              onValueChange={(value) => handleMappingChange(field.key, value)}
+                            >
+                              <SelectTrigger data-testid={`select-${field.key}`}>
+                                <SelectValue placeholder="-- Select Column --" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {detectedColumns.map(col => (
+                                  <SelectItem key={col} value={col}>{col}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+
+                    <Card className="bg-muted/50">
+                      <CardContent className="pt-4">
+                        <h4 className="text-sm font-medium mb-2">Additional Columns</h4>
+                        <p className="text-xs text-muted-foreground">
+                          All other columns will be preserved: {detectedColumns.filter(col => !Object.values(columnMapping).includes(col)).join(', ') || 'None'}
+                        </p>
+                      </CardContent>
+                    </Card>
+
+                    {error && (
+                      <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg flex items-center text-sm text-destructive">
+                        <AlertCircle className="w-4 h-4 mr-2" />
+                        {error}
+                      </div>
                     )}
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Expected columns: Reference Number, Client Name, Address
-                  </p>
-                </div>
 
-                <Button
-                  onClick={handleCreateBatch}
-                  className="w-full md:w-auto"
-                  data-testid="button-create-batch"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Create Batch
-                </Button>
+                    <div className="flex gap-3">
+                      <Button onClick={handleConfirmMapping} data-testid="button-continue-preview">
+                        Continue to Preview
+                      </Button>
+                      <Button variant="outline" onClick={handleCancel} data-testid="button-cancel-mapping">
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Stage: Preview */}
+                {uploadStage === 'preview' && csvData && (
+                  <div className="space-y-6">
+                    <div>
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-semibold">Preview Mapped Data</h3>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setShowPreview(!showPreview)}
+                          data-testid="button-toggle-preview"
+                        >
+                          {showPreview ? <ChevronUp className="w-4 h-4 mr-1" /> : <ChevronDown className="w-4 h-4 mr-1" />}
+                          {showPreview ? 'Hide' : 'Show'} Preview
+                        </Button>
+                      </div>
+
+                      {showPreview && (
+                        <div className="overflow-x-auto border rounded-lg">
+                          <table className="min-w-full divide-y">
+                            <thead className="bg-muted">
+                              <tr>
+                                {requiredFields.map(field => (
+                                  <th key={field.key} className="px-4 py-3 text-left text-xs font-medium uppercase">
+                                    {field.label}
+                                  </th>
+                                ))}
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y">
+                              {previewData.map((row, idx) => (
+                                <tr key={idx}>
+                                  {requiredFields.map(field => (
+                                    <td key={field.key} className="px-4 py-3 text-sm">
+                                      {row[columnMapping[field.key]] || '-'}
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+
+                      <p className="text-sm text-muted-foreground mt-3">
+                        Showing first 5 of {csvData.length} records
+                      </p>
+                    </div>
+
+                    <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+                      <div className="flex items-start">
+                        <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 mr-3" />
+                        <div>
+                          <h4 className="text-sm font-medium text-green-700 dark:text-green-400">Ready to Create Batch</h4>
+                          <p className="text-sm text-green-600 dark:text-green-500 mt-1">
+                            Batch: {batchNumber} - {batchTitle} • {csvData.length} records mapped successfully
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {error && (
+                      <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg flex items-center text-sm text-destructive">
+                        <AlertCircle className="w-4 h-4 mr-2" />
+                        {error}
+                      </div>
+                    )}
+
+                    <div className="flex gap-3">
+                      <Button onClick={handleCreateBatch} data-testid="button-create-batch">
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Create Batch
+                      </Button>
+                      <Button variant="outline" onClick={() => setUploadStage('mapping')} data-testid="button-back-mapping">
+                        Back to Mapping
+                      </Button>
+                      <Button variant="outline" onClick={handleCancel} data-testid="button-cancel-preview">
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Stage: Success */}
+                {uploadStage === 'success' && csvData && (
+                  <div className="text-center py-12">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-green-500/10 rounded-full mb-4">
+                      <CheckCircle className="w-8 h-8 text-green-500" />
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">Batch Created Successfully!</h3>
+                    <p className="text-muted-foreground mb-1">{batchNumber} - {batchTitle}</p>
+                    <p className="text-sm text-muted-foreground">{csvData.length} records imported</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
 
-          {/* All Batches Tab */}
-          <TabsContent value="all-batches" className="mt-8">
-            <Card className="border-l-4 border-l-blue-500">
+          {/* ALL BATCHES TAB */}
+          <TabsContent value="all-batches" className="mt-6">
+            <Card>
               <CardHeader>
                 <CardTitle>All Direct Mail Batches</CardTitle>
               </CardHeader>
               <CardContent>
                 {batches.length === 0 ? (
-                  <p className="text-muted-foreground text-center py-8">No batches created yet.</p>
+                  <div className="text-center py-12">
+                    <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                    <p className="text-muted-foreground">No batches created yet</p>
+                  </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full">
-                      <thead>
-                        <tr className="border-b">
-                          <th 
-                            className="text-left p-3 cursor-pointer hover:bg-muted/50"
-                            onClick={() => handleSort('createdDate')}
-                            data-testid="th-created-date"
-                          >
-                            <div className="flex items-center gap-2">
-                              Created Date
-                              <ArrowUpDown className="h-4 w-4" />
-                            </div>
+                      <thead className="border-b">
+                        <tr>
+                          <th className="text-left p-3">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleSort('createdDate')}
+                              data-testid="sort-date"
+                            >
+                              Date Created
+                              <ArrowUpDown className="ml-2 h-4 w-4" />
+                            </Button>
                           </th>
-                          <th 
-                            className="text-left p-3 cursor-pointer hover:bg-muted/50"
-                            onClick={() => handleSort('batchNumber')}
-                            data-testid="th-batch-number"
-                          >
-                            <div className="flex items-center gap-2">
+                          <th className="text-left p-3">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleSort('batchNumber')}
+                              data-testid="sort-batch-number"
+                            >
                               Batch Number
-                              <ArrowUpDown className="h-4 w-4" />
-                            </div>
+                              <ArrowUpDown className="ml-2 h-4 w-4" />
+                            </Button>
                           </th>
-                          <th 
-                            className="text-left p-3 cursor-pointer hover:bg-muted/50"
-                            onClick={() => handleSort('batchTitle')}
-                            data-testid="th-batch-title"
-                          >
-                            <div className="flex items-center gap-2">
+                          <th className="text-left p-3">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleSort('batchTitle')}
+                              data-testid="sort-batch-title"
+                            >
                               Batch Title
-                              <ArrowUpDown className="h-4 w-4" />
-                            </div>
+                              <ArrowUpDown className="ml-2 h-4 w-4" />
+                            </Button>
                           </th>
-                          <th className="text-left p-3">Total Records</th>
+                          <th className="text-left p-3">Total Leads</th>
                           <th className="text-left p-3">Actions</th>
                         </tr>
                       </thead>
                       <tbody>
                         {sortedBatches.map((batch) => (
-                          <tr 
-                            key={batch.id} 
-                            className="border-b hover:bg-muted/50 cursor-pointer"
-                            data-testid={`row-batch-${batch.id}`}
-                          >
-                            <td className="p-3">{batch.createdDate}</td>
-                            <td className="p-3 font-medium">{batch.batchNumber}</td>
+                          <tr key={batch.id} className="border-b hover-elevate">
+                            <td className="p-3">{new Date(batch.createdDate).toLocaleDateString()}</td>
+                            <td className="p-3">{batch.batchNumber}</td>
                             <td className="p-3">{batch.batchTitle}</td>
-                            <td className="p-3">{batch.excelData.length}</td>
+                            <td className="p-3">{batch.stats.totalLeads}</td>
                             <td className="p-3">
                               <div className="flex gap-2">
                                 <Button
-                                  variant="outline"
+                                  variant="ghost"
                                   size="sm"
                                   onClick={() => {
                                     setSelectedBatch(batch);
                                     setViewBatchDialog(true);
                                   }}
-                                  data-testid={`button-view-batch-${batch.id}`}
+                                  data-testid={`button-view-${batch.id}`}
                                 >
-                                  <Eye className="h-4 w-4 mr-1" />
-                                  View
+                                  <Eye className="h-4 w-4" />
                                 </Button>
                                 <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => {
-                                    setSelectedBatch(batch);
-                                    setStatsDialog(true);
-                                  }}
-                                  data-testid={`button-stats-batch-${batch.id}`}
-                                >
-                                  <BarChart3 className="h-4 w-4 mr-1" />
-                                  Stats
-                                </Button>
-                                <Button
-                                  variant="outline"
+                                  variant="ghost"
                                   size="sm"
                                   onClick={() => handleDeleteBatch(batch.id)}
-                                  data-testid={`button-delete-batch-${batch.id}`}
+                                  data-testid={`button-delete-${batch.id}`}
                                 >
-                                  <Trash2 className="h-4 w-4 mr-1" />
-                                  Delete
+                                  <Trash2 className="h-4 w-4" />
                                 </Button>
                               </div>
                             </td>
@@ -483,153 +679,81 @@ export default function AdminMarketing() {
             </Card>
           </TabsContent>
 
-          {/* Stats Overview Tab */}
-          <TabsContent value="stats-overview" className="mt-8">
-            <Card className="border-l-4 border-l-purple-500">
+          {/* STATS OVERVIEW TAB */}
+          <TabsContent value="stats" className="mt-6">
+            <Card>
               <CardHeader>
-                <CardTitle>Marketing Statistics Overview</CardTitle>
+                <CardTitle>Campaign Statistics</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">
-                  Overall campaign performance metrics will be displayed here.
-                </p>
+                <div className="grid grid-cols-3 gap-4">
+                  <Card>
+                    <CardContent className="pt-6">
+                      <div className="text-2xl font-bold">{batches.length}</div>
+                      <p className="text-sm text-muted-foreground">Total Batches</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="pt-6">
+                      <div className="text-2xl font-bold">
+                        {batches.reduce((sum, b) => sum + b.stats.totalLeads, 0)}
+                      </div>
+                      <p className="text-sm text-muted-foreground">Total Leads</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="pt-6">
+                      <div className="text-2xl font-bold">
+                        {batches.reduce((sum, b) => sum + b.stats.totalFunded, 0)}
+                      </div>
+                      <p className="text-sm text-muted-foreground">Total Funded</p>
+                    </CardContent>
+                  </Card>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
-      </div>
 
-      {/* View Batch Dialog */}
-      <Dialog open={viewBatchDialog} onOpenChange={setViewBatchDialog}>
-        <DialogContent className="max-w-6xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              {selectedBatch?.batchNumber} - {selectedBatch?.batchTitle}
-            </DialogTitle>
-            <DialogDescription>
-              Created: {selectedBatch?.createdDate} | Total Records: {selectedBatch?.excelData.length}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="overflow-x-auto">
-            {selectedBatch && selectedBatch.excelData.length > 0 && (
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left p-2">Reference Number</th>
-                    <th className="text-left p-2">Client Name</th>
-                    <th className="text-left p-2">Address</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedBatch.excelData.map((row, index) => (
-                    <tr key={index} className="border-b hover:bg-muted/50">
-                      <td className="p-2">{row.referenceNumber}</td>
-                      <td className="p-2">{row.clientName}</td>
-                      <td className="p-2">{row.address}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+        {/* View Batch Dialog */}
+        <Dialog open={viewBatchDialog} onOpenChange={setViewBatchDialog}>
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Batch Details: {selectedBatch?.batchNumber}</DialogTitle>
+              <DialogDescription>{selectedBatch?.batchTitle}</DialogDescription>
+            </DialogHeader>
+            {selectedBatch && (
+              <div className="space-y-4">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="border-b">
+                      <tr>
+                        <th className="text-left p-2">Reference</th>
+                        <th className="text-left p-2">Client Name</th>
+                        <th className="text-left p-2">Address</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {selectedBatch.excelData.slice(0, 10).map((row, idx) => (
+                        <tr key={idx} className="border-b">
+                          <td className="p-2">{row.referenceNumber}</td>
+                          <td className="p-2">{row.clientName}</td>
+                          <td className="p-2">{row.address}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {selectedBatch.excelData.length > 10 && (
+                  <p className="text-sm text-muted-foreground">
+                    Showing 10 of {selectedBatch.excelData.length} records
+                  </p>
+                )}
+              </div>
             )}
-          </div>
-          <DialogFooter>
-            <Button onClick={() => setViewBatchDialog(false)} data-testid="button-close-view-dialog">
-              Close
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Stats Dialog */}
-      <Dialog open={statsDialog} onOpenChange={setStatsDialog}>
-        <DialogContent className="max-w-4xl">
-          <DialogHeader>
-            <DialogTitle>
-              Batch Statistics - {selectedBatch?.batchNumber}
-            </DialogTitle>
-            <DialogDescription>
-              Campaign performance metrics
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm text-muted-foreground">Total Records</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{selectedBatch?.excelData.length || 0}</div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm text-muted-foreground">Total Leads</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-green-600">{selectedBatch?.stats.totalLeads || 0}</div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm text-muted-foreground">Total Quotes</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-blue-600">{selectedBatch?.stats.totalQuotes || 0}</div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm text-muted-foreground">Total Loan Preps</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-purple-600">{selectedBatch?.stats.totalLoanPreps || 0}</div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm text-muted-foreground">Total Loans</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-orange-600">{selectedBatch?.stats.totalLoans || 0}</div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm text-muted-foreground">Total Funded</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-green-700">{selectedBatch?.stats.totalFunded || 0}</div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm text-muted-foreground">Total Cancelled</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-red-600">{selectedBatch?.stats.totalCancelled || 0}</div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm text-muted-foreground">Total Withdrawn</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-gray-600">{selectedBatch?.stats.totalWithdrawn || 0}</div>
-              </CardContent>
-            </Card>
-          </div>
-          <div className="mt-4 p-4 bg-muted/50 rounded-lg">
-            <p className="text-sm text-muted-foreground">
-              <strong>Note:</strong> Statistics are automatically calculated based on leads created with reference numbers from this batch.
-              Detailed breakdowns by loan category, program, and purpose will be available once integration with the Lead system is complete.
-            </p>
-          </div>
-          <DialogFooter>
-            <Button onClick={() => setStatsDialog(false)} data-testid="button-close-stats-dialog">
-              Close
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   );
 }
