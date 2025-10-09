@@ -1182,26 +1182,21 @@ export default function AdminAddComment() {
                     <Card className="hover-elevate">
                       <CardContent className="p-6">
                         <div className="space-y-4">
-                          {/* Header with Author and Date */}
-                          <div className="flex items-center justify-between border-b pb-3">
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                                <span className="text-primary font-semibold">
-                                  {postAuthor ? postAuthor[0].toUpperCase() : 'A'}
-                                </span>
+                          {/* Header with Author */}
+                          <div className="flex items-center gap-3 border-b pb-3">
+                            <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                              <span className="text-primary font-semibold">
+                                {postAuthor ? postAuthor[0].toUpperCase() : 'A'}
+                              </span>
+                            </div>
+                            <div>
+                              <div className="font-semibold">
+                                {postAuthor || 'No author specified'}
                               </div>
-                              <div>
-                                <div className="font-semibold">
-                                  {postAuthor || 'No author specified'}
-                                </div>
-                                <div className="text-sm text-muted-foreground">
-                                  {postBy || 'Admin'}
-                                </div>
+                              <div className="text-sm text-muted-foreground">
+                                {postBy || 'Admin'}
                               </div>
                             </div>
-                            <Badge variant="secondary">
-                              {insightDate || 'No date'}
-                            </Badge>
                           </div>
 
                           {/* Comment Content with Font Styling */}
