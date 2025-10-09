@@ -71,7 +71,8 @@ export default function AdminAddComment() {
   // Trigger animation when component mounts or tab changes
   useEffect(() => {
     setAnimateCircles(false);
-    setTimeout(() => setAnimateCircles(true), 100);
+    const timer = setTimeout(() => setAnimateCircles(true), 50);
+    return () => clearTimeout(timer);
   }, [activeTab]);
 
   // Sorting state for All Comments table
@@ -186,7 +187,7 @@ export default function AdminAddComment() {
             </TabsList>
 
             {/* Card with Circular Indicators - Always Visible */}
-            <Card>
+            <Card key={activeTab}>
               <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
                 <div className="space-y-2">
                   <Label className="text-lg font-semibold">Last Comment</Label>
