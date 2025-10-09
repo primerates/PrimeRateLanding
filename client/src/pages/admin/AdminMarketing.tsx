@@ -1080,12 +1080,12 @@ export default function AdminMarketing() {
               Delete Batch Confirmation
             </DialogTitle>
             <DialogDescription className="pt-4">
-              <p className="font-semibold text-foreground mb-2">
+              <div className="font-semibold text-foreground mb-2">
                 Are you sure you want to delete this batch?
-              </p>
-              <p className="text-muted-foreground">
+              </div>
+              <div className="text-muted-foreground">
                 Clicking Yes will permanently remove all items in this batch. This action cannot be undone.
-              </p>
+              </div>
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2">
@@ -1094,7 +1094,7 @@ export default function AdminMarketing() {
               onClick={cancelDelete}
               data-testid="button-cancel-delete"
             >
-              No, Cancel
+              Go Back
             </Button>
             <Button 
               variant="destructive" 
