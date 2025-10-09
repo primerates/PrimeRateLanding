@@ -658,7 +658,7 @@ export default function AdminMarketing() {
                         </Select>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="data-type">Data</Label>
+                        <Label htmlFor="data-type">Data Speed</Label>
                         <Select value={dataType} onValueChange={setDataType}>
                           <SelectTrigger id="data-type" data-testid="select-data-type">
                             <SelectValue placeholder="Select" />
@@ -724,7 +724,7 @@ export default function AdminMarketing() {
                         </Select>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="data-source">Data</Label>
+                        <Label htmlFor="data-source">Data Vendor</Label>
                         <Select value={dataSource} onValueChange={setDataSource}>
                           <SelectTrigger id="data-source" data-testid="select-data-source">
                             <SelectValue placeholder="Select" />
