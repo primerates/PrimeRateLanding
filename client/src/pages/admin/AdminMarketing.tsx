@@ -17,6 +17,11 @@ interface BatchData {
   id: string;
   batchNumber: string;
   batchTitle: string;
+  category: string;
+  dataType: string;
+  delivery: string;
+  tenYearBond: string;
+  parRate: string;
   createdDate: string;
   excelData: Array<{
     referenceNumber: string;
@@ -299,6 +304,11 @@ export default function AdminMarketing() {
       id: Date.now().toString(),
       batchNumber: batchNumber,
       batchTitle: batchTitle,
+      category: category,
+      dataType: dataType,
+      delivery: delivery,
+      tenYearBond: tenYearBond,
+      parRate: parRate,
       createdDate: new Date().toISOString(),
       excelData: mappedData,
       stats: {
@@ -1005,12 +1015,12 @@ export default function AdminMarketing() {
                     <p className="text-muted-foreground">No batches created yet</p>
                   </div>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full border-collapse">
+                  <div className="overflow-x-auto flywheel-scroll">
+                    <table className="w-full border-collapse min-w-max">
                       <thead>
                         <tr className="border-b border-gray-300">
                           <th 
-                            className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                            className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
                             onClick={() => handleSort('createdDate')}
                             data-testid="sort-date"
                           >
@@ -1020,17 +1030,17 @@ export default function AdminMarketing() {
                             </div>
                           </th>
                           <th 
-                            className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                            className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
                             onClick={() => handleSort('batchNumber')}
                             data-testid="sort-batch-number"
                           >
                             <div className="flex items-center gap-2">
-                              Batch Number
+                              Batch #
                               <ArrowUpDown className="h-4 w-4" />
                             </div>
                           </th>
                           <th 
-                            className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                            className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
                             onClick={() => handleSort('batchTitle')}
                             data-testid="sort-batch-title"
                           >
@@ -1039,8 +1049,13 @@ export default function AdminMarketing() {
                               <ArrowUpDown className="h-4 w-4" />
                             </div>
                           </th>
-                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800">Total Leads</th>
-                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800">Actions</th>
+                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Category</th>
+                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Data Speed</th>
+                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Delivery Speed</th>
+                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">10 Year Bond</th>
+                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Par Rate</th>
+                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Total Leads</th>
+                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1050,10 +1065,41 @@ export default function AdminMarketing() {
                             return Object.values(row).some(value => value && value.toString().trim() !== '');
                           }).length;
                           
+                          // Format category display
+                          const getCategoryDisplay = (cat: string) => {
+                            switch(cat) {
+                              case 'va': return 'VA';
+                              case 'va-jumbo': return 'VA Jumbo';
+                              case 'conv': return 'Conv.';
+                              case 'conv-jumbo': return 'Conv. Jumbo';
+                              case 'fha': return 'FHA';
+                              default: return cat;
+                            }
+                          };
+                          
+                          // Format data speed display
+                          const getDataSpeedDisplay = (speed: string) => {
+                            switch(speed) {
+                              case 'trigger': return 'Trigger';
+                              case 'monthly': return 'Monthly';
+                              default: return speed;
+                            }
+                          };
+                          
+                          // Format delivery display
+                          const getDeliveryDisplay = (del: string) => {
+                            switch(del) {
+                              case 'first-class': return 'First Class';
+                              case 'standard': return 'Standard';
+                              case 'bulk': return 'Bulk';
+                              default: return del;
+                            }
+                          };
+                          
                           return (
                             <tr key={batch.id} className="border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                              <td className="p-3">{new Date(batch.createdDate).toLocaleDateString()}</td>
-                              <td className="p-3">
+                              <td className="p-3 whitespace-nowrap">{new Date(batch.createdDate).toLocaleDateString()}</td>
+                              <td className="p-3 whitespace-nowrap">
                                 <button
                                   onClick={() => setSelectedBatch(batch)}
                                   className="text-primary hover:underline cursor-pointer font-medium"
@@ -1062,7 +1108,7 @@ export default function AdminMarketing() {
                                   {batch.batchNumber}
                                 </button>
                               </td>
-                              <td className="p-3">
+                              <td className="p-3 whitespace-nowrap">
                                 <button
                                   onClick={() => setSelectedBatch(batch)}
                                   className="text-primary hover:underline cursor-pointer font-medium"
@@ -1071,8 +1117,13 @@ export default function AdminMarketing() {
                                   {batch.batchTitle}
                                 </button>
                               </td>
-                              <td className="p-3">{actualLeadCount}</td>
-                              <td className="p-3">
+                              <td className="p-3 whitespace-nowrap">{getCategoryDisplay(batch.category)}</td>
+                              <td className="p-3 whitespace-nowrap">{getDataSpeedDisplay(batch.dataType)}</td>
+                              <td className="p-3 whitespace-nowrap">{getDeliveryDisplay(batch.delivery)}</td>
+                              <td className="p-3 whitespace-nowrap">{batch.tenYearBond || '-'}</td>
+                              <td className="p-3 whitespace-nowrap">{batch.parRate || '-'}</td>
+                              <td className="p-3 whitespace-nowrap">{actualLeadCount}</td>
+                              <td className="p-3 whitespace-nowrap">
                                 <Tooltip>
                                   <TooltipTrigger asChild>
                                     <Button
