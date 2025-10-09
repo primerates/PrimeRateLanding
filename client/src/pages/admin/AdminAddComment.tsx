@@ -384,16 +384,21 @@ export default function AdminAddComment() {
     const now = new Date();
     const formattedDate = `${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}/${now.getFullYear()}`;
     
-    const updatedPosts = [...postedCompanyPosts];
-    updatedPosts[index] = {
-      ...updatedPosts[index],
+    // Get the post to republish
+    const postToRepublish = {
+      ...postedCompanyPosts[index],
       date: formattedDate
     };
+    
+    // Remove the post from its current position and add it to the end
+    const updatedPosts = [...postedCompanyPosts];
+    updatedPosts.splice(index, 1);
+    updatedPosts.push(postToRepublish);
     
     setPostedCompanyPosts(updatedPosts);
     localStorage.setItem('postedCompanyPosts', JSON.stringify(updatedPosts));
     
-    alert('Post republished with today\'s date!');
+    alert('Post republished and moved to dashboard!');
   };
 
   const handleScreenshare = () => {
