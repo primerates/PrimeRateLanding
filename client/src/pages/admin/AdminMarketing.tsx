@@ -85,23 +85,27 @@ export default function AdminMarketing() {
             return;
           }
 
-          // Validate required columns
+          // Validate required columns - be flexible with column names
           const firstRow = results.data[0] as any;
           const headers = Object.keys(firstRow);
           
-          const hasReferenceNumber = headers.some(h => 
-            h.toLowerCase().includes('reference') && h.toLowerCase().includes('number')
+          const hasReference = headers.some(h => 
+            h.toLowerCase().includes('reference')
           );
-          const hasClientName = headers.some(h => 
-            h.toLowerCase().includes('client') && h.toLowerCase().includes('name')
+          const hasName = headers.some(h => 
+            h.toLowerCase().includes('name') || 
+            h.toLowerCase().includes('first') || 
+            h.toLowerCase().includes('last')
           );
           const hasAddress = headers.some(h => 
-            h.toLowerCase().includes('address')
+            h.toLowerCase().includes('address') || 
+            h.toLowerCase().includes('street') || 
+            h.toLowerCase().includes('city')
           );
 
-          if (!hasReferenceNumber || !hasClientName || !hasAddress) {
+          if (!hasReference || !hasName || !hasAddress) {
             reject(new Error(
-              `Missing required columns. Your file has these columns: ${headers.join(', ')}. Please ensure you have columns for Reference Number, Client Name, and Address.`
+              `Missing required columns. Your file has these columns: ${headers.join(', ')}. Please ensure you have columns for Reference, Name (First/Last), and Address/Street.`
             ));
             return;
           }
@@ -144,12 +148,46 @@ export default function AdminMarketing() {
       
       // Ensure data has required fields - handle various column name formats
       const formattedData = excelData.map(row => {
+        // Reference Number
         const refNum = row['Reference Number'] || row['referenceNumber'] || row['reference number'] || 
-                       row['Ref Number'] || row['ref number'] || row['RefNumber'] || '';
-        const clientName = row['Client Name'] || row['clientName'] || row['client name'] || 
-                          row['Name'] || row['name'] || '';
-        const address = row['Address'] || row['address'] || row['Street Address'] || 
-                       row['street address'] || '';
+                       row['Ref Number'] || row['ref number'] || row['RefNumber'] || 
+                       row['Reference'] || row['reference'] || '';
+        
+        // Client Name - combine first and last if needed
+        let clientName = row['Client Name'] || row['clientName'] || row['client name'] || 
+                        row['Name'] || row['name'] || '';
+        
+        // If no combined name, try first + last
+        if (!clientName) {
+          const firstName = row['First Name'] || row['firstName'] || row['first name'] || '';
+          const lastName = row['Last Name'] || row['lastName'] || row['last name'] || '';
+          clientName = `${firstName} ${lastName}`.trim();
+        }
+        
+        // Address - combine street, unit, city, state, zip if needed
+        let address = row['Address'] || row['address'] || row['Street Address'] || 
+                     row['street address'] || '';
+        
+        // If no combined address, build from parts
+        if (!address) {
+          const street = row['Street Address'] || row['street address'] || '';
+          const unit = row['Unit'] || row['unit'] || '';
+          const city = row['City'] || row['city'] || '';
+          const state = row['State'] || row['state'] || '';
+          const zip = row['Zip'] || row['zip'] || '';
+          const zip4 = row['Zip4'] || row['zip4'] || '';
+          
+          const fullZip = zip4 ? `${zip}-${zip4}` : zip;
+          const parts = [
+            street,
+            unit ? `Unit ${unit}` : '',
+            city,
+            state,
+            fullZip
+          ].filter(p => p).join(', ');
+          
+          address = parts;
+        }
         
         return {
           referenceNumber: refNum,
