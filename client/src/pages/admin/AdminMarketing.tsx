@@ -895,7 +895,6 @@ export default function AdminMarketing() {
                     <CardTitle className="flex items-center gap-2">
                       {isEditingTitle ? (
                         <>
-                          <span>Batch Details: {selectedBatch.batchNumber} -</span>
                           <Input 
                             value={editedTitle}
                             onChange={(e) => setEditedTitle(e.target.value)}
@@ -921,7 +920,7 @@ export default function AdminMarketing() {
                         </>
                       ) : (
                         <>
-                          <span>Batch Details: {selectedBatch.batchNumber} - {selectedBatch.batchTitle}</span>
+                          <span>{selectedBatch.batchTitle}</span>
                           <Button 
                             size="icon" 
                             variant="ghost" 
