@@ -141,8 +141,10 @@ export default function AdminMarketing() {
           return;
         }
 
-        // Get column headers
-        const columns = Object.keys(results.data[0] as any);
+        // Get column headers - filter out empty column names
+        const allColumns = Object.keys(results.data[0] as any);
+        const columns = allColumns.filter(col => col && col.trim() !== '');
+        
         setDetectedColumns(columns);
         setCsvData(results.data);
         setPreviewData(results.data.slice(0, 5));
