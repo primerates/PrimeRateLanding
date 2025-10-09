@@ -144,80 +144,78 @@ export default function AdminAddComment() {
 
         {/* Main Content */}
         <div className="container mx-auto px-6 py-8">
-          <Tabs defaultValue="client" className="w-full">
-            {/* Menu Bar with Circular Indicators and Tabs */}
-            <Card className="mb-6">
-              <CardContent className="pt-6">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-lg font-semibold">Last Comment</Label>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label className="text-lg font-semibold">Client Comment</Label>
-                    <div className="min-h-[40px] flex items-center">
-                      <div
-                        className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
-                        style={{
-                          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
-                          fontSize: '36px',
-                          fontWeight: 600,
-                          backgroundColor: '#1a3373',
-                          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
-                        }}
-                        data-testid="circle-client-comment"
-                      >
-                        <span>0</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label className="text-lg font-semibold">Company Post</Label>
-                    <div className="min-h-[40px] flex items-center">
-                      <div
-                        className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
-                        style={{
-                          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
-                          fontSize: '36px',
-                          fontWeight: 600,
-                          backgroundColor: '#1a3373',
-                          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
-                        }}
-                        data-testid="circle-company-post"
-                      >
-                        <span>0</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label className="text-lg font-semibold">Note</Label>
-                    <div className="min-h-[40px] flex items-center">
-                      <div
-                        className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
-                        style={{
-                          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
-                          fontSize: '36px',
-                          fontWeight: 600,
-                          backgroundColor: '#1a3373',
-                          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
-                        }}
-                        data-testid="circle-note"
-                      >
-                        <span>0</span>
-                      </div>
+          <Tabs defaultValue="client" className="space-y-6">
+            {/* Menu Bar with Circular Indicators */}
+            <Card>
+              <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
+                <div className="space-y-2">
+                  <Label className="text-lg font-semibold">Last Comment</Label>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-lg font-semibold">Client Comment</Label>
+                  <div className="min-h-[40px] flex items-center">
+                    <div
+                      className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
+                      style={{
+                        fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                        fontSize: '36px',
+                        fontWeight: 600,
+                        backgroundColor: '#1a3373',
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+                      }}
+                      data-testid="circle-client-comment"
+                    >
+                      <span>0</span>
                     </div>
                   </div>
                 </div>
                 
-                {/* Tabs integrated into the menu bar */}
-                <TabsList className="grid w-full grid-cols-2 mt-6">
-                  <TabsTrigger value="client" data-testid="tab-client-comments">Client Comment</TabsTrigger>
-                  <TabsTrigger value="internal" data-testid="tab-internal-messages">Internal Message</TabsTrigger>
-                </TabsList>
+                <div className="space-y-2">
+                  <Label className="text-lg font-semibold">Company Post</Label>
+                  <div className="min-h-[40px] flex items-center">
+                    <div
+                      className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
+                      style={{
+                        fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                        fontSize: '36px',
+                        fontWeight: 600,
+                        backgroundColor: '#1a3373',
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+                      }}
+                      data-testid="circle-company-post"
+                    >
+                      <span>0</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-lg font-semibold">Note</Label>
+                  <div className="min-h-[40px] flex items-center">
+                    <div
+                      className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
+                      style={{
+                        fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                        fontSize: '36px',
+                        fontWeight: 600,
+                        backgroundColor: '#1a3373',
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+                      }}
+                      data-testid="circle-note"
+                    >
+                      <span>0</span>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
+
+            {/* Tab Menu Bar - Matching Lead Tile Style */}
+            <TabsList className="grid w-full grid-cols-2 bg-transparent h-auto p-0 relative border-b border-gray-200 group">
+              <TabsTrigger value="client" data-testid="tab-client-comments" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Client Comment</TabsTrigger>
+              <TabsTrigger value="internal" data-testid="tab-internal-messages" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Internal Message</TabsTrigger>
+            </TabsList>
 
             {/* Client Comments Tab */}
             <TabsContent value="client">
