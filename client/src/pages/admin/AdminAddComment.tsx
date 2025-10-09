@@ -729,7 +729,7 @@ export default function AdminAddComment() {
 
             {/* Client Comments Tab */}
             <TabsContent value="client" className="mt-8">
-              <Card>
+              <Card className="border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
                 <CardHeader>
                   <CardTitle>Client Comment</CardTitle>
                 </CardHeader>
