@@ -108,6 +108,12 @@ export default function AdminAddComment() {
   const [sortColumn, setSortColumn] = useState<string>('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
+  // Dialog state for viewing/editing comments
+  const [showCommentDialog, setShowCommentDialog] = useState(false);
+  const [selectedComment, setSelectedComment] = useState<any>(null);
+  const [selectedCommentIndex, setSelectedCommentIndex] = useState<number>(-1);
+  const [isEditMode, setIsEditMode] = useState(false);
+
   const handleSort = (column: string) => {
     if (sortColumn === column) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -115,6 +121,61 @@ export default function AdminAddComment() {
       setSortColumn(column);
       setSortDirection('asc');
     }
+  };
+
+  const handleCommentClick = (comment: any, index: number) => {
+    setSelectedComment(comment);
+    setSelectedCommentIndex(index);
+    setIsEditMode(false);
+    setShowCommentDialog(true);
+  };
+
+  const handleDeleteComment = () => {
+    if (selectedCommentIndex === -1) return;
+    
+    const updatedComments = postedComments.filter((_, i) => i !== selectedCommentIndex);
+    setPostedComments(updatedComments);
+    localStorage.setItem('postedTestimonials', JSON.stringify(updatedComments));
+    
+    // Update statistics
+    setTotalComments(updatedComments.length);
+    if (updatedComments.length > 0) {
+      setLastCommentDate(updatedComments[updatedComments.length - 1].date || '');
+    } else {
+      setLastCommentDate('');
+    }
+    const states = new Set(updatedComments.map(c => c.state).filter(s => s));
+    setUniqueStates(states.size);
+    
+    setShowCommentDialog(false);
+    alert('Comment deleted successfully!');
+  };
+
+  const handleEditComment = () => {
+    setIsEditMode(true);
+  };
+
+  const handleSaveEdit = () => {
+    if (selectedCommentIndex === -1) return;
+    
+    const updatedComments = [...postedComments];
+    updatedComments[selectedCommentIndex] = selectedComment;
+    setPostedComments(updatedComments);
+    localStorage.setItem('postedTestimonials', JSON.stringify(updatedComments));
+    
+    // Update statistics
+    setTotalComments(updatedComments.length);
+    if (updatedComments.length > 0) {
+      setLastCommentDate(updatedComments[updatedComments.length - 1].date || '');
+    } else {
+      setLastCommentDate('');
+    }
+    const states = new Set(updatedComments.map(c => c.state).filter(s => s));
+    setUniqueStates(states.size);
+    
+    setShowCommentDialog(false);
+    setIsEditMode(false);
+    alert('Comment updated successfully!');
   };
 
   const handleScreenshare = () => {
@@ -664,7 +725,24 @@ export default function AdminAddComment() {
                                   ))}
                                 </div>
                               </td>
-                              <td className="p-3" data-testid={`cell-last-name-${index}`}>{comment.lastName}</td>
+                              <td className="p-3" data-testid={`cell-last-name-${index}`}>
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <button 
+                                        onClick={() => handleCommentClick(comment, index)}
+                                        className="text-primary hover:underline cursor-pointer font-medium"
+                                        data-testid={`button-edit-comment-${index}`}
+                                      >
+                                        {comment.lastName}
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Edit Post</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              </td>
                               <td className="p-3" data-testid={`cell-first-name-${index}`}>{comment.firstName}</td>
                             </tr>
                           ))
@@ -826,6 +904,213 @@ export default function AdminAddComment() {
           </Tabs>
         </div>
       </div>
+
+      {/* Comment View/Edit Dialog */}
+      <Dialog open={showCommentDialog} onOpenChange={setShowCommentDialog}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{isEditMode ? 'Edit Comment' : 'View Comment'}</DialogTitle>
+          </DialogHeader>
+          
+          {selectedComment && (
+            <div className="space-y-4 py-4">
+              {isEditMode ? (
+                // Edit Mode
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>First Name</Label>
+                      <Input 
+                        value={selectedComment.firstName}
+                        onChange={(e) => setSelectedComment({...selectedComment, firstName: e.target.value})}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Last Name</Label>
+                      <Input 
+                        value={selectedComment.lastName}
+                        onChange={(e) => setSelectedComment({...selectedComment, lastName: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>City</Label>
+                      <Input 
+                        value={selectedComment.city}
+                        onChange={(e) => setSelectedComment({...selectedComment, city: e.target.value})}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>State</Label>
+                      <Select 
+                        value={selectedComment.state} 
+                        onValueChange={(value) => setSelectedComment({...selectedComment, state: value})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {US_STATES.map((state) => (
+                            <SelectItem key={state.value} value={state.value}>
+                              {state.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Loan Purpose</Label>
+                      <Select 
+                        value={selectedComment.loanPurpose} 
+                        onValueChange={(value) => setSelectedComment({...selectedComment, loanPurpose: value})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="refinance">Refinance</SelectItem>
+                          <SelectItem value="purchase">Purchase</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Rating</Label>
+                      <Select 
+                        value={selectedComment.rating} 
+                        onValueChange={(value) => setSelectedComment({...selectedComment, rating: value})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="5">5 Stars</SelectItem>
+                          <SelectItem value="4">4 Stars</SelectItem>
+                          <SelectItem value="3">3 Stars</SelectItem>
+                          <SelectItem value="2">2 Stars</SelectItem>
+                          <SelectItem value="1">1 Star</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Source</Label>
+                      <Input 
+                        value={selectedComment.source}
+                        onChange={(e) => setSelectedComment({...selectedComment, source: e.target.value})}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Comment Date</Label>
+                      <Input 
+                        value={selectedComment.date}
+                        onChange={(e) => setSelectedComment({...selectedComment, date: e.target.value})}
+                        placeholder="MM/DD/YYYY"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label>Comment</Label>
+                    <Textarea 
+                      value={selectedComment.comment}
+                      onChange={(e) => setSelectedComment({...selectedComment, comment: e.target.value})}
+                      className="min-h-[150px]"
+                    />
+                  </div>
+                </>
+              ) : (
+                // View Mode
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm text-muted-foreground">First Name</Label>
+                      <p className="font-medium">{selectedComment.firstName}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-muted-foreground">Last Name</Label>
+                      <p className="font-medium">{selectedComment.lastName}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm text-muted-foreground">City</Label>
+                      <p className="font-medium">{selectedComment.city}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-muted-foreground">State</Label>
+                      <p className="font-medium">{selectedComment.state}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm text-muted-foreground">Loan Purpose</Label>
+                      <p className="font-medium">{selectedComment.loanPurpose || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-muted-foreground">Rating</Label>
+                      <div className="flex items-center gap-2">
+                        {[...Array(parseInt(selectedComment.rating) || 0)].map((_, i) => (
+                          <Star key={i} className="w-4 h-4 fill-warning text-warning" />
+                        ))}
+                        <span className="font-medium">({selectedComment.rating} stars)</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm text-muted-foreground">Source</Label>
+                      <p className="font-medium">{selectedComment.source || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-muted-foreground">Comment Date</Label>
+                      <p className="font-medium">{selectedComment.date}</p>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <Label className="text-sm text-muted-foreground">Comment</Label>
+                    <p className="font-medium mt-2">{selectedComment.comment}</p>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+          
+          <DialogFooter>
+            {isEditMode ? (
+              <>
+                <Button variant="outline" onClick={() => setIsEditMode(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleSaveEdit} data-testid="button-save-edit">
+                  Save Changes
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="outline" onClick={handleDeleteComment} className="mr-auto" data-testid="button-delete-comment">
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete
+                </Button>
+                <Button onClick={handleEditComment} data-testid="button-edit-mode">
+                  <Edit className="w-4 h-4 mr-2" />
+                  Edit
+                </Button>
+              </>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </TooltipProvider>
   );
 }

@@ -15,19 +15,13 @@ export default function TestimonialsSection() {
       const stored = localStorage.getItem('postedTestimonials');
       if (stored) {
         const parsed = JSON.parse(stored);
-        console.log('Raw testimonials data:', parsed);
         // Transform data to match display format
-        const formatted = parsed.map((t: any) => {
-          const location = t.city && t.state ? `${t.city}, ${t.state}` : t.state || t.city || 'Location not specified';
-          console.log('Testimonial:', { city: t.city, state: t.state, location });
-          return {
-            name: `${t.firstName} ${t.lastName}`,
-            location: location,
-            rating: parseInt(t.rating) || 5,
-            text: t.comment
-          };
-        });
-        console.log('Formatted testimonials:', formatted);
+        const formatted = parsed.map((t: any) => ({
+          name: `${t.firstName} ${t.lastName}`,
+          location: t.city && t.state ? `${t.city}, ${t.state}` : t.state || t.city || 'Location not specified',
+          rating: parseInt(t.rating) || 5,
+          text: t.comment
+        }));
         setTestimonials(formatted);
       }
     };
@@ -121,7 +115,7 @@ export default function TestimonialsSection() {
                           <div className="flex items-center">
                             <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
                               <span className="text-primary font-semibold">
-                                {testimonial.name.split(' ').map(n => n[0]).join('')}
+                                {testimonial.name.split(' ').map((n: string) => n[0]).join('')}
                               </span>
                             </div>
                             <div>
