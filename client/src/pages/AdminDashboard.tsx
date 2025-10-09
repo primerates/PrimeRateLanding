@@ -492,7 +492,7 @@ export default function AdminDashboard() {
           const mostRecentPost = companyPosts[companyPosts.length - 1];
           
           return (
-            <div className="mt-16 flex justify-center">
+            <div className="mt-32 flex justify-center">
               <div className="max-w-3xl w-full">
                 <div 
                   data-testid="company-post-0"
