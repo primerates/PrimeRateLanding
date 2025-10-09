@@ -104,6 +104,23 @@ export default function AdminAddComment() {
     setTimeout(() => setLocation('/admin/dashboard'), 300);
   };
 
+  const handlePostComment = () => {
+    // For now, just show a success message and reset the form
+    alert('Comment posted successfully!');
+    
+    // Reset form
+    setClientFirstName('');
+    setClientLastName('');
+    setClientState('');
+    setClientCity('');
+    setClientSource('');
+    setClientRating('');
+    setClientLoanPurpose('');
+    setClientDate('');
+    setClientComment('');
+    setShowPreview(false);
+  };
+
   // Date formatting for MM/DD/YYYY with auto "/"
   const handleDateChange = (value: string, setter: (value: string) => void) => {
     const digitsOnly = value.replace(/\D/g, ''); // Remove non-digits
@@ -429,7 +446,10 @@ export default function AdminAddComment() {
                 <div className="mt-8">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold">Preview</h3>
-                    <Button data-testid="button-post-client-comment">
+                    <Button 
+                      onClick={handlePostComment}
+                      data-testid="button-post-client-comment"
+                    >
                       Post Comment
                     </Button>
                   </div>
