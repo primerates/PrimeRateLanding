@@ -110,33 +110,37 @@ The Comments & Posts Management system (`/admin/add-comment`) provides a compreh
   - Future category additions should be deliberately mapped to appropriate counter
 
 ### Notes Tab
-- **Sticky Note Input**: Yellow card with Pin icon header, textarea, and "OK - Pin to Wall" button
-- **Pin to Wall Behavior**: 
-  - Clicking "OK - Pin to Wall" removes the blank sticky note input
-  - New pinned note smoothly animates into the input's position
-  - To create another note, click the "Notes" tab again to show the input
-- **Pinned Notes Display**: Grid layout (1/2/3 columns responsive) showing all notes matching input card size (max-w-md)
+- **Sticky Note Cards**: Yellow cards with editable textareas for creating notes
 - **Visual Design**: 
   - Yellow background (bg-yellow-100/dark:bg-yellow-900)
   - Red pin icon at top center (rotated 45 degrees)
-  - "Sticky Note" header with yellow pin icon (matching input card)
-  - Same size as input sticky note card
-  - Bottom buttons: "Edit" and trash icon (no date display)
+  - "Sticky Note" header with yellow pin icon
+  - Minimize/Expand button at top right corner
+  - Bottom buttons: "Edit" and "Pin/Unpin"
+- **Minimize/Expand**: 
+  - Click minimize icon (top right) to collapse note to header only
+  - Click expand icon to restore note content
+- **Add Note**: 
+  - "Add Note" button at bottom creates new blank sticky note
+  - Multiple notes can be created and displayed in grid layout (1/2/3 columns responsive)
+- **Pin/Unpin System**:
+  - Notes start as unpinned
+  - Click "Pin" button to pin a note - text changes to "Unpin" and note persists
+  - Click "Unpin" to delete and remove the sticky note
+  - Only pinned notes are saved to localStorage
 - **Edit Functionality**:
-  - Click "Edit" button to enter edit mode
-  - Text becomes editable in textarea
+  - Notes are directly editable in textarea (no separate edit mode needed)
+  - Click "Edit" button for explicit edit mode
   - "Edit" button changes to "Save" button
-  - Click "Save" to save changes and return to view mode
-- **Functionality**:
-  - Notes persist in localStorage key `'pinnedNotes'`
-  - Input clears after posting and input card is hidden
-  - Delete button (trash icon) removes individual notes
-  - Each note can be edited and saved
-  - Smooth slide-in animation when pinning new notes
+  - Click "Save" to save changes
+- **Data Persistence**:
+  - Notes stored in localStorage key `'pinnedNotes'`
+  - Only pinned notes persist across sessions
+  - Unpinned notes are temporary until pinned or deleted
 
 ### Technical Implementation
 - **Data Storage**: Company posts stored in localStorage key `'postedCompanyPosts'`; Notes stored in `'pinnedNotes'`
-- **State Management**: Dedicated sorting state (`sortPostColumn`, `sortPostDirection`) and dialog state for posts; Notes use `currentNote` and `pinnedNotes` state
+- **State Management**: Dedicated sorting state (`sortPostColumn`, `sortPostDirection`) and dialog state for posts; Notes use `allNotes`, `editingNoteId`, `editingNoteText`, and `minimizedNotes` state
 - **Index Mapping**: Sorted arrays use `findIndex()` to map back to original array indices for edit/delete operations
 - **Dashboard Display**: Only the most recent post (last in array) is displayed on AdminDashboard, not all posts
 - **Republish Feature**: "Publish" button in All Posts table updates post date to today, making it the most recent

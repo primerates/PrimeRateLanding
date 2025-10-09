@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RotateCcw, Monitor, Save, Plus, ArrowUpDown, Star, Edit, Trash2, Pin } from 'lucide-react';
+import { RotateCcw, Monitor, Save, Plus, ArrowUpDown, Star, Edit, Trash2, Pin, Minimize2, Maximize2 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -85,12 +85,10 @@ export default function AdminAddComment() {
   const [eventsCount, setEventsCount] = useState(0); // "Policy", "Events", "Announcement"
   
   // Notes state
-  const [currentNote, setCurrentNote] = useState('');
-  const [pinnedNotes, setPinnedNotes] = useState<any[]>([]);
+  const [allNotes, setAllNotes] = useState<any[]>([]);
   const [editingNoteId, setEditingNoteId] = useState<number | null>(null);
   const [editingNoteText, setEditingNoteText] = useState('');
-  const [showNoteInput, setShowNoteInput] = useState(true);
-  const [justPinned, setJustPinned] = useState(false);
+  const [minimizedNotes, setMinimizedNotes] = useState<Set<number>>(new Set());
 
   // Trigger circle animation only on mount
   useEffect(() => {
@@ -147,16 +145,15 @@ export default function AdminAddComment() {
     // Load pinned notes
     const storedNotes = localStorage.getItem('pinnedNotes');
     if (storedNotes) {
-      setPinnedNotes(JSON.parse(storedNotes));
+      const pinnedNotes = JSON.parse(storedNotes);
+      // Mark notes as pinned when loading
+      const notesWithPinnedStatus = pinnedNotes.map((note: any) => ({
+        ...note,
+        isPinned: true
+      }));
+      setAllNotes(notesWithPinnedStatus);
     }
   }, []);
-
-  // Reset note input when Notes tab is clicked
-  useEffect(() => {
-    if (activeTab === 'notes') {
-      setShowNoteInput(true);
-    }
-  }, [activeTab]);
 
   // Sorting state for All Comments table
   const [sortColumn, setSortColumn] = useState<string>('');
@@ -422,37 +419,39 @@ export default function AdminAddComment() {
     alert('Post republished and moved to dashboard!');
   };
 
-  const handlePinNote = () => {
-    if (!currentNote.trim()) {
-      alert('Please write a note before pinning!');
-      return;
-    }
-    
+  const handleAddNote = () => {
     const newNote = {
       id: Date.now(),
-      text: currentNote,
+      text: '',
+      isPinned: false,
       createdAt: new Date().toISOString()
     };
-    
-    const updatedNotes = [...pinnedNotes, newNote];
-    setPinnedNotes(updatedNotes);
-    localStorage.setItem('pinnedNotes', JSON.stringify(updatedNotes));
-    
-    // Hide the input and trigger animation
-    setShowNoteInput(false);
-    setJustPinned(true);
-    
-    // Clear the current note
-    setCurrentNote('');
-    
-    // Reset animation state after animation completes
-    setTimeout(() => setJustPinned(false), 500);
+    setAllNotes([...allNotes, newNote]);
   };
 
-  const handleDeleteNote = (id: number) => {
-    const updatedNotes = pinnedNotes.filter(note => note.id !== id);
-    setPinnedNotes(updatedNotes);
-    localStorage.setItem('pinnedNotes', JSON.stringify(updatedNotes));
+  const handleTogglePin = (id: number) => {
+    const note = allNotes.find(n => n.id === id);
+    if (!note) return;
+    
+    if (note.isPinned) {
+      // Unpinning - remove the note
+      const updatedNotes = allNotes.filter(n => n.id !== id);
+      setAllNotes(updatedNotes);
+      
+      // Update localStorage with only pinned notes
+      const pinnedNotes = updatedNotes.filter(n => n.isPinned);
+      localStorage.setItem('pinnedNotes', JSON.stringify(pinnedNotes));
+    } else {
+      // Pinning - mark as pinned
+      const updatedNotes = allNotes.map(n => 
+        n.id === id ? { ...n, isPinned: true } : n
+      );
+      setAllNotes(updatedNotes);
+      
+      // Update localStorage with only pinned notes
+      const pinnedNotes = updatedNotes.filter(n => n.isPinned);
+      localStorage.setItem('pinnedNotes', JSON.stringify(pinnedNotes));
+    }
   };
 
   const handleEditNote = (id: number, text: string) => {
@@ -461,13 +460,34 @@ export default function AdminAddComment() {
   };
 
   const handleSaveNoteEdit = (id: number) => {
-    const updatedNotes = pinnedNotes.map(note => 
+    const updatedNotes = allNotes.map(note => 
       note.id === id ? { ...note, text: editingNoteText } : note
     );
-    setPinnedNotes(updatedNotes);
-    localStorage.setItem('pinnedNotes', JSON.stringify(updatedNotes));
+    setAllNotes(updatedNotes);
+    
+    // Update localStorage with only pinned notes
+    const pinnedNotes = updatedNotes.filter(n => n.isPinned);
+    localStorage.setItem('pinnedNotes', JSON.stringify(pinnedNotes));
+    
     setEditingNoteId(null);
     setEditingNoteText('');
+  };
+
+  const handleNoteTextChange = (id: number, text: string) => {
+    const updatedNotes = allNotes.map(note => 
+      note.id === id ? { ...note, text } : note
+    );
+    setAllNotes(updatedNotes);
+  };
+
+  const handleToggleMinimize = (id: number) => {
+    const newMinimized = new Set(minimizedNotes);
+    if (newMinimized.has(id)) {
+      newMinimized.delete(id);
+    } else {
+      newMinimized.add(id);
+    }
+    setMinimizedNotes(newMinimized);
   };
 
   const handleScreenshare = () => {
@@ -1523,110 +1543,106 @@ export default function AdminAddComment() {
             </TabsContent>
 
             <TabsContent value="notes" className="mt-8">
-              {/* Sticky Note Input */}
-              {showNoteInput && (
-                <Card className="bg-yellow-100 dark:bg-yellow-900 border-yellow-300 dark:border-yellow-700 max-w-md transition-all duration-300">
-                  <CardHeader>
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <Pin className="h-5 w-5 text-yellow-700 dark:text-yellow-300" />
-                      Sticky Note
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <Textarea
-                      value={currentNote}
-                      onChange={(e) => setCurrentNote(e.target.value)}
-                      placeholder="Type your note here..."
-                      className="min-h-[120px] bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700 resize-none"
-                      data-testid="textarea-note"
-                    />
-                    <Button 
-                      onClick={handlePinNote}
-                      className="w-full"
-                      data-testid="button-pin-note"
-                    >
-                      OK - Pin to Wall
-                    </Button>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Pinned Notes Wall */}
-              {pinnedNotes.length > 0 && (
-                <div className={`space-y-4 ${!showNoteInput ? '' : 'mt-8'}`}>
-                  {!showNoteInput && (
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <Pin className="h-5 w-5" />
-                      Pinned Notes
-                    </h3>
-                  )}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {pinnedNotes.map((note, index) => (
+              {/* Notes Display */}
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {allNotes.map((note) => {
+                    const isMinimized = minimizedNotes.has(note.id);
+                    return (
                       <Card 
                         key={note.id}
-                        className={`bg-yellow-100 dark:bg-yellow-900 border-yellow-300 dark:border-yellow-700 relative max-w-md transition-all duration-500 ${
-                          justPinned && index === pinnedNotes.length - 1 
-                            ? 'animate-in slide-in-from-bottom-4 fade-in' 
-                            : ''
-                        }`}
+                        className="bg-yellow-100 dark:bg-yellow-900 border-yellow-300 dark:border-yellow-700 relative max-w-md"
                         data-testid={`card-note-${note.id}`}
                       >
                         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                           <Pin className="h-6 w-6 text-red-500 rotate-45" />
                         </div>
                         <CardHeader>
-                          <CardTitle className="text-lg flex items-center gap-2">
-                            <Pin className="h-5 w-5 text-yellow-700 dark:text-yellow-300" />
-                            Sticky Note
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                          {editingNoteId === note.id ? (
-                            <Textarea
-                              value={editingNoteText}
-                              onChange={(e) => setEditingNoteText(e.target.value)}
-                              className="min-h-[120px] bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700 resize-none"
-                              data-testid={`textarea-edit-note-${note.id}`}
-                            />
-                          ) : (
-                            <div className="min-h-[120px] text-sm whitespace-pre-wrap">
-                              {note.text}
-                            </div>
-                          )}
-                          <div className="flex gap-2">
-                            {editingNoteId === note.id ? (
-                              <Button
-                                onClick={() => handleSaveNoteEdit(note.id)}
-                                className="flex-1"
-                                data-testid={`button-save-note-${note.id}`}
-                              >
-                                Save
-                              </Button>
-                            ) : (
-                              <Button
-                                variant="outline"
-                                onClick={() => handleEditNote(note.id, note.text)}
-                                className="flex-1 bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700"
-                                data-testid={`button-edit-note-${note.id}`}
-                              >
-                                Edit
-                              </Button>
-                            )}
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-lg flex items-center gap-2">
+                              <Pin className="h-5 w-5 text-yellow-700 dark:text-yellow-300" />
+                              Sticky Note
+                            </CardTitle>
                             <Button
-                              variant="outline"
-                              onClick={() => handleDeleteNote(note.id)}
-                              className="flex-1 bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700"
-                              data-testid={`button-delete-note-${note.id}`}
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleToggleMinimize(note.id)}
+                              className="h-6 w-6 p-0"
+                              data-testid={`button-toggle-minimize-${note.id}`}
                             >
-                              <Trash2 className="h-4 w-4" />
+                              {isMinimized ? (
+                                <Maximize2 className="h-4 w-4" />
+                              ) : (
+                                <Minimize2 className="h-4 w-4" />
+                              )}
                             </Button>
                           </div>
-                        </CardContent>
+                        </CardHeader>
+                        {!isMinimized && (
+                          <CardContent className="space-y-4">
+                            {editingNoteId === note.id ? (
+                              <Textarea
+                                value={editingNoteText}
+                                onChange={(e) => setEditingNoteText(e.target.value)}
+                                className="min-h-[120px] bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700 resize-none"
+                                data-testid={`textarea-edit-note-${note.id}`}
+                              />
+                            ) : (
+                              <Textarea
+                                value={note.text}
+                                onChange={(e) => handleNoteTextChange(note.id, e.target.value)}
+                                placeholder="Type your note here..."
+                                className="min-h-[120px] bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700 resize-none"
+                                data-testid={`textarea-note-${note.id}`}
+                              />
+                            )}
+                            <div className="flex gap-2">
+                              {editingNoteId === note.id ? (
+                                <Button
+                                  onClick={() => handleSaveNoteEdit(note.id)}
+                                  className="flex-1"
+                                  data-testid={`button-save-note-${note.id}`}
+                                >
+                                  Save
+                                </Button>
+                              ) : (
+                                <Button
+                                  variant="outline"
+                                  onClick={() => handleEditNote(note.id, note.text)}
+                                  className="flex-1 bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700"
+                                  data-testid={`button-edit-note-${note.id}`}
+                                >
+                                  Edit
+                                </Button>
+                              )}
+                              <Button
+                                variant="outline"
+                                onClick={() => handleTogglePin(note.id)}
+                                className="flex-1 bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700"
+                                data-testid={`button-pin-note-${note.id}`}
+                              >
+                                <Pin className="h-4 w-4 mr-1" />
+                                {note.isPinned ? 'Unpin' : 'Pin'}
+                              </Button>
+                            </div>
+                          </CardContent>
+                        )}
                       </Card>
-                    ))}
-                  </div>
+                    );
+                  })}
                 </div>
-              )}
+                
+                {/* Add Note Button */}
+                <Button 
+                  onClick={handleAddNote}
+                  variant="outline"
+                  className="w-full max-w-md"
+                  data-testid="button-add-note"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Note
+                </Button>
+              </div>
             </TabsContent>
           </Tabs>
         </div>
