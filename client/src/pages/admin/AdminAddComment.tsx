@@ -270,7 +270,7 @@ export default function AdminAddComment() {
                 <div className="space-y-2">
                   <Label className="text-lg font-semibold">Last Comment</Label>
                   {lastCommentDate && (
-                    <div className="text-2xl font-medium">{lastCommentDate}</div>
+                    <div className="text-xl font-medium">{lastCommentDate}</div>
                   )}
                 </div>
                 
