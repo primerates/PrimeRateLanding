@@ -799,13 +799,6 @@ export default function AdminMarketing() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground bg-blue-50 dark:bg-blue-900/20 p-2 rounded">
-                      <ArrowUpDown className="h-4 w-4" />
-                      <span>
-                        Use the scrollbar above the table to scroll horizontally and see all {Object.keys(selectedBatch.excelData[0]).length} columns
-                      </span>
-                    </div>
-                    
                     {/* Top Scrollbar */}
                     <div 
                       className="overflow-x-scroll w-full border-2 border-blue-400 rounded-t-lg" 
