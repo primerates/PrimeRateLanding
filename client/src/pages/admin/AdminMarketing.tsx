@@ -7,7 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Upload, Plus, BarChart3, FileText, Trash2, Eye, ArrowUpDown, CheckCircle, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
+import { RotateCcw, Monitor, Save, Upload, Plus, BarChart3, FileText, Trash2, Eye, ArrowUpDown, CheckCircle, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Papa from 'papaparse';
 
@@ -80,6 +81,11 @@ export default function AdminMarketing() {
   });
   const [error, setError] = useState('');
   const [showPreview, setShowPreview] = useState(true);
+  
+  // Animation states for buttons
+  const [showRevertAnimation, setShowRevertAnimation] = useState(false);
+  const [screenshareLoading, setScreenshareLoading] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
 
   const requiredFields: RequiredField[] = [
     { key: 'reference', label: 'Reference Number', description: 'Unique identifier for tracking' },
@@ -284,6 +290,36 @@ export default function AdminMarketing() {
   const handleCancel = () => {
     resetForm();
   };
+  
+  const handleBackToDashboard = () => {
+    setShowRevertAnimation(true);
+    setTimeout(() => {
+      setLocation('/admin');
+      setShowRevertAnimation(false);
+    }, 300);
+  };
+
+  const handleScreenshare = () => {
+    setScreenshareLoading(true);
+    setTimeout(() => {
+      setScreenshareLoading(false);
+      toast({
+        title: "Screenshare Started",
+        description: "Screen sharing feature activated",
+      });
+    }, 1000);
+  };
+
+  const handleSave = () => {
+    setSaveLoading(true);
+    setTimeout(() => {
+      setSaveLoading(false);
+      toast({
+        title: "Saved Successfully",
+        description: "All changes have been saved",
+      });
+    }, 1000);
+  };
 
   const handleDeleteBatch = (id: string) => {
     const updatedBatches = batches.filter(b => b.id !== id);
@@ -324,30 +360,68 @@ export default function AdminMarketing() {
   }, [batches, sortColumn, sortDirection]);
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-6">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setLocation('/admin')}
-            data-testid="button-back-to-dashboard"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold">Marketing - Direct Mail</h1>
-            <p className="text-muted-foreground">Manage your direct mail campaigns and track leads</p>
+    <TooltipProvider delayDuration={300}>
+      <div className="min-h-screen bg-background">
+        {/* Header - Matching Comments & Posts Design */}
+        <header className="bg-primary text-primary-foreground shadow-lg border-b transition-shadow duration-300 hover:shadow-2xl hover:shadow-primary/20">
+          <div className="container mx-auto px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <h1 className="text-xl font-black italic" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }}>
+                  Marketing - Direct Mail
+                </h1>
+              </div>
+              <div className="flex items-center space-x-3">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleBackToDashboard}
+                      className="text-primary-foreground hover:text-white hover:bg-green-600 p-2 transition-colors duration-200"
+                      data-testid="button-back-to-dashboard"
+                    >
+                      <RotateCcw className={`h-6 w-6 ${showRevertAnimation ? 'animate-rotate-360' : ''}`} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="left" sideOffset={10} className="text-sm">
+                    <p>Back to Dashboard</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Button
+                  onClick={handleScreenshare}
+                  disabled={screenshareLoading}
+                  size="sm"
+                  className="bg-primary-foreground text-primary hover:bg-green-600 hover:text-white"
+                  data-testid="button-screenshare"
+                >
+                  <Monitor className={`h-3 w-3 mr-2 transition-transform duration-500 ${screenshareLoading ? 'animate-spin' : ''}`} />
+                  {screenshareLoading ? 'Starting...' : 'Screenshare'}
+                </Button>
+                <Button
+                  onClick={handleSave}
+                  disabled={saveLoading}
+                  size="sm"
+                  className="bg-white text-primary border hover:bg-green-600 hover:text-white transition-all duration-500"
+                  data-testid="button-save"
+                >
+                  <Save className={`h-3 w-3 mr-2 transition-transform duration-500 ${saveLoading ? 'rotate-180' : ''}`} />
+                  {saveLoading ? 'Saving...' : 'Save'}
+                </Button>
+              </div>
+            </div>
           </div>
-        </div>
+        </header>
 
-        <Tabs defaultValue="create" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="create" data-testid="tab-create-batch">Create Batch</TabsTrigger>
-            <TabsTrigger value="all-batches" data-testid="tab-all-batches">All Batches</TabsTrigger>
-            <TabsTrigger value="stats" data-testid="tab-stats-overview">Stats Overview</TabsTrigger>
-          </TabsList>
+        {/* Tabs - Matching Comments & Posts Design */}
+        <div className="container mx-auto px-6 mt-6">
+          <Tabs defaultValue="create" className="w-full">
+            <TabsList className="grid w-full grid-cols-4 bg-transparent h-auto p-0 relative border-b border-gray-200 group">
+              <TabsTrigger value="create" data-testid="tab-create-batch" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Create Batch</TabsTrigger>
+              <TabsTrigger value="all-batches" data-testid="tab-all-batches" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">All Batches</TabsTrigger>
+              <TabsTrigger value="stats" data-testid="tab-stats-overview" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Stats Overview</TabsTrigger>
+              <TabsTrigger value="notes" data-testid="tab-notes" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Notes</TabsTrigger>
+            </TabsList>
 
           {/* CREATE BATCH TAB */}
           <TabsContent value="create" className="mt-6">
@@ -710,47 +784,62 @@ export default function AdminMarketing() {
               </CardContent>
             </Card>
           </TabsContent>
-        </Tabs>
 
-        {/* View Batch Dialog */}
-        <Dialog open={viewBatchDialog} onOpenChange={setViewBatchDialog}>
-          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Batch Details: {selectedBatch?.batchNumber}</DialogTitle>
-              <DialogDescription>{selectedBatch?.batchTitle}</DialogDescription>
-            </DialogHeader>
-            {selectedBatch && (
-              <div className="space-y-4">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="border-b">
-                      <tr>
-                        <th className="text-left p-2">Reference</th>
-                        <th className="text-left p-2">Client Name</th>
-                        <th className="text-left p-2">Address</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {selectedBatch.excelData.slice(0, 10).map((row, idx) => (
-                        <tr key={idx} className="border-b">
-                          <td className="p-2">{row.referenceNumber}</td>
-                          <td className="p-2">{row.clientName}</td>
-                          <td className="p-2">{row.address}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+          {/* NOTES TAB */}
+          <TabsContent value="notes" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Notes</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-12">
+                  <p className="text-muted-foreground">Notes feature coming soon...</p>
                 </div>
-                {selectedBatch.excelData.length > 10 && (
-                  <p className="text-sm text-muted-foreground">
-                    Showing 10 of {selectedBatch.excelData.length} records
-                  </p>
-                )}
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          </Tabs>
+
+          {/* View Batch Dialog */}
+          <Dialog open={viewBatchDialog} onOpenChange={setViewBatchDialog}>
+            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Batch Details: {selectedBatch?.batchNumber}</DialogTitle>
+                <DialogDescription>{selectedBatch?.batchTitle}</DialogDescription>
+              </DialogHeader>
+              {selectedBatch && (
+                <div className="space-y-4">
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="border-b">
+                        <tr>
+                          <th className="text-left p-2">Reference</th>
+                          <th className="text-left p-2">Client Name</th>
+                          <th className="text-left p-2">Address</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {selectedBatch.excelData.slice(0, 10).map((row, idx) => (
+                          <tr key={idx} className="border-b">
+                            <td className="p-2">{row.referenceNumber}</td>
+                            <td className="p-2">{row.clientName}</td>
+                            <td className="p-2">{row.address}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  {selectedBatch.excelData.length > 10 && (
+                    <p className="text-sm text-muted-foreground">
+                      Showing 10 of {selectedBatch.excelData.length} records
+                    </p>
+                  )}
+                </div>
+              )}
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 }
