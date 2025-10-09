@@ -62,6 +62,7 @@ export default function AdminAddComment() {
 
   // Preview state
   const [showPreview, setShowPreview] = useState(false);
+  const [showInsightPreview, setShowInsightPreview] = useState(false);
 
   // Animation state for circles - only animate on mount
   const [animateCircles, setAnimateCircles] = useState(false);
@@ -74,6 +75,9 @@ export default function AdminAddComment() {
   const [lastCommentDate, setLastCommentDate] = useState('');
   const [totalComments, setTotalComments] = useState(0);
   const [uniqueStates, setUniqueStates] = useState(0);
+  
+  // Posted company posts storage
+  const [postedCompanyPosts, setPostedCompanyPosts] = useState<any[]>([]);
 
   // Trigger circle animation only on mount
   useEffect(() => {
@@ -101,6 +105,13 @@ export default function AdminAddComment() {
       // Calculate unique states
       const states = new Set(parsed.map((c: any) => c.state).filter((s: string) => s));
       setUniqueStates(states.size);
+    }
+    
+    // Load company posts
+    const storedPosts = localStorage.getItem('postedCompanyPosts');
+    if (storedPosts) {
+      const parsed = JSON.parse(storedPosts);
+      setPostedCompanyPosts(parsed);
     }
   }, []);
 
@@ -281,6 +292,45 @@ export default function AdminAddComment() {
     const day = String(today.getDate()).padStart(2, '0');
     const year = today.getFullYear();
     setter(`${month}/${day}/${year}`);
+  };
+
+  // Cancel insight/company post - reset all fields and hide preview
+  const handleCancelInsight = () => {
+    setPostBy('Admin');
+    setPostAuthor('');
+    setInsightDate('');
+    setInsightComment('');
+    setFontSize('');
+    setFontType('');
+    setColorTheme('');
+    setShowInsightPreview(false);
+  };
+
+  // Post insight/company post
+  const handlePostInsight = () => {
+    const newPost = {
+      postBy,
+      postAuthor,
+      date: insightDate,
+      comment: insightComment,
+      fontSize,
+      fontType,
+      colorTheme,
+      postedAt: new Date().toISOString()
+    };
+    
+    // Update posted company posts
+    const updatedPosts = [...postedCompanyPosts, newPost];
+    setPostedCompanyPosts(updatedPosts);
+    
+    // Save to localStorage
+    localStorage.setItem('postedCompanyPosts', JSON.stringify(updatedPosts));
+    
+    // Show success message
+    alert(`Company post published successfully!\nTotal posts: ${updatedPosts.length}`);
+    
+    // Reset form
+    handleCancelInsight();
   };
 
   return (
@@ -822,7 +872,7 @@ export default function AdminAddComment() {
                         onClick={() => handleSetTodayDate(setInsightDate)}
                         data-testid="label-insight-date"
                       >
-                        Date
+                        Post Date
                       </Label>
                       <Input 
                         id="insight-date" 
@@ -908,18 +958,86 @@ export default function AdminAddComment() {
                   <div className="flex justify-end gap-3 pt-4">
                     <Button 
                       variant="outline"
+                      onClick={handleCancelInsight}
                       data-testid="button-cancel-insight"
                     >
                       Cancel
                     </Button>
                     <Button 
-                      data-testid="button-post-insight"
+                      onClick={() => setShowInsightPreview(true)}
+                      data-testid="button-preview-insight"
                     >
-                      Post
+                      Preview
                     </Button>
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Preview Card */}
+              {showInsightPreview && (
+                <div className="mt-8">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold">Preview</h3>
+                    <Button 
+                      onClick={handlePostInsight}
+                      data-testid="button-post-company-post"
+                    >
+                      Post
+                    </Button>
+                  </div>
+                  
+                  {/* Company Post Preview Card */}
+                  <div className="max-w-2xl mx-auto">
+                    <Card className="hover-elevate">
+                      <CardContent className="p-6">
+                        <div className="space-y-4">
+                          {/* Header with Author and Date */}
+                          <div className="flex items-center justify-between border-b pb-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                                <span className="text-primary font-semibold">
+                                  {postAuthor ? postAuthor[0].toUpperCase() : 'A'}
+                                </span>
+                              </div>
+                              <div>
+                                <div className="font-semibold">
+                                  {postAuthor || 'No author specified'}
+                                </div>
+                                <div className="text-sm text-muted-foreground">
+                                  {postBy || 'Admin'}
+                                </div>
+                              </div>
+                            </div>
+                            <Badge variant="secondary">
+                              {insightDate || 'No date'}
+                            </Badge>
+                          </div>
+
+                          {/* Comment Content with Font Styling */}
+                          <div 
+                            className={`
+                              ${fontSize === 'small' ? 'text-sm' : ''}
+                              ${fontSize === 'medium' ? 'text-base' : ''}
+                              ${fontSize === 'large' ? 'text-lg' : ''}
+                              ${fontSize === 'xlarge' ? 'text-xl' : ''}
+                              ${fontType === 'sans' ? 'font-sans' : ''}
+                              ${fontType === 'serif' ? 'font-serif' : ''}
+                              ${fontType === 'mono' ? 'font-mono' : ''}
+                              ${colorTheme === 'blue' ? 'text-blue-700' : ''}
+                              ${colorTheme === 'green' ? 'text-green-700' : ''}
+                              ${colorTheme === 'purple' ? 'text-purple-700' : ''}
+                              ${colorTheme === 'orange' ? 'text-orange-700' : ''}
+                              ${!colorTheme || colorTheme === 'default' ? 'text-foreground' : ''}
+                            `}
+                          >
+                            {insightComment || 'No comment provided'}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              )}
             </TabsContent>
 
             {/* All Posts Tab */}
