@@ -861,15 +861,20 @@ export default function AdminMarketing() {
                           </tr>
                         </thead>
                         <tbody>
-                          {sortedBatchDetails.map((row, idx) => (
-                            <tr key={idx} className="border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                              {Object.keys(selectedBatch.excelData[0]).map((column) => (
-                                <td key={column} className="p-3 whitespace-nowrap">
-                                  {row[column] || '-'}
-                                </td>
-                              ))}
-                            </tr>
-                          ))}
+                          {sortedBatchDetails
+                            .filter((row) => {
+                              // Filter out completely empty rows (rows where all values are empty/null/undefined)
+                              return Object.values(row).some(value => value && value.toString().trim() !== '');
+                            })
+                            .map((row, idx) => (
+                              <tr key={idx} className="border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                {Object.keys(selectedBatch.excelData[0]).map((column) => (
+                                  <td key={column} className="p-3 whitespace-nowrap">
+                                    {row[column] || '-'}
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
                         </tbody>
                       </table>
                     </div>
