@@ -798,8 +798,34 @@ export default function AdminMarketing() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="overflow-x-auto border rounded-lg">
-                    <table className="w-full border-collapse">
+                  <div 
+                    className="overflow-x-auto border rounded-lg"
+                    style={{
+                      overflowX: 'auto',
+                      scrollbarWidth: 'auto',
+                      WebkitOverflowScrolling: 'touch'
+                    }}
+                  >
+                    <style>{`
+                      .overflow-x-auto::-webkit-scrollbar {
+                        height: 12px;
+                      }
+                      .overflow-x-auto::-webkit-scrollbar-track {
+                        background: #f1f1f1;
+                        border-radius: 6px;
+                      }
+                      .dark .overflow-x-auto::-webkit-scrollbar-track {
+                        background: #333;
+                      }
+                      .overflow-x-auto::-webkit-scrollbar-thumb {
+                        background: #888;
+                        border-radius: 6px;
+                      }
+                      .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+                        background: #555;
+                      }
+                    `}</style>
+                    <table className="w-full border-collapse" style={{ minWidth: '100%' }}>
                       <thead className="sticky top-0 z-10">
                         <tr className="border-b border-gray-300">
                           {Object.keys(selectedBatch.excelData[0]).map((column) => (
@@ -831,7 +857,7 @@ export default function AdminMarketing() {
                     </table>
                   </div>
                   <p className="text-sm text-muted-foreground mt-4">
-                    Showing {selectedBatch.excelData.length} records with {Object.keys(selectedBatch.excelData[0]).length} columns
+                    Showing {selectedBatch.excelData.length} records with {Object.keys(selectedBatch.excelData[0]).length} columns • Scroll right to see all columns →
                   </p>
                 </CardContent>
               </Card>
