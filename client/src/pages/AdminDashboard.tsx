@@ -447,7 +447,7 @@ export default function AdminDashboard() {
 
         {/* Company Posts Display - Centered below tiles */}
         {companyPosts.length > 0 && (
-          <div className="mt-16 flex justify-center">
+          <div className="mt-48 flex justify-center">
             <div className="max-w-3xl w-full">
               <div className="space-y-8">
                 {companyPosts.map((post, index) => (
