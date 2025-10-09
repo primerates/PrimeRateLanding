@@ -790,34 +790,82 @@ export default function AdminMarketing() {
             </Card>
 
             {/* Second Card - Batch Details (shows when batch is selected) */}
-            {selectedBatch && selectedBatch.excelData.length > 0 && (
-              <Card className="mt-6">
-                <CardHeader>
-                  <CardTitle>
-                    Batch Details: {selectedBatch.batchNumber} - {selectedBatch.batchTitle}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-6">
-                  <div className="space-y-2">
-                    {/* Top Scrollbar */}
-                    <div 
-                      className="overflow-x-scroll w-full border-2 border-blue-400 rounded-t-lg" 
-                      style={{ scrollbarWidth: 'auto', height: '20px' }}
-                      onScroll={(e) => {
-                        const bottomScroll = document.getElementById('batch-table-scroll');
-                        if (bottomScroll) {
-                          bottomScroll.scrollLeft = e.currentTarget.scrollLeft;
-                        }
-                      }}
-                      id="top-scrollbar"
-                    >
-                      <div style={{ width: 'max-content', height: '1px' }}>
-                        {/* Spacer to create scrollbar width matching table */}
-                        <table className="w-max border-collapse invisible">
-                          <thead>
-                            <tr>
-                              {Object.keys(selectedBatch.excelData[0]).map((column) => (
-                                <th key={column} className="p-3 whitespace-nowrap">
+            {selectedBatch && selectedBatch.excelData.length > 0 && (() => {
+              // Filter out rows with no data
+              const filteredRows = sortedBatchDetails.filter((row) => {
+                return Object.values(row).some(value => value && value.toString().trim() !== '');
+              });
+              
+              // Filter out columns that have no data in any row
+              const columnsWithData = Object.keys(selectedBatch.excelData[0]).filter((column) => {
+                return filteredRows.some(row => {
+                  const value = row[column];
+                  return value && value.toString().trim() !== '';
+                });
+              });
+
+              return (
+                <Card className="mt-6">
+                  <CardHeader>
+                    <CardTitle>
+                      Batch Details: {selectedBatch.batchNumber} - {selectedBatch.batchTitle}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <div className="space-y-2">
+                      {/* Top Scrollbar */}
+                      <div 
+                        className="overflow-x-scroll w-full border-2 border-blue-400 rounded-t-lg" 
+                        style={{ scrollbarWidth: 'auto', height: '20px' }}
+                        onScroll={(e) => {
+                          const bottomScroll = document.getElementById('batch-table-scroll');
+                          if (bottomScroll) {
+                            bottomScroll.scrollLeft = e.currentTarget.scrollLeft;
+                          }
+                        }}
+                        id="top-scrollbar"
+                      >
+                        <div style={{ width: 'max-content', height: '1px' }}>
+                          {/* Spacer to create scrollbar width matching table */}
+                          <table className="w-max border-collapse invisible">
+                            <thead>
+                              <tr>
+                                {columnsWithData.map((column) => (
+                                  <th key={column} className="p-3 whitespace-nowrap">
+                                    <div className="flex items-center gap-2">
+                                      {column}
+                                      <ArrowUpDown className="h-4 w-4" />
+                                    </div>
+                                  </th>
+                                ))}
+                              </tr>
+                            </thead>
+                          </table>
+                        </div>
+                      </div>
+
+                      {/* Actual Table */}
+                      <div 
+                        className="overflow-x-scroll w-full border-2 border-t-0 border-blue-400 rounded-b-lg max-h-[600px] overflow-y-auto" 
+                        style={{ scrollbarWidth: 'auto' }}
+                        onScroll={(e) => {
+                          const topScroll = document.getElementById('top-scrollbar');
+                          if (topScroll) {
+                            topScroll.scrollLeft = e.currentTarget.scrollLeft;
+                          }
+                        }}
+                        id="batch-table-scroll"
+                      >
+                        <table className="w-max border-collapse">
+                          <thead className="sticky top-0 z-10">
+                            <tr className="border-b border-gray-300">
+                              {columnsWithData.map((column) => (
+                                <th 
+                                  key={column}
+                                  className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
+                                  onClick={() => handleBatchDetailSort(column)}
+                                  data-testid={`sort-${column}`}
+                                >
                                   <div className="flex items-center gap-2">
                                     {column}
                                     <ArrowUpDown className="h-4 w-4" />
@@ -826,65 +874,27 @@ export default function AdminMarketing() {
                               ))}
                             </tr>
                           </thead>
-                        </table>
-                      </div>
-                    </div>
-
-                    {/* Actual Table */}
-                    <div 
-                      className="overflow-x-scroll w-full border-2 border-t-0 border-blue-400 rounded-b-lg max-h-[600px] overflow-y-auto" 
-                      style={{ scrollbarWidth: 'auto' }}
-                      onScroll={(e) => {
-                        const topScroll = document.getElementById('top-scrollbar');
-                        if (topScroll) {
-                          topScroll.scrollLeft = e.currentTarget.scrollLeft;
-                        }
-                      }}
-                      id="batch-table-scroll"
-                    >
-                      <table className="w-max border-collapse">
-                        <thead className="sticky top-0 z-10">
-                          <tr className="border-b border-gray-300">
-                            {Object.keys(selectedBatch.excelData[0]).map((column) => (
-                              <th 
-                                key={column}
-                                className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
-                                onClick={() => handleBatchDetailSort(column)}
-                                data-testid={`sort-${column}`}
-                              >
-                                <div className="flex items-center gap-2">
-                                  {column}
-                                  <ArrowUpDown className="h-4 w-4" />
-                                </div>
-                              </th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {sortedBatchDetails
-                            .filter((row) => {
-                              // Filter out completely empty rows (rows where all values are empty/null/undefined)
-                              return Object.values(row).some(value => value && value.toString().trim() !== '');
-                            })
-                            .map((row, idx) => (
+                          <tbody>
+                            {filteredRows.map((row, idx) => (
                               <tr key={idx} className="border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                                {Object.keys(selectedBatch.excelData[0]).map((column) => (
+                                {columnsWithData.map((column) => (
                                   <td key={column} className="p-3 whitespace-nowrap">
                                     {row[column] || '-'}
                                   </td>
                                 ))}
                               </tr>
                             ))}
-                        </tbody>
-                      </table>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground mt-4">
-                    Showing {selectedBatch.excelData.length} records with {Object.keys(selectedBatch.excelData[0]).length} columns
-                  </p>
-                </CardContent>
-              </Card>
-            )}
+                    <p className="text-sm text-muted-foreground mt-4">
+                      Showing {filteredRows.length} records with {columnsWithData.length} columns
+                    </p>
+                  </CardContent>
+                </Card>
+              );
+            })()}
           </TabsContent>
 
           {/* STATS OVERVIEW TAB */}
