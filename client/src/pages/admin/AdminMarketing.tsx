@@ -159,8 +159,12 @@ export default function AdminMarketing() {
   const [mailDate, setMailDate] = useState('');
   const [mailVendor, setMailVendor] = useState('');
   const [dataSource, setDataSource] = useState('');
+  const [printVendor, setPrintVendor] = useState('');
+  const [supplyVendor, setSupplyVendor] = useState('');
   const [dataCost, setDataCost] = useState('');
   const [mailCost, setMailCost] = useState('');
+  const [printCost, setPrintCost] = useState('');
+  const [supplyCost, setSupplyCost] = useState('');
 
   const requiredFields: RequiredField[] = [
     { key: 'reference', label: 'Reference Number', description: 'Unique identifier for tracking' },
@@ -712,6 +716,17 @@ export default function AdminMarketing() {
                     {/* Third Row */}
                     <div className="grid grid-cols-4 gap-6">
                       <div className="space-y-2">
+                        <Label htmlFor="data-source">Data Vendor</Label>
+                        <Select value={dataSource} onValueChange={setDataSource}>
+                          <SelectTrigger id="data-source" data-testid="select-data-source">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="dlx">DLX</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
                         <Label htmlFor="mail-vendor">Mail Vendor</Label>
                         <Select value={mailVendor} onValueChange={setMailVendor}>
                           <SelectTrigger id="mail-vendor" data-testid="select-mail-vendor">
@@ -724,16 +739,33 @@ export default function AdminMarketing() {
                         </Select>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="data-source">Data Vendor</Label>
-                        <Select value={dataSource} onValueChange={setDataSource}>
-                          <SelectTrigger id="data-source" data-testid="select-data-source">
+                        <Label htmlFor="print-vendor">Print Vendor</Label>
+                        <Select value={printVendor} onValueChange={setPrintVendor}>
+                          <SelectTrigger id="print-vendor" data-testid="select-print-vendor">
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="dlx">DLX</SelectItem>
+                            <SelectItem value="in-house">In House</SelectItem>
+                            <SelectItem value="tbd">TBD</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="supply-vendor">Supply Vendor</Label>
+                        <Select value={supplyVendor} onValueChange={setSupplyVendor}>
+                          <SelectTrigger id="supply-vendor" data-testid="select-supply-vendor">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="in-house">In House</SelectItem>
+                            <SelectItem value="tbd">TBD</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    {/* Fourth Row */}
+                    <div className="grid grid-cols-4 gap-6">
                       <div className="space-y-2">
                         <Label htmlFor="data-cost">Data Cost</Label>
                         <CurrencyInput
@@ -752,6 +784,26 @@ export default function AdminMarketing() {
                           onChange={setMailCost}
                           placeholder=""
                           dataTestId="input-mail-cost"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="print-cost">Print Cost</Label>
+                        <CurrencyInput
+                          id="print-cost"
+                          value={printCost}
+                          onChange={setPrintCost}
+                          placeholder=""
+                          dataTestId="input-print-cost"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="supply-cost">Supply Cost</Label>
+                        <CurrencyInput
+                          id="supply-cost"
+                          value={supplyCost}
+                          onChange={setSupplyCost}
+                          placeholder=""
+                          dataTestId="input-supply-cost"
                         />
                       </div>
                     </div>
