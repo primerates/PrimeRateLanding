@@ -89,6 +89,8 @@ export default function AdminAddComment() {
   const [pinnedNotes, setPinnedNotes] = useState<any[]>([]);
   const [editingNoteId, setEditingNoteId] = useState<number | null>(null);
   const [editingNoteText, setEditingNoteText] = useState('');
+  const [showNoteInput, setShowNoteInput] = useState(true);
+  const [justPinned, setJustPinned] = useState(false);
 
   // Trigger circle animation only on mount
   useEffect(() => {
@@ -148,6 +150,13 @@ export default function AdminAddComment() {
       setPinnedNotes(JSON.parse(storedNotes));
     }
   }, []);
+
+  // Reset note input when Notes tab is clicked
+  useEffect(() => {
+    if (activeTab === 'notes') {
+      setShowNoteInput(true);
+    }
+  }, [activeTab]);
 
   // Sorting state for All Comments table
   const [sortColumn, setSortColumn] = useState<string>('');
@@ -429,8 +438,15 @@ export default function AdminAddComment() {
     setPinnedNotes(updatedNotes);
     localStorage.setItem('pinnedNotes', JSON.stringify(updatedNotes));
     
+    // Hide the input and trigger animation
+    setShowNoteInput(false);
+    setJustPinned(true);
+    
     // Clear the current note
     setCurrentNote('');
+    
+    // Reset animation state after animation completes
+    setTimeout(() => setJustPinned(false), 500);
   };
 
   const handleDeleteNote = (id: number) => {
@@ -1508,43 +1524,51 @@ export default function AdminAddComment() {
 
             <TabsContent value="notes" className="mt-8">
               {/* Sticky Note Input */}
-              <Card className="bg-yellow-100 dark:bg-yellow-900 border-yellow-300 dark:border-yellow-700 max-w-md">
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <Pin className="h-5 w-5 text-yellow-700 dark:text-yellow-300" />
-                    Sticky Note
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Textarea
-                    value={currentNote}
-                    onChange={(e) => setCurrentNote(e.target.value)}
-                    placeholder="Type your note here..."
-                    className="min-h-[120px] bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700 resize-none"
-                    data-testid="textarea-note"
-                  />
-                  <Button 
-                    onClick={handlePinNote}
-                    className="w-full"
-                    data-testid="button-pin-note"
-                  >
-                    OK - Pin to Wall
-                  </Button>
-                </CardContent>
-              </Card>
+              {showNoteInput && (
+                <Card className="bg-yellow-100 dark:bg-yellow-900 border-yellow-300 dark:border-yellow-700 max-w-md transition-all duration-300">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Pin className="h-5 w-5 text-yellow-700 dark:text-yellow-300" />
+                      Sticky Note
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Textarea
+                      value={currentNote}
+                      onChange={(e) => setCurrentNote(e.target.value)}
+                      placeholder="Type your note here..."
+                      className="min-h-[120px] bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700 resize-none"
+                      data-testid="textarea-note"
+                    />
+                    <Button 
+                      onClick={handlePinNote}
+                      className="w-full"
+                      data-testid="button-pin-note"
+                    >
+                      OK - Pin to Wall
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Pinned Notes Wall */}
               {pinnedNotes.length > 0 && (
-                <div className="mt-8 space-y-4">
-                  <h3 className="text-lg font-semibold flex items-center gap-2">
-                    <Pin className="h-5 w-5" />
-                    Pinned Notes
-                  </h3>
+                <div className={`space-y-4 ${!showNoteInput ? '' : 'mt-8'}`}>
+                  {!showNoteInput && (
+                    <h3 className="text-lg font-semibold flex items-center gap-2">
+                      <Pin className="h-5 w-5" />
+                      Pinned Notes
+                    </h3>
+                  )}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {pinnedNotes.map((note) => (
+                    {pinnedNotes.map((note, index) => (
                       <Card 
                         key={note.id}
-                        className="bg-yellow-100 dark:bg-yellow-900 border-yellow-300 dark:border-yellow-700 relative max-w-md"
+                        className={`bg-yellow-100 dark:bg-yellow-900 border-yellow-300 dark:border-yellow-700 relative max-w-md transition-all duration-500 ${
+                          justPinned && index === pinnedNotes.length - 1 
+                            ? 'animate-in slide-in-from-bottom-4 fade-in' 
+                            : ''
+                        }`}
                         data-testid={`card-note-${note.id}`}
                       >
                         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
