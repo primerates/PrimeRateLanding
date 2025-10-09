@@ -41,11 +41,11 @@ export default function AdminAddComment() {
   const [clientFirstName, setClientFirstName] = useState('');
   const [clientLastName, setClientLastName] = useState('');
   const [clientState, setClientState] = useState('');
+  const [clientCity, setClientCity] = useState('');
   const [clientSource, setClientSource] = useState('');
   const [clientRating, setClientRating] = useState('');
   const [clientLoanPurpose, setClientLoanPurpose] = useState('');
   const [clientDate, setClientDate] = useState('');
-  const [clientLoanDate, setClientLoanDate] = useState('');
   const [clientComment, setClientComment] = useState('');
 
   // Internal message state (Insight)
@@ -297,6 +297,15 @@ export default function AdminAddComment() {
                       />
                     </div>
                     <div className="space-y-2">
+                      <Label htmlFor="client-city">City</Label>
+                      <Input 
+                        id="client-city" 
+                        value={clientCity}
+                        onChange={(e) => setClientCity(e.target.value)}
+                        data-testid="input-client-city"
+                      />
+                    </div>
+                    <div className="space-y-2">
                       <Label htmlFor="client-state">State</Label>
                       <Select value={clientState} onValueChange={setClientState}>
                         <SelectTrigger id="client-state" data-testid="select-client-state">
@@ -310,17 +319,6 @@ export default function AdminAddComment() {
                           ))}
                         </SelectContent>
                       </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="client-loan-date">Loan Date</Label>
-                      <Input 
-                        id="client-loan-date" 
-                        value={clientLoanDate}
-                        onChange={(e) => handleDateChange(e.target.value, setClientLoanDate)}
-                        placeholder="MM/DD/YYYY"
-                        maxLength={10}
-                        data-testid="input-client-loan-date"
-                      />
                     </div>
                   </div>
 
@@ -354,17 +352,6 @@ export default function AdminAddComment() {
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="client-date">Comment Date</Label>
-                      <Input 
-                        id="client-date" 
-                        value={clientDate}
-                        onChange={(e) => handleDateChange(e.target.value, setClientDate)}
-                        placeholder="MM/DD/YYYY"
-                        maxLength={10}
-                        data-testid="input-client-date"
-                      />
-                    </div>
-                    <div className="space-y-2">
                       <Label htmlFor="client-source">Source</Label>
                       <Select value={clientSource} onValueChange={setClientSource}>
                         <SelectTrigger id="client-source" data-testid="select-client-source">
@@ -379,6 +366,17 @@ export default function AdminAddComment() {
                           <SelectItem value="other">Other</SelectItem>
                         </SelectContent>
                       </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="client-date">Comment Date</Label>
+                      <Input 
+                        id="client-date" 
+                        value={clientDate}
+                        onChange={(e) => handleDateChange(e.target.value, setClientDate)}
+                        placeholder="MM/DD/YYYY"
+                        maxLength={10}
+                        data-testid="input-client-date"
+                      />
                     </div>
                   </div>
 
@@ -456,7 +454,7 @@ export default function AdminAddComment() {
                               {clientFirstName} {clientLastName}
                             </div>
                             <div className="text-sm text-muted-foreground">
-                              {clientState ? `${clientState}` : 'Location not specified'}
+                              {clientCity && clientState ? `${clientCity}, ${clientState}` : clientCity || clientState || 'Location not specified'}
                             </div>
                           </div>
                         </div>
@@ -507,11 +505,11 @@ export default function AdminAddComment() {
                           </th>
                           <th 
                             className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
-                            onClick={() => handleSort('loanDate')}
-                            data-testid="header-loan-date"
+                            onClick={() => handleSort('city')}
+                            data-testid="header-city"
                           >
                             <div className="flex items-center gap-2">
-                              Loan Date
+                              City
                               <ArrowUpDown className="h-4 w-4" />
                             </div>
                           </th>
