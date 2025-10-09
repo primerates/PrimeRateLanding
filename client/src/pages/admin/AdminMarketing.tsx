@@ -797,7 +797,7 @@ export default function AdminMarketing() {
                     Batch Details: {selectedBatch.batchNumber} - {selectedBatch.batchTitle}
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="pt-6">
                   <div className="space-y-2">
                     {/* Top Scrollbar */}
                     <div 
