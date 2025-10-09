@@ -68,6 +68,12 @@ export default function AdminAddComment() {
   // Active tab state
   const [activeTab, setActiveTab] = useState('client');
 
+  // Posted comments storage
+  const [postedComments, setPostedComments] = useState<any[]>([]);
+  const [lastCommentDate, setLastCommentDate] = useState('');
+  const [totalComments, setTotalComments] = useState(0);
+  const [uniqueStates, setUniqueStates] = useState(0);
+
   // Trigger circle animation only on mount
   useEffect(() => {
     setAnimateCircles(false);
@@ -105,7 +111,35 @@ export default function AdminAddComment() {
   };
 
   const handlePostComment = () => {
-    // For now, just show a success message and reset the form
+    // Create comment object
+    const newComment = {
+      firstName: clientFirstName,
+      lastName: clientLastName,
+      state: clientState,
+      city: clientCity,
+      source: clientSource,
+      rating: clientRating,
+      loanPurpose: clientLoanPurpose,
+      date: clientDate,
+      comment: clientComment,
+      postedAt: new Date().toISOString()
+    };
+    
+    // Update posted comments
+    const updatedComments = [...postedComments, newComment];
+    setPostedComments(updatedComments);
+    
+    // Update last comment date
+    setLastCommentDate(clientDate);
+    
+    // Update total comments
+    setTotalComments(updatedComments.length);
+    
+    // Calculate unique states
+    const states = new Set(updatedComments.map(c => c.state).filter(s => s));
+    setUniqueStates(states.size);
+    
+    // Show success message
     alert('Comment posted successfully!');
     
     // Reset form
@@ -208,6 +242,9 @@ export default function AdminAddComment() {
               <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
                 <div className="space-y-2">
                   <Label className="text-lg font-semibold">Last Comment</Label>
+                  {lastCommentDate && (
+                    <div className="text-sm text-muted-foreground">{lastCommentDate}</div>
+                  )}
                 </div>
                 
                 <div className="space-y-2 flex flex-col items-center">
@@ -231,7 +268,7 @@ export default function AdminAddComment() {
                         transform: animateCircles ? 'translateY(0)' : 'translateY(-100px)',
                         transition: 'transform 0.6s ease-out 0.2s',
                         display: 'block'
-                      }}>0</span>
+                      }}>{totalComments}</span>
                     </div>
                   </div>
                 </div>
@@ -257,7 +294,7 @@ export default function AdminAddComment() {
                         transform: animateCircles ? 'translateY(0)' : 'translateY(-100px)',
                         transition: 'transform 0.6s ease-out 0.3s',
                         display: 'block'
-                      }}>0</span>
+                      }}>{uniqueStates}</span>
                     </div>
                   </div>
                 </div>
