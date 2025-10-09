@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'wouter';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -890,9 +891,20 @@ export default function AdminMarketing() {
               });
 
               return (
-                <Card className="mt-6">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
+                <motion.div
+                  initial={{ opacity: 0, height: 0, overflow: 'hidden' }}
+                  animate={{ opacity: 1, height: 'auto', overflow: 'visible' }}
+                  transition={{ duration: 0.5, ease: 'easeOut' }}
+                  className="mt-6"
+                >
+                  <Card>
+                    <motion.div
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.2, ease: 'easeOut' }}
+                    >
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
                       {isEditingTitle ? (
                         <>
                           <Input 
@@ -934,9 +946,10 @@ export default function AdminMarketing() {
                           </Button>
                         </>
                       )}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-6">
+                        </CardTitle>
+                      </CardHeader>
+                    </motion.div>
+                    <CardContent className="pt-6">
                     <div className="border-2 border-blue-400 rounded-lg">
                       {/* Top Scrollbar */}
                       <div 
@@ -1047,6 +1060,7 @@ export default function AdminMarketing() {
                     </p>
                   </CardContent>
                 </Card>
+              </motion.div>
               );
             })()}
           </TabsContent>
