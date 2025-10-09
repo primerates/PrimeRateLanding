@@ -796,8 +796,12 @@ export default function AdminMarketing() {
                 return Object.values(row).some(value => value && value.toString().trim() !== '');
               });
               
-              // Filter out columns that have no data in any row
+              // Filter out columns that have no data in any row, and also exclude repetitive columns
               const columnsWithData = Object.keys(selectedBatch.excelData[0]).filter((column) => {
+                // Skip clientName and address columns (repetitive)
+                if (column === 'clientName' || column === 'address') {
+                  return false;
+                }
                 return filteredRows.some(row => {
                   const value = row[column];
                   return value && value.toString().trim() !== '';
