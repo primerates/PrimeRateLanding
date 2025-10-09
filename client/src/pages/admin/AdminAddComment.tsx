@@ -1323,7 +1323,7 @@ export default function AdminAddComment() {
                             className="text-left p-3 font-semibold bg-gray-50"
                             data-testid="header-republish"
                           >
-                            Republish
+                            Publish
                           </th>
                           <th 
                             className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
