@@ -601,75 +601,70 @@ export default function AdminMarketing() {
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead className="border-b">
-                        <tr>
-                          <th className="text-left p-3">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleSort('createdDate')}
-                              data-testid="sort-date"
-                            >
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="border-b border-gray-300">
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                            onClick={() => handleSort('createdDate')}
+                            data-testid="sort-date"
+                          >
+                            <div className="flex items-center gap-2">
                               Date Created
-                              <ArrowUpDown className="ml-2 h-4 w-4" />
-                            </Button>
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
                           </th>
-                          <th className="text-left p-3">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleSort('batchNumber')}
-                              data-testid="sort-batch-number"
-                            >
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                            onClick={() => handleSort('batchNumber')}
+                            data-testid="sort-batch-number"
+                          >
+                            <div className="flex items-center gap-2">
                               Batch Number
-                              <ArrowUpDown className="ml-2 h-4 w-4" />
-                            </Button>
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
                           </th>
-                          <th className="text-left p-3">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleSort('batchTitle')}
-                              data-testid="sort-batch-title"
-                            >
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                            onClick={() => handleSort('batchTitle')}
+                            data-testid="sort-batch-title"
+                          >
+                            <div className="flex items-center gap-2">
                               Batch Title
-                              <ArrowUpDown className="ml-2 h-4 w-4" />
-                            </Button>
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
                           </th>
-                          <th className="text-left p-3">Total Leads</th>
-                          <th className="text-left p-3">Actions</th>
+                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800">Total Leads</th>
+                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800">Actions</th>
                         </tr>
                       </thead>
                       <tbody>
                         {sortedBatches.map((batch) => (
-                          <tr key={batch.id} className="border-b hover-elevate">
+                          <tr key={batch.id} className="border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                             <td className="p-3">{new Date(batch.createdDate).toLocaleDateString()}</td>
-                            <td className="p-3">{batch.batchNumber}</td>
+                            <td className="p-3">
+                              <button
+                                onClick={() => {
+                                  setSelectedBatch(batch);
+                                  setViewBatchDialog(true);
+                                }}
+                                className="text-primary hover:underline cursor-pointer font-medium"
+                                data-testid={`button-view-${batch.id}`}
+                              >
+                                {batch.batchNumber}
+                              </button>
+                            </td>
                             <td className="p-3">{batch.batchTitle}</td>
                             <td className="p-3">{batch.stats.totalLeads}</td>
                             <td className="p-3">
-                              <div className="flex gap-2">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => {
-                                    setSelectedBatch(batch);
-                                    setViewBatchDialog(true);
-                                  }}
-                                  data-testid={`button-view-${batch.id}`}
-                                >
-                                  <Eye className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleDeleteBatch(batch.id)}
-                                  data-testid={`button-delete-${batch.id}`}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDeleteBatch(batch.id)}
+                                data-testid={`button-delete-${batch.id}`}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
                             </td>
                           </tr>
                         ))}
