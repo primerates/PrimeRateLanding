@@ -144,93 +144,85 @@ export default function AdminAddComment() {
 
         {/* Main Content */}
         <div className="container mx-auto px-6 py-8">
-          {/* Menu Bar with Circular Indicators - Above Tabs */}
-          <Card className="mb-6">
-            <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
-              <div className="space-y-2">
-                {/* Empty first column for spacing */}
-              </div>
-              
-              <div className="space-y-2">
-                <Label className="text-lg font-semibold">Client Comment</Label>
-                <div className="min-h-[40px] flex items-center">
-                  <div
-                    className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
-                    style={{
-                      fontFamily: 'ui-sans-serif, system-ui, sans-serif',
-                      fontSize: '36px',
-                      fontWeight: 600,
-                      backgroundColor: '#1a3373',
-                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
-                    }}
-                    data-testid="circle-client-comment"
-                  >
-                    <span>0</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label className="text-lg font-semibold">Company Post</Label>
-                <div className="min-h-[40px] flex items-center">
-                  <div
-                    className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
-                    style={{
-                      fontFamily: 'ui-sans-serif, system-ui, sans-serif',
-                      fontSize: '36px',
-                      fontWeight: 600,
-                      backgroundColor: '#1a3373',
-                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
-                    }}
-                    data-testid="circle-company-post"
-                  >
-                    <span>0</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label className="text-lg font-semibold">Note</Label>
-                <div className="min-h-[40px] flex items-center">
-                  <div
-                    className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
-                    style={{
-                      fontFamily: 'ui-sans-serif, system-ui, sans-serif',
-                      fontSize: '36px',
-                      fontWeight: 600,
-                      backgroundColor: '#1a3373',
-                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
-                    }}
-                    data-testid="circle-note"
-                  >
-                    <span>0</span>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
           <Tabs defaultValue="client" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="client" data-testid="tab-client-comments">Client Comments</TabsTrigger>
-              <TabsTrigger value="internal" data-testid="tab-internal-messages">Internal Messages</TabsTrigger>
-            </TabsList>
+            {/* Menu Bar with Circular Indicators and Tabs */}
+            <Card className="mb-6">
+              <CardContent className="pt-6">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-lg font-semibold">Last Comment</Label>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-lg font-semibold">Client Comment</Label>
+                    <div className="min-h-[40px] flex items-center">
+                      <div
+                        className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
+                        style={{
+                          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                          fontSize: '36px',
+                          fontWeight: 600,
+                          backgroundColor: '#1a3373',
+                          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+                        }}
+                        data-testid="circle-client-comment"
+                      >
+                        <span>0</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-lg font-semibold">Company Post</Label>
+                    <div className="min-h-[40px] flex items-center">
+                      <div
+                        className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
+                        style={{
+                          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                          fontSize: '36px',
+                          fontWeight: 600,
+                          backgroundColor: '#1a3373',
+                          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+                        }}
+                        data-testid="circle-company-post"
+                      >
+                        <span>0</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-lg font-semibold">Note</Label>
+                    <div className="min-h-[40px] flex items-center">
+                      <div
+                        className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
+                        style={{
+                          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                          fontSize: '36px',
+                          fontWeight: 600,
+                          backgroundColor: '#1a3373',
+                          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+                        }}
+                        data-testid="circle-note"
+                      >
+                        <span>0</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Tabs integrated into the menu bar */}
+                <TabsList className="grid w-full grid-cols-2 mt-6">
+                  <TabsTrigger value="client" data-testid="tab-client-comments">Client Comment</TabsTrigger>
+                  <TabsTrigger value="internal" data-testid="tab-internal-messages">Internal Message</TabsTrigger>
+                </TabsList>
+              </CardContent>
+            </Card>
 
             {/* Client Comments Tab */}
             <TabsContent value="client">
               <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
-                  <CardTitle>Client Comment</CardTitle>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    data-testid="button-add-client-comment"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add New Comment
-                  </Button>
-                </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-6 pt-6">
                   {/* First Row */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
@@ -347,18 +339,7 @@ export default function AdminAddComment() {
             {/* Insight Tab */}
             <TabsContent value="internal">
               <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
-                  <CardTitle>Insight</CardTitle>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    data-testid="button-add-insight"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add New Insight
-                  </Button>
-                </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-6 pt-6">
                   {/* First Row */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
