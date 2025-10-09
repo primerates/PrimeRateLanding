@@ -1690,7 +1690,6 @@ export default function AdminAddComment() {
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">Select</SelectItem>
                           <SelectItem value="16px">16px</SelectItem>
                           <SelectItem value="18px">18px</SelectItem>
                           <SelectItem value="20px">20px</SelectItem>
@@ -1716,7 +1715,6 @@ export default function AdminAddComment() {
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">Select</SelectItem>
                           <SelectItem value="sans">Sans Serif</SelectItem>
                           <SelectItem value="serif">Serif</SelectItem>
                           <SelectItem value="mono">Monospace</SelectItem>
@@ -1735,7 +1733,6 @@ export default function AdminAddComment() {
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">Select</SelectItem>
                           <SelectItem value="blue">Blue</SelectItem>
                           <SelectItem value="green">Green</SelectItem>
                           <SelectItem value="purple">Purple</SelectItem>
