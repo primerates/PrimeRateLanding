@@ -641,7 +641,7 @@ export default function AdminMarketing() {
                     </div>
 
                     {/* Second Row */}
-                    <div className="grid grid-cols-3 gap-6">
+                    <div className="grid grid-cols-4 gap-6">
                       <div className="space-y-2">
                         <Label htmlFor="category">Category</Label>
                         <Select value={category} onValueChange={setCategory}>
@@ -682,20 +682,20 @@ export default function AdminMarketing() {
                           </SelectContent>
                         </Select>
                       </div>
-                    </div>
-
-                    {/* Third Row */}
-                    <div className="grid grid-cols-5 gap-6">
                       <div className="space-y-2">
                         <Label htmlFor="mail-date">Mail Date</Label>
                         <Input
                           id="mail-date"
-                          type="date"
                           value={mailDate}
                           onChange={(e) => setMailDate(e.target.value)}
+                          placeholder=""
                           data-testid="input-mail-date"
                         />
                       </div>
+                    </div>
+
+                    {/* Third Row */}
+                    <div className="grid grid-cols-4 gap-6">
                       <div className="space-y-2">
                         <Label htmlFor="mail-vendor">Mail Vendor</Label>
                         <Select value={mailVendor} onValueChange={setMailVendor}>
