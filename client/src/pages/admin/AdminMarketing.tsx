@@ -927,10 +927,10 @@ export default function AdminMarketing() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="pt-6">
-                    <div className="space-y-2">
+                    <div className="border-2 border-blue-400 rounded-lg">
                       {/* Top Scrollbar */}
                       <div 
-                        className="overflow-x-scroll w-full border-2 border-blue-400 rounded-t-lg" 
+                        className="overflow-x-scroll w-full" 
                         style={{ scrollbarWidth: 'auto', height: '20px' }}
                         onScroll={(e) => {
                           const bottomScroll = document.getElementById('batch-table-scroll');
@@ -987,7 +987,7 @@ export default function AdminMarketing() {
                         }
                       `}</style>
                       <div 
-                        className="overflow-x-scroll w-full border-2 border-t-0 border-blue-400 rounded-b-lg max-h-[600px] overflow-y-auto" 
+                        className="overflow-x-scroll w-full max-h-[600px] overflow-y-auto" 
                         onScroll={(e) => {
                           const topScroll = document.getElementById('top-scrollbar');
                           if (topScroll) {
