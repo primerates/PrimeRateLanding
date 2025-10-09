@@ -102,8 +102,7 @@ export default function AdminMarketing() {
           );
           const hasName = headers.some(h => 
             h.toLowerCase().includes('name') || 
-            h.toLowerCase().includes('first') || 
-            h.toLowerCase().includes('last')
+            h.toLowerCase().includes('first')
           );
           const hasAddress = headers.some(h => 
             h.toLowerCase().includes('address') || 
@@ -113,7 +112,7 @@ export default function AdminMarketing() {
 
           if (!hasReference || !hasName || !hasAddress) {
             reject(new Error(
-              `Missing required columns. Your file has these columns: ${headers.join(', ')}. Please ensure you have columns for Reference, Name (First/Last), and Address/Street.`
+              `Missing required columns. Your file has: ${headers.slice(0, 10).join(', ')}... Please ensure you have Reference, First Name, and Street Address/City columns.`
             ));
             return;
           }
@@ -161,16 +160,9 @@ export default function AdminMarketing() {
                        row['Ref Number'] || row['ref number'] || row['RefNumber'] || 
                        row['Reference'] || row['reference'] || '';
         
-        // Client Name - combine first and last if needed
-        let clientName = row['Client Name'] || row['clientName'] || row['client name'] || 
-                        row['Name'] || row['name'] || '';
-        
-        // If no combined name, try first + last
-        if (!clientName) {
-          const firstName = row['First Name'] || row['firstName'] || row['first name'] || '';
-          const lastName = row['Last Name'] || row['lastName'] || row['last name'] || '';
-          clientName = `${firstName} ${lastName}`.trim();
-        }
+        // Client Name - use First Name (no Last Name in this file)
+        const clientName = row['First Name'] || row['firstName'] || row['first name'] || 
+                          row['Client Name'] || row['clientName'] || row['Name'] || '';
         
         // Address - combine street, unit, city, state, zip if needed
         let address = row['Address'] || row['address'] || row['Street Address'] || 
