@@ -74,6 +74,10 @@ export default function AdminMarketing() {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editedTitle, setEditedTitle] = useState('');
   
+  // Delete confirmation state
+  const [deleteConfirmDialog, setDeleteConfirmDialog] = useState(false);
+  const [batchToDelete, setBatchToDelete] = useState<string | null>(null);
+  
   // Column Mapping States
   const [uploadStage, setUploadStage] = useState<UploadStage>('upload');
   const [csvData, setCsvData] = useState<any[] | null>(null);
@@ -330,13 +334,34 @@ export default function AdminMarketing() {
   };
 
   const handleDeleteBatch = (id: string) => {
-    const updatedBatches = batches.filter(b => b.id !== id);
+    setBatchToDelete(id);
+    setDeleteConfirmDialog(true);
+  };
+
+  const confirmDelete = () => {
+    if (!batchToDelete) return;
+    
+    const updatedBatches = batches.filter(b => b.id !== batchToDelete);
     setBatches(updatedBatches);
     localStorage.setItem('directMailBatches', JSON.stringify(updatedBatches));
+    
+    // Close the batch details if the deleted batch was selected
+    if (selectedBatch?.id === batchToDelete) {
+      setSelectedBatch(null);
+    }
+    
+    setDeleteConfirmDialog(false);
+    setBatchToDelete(null);
+    
     toast({
       title: "Batch Deleted",
       description: "The batch has been removed successfully.",
     });
+  };
+
+  const cancelDelete = () => {
+    setDeleteConfirmDialog(false);
+    setBatchToDelete(null);
   };
 
   const handleSaveBatchTitle = () => {
@@ -1045,6 +1070,42 @@ export default function AdminMarketing() {
           </Tabs>
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteConfirmDialog} onOpenChange={setDeleteConfirmDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-red-600" />
+              Delete Batch Confirmation
+            </DialogTitle>
+            <DialogDescription className="pt-4">
+              <p className="font-semibold text-foreground mb-2">
+                Are you sure you want to delete this batch?
+              </p>
+              <p className="text-muted-foreground">
+                Clicking Yes will permanently remove all items in this batch. This action cannot be undone.
+              </p>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button 
+              variant="outline" 
+              onClick={cancelDelete}
+              data-testid="button-cancel-delete"
+            >
+              No, Cancel
+            </Button>
+            <Button 
+              variant="destructive" 
+              onClick={confirmDelete}
+              data-testid="button-confirm-delete"
+            >
+              Yes, Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </TooltipProvider>
   );
 }
