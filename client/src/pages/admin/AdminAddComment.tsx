@@ -312,20 +312,15 @@ export default function AdminAddComment() {
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="client-source">Source</Label>
-                      <Select value={clientSource} onValueChange={setClientSource}>
-                        <SelectTrigger id="client-source" data-testid="select-client-source">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="select">Select</SelectItem>
-                          <SelectItem value="direct-mail">Direct Mail</SelectItem>
-                          <SelectItem value="social-media">Social Media</SelectItem>
-                          <SelectItem value="referral">Referral</SelectItem>
-                          <SelectItem value="repeat-client">Repeat Client</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <Label htmlFor="client-loan-date">Loan Date</Label>
+                      <Input 
+                        id="client-loan-date" 
+                        value={clientLoanDate}
+                        onChange={(e) => handleDateChange(e.target.value, setClientLoanDate)}
+                        placeholder="MM/DD/YYYY"
+                        maxLength={10}
+                        data-testid="input-client-loan-date"
+                      />
                     </div>
                   </div>
 
@@ -370,15 +365,20 @@ export default function AdminAddComment() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="client-loan-date">Loan Date</Label>
-                      <Input 
-                        id="client-loan-date" 
-                        value={clientLoanDate}
-                        onChange={(e) => handleDateChange(e.target.value, setClientLoanDate)}
-                        placeholder="MM/DD/YYYY"
-                        maxLength={10}
-                        data-testid="input-client-loan-date"
-                      />
+                      <Label htmlFor="client-source">Source</Label>
+                      <Select value={clientSource} onValueChange={setClientSource}>
+                        <SelectTrigger id="client-source" data-testid="select-client-source">
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="select">Select</SelectItem>
+                          <SelectItem value="direct-mail">Direct Mail</SelectItem>
+                          <SelectItem value="social-media">Social Media</SelectItem>
+                          <SelectItem value="referral">Referral</SelectItem>
+                          <SelectItem value="repeat-client">Repeat Client</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
 
