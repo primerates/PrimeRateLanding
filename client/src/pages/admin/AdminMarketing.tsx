@@ -687,8 +687,23 @@ export default function AdminMarketing() {
                         <Input
                           id="mail-date"
                           value={mailDate}
-                          onChange={(e) => setMailDate(e.target.value)}
-                          placeholder=""
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                            let formatted = '';
+                            
+                            if (value.length > 0) {
+                              formatted = value.substring(0, 2); // MM
+                            }
+                            if (value.length > 2) {
+                              formatted += '/' + value.substring(2, 4); // /DD
+                            }
+                            if (value.length > 4) {
+                              formatted += '/' + value.substring(4, 8); // /YYYY
+                            }
+                            
+                            setMailDate(formatted);
+                          }}
+                          placeholder="MM/DD/YYYY"
                           data-testid="input-mail-date"
                         />
                       </div>
