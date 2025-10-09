@@ -56,6 +56,9 @@ export default function AdminAddComment() {
   const [fontType, setFontType] = useState('');
   const [colorTheme, setColorTheme] = useState('');
 
+  // Preview state
+  const [showPreview, setShowPreview] = useState(false);
+
   const handleScreenshare = () => {
     setScreenshareLoading(true);
     setTimeout(() => setScreenshareLoading(false), 2000);
@@ -331,13 +334,58 @@ export default function AdminAddComment() {
                       Cancel
                     </Button>
                     <Button 
-                      data-testid="button-save-client-comment"
+                      onClick={() => setShowPreview(true)}
+                      data-testid="button-preview-client-comment"
                     >
-                      Save Comment
+                      Preview
                     </Button>
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Preview Card */}
+              {showPreview && (
+                <div className="mt-8">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold">Preview</h3>
+                    <Button data-testid="button-post-client-comment">
+                      Post
+                    </Button>
+                  </div>
+                  <Card>
+                    <CardContent className="space-y-4 pt-6">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <p className="text-sm text-muted-foreground">Name</p>
+                          <p className="font-medium">{clientFirstName} {clientLastName}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">State</p>
+                          <p className="font-medium">{clientState || '-'}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Rating</p>
+                          <p className="font-medium">{clientRating || '-'}</p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm text-muted-foreground">Loan Purpose</p>
+                          <p className="font-medium capitalize">{clientLoanPurpose || '-'}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Date</p>
+                          <p className="font-medium">{clientDate || '-'}</p>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-2">Comment</p>
+                        <p className="text-base">{clientComment || '-'}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
             </TabsContent>
 
             {/* All Comments Tab */}
