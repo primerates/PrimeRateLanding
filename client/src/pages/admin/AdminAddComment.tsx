@@ -40,9 +40,11 @@ export default function AdminAddComment() {
   const [clientFirstName, setClientFirstName] = useState('');
   const [clientLastName, setClientLastName] = useState('');
   const [clientState, setClientState] = useState('');
+  const [clientSource, setClientSource] = useState('');
   const [clientRating, setClientRating] = useState('');
   const [clientLoanPurpose, setClientLoanPurpose] = useState('');
   const [clientDate, setClientDate] = useState('');
+  const [clientLoanDate, setClientLoanDate] = useState('');
   const [clientComment, setClientComment] = useState('');
 
   // Internal message state (Insight)
@@ -231,7 +233,7 @@ export default function AdminAddComment() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {/* First Row */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="client-first-name">First Name</Label>
                       <Input 
@@ -265,10 +267,26 @@ export default function AdminAddComment() {
                         </SelectContent>
                       </Select>
                     </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="client-source">Source</Label>
+                      <Select value={clientSource} onValueChange={setClientSource}>
+                        <SelectTrigger id="client-source" data-testid="select-client-source">
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="select">Select</SelectItem>
+                          <SelectItem value="direct-mail">Direct Mail</SelectItem>
+                          <SelectItem value="social-media">Social Media</SelectItem>
+                          <SelectItem value="referral">Referral</SelectItem>
+                          <SelectItem value="repeat-client">Repeat Client</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
 
                   {/* Second Row */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="client-rating">Rating</Label>
                       <Select value={clientRating} onValueChange={setClientRating}>
@@ -305,6 +323,17 @@ export default function AdminAddComment() {
                         placeholder="MM/DD/YYYY"
                         maxLength={10}
                         data-testid="input-client-date"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="client-loan-date">Loan Date</Label>
+                      <Input 
+                        id="client-loan-date" 
+                        value={clientLoanDate}
+                        onChange={(e) => handleDateChange(e.target.value, setClientLoanDate)}
+                        placeholder="MM/DD/YYYY"
+                        maxLength={10}
+                        data-testid="input-client-loan-date"
                       />
                     </div>
                   </div>
@@ -354,7 +383,7 @@ export default function AdminAddComment() {
                   </div>
                   <Card>
                     <CardContent className="space-y-4 pt-6">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
                           <p className="text-sm text-muted-foreground">Name</p>
                           <p className="font-medium">{clientFirstName} {clientLastName}</p>
@@ -364,11 +393,15 @@ export default function AdminAddComment() {
                           <p className="font-medium">{clientState || '-'}</p>
                         </div>
                         <div>
+                          <p className="text-sm text-muted-foreground">Source</p>
+                          <p className="font-medium capitalize">{clientSource ? clientSource.replace('-', ' ') : '-'}</p>
+                        </div>
+                        <div>
                           <p className="text-sm text-muted-foreground">Rating</p>
                           <p className="font-medium">{clientRating || '-'}</p>
                         </div>
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
                           <p className="text-sm text-muted-foreground">Loan Purpose</p>
                           <p className="font-medium capitalize">{clientLoanPurpose || '-'}</p>
@@ -376,6 +409,10 @@ export default function AdminAddComment() {
                         <div>
                           <p className="text-sm text-muted-foreground">Date</p>
                           <p className="font-medium">{clientDate || '-'}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Loan Date</p>
+                          <p className="font-medium">{clientLoanDate || '-'}</p>
                         </div>
                       </div>
                       <div>
