@@ -647,12 +647,32 @@ export default function AdminAddComment() {
                         </tr>
                       </thead>
                       <tbody>
-                        {/* Empty state - no data rows yet */}
-                        <tr>
-                          <td colSpan={8} className="text-center py-8 text-muted-foreground">
-                            No comments to display
-                          </td>
-                        </tr>
+                        {postedComments.length === 0 ? (
+                          <tr>
+                            <td colSpan={8} className="text-center py-8 text-muted-foreground">
+                              No comments to display
+                            </td>
+                          </tr>
+                        ) : (
+                          postedComments.map((comment, index) => (
+                            <tr key={index} className="border-b hover:bg-gray-50">
+                              <td className="p-3" data-testid={`cell-comment-date-${index}`}>{comment.date}</td>
+                              <td className="p-3" data-testid={`cell-posted-by-${index}`}>{comment.firstName} {comment.lastName}</td>
+                              <td className="p-3" data-testid={`cell-city-${index}`}>{comment.city}</td>
+                              <td className="p-3" data-testid={`cell-state-${index}`}>{comment.state}</td>
+                              <td className="p-3" data-testid={`cell-source-${index}`}>{comment.source}</td>
+                              <td className="p-3" data-testid={`cell-rating-${index}`}>
+                                <div className="flex items-center gap-1">
+                                  {[...Array(parseInt(comment.rating) || 0)].map((_, i) => (
+                                    <Star key={i} className="w-3 h-3 fill-warning text-warning" />
+                                  ))}
+                                </div>
+                              </td>
+                              <td className="p-3" data-testid={`cell-last-name-${index}`}>{comment.lastName}</td>
+                              <td className="p-3" data-testid={`cell-first-name-${index}`}>{comment.firstName}</td>
+                            </tr>
+                          ))
+                        )}
                       </tbody>
                     </table>
                   </div>
