@@ -1008,6 +1008,9 @@ export default function AdminMarketing() {
                         #top-scrollbar::-webkit-scrollbar-thumb:hover {
                           background-color: #152a5e;
                         }
+                        #top-scrollbar::-webkit-scrollbar-button {
+                          display: none;
+                        }
                       `}</style>
                       <div 
                         className="overflow-x-scroll w-full max-h-[600px] overflow-y-auto" 
