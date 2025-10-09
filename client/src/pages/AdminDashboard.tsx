@@ -457,10 +457,17 @@ export default function AdminDashboard() {
                   >
                     {/* Post Content */}
                     <div 
-                      className={`whitespace-pre-wrap mb-2 ${isDarkBackground() ? 'text-white' : 'text-foreground'}`}
+                      className={`
+                        whitespace-pre-wrap mb-2
+                        ${post.fontType === 'sans' ? 'font-sans' : ''}
+                        ${post.fontType === 'serif' ? 'font-serif' : ''}
+                        ${post.fontType === 'mono' ? 'font-mono' : ''}
+                        ${post.fontType === 'cursive' ? 'font-[cursive]' : ''}
+                        ${post.fontType === 'italic' ? 'italic' : ''}
+                        ${isDarkBackground() ? 'text-white' : 'text-foreground'}
+                      `}
                       style={{
                         fontSize: post.fontSize || '16px',
-                        fontFamily: post.fontType || 'inherit',
                         color: post.colorTheme || 'inherit'
                       }}
                     >

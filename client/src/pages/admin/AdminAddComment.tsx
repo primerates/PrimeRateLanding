@@ -1143,10 +1143,18 @@ export default function AdminAddComment() {
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="small">Small</SelectItem>
-                              <SelectItem value="medium">Medium</SelectItem>
-                              <SelectItem value="large">Large</SelectItem>
-                              <SelectItem value="xlarge">Extra Large</SelectItem>
+                              <SelectItem value="16px">16px</SelectItem>
+                              <SelectItem value="18px">18px</SelectItem>
+                              <SelectItem value="20px">20px</SelectItem>
+                              <SelectItem value="24px">24px</SelectItem>
+                              <SelectItem value="28px">28px</SelectItem>
+                              <SelectItem value="32px">32px</SelectItem>
+                              <SelectItem value="36px">36px</SelectItem>
+                              <SelectItem value="40px">40px</SelectItem>
+                              <SelectItem value="48px">48px</SelectItem>
+                              <SelectItem value="56px">56px</SelectItem>
+                              <SelectItem value="64px">64px</SelectItem>
+                              <SelectItem value="72px">72px</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -1160,6 +1168,8 @@ export default function AdminAddComment() {
                               <SelectItem value="sans">Sans Serif</SelectItem>
                               <SelectItem value="serif">Serif</SelectItem>
                               <SelectItem value="mono">Monospace</SelectItem>
+                              <SelectItem value="cursive">Cursive</SelectItem>
+                              <SelectItem value="italic">Italic</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -1251,19 +1261,20 @@ export default function AdminAddComment() {
                           {/* Comment Content with Font Styling */}
                           <div 
                             className={`
-                              ${fontSize === 'small' ? 'text-sm' : ''}
-                              ${fontSize === 'medium' ? 'text-base' : ''}
-                              ${fontSize === 'large' ? 'text-lg' : ''}
-                              ${fontSize === 'xlarge' ? 'text-xl' : ''}
                               ${fontType === 'sans' ? 'font-sans' : ''}
                               ${fontType === 'serif' ? 'font-serif' : ''}
                               ${fontType === 'mono' ? 'font-mono' : ''}
+                              ${fontType === 'cursive' ? 'font-[cursive]' : ''}
+                              ${fontType === 'italic' ? 'italic' : ''}
                               ${colorTheme === 'blue' ? 'text-blue-700' : ''}
                               ${colorTheme === 'green' ? 'text-green-700' : ''}
                               ${colorTheme === 'purple' ? 'text-purple-700' : ''}
                               ${colorTheme === 'orange' ? 'text-orange-700' : ''}
                               ${!colorTheme || colorTheme === 'default' ? 'text-foreground' : ''}
                             `}
+                            style={{
+                              fontSize: fontSize || '16px'
+                            }}
                           >
                             {insightComment || 'No comment provided'}
                           </div>
@@ -1680,9 +1691,18 @@ export default function AdminAddComment() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="">Select</SelectItem>
-                          <SelectItem value="small">Small</SelectItem>
-                          <SelectItem value="medium">Medium</SelectItem>
-                          <SelectItem value="large">Large</SelectItem>
+                          <SelectItem value="16px">16px</SelectItem>
+                          <SelectItem value="18px">18px</SelectItem>
+                          <SelectItem value="20px">20px</SelectItem>
+                          <SelectItem value="24px">24px</SelectItem>
+                          <SelectItem value="28px">28px</SelectItem>
+                          <SelectItem value="32px">32px</SelectItem>
+                          <SelectItem value="36px">36px</SelectItem>
+                          <SelectItem value="40px">40px</SelectItem>
+                          <SelectItem value="48px">48px</SelectItem>
+                          <SelectItem value="56px">56px</SelectItem>
+                          <SelectItem value="64px">64px</SelectItem>
+                          <SelectItem value="72px">72px</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -1697,8 +1717,11 @@ export default function AdminAddComment() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="">Select</SelectItem>
+                          <SelectItem value="sans">Sans Serif</SelectItem>
                           <SelectItem value="serif">Serif</SelectItem>
-                          <SelectItem value="sans">Sans</SelectItem>
+                          <SelectItem value="mono">Monospace</SelectItem>
+                          <SelectItem value="cursive">Cursive</SelectItem>
+                          <SelectItem value="italic">Italic</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
