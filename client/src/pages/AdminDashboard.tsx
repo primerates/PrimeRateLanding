@@ -126,8 +126,8 @@ export default function AdminDashboard() {
     { id: 'settings', label: 'Settings', icon: Settings, path: '/admin/settings' },
     { id: 'add-comment', label: 'Comments', icon: MessageSquare, path: '/admin/add-comment' },
     { id: 'add-staff', label: 'Staff', icon: UserCheck, path: '/admin/add-staff' },
-    { id: 'add-vendor', label: 'Vendor', icon: Building2, path: '/admin/add-vendor' },
-    { id: 'add-partner', label: 'Partner', icon: Handshake, path: '/admin/add-partner' },
+    { id: 'add-vendor', label: 'Vendors', icon: Building2, path: '/admin/add-vendor' },
+    { id: 'add-partner', label: 'Partners', icon: Handshake, path: '/admin/add-partner' },
   ];
 
   const handleLogout = async () => {
