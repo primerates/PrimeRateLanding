@@ -66,6 +66,10 @@ export default function AdminMarketing() {
   const [sortColumn, setSortColumn] = useState<SortColumn>('createdDate');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   
+  // Batch detail table sorting
+  const [batchDetailSortColumn, setBatchDetailSortColumn] = useState<string>('');
+  const [batchDetailSortDirection, setBatchDetailSortDirection] = useState<'asc' | 'desc'>('asc');
+  
   // Column Mapping States
   const [uploadStage, setUploadStage] = useState<UploadStage>('upload');
   const [csvData, setCsvData] = useState<any[] | null>(null);
@@ -340,6 +344,15 @@ export default function AdminMarketing() {
     }
   };
 
+  const handleBatchDetailSort = (column: string) => {
+    if (batchDetailSortColumn === column) {
+      setBatchDetailSortDirection(batchDetailSortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setBatchDetailSortColumn(column);
+      setBatchDetailSortDirection('asc');
+    }
+  };
+
   const sortedBatches = useMemo(() => {
     return [...batches].sort((a, b) => {
       let aVal: any = a[sortColumn];
@@ -358,6 +371,27 @@ export default function AdminMarketing() {
       return 0;
     });
   }, [batches, sortColumn, sortDirection]);
+
+  const sortedBatchDetails = useMemo(() => {
+    if (!selectedBatch || !batchDetailSortColumn) return selectedBatch?.excelData || [];
+    
+    return [...(selectedBatch.excelData || [])].sort((a, b) => {
+      let aVal: any = a[batchDetailSortColumn] || '';
+      let bVal: any = b[batchDetailSortColumn] || '';
+      
+      // Convert to lowercase for string comparison
+      if (typeof aVal === 'string') aVal = aVal.toLowerCase();
+      if (typeof bVal === 'string') bVal = bVal.toLowerCase();
+      
+      if (aVal === bVal) return 0;
+      
+      if (batchDetailSortDirection === 'asc') {
+        return aVal > bVal ? 1 : -1;
+      } else {
+        return aVal < bVal ? 1 : -1;
+      }
+    });
+  }, [selectedBatch, batchDetailSortColumn, batchDetailSortDirection]);
 
   return (
     <TooltipProvider delayDuration={300}>
@@ -663,6 +697,7 @@ export default function AdminMarketing() {
 
           {/* ALL BATCHES TAB */}
           <TabsContent value="all-batches" className="mt-6">
+            {/* First Card - Batch List */}
             <Card>
               <CardHeader>
                 <CardTitle>All Direct Mail Batches</CardTitle>
@@ -718,10 +753,7 @@ export default function AdminMarketing() {
                             <td className="p-3">{new Date(batch.createdDate).toLocaleDateString()}</td>
                             <td className="p-3">
                               <button
-                                onClick={() => {
-                                  setSelectedBatch(batch);
-                                  setViewBatchDialog(true);
-                                }}
+                                onClick={() => setSelectedBatch(batch)}
                                 className="text-primary hover:underline cursor-pointer font-medium"
                                 data-testid={`button-view-${batch.id}`}
                               >
@@ -730,10 +762,7 @@ export default function AdminMarketing() {
                             </td>
                             <td className="p-3">
                               <button
-                                onClick={() => {
-                                  setSelectedBatch(batch);
-                                  setViewBatchDialog(true);
-                                }}
+                                onClick={() => setSelectedBatch(batch)}
                                 className="text-primary hover:underline cursor-pointer font-medium"
                                 data-testid={`button-view-title-${batch.id}`}
                               >
@@ -759,6 +788,69 @@ export default function AdminMarketing() {
                 )}
               </CardContent>
             </Card>
+
+            {/* Second Card - Batch Details (shows when batch is selected) */}
+            {selectedBatch && (
+              <Card className="mt-6">
+                <CardHeader>
+                  <CardTitle>
+                    Batch Details: {selectedBatch.batchNumber} - {selectedBatch.batchTitle}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="border-b border-gray-300">
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                            onClick={() => handleBatchDetailSort('referenceNumber')}
+                            data-testid="sort-reference"
+                          >
+                            <div className="flex items-center gap-2">
+                              Reference Number
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                            onClick={() => handleBatchDetailSort('clientName')}
+                            data-testid="sort-client-name"
+                          >
+                            <div className="flex items-center gap-2">
+                              Client Name
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                            onClick={() => handleBatchDetailSort('address')}
+                            data-testid="sort-address"
+                          >
+                            <div className="flex items-center gap-2">
+                              Address
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {sortedBatchDetails.map((row, idx) => (
+                          <tr key={idx} className="border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                            <td className="p-3">{row.referenceNumber}</td>
+                            <td className="p-3">{row.clientName}</td>
+                            <td className="p-3">{row.address}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-4">
+                    Showing {selectedBatch.excelData.length} records
+                  </p>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           {/* STATS OVERVIEW TAB */}
@@ -810,45 +902,6 @@ export default function AdminMarketing() {
             </Card>
           </TabsContent>
           </Tabs>
-
-          {/* View Batch Dialog */}
-          <Dialog open={viewBatchDialog} onOpenChange={setViewBatchDialog}>
-            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Batch Details: {selectedBatch?.batchNumber}</DialogTitle>
-                <DialogDescription>{selectedBatch?.batchTitle}</DialogDescription>
-              </DialogHeader>
-              {selectedBatch && (
-                <div className="space-y-4">
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead className="border-b">
-                        <tr>
-                          <th className="text-left p-2">Reference</th>
-                          <th className="text-left p-2">Client Name</th>
-                          <th className="text-left p-2">Address</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {selectedBatch.excelData.slice(0, 10).map((row, idx) => (
-                          <tr key={idx} className="border-b">
-                            <td className="p-2">{row.referenceNumber}</td>
-                            <td className="p-2">{row.clientName}</td>
-                            <td className="p-2">{row.address}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  {selectedBatch.excelData.length > 10 && (
-                    <p className="text-sm text-muted-foreground">
-                      Showing 10 of {selectedBatch.excelData.length} records
-                    </p>
-                  )}
-                </div>
-              )}
-            </DialogContent>
-          </Dialog>
         </div>
       </div>
     </TooltipProvider>
