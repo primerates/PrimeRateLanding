@@ -1012,6 +1012,29 @@ export default function AdminMarketing() {
                           width: 0;
                           height: 0;
                           display: none;
+                          -webkit-appearance: none;
+                          background: none;
+                        }
+                        #top-scrollbar::-webkit-scrollbar-button:single-button {
+                          display: none;
+                          width: 0;
+                          height: 0;
+                          -webkit-appearance: none;
+                          background: none;
+                        }
+                        #top-scrollbar::-webkit-scrollbar-button:horizontal:end:increment {
+                          display: none;
+                          width: 0;
+                          height: 0;
+                          -webkit-appearance: none;
+                          background: none;
+                        }
+                        #top-scrollbar::-webkit-scrollbar-button:horizontal:start:decrement {
+                          display: none;
+                          width: 0;
+                          height: 0;
+                          -webkit-appearance: none;
+                          background: none;
                         }
                         #top-scrollbar::-webkit-scrollbar-button:start:decrement,
                         #top-scrollbar::-webkit-scrollbar-button:end:increment {
