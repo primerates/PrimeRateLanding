@@ -832,7 +832,7 @@ export default function AdminMarketing() {
 
                     {/* Actual Table */}
                     <div 
-                      className="overflow-x-scroll w-full border-2 border-t-0 border-blue-400 rounded-b-lg" 
+                      className="overflow-x-scroll w-full border-2 border-t-0 border-blue-400 rounded-b-lg max-h-[600px] overflow-y-auto" 
                       style={{ scrollbarWidth: 'auto' }}
                       onScroll={(e) => {
                         const topScroll = document.getElementById('top-scrollbar');
