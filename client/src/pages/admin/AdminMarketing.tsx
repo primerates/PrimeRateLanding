@@ -840,8 +840,9 @@ export default function AdminMarketing() {
                                       size="sm"
                                       onClick={() => handleDeleteBatch(batch.id)}
                                       data-testid={`button-delete-${batch.id}`}
+                                      className="group"
                                     >
-                                      <Trash2 className="h-4 w-4 hover:text-red-600 transition-colors" />
+                                      <Trash2 className="h-4 w-4 transition-colors group-hover:text-red-600" />
                                     </Button>
                                   </TooltipTrigger>
                                   <TooltipContent>
