@@ -160,9 +160,12 @@ export default function AdminMarketing() {
                        row['Ref Number'] || row['ref number'] || row['RefNumber'] || 
                        row['Reference'] || row['reference'] || '';
         
-        // Client Name - use First Name (no Last Name in this file)
-        const clientName = row['First Name'] || row['firstName'] || row['first name'] || 
-                          row['Client Name'] || row['clientName'] || row['Name'] || '';
+        // Client Name - combine Last Name and First Name
+        const firstName = row['First Name'] || row['firstName'] || row['first name'] || '';
+        const lastName = row['Last Name'] || row['lastName'] || row['last name'] || '';
+        const clientName = lastName && firstName 
+          ? `${lastName}, ${firstName}` 
+          : (firstName || lastName || row['Client Name'] || row['Name'] || '');
         
         // Address - combine street, unit, city, state, zip if needed
         let address = row['Address'] || row['address'] || row['Street Address'] || 
