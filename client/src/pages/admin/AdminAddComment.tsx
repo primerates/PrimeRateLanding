@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RotateCcw, Monitor, Save, Plus } from 'lucide-react';
+import { RotateCcw, Monitor, Save, Plus, ArrowUpDown } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 
@@ -69,6 +69,19 @@ export default function AdminAddComment() {
     setAnimateCircles(false);
     setTimeout(() => setAnimateCircles(true), 100);
   }, []);
+
+  // Sorting state for All Comments table
+  const [sortColumn, setSortColumn] = useState<string>('');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+
+  const handleSort = (column: string) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
+  };
 
   const handleScreenshare = () => {
     setScreenshareLoading(true);
@@ -456,8 +469,105 @@ export default function AdminAddComment() {
             {/* All Comments Tab */}
             <TabsContent value="all-comments" className="mt-8">
               <Card>
-                <CardContent className="space-y-6 pt-6">
-                  <p className="text-muted-foreground">All Comments will be displayed here.</p>
+                <CardContent className="pt-6">
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="border-b border-gray-300">
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            onClick={() => handleSort('commentDate')}
+                            data-testid="header-comment-date"
+                          >
+                            <div className="flex items-center gap-2">
+                              Comment Date
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            onClick={() => handleSort('postedBy')}
+                            data-testid="header-posted-by"
+                          >
+                            <div className="flex items-center gap-2">
+                              Posted By
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            onClick={() => handleSort('loanPurpose')}
+                            data-testid="header-loan-purpose"
+                          >
+                            <div className="flex items-center gap-2">
+                              Loan Purpose
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            onClick={() => handleSort('loanDate')}
+                            data-testid="header-loan-date"
+                          >
+                            <div className="flex items-center gap-2">
+                              Loan Date
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            onClick={() => handleSort('source')}
+                            data-testid="header-source"
+                          >
+                            <div className="flex items-center gap-2">
+                              Source
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            onClick={() => handleSort('state')}
+                            data-testid="header-state"
+                          >
+                            <div className="flex items-center gap-2">
+                              State
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            onClick={() => handleSort('rating')}
+                            data-testid="header-rating"
+                          >
+                            <div className="flex items-center gap-2">
+                              Rating
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-50"
+                            data-testid="header-last-name"
+                          >
+                            Last Name
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-50"
+                            data-testid="header-first-name"
+                          >
+                            First Name
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {/* Empty state - no data rows yet */}
+                        <tr>
+                          <td colSpan={9} className="text-center py-8 text-muted-foreground">
+                            No comments to display
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
