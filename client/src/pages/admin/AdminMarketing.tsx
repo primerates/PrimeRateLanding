@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ArrowLeft, Upload, Plus, BarChart3, FileSpreadsheet, Trash2, Eye, ArrowUpDown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import Papa from 'papaparse';
 
 interface BatchData {
   id: string;
@@ -63,37 +64,47 @@ export default function AdminMarketing() {
 
   const parseExcelFile = async (file: File): Promise<Array<any>> => {
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const text = e.target?.result as string;
-          const lines = text.split('\n').filter(line => line.trim());
-          
-          if (lines.length === 0) {
-            reject(new Error('Empty file'));
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (results) => {
+          if (results.errors && results.errors.length > 0) {
+            reject(new Error(`CSV parsing error: ${results.errors[0].message}`));
             return;
           }
 
-          // First line is headers
-          const headers = lines[0].split(',').map(h => h.trim());
-          
-          // Parse data rows
-          const data = lines.slice(1).map(line => {
-            const values = line.split(',').map(v => v.trim());
-            const row: any = {};
-            headers.forEach((header, index) => {
-              row[header] = values[index] || '';
-            });
-            return row;
-          });
+          if (!results.data || results.data.length === 0) {
+            reject(new Error('Empty file or no data found'));
+            return;
+          }
 
-          resolve(data);
-        } catch (error) {
-          reject(error);
+          // Validate required columns
+          const firstRow = results.data[0] as any;
+          const headers = Object.keys(firstRow);
+          
+          const hasReferenceNumber = headers.some(h => 
+            h.toLowerCase().includes('reference') && h.toLowerCase().includes('number')
+          );
+          const hasClientName = headers.some(h => 
+            h.toLowerCase().includes('client') && h.toLowerCase().includes('name')
+          );
+          const hasAddress = headers.some(h => 
+            h.toLowerCase().includes('address')
+          );
+
+          if (!hasReferenceNumber || !hasClientName || !hasAddress) {
+            reject(new Error(
+              'Missing required columns. Expected: "Reference Number", "Client Name", and "Address"'
+            ));
+            return;
+          }
+
+          resolve(results.data);
+        },
+        error: (error) => {
+          reject(new Error(`Failed to parse CSV: ${error.message}`));
         }
-      };
-      reader.onerror = () => reject(new Error('Failed to read file'));
-      reader.readAsText(file);
+      });
     });
   };
 
@@ -119,13 +130,22 @@ export default function AdminMarketing() {
     try {
       const excelData = await parseExcelFile(selectedFile);
       
-      // Ensure data has required fields
-      const formattedData = excelData.map(row => ({
-        referenceNumber: row['Reference Number'] || row['referenceNumber'] || '',
-        clientName: row['Client Name'] || row['clientName'] || '',
-        address: row['Address'] || row['address'] || '',
-        ...row
-      }));
+      // Ensure data has required fields - handle various column name formats
+      const formattedData = excelData.map(row => {
+        const refNum = row['Reference Number'] || row['referenceNumber'] || row['reference number'] || 
+                       row['Ref Number'] || row['ref number'] || row['RefNumber'] || '';
+        const clientName = row['Client Name'] || row['clientName'] || row['client name'] || 
+                          row['Name'] || row['name'] || '';
+        const address = row['Address'] || row['address'] || row['Street Address'] || 
+                       row['street address'] || '';
+        
+        return {
+          referenceNumber: refNum,
+          clientName: clientName,
+          address: address,
+          ...row
+        };
+      });
 
       const newBatch: BatchData = {
         id: Date.now().toString(),
@@ -161,9 +181,10 @@ export default function AdminMarketing() {
       if (fileInput) fileInput.value = '';
 
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to parse file.";
       toast({
         title: "Error",
-        description: "Failed to parse Excel file. Please ensure it's a valid CSV format.",
+        description: errorMessage,
         variant: "destructive"
       });
     }
