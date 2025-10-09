@@ -79,6 +79,10 @@ export default function AdminAddComment() {
   
   // Posted company posts storage
   const [postedCompanyPosts, setPostedCompanyPosts] = useState<any[]>([]);
+  
+  // Category counts for circles
+  const [insightCount, setInsightCount] = useState(0); // "I wish I had said that"
+  const [eventsCount, setEventsCount] = useState(0); // "Policy", "Events", "Announcement"
 
   // Trigger circle animation only on mount
   useEffect(() => {
@@ -113,6 +117,23 @@ export default function AdminAddComment() {
     if (storedPosts) {
       const parsed = JSON.parse(storedPosts);
       setPostedCompanyPosts(parsed);
+      
+      // Calculate category counts
+      let insightTotal = 0;
+      let eventsTotal = 0;
+      
+      parsed.forEach((post: any) => {
+        const category = post.category || '';
+        
+        if (category === 'I wish I had said that') {
+          insightTotal++;
+        } else if (category === 'Policy' || category === 'Events' || category === 'Announcement') {
+          eventsTotal++;
+        }
+      });
+      
+      setInsightCount(insightTotal);
+      setEventsCount(eventsTotal);
     }
   }, []);
 
@@ -225,6 +246,25 @@ export default function AdminAddComment() {
     });
   }, [postedCompanyPosts, sortPostColumn, sortPostDirection]);
 
+  // Calculate category counts for circles
+  const calculateCategoryCounts = (posts: any[]) => {
+    let insightTotal = 0;
+    let eventsTotal = 0;
+    
+    posts.forEach(post => {
+      const category = post.category || '';
+      
+      if (category === 'I wish I had said that') {
+        insightTotal++;
+      } else if (category === 'Policy' || category === 'Events' || category === 'Announcement') {
+        eventsTotal++;
+      }
+    });
+    
+    setInsightCount(insightTotal);
+    setEventsCount(eventsTotal);
+  };
+
   const handleSort = (column: string) => {
     if (sortColumn === column) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -313,6 +353,9 @@ export default function AdminAddComment() {
     setPostedCompanyPosts(updatedPosts);
     localStorage.setItem('postedCompanyPosts', JSON.stringify(updatedPosts));
     
+    // Update category counts
+    calculateCategoryCounts(updatedPosts);
+    
     setShowPostDialog(false);
     alert('Post deleted successfully!');
   };
@@ -328,6 +371,9 @@ export default function AdminAddComment() {
     updatedPosts[selectedPostIndex] = selectedPost;
     setPostedCompanyPosts(updatedPosts);
     localStorage.setItem('postedCompanyPosts', JSON.stringify(updatedPosts));
+    
+    // Update category counts
+    calculateCategoryCounts(updatedPosts);
     
     setShowPostDialog(false);
     setIsPostEditMode(false);
@@ -472,6 +518,9 @@ export default function AdminAddComment() {
     
     // Save to localStorage
     localStorage.setItem('postedCompanyPosts', JSON.stringify(updatedPosts));
+    
+    // Update category counts
+    calculateCategoryCounts(updatedPosts);
     
     // Show success message
     alert(`Company post published successfully!\nTotal posts: ${updatedPosts.length}`);
@@ -629,7 +678,7 @@ export default function AdminAddComment() {
                         transform: animateCircles ? 'translateY(0)' : 'translateY(-100px)',
                         transition: 'transform 0.6s ease-out 0.4s',
                         display: 'block'
-                      }}>0</span>
+                      }}>{insightCount}</span>
                     </div>
                   </div>
                 </div>
@@ -655,7 +704,7 @@ export default function AdminAddComment() {
                         transform: animateCircles ? 'translateY(0)' : 'translateY(-100px)',
                         transition: 'transform 0.6s ease-out 0.5s',
                         display: 'block'
-                      }}>0</span>
+                      }}>{eventsCount}</span>
                     </div>
                   </div>
                 </div>
