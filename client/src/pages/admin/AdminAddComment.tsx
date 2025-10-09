@@ -260,6 +260,29 @@ export default function AdminAddComment() {
     setter(formatted);
   };
 
+  // Cancel client comment - reset all fields and hide preview
+  const handleCancelClientComment = () => {
+    setClientFirstName('');
+    setClientLastName('');
+    setClientState('');
+    setClientCity('');
+    setClientSource('');
+    setClientRating('');
+    setClientLoanPurpose('');
+    setClientDate('');
+    setClientComment('');
+    setShowPreview(false);
+  };
+
+  // Set today's date in MM/DD/YYYY format
+  const handleSetTodayDate = (setter: (value: string) => void) => {
+    const today = new Date();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const year = today.getFullYear();
+    setter(`${month}/${day}/${year}`);
+  };
+
   return (
     <TooltipProvider delayDuration={300}>
       <div className="min-h-screen bg-background">
@@ -515,7 +538,14 @@ export default function AdminAddComment() {
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="client-date">Comment Date</Label>
+                      <Label 
+                        htmlFor="client-date" 
+                        className="cursor-pointer hover:text-primary transition-colors"
+                        onClick={() => handleSetTodayDate(setClientDate)}
+                        data-testid="label-client-date"
+                      >
+                        Comment Date
+                      </Label>
                       <Input 
                         id="client-date" 
                         value={clientDate}
@@ -553,6 +583,7 @@ export default function AdminAddComment() {
                   <div className="flex justify-end gap-3 pt-4">
                     <Button 
                       variant="outline"
+                      onClick={handleCancelClientComment}
                       data-testid="button-cancel-client-comment"
                     >
                       Cancel
@@ -785,7 +816,14 @@ export default function AdminAddComment() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="insight-date">Date</Label>
+                      <Label 
+                        htmlFor="insight-date"
+                        className="cursor-pointer hover:text-primary transition-colors"
+                        onClick={() => handleSetTodayDate(setInsightDate)}
+                        data-testid="label-insight-date"
+                      >
+                        Date
+                      </Label>
                       <Input 
                         id="insight-date" 
                         value={insightDate}
