@@ -15,13 +15,19 @@ export default function TestimonialsSection() {
       const stored = localStorage.getItem('postedTestimonials');
       if (stored) {
         const parsed = JSON.parse(stored);
+        console.log('Raw testimonials data:', parsed);
         // Transform data to match display format
-        const formatted = parsed.map((t: any) => ({
-          name: `${t.firstName} ${t.lastName}`,
-          location: t.city && t.state ? `${t.city}, ${t.state}` : t.state || t.city || 'Location not specified',
-          rating: parseInt(t.rating) || 5,
-          text: t.comment
-        }));
+        const formatted = parsed.map((t: any) => {
+          const location = t.city && t.state ? `${t.city}, ${t.state}` : t.state || t.city || 'Location not specified';
+          console.log('Testimonial:', { city: t.city, state: t.state, location });
+          return {
+            name: `${t.firstName} ${t.lastName}`,
+            location: location,
+            rating: parseInt(t.rating) || 5,
+            text: t.comment
+          };
+        });
+        console.log('Formatted testimonials:', formatted);
         setTestimonials(formatted);
       }
     };
