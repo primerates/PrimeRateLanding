@@ -970,6 +970,13 @@ export default function AdminMarketing() {
                           -ms-overflow-style: none;
                           scrollbar-width: none;
                         }
+                        #top-scrollbar::-webkit-scrollbar-thumb {
+                          background-color: #1a3373;
+                          border-radius: 4px;
+                        }
+                        #top-scrollbar::-webkit-scrollbar-thumb:hover {
+                          background-color: #152a5e;
+                        }
                       `}</style>
                       <div 
                         className="overflow-x-scroll w-full border-2 border-t-0 border-blue-400 rounded-b-lg max-h-[600px] overflow-y-auto" 
