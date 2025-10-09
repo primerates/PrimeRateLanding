@@ -766,7 +766,7 @@ export default function AdminMarketing() {
             {/* First Card - Batch List */}
             <Card>
               <CardHeader>
-                <CardTitle>All Direct Mail Batches</CardTitle>
+                <CardTitle>Batch List</CardTitle>
               </CardHeader>
               <CardContent>
                 {batches.length === 0 ? (
