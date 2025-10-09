@@ -970,9 +970,17 @@ export default function AdminMarketing() {
                           -ms-overflow-style: none;
                           scrollbar-width: none;
                         }
+                        #top-scrollbar::-webkit-scrollbar {
+                          height: 12px;
+                        }
+                        #top-scrollbar::-webkit-scrollbar-track {
+                          background: transparent;
+                        }
                         #top-scrollbar::-webkit-scrollbar-thumb {
                           background-color: #1a3373;
-                          border-radius: 4px;
+                          border-radius: 6px;
+                          border: 2px solid transparent;
+                          background-clip: padding-box;
                         }
                         #top-scrollbar::-webkit-scrollbar-thumb:hover {
                           background-color: #152a5e;
