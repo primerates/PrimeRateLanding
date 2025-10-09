@@ -61,6 +61,15 @@ export default function AdminAddComment() {
   // Preview state
   const [showPreview, setShowPreview] = useState(false);
 
+  // Animation state for circles
+  const [animateCircles, setAnimateCircles] = useState(false);
+
+  // Trigger animation when component mounts or tab changes
+  useEffect(() => {
+    setAnimateCircles(false);
+    setTimeout(() => setAnimateCircles(true), 100);
+  }, []);
+
   const handleScreenshare = () => {
     setScreenshareLoading(true);
     setTimeout(() => setScreenshareLoading(false), 2000);
@@ -170,17 +179,24 @@ export default function AdminAddComment() {
                   <Label className="text-lg font-semibold">Comments</Label>
                   <div className="min-h-[40px] flex items-center justify-center">
                     <div
-                      className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
+                      className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center overflow-hidden"
                       style={{
                         fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                         fontSize: '36px',
                         fontWeight: 600,
                         backgroundColor: '#1a3373',
-                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
+                        transform: animateCircles ? 'translateY(0)' : 'translateY(100px)',
+                        opacity: animateCircles ? 1 : 0,
+                        transition: 'transform 0.6s ease-out, opacity 0.6s ease-out'
                       }}
                       data-testid="circle-client-comment"
                     >
-                      <span>0</span>
+                      <span style={{
+                        transform: animateCircles ? 'translateY(0)' : 'translateY(-100px)',
+                        transition: 'transform 0.6s ease-out 0.2s',
+                        display: 'block'
+                      }}>0</span>
                     </div>
                   </div>
                 </div>
@@ -189,17 +205,24 @@ export default function AdminAddComment() {
                   <Label className="text-lg font-semibold">States</Label>
                   <div className="min-h-[40px] flex items-center justify-center">
                     <div
-                      className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
+                      className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center overflow-hidden"
                       style={{
                         fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                         fontSize: '36px',
                         fontWeight: 600,
                         backgroundColor: '#1a3373',
-                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
+                        transform: animateCircles ? 'translateY(0)' : 'translateY(100px)',
+                        opacity: animateCircles ? 1 : 0,
+                        transition: 'transform 0.6s ease-out 0.1s, opacity 0.6s ease-out 0.1s'
                       }}
                       data-testid="circle-company-post"
                     >
-                      <span>0</span>
+                      <span style={{
+                        transform: animateCircles ? 'translateY(0)' : 'translateY(-100px)',
+                        transition: 'transform 0.6s ease-out 0.3s',
+                        display: 'block'
+                      }}>0</span>
                     </div>
                   </div>
                 </div>
@@ -208,17 +231,24 @@ export default function AdminAddComment() {
                   <Label className="text-lg font-semibold">Library</Label>
                   <div className="min-h-[40px] flex items-center justify-center">
                     <div
-                      className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
+                      className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center overflow-hidden"
                       style={{
                         fontFamily: 'ui-sans-serif, system-ui, sans-serif',
                         fontSize: '36px',
                         fontWeight: 600,
                         backgroundColor: '#1a3373',
-                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
+                        transform: animateCircles ? 'translateY(0)' : 'translateY(100px)',
+                        opacity: animateCircles ? 1 : 0,
+                        transition: 'transform 0.6s ease-out 0.2s, opacity 0.6s ease-out 0.2s'
                       }}
                       data-testid="circle-note"
                     >
-                      <span>0</span>
+                      <span style={{
+                        transform: animateCircles ? 'translateY(0)' : 'translateY(-100px)',
+                        transition: 'transform 0.6s ease-out 0.4s',
+                        display: 'block'
+                      }}>0</span>
                     </div>
                   </div>
                 </div>
@@ -288,6 +318,18 @@ export default function AdminAddComment() {
                   {/* Second Row */}
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="space-y-2">
+                      <Label htmlFor="client-loan-purpose">Loan Purpose</Label>
+                      <Select value={clientLoanPurpose} onValueChange={setClientLoanPurpose}>
+                        <SelectTrigger id="client-loan-purpose" data-testid="select-client-loan-purpose">
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="refinance">Refinance</SelectItem>
+                          <SelectItem value="purchase">Purchase</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
                       <Label htmlFor="client-rating">Rating</Label>
                       <Select value={clientRating} onValueChange={setClientRating}>
                         <SelectTrigger id="client-rating" data-testid="select-client-rating">
@@ -303,19 +345,7 @@ export default function AdminAddComment() {
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="client-loan-purpose">Loan Purpose</Label>
-                      <Select value={clientLoanPurpose} onValueChange={setClientLoanPurpose}>
-                        <SelectTrigger id="client-loan-purpose" data-testid="select-client-loan-purpose">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="refinance">Refinance</SelectItem>
-                          <SelectItem value="purchase">Purchase</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="client-date">Date</Label>
+                      <Label htmlFor="client-date">Comment Date</Label>
                       <Input 
                         id="client-date" 
                         value={clientDate}
@@ -395,10 +425,6 @@ export default function AdminAddComment() {
                           <p className="text-sm text-muted-foreground">Source</p>
                           <p className="font-medium capitalize">{clientSource ? clientSource.replace('-', ' ') : '-'}</p>
                         </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">Rating</p>
-                          <p className="font-medium">{clientRating || '-'}</p>
-                        </div>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
@@ -406,7 +432,11 @@ export default function AdminAddComment() {
                           <p className="font-medium capitalize">{clientLoanPurpose || '-'}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-muted-foreground">Date</p>
+                          <p className="text-sm text-muted-foreground">Rating</p>
+                          <p className="font-medium">{clientRating || '-'}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Comment Date</p>
                           <p className="font-medium">{clientDate || '-'}</p>
                         </div>
                         <div>
