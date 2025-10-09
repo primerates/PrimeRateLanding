@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RotateCcw, Monitor, Save, Plus, ArrowUpDown, Star, Edit, Trash2 } from 'lucide-react';
+import { RotateCcw, Monitor, Save, Plus, ArrowUpDown, Star, Edit, Trash2, Pin } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -83,6 +83,10 @@ export default function AdminAddComment() {
   // Category counts for circles
   const [insightCount, setInsightCount] = useState(0); // "I wish I had said that"
   const [eventsCount, setEventsCount] = useState(0); // "Policy", "Events", "Announcement"
+  
+  // Notes state
+  const [currentNote, setCurrentNote] = useState('');
+  const [pinnedNotes, setPinnedNotes] = useState<any[]>([]);
 
   // Trigger circle animation only on mount
   useEffect(() => {
@@ -134,6 +138,12 @@ export default function AdminAddComment() {
       
       setInsightCount(insightTotal);
       setEventsCount(eventsTotal);
+    }
+    
+    // Load pinned notes
+    const storedNotes = localStorage.getItem('pinnedNotes');
+    if (storedNotes) {
+      setPinnedNotes(JSON.parse(storedNotes));
     }
   }, []);
 
@@ -399,6 +409,32 @@ export default function AdminAddComment() {
     localStorage.setItem('postedCompanyPosts', JSON.stringify(updatedPosts));
     
     alert('Post republished and moved to dashboard!');
+  };
+
+  const handlePinNote = () => {
+    if (!currentNote.trim()) {
+      alert('Please write a note before pinning!');
+      return;
+    }
+    
+    const newNote = {
+      id: Date.now(),
+      text: currentNote,
+      createdAt: new Date().toISOString()
+    };
+    
+    const updatedNotes = [...pinnedNotes, newNote];
+    setPinnedNotes(updatedNotes);
+    localStorage.setItem('pinnedNotes', JSON.stringify(updatedNotes));
+    
+    // Clear the current note
+    setCurrentNote('');
+  };
+
+  const handleDeleteNote = (id: number) => {
+    const updatedNotes = pinnedNotes.filter(note => note.id !== id);
+    setPinnedNotes(updatedNotes);
+    localStorage.setItem('pinnedNotes', JSON.stringify(updatedNotes));
   };
 
   const handleScreenshare = () => {
@@ -1454,11 +1490,69 @@ export default function AdminAddComment() {
             </TabsContent>
 
             <TabsContent value="notes" className="mt-8">
-              <Card>
-                <CardContent className="space-y-6 pt-6">
-                  <p className="text-muted-foreground">Notes will be displayed here.</p>
+              {/* Sticky Note Input */}
+              <Card className="bg-yellow-100 dark:bg-yellow-900 border-yellow-300 dark:border-yellow-700 max-w-md">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Pin className="h-5 w-5 text-yellow-700 dark:text-yellow-300" />
+                    Sticky Note
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Textarea
+                    value={currentNote}
+                    onChange={(e) => setCurrentNote(e.target.value)}
+                    placeholder="Type your note here..."
+                    className="min-h-[120px] bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700 resize-none"
+                    data-testid="textarea-note"
+                  />
+                  <Button 
+                    onClick={handlePinNote}
+                    className="w-full"
+                    data-testid="button-pin-note"
+                  >
+                    OK - Pin to Wall
+                  </Button>
                 </CardContent>
               </Card>
+
+              {/* Pinned Notes Wall */}
+              {pinnedNotes.length > 0 && (
+                <div className="mt-8 space-y-4">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <Pin className="h-5 w-5" />
+                    Pinned Notes
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {pinnedNotes.map((note) => (
+                      <Card 
+                        key={note.id}
+                        className="bg-yellow-100 dark:bg-yellow-900 border-yellow-300 dark:border-yellow-700 relative"
+                        data-testid={`card-note-${note.id}`}
+                      >
+                        <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                          <Pin className="h-6 w-6 text-red-500 rotate-45" />
+                        </div>
+                        <CardContent className="pt-8 pb-4">
+                          <p className="text-sm whitespace-pre-wrap mb-4">{note.text}</p>
+                          <div className="flex justify-between items-center text-xs text-muted-foreground">
+                            <span>{new Date(note.createdAt).toLocaleDateString()}</span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDeleteNote(note.id)}
+                              className="h-6 px-2 text-red-600 hover:text-red-700"
+                              data-testid={`button-delete-note-${note.id}`}
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
             </TabsContent>
           </Tabs>
         </div>

@@ -75,6 +75,7 @@ The Comments & Posts Management system (`/admin/add-comment`) provides a compreh
 - **Statistics Tracking**: Total comments, last comment date, unique states
 - **localStorage Persistence**: Seamless connection between admin panel and public homepage
 - **Sortable Tables**: All Comments and All Posts tabs with column sorting (chronological for dates, numeric for ratings, alphabetical for text)
+- **Sticky Notes**: Notes tab with yellow sticky note input and pin-to-wall display system
 
 ### All Posts Tab
 - **Table Columns** (left to right): Post Date, Post By, Category, Author, Post Content
@@ -108,9 +109,23 @@ The Comments & Posts Management system (`/admin/add-comment`) provides a compreh
   - "Policy", "Events", "Announcement" → Events counter
   - Future category additions should be deliberately mapped to appropriate counter
 
+### Notes Tab
+- **Sticky Note Input**: Yellow card with textarea for creating new notes
+- **Pin to Wall**: "OK - Pin to Wall" button posts notes to display area below
+- **Pinned Notes Display**: Grid layout (1/2/3 columns responsive) showing all notes
+- **Visual Design**: 
+  - Yellow background (bg-yellow-100/dark:bg-yellow-900)
+  - Red pin icon at top center (rotated 45 degrees)
+  - Each note shows date and delete button
+- **Functionality**:
+  - Notes persist in localStorage key `'pinnedNotes'`
+  - Input clears after posting
+  - Delete button removes individual notes
+  - Notes display with creation date
+
 ### Technical Implementation
-- **Data Storage**: Company posts stored in localStorage key `'postedCompanyPosts'`
-- **State Management**: Dedicated sorting state (`sortPostColumn`, `sortPostDirection`) and dialog state for posts
+- **Data Storage**: Company posts stored in localStorage key `'postedCompanyPosts'`; Notes stored in `'pinnedNotes'`
+- **State Management**: Dedicated sorting state (`sortPostColumn`, `sortPostDirection`) and dialog state for posts; Notes use `currentNote` and `pinnedNotes` state
 - **Index Mapping**: Sorted arrays use `findIndex()` to map back to original array indices for edit/delete operations
 - **Dashboard Display**: Only the most recent post (last in array) is displayed on AdminDashboard, not all posts
 - **Republish Feature**: "Publish" button in All Posts table updates post date to today, making it the most recent
