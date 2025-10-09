@@ -802,10 +802,53 @@ export default function AdminMarketing() {
                     <div className="flex items-center gap-2 text-sm text-muted-foreground bg-blue-50 dark:bg-blue-900/20 p-2 rounded">
                       <ArrowUpDown className="h-4 w-4" />
                       <span>
-                        Drag the scrollbar below the table or click and drag on the table to scroll horizontally and see all {Object.keys(selectedBatch.excelData[0]).length} columns
+                        Use the scrollbar above the table to scroll horizontally and see all {Object.keys(selectedBatch.excelData[0]).length} columns
                       </span>
                     </div>
-                    <div className="overflow-x-scroll w-full border-2 border-blue-400 rounded-lg" style={{ scrollbarWidth: 'auto' }}>
+                    
+                    {/* Top Scrollbar */}
+                    <div 
+                      className="overflow-x-scroll w-full border-2 border-blue-400 rounded-t-lg" 
+                      style={{ scrollbarWidth: 'auto', height: '20px' }}
+                      onScroll={(e) => {
+                        const bottomScroll = document.getElementById('batch-table-scroll');
+                        if (bottomScroll) {
+                          bottomScroll.scrollLeft = e.currentTarget.scrollLeft;
+                        }
+                      }}
+                      id="top-scrollbar"
+                    >
+                      <div style={{ width: 'max-content', height: '1px' }}>
+                        {/* Spacer to create scrollbar width matching table */}
+                        <table className="w-max border-collapse invisible">
+                          <thead>
+                            <tr>
+                              {Object.keys(selectedBatch.excelData[0]).map((column) => (
+                                <th key={column} className="p-3 whitespace-nowrap">
+                                  <div className="flex items-center gap-2">
+                                    {column}
+                                    <ArrowUpDown className="h-4 w-4" />
+                                  </div>
+                                </th>
+                              ))}
+                            </tr>
+                          </thead>
+                        </table>
+                      </div>
+                    </div>
+
+                    {/* Actual Table */}
+                    <div 
+                      className="overflow-x-scroll w-full border-2 border-t-0 border-blue-400 rounded-b-lg" 
+                      style={{ scrollbarWidth: 'auto' }}
+                      onScroll={(e) => {
+                        const topScroll = document.getElementById('top-scrollbar');
+                        if (topScroll) {
+                          topScroll.scrollLeft = e.currentTarget.scrollLeft;
+                        }
+                      }}
+                      id="batch-table-scroll"
+                    >
                       <table className="w-max border-collapse">
                         <thead className="sticky top-0 z-10">
                           <tr className="border-b border-gray-300">
