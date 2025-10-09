@@ -833,14 +833,21 @@ export default function AdminMarketing() {
                               </td>
                               <td className="p-3">{actualLeadCount}</td>
                               <td className="p-3">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleDeleteBatch(batch.id)}
-                                  data-testid={`button-delete-${batch.id}`}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => handleDeleteBatch(batch.id)}
+                                      data-testid={`button-delete-${batch.id}`}
+                                    >
+                                      <Trash2 className="h-4 w-4 hover:text-red-600 transition-colors" />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    Delete Batch?
+                                  </TooltipContent>
+                                </Tooltip>
                               </td>
                             </tr>
                           );
