@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 import { RotateCcw, Monitor, Save, Upload, Plus, BarChart3, FileText, Trash2, Eye, ArrowUpDown, CheckCircle, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
@@ -326,26 +325,14 @@ export default function AdminMarketing() {
     }, 1000);
   };
 
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [batchToDelete, setBatchToDelete] = useState<string | null>(null);
-
   const handleDeleteBatch = (id: string) => {
-    setBatchToDelete(id);
-    setDeleteConfirmOpen(true);
-  };
-
-  const confirmDeleteBatch = () => {
-    if (batchToDelete) {
-      const updatedBatches = batches.filter(b => b.id !== batchToDelete);
-      setBatches(updatedBatches);
-      localStorage.setItem('directMailBatches', JSON.stringify(updatedBatches));
-      toast({
-        title: "Batch Deleted",
-        description: "The batch has been removed successfully.",
-      });
-      setBatchToDelete(null);
-    }
-    setDeleteConfirmOpen(false);
+    const updatedBatches = batches.filter(b => b.id !== id);
+    setBatches(updatedBatches);
+    localStorage.setItem('directMailBatches', JSON.stringify(updatedBatches));
+    toast({
+      title: "Batch Deleted",
+      description: "The batch has been removed successfully.",
+    });
   };
 
   const handleSort = (column: SortColumn) => {
@@ -782,7 +769,7 @@ export default function AdminMarketing() {
                                 {batch.batchTitle}
                               </button>
                             </td>
-                            <td className="p-3">{batch.excelData.length}</td>
+                            <td className="p-3">{batch.stats.totalLeads}</td>
                             <td className="p-3">
                               <Button
                                 variant="ghost"
@@ -812,46 +799,17 @@ export default function AdminMarketing() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground bg-blue-50 dark:bg-blue-900/20 p-2 rounded">
+                      <ArrowUpDown className="h-4 w-4" />
+                      <span>
+                        Use the scrollbar above the table to scroll horizontally and see all {Object.keys(selectedBatch.excelData[0]).length} columns
+                      </span>
+                    </div>
+                    
                     {/* Top Scrollbar */}
-                    <style>{`
-                      #top-scrollbar::-webkit-scrollbar {
-                        height: 7px;
-                      }
-                      #top-scrollbar::-webkit-scrollbar-track {
-                        background: #f1f1f1;
-                        border-radius: 4px;
-                      }
-                      .dark #top-scrollbar::-webkit-scrollbar-track {
-                        background: #333;
-                      }
-                      #top-scrollbar::-webkit-scrollbar-thumb {
-                        background: #22c55e;
-                        border-radius: 4px;
-                      }
-                      #top-scrollbar::-webkit-scrollbar-thumb:hover {
-                        background: #16a34a;
-                      }
-                      #batch-table-scroll::-webkit-scrollbar {
-                        height: 7px;
-                      }
-                      #batch-table-scroll::-webkit-scrollbar-track {
-                        background: #f1f1f1;
-                        border-radius: 4px;
-                      }
-                      .dark #batch-table-scroll::-webkit-scrollbar-track {
-                        background: #333;
-                      }
-                      #batch-table-scroll::-webkit-scrollbar-thumb {
-                        background: #22c55e;
-                        border-radius: 4px;
-                      }
-                      #batch-table-scroll::-webkit-scrollbar-thumb:hover {
-                        background: #16a34a;
-                      }
-                    `}</style>
                     <div 
                       className="overflow-x-scroll w-full border-2 border-blue-400 rounded-t-lg" 
-                      style={{ scrollbarWidth: 'thin', height: '20px' }}
+                      style={{ scrollbarWidth: 'auto', height: '20px' }}
                       onScroll={(e) => {
                         const bottomScroll = document.getElementById('batch-table-scroll');
                         if (bottomScroll) {
@@ -882,7 +840,7 @@ export default function AdminMarketing() {
                     {/* Actual Table */}
                     <div 
                       className="overflow-x-scroll w-full border-2 border-t-0 border-blue-400 rounded-b-lg" 
-                      style={{ scrollbarWidth: 'thin' }}
+                      style={{ scrollbarWidth: 'auto' }}
                       onScroll={(e) => {
                         const topScroll = document.getElementById('top-scrollbar');
                         if (topScroll) {
@@ -948,7 +906,7 @@ export default function AdminMarketing() {
                   <Card>
                     <CardContent className="pt-6">
                       <div className="text-2xl font-bold">
-                        {batches.reduce((sum, b) => sum + b.excelData.length, 0)}
+                        {batches.reduce((sum, b) => sum + b.stats.totalLeads, 0)}
                       </div>
                       <p className="text-sm text-muted-foreground">Total Leads</p>
                     </CardContent>
@@ -982,22 +940,6 @@ export default function AdminMarketing() {
           </Tabs>
         </div>
       </div>
-
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure you want to delete this batch?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Clicking Yes will permanently remove all items in this batch. This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>No</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDeleteBatch}>Yes</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </TooltipProvider>
   );
 }
