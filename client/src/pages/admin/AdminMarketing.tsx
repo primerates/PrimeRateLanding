@@ -798,40 +798,48 @@ export default function AdminMarketing() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="overflow-x-auto w-full border rounded-lg">
-                    <table className="w-max border-collapse">
-                      <thead className="sticky top-0 z-10">
-                        <tr className="border-b border-gray-300">
-                          {Object.keys(selectedBatch.excelData[0]).map((column) => (
-                            <th 
-                              key={column}
-                              className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
-                              onClick={() => handleBatchDetailSort(column)}
-                              data-testid={`sort-${column}`}
-                            >
-                              <div className="flex items-center gap-2">
-                                {column}
-                                <ArrowUpDown className="h-4 w-4" />
-                              </div>
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {sortedBatchDetails.map((row, idx) => (
-                          <tr key={idx} className="border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground bg-blue-50 dark:bg-blue-900/20 p-2 rounded">
+                      <ArrowUpDown className="h-4 w-4" />
+                      <span>
+                        Drag the scrollbar below the table or click and drag on the table to scroll horizontally and see all {Object.keys(selectedBatch.excelData[0]).length} columns
+                      </span>
+                    </div>
+                    <div className="overflow-x-scroll w-full border-2 border-blue-400 rounded-lg" style={{ scrollbarWidth: 'auto' }}>
+                      <table className="w-max border-collapse">
+                        <thead className="sticky top-0 z-10">
+                          <tr className="border-b border-gray-300">
                             {Object.keys(selectedBatch.excelData[0]).map((column) => (
-                              <td key={column} className="p-3 whitespace-nowrap">
-                                {row[column] || '-'}
-                              </td>
+                              <th 
+                                key={column}
+                                className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
+                                onClick={() => handleBatchDetailSort(column)}
+                                data-testid={`sort-${column}`}
+                              >
+                                <div className="flex items-center gap-2">
+                                  {column}
+                                  <ArrowUpDown className="h-4 w-4" />
+                                </div>
+                              </th>
                             ))}
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {sortedBatchDetails.map((row, idx) => (
+                            <tr key={idx} className="border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                              {Object.keys(selectedBatch.excelData[0]).map((column) => (
+                                <td key={column} className="p-3 whitespace-nowrap">
+                                  {row[column] || '-'}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                   <p className="text-sm text-muted-foreground mt-4">
-                    Showing {selectedBatch.excelData.length} records with {Object.keys(selectedBatch.excelData[0]).length} columns • Scroll right to see all columns →
+                    Showing {selectedBatch.excelData.length} records with {Object.keys(selectedBatch.excelData[0]).length} columns
                   </p>
                 </CardContent>
               </Card>
