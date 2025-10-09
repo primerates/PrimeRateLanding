@@ -84,8 +84,9 @@ export default function AdminAddComment() {
   const [insightCount, setInsightCount] = useState(0); // "I wish I had said that"
   const [eventsCount, setEventsCount] = useState(0); // "Policy", "Events", "Announcement"
   
-  // Notes state
-  const [allNotes, setAllNotes] = useState<any[]>([]);
+  // Notes state - always have a blank template note at index 0
+  const [blankNoteText, setBlankNoteText] = useState('');
+  const [pinnedNotes, setPinnedNotes] = useState<any[]>([]);
   const [editingNoteId, setEditingNoteId] = useState<number | null>(null);
   const [editingNoteText, setEditingNoteText] = useState('');
   const [minimizedNotes, setMinimizedNotes] = useState<Set<number>>(new Set());
@@ -145,13 +146,7 @@ export default function AdminAddComment() {
     // Load pinned notes
     const storedNotes = localStorage.getItem('pinnedNotes');
     if (storedNotes) {
-      const pinnedNotes = JSON.parse(storedNotes);
-      // Mark notes as pinned when loading
-      const notesWithPinnedStatus = pinnedNotes.map((note: any) => ({
-        ...note,
-        isPinned: true
-      }));
-      setAllNotes(notesWithPinnedStatus);
+      setPinnedNotes(JSON.parse(storedNotes));
     }
   }, []);
 
@@ -419,39 +414,31 @@ export default function AdminAddComment() {
     alert('Post republished and moved to dashboard!');
   };
 
-  const handleAddNote = () => {
+  const handlePinBlankNote = () => {
+    if (!blankNoteText.trim()) {
+      alert('Please write a note before pinning!');
+      return;
+    }
+    
+    // Create a new pinned note from blank note text
     const newNote = {
       id: Date.now(),
-      text: '',
-      isPinned: false,
+      text: blankNoteText,
       createdAt: new Date().toISOString()
     };
-    setAllNotes([...allNotes, newNote]);
+    
+    const updatedPinnedNotes = [...pinnedNotes, newNote];
+    setPinnedNotes(updatedPinnedNotes);
+    localStorage.setItem('pinnedNotes', JSON.stringify(updatedPinnedNotes));
+    
+    // Clear the blank note
+    setBlankNoteText('');
   };
 
-  const handleTogglePin = (id: number) => {
-    const note = allNotes.find(n => n.id === id);
-    if (!note) return;
-    
-    if (note.isPinned) {
-      // Unpinning - remove the note
-      const updatedNotes = allNotes.filter(n => n.id !== id);
-      setAllNotes(updatedNotes);
-      
-      // Update localStorage with only pinned notes
-      const pinnedNotes = updatedNotes.filter(n => n.isPinned);
-      localStorage.setItem('pinnedNotes', JSON.stringify(pinnedNotes));
-    } else {
-      // Pinning - mark as pinned
-      const updatedNotes = allNotes.map(n => 
-        n.id === id ? { ...n, isPinned: true } : n
-      );
-      setAllNotes(updatedNotes);
-      
-      // Update localStorage with only pinned notes
-      const pinnedNotes = updatedNotes.filter(n => n.isPinned);
-      localStorage.setItem('pinnedNotes', JSON.stringify(pinnedNotes));
-    }
+  const handleUnpinNote = (id: number) => {
+    const updatedNotes = pinnedNotes.filter(n => n.id !== id);
+    setPinnedNotes(updatedNotes);
+    localStorage.setItem('pinnedNotes', JSON.stringify(updatedNotes));
   };
 
   const handleEditNote = (id: number, text: string) => {
@@ -460,24 +447,21 @@ export default function AdminAddComment() {
   };
 
   const handleSaveNoteEdit = (id: number) => {
-    const updatedNotes = allNotes.map(note => 
+    const updatedNotes = pinnedNotes.map(note => 
       note.id === id ? { ...note, text: editingNoteText } : note
     );
-    setAllNotes(updatedNotes);
-    
-    // Update localStorage with only pinned notes
-    const pinnedNotes = updatedNotes.filter(n => n.isPinned);
-    localStorage.setItem('pinnedNotes', JSON.stringify(pinnedNotes));
+    setPinnedNotes(updatedNotes);
+    localStorage.setItem('pinnedNotes', JSON.stringify(updatedNotes));
     
     setEditingNoteId(null);
     setEditingNoteText('');
   };
 
   const handleNoteTextChange = (id: number, text: string) => {
-    const updatedNotes = allNotes.map(note => 
+    const updatedNotes = pinnedNotes.map(note => 
       note.id === id ? { ...note, text } : note
     );
-    setAllNotes(updatedNotes);
+    setPinnedNotes(updatedNotes);
   };
 
   const handleToggleMinimize = (id: number) => {
@@ -1546,7 +1530,76 @@ export default function AdminAddComment() {
               {/* Notes Display */}
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {allNotes.map((note) => {
+                  {/* Blank Template Note - Always First */}
+                  <Card 
+                    className="bg-yellow-100 dark:bg-yellow-900 border-yellow-300 dark:border-yellow-700 relative max-w-md"
+                    data-testid="card-blank-note"
+                  >
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                      <Pin className="h-6 w-6 text-red-500 rotate-45" />
+                    </div>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-lg flex items-center gap-2">
+                          <Pin className="h-5 w-5 text-yellow-700 dark:text-yellow-300" />
+                          Sticky Note
+                        </CardTitle>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleToggleMinimize(0)}
+                          className="h-6 w-6 p-0"
+                          data-testid="button-toggle-minimize-blank"
+                        >
+                          {minimizedNotes.has(0) ? (
+                            <Maximize2 className="h-4 w-4" />
+                          ) : (
+                            <Minimize2 className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    {!minimizedNotes.has(0) && (
+                      <CardContent className="space-y-4">
+                        <Textarea
+                          value={blankNoteText}
+                          onChange={(e) => setBlankNoteText(e.target.value)}
+                          placeholder="Type your note here..."
+                          className="min-h-[120px] bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700 resize-none"
+                          data-testid="textarea-blank-note"
+                        />
+                        <div className="grid grid-cols-3 gap-2">
+                          <Button
+                            variant="outline"
+                            disabled
+                            className="bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700 opacity-50"
+                            data-testid="button-edit-blank"
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            variant="outline"
+                            onClick={handlePinBlankNote}
+                            className="bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700"
+                            data-testid="button-pin-blank"
+                          >
+                            Pin
+                          </Button>
+                          <Button
+                            variant="outline"
+                            disabled
+                            className="bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700 opacity-50"
+                            data-testid="button-unpin-blank"
+                          >
+                            Unpin
+                          </Button>
+                        </div>
+                      </CardContent>
+                    )}
+                  </Card>
+
+                  {/* Pinned Notes */}
+                  {pinnedNotes.map((note) => {
                     const isMinimized = minimizedNotes.has(note.id);
                     return (
                       <Card 
@@ -1596,34 +1649,43 @@ export default function AdminAddComment() {
                                 data-testid={`textarea-note-${note.id}`}
                               />
                             )}
-                            <div className="flex gap-2">
+                            <div className="grid grid-cols-3 gap-2">
                               {editingNoteId === note.id ? (
                                 <Button
                                   onClick={() => handleSaveNoteEdit(note.id)}
-                                  className="flex-1"
+                                  className="col-span-3"
                                   data-testid={`button-save-note-${note.id}`}
                                 >
                                   Save
                                 </Button>
                               ) : (
-                                <Button
-                                  variant="outline"
-                                  onClick={() => handleEditNote(note.id, note.text)}
-                                  className="flex-1 bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700"
-                                  data-testid={`button-edit-note-${note.id}`}
-                                >
-                                  Edit
-                                </Button>
+                                <>
+                                  <Button
+                                    variant="outline"
+                                    onClick={() => handleEditNote(note.id, note.text)}
+                                    className="bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700"
+                                    data-testid={`button-edit-note-${note.id}`}
+                                  >
+                                    Edit
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    disabled
+                                    className="bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700 opacity-50"
+                                    data-testid={`button-pin-note-${note.id}`}
+                                  >
+                                    Pin
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    onClick={() => handleUnpinNote(note.id)}
+                                    className="bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700"
+                                    data-testid={`button-unpin-note-${note.id}`}
+                                  >
+                                    Unpin
+                                  </Button>
+                                </>
                               )}
-                              <Button
-                                variant="outline"
-                                onClick={() => handleTogglePin(note.id)}
-                                className="flex-1 bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700"
-                                data-testid={`button-pin-note-${note.id}`}
-                              >
-                                <Pin className="h-4 w-4 mr-1" />
-                                {note.isPinned ? 'Unpin' : 'Pin'}
-                              </Button>
                             </div>
                           </CardContent>
                         )}
@@ -1631,17 +1693,6 @@ export default function AdminAddComment() {
                     );
                   })}
                 </div>
-                
-                {/* Add Note Button */}
-                <Button 
-                  onClick={handleAddNote}
-                  variant="outline"
-                  className="w-full max-w-md"
-                  data-testid="button-add-note"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Note
-                </Button>
               </div>
             </TabsContent>
           </Tabs>

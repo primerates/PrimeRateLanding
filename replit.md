@@ -110,37 +110,40 @@ The Comments & Posts Management system (`/admin/add-comment`) provides a compreh
   - Future category additions should be deliberately mapped to appropriate counter
 
 ### Notes Tab
-- **Sticky Note Cards**: Yellow cards with editable textareas for creating notes
+- **Blank Template Note**: Always displayed first (leftmost) - ready for creating new notes
 - **Visual Design**: 
   - Yellow background (bg-yellow-100/dark:bg-yellow-900)
   - Red pin icon at top center (rotated 45 degrees)
   - "Sticky Note" header with yellow pin icon
   - Minimize/Expand button at top right corner
-  - Bottom buttons: "Edit" and "Pin/Unpin"
+  - Three buttons always visible: Edit, Pin, Unpin
 - **Minimize/Expand**: 
   - Click minimize icon (top right) to collapse note to header only
   - Click expand icon to restore note content
-- **Add Note**: 
-  - "Add Note" button at bottom creates new blank sticky note
-  - Multiple notes can be created and displayed in grid layout (1/2/3 columns responsive)
-- **Pin/Unpin System**:
-  - Notes start as unpinned
-  - Click "Pin" button to pin a note - text changes to "Unpin" and note persists
-  - Click "Unpin" to delete and remove the sticky note
-  - Only pinned notes are saved to localStorage
+- **Creating Notes**: 
+  - Type in the blank template note (always on the left)
+  - Click "Pin" button to save the note
+  - The pinned note moves to the right
+  - The blank template stays on the left, cleared and ready for the next note
+- **Button Behavior**:
+  - **Blank Note**: Only "Pin" button is active (Edit and Unpin are disabled)
+  - **Pinned Notes**: Only "Edit" and "Unpin" buttons are active (Pin is disabled)
 - **Edit Functionality**:
-  - Notes are directly editable in textarea (no separate edit mode needed)
-  - Click "Edit" button for explicit edit mode
+  - Notes are directly editable in textarea
+  - Click "Edit" button to enter edit mode
   - "Edit" button changes to "Save" button
   - Click "Save" to save changes
+- **Unpin System**:
+  - Click "Unpin" to delete and remove the sticky note completely
+  - Only pinned notes are saved to localStorage
 - **Data Persistence**:
   - Notes stored in localStorage key `'pinnedNotes'`
   - Only pinned notes persist across sessions
-  - Unpinned notes are temporary until pinned or deleted
+  - Blank template note never persists (always starts empty)
 
 ### Technical Implementation
 - **Data Storage**: Company posts stored in localStorage key `'postedCompanyPosts'`; Notes stored in `'pinnedNotes'`
-- **State Management**: Dedicated sorting state (`sortPostColumn`, `sortPostDirection`) and dialog state for posts; Notes use `allNotes`, `editingNoteId`, `editingNoteText`, and `minimizedNotes` state
+- **State Management**: Dedicated sorting state (`sortPostColumn`, `sortPostDirection`) and dialog state for posts; Notes use `blankNoteText`, `pinnedNotes`, `editingNoteId`, `editingNoteText`, and `minimizedNotes` state
 - **Index Mapping**: Sorted arrays use `findIndex()` to map back to original array indices for edit/delete operations
 - **Dashboard Display**: Only the most recent post (last in array) is displayed on AdminDashboard, not all posts
 - **Republish Feature**: "Publish" button in All Posts table updates post date to today, making it the most recent
