@@ -165,7 +165,7 @@ export default function AdminAddComment() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label className="text-lg font-semibold">Client Comments</Label>
+                  <Label className="text-lg font-semibold">Comments</Label>
                   <div className="min-h-[40px] flex items-center">
                     <div
                       className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
@@ -349,7 +349,7 @@ export default function AdminAddComment() {
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold">Preview</h3>
                     <Button data-testid="button-post-client-comment">
-                      Post
+                      Post Comment
                     </Button>
                   </div>
                   <Card>
