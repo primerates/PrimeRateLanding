@@ -548,7 +548,7 @@ export default function AdminAddComment() {
 
             {/* Card with Circular Indicators - Always Visible */}
             <Card>
-              <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
+              <CardContent className="grid grid-cols-1 md:grid-cols-5 gap-4 pt-6">
                 <div className="space-y-2">
                   <Label className="text-lg font-semibold">Last Comment</Label>
                   {lastCommentDate && (
@@ -609,7 +609,7 @@ export default function AdminAddComment() {
                 </div>
                 
                 <div className="space-y-2 flex flex-col items-center">
-                  <Label className="text-lg font-semibold">Library</Label>
+                  <Label className="text-lg font-semibold">Insight</Label>
                   <div className="min-h-[40px] flex items-center justify-center">
                     <div
                       className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center overflow-hidden"
@@ -623,11 +623,37 @@ export default function AdminAddComment() {
                         opacity: animateCircles ? 1 : 0,
                         transition: 'transform 0.6s ease-out 0.2s, opacity 0.6s ease-out 0.2s'
                       }}
-                      data-testid="circle-notes"
+                      data-testid="circle-insight"
                     >
                       <span style={{
                         transform: animateCircles ? 'translateY(0)' : 'translateY(-100px)',
                         transition: 'transform 0.6s ease-out 0.4s',
+                        display: 'block'
+                      }}>0</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-2 flex flex-col items-center">
+                  <Label className="text-lg font-semibold">Events</Label>
+                  <div className="min-h-[40px] flex items-center justify-center">
+                    <div
+                      className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center overflow-hidden"
+                      style={{
+                        fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                        fontSize: '36px',
+                        fontWeight: 600,
+                        backgroundColor: '#1a3373',
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
+                        transform: animateCircles ? 'translateY(0)' : 'translateY(100px)',
+                        opacity: animateCircles ? 1 : 0,
+                        transition: 'transform 0.6s ease-out 0.3s, opacity 0.6s ease-out 0.3s'
+                      }}
+                      data-testid="circle-events"
+                    >
+                      <span style={{
+                        transform: animateCircles ? 'translateY(0)' : 'translateY(-100px)',
+                        transition: 'transform 0.6s ease-out 0.5s',
                         display: 'block'
                       }}>0</span>
                     </div>
