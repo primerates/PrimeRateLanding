@@ -96,6 +96,18 @@ The Comments & Posts Management system (`/admin/add-comment`) provides a compreh
 - **Options**: Select, I wish I had said that, Policy, Events, Announcement
 - **Integration**: Category displayed in All Posts table and saved with post data
 
+### Category-Based Counting System
+- **Insight Circle**: Counts posts with category "I wish I had said that"
+- **Events Circle**: Counts posts with categories "Policy", "Events", or "Announcement"
+- **Implementation**: 
+  - `calculateCategoryCounts()` function updates counts from post array
+  - Counts updated on: initial load, post creation, post edit, post deletion
+  - State variables: `insightCount` and `eventsCount`
+- **Category-to-Counter Mapping**:
+  - "I wish I had said that" → Insight counter
+  - "Policy", "Events", "Announcement" → Events counter
+  - Future category additions should be deliberately mapped to appropriate counter
+
 ### Technical Implementation
 - **Data Storage**: Company posts stored in localStorage key `'postedCompanyPosts'`
 - **State Management**: Dedicated sorting state (`sortPostColumn`, `sortPostDirection`) and dialog state for posts
