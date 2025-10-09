@@ -147,17 +147,12 @@ export default function AdminAddComment() {
       postedAt: new Date().toISOString()
     };
     
-    console.log('Posting comment:', newComment);
-    console.log('City value:', clientCity);
-    console.log('State value:', clientState);
-    
     // Update posted comments
     const updatedComments = [...postedComments, newComment];
     setPostedComments(updatedComments);
     
     // Save to localStorage for homepage
     localStorage.setItem('postedTestimonials', JSON.stringify(updatedComments));
-    console.log('Saved to localStorage:', updatedComments);
     
     // Update last comment date
     setLastCommentDate(clientDate);
@@ -172,7 +167,7 @@ export default function AdminAddComment() {
     setUniqueStates(stateCount);
     
     // Show success message
-    alert(`Comment posted successfully!\nTotal: ${newTotal}, States: ${stateCount}, Date: ${clientDate}\n\nDEBUG:\nCity: "${clientCity}"\nState: "${clientState}"`);
+    alert(`Comment posted successfully!\nTotal: ${newTotal}, States: ${stateCount}, Date: ${clientDate}`);
     
     // Reset form
     setClientFirstName('');
