@@ -144,6 +144,72 @@ export default function AdminAddComment() {
 
         {/* Main Content */}
         <div className="container mx-auto px-6 py-8">
+          {/* Menu Bar with Circular Indicators - Above Tabs */}
+          <Card className="mb-6">
+            <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
+              <div className="space-y-2">
+                {/* Empty first column for spacing */}
+              </div>
+              
+              <div className="space-y-2">
+                <Label className="text-lg font-semibold">Client Comment</Label>
+                <div className="min-h-[40px] flex items-center">
+                  <div
+                    className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
+                    style={{
+                      fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                      fontSize: '36px',
+                      fontWeight: 600,
+                      backgroundColor: '#1a3373',
+                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+                    }}
+                    data-testid="circle-client-comment"
+                  >
+                    <span>0</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label className="text-lg font-semibold">Company Post</Label>
+                <div className="min-h-[40px] flex items-center">
+                  <div
+                    className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
+                    style={{
+                      fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                      fontSize: '36px',
+                      fontWeight: 600,
+                      backgroundColor: '#1a3373',
+                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+                    }}
+                    data-testid="circle-company-post"
+                  >
+                    <span>0</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label className="text-lg font-semibold">Note</Label>
+                <div className="min-h-[40px] flex items-center">
+                  <div
+                    className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
+                    style={{
+                      fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+                      fontSize: '36px',
+                      fontWeight: 600,
+                      backgroundColor: '#1a3373',
+                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+                    }}
+                    data-testid="circle-note"
+                  >
+                    <span>0</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           <Tabs defaultValue="client" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="client" data-testid="tab-client-comments">Client Comments</TabsTrigger>
