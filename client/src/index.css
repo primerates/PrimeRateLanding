@@ -139,6 +139,18 @@
   }
 }
 
+/* Comment box roll-down animation */
+@keyframes slideDownComment {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 @keyframes pulse-glow {
   0%, 100% { 
     filter: brightness(1) saturate(1) contrast(1);

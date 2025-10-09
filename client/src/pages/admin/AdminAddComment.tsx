@@ -62,16 +62,18 @@ export default function AdminAddComment() {
   // Preview state
   const [showPreview, setShowPreview] = useState(false);
 
-  // Animation state for circles - use counter to force animation reset
-  const [animationKey, setAnimationKey] = useState(0);
+  // Animation state for circles - only animate on mount
+  const [animateCircles, setAnimateCircles] = useState(false);
   
   // Active tab state
   const [activeTab, setActiveTab] = useState('client');
 
-  // Trigger animation when component mounts or tab changes
+  // Trigger circle animation only on mount
   useEffect(() => {
-    setAnimationKey(prev => prev + 1);
-  }, [activeTab]);
+    setAnimateCircles(false);
+    const timer = setTimeout(() => setAnimateCircles(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Sorting state for All Comments table
   const [sortColumn, setSortColumn] = useState<string>('');
@@ -185,7 +187,7 @@ export default function AdminAddComment() {
             </TabsList>
 
             {/* Card with Circular Indicators - Always Visible */}
-            <Card key={animationKey}>
+            <Card>
               <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
                 <div className="space-y-2">
                   <Label className="text-lg font-semibold">Last Comment</Label>
@@ -202,12 +204,15 @@ export default function AdminAddComment() {
                         fontWeight: 600,
                         backgroundColor: '#1a3373',
                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
-                        animation: 'slideUpCircle 0.6s ease-out forwards'
+                        transform: animateCircles ? 'translateY(0)' : 'translateY(100px)',
+                        opacity: animateCircles ? 1 : 0,
+                        transition: 'transform 0.6s ease-out, opacity 0.6s ease-out'
                       }}
                       data-testid="circle-client-comment"
                     >
                       <span style={{
-                        animation: 'slideDownNumber 0.6s ease-out 0.2s forwards',
+                        transform: animateCircles ? 'translateY(0)' : 'translateY(-100px)',
+                        transition: 'transform 0.6s ease-out 0.2s',
                         display: 'block'
                       }}>0</span>
                     </div>
@@ -225,12 +230,15 @@ export default function AdminAddComment() {
                         fontWeight: 600,
                         backgroundColor: '#1a3373',
                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
-                        animation: 'slideUpCircle 0.6s ease-out 0.1s forwards'
+                        transform: animateCircles ? 'translateY(0)' : 'translateY(100px)',
+                        opacity: animateCircles ? 1 : 0,
+                        transition: 'transform 0.6s ease-out 0.1s, opacity 0.6s ease-out 0.1s'
                       }}
                       data-testid="circle-company-post"
                     >
                       <span style={{
-                        animation: 'slideDownNumber 0.6s ease-out 0.3s forwards',
+                        transform: animateCircles ? 'translateY(0)' : 'translateY(-100px)',
+                        transition: 'transform 0.6s ease-out 0.3s',
                         display: 'block'
                       }}>0</span>
                     </div>
@@ -248,12 +256,15 @@ export default function AdminAddComment() {
                         fontWeight: 600,
                         backgroundColor: '#1a3373',
                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
-                        animation: 'slideUpCircle 0.6s ease-out 0.2s forwards'
+                        transform: animateCircles ? 'translateY(0)' : 'translateY(100px)',
+                        opacity: animateCircles ? 1 : 0,
+                        transition: 'transform 0.6s ease-out 0.2s, opacity 0.6s ease-out 0.2s'
                       }}
                       data-testid="circle-notes"
                     >
                       <span style={{
-                        animation: 'slideDownNumber 0.6s ease-out 0.4s forwards',
+                        transform: animateCircles ? 'translateY(0)' : 'translateY(-100px)',
+                        transition: 'transform 0.6s ease-out 0.4s',
                         display: 'block'
                       }}>0</span>
                     </div>
@@ -374,7 +385,13 @@ export default function AdminAddComment() {
                   </div>
 
                   {/* Comment Text - Wrapped in Grey Card */}
-                  <Card className="bg-gray-50 border-gray-200">
+                  <Card 
+                    key={`client-${activeTab}`} 
+                    className="bg-gray-50 border-gray-200"
+                    style={{
+                      animation: activeTab === 'client' ? 'slideDownComment 0.5s ease-out' : 'none'
+                    }}
+                  >
                     <CardContent className="pt-6">
                       <div className="space-y-2">
                         <Label htmlFor="client-comment">Client Comment</Label>
@@ -598,7 +615,13 @@ export default function AdminAddComment() {
                   </div>
 
                   {/* Comment Section with Font Controls - Wrapped in Grey Card */}
-                  <Card className="bg-gray-50 border-gray-200">
+                  <Card 
+                    key={`post-${activeTab}`}
+                    className="bg-gray-50 border-gray-200"
+                    style={{
+                      animation: activeTab === 'company-post' ? 'slideDownComment 0.5s ease-out' : 'none'
+                    }}
+                  >
                     <CardContent className="pt-6 space-y-4">
                       {/* Font Controls */}
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
