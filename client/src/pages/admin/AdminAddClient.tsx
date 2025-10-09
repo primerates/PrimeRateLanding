@@ -15394,7 +15394,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                                       size="sm"
                                       onClick={() => {
                                         // Add your button functionality here
-                                        console.log('Home Purchase button clicked');
+                                        
                                       }}
                                       style={(() => {
                                         const properties = form.watch('property.properties') || [];
@@ -16158,7 +16158,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                                       size="sm"
                                       onClick={() => {
                                         // Add your button functionality here
-                                        console.log('New button clicked');
+                                        
                                       }}
                                       style={(() => {
                                         const properties = form.watch('property.properties') || [];
@@ -16969,7 +16969,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                                       size="sm"
                                       onClick={() => {
                                         // Add your button functionality here
-                                        console.log('Second Home Loans button clicked');
+                                        
                                       }}
                                       style={(() => {
                                         const currentProperty = property;
@@ -17783,7 +17783,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                                       size="sm"
                                       onClick={() => {
                                         // Add your button functionality here
-                                        console.log('Investment Property Loans button clicked');
+                                        
                                       }}
                                       style={(() => {
                                         const currentProperty = property;
@@ -18593,7 +18593,7 @@ const calculatedNewFhaMipCost = useMemo(() => {
                                       size="sm"
                                       onClick={() => {
                                         // Add your button functionality here
-                                        console.log('Home Purchase Loans button clicked');
+                                        
                                       }}
                                       style={(() => {
                                         const currentProperty = property;
