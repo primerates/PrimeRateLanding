@@ -18,7 +18,9 @@ import {
   UserCheck,
   Handshake,
   Monitor,
-  Settings
+  Settings,
+  CheckCircle,
+  FolderOpen
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
@@ -116,17 +118,20 @@ export default function AdminDashboard() {
   }, []);
 
   const menuItems = [
-    // Line 1
+    // Row 1
+    { id: 'funded', label: 'Funded', icon: CheckCircle, path: '/admin/funded' },
     { id: 'pipeline', label: 'Loan', icon: LayoutDashboard, path: '/admin/pipeline' },
     { id: 'loan-prep', label: 'Loan Prep', icon: FileText, path: '/admin/loan-prep' },
     { id: 'quotes', label: 'Quote', icon: Calculator, path: '/admin/quotes' },
     { id: 'stats', label: 'Lead', icon: UserPlus, path: '/admin/add-client' },
+    // Row 2
     { id: 'search', label: 'Marketing', icon: Search, path: '/admin/search' },
-    // Line 2
-    { id: 'settings', label: 'Settings', icon: Settings, path: '/admin/settings' },
-    { id: 'add-comment', label: 'Comments', icon: MessageSquare, path: '/admin/add-comment' },
-    { id: 'add-staff', label: 'Staff', icon: UserCheck, path: '/admin/add-staff' },
+    { id: 'reports', label: 'Reports', icon: BarChart3, path: '/admin/reports' },
+    { id: 'library', label: 'Library', icon: FolderOpen, path: '/admin/library' },
+    { id: 'settings', label: 'Settings', icon: Settings, path: '/admin/add-comment' },
+    // Row 3
     { id: 'add-vendor', label: 'Vendors', icon: Building2, path: '/admin/add-vendor' },
+    { id: 'add-staff', label: 'Staff', icon: UserCheck, path: '/admin/add-staff' },
     { id: 'add-partner', label: 'Partners', icon: Handshake, path: '/admin/add-partner' },
   ];
 
@@ -146,20 +151,26 @@ export default function AdminDashboard() {
   };
 
   const handleMenuClick = (path: string) => {
-    if (path === '/admin/settings') {
+    if (path === '/admin/funded' || path === '/admin/reports' || path === '/admin/library') {
       toast({
         title: "Coming Soon",
-        description: "Settings page is under development.",
+        description: "This page is under development.",
       });
       return;
     }
     setLocation(path);
   };
 
-  const getTileHoverClass = (itemId: string, isSecondRow: boolean = false) => {
-    const baseHoverClass = isSecondRow 
-      ? 'border-l-4 border-l-blue-500 hover:border-blue-500'
-      : 'border-l-4 border-l-green-500 hover:border-green-500';
+  const getTileHoverClass = (itemId: string, rowNumber: number = 1) => {
+    let baseHoverClass = '';
+    
+    if (rowNumber === 1) {
+      baseHoverClass = 'border-l-4 border-l-green-500 hover:border-green-500';
+    } else if (rowNumber === 2) {
+      baseHoverClass = 'border-l-4 border-l-blue-500 hover:border-blue-500';
+    } else if (rowNumber === 3) {
+      baseHoverClass = 'border-l-4 border-l-purple-500 hover:border-purple-500';
+    }
     
     // Add shadow effects to all tiles
     return `${baseHoverClass} hover:shadow-lg hover:shadow-primary/20`;
@@ -392,7 +403,7 @@ export default function AdminDashboard() {
             return (
               <Card 
                 key={item.id}
-                className={`cursor-pointer transition-all duration-500 ${getTileHoverClass(item.id, false)} group ${
+                className={`cursor-pointer transition-all duration-500 ${getTileHoverClass(item.id, 1)} group ${
                   isLoaded 
                     ? 'transform scale-x-100 opacity-100' 
                     : 'transform scale-x-0 opacity-0'
@@ -417,12 +428,12 @@ export default function AdminDashboard() {
 
         {/* Menu Grid - Second Row with extra spacing */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-16">
-          {menuItems.slice(5).map((item, index) => {
+          {menuItems.slice(5, 9).map((item, index) => {
             const Icon = item.icon;
             return (
               <Card 
                 key={item.id}
-                className={`cursor-pointer transition-all duration-500 ${getTileHoverClass(item.id, true)} group ${
+                className={`cursor-pointer transition-all duration-500 ${getTileHoverClass(item.id, 2)} group ${
                   isLoaded 
                     ? 'transform scale-x-100 opacity-100' 
                     : 'transform scale-x-0 opacity-0'
@@ -430,6 +441,36 @@ export default function AdminDashboard() {
                 style={{
                   transformOrigin: 'left',
                   transitionDelay: `${1250 + (index * 150)}ms`
+                }}
+                onClick={() => handleMenuClick(item.path)}
+                data-testid={`card-admin-${item.id}`}
+              >
+                <CardHeader className="text-center pb-8 pt-8">
+                  <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-6">
+                    <Icon className="h-6 w-6 text-primary transition-transform duration-300 group-hover:rotate-[360deg]" />
+                  </div>
+                  <CardTitle className="text-lg">{item.label}</CardTitle>
+                </CardHeader>
+              </Card>
+            );
+          })}
+        </div>
+
+        {/* Menu Grid - Third Row with extra spacing */}
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-16">
+          {menuItems.slice(9).map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <Card 
+                key={item.id}
+                className={`cursor-pointer transition-all duration-500 ${getTileHoverClass(item.id, 3)} group ${
+                  isLoaded 
+                    ? 'transform scale-x-100 opacity-100' 
+                    : 'transform scale-x-0 opacity-0'
+                } bg-gradient-to-br from-card to-card/80`}
+                style={{
+                  transformOrigin: 'left',
+                  transitionDelay: `${1850 + (index * 150)}ms`
                 }}
                 onClick={() => handleMenuClick(item.path)}
                 data-testid={`card-admin-${item.id}`}
