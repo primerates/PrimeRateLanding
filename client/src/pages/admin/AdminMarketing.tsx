@@ -790,7 +790,7 @@ export default function AdminMarketing() {
             </Card>
 
             {/* Second Card - Batch Details (shows when batch is selected) */}
-            {selectedBatch && (
+            {selectedBatch && selectedBatch.excelData.length > 0 && (
               <Card className="mt-6">
                 <CardHeader>
                   <CardTitle>
@@ -798,55 +798,40 @@ export default function AdminMarketing() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="overflow-x-auto">
+                  <div className="overflow-x-auto border rounded-lg">
                     <table className="w-full border-collapse">
-                      <thead>
+                      <thead className="sticky top-0 z-10">
                         <tr className="border-b border-gray-300">
-                          <th 
-                            className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                            onClick={() => handleBatchDetailSort('referenceNumber')}
-                            data-testid="sort-reference"
-                          >
-                            <div className="flex items-center gap-2">
-                              Reference Number
-                              <ArrowUpDown className="h-4 w-4" />
-                            </div>
-                          </th>
-                          <th 
-                            className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                            onClick={() => handleBatchDetailSort('clientName')}
-                            data-testid="sort-client-name"
-                          >
-                            <div className="flex items-center gap-2">
-                              Client Name
-                              <ArrowUpDown className="h-4 w-4" />
-                            </div>
-                          </th>
-                          <th 
-                            className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                            onClick={() => handleBatchDetailSort('address')}
-                            data-testid="sort-address"
-                          >
-                            <div className="flex items-center gap-2">
-                              Address
-                              <ArrowUpDown className="h-4 w-4" />
-                            </div>
-                          </th>
+                          {Object.keys(selectedBatch.excelData[0]).map((column) => (
+                            <th 
+                              key={column}
+                              className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
+                              onClick={() => handleBatchDetailSort(column)}
+                              data-testid={`sort-${column}`}
+                            >
+                              <div className="flex items-center gap-2">
+                                {column}
+                                <ArrowUpDown className="h-4 w-4" />
+                              </div>
+                            </th>
+                          ))}
                         </tr>
                       </thead>
                       <tbody>
                         {sortedBatchDetails.map((row, idx) => (
                           <tr key={idx} className="border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                            <td className="p-3">{row.referenceNumber}</td>
-                            <td className="p-3">{row.clientName}</td>
-                            <td className="p-3">{row.address}</td>
+                            {Object.keys(selectedBatch.excelData[0]).map((column) => (
+                              <td key={column} className="p-3 whitespace-nowrap">
+                                {row[column] || '-'}
+                              </td>
+                            ))}
                           </tr>
                         ))}
                       </tbody>
                     </table>
                   </div>
                   <p className="text-sm text-muted-foreground mt-4">
-                    Showing {selectedBatch.excelData.length} records
+                    Showing {selectedBatch.excelData.length} records with {Object.keys(selectedBatch.excelData[0]).length} columns
                   </p>
                 </CardContent>
               </Card>
