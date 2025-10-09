@@ -64,12 +64,15 @@ export default function AdminAddComment() {
 
   // Animation state for circles
   const [animateCircles, setAnimateCircles] = useState(false);
+  
+  // Active tab state
+  const [activeTab, setActiveTab] = useState('client');
 
   // Trigger animation when component mounts or tab changes
   useEffect(() => {
     setAnimateCircles(false);
     setTimeout(() => setAnimateCircles(true), 100);
-  }, []);
+  }, [activeTab]);
 
   // Sorting state for All Comments table
   const [sortColumn, setSortColumn] = useState<string>('');
@@ -172,7 +175,7 @@ export default function AdminAddComment() {
 
         {/* Main Content */}
         <div className="container mx-auto px-6 py-8">
-          <Tabs defaultValue="client" className="space-y-6">
+          <Tabs defaultValue="client" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             {/* Tab Menu Bar - Matching Lead Tile Style */}
             <TabsList className="grid w-full grid-cols-5 bg-transparent h-auto p-0 relative border-b border-gray-200 group">
               <TabsTrigger value="client" data-testid="tab-client-comment" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Client Comment</TabsTrigger>
@@ -495,16 +498,6 @@ export default function AdminAddComment() {
                           </th>
                           <th 
                             className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
-                            onClick={() => handleSort('loanPurpose')}
-                            data-testid="header-loan-purpose"
-                          >
-                            <div className="flex items-center gap-2">
-                              Loan Purpose
-                              <ArrowUpDown className="h-4 w-4" />
-                            </div>
-                          </th>
-                          <th 
-                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
                             onClick={() => handleSort('city')}
                             data-testid="header-city"
                           >
@@ -515,21 +508,21 @@ export default function AdminAddComment() {
                           </th>
                           <th 
                             className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
-                            onClick={() => handleSort('source')}
-                            data-testid="header-source"
-                          >
-                            <div className="flex items-center gap-2">
-                              Source
-                              <ArrowUpDown className="h-4 w-4" />
-                            </div>
-                          </th>
-                          <th 
-                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
                             onClick={() => handleSort('state')}
                             data-testid="header-state"
                           >
                             <div className="flex items-center gap-2">
                               State
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            onClick={() => handleSort('source')}
+                            data-testid="header-source"
+                          >
+                            <div className="flex items-center gap-2">
+                              Source
                               <ArrowUpDown className="h-4 w-4" />
                             </div>
                           </th>
@@ -560,7 +553,7 @@ export default function AdminAddComment() {
                       <tbody>
                         {/* Empty state - no data rows yet */}
                         <tr>
-                          <td colSpan={9} className="text-center py-8 text-muted-foreground">
+                          <td colSpan={8} className="text-center py-8 text-muted-foreground">
                             No comments to display
                           </td>
                         </tr>
