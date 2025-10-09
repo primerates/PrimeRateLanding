@@ -45,14 +45,16 @@ export default function AdminAddComment() {
   const [clientDate, setClientDate] = useState('');
   const [clientComment, setClientComment] = useState('');
 
-  // Internal message state
-  const [messageTitle, setMessageTitle] = useState('');
-  const [messageCategory, setMessageCategory] = useState('');
-  const [messagePriority, setMessagePriority] = useState('');
-  const [messageStatus, setMessageStatus] = useState('');
-  const [messageStartDate, setMessageStartDate] = useState('');
-  const [messageEndDate, setMessageEndDate] = useState('');
-  const [messageContent, setMessageContent] = useState('');
+  // Internal message state (Insight)
+  const [postBy, setPostBy] = useState('Admin');
+  const [postAuthor, setPostAuthor] = useState('');
+  const [insightDate, setInsightDate] = useState('');
+  const [insightComment, setInsightComment] = useState('');
+  
+  // Font control states
+  const [fontSize, setFontSize] = useState('');
+  const [fontType, setFontType] = useState('');
+  const [colorTheme, setColorTheme] = useState('');
 
   const handleScreenshare = () => {
     setScreenshareLoading(true);
@@ -276,111 +278,115 @@ export default function AdminAddComment() {
               </Card>
             </TabsContent>
 
-            {/* Internal Messages Tab */}
+            {/* Insight Tab */}
             <TabsContent value="internal">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
-                  <CardTitle>Internal Message</CardTitle>
+                  <CardTitle>Insight</CardTitle>
                   <Button 
                     variant="outline" 
                     size="sm"
-                    data-testid="button-add-internal-message"
+                    data-testid="button-add-insight"
                   >
                     <Plus className="h-4 w-4 mr-2" />
-                    Add New Message
+                    Add New Insight
                   </Button>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {/* First Row */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="message-title">Message Title</Label>
+                      <Label htmlFor="post-by">Post by</Label>
+                      <Select value={postBy} onValueChange={setPostBy}>
+                        <SelectTrigger id="post-by" data-testid="select-post-by">
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Select">Select</SelectItem>
+                          <SelectItem value="Admin">Admin</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="post-author">Post Author</Label>
                       <Input 
-                        id="message-title" 
-                        value={messageTitle}
-                        onChange={(e) => setMessageTitle(e.target.value)}
-                        data-testid="input-message-title"
+                        id="post-author" 
+                        value={postAuthor}
+                        onChange={(e) => setPostAuthor(e.target.value)}
+                        data-testid="input-post-author"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="message-category">Category</Label>
-                      <Select value={messageCategory} onValueChange={setMessageCategory}>
-                        <SelectTrigger id="message-category" data-testid="select-message-category">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="motivation">Motivation</SelectItem>
-                          <SelectItem value="announcement">Announcement</SelectItem>
-                          <SelectItem value="update">Company Update</SelectItem>
-                          <SelectItem value="reminder">Reminder</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="message-priority">Priority</Label>
-                      <Select value={messagePriority} onValueChange={setMessagePriority}>
-                        <SelectTrigger id="message-priority" data-testid="select-message-priority">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="high">High</SelectItem>
-                          <SelectItem value="medium">Medium</SelectItem>
-                          <SelectItem value="low">Low</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  {/* Second Row */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="message-status">Status</Label>
-                      <Select value={messageStatus} onValueChange={setMessageStatus}>
-                        <SelectTrigger id="message-status" data-testid="select-message-status">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="active">Active</SelectItem>
-                          <SelectItem value="draft">Draft</SelectItem>
-                          <SelectItem value="archived">Archived</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="message-start-date">Start Date</Label>
+                      <Label htmlFor="insight-date">Date</Label>
                       <Input 
-                        id="message-start-date" 
-                        value={messageStartDate}
-                        onChange={(e) => handleDateChange(e.target.value, setMessageStartDate)}
+                        id="insight-date" 
+                        value={insightDate}
+                        onChange={(e) => handleDateChange(e.target.value, setInsightDate)}
                         placeholder="MM/DD/YYYY"
                         maxLength={10}
-                        data-testid="input-message-start-date"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="message-end-date">End Date</Label>
-                      <Input 
-                        id="message-end-date" 
-                        value={messageEndDate}
-                        onChange={(e) => handleDateChange(e.target.value, setMessageEndDate)}
-                        placeholder="MM/DD/YYYY"
-                        maxLength={10}
-                        data-testid="input-message-end-date"
+                        data-testid="input-insight-date"
                       />
                     </div>
                   </div>
 
-                  {/* Message Text - Wrapped in Grey Card */}
+                  {/* Comment Section with Font Controls - Wrapped in Grey Card */}
                   <Card className="bg-gray-50 border-gray-200">
-                    <CardContent className="pt-6">
+                    <CardContent className="pt-6 space-y-4">
+                      {/* Font Controls */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="font-size">Font Size</Label>
+                          <Select value={fontSize} onValueChange={setFontSize}>
+                            <SelectTrigger id="font-size" data-testid="select-font-size">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="small">Small</SelectItem>
+                              <SelectItem value="medium">Medium</SelectItem>
+                              <SelectItem value="large">Large</SelectItem>
+                              <SelectItem value="xlarge">Extra Large</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="font-type">Font Type</Label>
+                          <Select value={fontType} onValueChange={setFontType}>
+                            <SelectTrigger id="font-type" data-testid="select-font-type">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="sans">Sans Serif</SelectItem>
+                              <SelectItem value="serif">Serif</SelectItem>
+                              <SelectItem value="mono">Monospace</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="color-theme">Color Theme</Label>
+                          <Select value={colorTheme} onValueChange={setColorTheme}>
+                            <SelectTrigger id="color-theme" data-testid="select-color-theme">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="default">Default</SelectItem>
+                              <SelectItem value="blue">Blue</SelectItem>
+                              <SelectItem value="green">Green</SelectItem>
+                              <SelectItem value="purple">Purple</SelectItem>
+                              <SelectItem value="orange">Orange</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      {/* Comment Textarea */}
                       <div className="space-y-2">
-                        <Label htmlFor="message-content">Message Content</Label>
+                        <Label htmlFor="insight-comment">Comment</Label>
                         <Textarea 
-                          id="message-content"
+                          id="insight-comment"
                           className="min-h-[150px] bg-background"
-                          value={messageContent}
-                          onChange={(e) => setMessageContent(e.target.value)}
-                          data-testid="textarea-message-content"
+                          value={insightComment}
+                          onChange={(e) => setInsightComment(e.target.value)}
+                          data-testid="textarea-insight-comment"
                         />
                       </div>
                     </CardContent>
@@ -390,14 +396,14 @@ export default function AdminAddComment() {
                   <div className="flex justify-end gap-3 pt-4">
                     <Button 
                       variant="outline"
-                      data-testid="button-cancel-internal-message"
+                      data-testid="button-cancel-insight"
                     >
                       Cancel
                     </Button>
                     <Button 
-                      data-testid="button-save-internal-message"
+                      data-testid="button-post-insight"
                     >
-                      Save Message
+                      Post
                     </Button>
                   </div>
                 </CardContent>
