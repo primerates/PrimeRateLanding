@@ -125,7 +125,7 @@ export default function AdminDashboard() {
     { id: 'quotes', label: 'Quote', icon: Calculator, path: '/admin/quotes' },
     { id: 'stats', label: 'Lead', icon: UserPlus, path: '/admin/add-client' },
     // Row 2
-    { id: 'search', label: 'Marketing', icon: Search, path: '/admin/search' },
+    { id: 'search', label: 'Marketing', icon: Search, path: '/admin/marketing' },
     { id: 'reports', label: 'Reports', icon: BarChart3, path: '/admin/reports' },
     { id: 'library', label: 'Library', icon: FolderOpen, path: '/admin/library' },
     { id: 'settings', label: 'Settings', icon: Settings, path: '/admin/add-comment' },
