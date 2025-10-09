@@ -1009,6 +1009,16 @@ export default function AdminMarketing() {
                           background-color: #152a5e;
                         }
                         #top-scrollbar::-webkit-scrollbar-button {
+                          width: 0;
+                          height: 0;
+                          display: none;
+                        }
+                        #top-scrollbar::-webkit-scrollbar-button:start:decrement,
+                        #top-scrollbar::-webkit-scrollbar-button:end:increment {
+                          display: none;
+                        }
+                        #top-scrollbar::-webkit-scrollbar-corner {
+                          background: transparent;
                           display: none;
                         }
                       `}</style>
