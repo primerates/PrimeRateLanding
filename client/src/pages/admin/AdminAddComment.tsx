@@ -81,6 +81,28 @@ export default function AdminAddComment() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Load existing testimonials from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem('postedTestimonials');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      setPostedComments(parsed);
+      
+      // Update statistics
+      setTotalComments(parsed.length);
+      
+      // Get last comment date
+      if (parsed.length > 0) {
+        const lastComment = parsed[parsed.length - 1];
+        setLastCommentDate(lastComment.date || '');
+      }
+      
+      // Calculate unique states
+      const states = new Set(parsed.map((c: any) => c.state).filter((s: string) => s));
+      setUniqueStates(states.size);
+    }
+  }, []);
+
   // Sorting state for All Comments table
   const [sortColumn, setSortColumn] = useState<string>('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
@@ -125,25 +147,23 @@ export default function AdminAddComment() {
       postedAt: new Date().toISOString()
     };
     
-    console.log('Posting comment:', newComment);
-    
     // Update posted comments
     const updatedComments = [...postedComments, newComment];
     setPostedComments(updatedComments);
     
+    // Save to localStorage for homepage
+    localStorage.setItem('postedTestimonials', JSON.stringify(updatedComments));
+    
     // Update last comment date
-    console.log('Setting last comment date:', clientDate);
     setLastCommentDate(clientDate);
     
     // Update total comments
     const newTotal = updatedComments.length;
-    console.log('Setting total comments:', newTotal);
     setTotalComments(newTotal);
     
     // Calculate unique states
     const states = new Set(updatedComments.map(c => c.state).filter(s => s));
     const stateCount = states.size;
-    console.log('Setting unique states:', stateCount, 'States:', Array.from(states));
     setUniqueStates(stateCount);
     
     // Show success message

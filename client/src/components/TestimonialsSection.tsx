@@ -1,53 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
 
-// todo: remove mock functionality - replace with real testimonials
-const testimonials = [
-  {
-    name: 'Sarah Johnson',
-    location: 'Austin, TX',
-    rating: 5,
-    text: 'Prime Rate Home Loans made our first home purchase seamless. Their team guided us through every step and secured us an amazing rate!'
-  },
-  {
-    name: 'Michael Chen',
-    location: 'Denver, CO', 
-    rating: 5,
-    text: 'Refinanced with Prime Rate and saved $400/month. Professional service and incredibly fast closing process.'
-  },
-  {
-    name: 'Jennifer Martinez',
-    location: 'Phoenix, AZ',
-    rating: 5,
-    text: 'As a first-time homebuyer, I was nervous about the process. Prime Rate made everything clear and got me into my dream home with an incredible rate!'
-  },
-  {
-    name: 'David Thompson',
-    location: 'Seattle, WA',
-    rating: 5,
-    text: 'Exceptional service from start to finish. They worked with my complex financial situation and found the perfect loan solution for my family.'
-  },
-  {
-    name: 'Lisa Rodriguez',
-    location: 'Miami, FL',
-    rating: 5,
-    text: 'Prime Rate helped us refinance and consolidate debt. We now save over $600 monthly and couldn\'t be happier with their expertise.'
-  },
-  {
-    name: 'Robert Kim',
-    location: 'Portland, OR',
-    rating: 5,
-    text: 'Their VA loan program made homeownership possible for our military family. Outstanding support and competitive rates throughout the process.'
-  }
-];
-
 export default function TestimonialsSection() {
+  const [testimonials, setTestimonials] = useState<any[]>([]);
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
   const testimonialsPerPage = 2;
-  const maxIndex = Math.ceil(testimonials.length / testimonialsPerPage) - 1;
+  
+  // Load testimonials from localStorage
+  useEffect(() => {
+    const loadTestimonials = () => {
+      const stored = localStorage.getItem('postedTestimonials');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        // Transform data to match display format
+        const formatted = parsed.map((t: any) => ({
+          name: `${t.firstName} ${t.lastName}`,
+          location: t.city && t.state ? `${t.city}, ${t.state}` : t.state || t.city || 'Location not specified',
+          rating: parseInt(t.rating) || 5,
+          text: t.comment
+        }));
+        setTestimonials(formatted);
+      }
+    };
+    
+    loadTestimonials();
+    
+    // Listen for storage changes (when new testimonials are posted)
+    window.addEventListener('storage', loadTestimonials);
+    return () => window.removeEventListener('storage', loadTestimonials);
+  }, []);
+  
+  const maxIndex = testimonials.length > 0 ? Math.ceil(testimonials.length / testimonialsPerPage) - 1 : 0;
 
   const nextTestimonials = () => {
     setCurrentTestimonialIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
@@ -71,88 +57,98 @@ export default function TestimonialsSection() {
             What Our Clients Say
           </h2>
           
-          {/* Navigation Arrows - centered below heading */}
-          <div className="flex justify-center items-center gap-4 mb-8">
-            <Button
-              variant="outline"
-              size="icon"
-              className="bg-white shadow-md hover-elevate"
-              onClick={prevTestimonials}
-              data-testid="button-prev-testimonials"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            
-            <Button
-              variant="outline"
-              size="icon"
-              className="bg-white shadow-md hover-elevate"
-              onClick={nextTestimonials}
-              data-testid="button-next-testimonials"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
-
-          <div className="relative">
-            {/* Testimonials Container */}
-            <div className="px-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {currentTestimonials.map((testimonial, index) => (
-                  <Card 
-                    key={`${currentTestimonialIndex}-${index}`}
-                    className="hover-elevate"
-                    data-testid={`card-testimonial-${currentTestimonialIndex * testimonialsPerPage + index}`}
-                  >
-                    <CardContent className="p-6">
-                      <div className="flex items-center mb-4">
-                        <div className="flex items-center mr-4">
-                          {[...Array(testimonial.rating)].map((_, i) => (
-                            <Star key={i} className="w-4 h-4 fill-warning text-warning" />
-                          ))}
-                        </div>
-                        <Badge variant="secondary" data-testid={`badge-testimonial-rating-${currentTestimonialIndex * testimonialsPerPage + index}`}>
-                          {testimonial.rating} stars
-                        </Badge>
-                      </div>
-                      <p className="text-muted-foreground mb-4 italic" data-testid={`text-testimonial-content-${currentTestimonialIndex * testimonialsPerPage + index}`}>
-                        "{testimonial.text}"
-                      </p>
-                      <div className="flex items-center">
-                        <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
-                          <span className="text-primary font-semibold">
-                            {testimonial.name.split(' ').map(n => n[0]).join('')}
-                          </span>
-                        </div>
-                        <div>
-                          <div className="font-semibold" data-testid={`text-testimonial-name-${currentTestimonialIndex * testimonialsPerPage + index}`}>
-                            {testimonial.name}
-                          </div>
-                          <div className="text-sm text-muted-foreground" data-testid={`text-testimonial-location-${currentTestimonialIndex * testimonialsPerPage + index}`}>
-                            {testimonial.location}
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+          {testimonials.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground text-lg" data-testid="text-no-testimonials">
+                No testimonials yet. Check back soon!
+              </p>
+            </div>
+          ) : (
+            <>
+              {/* Navigation Arrows - centered below heading */}
+              <div className="flex justify-center items-center gap-4 mb-8">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="bg-white shadow-md hover-elevate"
+                  onClick={prevTestimonials}
+                  data-testid="button-prev-testimonials"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="bg-white shadow-md hover-elevate"
+                  onClick={nextTestimonials}
+                  data-testid="button-next-testimonials"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
               </div>
-            </div>
 
-            {/* Pagination Dots */}
-            <div className="flex justify-center mt-6 space-x-2">
-              {[...Array(maxIndex + 1)].map((_, index) => (
-                <button
-                  key={index}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    index === currentTestimonialIndex ? 'bg-primary' : 'bg-muted'
-                  }`}
-                  onClick={() => setCurrentTestimonialIndex(index)}
-                  data-testid={`button-testimonial-dot-${index}`}
-                />
-              ))}
-            </div>
-          </div>
+              <div className="relative">
+                {/* Testimonials Container */}
+                <div className="px-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {currentTestimonials.map((testimonial, index) => (
+                      <Card 
+                        key={`${currentTestimonialIndex}-${index}`}
+                        className="hover-elevate"
+                        data-testid={`card-testimonial-${currentTestimonialIndex * testimonialsPerPage + index}`}
+                      >
+                        <CardContent className="p-6">
+                          <div className="flex items-center mb-4">
+                            <div className="flex items-center mr-4">
+                              {[...Array(testimonial.rating)].map((_, i) => (
+                                <Star key={i} className="w-4 h-4 fill-warning text-warning" />
+                              ))}
+                            </div>
+                            <Badge variant="secondary" data-testid={`badge-testimonial-rating-${currentTestimonialIndex * testimonialsPerPage + index}`}>
+                              {testimonial.rating} stars
+                            </Badge>
+                          </div>
+                          <p className="text-muted-foreground mb-4 italic" data-testid={`text-testimonial-content-${currentTestimonialIndex * testimonialsPerPage + index}`}>
+                            "{testimonial.text}"
+                          </p>
+                          <div className="flex items-center">
+                            <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                              <span className="text-primary font-semibold">
+                                {testimonial.name.split(' ').map(n => n[0]).join('')}
+                              </span>
+                            </div>
+                            <div>
+                              <div className="font-semibold" data-testid={`text-testimonial-name-${currentTestimonialIndex * testimonialsPerPage + index}`}>
+                                {testimonial.name}
+                              </div>
+                              <div className="text-sm text-muted-foreground" data-testid={`text-testimonial-location-${currentTestimonialIndex * testimonialsPerPage + index}`}>
+                                {testimonial.location}
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Pagination Dots */}
+                <div className="flex justify-center mt-6 space-x-2">
+                  {[...Array(maxIndex + 1)].map((_, index) => (
+                    <button
+                      key={index}
+                      className={`w-2 h-2 rounded-full transition-colors ${
+                        index === currentTestimonialIndex ? 'bg-primary' : 'bg-muted'
+                      }`}
+                      onClick={() => setCurrentTestimonialIndex(index)}
+                      data-testid={`button-testimonial-dot-${index}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </section>
