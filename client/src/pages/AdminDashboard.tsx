@@ -449,61 +449,29 @@ export default function AdminDashboard() {
         {companyPosts.length > 0 && (
           <div className="mt-16 flex justify-center">
             <div className="max-w-3xl w-full">
-              <h3 className={`text-xl font-bold mb-6 text-center ${
-                isDarkBackground() ? 'text-white' : 'text-foreground'
-              }`} data-testid="text-company-posts-header">
-                Company Posts
-              </h3>
-              <div className="space-y-4">
+              <div className="space-y-8">
                 {companyPosts.map((post, index) => (
-                  <Card 
+                  <div 
                     key={index}
-                    className="hover-elevate"
-                    data-testid={`card-company-post-${index}`}
+                    data-testid={`company-post-${index}`}
                   >
-                    <CardContent className="p-6">
-                      <div className="space-y-4">
-                        {/* Header with Author */}
-                        <div className="flex items-center gap-3 border-b pb-3">
-                          <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                            <span className="text-primary font-semibold">
-                              {post.postAuthor ? post.postAuthor[0].toUpperCase() : 'A'}
-                            </span>
-                          </div>
-                          <div>
-                            <div className="font-semibold">{post.postAuthor || 'Anonymous'}</div>
-                            <div className="text-sm text-muted-foreground">
-                              {post.date || 'No date'}
-                              {post.category && post.category !== 'Select' && (
-                                <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">
-                                  {post.category}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
+                    {/* Post Content */}
+                    <div 
+                      className={`whitespace-pre-wrap mb-2 ${isDarkBackground() ? 'text-white' : 'text-foreground'}`}
+                      style={{
+                        fontSize: post.fontSize || '16px',
+                        fontFamily: post.fontType || 'inherit',
+                        color: post.colorTheme || 'inherit'
+                      }}
+                    >
+                      {post.comment}
+                    </div>
 
-                        {/* Post Content */}
-                        <div 
-                          className="whitespace-pre-wrap"
-                          style={{
-                            fontSize: post.fontSize || '16px',
-                            fontFamily: post.fontType || 'inherit',
-                            color: post.colorTheme || 'inherit'
-                          }}
-                        >
-                          {post.comment}
-                        </div>
-
-                        {/* Footer with Post By */}
-                        {post.postBy && (
-                          <div className="text-sm text-muted-foreground border-t pt-3">
-                            Posted by: {post.postBy}
-                          </div>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
+                    {/* Author at bottom left */}
+                    <div className={`text-sm ${isDarkBackground() ? 'text-white/70' : 'text-muted-foreground'}`}>
+                      — {post.postAuthor || 'Anonymous'}
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
