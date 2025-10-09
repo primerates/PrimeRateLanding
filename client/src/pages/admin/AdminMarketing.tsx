@@ -101,7 +101,7 @@ export default function AdminMarketing() {
 
           if (!hasReferenceNumber || !hasClientName || !hasAddress) {
             reject(new Error(
-              'Missing required columns. Expected columns containing: "Reference Number", "Client Name", and "Address"'
+              `Missing required columns. Your file has these columns: ${headers.join(', ')}. Please ensure you have columns for Reference Number, Client Name, and Address.`
             ));
             return;
           }
