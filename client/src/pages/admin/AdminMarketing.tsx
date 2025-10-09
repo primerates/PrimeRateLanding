@@ -798,53 +798,14 @@ export default function AdminMarketing() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <style>{`
-                    .batch-details-scroll {
-                      overflow-x: scroll !important;
-                      overflow-y: visible;
-                      -webkit-overflow-scrolling: touch;
-                      scrollbar-width: thin;
-                      scrollbar-color: #888 #f1f1f1;
-                    }
-                    .dark .batch-details-scroll {
-                      scrollbar-color: #888 #333;
-                    }
-                    .batch-details-scroll::-webkit-scrollbar {
-                      height: 14px;
-                      background: #f1f1f1;
-                    }
-                    .dark .batch-details-scroll::-webkit-scrollbar {
-                      background: #333;
-                    }
-                    .batch-details-scroll::-webkit-scrollbar-track {
-                      background: #f1f1f1;
-                      border-radius: 7px;
-                      margin: 0 4px;
-                    }
-                    .dark .batch-details-scroll::-webkit-scrollbar-track {
-                      background: #333;
-                    }
-                    .batch-details-scroll::-webkit-scrollbar-thumb {
-                      background: #888;
-                      border-radius: 7px;
-                      border: 2px solid #f1f1f1;
-                    }
-                    .dark .batch-details-scroll::-webkit-scrollbar-thumb {
-                      border-color: #333;
-                    }
-                    .batch-details-scroll::-webkit-scrollbar-thumb:hover {
-                      background: #555;
-                    }
-                  `}</style>
-                  <div className="batch-details-scroll border rounded-lg">
-                    <table className="border-collapse" style={{ width: 'max-content', minWidth: '100%' }}>
+                  <div className="overflow-x-auto w-full border rounded-lg">
+                    <table className="w-max border-collapse">
                       <thead className="sticky top-0 z-10">
                         <tr className="border-b border-gray-300">
                           {Object.keys(selectedBatch.excelData[0]).map((column) => (
                             <th 
                               key={column}
                               className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
-                              style={{ minWidth: '150px' }}
                               onClick={() => handleBatchDetailSort(column)}
                               data-testid={`sort-${column}`}
                             >
@@ -860,7 +821,7 @@ export default function AdminMarketing() {
                         {sortedBatchDetails.map((row, idx) => (
                           <tr key={idx} className="border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                             {Object.keys(selectedBatch.excelData[0]).map((column) => (
-                              <td key={column} className="p-3 whitespace-nowrap" style={{ minWidth: '150px' }}>
+                              <td key={column} className="p-3 whitespace-nowrap">
                                 {row[column] || '-'}
                               </td>
                             ))}
