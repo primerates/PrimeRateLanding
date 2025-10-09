@@ -728,7 +728,18 @@ export default function AdminMarketing() {
                                 {batch.batchNumber}
                               </button>
                             </td>
-                            <td className="p-3">{batch.batchTitle}</td>
+                            <td className="p-3">
+                              <button
+                                onClick={() => {
+                                  setSelectedBatch(batch);
+                                  setViewBatchDialog(true);
+                                }}
+                                className="text-primary hover:underline cursor-pointer font-medium"
+                                data-testid={`button-view-title-${batch.id}`}
+                              >
+                                {batch.batchTitle}
+                              </button>
+                            </td>
                             <td className="p-3">{batch.stats.totalLeads}</td>
                             <td className="p-3">
                               <Button
