@@ -107,10 +107,10 @@ export default function AdminDashboard() {
 
   const menuItems = [
     // Line 1
-    { id: 'pipeline', label: 'Loans', icon: LayoutDashboard, path: '/admin/pipeline' },
+    { id: 'pipeline', label: 'Loan', icon: LayoutDashboard, path: '/admin/pipeline' },
     { id: 'loan-prep', label: 'Loan Prep', icon: FileText, path: '/admin/loan-prep' },
-    { id: 'quotes', label: 'Quotes', icon: Calculator, path: '/admin/quotes' },
-    { id: 'stats', label: 'Leads', icon: UserPlus, path: '/admin/add-client' },
+    { id: 'quotes', label: 'Quote', icon: Calculator, path: '/admin/quotes' },
+    { id: 'stats', label: 'Lead', icon: UserPlus, path: '/admin/add-client' },
     { id: 'search', label: 'Marketing', icon: Search, path: '/admin/search' },
     // Line 2
     { id: 'settings', label: 'Settings', icon: Settings, path: '/admin/settings' },
