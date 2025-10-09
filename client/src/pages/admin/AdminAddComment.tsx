@@ -172,7 +172,7 @@ export default function AdminAddComment() {
     setUniqueStates(stateCount);
     
     // Show success message
-    alert(`Comment posted successfully!\nTotal: ${newTotal}, States: ${stateCount}, Date: ${clientDate}`);
+    alert(`Comment posted successfully!\nTotal: ${newTotal}, States: ${stateCount}, Date: ${clientDate}\n\nDEBUG:\nCity: "${clientCity}"\nState: "${clientState}"`);
     
     // Reset form
     setClientFirstName('');
