@@ -798,6 +798,30 @@ export default function AdminMarketing() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-6">
+                  <style>{`
+                    #top-scrollbar::-webkit-scrollbar,
+                    #batch-table-scroll::-webkit-scrollbar {
+                      height: 20px;
+                    }
+                    #top-scrollbar::-webkit-scrollbar-thumb,
+                    #batch-table-scroll::-webkit-scrollbar-thumb {
+                      background: #22c55e;
+                      border-radius: 10px;
+                    }
+                    #top-scrollbar::-webkit-scrollbar-thumb:hover,
+                    #batch-table-scroll::-webkit-scrollbar-thumb:hover {
+                      background: #16a34a;
+                    }
+                    #top-scrollbar::-webkit-scrollbar-track,
+                    #batch-table-scroll::-webkit-scrollbar-track {
+                      background: #f1f5f9;
+                      border-radius: 10px;
+                    }
+                    .dark #top-scrollbar::-webkit-scrollbar-track,
+                    .dark #batch-table-scroll::-webkit-scrollbar-track {
+                      background: #334155;
+                    }
+                  `}</style>
                   <div className="space-y-2">
                     {/* Top Scrollbar */}
                     <div 
