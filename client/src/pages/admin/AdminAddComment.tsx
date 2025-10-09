@@ -152,7 +152,7 @@ export default function AdminAddComment() {
             <TabsContent value="client">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
-                  <CardTitle>Client Testimonial</CardTitle>
+                  <CardTitle>Client Comment</CardTitle>
                   <Button 
                     variant="outline" 
                     size="sm"
@@ -169,7 +169,6 @@ export default function AdminAddComment() {
                       <Label htmlFor="client-first-name">First Name</Label>
                       <Input 
                         id="client-first-name" 
-                        placeholder="Enter first name"
                         value={clientFirstName}
                         onChange={(e) => setClientFirstName(e.target.value)}
                         data-testid="input-client-first-name"
@@ -179,7 +178,6 @@ export default function AdminAddComment() {
                       <Label htmlFor="client-last-name">Last Name</Label>
                       <Input 
                         id="client-last-name" 
-                        placeholder="Enter last name"
                         value={clientLastName}
                         onChange={(e) => setClientLastName(e.target.value)}
                         data-testid="input-client-last-name"
@@ -245,13 +243,12 @@ export default function AdminAddComment() {
                   </div>
 
                   {/* Comment Text - Wrapped in Grey Card */}
-                  <Card className="bg-muted/30 border-muted">
+                  <Card className="bg-gray-50 border-gray-200">
                     <CardContent className="pt-6">
                       <div className="space-y-2">
                         <Label htmlFor="client-comment">Client Comment</Label>
                         <Textarea 
                           id="client-comment"
-                          placeholder="Enter client testimonial or comment here..."
                           className="min-h-[150px] bg-background"
                           value={clientComment}
                           onChange={(e) => setClientComment(e.target.value)}
@@ -300,7 +297,6 @@ export default function AdminAddComment() {
                       <Label htmlFor="message-title">Message Title</Label>
                       <Input 
                         id="message-title" 
-                        placeholder="Enter message title"
                         value={messageTitle}
                         onChange={(e) => setMessageTitle(e.target.value)}
                         data-testid="input-message-title"
@@ -375,13 +371,12 @@ export default function AdminAddComment() {
                   </div>
 
                   {/* Message Text - Wrapped in Grey Card */}
-                  <Card className="bg-muted/30 border-muted">
+                  <Card className="bg-gray-50 border-gray-200">
                     <CardContent className="pt-6">
                       <div className="space-y-2">
                         <Label htmlFor="message-content">Message Content</Label>
                         <Textarea 
                           id="message-content"
-                          placeholder="Enter internal message or motivation content here..."
                           className="min-h-[150px] bg-background"
                           value={messageContent}
                           onChange={(e) => setMessageContent(e.target.value)}
