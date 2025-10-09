@@ -831,7 +831,7 @@ export default function AdminMarketing() {
                       >
                         <div style={{ width: 'max-content', height: '1px' }}>
                           {/* Spacer to create scrollbar width matching table */}
-                          <table className="w-max border-collapse invisible" style={{ paddingRight: '200px' }}>
+                          <table className="w-max border-collapse invisible">
                             <thead>
                               <tr>
                                 {columnsWithData.map((column) => (
@@ -842,6 +842,8 @@ export default function AdminMarketing() {
                                     </div>
                                   </th>
                                 ))}
+                                {/* Empty spacer column */}
+                                <th className="p-3" style={{ width: '200px' }}></th>
                               </tr>
                             </thead>
                           </table>
@@ -868,7 +870,7 @@ export default function AdminMarketing() {
                         }}
                         id="batch-table-scroll"
                       >
-                        <table className="w-max border-collapse" style={{ paddingRight: '200px' }}>
+                        <table className="w-max border-collapse">
                           <thead className="sticky top-0 z-10">
                             <tr className="border-b border-gray-300">
                               {columnsWithData.map((column) => (
@@ -884,6 +886,8 @@ export default function AdminMarketing() {
                                   </div>
                                 </th>
                               ))}
+                              {/* Empty spacer column */}
+                              <th className="p-3 bg-gray-50 dark:bg-gray-800" style={{ width: '200px' }}></th>
                             </tr>
                           </thead>
                           <tbody>
@@ -894,6 +898,8 @@ export default function AdminMarketing() {
                                     {row[column] || '-'}
                                   </td>
                                 ))}
+                                {/* Empty spacer cell */}
+                                <td className="p-3" style={{ width: '200px' }}></td>
                               </tr>
                             ))}
                           </tbody>
