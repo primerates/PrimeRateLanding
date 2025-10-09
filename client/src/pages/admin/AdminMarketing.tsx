@@ -69,24 +69,32 @@ export default function AdminMarketing() {
         skipEmptyLines: true,
         dynamicTyping: false,
         transformHeader: (header) => header.trim(),
+        quoteChar: '"',
+        escapeChar: '"',
+        delimiter: ',',
+        newline: '\n',
         complete: (results) => {
-          // Only fail on critical errors, skip row-level issues
-          const criticalErrors = results.errors.filter(err => 
-            err.type === 'Delimiter' || err.type === 'Quotes'
-          );
-          
-          if (criticalErrors.length > 0) {
-            reject(new Error(`CSV parsing error: ${criticalErrors[0].message}`));
-            return;
-          }
+          // Be very lenient - only fail if we have no data at all
+          // Skip ALL parsing errors and just try to import what we can
 
           if (!results.data || results.data.length === 0) {
             reject(new Error('Empty file or no data found'));
             return;
           }
 
+          // Filter out completely empty rows
+          const validData = results.data.filter((row: any) => {
+            const values = Object.values(row);
+            return values.some(val => val && val.toString().trim() !== '');
+          });
+
+          if (validData.length === 0) {
+            reject(new Error('No valid data rows found in file'));
+            return;
+          }
+
           // Validate required columns - be flexible with column names
-          const firstRow = results.data[0] as any;
+          const firstRow = validData[0] as any;
           const headers = Object.keys(firstRow);
           
           const hasReference = headers.some(h => 
@@ -110,12 +118,12 @@ export default function AdminMarketing() {
             return;
           }
 
-          // Show warning if there were row-level errors but still proceed
+          // Show warning if there were parsing errors but still proceed
           if (results.errors.length > 0) {
-            console.warn(`CSV had ${results.errors.length} row-level warnings, but data was imported successfully`);
+            console.warn(`CSV had ${results.errors.length} parsing warnings, but ${validData.length} rows were imported successfully`);
           }
 
-          resolve(results.data);
+          resolve(validData);
         },
         error: (error) => {
           reject(new Error(`Failed to parse CSV: ${error.message}`));
