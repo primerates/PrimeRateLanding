@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -126,6 +126,105 @@ export default function AdminAddComment() {
   const [selectedCommentIndex, setSelectedCommentIndex] = useState<number>(-1);
   const [isEditMode, setIsEditMode] = useState(false);
 
+  // Sorting state for All Posts table
+  const [sortPostColumn, setSortPostColumn] = useState<string>('');
+  const [sortPostDirection, setSortPostDirection] = useState<'asc' | 'desc'>('asc');
+
+  // Dialog state for viewing/editing posts
+  const [showPostDialog, setShowPostDialog] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<any>(null);
+  const [selectedPostIndex, setSelectedPostIndex] = useState<number>(-1);
+  const [isPostEditMode, setIsPostEditMode] = useState(false);
+
+  // Sorted comments array
+  const sortedComments = useMemo(() => {
+    if (!sortColumn) return postedComments;
+    
+    return [...postedComments].sort((a, b) => {
+      let aVal: any = '';
+      let bVal: any = '';
+      
+      switch (sortColumn) {
+        case 'commentDate':
+          // Parse dates for proper chronological sorting
+          aVal = new Date(a.date || '01/01/1900').getTime();
+          bVal = new Date(b.date || '01/01/1900').getTime();
+          break;
+        case 'postedBy':
+          aVal = `${a.firstName} ${a.lastName}`.toLowerCase();
+          bVal = `${b.firstName} ${b.lastName}`.toLowerCase();
+          break;
+        case 'city':
+          aVal = (a.city || '').toLowerCase();
+          bVal = (b.city || '').toLowerCase();
+          break;
+        case 'state':
+          aVal = (a.state || '').toLowerCase();
+          bVal = (b.state || '').toLowerCase();
+          break;
+        case 'source':
+          aVal = (a.source || '').toLowerCase();
+          bVal = (b.source || '').toLowerCase();
+          break;
+        case 'rating':
+          // Parse rating as number for proper numeric sorting
+          aVal = parseInt(a.rating || '0', 10);
+          bVal = parseInt(b.rating || '0', 10);
+          break;
+        default:
+          return 0;
+      }
+      
+      if (aVal === bVal) return 0;
+      
+      if (sortDirection === 'asc') {
+        return aVal > bVal ? 1 : -1;
+      } else {
+        return aVal < bVal ? 1 : -1;
+      }
+    });
+  }, [postedComments, sortColumn, sortDirection]);
+
+  // Sorted posts array
+  const sortedPosts = useMemo(() => {
+    if (!sortPostColumn) return postedCompanyPosts;
+    
+    return [...postedCompanyPosts].sort((a, b) => {
+      let aVal: any = '';
+      let bVal: any = '';
+      
+      switch (sortPostColumn) {
+        case 'postDate':
+          // Parse dates for proper chronological sorting
+          aVal = new Date(a.date || '01/01/1900').getTime();
+          bVal = new Date(b.date || '01/01/1900').getTime();
+          break;
+        case 'postBy':
+          aVal = (a.postBy || '').toLowerCase();
+          bVal = (b.postBy || '').toLowerCase();
+          break;
+        case 'category':
+          aVal = (a.category || '').toLowerCase();
+          bVal = (b.category || '').toLowerCase();
+          break;
+        case 'author':
+          aVal = (a.postAuthor || '').toLowerCase();
+          bVal = (b.postAuthor || '').toLowerCase();
+          break;
+        default:
+          return 0;
+      }
+      
+      if (aVal === bVal) return 0;
+      
+      if (sortPostDirection === 'asc') {
+        return aVal > bVal ? 1 : -1;
+      } else {
+        return aVal < bVal ? 1 : -1;
+      }
+    });
+  }, [postedCompanyPosts, sortPostColumn, sortPostDirection]);
+
   const handleSort = (column: string) => {
     if (sortColumn === column) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -188,6 +287,51 @@ export default function AdminAddComment() {
     setShowCommentDialog(false);
     setIsEditMode(false);
     alert('Comment updated successfully!');
+  };
+
+  // Post handlers
+  const handlePostSort = (column: string) => {
+    if (sortPostColumn === column) {
+      setSortPostDirection(sortPostDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortPostColumn(column);
+      setSortPostDirection('asc');
+    }
+  };
+
+  const handlePostClick = (post: any, index: number) => {
+    setSelectedPost(post);
+    setSelectedPostIndex(index);
+    setIsPostEditMode(false);
+    setShowPostDialog(true);
+  };
+
+  const handleDeletePost = () => {
+    if (selectedPostIndex === -1) return;
+    
+    const updatedPosts = postedCompanyPosts.filter((_, i) => i !== selectedPostIndex);
+    setPostedCompanyPosts(updatedPosts);
+    localStorage.setItem('postedCompanyPosts', JSON.stringify(updatedPosts));
+    
+    setShowPostDialog(false);
+    alert('Post deleted successfully!');
+  };
+
+  const handleEditPost = () => {
+    setIsPostEditMode(true);
+  };
+
+  const handleSavePostEdit = () => {
+    if (selectedPostIndex === -1) return;
+    
+    const updatedPosts = [...postedCompanyPosts];
+    updatedPosts[selectedPostIndex] = selectedPost;
+    setPostedCompanyPosts(updatedPosts);
+    localStorage.setItem('postedCompanyPosts', JSON.stringify(updatedPosts));
+    
+    setShowPostDialog(false);
+    setIsPostEditMode(false);
+    alert('Post updated successfully!');
   };
 
   const handleScreenshare = () => {
@@ -788,35 +932,37 @@ export default function AdminAddComment() {
                         </tr>
                       </thead>
                       <tbody>
-                        {postedComments.length === 0 ? (
+                        {sortedComments.length === 0 ? (
                           <tr>
                             <td colSpan={8} className="text-center py-8 text-muted-foreground">
                               No comments to display
                             </td>
                           </tr>
                         ) : (
-                          postedComments.map((comment, index) => (
-                            <tr key={index} className="border-b hover:bg-gray-50">
-                              <td className="p-3" data-testid={`cell-comment-date-${index}`}>{comment.date}</td>
-                              <td className="p-3" data-testid={`cell-posted-by-${index}`}>{comment.firstName} {comment.lastName}</td>
-                              <td className="p-3" data-testid={`cell-city-${index}`}>{comment.city}</td>
-                              <td className="p-3" data-testid={`cell-state-${index}`}>{comment.state}</td>
-                              <td className="p-3" data-testid={`cell-source-${index}`}>{comment.source}</td>
-                              <td className="p-3" data-testid={`cell-rating-${index}`}>
+                          sortedComments.map((comment, sortedIndex) => {
+                            const originalIndex = postedComments.findIndex(c => c === comment);
+                            return (
+                            <tr key={sortedIndex} className="border-b hover:bg-gray-50">
+                              <td className="p-3" data-testid={`cell-comment-date-${sortedIndex}`}>{comment.date}</td>
+                              <td className="p-3" data-testid={`cell-posted-by-${sortedIndex}`}>{comment.firstName} {comment.lastName}</td>
+                              <td className="p-3" data-testid={`cell-city-${sortedIndex}`}>{comment.city}</td>
+                              <td className="p-3" data-testid={`cell-state-${sortedIndex}`}>{comment.state}</td>
+                              <td className="p-3" data-testid={`cell-source-${sortedIndex}`}>{comment.source}</td>
+                              <td className="p-3" data-testid={`cell-rating-${sortedIndex}`}>
                                 <div className="flex items-center gap-1">
                                   {[...Array(parseInt(comment.rating) || 0)].map((_, i) => (
                                     <Star key={i} className="w-3 h-3 fill-warning text-warning" />
                                   ))}
                                 </div>
                               </td>
-                              <td className="p-3" data-testid={`cell-last-name-${index}`}>
+                              <td className="p-3" data-testid={`cell-last-name-${sortedIndex}`}>
                                 <TooltipProvider>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <button 
-                                        onClick={() => handleCommentClick(comment, index)}
+                                        onClick={() => handleCommentClick(comment, originalIndex)}
                                         className="text-primary hover:underline cursor-pointer font-medium"
-                                        data-testid={`button-edit-comment-${index}`}
+                                        data-testid={`button-edit-comment-${sortedIndex}`}
                                       >
                                         {comment.lastName}
                                       </button>
@@ -827,9 +973,10 @@ export default function AdminAddComment() {
                                   </Tooltip>
                                 </TooltipProvider>
                               </td>
-                              <td className="p-3" data-testid={`cell-first-name-${index}`}>{comment.firstName}</td>
+                              <td className="p-3" data-testid={`cell-first-name-${sortedIndex}`}>{comment.firstName}</td>
                             </tr>
-                          ))
+                            );
+                          })
                         )}
                       </tbody>
                     </table>
@@ -1067,7 +1214,97 @@ export default function AdminAddComment() {
               </Card>
             </TabsContent>
 
-            {/* Notes Tab */}
+            {/* All Posts Tab */}
+            <TabsContent value="all-posts" className="mt-8">
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="border-b border-gray-300">
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            onClick={() => handlePostSort('postDate')}
+                            data-testid="header-post-date"
+                          >
+                            <div className="flex items-center gap-2">
+                              Post Date
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            onClick={() => handlePostSort('postBy')}
+                            data-testid="header-post-by"
+                          >
+                            <div className="flex items-center gap-2">
+                              Post By
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            onClick={() => handlePostSort('category')}
+                            data-testid="header-category"
+                          >
+                            <div className="flex items-center gap-2">
+                              Category
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            onClick={() => handlePostSort('author')}
+                            data-testid="header-author"
+                          >
+                            <div className="flex items-center gap-2">
+                              Author
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-50"
+                            data-testid="header-post-content"
+                          >
+                            Post Content
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {sortedPosts.length === 0 ? (
+                          <tr>
+                            <td colSpan={5} className="text-center py-8 text-muted-foreground">
+                              No posts to display
+                            </td>
+                          </tr>
+                        ) : (
+                          sortedPosts.map((post, sortedIndex) => {
+                            const originalIndex = postedCompanyPosts.findIndex(p => p === post);
+                            return (
+                            <tr 
+                              key={sortedIndex} 
+                              className="border-b hover:bg-gray-50 cursor-pointer"
+                              onClick={() => handlePostClick(post, originalIndex)}
+                              data-testid={`row-post-${sortedIndex}`}
+                            >
+                              <td className="p-3" data-testid={`cell-post-date-${sortedIndex}`}>{post.date}</td>
+                              <td className="p-3" data-testid={`cell-post-by-${sortedIndex}`}>{post.postBy}</td>
+                              <td className="p-3" data-testid={`cell-category-${sortedIndex}`}>{post.category}</td>
+                              <td className="p-3" data-testid={`cell-author-${sortedIndex}`}>{post.postAuthor}</td>
+                              <td className="p-3 max-w-md truncate" data-testid={`cell-content-${sortedIndex}`}>
+                                {post.comment}
+                              </td>
+                            </tr>
+                            );
+                          })
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
             <TabsContent value="notes" className="mt-8">
               <Card>
                 <CardContent className="space-y-6 pt-6">
@@ -1277,6 +1514,209 @@ export default function AdminAddComment() {
                   Delete
                 </Button>
                 <Button onClick={handleEditComment} data-testid="button-edit-mode">
+                  <Edit className="w-4 h-4 mr-2" />
+                  Edit
+                </Button>
+              </>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Post Dialog */}
+      <Dialog open={showPostDialog} onOpenChange={setShowPostDialog}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{isPostEditMode ? 'Edit Post' : 'View Post'}</DialogTitle>
+          </DialogHeader>
+          
+          {selectedPost && (
+            <div className="space-y-4 py-4">
+              {isPostEditMode ? (
+                // Edit Mode
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Post By</Label>
+                      <Select 
+                        value={selectedPost.postBy} 
+                        onValueChange={(value) => setSelectedPost({...selectedPost, postBy: value})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Select">Select</SelectItem>
+                          <SelectItem value="Admin">Admin</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Category</Label>
+                      <Select 
+                        value={selectedPost.category} 
+                        onValueChange={(value) => setSelectedPost({...selectedPost, category: value})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Select">Select</SelectItem>
+                          <SelectItem value="I wish I had said that">I wish I had said that</SelectItem>
+                          <SelectItem value="Policy">Policy</SelectItem>
+                          <SelectItem value="Events">Events</SelectItem>
+                          <SelectItem value="Announcement">Announcement</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Author</Label>
+                      <Input 
+                        value={selectedPost.postAuthor}
+                        onChange={(e) => setSelectedPost({...selectedPost, postAuthor: e.target.value})}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Post Date</Label>
+                      <Input 
+                        value={selectedPost.date}
+                        onChange={(e) => setSelectedPost({...selectedPost, date: e.target.value})}
+                        placeholder="MM/DD/YYYY"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label>Post Content</Label>
+                    <Textarea 
+                      value={selectedPost.comment}
+                      onChange={(e) => setSelectedPost({...selectedPost, comment: e.target.value})}
+                      className="min-h-[150px]"
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label>Font Size</Label>
+                      <Select 
+                        value={selectedPost.fontSize || ''} 
+                        onValueChange={(value) => setSelectedPost({...selectedPost, fontSize: value})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="">Select</SelectItem>
+                          <SelectItem value="small">Small</SelectItem>
+                          <SelectItem value="medium">Medium</SelectItem>
+                          <SelectItem value="large">Large</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Font Type</Label>
+                      <Select 
+                        value={selectedPost.fontType || ''} 
+                        onValueChange={(value) => setSelectedPost({...selectedPost, fontType: value})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="">Select</SelectItem>
+                          <SelectItem value="serif">Serif</SelectItem>
+                          <SelectItem value="sans">Sans</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Color Theme</Label>
+                      <Select 
+                        value={selectedPost.colorTheme || ''} 
+                        onValueChange={(value) => setSelectedPost({...selectedPost, colorTheme: value})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="">Select</SelectItem>
+                          <SelectItem value="blue">Blue</SelectItem>
+                          <SelectItem value="green">Green</SelectItem>
+                          <SelectItem value="purple">Purple</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                // View Mode
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm text-muted-foreground">Post By</Label>
+                      <p className="font-medium">{selectedPost.postBy}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-muted-foreground">Category</Label>
+                      <p className="font-medium">{selectedPost.category}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm text-muted-foreground">Author</Label>
+                      <p className="font-medium">{selectedPost.postAuthor}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-muted-foreground">Post Date</Label>
+                      <p className="font-medium">{selectedPost.date}</p>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <Label className="text-sm text-muted-foreground">Post Content</Label>
+                    <p className="font-medium mt-2">{selectedPost.comment}</p>
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm text-muted-foreground">Font Size</Label>
+                      <p className="font-medium">{selectedPost.fontSize || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-muted-foreground">Font Type</Label>
+                      <p className="font-medium">{selectedPost.fontType || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-muted-foreground">Color Theme</Label>
+                      <p className="font-medium">{selectedPost.colorTheme || 'N/A'}</p>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+          
+          <DialogFooter>
+            {isPostEditMode ? (
+              <>
+                <Button variant="outline" onClick={() => setIsPostEditMode(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleSavePostEdit} data-testid="button-save-post-edit">
+                  Save Changes
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="outline" onClick={handleDeletePost} className="mr-auto" data-testid="button-delete-post">
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete
+                </Button>
+                <Button onClick={handleEditPost} data-testid="button-edit-post">
                   <Edit className="w-4 h-4 mr-2" />
                   Edit
                 </Button>
