@@ -1078,7 +1078,7 @@ export default function AdminAddComment() {
 
             {/* Company Post Tab (Insight) */}
             <TabsContent value="company-post" className="mt-8">
-              <Card>
+              <Card className="border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
                 <CardHeader>
                   <CardTitle>Insight</CardTitle>
                 </CardHeader>
