@@ -831,7 +831,7 @@ export default function AdminMarketing() {
                       >
                         <div style={{ width: 'max-content', height: '1px' }}>
                           {/* Spacer to create scrollbar width matching table */}
-                          <table className="w-max border-collapse invisible">
+                          <table className="w-max border-collapse invisible" style={{ paddingRight: '200px' }}>
                             <thead>
                               <tr>
                                 {columnsWithData.map((column) => (
@@ -868,7 +868,7 @@ export default function AdminMarketing() {
                         }}
                         id="batch-table-scroll"
                       >
-                        <table className="w-max border-collapse">
+                        <table className="w-max border-collapse" style={{ paddingRight: '200px' }}>
                           <thead className="sticky top-0 z-10">
                             <tr className="border-b border-gray-300">
                               {columnsWithData.map((column) => (
