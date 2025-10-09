@@ -162,7 +162,7 @@ export default function AdminAddComment() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label className="text-lg font-semibold">Client Comment</Label>
+                  <Label className="text-lg font-semibold">Client Comments</Label>
                   <div className="min-h-[40px] flex items-center">
                     <div
                       className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
@@ -181,7 +181,7 @@ export default function AdminAddComment() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label className="text-lg font-semibold">Company Post</Label>
+                  <Label className="text-lg font-semibold">States</Label>
                   <div className="min-h-[40px] flex items-center">
                     <div
                       className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
@@ -200,7 +200,7 @@ export default function AdminAddComment() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label className="text-lg font-semibold">Note</Label>
+                  <Label className="text-lg font-semibold">Library</Label>
                   <div className="min-h-[40px] flex items-center">
                     <div
                       className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
