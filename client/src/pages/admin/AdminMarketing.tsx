@@ -391,6 +391,16 @@ export default function AdminMarketing() {
     setEditedTitle('');
   };
 
+  // Format column names for display (convert camelCase to Title Case)
+  const formatColumnName = (columnName: string): string => {
+    if (columnName === 'referenceNumber') return 'Reference Number';
+    // Add space before capital letters and capitalize first letter
+    return columnName
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, (str) => str.toUpperCase())
+      .trim();
+  };
+
   const handleSort = (column: SortColumn) => {
     if (sortColumn === column) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -949,7 +959,7 @@ export default function AdminMarketing() {
                                 {columnsWithData.map((column) => (
                                   <th key={column} className="p-3 whitespace-nowrap">
                                     <div className="flex items-center gap-2">
-                                      {column}
+                                      {formatColumnName(column)}
                                       <ArrowUpDown className="h-4 w-4" />
                                     </div>
                                   </th>
@@ -1008,7 +1018,7 @@ export default function AdminMarketing() {
                                   data-testid={`sort-${column}`}
                                 >
                                   <div className="flex items-center gap-2">
-                                    {column}
+                                    {formatColumnName(column)}
                                     <ArrowUpDown className="h-4 w-4" />
                                   </div>
                                 </th>
