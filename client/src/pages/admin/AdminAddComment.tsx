@@ -164,9 +164,9 @@ export default function AdminAddComment() {
                   <Label className="text-lg font-semibold">Last Comment</Label>
                 </div>
                 
-                <div className="space-y-2">
+                <div className="space-y-2 flex flex-col items-center">
                   <Label className="text-lg font-semibold">Comments</Label>
-                  <div className="min-h-[40px] flex items-center">
+                  <div className="min-h-[40px] flex items-center justify-center">
                     <div
                       className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
                       style={{
@@ -183,9 +183,9 @@ export default function AdminAddComment() {
                   </div>
                 </div>
                 
-                <div className="space-y-2">
+                <div className="space-y-2 flex flex-col items-center">
                   <Label className="text-lg font-semibold">States</Label>
-                  <div className="min-h-[40px] flex items-center">
+                  <div className="min-h-[40px] flex items-center justify-center">
                     <div
                       className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
                       style={{
@@ -202,9 +202,9 @@ export default function AdminAddComment() {
                   </div>
                 </div>
                 
-                <div className="space-y-2">
+                <div className="space-y-2 flex flex-col items-center">
                   <Label className="text-lg font-semibold">Library</Label>
-                  <div className="min-h-[40px] flex items-center">
+                  <div className="min-h-[40px] flex items-center justify-center">
                     <div
                       className="bg-navy-900 text-white rounded-full w-20 h-20 flex items-center justify-center"
                       style={{
