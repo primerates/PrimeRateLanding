@@ -67,9 +67,16 @@ export default function AdminMarketing() {
       Papa.parse(file, {
         header: true,
         skipEmptyLines: true,
+        dynamicTyping: false,
+        transformHeader: (header) => header.trim(),
         complete: (results) => {
-          if (results.errors && results.errors.length > 0) {
-            reject(new Error(`CSV parsing error: ${results.errors[0].message}`));
+          // Only fail on critical errors, skip row-level issues
+          const criticalErrors = results.errors.filter(err => 
+            err.type === 'Delimiter' || err.type === 'Quotes'
+          );
+          
+          if (criticalErrors.length > 0) {
+            reject(new Error(`CSV parsing error: ${criticalErrors[0].message}`));
             return;
           }
 
@@ -94,9 +101,14 @@ export default function AdminMarketing() {
 
           if (!hasReferenceNumber || !hasClientName || !hasAddress) {
             reject(new Error(
-              'Missing required columns. Expected: "Reference Number", "Client Name", and "Address"'
+              'Missing required columns. Expected columns containing: "Reference Number", "Client Name", and "Address"'
             ));
             return;
+          }
+
+          // Show warning if there were row-level errors but still proceed
+          if (results.errors.length > 0) {
+            console.warn(`CSV had ${results.errors.length} row-level warnings, but data was imported successfully`);
           }
 
           resolve(results.data);
