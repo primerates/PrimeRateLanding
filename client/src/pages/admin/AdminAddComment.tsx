@@ -87,6 +87,8 @@ export default function AdminAddComment() {
   // Notes state
   const [currentNote, setCurrentNote] = useState('');
   const [pinnedNotes, setPinnedNotes] = useState<any[]>([]);
+  const [editingNoteId, setEditingNoteId] = useState<number | null>(null);
+  const [editingNoteText, setEditingNoteText] = useState('');
 
   // Trigger circle animation only on mount
   useEffect(() => {
@@ -435,6 +437,21 @@ export default function AdminAddComment() {
     const updatedNotes = pinnedNotes.filter(note => note.id !== id);
     setPinnedNotes(updatedNotes);
     localStorage.setItem('pinnedNotes', JSON.stringify(updatedNotes));
+  };
+
+  const handleEditNote = (id: number, text: string) => {
+    setEditingNoteId(id);
+    setEditingNoteText(text);
+  };
+
+  const handleSaveNoteEdit = (id: number) => {
+    const updatedNotes = pinnedNotes.map(note => 
+      note.id === id ? { ...note, text: editingNoteText } : note
+    );
+    setPinnedNotes(updatedNotes);
+    localStorage.setItem('pinnedNotes', JSON.stringify(updatedNotes));
+    setEditingNoteId(null);
+    setEditingNoteText('');
   };
 
   const handleScreenshare = () => {
@@ -1527,24 +1544,57 @@ export default function AdminAddComment() {
                     {pinnedNotes.map((note) => (
                       <Card 
                         key={note.id}
-                        className="bg-yellow-100 dark:bg-yellow-900 border-yellow-300 dark:border-yellow-700 relative"
+                        className="bg-yellow-100 dark:bg-yellow-900 border-yellow-300 dark:border-yellow-700 relative max-w-md"
                         data-testid={`card-note-${note.id}`}
                       >
                         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                           <Pin className="h-6 w-6 text-red-500 rotate-45" />
                         </div>
-                        <CardContent className="pt-8 pb-4">
-                          <p className="text-sm whitespace-pre-wrap mb-4">{note.text}</p>
-                          <div className="flex justify-between items-center text-xs text-muted-foreground">
-                            <span>{new Date(note.createdAt).toLocaleDateString()}</span>
+                        <CardHeader>
+                          <CardTitle className="text-lg flex items-center gap-2">
+                            <Pin className="h-5 w-5 text-yellow-700 dark:text-yellow-300" />
+                            Sticky Note
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          {editingNoteId === note.id ? (
+                            <Textarea
+                              value={editingNoteText}
+                              onChange={(e) => setEditingNoteText(e.target.value)}
+                              className="min-h-[120px] bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700 resize-none"
+                              data-testid={`textarea-edit-note-${note.id}`}
+                            />
+                          ) : (
+                            <div className="min-h-[120px] text-sm whitespace-pre-wrap">
+                              {note.text}
+                            </div>
+                          )}
+                          <div className="flex gap-2">
+                            {editingNoteId === note.id ? (
+                              <Button
+                                onClick={() => handleSaveNoteEdit(note.id)}
+                                className="flex-1"
+                                data-testid={`button-save-note-${note.id}`}
+                              >
+                                Save
+                              </Button>
+                            ) : (
+                              <Button
+                                variant="outline"
+                                onClick={() => handleEditNote(note.id, note.text)}
+                                className="flex-1 bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700"
+                                data-testid={`button-edit-note-${note.id}`}
+                              >
+                                Edit
+                              </Button>
+                            )}
                             <Button
-                              variant="ghost"
-                              size="sm"
+                              variant="outline"
                               onClick={() => handleDeleteNote(note.id)}
-                              className="h-6 px-2 text-red-600 hover:text-red-700"
+                              className="flex-1 bg-yellow-50 dark:bg-yellow-950 border-yellow-300 dark:border-yellow-700"
                               data-testid={`button-delete-note-${note.id}`}
                             >
-                              <Trash2 className="h-3 w-3" />
+                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
                         </CardContent>

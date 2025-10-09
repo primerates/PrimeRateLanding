@@ -110,18 +110,25 @@ The Comments & Posts Management system (`/admin/add-comment`) provides a compreh
   - Future category additions should be deliberately mapped to appropriate counter
 
 ### Notes Tab
-- **Sticky Note Input**: Yellow card with textarea for creating new notes
+- **Sticky Note Input**: Yellow card with Pin icon header, textarea, and "OK - Pin to Wall" button
 - **Pin to Wall**: "OK - Pin to Wall" button posts notes to display area below
-- **Pinned Notes Display**: Grid layout (1/2/3 columns responsive) showing all notes
+- **Pinned Notes Display**: Grid layout (1/2/3 columns responsive) showing all notes matching input card size (max-w-md)
 - **Visual Design**: 
   - Yellow background (bg-yellow-100/dark:bg-yellow-900)
   - Red pin icon at top center (rotated 45 degrees)
-  - Each note shows date and delete button
+  - "Sticky Note" header with yellow pin icon (matching input card)
+  - Same size as input sticky note card
+  - Bottom buttons: "Edit" and trash icon (no date display)
+- **Edit Functionality**:
+  - Click "Edit" button to enter edit mode
+  - Text becomes editable in textarea
+  - "Edit" button changes to "Save" button
+  - Click "Save" to save changes and return to view mode
 - **Functionality**:
   - Notes persist in localStorage key `'pinnedNotes'`
   - Input clears after posting
-  - Delete button removes individual notes
-  - Notes display with creation date
+  - Delete button (trash icon) removes individual notes
+  - Each note can be edited and saved
 
 ### Technical Implementation
 - **Data Storage**: Company posts stored in localStorage key `'postedCompanyPosts'`; Notes stored in `'pinnedNotes'`
