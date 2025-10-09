@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
-import { RotateCcw, Monitor, Save, Upload, Plus, BarChart3, FileText, Trash2, Eye, ArrowUpDown, CheckCircle, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { RotateCcw, Monitor, Save, Upload, Plus, BarChart3, FileText, Trash2, Eye, ArrowUpDown, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Pencil, Check, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Papa from 'papaparse';
 
@@ -69,6 +69,10 @@ export default function AdminMarketing() {
   // Batch detail table sorting
   const [batchDetailSortColumn, setBatchDetailSortColumn] = useState<string>('');
   const [batchDetailSortDirection, setBatchDetailSortDirection] = useState<'asc' | 'desc'>('asc');
+  
+  // Edit batch title state
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [editedTitle, setEditedTitle] = useState('');
   
   // Column Mapping States
   const [uploadStage, setUploadStage] = useState<UploadStage>('upload');
@@ -333,6 +337,33 @@ export default function AdminMarketing() {
       title: "Batch Deleted",
       description: "The batch has been removed successfully.",
     });
+  };
+
+  const handleSaveBatchTitle = () => {
+    if (!selectedBatch || !editedTitle.trim()) return;
+    
+    const updatedBatches = batches.map(batch => 
+      batch.id === selectedBatch.id 
+        ? { ...batch, batchTitle: editedTitle.trim() }
+        : batch
+    );
+    
+    setBatches(updatedBatches);
+    localStorage.setItem('directMailBatches', JSON.stringify(updatedBatches));
+    
+    // Update selectedBatch to reflect the change
+    setSelectedBatch({ ...selectedBatch, batchTitle: editedTitle.trim() });
+    
+    setIsEditingTitle(false);
+    toast({
+      title: "Title Updated",
+      description: "Batch title has been updated successfully.",
+    });
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditingTitle(false);
+    setEditedTitle('');
   };
 
   const handleSort = (column: SortColumn) => {
@@ -818,8 +849,49 @@ export default function AdminMarketing() {
               return (
                 <Card className="mt-6">
                   <CardHeader>
-                    <CardTitle>
-                      Batch Details: {selectedBatch.batchNumber} - {selectedBatch.batchTitle}
+                    <CardTitle className="flex items-center gap-2">
+                      {isEditingTitle ? (
+                        <>
+                          <span>Batch Details: {selectedBatch.batchNumber} -</span>
+                          <Input 
+                            value={editedTitle}
+                            onChange={(e) => setEditedTitle(e.target.value)}
+                            className="flex-1 max-w-md"
+                            data-testid="input-edit-batch-title"
+                          />
+                          <Button 
+                            size="icon" 
+                            variant="ghost" 
+                            onClick={handleSaveBatchTitle}
+                            data-testid="button-save-title"
+                          >
+                            <Check className="h-4 w-4 text-green-600" />
+                          </Button>
+                          <Button 
+                            size="icon" 
+                            variant="ghost" 
+                            onClick={handleCancelEdit}
+                            data-testid="button-cancel-edit"
+                          >
+                            <X className="h-4 w-4 text-red-600" />
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <span>Batch Details: {selectedBatch.batchNumber} - {selectedBatch.batchTitle}</span>
+                          <Button 
+                            size="icon" 
+                            variant="ghost" 
+                            onClick={() => {
+                              setIsEditingTitle(true);
+                              setEditedTitle(selectedBatch.batchTitle);
+                            }}
+                            data-testid="button-edit-title"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        </>
+                      )}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="pt-6">
