@@ -51,6 +51,7 @@ export default function AdminAddComment() {
 
   // Internal message state (Insight)
   const [postBy, setPostBy] = useState('Admin');
+  const [postCategory, setPostCategory] = useState('Select');
   const [postAuthor, setPostAuthor] = useState('');
   const [insightDate, setInsightDate] = useState('');
   const [insightComment, setInsightComment] = useState('');
@@ -297,6 +298,7 @@ export default function AdminAddComment() {
   // Cancel insight/company post - reset all fields and hide preview
   const handleCancelInsight = () => {
     setPostBy('Admin');
+    setPostCategory('Select');
     setPostAuthor('');
     setInsightDate('');
     setInsightComment('');
@@ -310,6 +312,7 @@ export default function AdminAddComment() {
   const handlePostInsight = () => {
     const newPost = {
       postBy,
+      category: postCategory,
       postAuthor,
       date: insightDate,
       comment: insightComment,
@@ -843,7 +846,7 @@ export default function AdminAddComment() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {/* First Row */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="post-by">Post by</Label>
                       <Select value={postBy} onValueChange={setPostBy}>
@@ -853,6 +856,21 @@ export default function AdminAddComment() {
                         <SelectContent>
                           <SelectItem value="Select">Select</SelectItem>
                           <SelectItem value="Admin">Admin</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="post-category">Category</Label>
+                      <Select value={postCategory} onValueChange={setPostCategory}>
+                        <SelectTrigger id="post-category" data-testid="select-post-category">
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Select">Select</SelectItem>
+                          <SelectItem value="I wish I had said that">I wish I had said that</SelectItem>
+                          <SelectItem value="Policy">Policy</SelectItem>
+                          <SelectItem value="Events">Events</SelectItem>
+                          <SelectItem value="Announcement">Announcement</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
