@@ -54,51 +54,33 @@ interface RequiredField {
   description: string;
 }
 
-// CurrencyInput component for dollar values
-const CurrencyInput = ({ value, onChange, placeholder, id, dataTestId }: {
+// CurrencyInput component for dollar values - matches Income tab style
+const CurrencyInput = ({ value, onChange, placeholder = '$0', id, dataTestId }: {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
   id?: string;
   dataTestId?: string;
 }) => {
-  const [localValue, setLocalValue] = useState(value);
-  const [isFocused, setIsFocused] = useState(false);
-
-  useEffect(() => {
-    if (!isFocused) {
-      setLocalValue(value);
-    }
-  }, [value, isFocused]);
+  // Display value with $ and comma formatting
+  const displayValue = useMemo(() => {
+    if (!value) return '';
+    const numVal = value.replace(/[^\d]/g, '');
+    return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
+  }, [value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value.replace(/[^\d.]/g, '');
-    setLocalValue(val);
+    const val = e.target.value.replace(/[^\d]/g, '');
     onChange(val);
-  };
-
-  const handleBlur = () => {
-    setIsFocused(false);
-    const num = parseFloat(localValue) || 0;
-    const formatted = num > 0 ? `$${num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` : '';
-    setLocalValue(formatted);
-    onChange(formatted);
-  };
-
-  const handleFocus = () => {
-    setIsFocused(true);
-    const raw = localValue.replace(/[^\d.]/g, '');
-    setLocalValue(raw);
   };
 
   return (
     <Input
       id={id}
-      value={localValue}
-      onChange={handleChange}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
+      type="text"
       placeholder={placeholder}
+      value={displayValue}
+      onChange={handleChange}
       data-testid={dataTestId}
     />
   );
