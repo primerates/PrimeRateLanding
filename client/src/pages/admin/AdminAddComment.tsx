@@ -146,12 +146,15 @@ export default function AdminAddComment() {
         <div className="container mx-auto px-6 py-8">
           <Tabs defaultValue="client" className="space-y-6">
             {/* Tab Menu Bar - Matching Lead Tile Style */}
-            <TabsList className="grid w-full grid-cols-2 bg-transparent h-auto p-0 relative border-b border-gray-200 group">
-              <TabsTrigger value="client" data-testid="tab-client-comments" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Client Comment</TabsTrigger>
-              <TabsTrigger value="internal" data-testid="tab-internal-messages" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Internal Message</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-5 bg-transparent h-auto p-0 relative border-b border-gray-200 group">
+              <TabsTrigger value="client" data-testid="tab-client-comment" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Client Comment</TabsTrigger>
+              <TabsTrigger value="all-comments" data-testid="tab-all-comments" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">All Comments</TabsTrigger>
+              <TabsTrigger value="company-post" data-testid="tab-company-post" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Company Post</TabsTrigger>
+              <TabsTrigger value="all-posts" data-testid="tab-all-posts" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">All Posts</TabsTrigger>
+              <TabsTrigger value="notes" data-testid="tab-notes" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Notes</TabsTrigger>
             </TabsList>
 
-            {/* Card with Circular Indicators */}
+            {/* Card with Circular Indicators - Always Visible */}
             <Card>
               <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
                 <div className="space-y-2">
@@ -334,8 +337,17 @@ export default function AdminAddComment() {
               </Card>
             </TabsContent>
 
-            {/* Insight Tab */}
-            <TabsContent value="internal">
+            {/* All Comments Tab */}
+            <TabsContent value="all-comments">
+              <Card>
+                <CardContent className="space-y-6 pt-6">
+                  <p className="text-muted-foreground">All Comments will be displayed here.</p>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Company Post Tab (Insight) */}
+            <TabsContent value="company-post">
               <Card>
                 <CardContent className="space-y-6 pt-6">
                   {/* First Row */}
@@ -451,6 +463,24 @@ export default function AdminAddComment() {
                       Post
                     </Button>
                   </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* All Posts Tab */}
+            <TabsContent value="all-posts">
+              <Card>
+                <CardContent className="space-y-6 pt-6">
+                  <p className="text-muted-foreground">All Posts will be displayed here.</p>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Notes Tab */}
+            <TabsContent value="notes">
+              <Card>
+                <CardContent className="space-y-6 pt-6">
+                  <p className="text-muted-foreground">Notes will be displayed here.</p>
                 </CardContent>
               </Card>
             </TabsContent>
