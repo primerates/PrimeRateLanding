@@ -221,9 +221,12 @@ export default function AdminAddComment() {
             </Card>
 
             {/* Client Comments Tab */}
-            <TabsContent value="client">
+            <TabsContent value="client" className="mt-8">
               <Card>
-                <CardContent className="space-y-6 pt-6">
+                <CardHeader>
+                  <CardTitle>Client Comment</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
                   {/* First Row */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
@@ -338,7 +341,7 @@ export default function AdminAddComment() {
             </TabsContent>
 
             {/* All Comments Tab */}
-            <TabsContent value="all-comments">
+            <TabsContent value="all-comments" className="mt-8">
               <Card>
                 <CardContent className="space-y-6 pt-6">
                   <p className="text-muted-foreground">All Comments will be displayed here.</p>
@@ -347,9 +350,12 @@ export default function AdminAddComment() {
             </TabsContent>
 
             {/* Company Post Tab (Insight) */}
-            <TabsContent value="company-post">
+            <TabsContent value="company-post" className="mt-8">
               <Card>
-                <CardContent className="space-y-6 pt-6">
+                <CardHeader>
+                  <CardTitle>Insight</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
                   {/* First Row */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
@@ -468,7 +474,7 @@ export default function AdminAddComment() {
             </TabsContent>
 
             {/* All Posts Tab */}
-            <TabsContent value="all-posts">
+            <TabsContent value="all-posts" className="mt-8">
               <Card>
                 <CardContent className="space-y-6 pt-6">
                   <p className="text-muted-foreground">All Posts will be displayed here.</p>
@@ -477,7 +483,7 @@ export default function AdminAddComment() {
             </TabsContent>
 
             {/* Notes Tab */}
-            <TabsContent value="notes">
+            <TabsContent value="notes" className="mt-8">
               <Card>
                 <CardContent className="space-y-6 pt-6">
                   <p className="text-muted-foreground">Notes will be displayed here.</p>
