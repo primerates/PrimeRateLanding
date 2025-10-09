@@ -748,40 +748,47 @@ export default function AdminMarketing() {
                         </tr>
                       </thead>
                       <tbody>
-                        {sortedBatches.map((batch) => (
-                          <tr key={batch.id} className="border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                            <td className="p-3">{new Date(batch.createdDate).toLocaleDateString()}</td>
-                            <td className="p-3">
-                              <button
-                                onClick={() => setSelectedBatch(batch)}
-                                className="text-primary hover:underline cursor-pointer font-medium"
-                                data-testid={`button-view-${batch.id}`}
-                              >
-                                {batch.batchNumber}
-                              </button>
-                            </td>
-                            <td className="p-3">
-                              <button
-                                onClick={() => setSelectedBatch(batch)}
-                                className="text-primary hover:underline cursor-pointer font-medium"
-                                data-testid={`button-view-title-${batch.id}`}
-                              >
-                                {batch.batchTitle}
-                              </button>
-                            </td>
-                            <td className="p-3">{batch.stats.totalLeads}</td>
-                            <td className="p-3">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleDeleteBatch(batch.id)}
-                                data-testid={`button-delete-${batch.id}`}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </td>
-                          </tr>
-                        ))}
+                        {sortedBatches.map((batch) => {
+                          // Calculate actual lead count by filtering out empty rows
+                          const actualLeadCount = batch.excelData.filter((row) => {
+                            return Object.values(row).some(value => value && value.toString().trim() !== '');
+                          }).length;
+                          
+                          return (
+                            <tr key={batch.id} className="border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                              <td className="p-3">{new Date(batch.createdDate).toLocaleDateString()}</td>
+                              <td className="p-3">
+                                <button
+                                  onClick={() => setSelectedBatch(batch)}
+                                  className="text-primary hover:underline cursor-pointer font-medium"
+                                  data-testid={`button-view-${batch.id}`}
+                                >
+                                  {batch.batchNumber}
+                                </button>
+                              </td>
+                              <td className="p-3">
+                                <button
+                                  onClick={() => setSelectedBatch(batch)}
+                                  className="text-primary hover:underline cursor-pointer font-medium"
+                                  data-testid={`button-view-title-${batch.id}`}
+                                >
+                                  {batch.batchTitle}
+                                </button>
+                              </td>
+                              <td className="p-3">{actualLeadCount}</td>
+                              <td className="p-3">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleDeleteBatch(batch.id)}
+                                  data-testid={`button-delete-${batch.id}`}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
