@@ -380,6 +380,22 @@ export default function AdminAddComment() {
     alert('Post updated successfully!');
   };
 
+  const handleRepublishPost = (index: number) => {
+    const now = new Date();
+    const formattedDate = `${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}/${now.getFullYear()}`;
+    
+    const updatedPosts = [...postedCompanyPosts];
+    updatedPosts[index] = {
+      ...updatedPosts[index],
+      date: formattedDate
+    };
+    
+    setPostedCompanyPosts(updatedPosts);
+    localStorage.setItem('postedCompanyPosts', JSON.stringify(updatedPosts));
+    
+    alert('Post republished with today\'s date!');
+  };
+
   const handleScreenshare = () => {
     setScreenshareLoading(true);
     setTimeout(() => setScreenshareLoading(false), 2000);
@@ -1304,6 +1320,12 @@ export default function AdminAddComment() {
                       <thead>
                         <tr className="border-b border-gray-300">
                           <th 
+                            className="text-left p-3 font-semibold bg-gray-50"
+                            data-testid="header-republish"
+                          >
+                            Republish
+                          </th>
+                          <th 
                             className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
                             onClick={() => handlePostSort('postDate')}
                             data-testid="header-post-date"
@@ -1354,7 +1376,7 @@ export default function AdminAddComment() {
                       <tbody>
                         {sortedPosts.length === 0 ? (
                           <tr>
-                            <td colSpan={5} className="text-center py-8 text-muted-foreground">
+                            <td colSpan={6} className="text-center py-8 text-muted-foreground">
                               No posts to display
                             </td>
                           </tr>
@@ -1364,15 +1386,55 @@ export default function AdminAddComment() {
                             return (
                             <tr 
                               key={sortedIndex} 
-                              className="border-b hover:bg-gray-50 cursor-pointer"
-                              onClick={() => handlePostClick(post, originalIndex)}
+                              className="border-b hover:bg-gray-50"
                               data-testid={`row-post-${sortedIndex}`}
                             >
-                              <td className="p-3" data-testid={`cell-post-date-${sortedIndex}`}>{post.date}</td>
-                              <td className="p-3" data-testid={`cell-post-by-${sortedIndex}`}>{post.postBy}</td>
-                              <td className="p-3" data-testid={`cell-category-${sortedIndex}`}>{post.category}</td>
-                              <td className="p-3" data-testid={`cell-author-${sortedIndex}`}>{post.postAuthor}</td>
-                              <td className="p-3 max-w-md truncate" data-testid={`cell-content-${sortedIndex}`}>
+                              <td className="p-3" data-testid={`cell-republish-${sortedIndex}`}>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleRepublishPost(originalIndex);
+                                  }}
+                                  data-testid={`button-republish-${sortedIndex}`}
+                                >
+                                  Publish
+                                </Button>
+                              </td>
+                              <td 
+                                className="p-3 cursor-pointer" 
+                                onClick={() => handlePostClick(post, originalIndex)}
+                                data-testid={`cell-post-date-${sortedIndex}`}
+                              >
+                                {post.date}
+                              </td>
+                              <td 
+                                className="p-3 cursor-pointer" 
+                                onClick={() => handlePostClick(post, originalIndex)}
+                                data-testid={`cell-post-by-${sortedIndex}`}
+                              >
+                                {post.postBy}
+                              </td>
+                              <td 
+                                className="p-3 cursor-pointer" 
+                                onClick={() => handlePostClick(post, originalIndex)}
+                                data-testid={`cell-category-${sortedIndex}`}
+                              >
+                                {post.category}
+                              </td>
+                              <td 
+                                className="p-3 cursor-pointer" 
+                                onClick={() => handlePostClick(post, originalIndex)}
+                                data-testid={`cell-author-${sortedIndex}`}
+                              >
+                                {post.postAuthor}
+                              </td>
+                              <td 
+                                className="p-3 max-w-md truncate cursor-pointer" 
+                                onClick={() => handlePostClick(post, originalIndex)}
+                                data-testid={`cell-content-${sortedIndex}`}
+                              >
                                 {post.comment}
                               </td>
                             </tr>
