@@ -54,6 +54,56 @@ interface RequiredField {
   description: string;
 }
 
+// CurrencyInput component for dollar values
+const CurrencyInput = ({ value, onChange, placeholder, id, dataTestId }: {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  id?: string;
+  dataTestId?: string;
+}) => {
+  const [localValue, setLocalValue] = useState(value);
+  const [isFocused, setIsFocused] = useState(false);
+
+  useEffect(() => {
+    if (!isFocused) {
+      setLocalValue(value);
+    }
+  }, [value, isFocused]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/[^\d.]/g, '');
+    setLocalValue(val);
+    onChange(val);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+    const num = parseFloat(localValue) || 0;
+    const formatted = num > 0 ? `$${num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` : '';
+    setLocalValue(formatted);
+    onChange(formatted);
+  };
+
+  const handleFocus = () => {
+    setIsFocused(true);
+    const raw = localValue.replace(/[^\d.]/g, '');
+    setLocalValue(raw);
+  };
+
+  return (
+    <Input
+      id={id}
+      value={localValue}
+      onChange={handleChange}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+      placeholder={placeholder}
+      data-testid={dataTestId}
+    />
+  );
+};
+
 export default function AdminMarketing() {
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
@@ -99,6 +149,18 @@ export default function AdminMarketing() {
   const [showRevertAnimation, setShowRevertAnimation] = useState(false);
   const [screenshareLoading, setScreenshareLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
+  
+  // New batch fields
+  const [tenYearBond, setTenYearBond] = useState('');
+  const [parRate, setParRate] = useState('');
+  const [category, setCategory] = useState('');
+  const [dataType, setDataType] = useState('');
+  const [delivery, setDelivery] = useState('');
+  const [mailDate, setMailDate] = useState('');
+  const [mailVendor, setMailVendor] = useState('');
+  const [dataSource, setDataSource] = useState('');
+  const [dataCost, setDataCost] = useState('');
+  const [mailCost, setMailCost] = useState('');
 
   const requiredFields: RequiredField[] = [
     { key: 'reference', label: 'Reference Number', description: 'Unique identifier for tracking' },
@@ -534,29 +596,147 @@ export default function AdminMarketing() {
                 {/* Stage: Upload */}
                 {uploadStage === 'upload' && (
                   <div className="space-y-6">
-                    <div className="grid grid-cols-2 gap-6">
+                    {/* First Row */}
+                    <div className="grid grid-cols-4 gap-6">
                       <div className="space-y-2">
-                        <Label htmlFor="batch-number">
-                          Batch Number <span className="text-destructive">*</span>
-                        </Label>
+                        <Label htmlFor="batch-number">Batch Number</Label>
                         <Input
                           id="batch-number"
                           value={batchNumber}
                           onChange={(e) => setBatchNumber(e.target.value)}
-                          placeholder="e.g., DM-2024-001"
+                          placeholder=""
                           data-testid="input-batch-number"
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="batch-title">
-                          Batch Title <span className="text-destructive">*</span>
-                        </Label>
+                        <Label htmlFor="batch-title">Batch Title</Label>
                         <Input
                           id="batch-title"
                           value={batchTitle}
                           onChange={(e) => setBatchTitle(e.target.value)}
-                          placeholder="Enter descriptive title"
+                          placeholder=""
                           data-testid="input-batch-title"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="ten-year-bond">10 Year Bond</Label>
+                        <Input
+                          id="ten-year-bond"
+                          value={tenYearBond}
+                          onChange={(e) => setTenYearBond(e.target.value)}
+                          placeholder=""
+                          data-testid="input-ten-year-bond"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="par-rate">Par Rate</Label>
+                        <Input
+                          id="par-rate"
+                          value={parRate}
+                          onChange={(e) => setParRate(e.target.value)}
+                          placeholder=""
+                          data-testid="input-par-rate"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Second Row */}
+                    <div className="grid grid-cols-3 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="category">Category</Label>
+                        <Select value={category} onValueChange={setCategory}>
+                          <SelectTrigger id="category" data-testid="select-category">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="va">VA</SelectItem>
+                            <SelectItem value="va-jumbo">VA Jumbo</SelectItem>
+                            <SelectItem value="conv">Conv.</SelectItem>
+                            <SelectItem value="conv-jumbo">Conv. Jumbo</SelectItem>
+                            <SelectItem value="fha">FHA</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="data-type">Data</Label>
+                        <Select value={dataType} onValueChange={setDataType}>
+                          <SelectTrigger id="data-type" data-testid="select-data-type">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="trigger">Trigger</SelectItem>
+                            <SelectItem value="monthly">Monthly</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="delivery">Delivery</Label>
+                        <Select value={delivery} onValueChange={setDelivery}>
+                          <SelectTrigger id="delivery" data-testid="select-delivery">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="first-class">First Class</SelectItem>
+                            <SelectItem value="standard">Standard</SelectItem>
+                            <SelectItem value="bulk">Bulk</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    {/* Third Row */}
+                    <div className="grid grid-cols-5 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="mail-date">Mail Date</Label>
+                        <Input
+                          id="mail-date"
+                          type="date"
+                          value={mailDate}
+                          onChange={(e) => setMailDate(e.target.value)}
+                          data-testid="input-mail-date"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="mail-vendor">Mail Vendor</Label>
+                        <Select value={mailVendor} onValueChange={setMailVendor}>
+                          <SelectTrigger id="mail-vendor" data-testid="select-mail-vendor">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="in-house">In House</SelectItem>
+                            <SelectItem value="tbd">TBD</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="data-source">Data</Label>
+                        <Select value={dataSource} onValueChange={setDataSource}>
+                          <SelectTrigger id="data-source" data-testid="select-data-source">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="dlx">DLX</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="data-cost">Data Cost</Label>
+                        <CurrencyInput
+                          id="data-cost"
+                          value={dataCost}
+                          onChange={setDataCost}
+                          placeholder=""
+                          dataTestId="input-data-cost"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="mail-cost">Mail Cost</Label>
+                        <CurrencyInput
+                          id="mail-cost"
+                          value={mailCost}
+                          onChange={setMailCost}
+                          placeholder=""
+                          dataTestId="input-mail-cost"
                         />
                       </div>
                     </div>
