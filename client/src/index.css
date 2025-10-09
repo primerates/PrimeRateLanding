@@ -118,6 +118,27 @@
   animation: rotate-360 0.6s ease-out forwards;
 }
 
+/* Circle slide up animations for Comments & Posts page */
+@keyframes slideUpCircle {
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDownNumber {
+  from {
+    transform: translateY(-100px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
 @keyframes pulse-glow {
   0%, 100% { 
     filter: brightness(1) saturate(1) contrast(1);

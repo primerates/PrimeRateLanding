@@ -62,17 +62,15 @@ export default function AdminAddComment() {
   // Preview state
   const [showPreview, setShowPreview] = useState(false);
 
-  // Animation state for circles
-  const [animateCircles, setAnimateCircles] = useState(false);
+  // Animation state for circles - use counter to force animation reset
+  const [animationKey, setAnimationKey] = useState(0);
   
   // Active tab state
   const [activeTab, setActiveTab] = useState('client');
 
   // Trigger animation when component mounts or tab changes
   useEffect(() => {
-    setAnimateCircles(false);
-    const timer = setTimeout(() => setAnimateCircles(true), 50);
-    return () => clearTimeout(timer);
+    setAnimationKey(prev => prev + 1);
   }, [activeTab]);
 
   // Sorting state for All Comments table
@@ -187,7 +185,7 @@ export default function AdminAddComment() {
             </TabsList>
 
             {/* Card with Circular Indicators - Always Visible */}
-            <Card key={activeTab}>
+            <Card key={animationKey}>
               <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6">
                 <div className="space-y-2">
                   <Label className="text-lg font-semibold">Last Comment</Label>
@@ -204,15 +202,12 @@ export default function AdminAddComment() {
                         fontWeight: 600,
                         backgroundColor: '#1a3373',
                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
-                        transform: animateCircles ? 'translateY(0)' : 'translateY(100px)',
-                        opacity: animateCircles ? 1 : 0,
-                        transition: 'transform 0.6s ease-out, opacity 0.6s ease-out'
+                        animation: 'slideUpCircle 0.6s ease-out forwards'
                       }}
                       data-testid="circle-client-comment"
                     >
                       <span style={{
-                        transform: animateCircles ? 'translateY(0)' : 'translateY(-100px)',
-                        transition: 'transform 0.6s ease-out 0.2s',
+                        animation: 'slideDownNumber 0.6s ease-out 0.2s forwards',
                         display: 'block'
                       }}>0</span>
                     </div>
@@ -230,15 +225,12 @@ export default function AdminAddComment() {
                         fontWeight: 600,
                         backgroundColor: '#1a3373',
                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
-                        transform: animateCircles ? 'translateY(0)' : 'translateY(100px)',
-                        opacity: animateCircles ? 1 : 0,
-                        transition: 'transform 0.6s ease-out 0.1s, opacity 0.6s ease-out 0.1s'
+                        animation: 'slideUpCircle 0.6s ease-out 0.1s forwards'
                       }}
                       data-testid="circle-company-post"
                     >
                       <span style={{
-                        transform: animateCircles ? 'translateY(0)' : 'translateY(-100px)',
-                        transition: 'transform 0.6s ease-out 0.3s',
+                        animation: 'slideDownNumber 0.6s ease-out 0.3s forwards',
                         display: 'block'
                       }}>0</span>
                     </div>
@@ -256,15 +248,12 @@ export default function AdminAddComment() {
                         fontWeight: 600,
                         backgroundColor: '#1a3373',
                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
-                        transform: animateCircles ? 'translateY(0)' : 'translateY(100px)',
-                        opacity: animateCircles ? 1 : 0,
-                        transition: 'transform 0.6s ease-out 0.2s, opacity 0.6s ease-out 0.2s'
+                        animation: 'slideUpCircle 0.6s ease-out 0.2s forwards'
                       }}
-                      data-testid="circle-note"
+                      data-testid="circle-notes"
                     >
                       <span style={{
-                        transform: animateCircles ? 'translateY(0)' : 'translateY(-100px)',
-                        transition: 'transform 0.6s ease-out 0.4s',
+                        animation: 'slideDownNumber 0.6s ease-out 0.4s forwards',
                         display: 'block'
                       }}>0</span>
                     </div>
