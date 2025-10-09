@@ -125,22 +125,29 @@ export default function AdminAddComment() {
       postedAt: new Date().toISOString()
     };
     
+    console.log('Posting comment:', newComment);
+    
     // Update posted comments
     const updatedComments = [...postedComments, newComment];
     setPostedComments(updatedComments);
     
     // Update last comment date
+    console.log('Setting last comment date:', clientDate);
     setLastCommentDate(clientDate);
     
     // Update total comments
-    setTotalComments(updatedComments.length);
+    const newTotal = updatedComments.length;
+    console.log('Setting total comments:', newTotal);
+    setTotalComments(newTotal);
     
     // Calculate unique states
     const states = new Set(updatedComments.map(c => c.state).filter(s => s));
-    setUniqueStates(states.size);
+    const stateCount = states.size;
+    console.log('Setting unique states:', stateCount, 'States:', Array.from(states));
+    setUniqueStates(stateCount);
     
     // Show success message
-    alert('Comment posted successfully!');
+    alert(`Comment posted successfully!\nTotal: ${newTotal}, States: ${stateCount}, Date: ${clientDate}`);
     
     // Reset form
     setClientFirstName('');
@@ -243,7 +250,7 @@ export default function AdminAddComment() {
                 <div className="space-y-2">
                   <Label className="text-lg font-semibold">Last Comment</Label>
                   {lastCommentDate && (
-                    <div className="text-sm text-muted-foreground">{lastCommentDate}</div>
+                    <div className="text-2xl font-medium">{lastCommentDate}</div>
                   )}
                 </div>
                 
