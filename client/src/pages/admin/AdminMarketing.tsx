@@ -476,7 +476,7 @@ export default function AdminMarketing() {
 
   // Format column names for display (convert camelCase to Title Case)
   const formatColumnName = (columnName: string): string => {
-    if (columnName === 'referenceNumber') return 'Reference';
+    if (columnName === 'referenceNumber') return 'Reference #';
     // Add space before capital letters and capitalize first letter
     return columnName
       .replace(/([A-Z])/g, ' $1')
