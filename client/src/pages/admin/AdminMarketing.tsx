@@ -505,7 +505,7 @@ export default function AdminMarketing() {
   const handleBackToDashboard = () => {
     setShowRevertAnimation(true);
     setTimeout(() => {
-      setLocation('/admin');
+      setLocation('/admin/dashboard');
       setShowRevertAnimation(false);
     }, 300);
   };
