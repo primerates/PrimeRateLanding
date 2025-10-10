@@ -1080,7 +1080,7 @@ export default function AdminMarketing() {
                         </tr>
                       </thead>
                       <tbody>
-                        {sortedBatches.map((batch) => {
+                        {sortedBatches.map((batch, index) => {
                           // Calculate actual lead count by filtering out empty rows
                           const actualLeadCount = batch.excelData.filter((row) => {
                             return Object.values(row).some(value => value && value.toString().trim() !== '');
@@ -1121,7 +1121,7 @@ export default function AdminMarketing() {
                           };
                           
                           return (
-                            <tr key={batch.id} className="border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                            <tr key={batch.id} className={`border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'}`}>
                               <td className="p-3 whitespace-nowrap">{new Date(batch.createdDate).toLocaleDateString()}</td>
                               <td className="p-3 whitespace-nowrap">
                                 <button
@@ -1522,7 +1522,7 @@ export default function AdminMarketing() {
                           </thead>
                           <tbody>
                             {filteredRows.map((row, idx) => (
-                              <tr key={idx} className="border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                              <tr key={idx} className={`border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'}`}>
                                 {columnsWithData.map((column) => (
                                   <td key={column} className="p-3 whitespace-nowrap">
                                     {row[column] || '-'}
