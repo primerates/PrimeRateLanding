@@ -1100,10 +1100,16 @@ export default function AdminMarketing() {
                   </div>
                   <div className="space-y-2">
                     <Label>Batch Results To Date</Label>
-                    <Input
-                      placeholder=""
-                      data-testid="input-batch-results"
-                    />
+                    <Select defaultValue="show-all">
+                      <SelectTrigger data-testid="select-batch-results">
+                        <SelectValue placeholder="Show All" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="show-all">Show All</SelectItem>
+                        <SelectItem value="profitable">Profitable</SelectItem>
+                        <SelectItem value="loss">Loss</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 </CardContent>
