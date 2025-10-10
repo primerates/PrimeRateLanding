@@ -1171,9 +1171,6 @@ export default function AdminMarketing() {
                         <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 mr-3" />
                         <div>
                           <h4 className="text-sm font-medium text-green-700 dark:text-green-400">Ready to Create Batch</h4>
-                          <p className="text-sm text-green-600 dark:text-green-500 mt-1">
-                            Batch: {batchNumber} - {batchTitle} • {csvData.length} records mapped successfully
-                          </p>
                         </div>
                       </div>
                     </div>
