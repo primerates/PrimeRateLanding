@@ -705,7 +705,7 @@ export default function AdminMarketing() {
                   <CardTitle>Create New Batch</CardTitle>
                   <Button 
                     onClick={() => setStatesDialogOpen(true)}
-                    className="bg-green-600 hover:bg-green-700 text-white"
+                    className="bg-green-600 hover:bg-green-700 text-white scale-95"
                     data-testid="button-states"
                   >
                     {selectedStates.length > 0 ? `${selectedStates.length} States` : 'States'}
