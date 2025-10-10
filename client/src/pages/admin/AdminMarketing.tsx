@@ -186,6 +186,7 @@ export default function AdminMarketing() {
   
   // Cancel new batch confirmation dialog
   const [cancelBatchConfirmDialog, setCancelBatchConfirmDialog] = useState(false);
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   
   // Batch detail table sorting
   const [batchDetailSortColumn, setBatchDetailSortColumn] = useState<string>('');
@@ -550,6 +551,12 @@ export default function AdminMarketing() {
     resetForm();
   };
   
+  const handleCancelConfirm = () => {
+    setShowCreateBatch(false);
+    setCancelDialogOpen(false);
+    resetForm();
+  };
+  
   const handleBackToDashboard = () => {
     setShowRevertAnimation(true);
     setTimeout(() => {
@@ -849,11 +856,10 @@ export default function AdminMarketing() {
           <Tabs value={activeTab} className="w-full" onValueChange={(value) => {
             setActiveTab(value);
           }}>
-            <TabsList className="grid w-full grid-cols-5 bg-transparent h-auto p-0 relative border-b border-gray-200 group">
+            <TabsList className="grid w-full grid-cols-4 bg-transparent h-auto p-0 relative border-b border-gray-200 group">
               <TabsTrigger value="direct-mail" data-testid="tab-direct-mail" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Direct Mail</TabsTrigger>
               <TabsTrigger value="lead-vendor" data-testid="tab-lead-vendor" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Lead Vendor</TabsTrigger>
               <TabsTrigger value="social-media" data-testid="tab-social-media" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Social Media</TabsTrigger>
-              <TabsTrigger value="all-batches" data-testid="tab-all-batches" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Batch List</TabsTrigger>
               <TabsTrigger value="notes" data-testid="tab-notes" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Notes</TabsTrigger>
             </TabsList>
 
@@ -2415,894 +2421,6 @@ export default function AdminMarketing() {
             )}
           </TabsContent>
 
-
-          {/* ALL BATCHES TAB */}
-          <TabsContent value="all-batches" className="mt-6">
-            {/* First Card - Batch List */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Batch List</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {batches.length === 0 ? (
-                  <div className="text-center py-12">
-                    <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-                    <p className="text-muted-foreground">No batches created yet</p>
-                  </div>
-                ) : (
-                  <div className="overflow-x-auto flywheel-scroll">
-                    <table className="w-full border-collapse min-w-max">
-                      <thead>
-                        <tr className="border-b border-gray-300">
-                          <th 
-                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
-                            onClick={() => handleSort('createdDate')}
-                            data-testid="sort-date"
-                          >
-                            <div className="flex items-center gap-2">
-                              Created
-                              <ArrowUpDown className="h-4 w-4" />
-                            </div>
-                          </th>
-                          <th 
-                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
-                            onClick={() => handleSort('batchNumber')}
-                            data-testid="sort-batch-number"
-                          >
-                            <div className="flex items-center gap-2">
-                              Batch #
-                              <ArrowUpDown className="h-4 w-4" />
-                            </div>
-                          </th>
-                          <th 
-                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
-                            onClick={() => handleSort('batchTitle')}
-                            data-testid="sort-batch-title"
-                          >
-                            <div className="flex items-center gap-2">
-                              Batch Title
-                              <ArrowUpDown className="h-4 w-4" />
-                            </div>
-                          </th>
-                          <th 
-                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
-                            onClick={() => handleSort('category')}
-                            data-testid="sort-category"
-                          >
-                            <div className="flex items-center gap-2">
-                              Category
-                              <ArrowUpDown className="h-4 w-4" />
-                            </div>
-                          </th>
-                          <th 
-                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
-                            onClick={() => handleSort('dataType')}
-                            data-testid="sort-data-type"
-                          >
-                            <div className="flex items-center gap-2">
-                              Data
-                              <ArrowUpDown className="h-4 w-4" />
-                            </div>
-                          </th>
-                          <th 
-                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
-                            onClick={() => handleSort('delivery')}
-                            data-testid="sort-delivery"
-                          >
-                            <div className="flex items-center gap-2">
-                              Delivery
-                              <ArrowUpDown className="h-4 w-4" />
-                            </div>
-                          </th>
-                          <th 
-                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
-                            onClick={() => handleSort('tenYearBond')}
-                            data-testid="sort-ten-year-bond"
-                          >
-                            <div className="flex items-center gap-2">
-                              10 Yr Bond
-                              <ArrowUpDown className="h-4 w-4" />
-                            </div>
-                          </th>
-                          <th 
-                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
-                            onClick={() => handleSort('parRate')}
-                            data-testid="sort-par-rate"
-                          >
-                            <div className="flex items-center gap-2">
-                              Par Rate
-                              <ArrowUpDown className="h-4 w-4" />
-                            </div>
-                          </th>
-                          <th 
-                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
-                            onClick={() => handleSort('records')}
-                            data-testid="sort-records"
-                          >
-                            <div className="flex items-center gap-2">
-                              Records
-                              <ArrowUpDown className="h-4 w-4" />
-                            </div>
-                          </th>
-                          <th 
-                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
-                            onClick={() => handleSort('states')}
-                            data-testid="sort-states"
-                          >
-                            <div className="flex items-center gap-2">
-                              States
-                              <ArrowUpDown className="h-4 w-4" />
-                            </div>
-                          </th>
-                          <th 
-                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
-                            onClick={() => handleSort('cost')}
-                            data-testid="sort-cost"
-                          >
-                            <div className="flex items-center gap-2">
-                              Cost
-                              <ArrowUpDown className="h-4 w-4" />
-                            </div>
-                          </th>
-                          <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {sortedBatches.map((batch, index) => {
-                          // Calculate actual lead count by filtering out empty rows
-                          const actualLeadCount = batch.excelData.filter((row) => {
-                            return Object.values(row).some(value => value && value.toString().trim() !== '');
-                          }).length;
-                          
-                          // Format category display
-                          const getCategoryDisplay = (cat: string | undefined) => {
-                            if (!cat) return '-';
-                            switch(cat) {
-                              case 'va': return 'VA';
-                              case 'va-jumbo': return 'VA Jumbo';
-                              case 'conv': return 'Conv.';
-                              case 'conv-jumbo': return 'Conv. Jumbo';
-                              case 'fha': return 'FHA';
-                              default: return cat;
-                            }
-                          };
-                          
-                          // Format data speed display
-                          const getDataSpeedDisplay = (speed: string | undefined) => {
-                            if (!speed) return '-';
-                            switch(speed) {
-                              case 'trigger': return 'Trigger';
-                              case 'monthly': return 'Monthly';
-                              default: return speed;
-                            }
-                          };
-                          
-                          // Format delivery display
-                          const getDeliveryDisplay = (del: string | undefined) => {
-                            if (!del) return '-';
-                            switch(del) {
-                              case 'first-class': return 'First Class';
-                              case 'standard': return 'Standard';
-                              case 'bulk': return 'Bulk';
-                              default: return del;
-                            }
-                          };
-                          
-                          return (
-                            <tr key={batch.id} className={`border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'}`}>
-                              <td className="p-3 whitespace-nowrap">{new Date(batch.createdDate).toLocaleDateString()}</td>
-                              <td className="p-3 whitespace-nowrap">
-                                <button
-                                  onClick={() => {
-                                    if (selectedBatch?.id === batch.id) {
-                                      setSelectedBatch(null);
-                                    } else {
-                                      setSelectedBatch(batch);
-                                    }
-                                  }}
-                                  className="text-primary hover:underline cursor-pointer font-medium"
-                                  data-testid={`button-view-${batch.id}`}
-                                >
-                                  {batch.batchNumber}
-                                </button>
-                              </td>
-                              <td className="p-3 whitespace-nowrap">
-                                <button
-                                  onClick={() => {
-                                    if (selectedBatch?.id === batch.id) {
-                                      setSelectedBatch(null);
-                                    } else {
-                                      setSelectedBatch(batch);
-                                    }
-                                  }}
-                                  className="text-primary hover:underline cursor-pointer font-medium"
-                                  data-testid={`button-view-title-${batch.id}`}
-                                >
-                                  {batch.batchTitle}
-                                </button>
-                              </td>
-                              <td className="p-3 whitespace-nowrap">{batch.category ? getCategoryDisplay(batch.category) : '-'}</td>
-                              <td className="p-3 whitespace-nowrap">{batch.dataType ? getDataSpeedDisplay(batch.dataType) : '-'}</td>
-                              <td className="p-3 whitespace-nowrap">{getDeliveryDisplay(batch.delivery)}</td>
-                              <td className="p-3 whitespace-nowrap">{batch.tenYearBond || '-'}</td>
-                              <td className="p-3 whitespace-nowrap">{batch.parRate || '-'}</td>
-                              <td className="p-3 whitespace-nowrap">{actualLeadCount}</td>
-                              <td className="p-3 whitespace-nowrap">
-                                {batch.states && batch.states.length > 0 ? `${batch.states.length} States` : '-'}
-                              </td>
-                              <td className="p-3 whitespace-nowrap">
-                                {(() => {
-                                  const dataCost = parseInt((batch.dataCost || '0').replace(/[^\d]/g, ''), 10);
-                                  const mailCost = parseInt((batch.mailCost || '0').replace(/[^\d]/g, ''), 10);
-                                  const printCost = parseInt((batch.printCost || '0').replace(/[^\d]/g, ''), 10);
-                                  const supplyCost = parseInt((batch.supplyCost || '0').replace(/[^\d]/g, ''), 10);
-                                  const totalCost = dataCost + mailCost + printCost + supplyCost;
-                                  return totalCost > 0 ? `$${totalCost.toLocaleString()}` : '-';
-                                })()}
-                              </td>
-                              <td className="p-3 whitespace-nowrap">
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={() => handleDeleteBatch(batch.id)}
-                                      data-testid={`button-delete-${batch.id}`}
-                                      className="group"
-                                    >
-                                      <Trash2 className="h-4 w-4 transition-colors group-hover:text-red-600" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    Delete Batch?
-                                  </TooltipContent>
-                                </Tooltip>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Second Card - Batch Details (shows when batch is selected) */}
-            {selectedBatch && selectedBatch.excelData.length > 0 && (() => {
-              // Filter out rows with no data
-              const filteredRows = sortedBatchDetails.filter((row) => {
-                return Object.values(row).some(value => value && value.toString().trim() !== '');
-              });
-              
-              // Filter out columns that have no data in any row, and also exclude repetitive columns
-              const columnsWithData = Object.keys(selectedBatch.excelData[0]).filter((column) => {
-                // Skip address column (repetitive - we show it separately)
-                if (column === 'address') {
-                  return false;
-                }
-                // Skip any column that looks like "reference" since we already have referenceNumber
-                if (column !== 'referenceNumber' && column.toLowerCase().includes('ref')) {
-                  return false;
-                }
-                return filteredRows.some(row => {
-                  const value = row[column];
-                  return value && value.toString().trim() !== '';
-                });
-              });
-
-              return (
-                <motion.div
-                  initial={{ opacity: 0, height: 0, overflow: 'hidden' }}
-                  animate={{ opacity: 1, height: 'auto', overflow: 'visible' }}
-                  transition={{ duration: 0.5, ease: 'easeOut' }}
-                  className="mt-6"
-                >
-                  <Card>
-                    <motion.div
-                      initial={{ opacity: 0, y: -20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: 0.2, ease: 'easeOut' }}
-                    >
-                      <CardHeader>
-                        <div className="space-y-4">
-                          <div className="flex items-center justify-between gap-4">
-                            <CardTitle className="flex items-center gap-2">
-                              {isEditingTitle ? (
-                                <>
-                                  <Input 
-                                    value={editedTitle}
-                                    onChange={(e) => setEditedTitle(e.target.value)}
-                                    className="flex-1 max-w-md"
-                                    data-testid="input-edit-batch-title"
-                                  />
-                                  <Button 
-                                    size="icon" 
-                                    variant="ghost" 
-                                    onClick={handleSaveBatchTitle}
-                                    data-testid="button-save-title"
-                                  >
-                                    <Check className="h-4 w-4 text-green-600" />
-                                  </Button>
-                                  <Button 
-                                    size="icon" 
-                                    variant="ghost" 
-                                    onClick={handleCancelEdit}
-                                    data-testid="button-cancel-edit"
-                                  >
-                                    <X className="h-4 w-4 text-red-600" />
-                                  </Button>
-                                </>
-                              ) : (
-                                <>
-                                  <span>{selectedBatch.batchTitle}</span>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Button 
-                                        size="icon" 
-                                        variant="ghost" 
-                                        onClick={() => setIsBatchDetailsExpanded(!isBatchDetailsExpanded)}
-                                        data-testid="button-toggle-batch-details"
-                                      >
-                                        {isBatchDetailsExpanded ? (
-                                          <EyeOff className="h-4 w-4 text-green-600" />
-                                        ) : (
-                                          <Eye className="h-4 w-4 text-green-600" />
-                                        )}
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                    {isBatchDetailsExpanded ? 'Hide' : 'Show'} Batch Details
-                                  </TooltipContent>
-                                </Tooltip>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button 
-                                      size="icon" 
-                                      variant="ghost" 
-                                      onClick={() => {
-                                        setIsEditingTitle(true);
-                                        setEditedTitle(selectedBatch.batchTitle);
-                                      }}
-                                      data-testid="button-edit-title"
-                                    >
-                                      <Pencil className="h-4 w-4 text-green-600" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    Edit Batch Title
-                                  </TooltipContent>
-                                </Tooltip>
-                              </>
-                            )}
-                          </CardTitle>
-                          
-                          <div className="flex items-center gap-2">
-                            <Button 
-                              onClick={() => setBatchStatesDialogOpen(true)}
-                              className="bg-green-600 hover:bg-green-700 text-white scale-95"
-                              data-testid="button-batch-states"
-                            >
-                              {selectedBatch.states && selectedBatch.states.length > 0 
-                                ? `${selectedBatch.states.length} States` 
-                                : 'States'}
-                            </Button>
-                            
-                            {isBatchDetailsExpanded && (
-                              <>
-                                {isEditingBatchDetails ? (
-                                  <>
-                                    <Button 
-                                      size="icon" 
-                                      variant="ghost" 
-                                      onClick={handleSaveBatchDetails}
-                                      data-testid="button-save-batch-details"
-                                    >
-                                      <Check className="h-4 w-4 text-green-600" />
-                                    </Button>
-                                    <Button 
-                                      size="icon" 
-                                      variant="ghost" 
-                                      onClick={handleCancelBatchEdit}
-                                      data-testid="button-cancel-batch-edit"
-                                    >
-                                      <X className="h-4 w-4 text-red-600" />
-                                    </Button>
-                                  </>
-                                ) : (
-                                  <Button 
-                                    size="icon" 
-                                    variant="ghost" 
-                                    onClick={handleEditBatchDetails}
-                                    data-testid="button-edit-batch-details"
-                                  >
-                                    <Pencil className="h-4 w-4 text-green-600" />
-                                  </Button>
-                                )}
-                              </>
-                            )}
-                          </div>
-                        </div>
-                          
-                          {/* Collapsible Batch Details */}
-                          {isBatchDetailsExpanded && (
-                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: 'auto' }}
-                              exit={{ opacity: 0, height: 0 }}
-                              transition={{ duration: 0.3 }}
-                              className="space-y-3 pt-2 border-t"
-                            >
-                              {/* Row 1: Batch #, Title, 10 Year Bond, Par Rate */}
-                              <div className="grid grid-cols-4 gap-4 pt-3">
-                                <div>
-                                  <Label className="text-xs text-muted-foreground">Batch #</Label>
-                                  {isEditingBatchDetails ? (
-                                    <Input 
-                                      value={editedBatchDetails.batchNumber || ''}
-                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, batchNumber: e.target.value})}
-                                      className="h-8 mt-1"
-                                    />
-                                  ) : (
-                                    <p className="font-medium">{selectedBatch.batchNumber}</p>
-                                  )}
-                                </div>
-                                <div>
-                                  <Label className="text-xs text-muted-foreground">Batch Title</Label>
-                                  {isEditingBatchDetails ? (
-                                    <Input 
-                                      value={editedBatchDetails.batchTitle || ''}
-                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, batchTitle: e.target.value})}
-                                      className="h-8 mt-1"
-                                    />
-                                  ) : (
-                                    <p className="font-medium">{selectedBatch.batchTitle}</p>
-                                  )}
-                                </div>
-                                <div>
-                                  <Label className="text-xs text-muted-foreground">10 Year Bond</Label>
-                                  {isEditingBatchDetails ? (
-                                    <Input 
-                                      value={editedBatchDetails.tenYearBond || ''}
-                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, tenYearBond: e.target.value})}
-                                      className="h-8 mt-1"
-                                    />
-                                  ) : (
-                                    <p className="font-medium">{selectedBatch.tenYearBond || '-'}</p>
-                                  )}
-                                </div>
-                                <div>
-                                  <Label className="text-xs text-muted-foreground">Par Rate</Label>
-                                  {isEditingBatchDetails ? (
-                                    <Input 
-                                      value={editedBatchDetails.parRate || ''}
-                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, parRate: e.target.value})}
-                                      className="h-8 mt-1"
-                                    />
-                                  ) : (
-                                    <p className="font-medium">{selectedBatch.parRate || '-'}</p>
-                                  )}
-                                </div>
-                              </div>
-                              
-                              {/* Row 2: Category, Data Speed, Delivery, Duration to First Call */}
-                              <div className="grid grid-cols-4 gap-4">
-                                <div>
-                                  <Label className="text-xs text-muted-foreground">Loan Category</Label>
-                                  {isEditingBatchDetails ? (
-                                    <Input 
-                                      value={editedBatchDetails.category || ''}
-                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, category: e.target.value})}
-                                      className="h-8 mt-1"
-                                    />
-                                  ) : (
-                                    <p className="font-medium">
-                                      {selectedBatch.category ? (() => {
-                                        switch(selectedBatch.category) {
-                                          case 'va': return 'VA';
-                                          case 'va-jumbo': return 'VA Jumbo';
-                                          case 'conv': return 'Conv.';
-                                          case 'conv-jumbo': return 'Conv. Jumbo';
-                                          case 'fha': return 'FHA';
-                                          default: return selectedBatch.category;
-                                        }
-                                      })() : '-'}
-                                    </p>
-                                  )}
-                                </div>
-                                <div>
-                                  <Label className="text-xs text-muted-foreground">Data Speed</Label>
-                                  {isEditingBatchDetails ? (
-                                    <Input 
-                                      value={editedBatchDetails.dataType || ''}
-                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, dataType: e.target.value})}
-                                      className="h-8 mt-1"
-                                    />
-                                  ) : (
-                                    <p className="font-medium">
-                                      {selectedBatch.dataType ? (selectedBatch.dataType === 'trigger' ? 'Trigger' : 'Monthly') : '-'}
-                                    </p>
-                                  )}
-                                </div>
-                                <div>
-                                  <Label className="text-xs text-muted-foreground">Delivery</Label>
-                                  {isEditingBatchDetails ? (
-                                    <Input 
-                                      value={editedBatchDetails.delivery || ''}
-                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, delivery: e.target.value})}
-                                      className="h-8 mt-1"
-                                    />
-                                  ) : (
-                                    <p className="font-medium">
-                                      {selectedBatch.delivery ? selectedBatch.delivery.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : '-'}
-                                    </p>
-                                  )}
-                                </div>
-                                <div>
-                                  <Label className="text-xs text-muted-foreground">Duration to First Call</Label>
-                                  {isEditingBatchDetails ? (
-                                    <Input 
-                                      value={editedBatchDetails.durationToFirstCall || ''}
-                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, durationToFirstCall: e.target.value})}
-                                      className="h-8 mt-1"
-                                    />
-                                  ) : (
-                                    <p className="font-medium">{selectedBatch.durationToFirstCall || '-'}</p>
-                                  )}
-                                </div>
-                              </div>
-                              
-                              {/* Row 3: Date Fields */}
-                              <div className="grid grid-cols-4 gap-4">
-                                <div>
-                                  <Label className="text-xs text-muted-foreground">Data Date</Label>
-                                  {isEditingBatchDetails ? (
-                                    <Input 
-                                      value={editedBatchDetails.dataDate || ''}
-                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, dataDate: e.target.value})}
-                                      className="h-8 mt-1"
-                                      placeholder="MM/DD/YYYY"
-                                    />
-                                  ) : (
-                                    <p className="font-medium">{selectedBatch.dataDate || '-'}</p>
-                                  )}
-                                </div>
-                                <div>
-                                  <Label className="text-xs text-muted-foreground">Print Date</Label>
-                                  {isEditingBatchDetails ? (
-                                    <Input 
-                                      value={editedBatchDetails.printDate || ''}
-                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, printDate: e.target.value})}
-                                      className="h-8 mt-1"
-                                      placeholder="MM/DD/YYYY"
-                                    />
-                                  ) : (
-                                    <p className="font-medium">{selectedBatch.printDate || '-'}</p>
-                                  )}
-                                </div>
-                                <div>
-                                  <Label className="text-xs text-muted-foreground">Mail Date</Label>
-                                  {isEditingBatchDetails ? (
-                                    <Input 
-                                      value={editedBatchDetails.newMailDate || ''}
-                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, newMailDate: e.target.value})}
-                                      className="h-8 mt-1"
-                                      placeholder="MM/DD/YYYY"
-                                    />
-                                  ) : (
-                                    <p className="font-medium">{selectedBatch.newMailDate || '-'}</p>
-                                  )}
-                                </div>
-                                <div>
-                                  <Label className="text-xs text-muted-foreground">First Call</Label>
-                                  {isEditingBatchDetails ? (
-                                    <Input 
-                                      value={editedBatchDetails.mailDate || ''}
-                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, mailDate: e.target.value})}
-                                      className="h-8 mt-1"
-                                      placeholder="MM/DD/YYYY"
-                                    />
-                                  ) : (
-                                    <p className="font-medium">{selectedBatch.mailDate || '-'}</p>
-                                  )}
-                                </div>
-                              </div>
-                              
-                              <div className="h-4" style={{ borderTop: '1px solid hsl(var(--border))', paddingTop: '24px' }}></div>
-                              
-                              {/* Row 4: Vendors */}
-                              <div className="grid grid-cols-4 gap-4">
-                                <div>
-                                  <Label className="text-xs text-muted-foreground">Data Vendor</Label>
-                                  {isEditingBatchDetails ? (
-                                    <Input 
-                                      value={editedBatchDetails.dataSource || ''}
-                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, dataSource: e.target.value})}
-                                      className="h-8 mt-1"
-                                    />
-                                  ) : (
-                                    <p className="font-medium">{selectedBatch.dataSource ? (selectedBatch.dataSource === 'dlx' ? 'DLX' : selectedBatch.dataSource) : '-'}</p>
-                                  )}
-                                </div>
-                                <div>
-                                  <Label className="text-xs text-muted-foreground">Print Vendor</Label>
-                                  {isEditingBatchDetails ? (
-                                    <Input 
-                                      value={editedBatchDetails.printVendor || ''}
-                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, printVendor: e.target.value})}
-                                      className="h-8 mt-1"
-                                    />
-                                  ) : (
-                                    <p className="font-medium">
-                                      {selectedBatch.printVendor ? (selectedBatch.printVendor === 'in-house' ? 'In House' : selectedBatch.printVendor === 'tbd' ? 'TBD' : selectedBatch.printVendor) : '-'}
-                                    </p>
-                                  )}
-                                </div>
-                                <div>
-                                  <Label className="text-xs text-muted-foreground">Mail Vendor</Label>
-                                  {isEditingBatchDetails ? (
-                                    <Input 
-                                      value={editedBatchDetails.mailVendor || ''}
-                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, mailVendor: e.target.value})}
-                                      className="h-8 mt-1"
-                                    />
-                                  ) : (
-                                    <p className="font-medium">
-                                      {selectedBatch.mailVendor ? (selectedBatch.mailVendor === 'in-house' ? 'In House' : selectedBatch.mailVendor === 'tbd' ? 'TBD' : selectedBatch.mailVendor) : '-'}
-                                    </p>
-                                  )}
-                                </div>
-                                <div>
-                                  <Label className="text-xs text-muted-foreground">Supply Vendor</Label>
-                                  {isEditingBatchDetails ? (
-                                    <Input 
-                                      value={editedBatchDetails.supplyVendor || ''}
-                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, supplyVendor: e.target.value})}
-                                      className="h-8 mt-1"
-                                    />
-                                  ) : (
-                                    <p className="font-medium">
-                                      {selectedBatch.supplyVendor ? (selectedBatch.supplyVendor === 'in-house' ? 'In House' : selectedBatch.supplyVendor === 'tbd' ? 'TBD' : selectedBatch.supplyVendor) : '-'}
-                                    </p>
-                                  )}
-                                </div>
-                              </div>
-                              
-                              {/* Row 5: Costs */}
-                              <div className="grid grid-cols-4 gap-4">
-                                <div>
-                                  <Label className="text-xs text-muted-foreground">Data Cost</Label>
-                                  {isEditingBatchDetails ? (
-                                    <Input 
-                                      value={editedBatchDetails.dataCost || ''}
-                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, dataCost: e.target.value})}
-                                      className="h-8 mt-1"
-                                    />
-                                  ) : (
-                                    <p className="font-medium">
-                                      {selectedBatch.dataCost && parseInt(selectedBatch.dataCost) ? `$${parseInt(selectedBatch.dataCost).toLocaleString()}` : '-'}
-                                    </p>
-                                  )}
-                                </div>
-                                <div>
-                                  <Label className="text-xs text-muted-foreground">Mail Cost</Label>
-                                  {isEditingBatchDetails ? (
-                                    <Input 
-                                      value={editedBatchDetails.mailCost || ''}
-                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, mailCost: e.target.value})}
-                                      className="h-8 mt-1"
-                                    />
-                                  ) : (
-                                    <p className="font-medium">
-                                      {selectedBatch.mailCost && parseInt(selectedBatch.mailCost) ? `$${parseInt(selectedBatch.mailCost).toLocaleString()}` : '-'}
-                                    </p>
-                                  )}
-                                </div>
-                                <div>
-                                  <Label className="text-xs text-muted-foreground">Print Cost</Label>
-                                  {isEditingBatchDetails ? (
-                                    <Input 
-                                      value={editedBatchDetails.printCost || ''}
-                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, printCost: e.target.value})}
-                                      className="h-8 mt-1"
-                                    />
-                                  ) : (
-                                    <p className="font-medium">
-                                      {selectedBatch.printCost && parseInt(selectedBatch.printCost) ? `$${parseInt(selectedBatch.printCost).toLocaleString()}` : '-'}
-                                    </p>
-                                  )}
-                                </div>
-                                <div>
-                                  <Label className="text-xs text-muted-foreground">Supply Cost</Label>
-                                  {isEditingBatchDetails ? (
-                                    <Input 
-                                      value={editedBatchDetails.supplyCost || ''}
-                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, supplyCost: e.target.value})}
-                                      className="h-8 mt-1"
-                                    />
-                                  ) : (
-                                    <p className="font-medium">
-                                      {selectedBatch.supplyCost && parseInt(selectedBatch.supplyCost) ? `$${parseInt(selectedBatch.supplyCost).toLocaleString()}` : '-'}
-                                    </p>
-                                  )}
-                                </div>
-                              </div>
-                            </motion.div>
-                          )}
-                        </div>
-                      </CardHeader>
-                    </motion.div>
-                    <CardContent className="pt-6">
-                    <div className="border-2 border-blue-400 rounded-lg">
-                      {/* Top Scrollbar */}
-                      <div 
-                        className="overflow-x-scroll w-full" 
-                        style={{ scrollbarWidth: 'auto', height: '20px' }}
-                        onScroll={(e) => {
-                          const bottomScroll = document.getElementById('batch-table-scroll');
-                          if (bottomScroll) {
-                            bottomScroll.scrollLeft = e.currentTarget.scrollLeft;
-                          }
-                        }}
-                        id="top-scrollbar"
-                      >
-                        <div style={{ width: 'max-content', height: '1px' }}>
-                          {/* Spacer to create scrollbar width matching table */}
-                          <table className="w-max border-collapse invisible">
-                            <thead>
-                              <tr>
-                                {columnsWithData.map((column) => (
-                                  <th key={column} className="p-3 whitespace-nowrap">
-                                    <div className="flex items-center gap-2">
-                                      {formatColumnName(column)}
-                                      <ArrowUpDown className="h-4 w-4" />
-                                    </div>
-                                  </th>
-                                ))}
-                                {/* Empty spacer column */}
-                                <th className="p-3" style={{ width: '200px' }}></th>
-                              </tr>
-                            </thead>
-                          </table>
-                        </div>
-                      </div>
-
-                      {/* Actual Table */}
-                      <style>{`
-                        #batch-table-scroll::-webkit-scrollbar {
-                          display: none;
-                        }
-                        #batch-table-scroll {
-                          -ms-overflow-style: none;
-                          scrollbar-width: none;
-                        }
-                        #top-scrollbar::-webkit-scrollbar {
-                          height: 12px;
-                        }
-                        #top-scrollbar::-webkit-scrollbar-track {
-                          background: transparent;
-                        }
-                        #top-scrollbar::-webkit-scrollbar-thumb {
-                          background-color: #1a3373;
-                          border-radius: 6px;
-                          border: 2px solid transparent;
-                          background-clip: padding-box;
-                        }
-                        #top-scrollbar::-webkit-scrollbar-thumb:hover {
-                          background-color: #152a5e;
-                        }
-                        #top-scrollbar::-webkit-scrollbar-button {
-                          width: 0;
-                          height: 0;
-                          display: none;
-                          -webkit-appearance: none;
-                          background: none;
-                        }
-                        #top-scrollbar::-webkit-scrollbar-button:single-button {
-                          display: none;
-                          width: 0;
-                          height: 0;
-                          -webkit-appearance: none;
-                          background: none;
-                        }
-                        #top-scrollbar::-webkit-scrollbar-button:horizontal:end:increment {
-                          display: none;
-                          width: 0;
-                          height: 0;
-                          -webkit-appearance: none;
-                          background: none;
-                        }
-                        #top-scrollbar::-webkit-scrollbar-button:horizontal:start:decrement {
-                          display: none;
-                          width: 0;
-                          height: 0;
-                          -webkit-appearance: none;
-                          background: none;
-                        }
-                        #top-scrollbar::-webkit-scrollbar-button:start:decrement,
-                        #top-scrollbar::-webkit-scrollbar-button:end:increment {
-                          display: none;
-                        }
-                        #top-scrollbar::-webkit-scrollbar-corner {
-                          background: transparent;
-                          display: none;
-                        }
-                        
-                        /* Sticky column for firstName */
-                        .sticky-col-firstName {
-                          position: sticky;
-                          left: 0;
-                          z-index: 20;
-                          box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
-                        }
-                        .sticky-header {
-                          z-index: 30 !important;
-                        }
-                      `}</style>
-                      <div 
-                        className="overflow-x-scroll w-full max-h-[600px] overflow-y-auto" 
-                        onScroll={(e) => {
-                          const topScroll = document.getElementById('top-scrollbar');
-                          if (topScroll) {
-                            topScroll.scrollLeft = e.currentTarget.scrollLeft;
-                          }
-                        }}
-                        id="batch-table-scroll"
-                      >
-                        <table className="w-max border-collapse">
-                          <thead className="sticky top-0 z-10">
-                            <tr className="border-b border-gray-300">
-                              {columnsWithData.map((column, colIdx) => (
-                                  <th 
-                                    key={column}
-                                    className={`text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap ${column === 'firstName' ? 'sticky-col-firstName sticky-header' : ''}`}
-                                    onClick={() => handleBatchDetailSort(column)}
-                                    data-testid={`sort-${column}`}
-                                  >
-                                    <div className="flex items-center gap-2">
-                                      {formatColumnName(column)}
-                                      <ArrowUpDown className="h-4 w-4" />
-                                    </div>
-                                  </th>
-                              ))}
-                              {/* Empty spacer column */}
-                              <th className="p-3 bg-gray-200 dark:bg-gray-700" style={{ width: '200px' }}></th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {filteredRows.map((row, idx) => (
-                              <tr key={idx} className={`border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'}`}>
-                                {columnsWithData.map((column) => (
-                                  <td 
-                                    key={column} 
-                                    className={`p-3 whitespace-nowrap ${column === 'firstName' ? 'sticky-col-firstName' : ''}`}
-                                    style={column === 'firstName' ? {
-                                      backgroundColor: idx % 2 === 0 
-                                        ? 'hsl(var(--background))' 
-                                        : 'hsl(var(--muted) / 0.3)'
-                                    } : {}}
-                                  >
-                                    {row[column] || '-'}
-                                  </td>
-                                ))}
-                                {/* Empty spacer cell */}
-                                <td className="p-3" style={{ width: '200px' }}></td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-4">
-                      Showing {filteredRows.length} records with {columnsWithData.length} columns
-                    </p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-              );
-            })()}
-          </TabsContent>
-
           {/* NOTES TAB */}
           <TabsContent value="notes" className="mt-6">
             <Card>
@@ -3357,192 +2475,149 @@ export default function AdminMarketing() {
               Choose which states this batch covers. Selected: {selectedStates.length}
             </DialogDescription>
           </DialogHeader>
-          <div className="grid grid-cols-3 gap-3 py-4">
-            {US_STATES.map((state) => {
-              const isSelected = selectedStates.includes(state.abbr);
-              return (
-                <Button
-                  key={state.abbr}
-                  variant={isSelected ? "default" : "outline"}
-                  className={`justify-start ${isSelected ? 'bg-green-600 hover:bg-green-700' : ''}`}
-                  onClick={() => {
-                    if (isSelected) {
-                      setSelectedStates(selectedStates.filter(s => s !== state.abbr));
-                    } else {
+          <div className="grid grid-cols-2 gap-3 py-4">
+            {US_STATES.map((state) => (
+              <div key={state.abbr} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`state-${state.abbr}`}
+                  checked={selectedStates.includes(state.abbr)}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
                       setSelectedStates([...selectedStates, state.abbr]);
+                    } else {
+                      setSelectedStates(selectedStates.filter(s => s !== state.abbr));
                     }
                   }}
-                  data-testid={`button-state-${state.abbr}`}
+                  data-testid={`checkbox-state-${state.abbr}`}
+                />
+                <label
+                  htmlFor={`state-${state.abbr}`}
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
                 >
-                  <span className="font-semibold mr-2">{state.abbr}</span>
-                  <span className="text-sm">{state.name}</span>
-                </Button>
-              );
-            })}
+                  {state.name}
+                </label>
+              </div>
+            ))}
           </div>
-          <DialogFooter>
-            <Button 
-              variant="outline" 
-              onClick={() => setSelectedStates([])}
-              data-testid="button-clear-states"
-            >
-              Clear All
-            </Button>
-            <Button 
+          <div className="flex justify-end gap-2 mt-4">
+            <Button
+              variant="outline"
               onClick={() => setStatesDialogOpen(false)}
-              className="bg-green-600 hover:bg-green-700"
-              data-testid="button-done-states"
+              data-testid="button-cancel-states"
             >
-              Done
+              Cancel
             </Button>
-          </DialogFooter>
+            <Button
+              onClick={() => setStatesDialogOpen(false)}
+              className="bg-green-600 hover:bg-green-700 text-white"
+              data-testid="button-confirm-states"
+            >
+              Confirm
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
 
-      {/* Batch States Display Dialog (Read-only) */}
+      {/* Batch States Selection Dialog */}
       <Dialog open={batchStatesDialogOpen} onOpenChange={setBatchStatesDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>States for This Batch</DialogTitle>
+            <DialogTitle>Edit States for This Batch</DialogTitle>
             <DialogDescription>
-              {selectedBatch?.states && selectedBatch.states.length > 0 
-                ? `This batch covers ${selectedBatch.states.length} state${selectedBatch.states.length > 1 ? 's' : ''}`
-                : 'No states selected for this batch'}
+              Choose which states this batch covers. Selected: {selectedBatch?.states?.length || 0}
             </DialogDescription>
           </DialogHeader>
-          <div className="grid grid-cols-3 gap-3 py-4">
-            {selectedBatch?.states && selectedBatch.states.length > 0 ? (
-              US_STATES.map((state) => {
-                const isSelected = selectedBatch.states.includes(state.abbr);
-                return isSelected ? (
-                  <div
-                    key={state.abbr}
-                    className="flex items-center gap-2 p-3 rounded-md bg-green-600 text-white"
-                    data-testid={`batch-state-${state.abbr}`}
-                  >
-                    <span className="font-semibold">{state.abbr}</span>
-                    <span className="text-sm">{state.name}</span>
-                  </div>
-                ) : null;
-              })
-            ) : (
-              <p className="col-span-3 text-center text-muted-foreground">No states selected</p>
-            )}
+          <div className="grid grid-cols-2 gap-3 py-4">
+            {US_STATES.map((state) => (
+              <div key={state.abbr} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`batch-state-${state.abbr}`}
+                  checked={selectedBatch?.states?.includes(state.abbr) || false}
+                  onCheckedChange={(checked) => {
+                    if (!selectedBatch) return;
+                    const currentStates = selectedBatch.states || [];
+                    const newStates = checked
+                      ? [...currentStates, state.abbr]
+                      : currentStates.filter(s => s !== state.abbr);
+                    
+                    setBatches(batches.map(b =>
+                      b.id === selectedBatch.id ? { ...b, states: newStates } : b
+                    ));
+                    setSelectedBatch({ ...selectedBatch, states: newStates });
+                  }}
+                  data-testid={`checkbox-batch-state-${state.abbr}`}
+                />
+                <label
+                  htmlFor={`batch-state-${state.abbr}`}
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                >
+                  {state.name}
+                </label>
+              </div>
+            ))}
           </div>
-          <DialogFooter>
-            <Button 
+          <div className="flex justify-end gap-2 mt-4">
+            <Button
+              variant="outline"
               onClick={() => setBatchStatesDialogOpen(false)}
-              className="bg-green-600 hover:bg-green-700"
-              data-testid="button-close-batch-states"
+              data-testid="button-cancel-batch-states"
             >
-              Close
+              Cancel
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* No States Selected Warning Dialog */}
-      <Dialog open={noStatesWarningDialog} onOpenChange={setNoStatesWarningDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>State Selection Required</DialogTitle>
-            <DialogDescription>
-              Please select a state using the green button before uploading your documents.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button 
-              onClick={() => setNoStatesWarningDialog(false)}
-              data-testid="button-close-warning"
+            <Button
+              onClick={() => setBatchStatesDialogOpen(false)}
+              className="bg-green-600 hover:bg-green-700 text-white"
+              data-testid="button-confirm-batch-states"
             >
-              OK
+              Confirm
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteConfirmDialog} onOpenChange={setDeleteConfirmDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 text-red-600" />
-              Delete Batch Confirmation
-            </DialogTitle>
-            <DialogDescription className="pt-4">
-              <div className="font-semibold text-foreground mb-2">
-                Are you sure you want to delete this batch?
-              </div>
-              <div className="text-muted-foreground">
-                Clicking Yes will permanently remove all items in this batch. This action cannot be undone.
-              </div>
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="gap-2">
-            <Button 
-              variant="outline" 
-              onClick={cancelDelete}
-              data-testid="button-cancel-delete"
-            >
-              Go Back
-            </Button>
-            <Button 
-              variant="destructive" 
-              onClick={confirmDelete}
-              data-testid="button-confirm-delete"
-            >
-              Yes, Delete
-            </Button>
-          </DialogFooter>
+          </div>
         </DialogContent>
       </Dialog>
 
       {/* Cancel New Batch Confirmation Dialog */}
-      <AlertDialog open={cancelBatchConfirmDialog} onOpenChange={setCancelBatchConfirmDialog}>
-        <AlertDialogContent data-testid="dialog-cancel-new-batch">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Cancel new batch?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will close the batch creation form without saving.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel 
-              onClick={() => setCancelBatchConfirmDialog(false)}
-              data-testid="button-go-back-cancel"
+      <Dialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Cancel new batch?</DialogTitle>
+          </DialogHeader>
+          <div className="flex justify-end gap-2 mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setCancelDialogOpen(false)}
+              data-testid="button-go-back"
             >
               Go Back
-            </AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={() => {
-                setShowCreateBatch(false);
-                setCancelBatchConfirmDialog(false);
-              }}
+            </Button>
+            <Button
+              onClick={handleCancelConfirm}
+              className="bg-red-600 hover:bg-red-700 text-white"
               data-testid="button-yes-cancel"
-              className="bg-red-600 hover:bg-red-700"
             >
               Yes
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
-      {/* Card Already Open Warning Dialog */}
-      <AlertDialog open={cardAlreadyOpenDialog} onOpenChange={setCardAlreadyOpenDialog}>
-        <AlertDialogContent data-testid="dialog-card-already-open">
-          <AlertDialogHeader>
-            <AlertDialogTitle>A "Create New Batch" card is currently open.</AlertDialogTitle>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction 
+      {/* Card Already Open Alert Dialog */}
+      <Dialog open={cardAlreadyOpenDialog} onOpenChange={setCardAlreadyOpenDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Notice</DialogTitle>
+          </DialogHeader>
+          <p>A "Create New Batch" card is currently open.</p>
+          <div className="flex justify-end gap-2 mt-4">
+            <Button
               onClick={() => setCardAlreadyOpenDialog(false)}
-              data-testid="button-ok-card-already-open"
+              data-testid="button-ok"
             >
               OK
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
     </TooltipProvider>
   );
 }

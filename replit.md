@@ -70,14 +70,14 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 - **Save**: Save current work with rotating animation
 
 ### Navigation Structure
-- **Single Tab Bar**: Five tabs always visible for seamless navigation
-  - **Direct Mail**: Query card with filtering options and integrated batch creation
+- **Single Tab Bar**: Four tabs always visible for seamless navigation
+  - **Direct Mail**: Query card with filtering options, integrated batch creation, batch list (when Data Category = "Show All"), and batch details display
   - **Lead Vendor**: Vendor management (coming soon)
   - **Social Media**: Social media marketing tools (coming soon)
-  - **Batch List**: Comprehensive table of all batches with sorting
   - **Notes**: Sticky notes and annotations (coming soon)
 - ~~**Stats**: Removed from menu~~ (previously showed campaign statistics)
 - ~~**Create Batch**: Removed from menu~~ (functionality moved to Direct Mail tab)
+- ~~**Batch List**: Removed from menu~~ (functionality moved to Direct Mail tab - displays when Data Category = "Show All")
 
 ### Direct Mail Tab
 - **Stats Card**: Overview card displaying statistics (coming soon)
