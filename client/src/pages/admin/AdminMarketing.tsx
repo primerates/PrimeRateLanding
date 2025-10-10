@@ -1008,7 +1008,7 @@ export default function AdminMarketing() {
                       <Button 
                         onClick={() => setStatesDialogOpen(true)}
                         size="sm"
-                        className="bg-blue-400 text-white hover:bg-blue-500 scale-90 border-0"
+                        className="bg-teal-500 text-white hover:bg-teal-600 scale-90 border-0"
                         data-testid="button-states-direct-mail"
                       >
                         {selectedStates.length > 0 ? `${selectedStates.length} States` : 'States'}
