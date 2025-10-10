@@ -1461,7 +1461,7 @@ export default function AdminAddComment() {
                               <td className="p-3" data-testid={`cell-republish-${sortedIndex}`}>
                                 <Button
                                   size="sm"
-                                  variant="outline"
+                                  className="bg-green-600 text-white hover:bg-green-700"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleRepublishPost(originalIndex);
