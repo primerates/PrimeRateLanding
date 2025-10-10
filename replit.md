@@ -153,8 +153,8 @@ The Comments & Posts Management system (`/admin/add-comment`) provides a compreh
 ### Tile Layout
 The Admin Dashboard displays tiles organized in rows:
 - **Row 1 (Lead Journey)**: Lead → Quote → Loan Prep → Loan → Funded
-- **Row 2 (Operations)**: Marketing, Reports, Library, Settings
-- **Row 3 (Management)**: Vendors, Staff, Partners
+- **Row 2 (Operations)**: Marketing, Reports, Library, Audit, Settings
+- **Row 3 (Management)**: Vendors, Staff, Partners, Records, Vault
 
 ## Admin Loan Management System
 
