@@ -10,10 +10,9 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
-import { RotateCcw, Monitor, Save, Upload, Plus, BarChart3, FileText, Trash2, Eye, EyeOff, ArrowUpDown, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Pencil, Check, X } from 'lucide-react';
+import { RotateCcw, Monitor, Save, Upload, Plus, BarChart3, FileText, Trash2, Eye, EyeOff, ArrowUpDown, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Pencil, Check, X, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Papa from 'papaparse';
-import walkingPersonIcon from '@assets/image_1760117980437.png';
 
 interface BatchData {
   id: string;
@@ -776,7 +775,7 @@ export default function AdminMarketing() {
                           className="text-primary-foreground hover:text-white hover:bg-green-600 p-2 transition-colors duration-200"
                           data-testid="button-shortcut"
                         >
-                          <img src={walkingPersonIcon} alt="Shortcut" className="h-6 w-6" />
+                          <User className="h-6 w-6" />
                         </Button>
                       </DropdownMenuTrigger>
                     </TooltipTrigger>
