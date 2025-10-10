@@ -1041,7 +1041,7 @@ export default function AdminMarketing() {
                       <thead>
                         <tr className="border-b border-gray-300">
                           <th 
-                            className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
                             onClick={() => handleSort('createdDate')}
                             data-testid="sort-date"
                           >
@@ -1051,7 +1051,7 @@ export default function AdminMarketing() {
                             </div>
                           </th>
                           <th 
-                            className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
                             onClick={() => handleSort('batchNumber')}
                             data-testid="sort-batch-number"
                           >
@@ -1061,7 +1061,7 @@ export default function AdminMarketing() {
                             </div>
                           </th>
                           <th 
-                            className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
                             onClick={() => handleSort('batchTitle')}
                             data-testid="sort-batch-title"
                           >
@@ -1070,14 +1070,14 @@ export default function AdminMarketing() {
                               <ArrowUpDown className="h-4 w-4" />
                             </div>
                           </th>
-                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Category</th>
-                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Data</th>
-                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Delivery</th>
-                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">10 Yr Bond</th>
-                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Par Rate</th>
-                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Records</th>
-                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Cost</th>
-                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Actions</th>
+                          <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">Category</th>
+                          <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">Data</th>
+                          <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">Delivery</th>
+                          <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">10 Yr Bond</th>
+                          <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">Par Rate</th>
+                          <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">Records</th>
+                          <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">Cost</th>
+                          <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1514,6 +1514,12 @@ export default function AdminMarketing() {
                         }
                         .sticky-header {
                           z-index: 30 !important;
+                          background-color: rgb(229, 231, 235) !important;
+                        }
+                        @media (prefers-color-scheme: dark) {
+                          .sticky-header {
+                            background-color: rgb(55, 65, 81) !important;
+                          }
                         }
                       `}</style>
                       <div 
@@ -1537,7 +1543,7 @@ export default function AdminMarketing() {
                                 return (
                                   <th 
                                     key={column}
-                                    className={`text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap ${
+                                    className={`text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap ${
                                       colIdx === 0 ? 'sticky-col-lastName sticky-header' : 
                                       colIdx === 1 ? 'sticky-col-firstName sticky-header' : ''
                                     }`}
@@ -1552,7 +1558,7 @@ export default function AdminMarketing() {
                                 );
                               })}
                               {/* Empty spacer column */}
-                              <th className="p-3 bg-gray-50 dark:bg-gray-800" style={{ width: '200px' }}></th>
+                              <th className="p-3 bg-gray-200 dark:bg-gray-700" style={{ width: '200px' }}></th>
                             </tr>
                           </thead>
                           <tbody>
