@@ -1997,6 +1997,17 @@ export default function AdminMarketing() {
                           background: transparent;
                           display: none;
                         }
+                        
+                        /* Sticky column for firstName */
+                        .sticky-col-firstName {
+                          position: sticky;
+                          left: 0;
+                          z-index: 20;
+                          box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+                        }
+                        .sticky-header {
+                          z-index: 30 !important;
+                        }
                       `}</style>
                       <div 
                         className="overflow-x-scroll w-full max-h-[600px] overflow-y-auto" 
@@ -2011,10 +2022,10 @@ export default function AdminMarketing() {
                         <table className="w-max border-collapse">
                           <thead className="sticky top-0 z-10">
                             <tr className="border-b border-gray-300">
-                              {columnsWithData.map((column) => (
+                              {columnsWithData.map((column, colIdx) => (
                                   <th 
                                     key={column}
-                                    className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
+                                    className={`text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap ${column === 'firstName' ? 'sticky-col-firstName sticky-header' : ''}`}
                                     onClick={() => handleBatchDetailSort(column)}
                                     data-testid={`sort-${column}`}
                                   >
@@ -2034,7 +2045,12 @@ export default function AdminMarketing() {
                                 {columnsWithData.map((column) => (
                                   <td 
                                     key={column} 
-                                    className="p-3 whitespace-nowrap"
+                                    className={`p-3 whitespace-nowrap ${column === 'firstName' ? 'sticky-col-firstName' : ''}`}
+                                    style={column === 'firstName' ? {
+                                      backgroundColor: idx % 2 === 0 
+                                        ? 'hsl(var(--background))' 
+                                        : 'hsl(var(--muted) / 0.3)'
+                                    } : {}}
                                   >
                                     {row[column] || '-'}
                                   </td>

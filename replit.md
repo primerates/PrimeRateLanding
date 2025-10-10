@@ -19,20 +19,19 @@ When creating popup dialogs in the admin interface, use this spacing approach to
 **Testing Pattern**: Use thick red borders (`borderBottom: '3px solid red'`) as temporary visual indicators when testing spacing, then remove once confirmed.
 
 ### Data Table Sticky Column Pattern (Default Standard)
-For all Excel/CSV data upload features, use sticky columns for the first two columns:
+For all Excel/CSV data upload features, use sticky columns for key identifier columns:
 
 **Implementation Pattern**:
-1. **Column Selection**: First two columns (index 0 and 1) are always sticky/frozen
+1. **Column Selection**: First Name column is sticky/frozen
 2. **CSS Classes**:
-   - Column 0: `sticky-col-lastName` (left: 0)
-   - Column 1: `sticky-col-firstName` (left: 150px)
+   - `sticky-col-firstName` with left: 0
 3. **Styling Requirements**:
    - position: sticky with appropriate left offset
-   - z-index: 20 for proper layering
+   - z-index: 20 for proper layering (30 for headers)
    - box-shadow for visual separation
    - Background colors must match alternating row pattern
 4. **Header Styling**: Add `sticky-header` class to sticky column headers
-5. **Index-Based Approach**: Use `colIdx` instead of column names to ensure compatibility with varying CSV headers
+5. **Column-Based Approach**: Check `column === 'firstName'` to apply sticky class
 
 **Benefits**: Maintains context when scrolling horizontally through wide datasets, improving data review efficiency.
 
