@@ -218,6 +218,9 @@ export default function AdminMarketing() {
   // Batch Activity multi-select state
   const [selectedBatchActivities, setSelectedBatchActivities] = useState<string[]>([]);
   
+  // Query card Data Category state
+  const [dataCategory, setDataCategory] = useState('Select');
+  
   // Column Mapping States
   const [uploadStage, setUploadStage] = useState<UploadStage>('upload');
   const [csvData, setCsvData] = useState<any[] | null>(null);
@@ -913,15 +916,15 @@ export default function AdminMarketing() {
                 <div className="grid grid-cols-5 gap-6 mb-6">
                   <div className="space-y-2">
                     <Label>Data Category</Label>
-                    <Select defaultValue="select">
+                    <Select value={dataCategory} onValueChange={setDataCategory}>
                       <SelectTrigger data-testid="select-data-category">
                         <SelectValue placeholder="Select" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="select">Select</SelectItem>
-                        <SelectItem value="show-all">Show All</SelectItem>
-                        <SelectItem value="trigger-data">Trigger Data</SelectItem>
-                        <SelectItem value="monthly-data">Monthly Data</SelectItem>
+                        <SelectItem value="Select">Select</SelectItem>
+                        <SelectItem value="Show All">Show All</SelectItem>
+                        <SelectItem value="Trigger Data">Trigger Data</SelectItem>
+                        <SelectItem value="Monthly Data">Monthly Data</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -1641,6 +1644,261 @@ export default function AdminMarketing() {
                   )}
                 </CardContent>
               </Card>
+            )}
+
+            {/* Conditional Batch List - Show when Data Category is "Show All" */}
+            {dataCategory === 'Show All' && (
+              <>
+                {/* First Card - Batch List */}
+                <Card className="mt-6">
+                  <CardHeader>
+                    <CardTitle>Batch List</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {batches.length === 0 ? (
+                      <div className="text-center py-12">
+                        <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                        <p className="text-muted-foreground">No batches created yet</p>
+                      </div>
+                    ) : (
+                      <div className="overflow-x-auto flywheel-scroll">
+                        <table className="w-full border-collapse min-w-max">
+                          <thead>
+                            <tr className="border-b border-gray-300">
+                              <th 
+                                className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
+                                onClick={() => handleSort('createdDate')}
+                                data-testid="sort-date"
+                              >
+                                <div className="flex items-center gap-2">
+                                  Created
+                                  <ArrowUpDown className="h-4 w-4" />
+                                </div>
+                              </th>
+                              <th 
+                                className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
+                                onClick={() => handleSort('batchNumber')}
+                                data-testid="sort-batch-number"
+                              >
+                                <div className="flex items-center gap-2">
+                                  Batch #
+                                  <ArrowUpDown className="h-4 w-4" />
+                                </div>
+                              </th>
+                              <th 
+                                className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
+                                onClick={() => handleSort('batchTitle')}
+                                data-testid="sort-batch-title"
+                              >
+                                <div className="flex items-center gap-2">
+                                  Batch Title
+                                  <ArrowUpDown className="h-4 w-4" />
+                                </div>
+                              </th>
+                              <th 
+                                className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
+                                onClick={() => handleSort('category')}
+                                data-testid="sort-category"
+                              >
+                                <div className="flex items-center gap-2">
+                                  Category
+                                  <ArrowUpDown className="h-4 w-4" />
+                                </div>
+                              </th>
+                              <th 
+                                className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
+                                onClick={() => handleSort('dataType')}
+                                data-testid="sort-data-type"
+                              >
+                                <div className="flex items-center gap-2">
+                                  Data
+                                  <ArrowUpDown className="h-4 w-4" />
+                                </div>
+                              </th>
+                              <th 
+                                className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
+                                onClick={() => handleSort('delivery')}
+                                data-testid="sort-delivery"
+                              >
+                                <div className="flex items-center gap-2">
+                                  Delivery
+                                  <ArrowUpDown className="h-4 w-4" />
+                                </div>
+                              </th>
+                              <th 
+                                className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
+                                onClick={() => handleSort('tenYearBond')}
+                                data-testid="sort-ten-year-bond"
+                              >
+                                <div className="flex items-center gap-2">
+                                  10 Yr Bond
+                                  <ArrowUpDown className="h-4 w-4" />
+                                </div>
+                              </th>
+                              <th 
+                                className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
+                                onClick={() => handleSort('parRate')}
+                                data-testid="sort-par-rate"
+                              >
+                                <div className="flex items-center gap-2">
+                                  Par Rate
+                                  <ArrowUpDown className="h-4 w-4" />
+                                </div>
+                              </th>
+                              <th 
+                                className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
+                                onClick={() => handleSort('records')}
+                                data-testid="sort-records"
+                              >
+                                <div className="flex items-center gap-2">
+                                  Records
+                                  <ArrowUpDown className="h-4 w-4" />
+                                </div>
+                              </th>
+                              <th 
+                                className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
+                                onClick={() => handleSort('states')}
+                                data-testid="sort-states"
+                              >
+                                <div className="flex items-center gap-2">
+                                  States
+                                  <ArrowUpDown className="h-4 w-4" />
+                                </div>
+                              </th>
+                              <th 
+                                className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
+                                onClick={() => handleSort('cost')}
+                                data-testid="sort-cost"
+                              >
+                                <div className="flex items-center gap-2">
+                                  Cost
+                                  <ArrowUpDown className="h-4 w-4" />
+                                </div>
+                              </th>
+                              <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {sortedBatches.map((batch, index) => {
+                              // Calculate actual lead count by filtering out empty rows
+                              const actualLeadCount = batch.excelData.filter((row) => {
+                                return Object.values(row).some(value => value && value.toString().trim() !== '');
+                              }).length;
+                              
+                              // Format category display
+                              const getCategoryDisplay = (cat: string | undefined) => {
+                                if (!cat) return '-';
+                                switch(cat) {
+                                  case 'va': return 'VA';
+                                  case 'va-jumbo': return 'VA Jumbo';
+                                  case 'conv': return 'Conv.';
+                                  case 'conv-jumbo': return 'Conv. Jumbo';
+                                  case 'fha': return 'FHA';
+                                  default: return cat;
+                                }
+                              };
+                              
+                              // Format data speed display
+                              const getDataSpeedDisplay = (speed: string | undefined) => {
+                                if (!speed) return '-';
+                                switch(speed) {
+                                  case 'trigger': return 'Trigger';
+                                  case 'monthly': return 'Monthly';
+                                  default: return speed;
+                                }
+                              };
+                              
+                              // Format delivery display
+                              const getDeliveryDisplay = (del: string | undefined) => {
+                                if (!del) return '-';
+                                switch(del) {
+                                  case 'first-class': return 'First Class';
+                                  case 'standard': return 'Standard';
+                                  case 'bulk': return 'Bulk';
+                                  default: return del;
+                                }
+                              };
+                              
+                              return (
+                                <tr key={batch.id} className={`border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'}`}>
+                                  <td className="p-3 whitespace-nowrap">{new Date(batch.createdDate).toLocaleDateString()}</td>
+                                  <td className="p-3 whitespace-nowrap">
+                                    <button
+                                      onClick={() => {
+                                        if (selectedBatch?.id === batch.id) {
+                                          setSelectedBatch(null);
+                                        } else {
+                                          setSelectedBatch(batch);
+                                        }
+                                      }}
+                                      className="text-primary hover:underline cursor-pointer font-medium"
+                                      data-testid={`button-view-${batch.id}`}
+                                    >
+                                      {batch.batchNumber}
+                                    </button>
+                                  </td>
+                                  <td className="p-3 whitespace-nowrap">
+                                    <button
+                                      onClick={() => {
+                                        if (selectedBatch?.id === batch.id) {
+                                          setSelectedBatch(null);
+                                        } else {
+                                          setSelectedBatch(batch);
+                                        }
+                                      }}
+                                      className="text-primary hover:underline cursor-pointer font-medium"
+                                      data-testid={`button-view-title-${batch.id}`}
+                                    >
+                                      {batch.batchTitle}
+                                    </button>
+                                  </td>
+                                  <td className="p-3 whitespace-nowrap">{batch.category ? getCategoryDisplay(batch.category) : '-'}</td>
+                                  <td className="p-3 whitespace-nowrap">{batch.dataType ? getDataSpeedDisplay(batch.dataType) : '-'}</td>
+                                  <td className="p-3 whitespace-nowrap">{getDeliveryDisplay(batch.delivery)}</td>
+                                  <td className="p-3 whitespace-nowrap">{batch.tenYearBond || '-'}</td>
+                                  <td className="p-3 whitespace-nowrap">{batch.parRate || '-'}</td>
+                                  <td className="p-3 whitespace-nowrap">{actualLeadCount}</td>
+                                  <td className="p-3 whitespace-nowrap">
+                                    {batch.states && batch.states.length > 0 ? `${batch.states.length} States` : '-'}
+                                  </td>
+                                  <td className="p-3 whitespace-nowrap">
+                                    {(() => {
+                                      const dataCost = parseInt((batch.dataCost || '0').replace(/[^\d]/g, ''), 10);
+                                      const mailCost = parseInt((batch.mailCost || '0').replace(/[^\d]/g, ''), 10);
+                                      const printCost = parseInt((batch.printCost || '0').replace(/[^\d]/g, ''), 10);
+                                      const supplyCost = parseInt((batch.supplyCost || '0').replace(/[^\d]/g, ''), 10);
+                                      const totalCost = dataCost + mailCost + printCost + supplyCost;
+                                      return totalCost > 0 ? `$${totalCost.toLocaleString()}` : '-';
+                                    })()}
+                                  </td>
+                                  <td className="p-3 whitespace-nowrap">
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          onClick={() => handleDeleteBatch(batch.id)}
+                                          data-testid={`button-delete-${batch.id}`}
+                                          className="group"
+                                        >
+                                          <Trash2 className="h-4 w-4 transition-colors group-hover:text-red-600" />
+                                        </Button>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        Delete Batch?
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </>
             )}
           </TabsContent>
 
