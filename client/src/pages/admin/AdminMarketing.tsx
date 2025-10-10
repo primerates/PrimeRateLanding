@@ -1071,7 +1071,6 @@ export default function AdminMarketing() {
                                 <Label className="text-sm font-medium">
                                   {field.label} <span className="text-destructive">*</span>
                                 </Label>
-                                <p className="text-xs text-muted-foreground mt-0.5">{field.description}</p>
                               </div>
                               {columnMapping[field.key] && (
                                 <CheckCircle className="w-5 h-5 text-green-500" />
