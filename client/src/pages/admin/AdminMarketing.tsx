@@ -1025,10 +1025,10 @@ export default function AdminMarketing() {
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
-                          className="w-full justify-between font-normal"
+                          className="w-full justify-between font-normal text-foreground"
                           data-testid="button-batch-activity"
                         >
-                          <span className="truncate">
+                          <span className="truncate text-foreground">
                             {selectedBatchActivities.length === 0
                               ? 'Select'
                               : selectedBatchActivities.length === 1
@@ -1038,10 +1038,21 @@ export default function AdminMarketing() {
                           <ChevronDown className="h-4 w-4 opacity-50 ml-2 flex-shrink-0" />
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-[200px] p-3" align="start">
-                        <div className="space-y-2">
+                      <PopoverContent className="w-[200px] p-2" align="start">
+                        <div className="space-y-1">
                           {['Select', 'Lead', 'Quote', 'Loan Prep', 'Loan', 'Funded', 'Cancelled', 'Withdrawn'].map((activity) => (
-                            <div key={activity} className="flex items-center space-x-2">
+                            <div 
+                              key={activity} 
+                              className="flex items-center space-x-2 px-2 py-1.5 rounded-md hover:bg-blue-500 hover:text-white transition-colors cursor-pointer"
+                              onClick={() => {
+                                const isChecked = selectedBatchActivities.includes(activity);
+                                if (isChecked) {
+                                  setSelectedBatchActivities(selectedBatchActivities.filter(a => a !== activity));
+                                } else {
+                                  setSelectedBatchActivities([...selectedBatchActivities, activity]);
+                                }
+                              }}
+                            >
                               <Checkbox
                                 id={`activity-${activity}`}
                                 checked={selectedBatchActivities.includes(activity)}
@@ -1053,10 +1064,11 @@ export default function AdminMarketing() {
                                   }
                                 }}
                                 data-testid={`checkbox-activity-${activity.toLowerCase().replace(' ', '-')}`}
+                                className="pointer-events-none"
                               />
                               <label
                                 htmlFor={`activity-${activity}`}
-                                className="text-sm font-normal cursor-pointer flex-1"
+                                className="text-sm font-normal cursor-pointer flex-1 pointer-events-none"
                               >
                                 {activity}
                               </label>
