@@ -790,31 +790,52 @@ export default function AdminMarketing() {
                 <div className="grid grid-cols-7 gap-6">
                   <div className="space-y-2">
                     <Label>Box 1</Label>
-                    <div className="border rounded-md p-4 h-24 bg-muted/50" data-testid="box-1"></div>
+                    <Input
+                      placeholder=""
+                      data-testid="input-box-1"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label>Box 2</Label>
-                    <div className="border rounded-md p-4 h-24 bg-muted/50" data-testid="box-2"></div>
+                    <Input
+                      placeholder=""
+                      data-testid="input-box-2"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label>Box 3</Label>
-                    <div className="border rounded-md p-4 h-24 bg-muted/50" data-testid="box-3"></div>
+                    <Input
+                      placeholder=""
+                      data-testid="input-box-3"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label>Box 4</Label>
-                    <div className="border rounded-md p-4 h-24 bg-muted/50" data-testid="box-4"></div>
+                    <Input
+                      placeholder=""
+                      data-testid="input-box-4"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label>Box 5</Label>
-                    <div className="border rounded-md p-4 h-24 bg-muted/50" data-testid="box-5"></div>
+                    <Input
+                      placeholder=""
+                      data-testid="input-box-5"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label>Box 6</Label>
-                    <div className="border rounded-md p-4 h-24 bg-muted/50" data-testid="box-6"></div>
+                    <Input
+                      placeholder=""
+                      data-testid="input-box-6"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label>Box 7</Label>
-                    <div className="border rounded-md p-4 h-24 bg-muted/50" data-testid="box-7"></div>
+                    <Input
+                      placeholder=""
+                      data-testid="input-box-7"
+                    />
                   </div>
                 </div>
               </CardContent>
