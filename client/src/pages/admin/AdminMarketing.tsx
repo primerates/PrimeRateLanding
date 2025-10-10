@@ -207,6 +207,9 @@ export default function AdminMarketing() {
   // No states selected warning dialog
   const [noStatesWarningDialog, setNoStatesWarningDialog] = useState(false);
   
+  // Card already open warning dialog
+  const [cardAlreadyOpenDialog, setCardAlreadyOpenDialog] = useState(false);
+  
   // Column Mapping States
   const [uploadStage, setUploadStage] = useState<UploadStage>('upload');
   const [csvData, setCsvData] = useState<any[] | null>(null);
@@ -864,7 +867,13 @@ export default function AdminMarketing() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => setShowCreateBatch(true)}
+                    onClick={() => {
+                      if (showCreateBatch) {
+                        setCardAlreadyOpenDialog(true);
+                      } else {
+                        setShowCreateBatch(true);
+                      }
+                    }}
                     className="hover:bg-blue-400 hover:text-white"
                     data-testid="button-add-new-batch"
                   >
@@ -2623,6 +2632,23 @@ export default function AdminMarketing() {
               className="bg-red-600 hover:bg-red-700"
             >
               Yes
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Card Already Open Warning Dialog */}
+      <AlertDialog open={cardAlreadyOpenDialog} onOpenChange={setCardAlreadyOpenDialog}>
+        <AlertDialogContent data-testid="dialog-card-already-open">
+          <AlertDialogHeader>
+            <AlertDialogTitle>A blank new batch card is currently open</AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction 
+              onClick={() => setCardAlreadyOpenDialog(false)}
+              data-testid="button-ok-card-already-open"
+            >
+              OK
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

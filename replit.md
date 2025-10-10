@@ -92,6 +92,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
   - **Card Header**: Create New Batch title with States button (green) and Cancel New Batch button (red hover effect)
   - **Cancel New Batch Button**: Located in Create Batch card header to the right of States button; triggers confirmation dialog
   - **Cancel Confirmation Dialog**: Shows "Cancel new batch?" with "Go Back" and "Yes" buttons
+  - **Single Card Enforcement**: If "Add New Batch" is clicked when a card is already open, displays alert "A blank new batch card is currently open" (only one card allowed at a time)
   - Same functionality as Create Batch tab
   - Includes all 5 rows, vendor fields, cost tracking, CSV upload, and column mapping
 - **Design**: Both cards match Create Batch card aesthetics with similar styling and spacing
