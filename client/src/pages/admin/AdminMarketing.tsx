@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
@@ -180,6 +181,9 @@ export default function AdminMarketing() {
   
   // Show/hide create batch card in Direct Mail tab
   const [showCreateBatch, setShowCreateBatch] = useState(false);
+  
+  // Cancel new batch confirmation dialog
+  const [cancelBatchConfirmDialog, setCancelBatchConfirmDialog] = useState(false);
   
   // Batch detail table sorting
   const [batchDetailSortColumn, setBatchDetailSortColumn] = useState<string>('');
@@ -857,31 +861,16 @@ export default function AdminMarketing() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle>Query</CardTitle>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setShowCreateBatch(true)}
-                      className="hover:bg-blue-500 hover:text-white"
-                      data-testid="button-add-new-batch"
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add New Batch
-                    </Button>
-                    {showCreateBatch && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setShowCreateBatch(false)}
-                        className="hover:bg-red-500 hover:text-white"
-                        data-testid="button-cancel-new-batch"
-                      >
-                        Cancel New Batch
-                      </Button>
-                    )}
-                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowCreateBatch(true)}
+                    className="hover:bg-blue-400 hover:text-white"
+                    data-testid="button-add-new-batch"
+                  >
+                    Add New Batch
+                  </Button>
                 </div>
               </CardHeader>
               <CardContent>
@@ -1016,13 +1005,25 @@ export default function AdminMarketing() {
                 <CardHeader>
                   <div className="flex items-center justify-between gap-4">
                     <CardTitle>Create New Batch</CardTitle>
-                    <Button 
-                      onClick={() => setStatesDialogOpen(true)}
-                      className="bg-green-600 hover:bg-green-700 text-white scale-90 font-medium border-0"
-                      data-testid="button-states-direct-mail"
-                    >
-                      {selectedStates.length > 0 ? `${selectedStates.length} States` : 'States'}
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <Button 
+                        onClick={() => setStatesDialogOpen(true)}
+                        className="bg-green-600 hover:bg-green-700 text-white scale-90 font-medium border-0"
+                        data-testid="button-states-direct-mail"
+                      >
+                        {selectedStates.length > 0 ? `${selectedStates.length} States` : 'States'}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCancelBatchConfirmDialog(true)}
+                        className="hover:bg-red-500 hover:text-white scale-90"
+                        data-testid="button-cancel-new-batch"
+                      >
+                        Cancel New Batch
+                      </Button>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -3098,6 +3099,33 @@ export default function AdminMarketing() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Cancel New Batch Confirmation Dialog */}
+      <AlertDialog open={cancelBatchConfirmDialog} onOpenChange={setCancelBatchConfirmDialog}>
+        <AlertDialogContent data-testid="dialog-cancel-new-batch">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancel new batch?</AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setCancelBatchConfirmDialog(false)}
+              data-testid="button-go-back-cancel"
+            >
+              Go Back
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                setShowCreateBatch(false);
+                setCancelBatchConfirmDialog(false);
+              }}
+              data-testid="button-yes-cancel"
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Yes
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </TooltipProvider>
   );
 }
