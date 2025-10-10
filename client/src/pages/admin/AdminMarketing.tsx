@@ -473,7 +473,7 @@ export default function AdminMarketing() {
 
   // Format column names for display (convert camelCase to Title Case)
   const formatColumnName = (columnName: string): string => {
-    if (columnName === 'referenceNumber') return 'Reference Number';
+    if (columnName === 'referenceNumber') return 'Reference';
     // Add space before capital letters and capitalize first letter
     return columnName
       .replace(/([A-Z])/g, ' $1')
@@ -1255,9 +1255,9 @@ export default function AdminMarketing() {
                                       data-testid="button-toggle-batch-details"
                                     >
                                       {isBatchDetailsExpanded ? (
-                                        <EyeOff className="h-4 w-4" />
+                                        <EyeOff className="h-4 w-4 text-green-600" />
                                       ) : (
-                                        <Eye className="h-4 w-4" />
+                                        <Eye className="h-4 w-4 text-green-600" />
                                       )}
                                     </Button>
                                   </TooltipTrigger>
@@ -1274,7 +1274,7 @@ export default function AdminMarketing() {
                                   }}
                                   data-testid="button-edit-title"
                                 >
-                                  <Pencil className="h-4 w-4" />
+                                  <Pencil className="h-4 w-4 text-green-600" />
                                 </Button>
                               </>
                             )}
