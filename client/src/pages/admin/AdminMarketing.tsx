@@ -2013,19 +2013,17 @@ export default function AdminMarketing() {
                                   </>
                                 )}
                               </CardTitle>
-                              </div>
-                              
                               <div className="flex items-center gap-2">
                                 <Button 
                                   onClick={() => setBatchStatesDialogOpen(true)}
-                                  className="bg-green-600 hover:bg-green-700 text-white scale-95"
+                                  size="sm"
+                                  className="bg-green-600 text-white hover:bg-green-700 scale-90 border-0"
                                   data-testid="button-batch-states"
                                 >
                                   {selectedBatch.states && selectedBatch.states.length > 0 
                                     ? `${selectedBatch.states.length} States` 
                                     : 'States'}
                                 </Button>
-                                
                                 {isBatchDetailsExpanded && (
                                   <>
                                     {isEditingBatchDetails ? (
@@ -2059,6 +2057,7 @@ export default function AdminMarketing() {
                                     )}
                                   </>
                                 )}
+                              </div>
                               </div>
                             
                               {/* Collapsible Batch Details */}
