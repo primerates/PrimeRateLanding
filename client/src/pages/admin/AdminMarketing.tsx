@@ -693,7 +693,7 @@ export default function AdminMarketing() {
                     {/* Second Row */}
                     <div className="grid grid-cols-4 gap-6">
                       <div className="space-y-2">
-                        <Label htmlFor="category">Category</Label>
+                        <Label htmlFor="category">Loan Category</Label>
                         <Select value={category} onValueChange={setCategory}>
                           <SelectTrigger id="category" data-testid="select-category">
                             <SelectValue placeholder="Select" />
@@ -877,9 +877,9 @@ export default function AdminMarketing() {
                         </Select>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="mail-vendor">Mail Vendor</Label>
-                        <Select value={mailVendor} onValueChange={setMailVendor}>
-                          <SelectTrigger id="mail-vendor" data-testid="select-mail-vendor">
+                        <Label htmlFor="print-vendor">Print Vendor</Label>
+                        <Select value={printVendor} onValueChange={setPrintVendor}>
+                          <SelectTrigger id="print-vendor" data-testid="select-print-vendor">
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                           <SelectContent>
@@ -889,9 +889,9 @@ export default function AdminMarketing() {
                         </Select>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="print-vendor">Print Vendor</Label>
-                        <Select value={printVendor} onValueChange={setPrintVendor}>
-                          <SelectTrigger id="print-vendor" data-testid="select-print-vendor">
+                        <Label htmlFor="mail-vendor">Mail Vendor</Label>
+                        <Select value={mailVendor} onValueChange={setMailVendor}>
+                          <SelectTrigger id="mail-vendor" data-testid="select-mail-vendor">
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                           <SelectContent>
