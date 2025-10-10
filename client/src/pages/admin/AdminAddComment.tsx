@@ -7,10 +7,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RotateCcw, Monitor, Save, Plus, ArrowUpDown, Star, Edit, Trash2, Pin, Minimize2, Maximize2 } from 'lucide-react';
+import { RotateCcw, Monitor, Save, Plus, ArrowUpDown, Star, Edit, Trash2, Pin, Minimize2, Maximize2, User } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 
 const US_STATES = [
   { value: 'AL', label: 'AL' }, { value: 'AK', label: 'AK' }, { value: 'AZ', label: 'AZ' }, 
@@ -37,6 +38,7 @@ export default function AdminAddComment() {
   const [showRevertAnimation, setShowRevertAnimation] = useState(false);
   const [screenshareLoading, setScreenshareLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
+  const [shortcutDropdownOpen, setShortcutDropdownOpen] = useState(false);
 
   // Client comment state
   const [clientFirstName, setClientFirstName] = useState('');
@@ -90,6 +92,28 @@ export default function AdminAddComment() {
   const [editingNoteId, setEditingNoteId] = useState<number | null>(null);
   const [editingNoteText, setEditingNoteText] = useState('');
   const [minimizedNotes, setMinimizedNotes] = useState<Set<number>>(new Set());
+
+  // Dashboard shortcuts menu items
+  const dashboardMenuItems = [
+    // Row 1
+    { label: 'Lead', path: '/admin/add-client' },
+    { label: 'Quote', path: '/admin/quotes' },
+    { label: 'Loan Prep', path: '/admin/loan-prep' },
+    { label: 'Loan', path: '/admin/pipeline' },
+    { label: 'Funded', path: '/admin/funded' },
+    // Row 2
+    { label: 'Marketing', path: '/admin/marketing' },
+    { label: 'Snapshot', path: '/admin/reports' },
+    { label: 'Library', path: '/admin/library' },
+    { label: 'Audit', path: '/admin/audit' },
+    { label: 'Settings', path: '/admin/add-comment' },
+    // Row 3
+    { label: 'Vendors', path: '/admin/add-vendor' },
+    { label: 'Staff', path: '/admin/add-staff' },
+    { label: 'Partners', path: '/admin/add-partner' },
+    { label: 'Ledger', path: '/admin/records' },
+    { label: 'Vault', path: '/admin/vault' },
+  ];
 
   // Trigger circle animation only on mount
   useEffect(() => {
@@ -652,6 +676,39 @@ export default function AdminAddComment() {
                     <p>Back to Dashboard</p>
                   </TooltipContent>
                 </Tooltip>
+                <DropdownMenu open={shortcutDropdownOpen} onOpenChange={setShortcutDropdownOpen}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-primary-foreground hover:text-white hover:bg-green-600 p-2 transition-colors duration-200"
+                          data-testid="button-shortcut"
+                        >
+                          <User className="h-6 w-6" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent side="left" sideOffset={10} className="text-sm">
+                      <p>Short Cut</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <DropdownMenuContent align="end" className="w-48">
+                    {dashboardMenuItems.map((item, index) => (
+                      <div key={item.path}>
+                        <DropdownMenuItem
+                          onClick={() => setLocation(item.path)}
+                          className="cursor-pointer hover:!bg-blue-400 dark:hover:!bg-blue-700"
+                          data-testid={`shortcut-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+                        >
+                          {item.label}
+                        </DropdownMenuItem>
+                        {(index === 4 || index === 9) && <DropdownMenuSeparator />}
+                      </div>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 <Button
                   onClick={handleScreenshare}
                   disabled={screenshareLoading}
