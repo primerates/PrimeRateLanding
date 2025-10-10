@@ -784,12 +784,38 @@ export default function AdminMarketing() {
           <TabsContent value="direct-mail" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>Direct Mail Overview</CardTitle>
+                <CardTitle>TBD</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-12">
-                  <p className="text-muted-foreground">Direct Mail overview coming soon...</p>
-                  <p className="text-sm text-muted-foreground mt-2">Use Create Batch or Batch List tabs to manage campaigns</p>
+                <div className="grid grid-cols-7 gap-6">
+                  <div className="space-y-2">
+                    <Label>Box 1</Label>
+                    <div className="border rounded-md p-4 h-24 bg-muted/50" data-testid="box-1"></div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Box 2</Label>
+                    <div className="border rounded-md p-4 h-24 bg-muted/50" data-testid="box-2"></div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Box 3</Label>
+                    <div className="border rounded-md p-4 h-24 bg-muted/50" data-testid="box-3"></div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Box 4</Label>
+                    <div className="border rounded-md p-4 h-24 bg-muted/50" data-testid="box-4"></div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Box 5</Label>
+                    <div className="border rounded-md p-4 h-24 bg-muted/50" data-testid="box-5"></div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Box 6</Label>
+                    <div className="border rounded-md p-4 h-24 bg-muted/50" data-testid="box-6"></div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Box 7</Label>
+                    <div className="border rounded-md p-4 h-24 bg-muted/50" data-testid="box-7"></div>
+                  </div>
                 </div>
               </CardContent>
             </Card>

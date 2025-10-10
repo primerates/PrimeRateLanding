@@ -61,18 +61,18 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 ## Admin Marketing System
 
 ### Navigation Structure
-- **Main Menu Bar**: Three primary sections accessible via menu buttons
-  - **Direct Mail**: Campaign batch management system (default view)
+- **Single Tab Bar**: Six tabs always visible for seamless navigation
+  - **Direct Mail**: TBD card with 7 placeholder boxes for future features
   - **Lead Vendor**: Vendor management (coming soon)
   - **Social Media**: Social media marketing tools (coming soon)
-
-### Direct Mail System
-
-#### Sub-Navigation Tabs
-- **Create Batch**: Form for creating new direct mail campaigns
-- **Batch List**: Comprehensive table of all batches with sorting
-- **Notes**: Sticky notes and annotations (coming soon)
+  - **Create Batch**: Form for creating new direct mail campaigns
+  - **Batch List**: Comprehensive table of all batches with sorting
+  - **Notes**: Sticky notes and annotations (coming soon)
 - ~~**Stats**: Removed from menu~~ (previously showed campaign statistics)
+
+### Direct Mail Tab
+- **TBD Card**: Placeholder card with 7 boxes (Box 1 through Box 7) awaiting feature design
+- **Design**: Matches Create Batch card aesthetics with similar styling and spacing
 
 ### Batch Creation
 - **5-Row Layout**: Campaign parameters, date tracking, vendor fields, cost tracking, and CSV upload
