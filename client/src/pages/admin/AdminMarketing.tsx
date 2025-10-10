@@ -837,7 +837,7 @@ export default function AdminMarketing() {
                         <label htmlFor="csv-upload" className="cursor-pointer">
                           <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
                           <p className="text-foreground mb-1">Click to upload or drag and drop</p>
-                          <p className="text-sm text-muted-foreground">CSV files only</p>
+                          <p className="text-sm text-green-600">CSV UTF8 format files only</p>
                         </label>
                       </div>
                       <p className="text-sm text-muted-foreground">
