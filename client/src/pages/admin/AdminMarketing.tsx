@@ -953,8 +953,6 @@ export default function AdminMarketing() {
                         <SelectItem value="second-home">Second Home</SelectItem>
                         <SelectItem value="investment-property">Investment Property</SelectItem>
                         <SelectItem value="home-purchase">Home Purchase</SelectItem>
-                        <SelectItem value="duplex">Duplex</SelectItem>
-                        <SelectItem value="multi-family">Multi-Family</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
