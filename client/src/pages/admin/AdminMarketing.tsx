@@ -785,7 +785,7 @@ export default function AdminMarketing() {
                           id="data-cost"
                           value={dataCost}
                           onChange={setDataCost}
-                          placeholder=""
+                          placeholder="$"
                           dataTestId="input-data-cost"
                         />
                       </div>
@@ -795,7 +795,7 @@ export default function AdminMarketing() {
                           id="mail-cost"
                           value={mailCost}
                           onChange={setMailCost}
-                          placeholder=""
+                          placeholder="$"
                           dataTestId="input-mail-cost"
                         />
                       </div>
@@ -805,7 +805,7 @@ export default function AdminMarketing() {
                           id="print-cost"
                           value={printCost}
                           onChange={setPrintCost}
-                          placeholder=""
+                          placeholder="$"
                           dataTestId="input-print-cost"
                         />
                       </div>
@@ -815,7 +815,7 @@ export default function AdminMarketing() {
                           id="supply-cost"
                           value={supplyCost}
                           onChange={setSupplyCost}
-                          placeholder=""
+                          placeholder="$"
                           dataTestId="input-supply-cost"
                         />
                       </div>
