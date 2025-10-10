@@ -1036,10 +1036,6 @@ export default function AdminMarketing() {
                     {/* Separation Line */}
                     <div className="h-4"></div>
                     <div style={{ borderTop: '1px solid hsl(var(--border))', paddingTop: '24px' }}>
-                      <div className="space-y-2">
-                        <Label htmlFor="csv-upload" className="text-green-600">
-                          Upload Excel File Format (CSV UTF8) <span className="text-destructive">*</span>
-                        </Label>
                       <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary transition-colors">
                         <input
                           type="file"
@@ -1055,7 +1051,6 @@ export default function AdminMarketing() {
                           <p className="text-sm text-green-600">Upload Excel File Format (CSV UTF8) <span className="text-destructive">*</span></p>
                         </label>
                       </div>
-                    </div>
                     </div>
                   </div>
                 )}
