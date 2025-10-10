@@ -66,8 +66,10 @@ For all Excel/CSV data upload features, use sticky columns for the first two col
   - **Row 1**: Batch Number, Batch Title, 10 Year Bond, Par Rate
   - **Row 2**: Loan Category, Data Speed, Delivery, Duration to First Call (date field with MM/DD/YYYY format)
   - **Row 3**: Data Date, Print Date, Mail Date, First Call (all date fields with MM/DD/YYYY format)
+  - **Separation line below Row 3**
   - **Row 4**: Data Vendor, Print Vendor (swapped positions), Mail Vendor, Supply Vendor
   - **Row 5**: Data Cost, Mail Cost, Print Cost, Supply Cost (currency formatted with CurrencyInput component)
+  - **Separation line below Row 5**
   - **CSV Upload**: UTF8 file upload with green labels below the 5 rows
 - **States Selector**: Green "States" button in card header opens dialog to select multiple states; displays count in button when states selected
 - **Date Fields**: Auto-format as MM/DD/YYYY; "First Call" renamed from "Mail Date" for clarity

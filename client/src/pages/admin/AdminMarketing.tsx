@@ -934,8 +934,11 @@ export default function AdminMarketing() {
                       </div>
                     </div>
 
-                    {/* Fourth Row - Vendor Fields */}
-                    <div className="grid grid-cols-4 gap-6">
+                    {/* Separation Line */}
+                    <div className="h-4"></div>
+                    <div style={{ borderTop: '1px solid hsl(var(--border))', paddingTop: '24px' }}>
+                      {/* Fourth Row - Vendor Fields */}
+                      <div className="grid grid-cols-4 gap-6">
                       <div className="space-y-2">
                         <Label htmlFor="data-source">Data Vendor</Label>
                         <Select value={dataSource} onValueChange={setDataSource}>
@@ -984,6 +987,7 @@ export default function AdminMarketing() {
                         </Select>
                       </div>
                     </div>
+                    </div>
 
                     {/* Fifth Row - Cost Fields */}
                     <div className="grid grid-cols-4 gap-6">
@@ -1029,10 +1033,13 @@ export default function AdminMarketing() {
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="csv-upload" className="text-green-600">
-                        Upload Excel File Format (CSV UTF8) <span className="text-destructive">*</span>
-                      </Label>
+                    {/* Separation Line */}
+                    <div className="h-4"></div>
+                    <div style={{ borderTop: '1px solid hsl(var(--border))', paddingTop: '24px' }}>
+                      <div className="space-y-2">
+                        <Label htmlFor="csv-upload" className="text-green-600">
+                          Upload Excel File Format (CSV UTF8) <span className="text-destructive">*</span>
+                        </Label>
                       <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary transition-colors">
                         <input
                           type="file"
@@ -1048,6 +1055,7 @@ export default function AdminMarketing() {
                           <p className="text-sm text-green-600">CSV UTF8 format files only</p>
                         </label>
                       </div>
+                    </div>
                     </div>
                   </div>
                 )}
