@@ -39,7 +39,8 @@ interface BatchData {
   createdDate: string;
   excelData: Array<{
     referenceNumber: string;
-    clientName: string;
+    lastName: string;
+    firstName: string;
     address: string;
     [key: string]: any;
   }>;
@@ -376,16 +377,13 @@ export default function AdminMarketing() {
       const addressParts = [streetAddress, city, state, zip].filter(Boolean);
       const fullAddress = addressParts.join(', ');
 
-      // Get client name (combine last name and first name)
+      // Get client name (keep last name and first name separate)
       const firstName = row[columnMapping.firstName] || '';
       const lastName = row[columnMapping.lastName] || '';
-      const clientName = lastName && firstName ? `${lastName}, ${firstName}` : firstName || lastName;
 
       // Create a copy of row without the mapped columns to avoid duplicates
       const { 
         [columnMapping.reference]: _, 
-        [columnMapping.firstName]: __, 
-        [columnMapping.lastName]: ___,
         [columnMapping.streetAddress]: ____,
         [columnMapping.city]: _____,
         [columnMapping.state]: ______,
@@ -395,7 +393,8 @@ export default function AdminMarketing() {
       
       return {
         referenceNumber: row[columnMapping.reference] || '',
-        clientName: clientName,
+        lastName: lastName,
+        firstName: firstName,
         address: fullAddress,
         ...otherColumns // Preserve all other original columns (excluding mapped ones)
       };
@@ -1404,8 +1403,8 @@ export default function AdminMarketing() {
               
               // Filter out columns that have no data in any row, and also exclude repetitive columns
               const columnsWithData = Object.keys(selectedBatch.excelData[0]).filter((column) => {
-                // Skip clientName and address columns (repetitive)
-                if (column === 'clientName' || column === 'address') {
+                // Skip address column (repetitive - we show it separately)
+                if (column === 'address') {
                   return false;
                 }
                 // Skip any column that looks like "reference" since we already have referenceNumber
@@ -1725,27 +1724,6 @@ export default function AdminMarketing() {
                           background: transparent;
                           display: none;
                         }
-                        .sticky-col-lastName {
-                          position: sticky;
-                          left: 0;
-                          z-index: 20;
-                          box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
-                        }
-                        .sticky-col-firstName {
-                          position: sticky;
-                          left: 150px;
-                          z-index: 20;
-                          box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
-                        }
-                        .sticky-header {
-                          z-index: 30 !important;
-                          background-color: rgb(229, 231, 235) !important;
-                        }
-                        @media (prefers-color-scheme: dark) {
-                          .sticky-header {
-                            background-color: rgb(55, 65, 81) !important;
-                          }
-                        }
                       `}</style>
                       <div 
                         className="overflow-x-scroll w-full max-h-[600px] overflow-y-auto" 
@@ -1760,18 +1738,10 @@ export default function AdminMarketing() {
                         <table className="w-max border-collapse">
                           <thead className="sticky top-0 z-10">
                             <tr className="border-b border-gray-300">
-                              {columnsWithData.map((column, colIdx) => {
-                                const isLastName = column.toLowerCase().includes('last') && column.toLowerCase().includes('name');
-                                const isFirstName = column.toLowerCase().includes('first') && column.toLowerCase().includes('name');
-                                const isSticky = colIdx < 2 && (isLastName || isFirstName);
-                                
-                                return (
+                              {columnsWithData.map((column) => (
                                   <th 
                                     key={column}
-                                    className={`text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap ${
-                                      colIdx === 0 ? 'sticky-col-lastName sticky-header' : 
-                                      colIdx === 1 ? 'sticky-col-firstName sticky-header' : ''
-                                    }`}
+                                    className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
                                     onClick={() => handleBatchDetailSort(column)}
                                     data-testid={`sort-${column}`}
                                   >
@@ -1780,8 +1750,7 @@ export default function AdminMarketing() {
                                       <ArrowUpDown className="h-4 w-4" />
                                     </div>
                                   </th>
-                                );
-                              })}
+                              ))}
                               {/* Empty spacer column */}
                               <th className="p-3 bg-gray-200 dark:bg-gray-700" style={{ width: '200px' }}></th>
                             </tr>
@@ -1789,13 +1758,10 @@ export default function AdminMarketing() {
                           <tbody>
                             {filteredRows.map((row, idx) => (
                               <tr key={idx} className={`border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'}`}>
-                                {columnsWithData.map((column, colIdx) => (
+                                {columnsWithData.map((column) => (
                                   <td 
                                     key={column} 
-                                    className={`p-3 whitespace-nowrap ${
-                                      colIdx === 0 ? `sticky-col-lastName ${idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'}` : 
-                                      colIdx === 1 ? `sticky-col-firstName ${idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'}` : ''
-                                    }`}
+                                    className="p-3 whitespace-nowrap"
                                   >
                                     {row[column] || '-'}
                                   </td>
