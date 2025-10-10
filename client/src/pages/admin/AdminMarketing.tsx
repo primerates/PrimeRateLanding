@@ -961,10 +961,21 @@ export default function AdminMarketing() {
                   </div>
                   <div className="space-y-2">
                     <Label>Loan Category</Label>
-                    <Input
-                      placeholder=""
-                      data-testid="input-loan-category"
-                    />
+                    <Select defaultValue="show-all">
+                      <SelectTrigger data-testid="select-loan-category">
+                        <SelectValue placeholder="Show All" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="show-all">Show All</SelectItem>
+                        <SelectItem value="va">VA</SelectItem>
+                        <SelectItem value="va-jumbo">VA Jumbo</SelectItem>
+                        <SelectItem value="conventional">Conventional</SelectItem>
+                        <SelectItem value="conventional-jumbo">Conventional Jumbo</SelectItem>
+                        <SelectItem value="fha">FHA</SelectItem>
+                        <SelectItem value="second-loan">Second Loan</SelectItem>
+                        <SelectItem value="non-qm">Non-QM</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div className="space-y-2">
                     <Label>Loan Purpose</Label>
