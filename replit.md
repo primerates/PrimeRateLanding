@@ -167,6 +167,14 @@ The Marketing Direct Mail system (`/admin/marketing`) provides comprehensive cam
 - **Alternating Row Colors**: Zebra striping for visual separation (white/gray-50 alternating backgrounds)
 - **Sortable Columns**: Created, Batch #, Batch Title (clickable headers with sort icons)
 
+### Batch Details Table (Second Card)
+- **Sticky Columns**: Last Name and First Name columns remain frozen when scrolling horizontally for easy client reference
+- **Sticky Implementation**: 
+  - Last Name: Fixed at left: 0px
+  - First Name: Fixed at left: 150px
+  - Both columns have shadow effect and proper z-index for visual separation
+  - Background colors match alternating row pattern
+
 ### Batch Creation
 - **4-Row Layout**: Vendor fields, cost tracking, bond rates, and campaign parameters
 - **Cost Fields**: Data Cost, Mail Cost, Print Cost, Supply Cost (currency formatted with CurrencyInput component)

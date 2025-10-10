@@ -1500,6 +1500,21 @@ export default function AdminMarketing() {
                           background: transparent;
                           display: none;
                         }
+                        .sticky-col-lastName {
+                          position: sticky;
+                          left: 0;
+                          z-index: 20;
+                          box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+                        }
+                        .sticky-col-firstName {
+                          position: sticky;
+                          left: 150px;
+                          z-index: 20;
+                          box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+                        }
+                        .sticky-header {
+                          z-index: 30 !important;
+                        }
                       `}</style>
                       <div 
                         className="overflow-x-scroll w-full max-h-[600px] overflow-y-auto" 
@@ -1517,7 +1532,10 @@ export default function AdminMarketing() {
                               {columnsWithData.map((column) => (
                                 <th 
                                   key={column}
-                                  className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
+                                  className={`text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap ${
+                                    column === 'lastName' ? 'sticky-col-lastName sticky-header' : 
+                                    column === 'firstName' ? 'sticky-col-firstName sticky-header' : ''
+                                  }`}
                                   onClick={() => handleBatchDetailSort(column)}
                                   data-testid={`sort-${column}`}
                                 >
@@ -1535,7 +1553,13 @@ export default function AdminMarketing() {
                             {filteredRows.map((row, idx) => (
                               <tr key={idx} className={`border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'}`}>
                                 {columnsWithData.map((column) => (
-                                  <td key={column} className="p-3 whitespace-nowrap">
+                                  <td 
+                                    key={column} 
+                                    className={`p-3 whitespace-nowrap ${
+                                      column === 'lastName' ? `sticky-col-lastName ${idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'}` : 
+                                      column === 'firstName' ? `sticky-col-firstName ${idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'}` : ''
+                                    }`}
+                                  >
                                     {row[column] || '-'}
                                   </td>
                                 ))}
