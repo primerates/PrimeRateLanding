@@ -1007,7 +1007,9 @@ export default function AdminMarketing() {
                     <div className="flex items-center gap-2">
                       <Button 
                         onClick={() => setStatesDialogOpen(true)}
-                        className="bg-green-600 hover:bg-green-700 text-white scale-90 font-medium border-0"
+                        variant="outline"
+                        size="sm"
+                        className="hover:bg-green-600 hover:text-white scale-90"
                         data-testid="button-states-direct-mail"
                       >
                         {selectedStates.length > 0 ? `${selectedStates.length} States` : 'States'}
