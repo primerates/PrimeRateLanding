@@ -11,6 +11,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Checkbox } from '@/components/ui/checkbox';
 import { RotateCcw, Monitor, Save, Upload, Plus, Minus, BarChart3, FileText, Trash2, Eye, EyeOff, ArrowUpDown, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Pencil, Check, X, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Papa from 'papaparse';
@@ -212,6 +214,9 @@ export default function AdminMarketing() {
   
   // Query card minimize/expand state
   const [isQueryCardMinimized, setIsQueryCardMinimized] = useState(false);
+  
+  // Batch Activity multi-select state
+  const [selectedBatchActivities, setSelectedBatchActivities] = useState<string[]>([]);
   
   // Column Mapping States
   const [uploadStage, setUploadStage] = useState<UploadStage>('upload');
@@ -908,15 +913,14 @@ export default function AdminMarketing() {
                 <div className="grid grid-cols-5 gap-6 mb-6">
                   <div className="space-y-2">
                     <Label>Data Category</Label>
-                    <Select defaultValue="select">
+                    <Select defaultValue="show-all">
                       <SelectTrigger data-testid="select-data-category">
-                        <SelectValue placeholder="Select" />
+                        <SelectValue placeholder="Show All" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="select">Select</SelectItem>
+                        <SelectItem value="show-all">Show All</SelectItem>
                         <SelectItem value="trigger-data">Trigger Data</SelectItem>
                         <SelectItem value="monthly-data">Monthly Data</SelectItem>
-                        <SelectItem value="show-all">Show All</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -1005,10 +1009,50 @@ export default function AdminMarketing() {
                   </div>
                   <div className="space-y-2">
                     <Label>Batch Activity To Date</Label>
-                    <Input
-                      placeholder=""
-                      data-testid="input-activity"
-                    />
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-between font-normal"
+                          data-testid="button-batch-activity"
+                        >
+                          <span className="truncate">
+                            {selectedBatchActivities.length === 0
+                              ? 'Select'
+                              : selectedBatchActivities.length === 1
+                              ? selectedBatchActivities[0]
+                              : `${selectedBatchActivities.length} selected`}
+                          </span>
+                          <ChevronDown className="h-4 w-4 opacity-50 ml-2 flex-shrink-0" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[200px] p-3" align="start">
+                        <div className="space-y-2">
+                          {['Select', 'Lead', 'Quote', 'Loan Prep', 'Loan', 'Funded', 'Cancelled', 'Withdrawn'].map((activity) => (
+                            <div key={activity} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`activity-${activity}`}
+                                checked={selectedBatchActivities.includes(activity)}
+                                onCheckedChange={(checked) => {
+                                  if (checked) {
+                                    setSelectedBatchActivities([...selectedBatchActivities, activity]);
+                                  } else {
+                                    setSelectedBatchActivities(selectedBatchActivities.filter(a => a !== activity));
+                                  }
+                                }}
+                                data-testid={`checkbox-activity-${activity.toLowerCase().replace(' ', '-')}`}
+                              />
+                              <label
+                                htmlFor={`activity-${activity}`}
+                                className="text-sm font-normal cursor-pointer flex-1"
+                              >
+                                {activity}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                   </div>
                 </div>
 
