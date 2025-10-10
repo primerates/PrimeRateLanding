@@ -1046,7 +1046,7 @@ export default function AdminMarketing() {
                             data-testid="sort-date"
                           >
                             <div className="flex items-center gap-2">
-                              Date Created
+                              Created
                               <ArrowUpDown className="h-4 w-4" />
                             </div>
                           </th>
@@ -1071,11 +1071,11 @@ export default function AdminMarketing() {
                             </div>
                           </th>
                           <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Category</th>
-                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Data Speed</th>
-                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Delivery Speed</th>
-                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">10 Year Bond</th>
+                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Data</th>
+                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Delivery</th>
+                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">10 Yr Bond</th>
                           <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Par Rate</th>
-                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Total Leads</th>
+                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Records</th>
                           <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Actions</th>
                         </tr>
                       </thead>
