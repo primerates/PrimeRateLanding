@@ -304,11 +304,14 @@ export default function AdminMarketing() {
         clientName = row[lastNameCol] + ', ' + clientName;
       }
 
+      // Create a copy of row without the mapped columns to avoid duplicates
+      const { [columnMapping.reference]: _, [columnMapping.firstName]: __, ...otherColumns } = row;
+      
       return {
         referenceNumber: row[columnMapping.reference] || '',
         clientName: clientName,
         address: fullAddress,
-        ...row // Preserve all original columns
+        ...otherColumns // Preserve all other original columns (excluding mapped ones)
       };
     });
 
