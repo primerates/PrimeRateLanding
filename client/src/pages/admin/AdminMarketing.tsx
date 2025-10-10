@@ -943,10 +943,20 @@ export default function AdminMarketing() {
                   </div>
                   <div className="space-y-2">
                     <Label>Property Use</Label>
-                    <Input
-                      placeholder=""
-                      data-testid="input-property-use"
-                    />
+                    <Select defaultValue="show-all">
+                      <SelectTrigger data-testid="select-property-use">
+                        <SelectValue placeholder="Show All" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="show-all">Show All</SelectItem>
+                        <SelectItem value="primary-residence">Primary Residence</SelectItem>
+                        <SelectItem value="second-home">Second Home</SelectItem>
+                        <SelectItem value="investment-property">Investment Property</SelectItem>
+                        <SelectItem value="home-purchase">Home Purchase</SelectItem>
+                        <SelectItem value="duplex">Duplex</SelectItem>
+                        <SelectItem value="multi-family">Multi-Family</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
