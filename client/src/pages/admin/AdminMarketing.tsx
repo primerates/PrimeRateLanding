@@ -188,6 +188,9 @@ export default function AdminMarketing() {
   const [deleteConfirmDialog, setDeleteConfirmDialog] = useState(false);
   const [batchToDelete, setBatchToDelete] = useState<string | null>(null);
   
+  // No states selected warning dialog
+  const [noStatesWarningDialog, setNoStatesWarningDialog] = useState(false);
+  
   // Column Mapping States
   const [uploadStage, setUploadStage] = useState<UploadStage>('upload');
   const [csvData, setCsvData] = useState<any[] | null>(null);
@@ -280,6 +283,14 @@ export default function AdminMarketing() {
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Check if states are selected
+    if (selectedStates.length === 0) {
+      setNoStatesWarningDialog(true);
+      // Clear the file input
+      e.target.value = '';
+      return;
+    }
 
     setError('');
     
@@ -1947,6 +1958,26 @@ export default function AdminMarketing() {
               data-testid="button-close-batch-states"
             >
               Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* No States Selected Warning Dialog */}
+      <Dialog open={noStatesWarningDialog} onOpenChange={setNoStatesWarningDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>State Selection Required</DialogTitle>
+            <DialogDescription>
+              Please select a state using the green button before uploading your documents.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button 
+              onClick={() => setNoStatesWarningDialog(false)}
+              data-testid="button-close-warning"
+            >
+              OK
             </Button>
           </DialogFooter>
         </DialogContent>
