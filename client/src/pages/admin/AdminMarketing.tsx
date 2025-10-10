@@ -224,6 +224,9 @@ export default function AdminMarketing() {
   // Query States multi-select state
   const [selectedQueryStates, setSelectedQueryStates] = useState<string[]>([]);
   
+  // Query card filter values
+  const [cashOutAbove, setCashOutAbove] = useState('');
+  
   // Query card Data Category state
   const [dataCategory, setDataCategory] = useState('Select');
   
@@ -1206,9 +1209,12 @@ export default function AdminMarketing() {
                   </div>
                   <div className="space-y-2">
                     <Label>Cash Out Above</Label>
-                    <Input
-                      placeholder=""
-                      data-testid="input-cash-out-above"
+                    <CurrencyInput
+                      value={cashOutAbove}
+                      onChange={setCashOutAbove}
+                      placeholder="$0"
+                      id="cash-out-above"
+                      dataTestId="input-cash-out-above"
                     />
                   </div>
                   <div className="space-y-2">
