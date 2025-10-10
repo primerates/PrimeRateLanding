@@ -1532,17 +1532,24 @@ export default function AdminMarketing() {
                                     {isBatchDetailsExpanded ? 'Hide' : 'Show'} Batch Details
                                   </TooltipContent>
                                 </Tooltip>
-                                <Button 
-                                  size="icon" 
-                                  variant="ghost" 
-                                  onClick={() => {
-                                    setIsEditingTitle(true);
-                                    setEditedTitle(selectedBatch.batchTitle);
-                                  }}
-                                  data-testid="button-edit-title"
-                                >
-                                  <Pencil className="h-4 w-4 text-green-600" />
-                                </Button>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button 
+                                      size="icon" 
+                                      variant="ghost" 
+                                      onClick={() => {
+                                        setIsEditingTitle(true);
+                                        setEditedTitle(selectedBatch.batchTitle);
+                                      }}
+                                      data-testid="button-edit-title"
+                                    >
+                                      <Pencil className="h-4 w-4 text-green-600" />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    Edit Batch Title
+                                  </TooltipContent>
+                                </Tooltip>
                               </>
                             )}
                           </CardTitle>
