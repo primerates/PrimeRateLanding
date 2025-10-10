@@ -176,6 +176,7 @@ export default function AdminMarketing() {
   
   // Main menu selection state
   const [mainMenuSelection, setMainMenuSelection] = useState<'direct-mail' | 'lead-vendor' | 'social-media'>('direct-mail');
+  const [activeTab, setActiveTab] = useState<string>('create');
   
   // Batch detail table sorting
   const [batchDetailSortColumn, setBatchDetailSortColumn] = useState<string>('');
@@ -766,44 +767,28 @@ export default function AdminMarketing() {
           </div>
         </header>
 
-        {/* Main Menu Bar */}
+        {/* Tabs - Matching Add Client Design */}
         <div className="container mx-auto px-6 mt-6">
-          <div className="flex items-center gap-2 mb-6 border-b border-gray-200 pb-2">
-            <Button
-              variant={mainMenuSelection === 'direct-mail' ? 'default' : 'ghost'}
-              onClick={() => setMainMenuSelection('direct-mail')}
-              className={mainMenuSelection === 'direct-mail' ? 'bg-blue-900 hover:bg-blue-800 text-white' : 'text-gray-700 hover:text-black'}
-              data-testid="menu-direct-mail"
-            >
-              Direct Mail
-            </Button>
-            <Button
-              variant={mainMenuSelection === 'lead-vendor' ? 'default' : 'ghost'}
-              onClick={() => setMainMenuSelection('lead-vendor')}
-              className={mainMenuSelection === 'lead-vendor' ? 'bg-blue-900 hover:bg-blue-800 text-white' : 'text-gray-700 hover:text-black'}
-              data-testid="menu-lead-vendor"
-            >
-              Lead Vendor
-            </Button>
-            <Button
-              variant={mainMenuSelection === 'social-media' ? 'default' : 'ghost'}
-              onClick={() => setMainMenuSelection('social-media')}
-              className={mainMenuSelection === 'social-media' ? 'bg-blue-900 hover:bg-blue-800 text-white' : 'text-gray-700 hover:text-black'}
-              data-testid="menu-social-media"
-            >
-              Social Media
-            </Button>
-          </div>
-
-          <>
-          {/* Direct Mail Section - Tabs */}
-          {mainMenuSelection === 'direct-mail' && (
-            <Tabs defaultValue="create" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 bg-transparent h-auto p-0 relative border-b border-gray-200 group">
-                <TabsTrigger value="create" data-testid="tab-create-batch" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Create Batch</TabsTrigger>
-                <TabsTrigger value="all-batches" data-testid="tab-all-batches" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Batch List</TabsTrigger>
-                <TabsTrigger value="notes" data-testid="tab-notes" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Notes</TabsTrigger>
-              </TabsList>
+          <Tabs value={activeTab} className="w-full" onValueChange={(value) => {
+            setActiveTab(value);
+            if (value === 'lead-vendor' || value === 'social-media') {
+              setMainMenuSelection(value as any);
+            } else if (value === 'create' || value === 'all-batches' || value === 'notes') {
+              setMainMenuSelection('direct-mail');
+            }
+          }}>
+            <TabsList className={`grid w-full ${mainMenuSelection === 'direct-mail' ? 'grid-cols-6' : 'grid-cols-3'} bg-transparent h-auto p-0 relative border-b border-gray-200 group`}>
+              <TabsTrigger value="create" onClick={() => { setMainMenuSelection('direct-mail'); setActiveTab('create'); }} data-testid="tab-direct-mail" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Direct Mail</TabsTrigger>
+              <TabsTrigger value="lead-vendor" data-testid="tab-lead-vendor" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Lead Vendor</TabsTrigger>
+              <TabsTrigger value="social-media" data-testid="tab-social-media" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Social Media</TabsTrigger>
+              {mainMenuSelection === 'direct-mail' && (
+                <>
+                  <TabsTrigger value="create" data-testid="tab-create-batch" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Create Batch</TabsTrigger>
+                  <TabsTrigger value="all-batches" data-testid="tab-all-batches" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Batch List</TabsTrigger>
+                  <TabsTrigger value="notes" data-testid="tab-notes" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Notes</TabsTrigger>
+                </>
+              )}
+            </TabsList>
 
           {/* CREATE BATCH TAB */}
           <TabsContent value="create" className="mt-6">
@@ -2215,41 +2200,35 @@ export default function AdminMarketing() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {/* LEAD VENDOR TAB */}
+          <TabsContent value="lead-vendor" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Lead Vendor Management</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-12">
+                  <p className="text-muted-foreground">Lead Vendor feature coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* SOCIAL MEDIA TAB */}
+          <TabsContent value="social-media" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Social Media Marketing</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-12">
+                  <p className="text-muted-foreground">Social Media feature coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
           </Tabs>
-          )}
-
-          {/* Lead Vendor Section */}
-          {mainMenuSelection === 'lead-vendor' && (
-            <div className="mt-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Lead Vendor Management</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-12">
-                    <p className="text-muted-foreground">Lead Vendor feature coming soon...</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-
-          {/* Social Media Section */}
-          {mainMenuSelection === 'social-media' && (
-            <div className="mt-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Social Media Marketing</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-12">
-                    <p className="text-muted-foreground">Social Media feature coming soon...</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-          </>
         </div>
       </div>
 
