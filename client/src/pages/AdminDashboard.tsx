@@ -434,7 +434,7 @@ export default function AdminDashboard() {
 
         {/* Menu Grid - Second Row with extra spacing */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-16">
-          {menuItems.slice(5, 9).map((item, index) => {
+          {menuItems.slice(5, 10).map((item, index) => {
             const Icon = item.icon;
             return (
               <Card 
