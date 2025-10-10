@@ -212,6 +212,9 @@ export default function AdminMarketing() {
   // Card already open warning dialog
   const [cardAlreadyOpenDialog, setCardAlreadyOpenDialog] = useState(false);
   
+  // Close charts warning dialog
+  const [closeChartsWarningDialog, setCloseChartsWarningDialog] = useState(false);
+  
   // Query card minimize/expand state
   const [isQueryCardMinimized, setIsQueryCardMinimized] = useState(false);
   
@@ -556,6 +559,16 @@ export default function AdminMarketing() {
     resetForm();
   };
   
+  const handleCloseChartsAndOpenBatch = () => {
+    // Close all charts
+    setDataCategory('Select');
+    setSelectedBatch(null);
+    // Close the warning dialog
+    setCloseChartsWarningDialog(false);
+    // Open create batch card
+    setShowCreateBatch(true);
+  };
+  
   const handleBackToDashboard = () => {
     setShowRevertAnimation(true);
     setTimeout(() => {
@@ -888,7 +901,13 @@ export default function AdminMarketing() {
                         if (showCreateBatch) {
                           setCardAlreadyOpenDialog(true);
                         } else {
-                          setShowCreateBatch(true);
+                          // Check if any charts are open
+                          const hasOpenCharts = dataCategory !== 'Select' || selectedBatch !== null;
+                          if (hasOpenCharts) {
+                            setCloseChartsWarningDialog(true);
+                          } else {
+                            setShowCreateBatch(true);
+                          }
                         }
                       }}
                       className="hover:bg-blue-400 hover:text-white"
@@ -2610,6 +2629,32 @@ export default function AdminMarketing() {
               data-testid="button-ok"
             >
               OK
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Close Charts Warning Dialog */}
+      <Dialog open={closeChartsWarningDialog} onOpenChange={setCloseChartsWarningDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Close Open Charts?</DialogTitle>
+          </DialogHeader>
+          <p>This will close all open charts. Unsaved changes will be lost. Proceed?</p>
+          <div className="flex justify-end gap-2 mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setCloseChartsWarningDialog(false)}
+              data-testid="button-go-back-charts"
+            >
+              Go Back
+            </Button>
+            <Button
+              onClick={handleCloseChartsAndOpenBatch}
+              className="bg-red-600 hover:bg-red-700 text-white"
+              data-testid="button-yes-close-charts"
+            >
+              Yes
             </Button>
           </div>
         </DialogContent>
