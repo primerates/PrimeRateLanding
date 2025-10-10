@@ -56,8 +56,30 @@ For all Excel/CSV data upload features, use sticky columns for the first two col
 
 ### Admin Features
 - **Comments & Posts Management**: System for client testimonials and internal company posts with 5-tab navigation, real-time preview, statistics, localStorage persistence, sortable tables, and sticky notes functionality.
-- **Marketing Direct Mail System**: Campaign management with CSV upload, batch tracking, lead journey monitoring, and auto-calculated costs. Features sticky columns for data tables and detailed batch creation forms.
+- **Marketing Direct Mail System**: Campaign management with CSV upload, batch tracking, lead journey monitoring, state selection, and auto-calculated costs. Features sticky columns for data tables, state selector dialog, and detailed batch creation forms with 5-row layout.
 - **Loan Management System**: Manages client loan applications with support for multiple loan categories, rate configurations, third-party services, and quote generation. Includes specific patterns for FHA Upfront MIP calculations, rate column totals, and value synchronization.
+
+## Admin Marketing - Direct Mail System
+
+### Batch Creation
+- **5-Row Layout**: Campaign parameters, date tracking, vendor fields, cost tracking, and CSV upload
+  - **Row 1**: Loan Category, Data Speed, Delivery, First Call (date field)
+  - **Row 2**: Data Date, Print Date, Mail Date, Duration to First Call (all date fields with MM/DD/YYYY format)
+  - **Row 3**: Data Vendor, Print Vendor (swapped positions), Mail Vendor, Supply Vendor
+  - **Row 4**: Data Cost, Mail Cost, Print Cost, Supply Cost (currency formatted with CurrencyInput component)
+  - **Row 5**: CSV UTF8 file upload with green labels
+- **States Selector**: Green "States" button in card header opens dialog to select multiple states; displays count in button when states selected
+- **Date Fields**: Auto-format as MM/DD/YYYY; "First Call" renamed from "Mail Date" for clarity
+
+### Batch List Table
+- **Column Headers** (left to right): Created, Batch #, Batch Title, Category, Data, Delivery, 10 Yr Bond, Par Rate, Records, **States**, Cost, Actions
+- **States Column**: Displays comma-separated state abbreviations (e.g., "CA, FL") or "-" if none selected
+- **Cost Column**: Auto-calculates total from Data Cost + Mail Cost + Print Cost + Supply Cost
+- **Sortable Columns**: Created, Batch #, Batch Title with arrow indicators
+
+### Batch Details Table
+- **Sticky Columns**: First two columns (Last Name, First Name) remain frozen during horizontal scroll
+- **Reference Column**: Displays as "Reference #" (duplicate reference columns filtered out)
 
 ## External Dependencies
 

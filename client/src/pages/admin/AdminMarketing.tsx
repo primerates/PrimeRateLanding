@@ -35,6 +35,7 @@ interface BatchData {
   supplyCost: string;
   tenYearBond: string;
   parRate: string;
+  states: string[]; // Array of state abbreviations
   createdDate: string;
   excelData: Array<{
     referenceNumber: string;
@@ -71,6 +72,60 @@ interface RequiredField {
   label: string;
   description: string;
 }
+
+// US States list
+const US_STATES = [
+  { abbr: 'AL', name: 'Alabama' },
+  { abbr: 'AK', name: 'Alaska' },
+  { abbr: 'AZ', name: 'Arizona' },
+  { abbr: 'AR', name: 'Arkansas' },
+  { abbr: 'CA', name: 'California' },
+  { abbr: 'CO', name: 'Colorado' },
+  { abbr: 'CT', name: 'Connecticut' },
+  { abbr: 'DE', name: 'Delaware' },
+  { abbr: 'FL', name: 'Florida' },
+  { abbr: 'GA', name: 'Georgia' },
+  { abbr: 'HI', name: 'Hawaii' },
+  { abbr: 'ID', name: 'Idaho' },
+  { abbr: 'IL', name: 'Illinois' },
+  { abbr: 'IN', name: 'Indiana' },
+  { abbr: 'IA', name: 'Iowa' },
+  { abbr: 'KS', name: 'Kansas' },
+  { abbr: 'KY', name: 'Kentucky' },
+  { abbr: 'LA', name: 'Louisiana' },
+  { abbr: 'ME', name: 'Maine' },
+  { abbr: 'MD', name: 'Maryland' },
+  { abbr: 'MA', name: 'Massachusetts' },
+  { abbr: 'MI', name: 'Michigan' },
+  { abbr: 'MN', name: 'Minnesota' },
+  { abbr: 'MS', name: 'Mississippi' },
+  { abbr: 'MO', name: 'Missouri' },
+  { abbr: 'MT', name: 'Montana' },
+  { abbr: 'NE', name: 'Nebraska' },
+  { abbr: 'NV', name: 'Nevada' },
+  { abbr: 'NH', name: 'New Hampshire' },
+  { abbr: 'NJ', name: 'New Jersey' },
+  { abbr: 'NM', name: 'New Mexico' },
+  { abbr: 'NY', name: 'New York' },
+  { abbr: 'NC', name: 'North Carolina' },
+  { abbr: 'ND', name: 'North Dakota' },
+  { abbr: 'OH', name: 'Ohio' },
+  { abbr: 'OK', name: 'Oklahoma' },
+  { abbr: 'OR', name: 'Oregon' },
+  { abbr: 'PA', name: 'Pennsylvania' },
+  { abbr: 'RI', name: 'Rhode Island' },
+  { abbr: 'SC', name: 'South Carolina' },
+  { abbr: 'SD', name: 'South Dakota' },
+  { abbr: 'TN', name: 'Tennessee' },
+  { abbr: 'TX', name: 'Texas' },
+  { abbr: 'UT', name: 'Utah' },
+  { abbr: 'VT', name: 'Vermont' },
+  { abbr: 'VA', name: 'Virginia' },
+  { abbr: 'WA', name: 'Washington' },
+  { abbr: 'WV', name: 'West Virginia' },
+  { abbr: 'WI', name: 'Wisconsin' },
+  { abbr: 'WY', name: 'Wyoming' }
+];
 
 // CurrencyInput component for dollar values - matches Income tab style
 const CurrencyInput = ({ value, onChange, placeholder = '$0', id, dataTestId }: {
@@ -172,6 +227,10 @@ export default function AdminMarketing() {
   const [mailCost, setMailCost] = useState('');
   const [printCost, setPrintCost] = useState('');
   const [supplyCost, setSupplyCost] = useState('');
+  
+  // States selection
+  const [selectedStates, setSelectedStates] = useState<string[]>([]);
+  const [statesDialogOpen, setStatesDialogOpen] = useState(false);
 
   const requiredFields: RequiredField[] = [
     { key: 'reference', label: 'Reference Number', description: 'Unique identifier for tracking' },
@@ -345,6 +404,7 @@ export default function AdminMarketing() {
       supplyCost: supplyCost,
       tenYearBond: tenYearBond,
       parRate: parRate,
+      states: selectedStates,
       createdDate: new Date().toISOString(),
       excelData: mappedData,
       stats: {
@@ -396,6 +456,7 @@ export default function AdminMarketing() {
     setSupplyCost('');
     setTenYearBond('');
     setParRate('');
+    setSelectedStates([]);
     setCsvData(null);
     setDetectedColumns([]);
     setPreviewData([]);
@@ -640,7 +701,16 @@ export default function AdminMarketing() {
           <TabsContent value="create" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>Create New Batch</CardTitle>
+                <div className="flex items-center justify-between gap-4">
+                  <CardTitle>Create New Batch</CardTitle>
+                  <Button 
+                    onClick={() => setStatesDialogOpen(true)}
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                    data-testid="button-states"
+                  >
+                    States {selectedStates.length > 0 && `(${selectedStates.length})`}
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 {/* Stage: Upload */}
@@ -1210,6 +1280,7 @@ export default function AdminMarketing() {
                           <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">10 Yr Bond</th>
                           <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">Par Rate</th>
                           <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">Records</th>
+                          <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">States</th>
                           <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">Cost</th>
                           <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">Actions</th>
                         </tr>
@@ -1282,6 +1353,9 @@ export default function AdminMarketing() {
                               <td className="p-3 whitespace-nowrap">{batch.tenYearBond || '-'}</td>
                               <td className="p-3 whitespace-nowrap">{batch.parRate || '-'}</td>
                               <td className="p-3 whitespace-nowrap">{actualLeadCount}</td>
+                              <td className="p-3 whitespace-nowrap">
+                                {batch.states && batch.states.length > 0 ? batch.states.join(', ') : '-'}
+                              </td>
                               <td className="p-3 whitespace-nowrap">
                                 {(() => {
                                   const dataCost = parseInt((batch.dataCost || '0').replace(/[^\d]/g, ''), 10);
@@ -1782,6 +1856,57 @@ export default function AdminMarketing() {
           </Tabs>
         </div>
       </div>
+
+      {/* States Selection Dialog */}
+      <Dialog open={statesDialogOpen} onOpenChange={setStatesDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Select States for This Batch</DialogTitle>
+            <DialogDescription>
+              Choose which states this batch covers. Selected: {selectedStates.length}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-3 gap-3 py-4">
+            {US_STATES.map((state) => {
+              const isSelected = selectedStates.includes(state.abbr);
+              return (
+                <Button
+                  key={state.abbr}
+                  variant={isSelected ? "default" : "outline"}
+                  className={`justify-start ${isSelected ? 'bg-green-600 hover:bg-green-700' : ''}`}
+                  onClick={() => {
+                    if (isSelected) {
+                      setSelectedStates(selectedStates.filter(s => s !== state.abbr));
+                    } else {
+                      setSelectedStates([...selectedStates, state.abbr]);
+                    }
+                  }}
+                  data-testid={`button-state-${state.abbr}`}
+                >
+                  <span className="font-semibold mr-2">{state.abbr}</span>
+                  <span className="text-sm">{state.name}</span>
+                </Button>
+              );
+            })}
+          </div>
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => setSelectedStates([])}
+              data-testid="button-clear-states"
+            >
+              Clear All
+            </Button>
+            <Button 
+              onClick={() => setStatesDialogOpen(false)}
+              className="bg-green-600 hover:bg-green-700"
+              data-testid="button-done-states"
+            >
+              Done
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteConfirmDialog} onOpenChange={setDeleteConfirmDialog}>
