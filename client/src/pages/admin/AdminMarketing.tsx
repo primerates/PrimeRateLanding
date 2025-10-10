@@ -763,7 +763,7 @@ export default function AdminMarketing() {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <h1 className="text-xl font-black italic" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }}>
-                  Marketing - Direct Mail
+                  Marketing
                 </h1>
               </div>
               <div className="flex items-center space-x-3">
