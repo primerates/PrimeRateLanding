@@ -840,9 +840,6 @@ export default function AdminMarketing() {
                           <p className="text-sm text-green-600">CSV UTF8 format files only</p>
                         </label>
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        Any CSV format accepted - you'll map columns in the next step
-                      </p>
                     </div>
                   </div>
                 )}
