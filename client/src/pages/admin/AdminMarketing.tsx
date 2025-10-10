@@ -185,7 +185,6 @@ export default function AdminMarketing() {
   const [showCreateBatch, setShowCreateBatch] = useState(false);
   
   // Cancel new batch confirmation dialog
-  const [cancelBatchConfirmDialog, setCancelBatchConfirmDialog] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   
   // Batch detail table sorting
@@ -1161,7 +1160,7 @@ export default function AdminMarketing() {
                         type="button"
                         variant="outline"
                         size="sm"
-                        onClick={() => setCancelBatchConfirmDialog(true)}
+                        onClick={() => setCancelDialogOpen(true)}
                         className="hover:bg-red-500 hover:text-white scale-90"
                         data-testid="button-cancel-new-batch"
                       >
