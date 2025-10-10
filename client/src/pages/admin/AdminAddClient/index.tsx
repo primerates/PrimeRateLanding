@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import AddClientHeader from './components/Header';
 import { useToast } from '@/hooks/use-toast';
@@ -10,7 +11,13 @@ import { useAnimations } from './hooks/useAnimations';
 const AddClientPage = () => {
 
     const { toast } = useToast();
-    const { triggerTabAnimation } = useAnimations();
+    const { animations, triggerTabAnimation, updateAnimation } = useAnimations();
+
+    useEffect(() => {
+        // Trigger entry animation on component mount
+        updateAnimation('showEntry', true);
+        setTimeout(() => updateAnimation('showEntry', false), 1000);
+    }, [updateAnimation]);
 
     return (
         <TooltipProvider delayDuration={300}>
@@ -31,7 +38,7 @@ const AddClientPage = () => {
                                 const Component = tab.component;
                                 return (
                                     <TabsContent key={tab.value} value={tab.value} className="space-y-6">
-                                        <Component />
+                                        <Component animations={animations} />
                                     </TabsContent>
                                 );
                             })}

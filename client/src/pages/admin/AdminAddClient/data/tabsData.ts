@@ -13,7 +13,7 @@ export interface TabData {
   value: string;
   label: string;
   testId: string;
-  component: ComponentType;
+  component: ComponentType<{ animations?: any }>;
 }
 
 export const TABS_DATA: TabData[] = [
