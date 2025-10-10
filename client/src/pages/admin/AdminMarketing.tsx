@@ -221,6 +221,9 @@ export default function AdminMarketing() {
   // Batch Activity multi-select state
   const [selectedBatchActivities, setSelectedBatchActivities] = useState<string[]>([]);
   
+  // Query States multi-select state
+  const [selectedQueryStates, setSelectedQueryStates] = useState<string[]>([]);
+  
   // Query card Data Category state
   const [dataCategory, setDataCategory] = useState('Select');
   
@@ -954,10 +957,63 @@ export default function AdminMarketing() {
                   </div>
                   <div className="space-y-2">
                     <Label>States</Label>
-                    <Input
-                      placeholder=""
-                      data-testid="input-states"
-                    />
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-between font-normal h-9 border-input bg-background px-3 py-2 text-sm"
+                          data-testid="button-query-states"
+                        >
+                          <span className="truncate">
+                            {selectedQueryStates.length === 0
+                              ? 'Select'
+                              : selectedQueryStates.length === 1
+                              ? selectedQueryStates[0]
+                              : `${selectedQueryStates.length} selected`}
+                          </span>
+                          <ChevronDown className="h-4 w-4 opacity-50 ml-2 flex-shrink-0" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[300px] p-2 max-h-[400px] overflow-y-auto" align="start">
+                        <div className="grid grid-cols-2 gap-1">
+                          {US_STATES.map((state, index) => (
+                            <div key={state.abbr}>
+                              <div 
+                                className="flex items-center space-x-2 px-2 py-1.5 rounded-md hover:bg-blue-500 hover:text-white transition-colors cursor-pointer"
+                                onClick={() => {
+                                  const isChecked = selectedQueryStates.includes(state.abbr);
+                                  if (isChecked) {
+                                    setSelectedQueryStates(selectedQueryStates.filter(s => s !== state.abbr));
+                                  } else {
+                                    setSelectedQueryStates([...selectedQueryStates, state.abbr]);
+                                  }
+                                }}
+                              >
+                                <Checkbox
+                                  id={`query-state-${state.abbr}`}
+                                  checked={selectedQueryStates.includes(state.abbr)}
+                                  onCheckedChange={(checked) => {
+                                    if (checked) {
+                                      setSelectedQueryStates([...selectedQueryStates, state.abbr]);
+                                    } else {
+                                      setSelectedQueryStates(selectedQueryStates.filter(s => s !== state.abbr));
+                                    }
+                                  }}
+                                  data-testid={`checkbox-query-state-${state.abbr}`}
+                                  className="pointer-events-none"
+                                />
+                                <label
+                                  htmlFor={`query-state-${state.abbr}`}
+                                  className="text-sm font-normal cursor-pointer flex-1 pointer-events-none"
+                                >
+                                  {state.abbr}
+                                </label>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                   </div>
                   <div className="space-y-2">
                     <Label>Loan Category</Label>
