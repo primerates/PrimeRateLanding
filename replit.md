@@ -58,7 +58,21 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 - **Marketing Direct Mail System**: Campaign management with CSV upload, batch tracking, lead journey monitoring, state selection, and auto-calculated costs. Features sticky columns for data tables, state selector dialog, and detailed batch creation forms with 5-row layout.
 - **Loan Management System**: Manages client loan applications with support for multiple loan categories, rate configurations, third-party services, and quote generation. Includes specific patterns for FHA Upfront MIP calculations, rate column totals, and value synchronization.
 
-## Admin Marketing - Direct Mail System
+## Admin Marketing System
+
+### Navigation Structure
+- **Main Menu Bar**: Three primary sections accessible via menu buttons
+  - **Direct Mail**: Campaign batch management system (default view)
+  - **Lead Vendor**: Vendor management (coming soon)
+  - **Social Media**: Social media marketing tools (coming soon)
+
+### Direct Mail System
+
+#### Sub-Navigation Tabs
+- **Create Batch**: Form for creating new direct mail campaigns
+- **Batch List**: Comprehensive table of all batches with sorting
+- **Notes**: Sticky notes and annotations (coming soon)
+- ~~**Stats**: Removed from menu~~ (previously showed campaign statistics)
 
 ### Batch Creation
 - **5-Row Layout**: Campaign parameters, date tracking, vendor fields, cost tracking, and CSV upload
@@ -78,7 +92,11 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 - **Column Headers** (left to right): Created, Batch #, Batch Title, Category, Data, Delivery, 10 Yr Bond, Par Rate, Records, **States**, Cost, Actions
 - **States Column**: Displays state count (e.g., "3 States") or "-" if none selected
 - **Cost Column**: Auto-calculates total from Data Cost + Mail Cost + Print Cost + Supply Cost
-- **Sortable Columns**: Created, Batch #, Batch Title with arrow indicators
+- **Sortable Columns**: All columns are sortable with arrow indicators (click to toggle ascending/descending)
+  - Text columns (Category, Data, Delivery): Alphabetical sort
+  - Numeric columns (10 Yr Bond, Par Rate): Numeric sort
+  - Date column (Created): Date sort
+  - Calculated columns (Records, States, Cost): Sorts by actual count/value
 
 ### Batch Details Card
 - **Toggle Behavior**: Clicking batch title or batch number toggles the batch details card open/close

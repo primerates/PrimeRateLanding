@@ -174,6 +174,9 @@ export default function AdminMarketing() {
   const [sortColumn, setSortColumn] = useState<SortColumn>('createdDate');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   
+  // Main menu selection state
+  const [mainMenuSelection, setMainMenuSelection] = useState<'direct-mail' | 'lead-vendor' | 'social-media'>('direct-mail');
+  
   // Batch detail table sorting
   const [batchDetailSortColumn, setBatchDetailSortColumn] = useState<string>('');
   const [batchDetailSortDirection, setBatchDetailSortDirection] = useState<'asc' | 'desc'>('asc');
@@ -763,15 +766,44 @@ export default function AdminMarketing() {
           </div>
         </header>
 
-        {/* Tabs - Matching Comments & Posts Design */}
+        {/* Main Menu Bar */}
         <div className="container mx-auto px-6 mt-6">
-          <Tabs defaultValue="create" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 bg-transparent h-auto p-0 relative border-b border-gray-200 group">
-              <TabsTrigger value="create" data-testid="tab-create-batch" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Create Batch</TabsTrigger>
-              <TabsTrigger value="all-batches" data-testid="tab-all-batches" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Batch List</TabsTrigger>
-              <TabsTrigger value="stats" data-testid="tab-stats-overview" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Stats</TabsTrigger>
-              <TabsTrigger value="notes" data-testid="tab-notes" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Notes</TabsTrigger>
-            </TabsList>
+          <div className="flex items-center gap-2 mb-6 border-b border-gray-200 pb-2">
+            <Button
+              variant={mainMenuSelection === 'direct-mail' ? 'default' : 'ghost'}
+              onClick={() => setMainMenuSelection('direct-mail')}
+              className={mainMenuSelection === 'direct-mail' ? 'bg-blue-900 hover:bg-blue-800 text-white' : 'text-gray-700 hover:text-black'}
+              data-testid="menu-direct-mail"
+            >
+              Direct Mail
+            </Button>
+            <Button
+              variant={mainMenuSelection === 'lead-vendor' ? 'default' : 'ghost'}
+              onClick={() => setMainMenuSelection('lead-vendor')}
+              className={mainMenuSelection === 'lead-vendor' ? 'bg-blue-900 hover:bg-blue-800 text-white' : 'text-gray-700 hover:text-black'}
+              data-testid="menu-lead-vendor"
+            >
+              Lead Vendor
+            </Button>
+            <Button
+              variant={mainMenuSelection === 'social-media' ? 'default' : 'ghost'}
+              onClick={() => setMainMenuSelection('social-media')}
+              className={mainMenuSelection === 'social-media' ? 'bg-blue-900 hover:bg-blue-800 text-white' : 'text-gray-700 hover:text-black'}
+              data-testid="menu-social-media"
+            >
+              Social Media
+            </Button>
+          </div>
+
+          <>
+          {/* Direct Mail Section - Tabs */}
+          {mainMenuSelection === 'direct-mail' && (
+            <Tabs defaultValue="create" className="w-full">
+              <TabsList className="grid w-full grid-cols-3 bg-transparent h-auto p-0 relative border-b border-gray-200 group">
+                <TabsTrigger value="create" data-testid="tab-create-batch" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Create Batch</TabsTrigger>
+                <TabsTrigger value="all-batches" data-testid="tab-all-batches" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Batch List</TabsTrigger>
+                <TabsTrigger value="notes" data-testid="tab-notes" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Notes</TabsTrigger>
+              </TabsList>
 
           {/* CREATE BATCH TAB */}
           <TabsContent value="create" className="mt-6">
@@ -2170,41 +2202,6 @@ export default function AdminMarketing() {
             })()}
           </TabsContent>
 
-          {/* STATS OVERVIEW TAB */}
-          <TabsContent value="stats" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Campaign Statistics</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-3 gap-4">
-                  <Card>
-                    <CardContent className="pt-6">
-                      <div className="text-2xl font-bold">{batches.length}</div>
-                      <p className="text-sm text-muted-foreground">Total Batches</p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent className="pt-6">
-                      <div className="text-2xl font-bold">
-                        {batches.reduce((sum, b) => sum + b.stats.totalLeads, 0)}
-                      </div>
-                      <p className="text-sm text-muted-foreground">Total Leads</p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent className="pt-6">
-                      <div className="text-2xl font-bold">
-                        {batches.reduce((sum, b) => sum + b.stats.totalFunded, 0)}
-                      </div>
-                      <p className="text-sm text-muted-foreground">Total Funded</p>
-                    </CardContent>
-                  </Card>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
           {/* NOTES TAB */}
           <TabsContent value="notes" className="mt-6">
             <Card>
@@ -2219,6 +2216,40 @@ export default function AdminMarketing() {
             </Card>
           </TabsContent>
           </Tabs>
+          )}
+
+          {/* Lead Vendor Section */}
+          {mainMenuSelection === 'lead-vendor' && (
+            <div className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Lead Vendor Management</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-12">
+                    <p className="text-muted-foreground">Lead Vendor feature coming soon...</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Social Media Section */}
+          {mainMenuSelection === 'social-media' && (
+            <div className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Social Media Marketing</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-12">
+                    <p className="text-muted-foreground">Social Media feature coming soon...</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+          </>
         </div>
       </div>
 
