@@ -1,6 +1,7 @@
 import { TooltipProvider } from '@/components/ui/tooltip';
 import AddClientHeader from './components/Header';
 import { useToast } from '@/hooks/use-toast';
+import UnSavedChangesDialog from './dialogs/unsavedChanges';
 
 const AddClientPage = () => {
 
@@ -17,6 +18,7 @@ const AddClientPage = () => {
 
             </div>
 
+            <UnSavedChangesDialog />
         </TooltipProvider>
     );
 };
