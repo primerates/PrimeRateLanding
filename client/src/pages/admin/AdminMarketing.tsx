@@ -801,10 +801,17 @@ export default function AdminMarketing() {
                 <div className="grid grid-cols-6 gap-6">
                   <div className="space-y-2">
                     <Label>Data Category</Label>
-                    <Input
-                      placeholder=""
-                      data-testid="input-data-category"
-                    />
+                    <Select defaultValue="select">
+                      <SelectTrigger data-testid="select-data-category">
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="select">Select</SelectItem>
+                        <SelectItem value="trigger-data">Trigger Data</SelectItem>
+                        <SelectItem value="monthly-data">Monthly Data</SelectItem>
+                        <SelectItem value="show-all">Show All</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div className="space-y-2">
                     <Label>States</Label>
@@ -836,10 +843,16 @@ export default function AdminMarketing() {
                   </div>
                   <div className="space-y-2">
                     <Label>Lenders</Label>
-                    <Input
-                      placeholder=""
-                      data-testid="input-lenders"
-                    />
+                    <Select defaultValue="select">
+                      <SelectTrigger data-testid="select-lenders">
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="select">Select</SelectItem>
+                        <SelectItem value="uwm">UWM</SelectItem>
+                        <SelectItem value="pennymac">Pennymac</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
               </CardContent>
