@@ -388,6 +388,8 @@ export default function AdminMarketing() {
       // Create a copy of row without the mapped columns to avoid duplicates
       const { 
         [columnMapping.reference]: _, 
+        [columnMapping.firstName]: __,
+        [columnMapping.lastName]: ___,
         [columnMapping.streetAddress]: ____,
         [columnMapping.city]: _____,
         [columnMapping.state]: ______,
