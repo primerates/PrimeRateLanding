@@ -2464,7 +2464,6 @@ export default function AdminMarketing() {
           </TabsContent>
           </Tabs>
         </div>
-      </div>
 
       {/* States Selection Dialog */}
       <Dialog open={statesDialogOpen} onOpenChange={setStatesDialogOpen}>
