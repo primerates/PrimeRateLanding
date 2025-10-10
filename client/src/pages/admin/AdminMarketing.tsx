@@ -176,7 +176,7 @@ export default function AdminMarketing() {
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   
   // Main menu selection state - no longer needed since all tabs are always visible
-  const [activeTab, setActiveTab] = useState<string>('create');
+  const [activeTab, setActiveTab] = useState<string>('direct-mail');
   
   // Batch detail table sorting
   const [batchDetailSortColumn, setBatchDetailSortColumn] = useState<string>('');
@@ -855,7 +855,8 @@ export default function AdminMarketing() {
                 <CardTitle>Query</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-6 gap-6">
+                {/* Row 1 */}
+                <div className="grid grid-cols-6 gap-6 mb-6">
                   <div className="space-y-2">
                     <Label>Data Category</Label>
                     <Select defaultValue="select">
@@ -888,7 +889,7 @@ export default function AdminMarketing() {
                     <Label>Loan Purpose</Label>
                     <Input
                       placeholder=""
-                      data-testid="input-loan-purpose"
+                      data-testid="input-loan-purpose-row1"
                     />
                   </div>
                   <div className="space-y-2">
@@ -910,6 +911,70 @@ export default function AdminMarketing() {
                         <SelectItem value="pennymac">Pennymac</SelectItem>
                       </SelectContent>
                     </Select>
+                  </div>
+                </div>
+
+                {/* Row 2 */}
+                <div className="grid grid-cols-4 gap-6 mb-6">
+                  <div className="space-y-2">
+                    <Label>Loan Purpose</Label>
+                    <Input
+                      placeholder=""
+                      data-testid="input-loan-purpose-row2"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Activity</Label>
+                    <Input
+                      placeholder=""
+                      data-testid="input-activity"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Results</Label>
+                    <Input
+                      placeholder=""
+                      data-testid="input-results"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Vendors</Label>
+                    <Input
+                      placeholder=""
+                      data-testid="input-vendors"
+                    />
+                  </div>
+                </div>
+
+                {/* Row 3 */}
+                <div className="grid grid-cols-4 gap-6">
+                  <div className="space-y-2">
+                    <Label>10 Yr Bond Above</Label>
+                    <Input
+                      placeholder=""
+                      data-testid="input-bond-above"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Par Rate Above</Label>
+                    <Input
+                      placeholder=""
+                      data-testid="input-par-rate-above"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Cash Out Above</Label>
+                    <Input
+                      placeholder=""
+                      data-testid="input-cash-out-above"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>FICO Range</Label>
+                    <Input
+                      placeholder=""
+                      data-testid="input-fico-range"
+                    />
                   </div>
                 </div>
               </CardContent>
