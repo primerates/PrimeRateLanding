@@ -868,7 +868,7 @@ export default function AdminMarketing() {
                     className="hover:bg-blue-400 hover:text-white"
                     data-testid="button-add-new-batch"
                   >
-                    Add New Batch
+                    + Add New Batch
                   </Button>
                 </div>
               </CardHeader>
@@ -1007,9 +1007,8 @@ export default function AdminMarketing() {
                     <div className="flex items-center gap-2">
                       <Button 
                         onClick={() => setStatesDialogOpen(true)}
-                        variant="outline"
                         size="sm"
-                        className="hover:bg-green-600 hover:text-white scale-90"
+                        className="bg-blue-400 text-white hover:bg-blue-500 scale-90 border-0"
                         data-testid="button-states-direct-mail"
                       >
                         {selectedStates.length > 0 ? `${selectedStates.length} States` : 'States'}
