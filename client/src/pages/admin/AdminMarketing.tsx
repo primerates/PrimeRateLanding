@@ -215,6 +215,10 @@ export default function AdminMarketing() {
   // Close charts warning dialog
   const [closeChartsWarningDialog, setCloseChartsWarningDialog] = useState(false);
   
+  // Close batch card warning dialog (when changing data category)
+  const [closeBatchCardWarningDialog, setCloseBatchCardWarningDialog] = useState(false);
+  const [pendingDataCategory, setPendingDataCategory] = useState<string>('');
+  
   // Query card minimize/expand state
   const [isQueryCardMinimized, setIsQueryCardMinimized] = useState(false);
   
@@ -575,6 +579,28 @@ export default function AdminMarketing() {
     setCloseChartsWarningDialog(false);
     // Open create batch card
     setShowCreateBatch(true);
+  };
+  
+  const handleDataCategoryChange = (value: string) => {
+    // Check if changing to a chart-triggering category while batch card is open
+    if (showCreateBatch && (value === 'Show All' || value === 'Trigger Data' || value === 'Monthly Data')) {
+      // Show warning dialog
+      setPendingDataCategory(value);
+      setCloseBatchCardWarningDialog(true);
+    } else {
+      // No conflict, apply change directly
+      setDataCategory(value);
+    }
+  };
+  
+  const handleCloseBatchCardAndShowCharts = () => {
+    // Close create batch card
+    setShowCreateBatch(false);
+    resetForm();
+    // Apply the pending data category change
+    setDataCategory(pendingDataCategory);
+    // Close the warning dialog
+    setCloseBatchCardWarningDialog(false);
   };
   
   const handleBackToDashboard = () => {
@@ -948,7 +974,7 @@ export default function AdminMarketing() {
                 <div className="grid grid-cols-5 gap-6 mb-6">
                   <div className="space-y-2">
                     <Label>Data Category</Label>
-                    <Select value={dataCategory} onValueChange={setDataCategory}>
+                    <Select value={dataCategory} onValueChange={handleDataCategoryChange}>
                       <SelectTrigger data-testid="select-data-category">
                         <SelectValue placeholder="Select" />
                       </SelectTrigger>
@@ -2749,6 +2775,31 @@ export default function AdminMarketing() {
               onClick={handleCloseChartsAndOpenBatch}
               className="bg-red-600 hover:bg-red-700 text-white"
               data-testid="button-yes-close-charts"
+            >
+              Yes
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Close Batch Card Warning Dialog (when changing data category) */}
+      <Dialog open={closeBatchCardWarningDialog} onOpenChange={setCloseBatchCardWarningDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Existing "Create New Batch" card will be closed. Still Proceed?</DialogTitle>
+          </DialogHeader>
+          <div className="flex justify-end gap-2 mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setCloseBatchCardWarningDialog(false)}
+              data-testid="button-go-back-batch-card"
+            >
+              Go Back
+            </Button>
+            <Button
+              onClick={handleCloseBatchCardAndShowCharts}
+              className="bg-red-600 hover:bg-red-700 text-white border-0"
+              data-testid="button-yes-close-batch-card"
             >
               Yes
             </Button>
