@@ -1367,11 +1367,14 @@ export default function AdminMarketing() {
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                             <SelectContent>
+                              <SelectItem value="select">Select</SelectItem>
                               <SelectItem value="va">VA</SelectItem>
                               <SelectItem value="va-jumbo">VA Jumbo</SelectItem>
-                              <SelectItem value="conv">Conv.</SelectItem>
-                              <SelectItem value="conv-jumbo">Conv. Jumbo</SelectItem>
+                              <SelectItem value="conventional">Conventional</SelectItem>
+                              <SelectItem value="conventional-jumbo">Conventional Jumbo</SelectItem>
                               <SelectItem value="fha">FHA</SelectItem>
+                              <SelectItem value="second-loan">Second Loan</SelectItem>
+                              <SelectItem value="non-qm">Non-QM</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -1935,11 +1938,16 @@ export default function AdminMarketing() {
                               const getCategoryDisplay = (cat: string | undefined) => {
                                 if (!cat) return '-';
                                 switch(cat) {
+                                  case 'select': return 'Select';
                                   case 'va': return 'VA';
                                   case 'va-jumbo': return 'VA Jumbo';
+                                  case 'conventional': return 'Conventional';
+                                  case 'conventional-jumbo': return 'Conventional Jumbo';
+                                  case 'fha': return 'FHA';
+                                  case 'second-loan': return 'Second Loan';
+                                  case 'non-qm': return 'Non-QM';
                                   case 'conv': return 'Conv.';
                                   case 'conv-jumbo': return 'Conv. Jumbo';
-                                  case 'fha': return 'FHA';
                                   default: return cat;
                                 }
                               };
@@ -2275,11 +2283,16 @@ export default function AdminMarketing() {
                                         <p className="font-medium">
                                           {selectedBatch.category ? (() => {
                                             switch(selectedBatch.category) {
+                                              case 'select': return 'Select';
                                               case 'va': return 'VA';
                                               case 'va-jumbo': return 'VA Jumbo';
+                                              case 'conventional': return 'Conventional';
+                                              case 'conventional-jumbo': return 'Conventional Jumbo';
+                                              case 'fha': return 'FHA';
+                                              case 'second-loan': return 'Second Loan';
+                                              case 'non-qm': return 'Non-QM';
                                               case 'conv': return 'Conv.';
                                               case 'conv-jumbo': return 'Conv. Jumbo';
-                                              case 'fha': return 'FHA';
                                               default: return selectedBatch.category;
                                             }
                                           })() : '-'}
