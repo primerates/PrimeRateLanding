@@ -1,8 +1,9 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
-import { RotateCcw, Monitor } from 'lucide-react';
+import { RotateCcw, Monitor, Save } from 'lucide-react';
 import { useState } from "react";
 import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
+import { useAnimations } from '../hooks/useAnimations';
 
 interface AddClientHeaderProps {
     toast: (options: {
@@ -10,12 +11,15 @@ interface AddClientHeaderProps {
         description?: string;
         variant?: 'default' | 'destructive';
     }) => void;
+    onSave?: () => void;
+    isSaving?: boolean;
 }
 
-const AddClientHeader = ({ toast }: AddClientHeaderProps) => {
+const AddClientHeader = ({ toast, onSave, isSaving = false }: AddClientHeaderProps) => {
 
     const [showRevertAnimation, setShowRevertAnimation] = useState<boolean>(false);
     const [screenshareLoading, setScreenshareLoading] = useState<boolean>(false);
+    const { animations } = useAnimations();
 
     const { setUnsavedChangesDialog } = useAdminAddClientStore();
 
@@ -112,15 +116,14 @@ const AddClientHeader = ({ toast }: AddClientHeaderProps) => {
                             {screenshareLoading ? 'Starting...' : 'Screenshare'}
                         </Button>
                         <Button
-                            // onClick={form.handleSubmit(onSubmit)}
-                            // disabled={addClientMutation.isPending}
+                            onClick={onSave}
+                            disabled={isSaving}
                             size="sm"
-                            // className={`bg-white text-primary border hover:bg-green-600 hover:text-white transition-all duration-500 ${showEntryAnimation ? 'animate-roll-down' : ''
-                            //     }`}
+                            className={`bg-white text-primary border hover:bg-green-600 hover:text-white transition-all duration-500 ${animations.showEntry ? 'animate-roll-down' : ''}`}
                             data-testid="button-save-client"
                         >
-                            {/* <Save className={`h-3 w-3 mr-2 transition-transform duration-500 ${addClientMutation.isPending ? 'rotate-180' : ''}`} /> */}
-                            {/* {addClientMutation.isPending ? 'Saving...' : 'Save'} */}
+                            <Save className={`h-3 w-3 mr-2 transition-transform duration-500 ${isSaving ? 'rotate-180' : ''}`} />
+                            {isSaving ? 'Saving...' : 'Save'}
                         </Button>
                     </div>
                 </div>

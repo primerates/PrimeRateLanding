@@ -1,0 +1,48 @@
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectTrigger, SelectValue } from '@/components/ui/select';
+import SelectItems from './SelectItems';
+import { type Option } from '../data/stageOptions';
+
+interface FormSelectProps {
+  label: string;
+  value: string;
+  onValueChange: (value: string) => void;
+  options: Option[];
+  placeholder?: string;
+  testId?: string;
+  className?: string;
+  getOptionColor?: (value: string) => string;
+}
+
+const FormSelect = ({
+  label,
+  value,
+  onValueChange,
+  options,
+  placeholder = '',
+  testId,
+  className = 'space-y-2 max-w-[75%]',
+  getOptionColor
+}: FormSelectProps) => {
+  return (
+    <div className={className}>
+      <Label htmlFor={testId}>{label}</Label>
+      <Select
+        value={value}
+        onValueChange={onValueChange}
+      >
+        <SelectTrigger
+          data-testid={testId}
+          className={getOptionColor ? getOptionColor(value) : ''}
+        >
+          <SelectValue placeholder={placeholder} />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItems options={options} testIdPrefix={testId} />
+        </SelectContent>
+      </Select>
+    </div>
+  );
+};
+
+export default FormSelect;
