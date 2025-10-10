@@ -1025,7 +1025,7 @@ export default function AdminMarketing() {
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
-                          className="w-full justify-between font-normal text-foreground"
+                          className="w-full justify-between font-normal text-foreground bg-white"
                           data-testid="button-batch-activity"
                         >
                           <span className="truncate text-foreground">
