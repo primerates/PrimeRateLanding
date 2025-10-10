@@ -20,7 +20,11 @@ interface BatchData {
   category: string;
   dataType: string;
   delivery: string;
-  mailDate: string;
+  mailDate: string; // This is "First Call" field
+  dataDate: string;
+  printDate: string;
+  newMailDate: string;
+  durationToFirstCall: string;
   dataSource: string;
   mailVendor: string;
   printVendor: string;
@@ -155,7 +159,11 @@ export default function AdminMarketing() {
   const [category, setCategory] = useState('');
   const [dataType, setDataType] = useState('');
   const [delivery, setDelivery] = useState('');
-  const [mailDate, setMailDate] = useState('');
+  const [mailDate, setMailDate] = useState(''); // This is "First Call"
+  const [dataDate, setDataDate] = useState('');
+  const [printDate, setPrintDate] = useState('');
+  const [newMailDate, setNewMailDate] = useState('');
+  const [durationToFirstCall, setDurationToFirstCall] = useState('');
   const [mailVendor, setMailVendor] = useState('');
   const [dataSource, setDataSource] = useState('');
   const [printVendor, setPrintVendor] = useState('');
@@ -323,6 +331,10 @@ export default function AdminMarketing() {
       dataType: dataType,
       delivery: delivery,
       mailDate: mailDate,
+      dataDate: dataDate,
+      printDate: printDate,
+      newMailDate: newMailDate,
+      durationToFirstCall: durationToFirstCall,
       dataSource: dataSource,
       mailVendor: mailVendor,
       printVendor: printVendor,
@@ -366,6 +378,24 @@ export default function AdminMarketing() {
   const resetForm = () => {
     setBatchNumber('');
     setBatchTitle('');
+    setCategory('');
+    setDataType('');
+    setDelivery('');
+    setMailDate('');
+    setDataDate('');
+    setPrintDate('');
+    setNewMailDate('');
+    setDurationToFirstCall('');
+    setDataSource('');
+    setMailVendor('');
+    setPrintVendor('');
+    setSupplyVendor('');
+    setDataCost('');
+    setMailCost('');
+    setPrintCost('');
+    setSupplyCost('');
+    setTenYearBond('');
+    setParRate('');
     setCsvData(null);
     setDetectedColumns([]);
     setPreviewData([]);
@@ -703,9 +733,9 @@ export default function AdminMarketing() {
                         </Select>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="mail-date">Mail Date</Label>
+                        <Label htmlFor="first-call">First Call</Label>
                         <Input
-                          id="mail-date"
+                          id="first-call"
                           value={mailDate}
                           onChange={(e) => {
                             const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
@@ -724,12 +754,116 @@ export default function AdminMarketing() {
                             setMailDate(formatted);
                           }}
                           placeholder="MM/DD/YYYY"
-                          data-testid="input-mail-date"
+                          data-testid="input-first-call"
                         />
                       </div>
                     </div>
 
-                    {/* Third Row */}
+                    {/* Third Row - Date Fields */}
+                    <div className="grid grid-cols-4 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="data-date">Data Date</Label>
+                        <Input
+                          id="data-date"
+                          value={dataDate}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, '');
+                            let formatted = '';
+                            
+                            if (value.length > 0) {
+                              formatted = value.substring(0, 2);
+                            }
+                            if (value.length > 2) {
+                              formatted += '/' + value.substring(2, 4);
+                            }
+                            if (value.length > 4) {
+                              formatted += '/' + value.substring(4, 8);
+                            }
+                            
+                            setDataDate(formatted);
+                          }}
+                          placeholder="MM/DD/YYYY"
+                          data-testid="input-data-date"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="print-date">Print Date</Label>
+                        <Input
+                          id="print-date"
+                          value={printDate}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, '');
+                            let formatted = '';
+                            
+                            if (value.length > 0) {
+                              formatted = value.substring(0, 2);
+                            }
+                            if (value.length > 2) {
+                              formatted += '/' + value.substring(2, 4);
+                            }
+                            if (value.length > 4) {
+                              formatted += '/' + value.substring(4, 8);
+                            }
+                            
+                            setPrintDate(formatted);
+                          }}
+                          placeholder="MM/DD/YYYY"
+                          data-testid="input-print-date"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="new-mail-date">Mail Date</Label>
+                        <Input
+                          id="new-mail-date"
+                          value={newMailDate}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, '');
+                            let formatted = '';
+                            
+                            if (value.length > 0) {
+                              formatted = value.substring(0, 2);
+                            }
+                            if (value.length > 2) {
+                              formatted += '/' + value.substring(2, 4);
+                            }
+                            if (value.length > 4) {
+                              formatted += '/' + value.substring(4, 8);
+                            }
+                            
+                            setNewMailDate(formatted);
+                          }}
+                          placeholder="MM/DD/YYYY"
+                          data-testid="input-new-mail-date"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="duration-first-call">Duration to First Call</Label>
+                        <Input
+                          id="duration-first-call"
+                          value={durationToFirstCall}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, '');
+                            let formatted = '';
+                            
+                            if (value.length > 0) {
+                              formatted = value.substring(0, 2);
+                            }
+                            if (value.length > 2) {
+                              formatted += '/' + value.substring(2, 4);
+                            }
+                            if (value.length > 4) {
+                              formatted += '/' + value.substring(4, 8);
+                            }
+                            
+                            setDurationToFirstCall(formatted);
+                          }}
+                          placeholder="MM/DD/YYYY"
+                          data-testid="input-duration-first-call"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Fourth Row - Vendor Fields */}
                     <div className="grid grid-cols-4 gap-6">
                       <div className="space-y-2">
                         <Label htmlFor="data-source">Data Vendor</Label>
@@ -780,7 +914,7 @@ export default function AdminMarketing() {
                       </div>
                     </div>
 
-                    {/* Fourth Row */}
+                    {/* Fifth Row - Cost Fields */}
                     <div className="grid grid-cols-4 gap-6">
                       <div className="space-y-2">
                         <Label htmlFor="data-cost">Data Cost</Label>
