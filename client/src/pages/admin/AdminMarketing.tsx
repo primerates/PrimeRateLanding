@@ -185,6 +185,10 @@ export default function AdminMarketing() {
   // Batch details visibility state
   const [isBatchDetailsExpanded, setIsBatchDetailsExpanded] = useState(false);
   
+  // Edit batch details state
+  const [isEditingBatchDetails, setIsEditingBatchDetails] = useState(false);
+  const [editedBatchDetails, setEditedBatchDetails] = useState<Partial<BatchData>>({});
+  
   // Delete confirmation state
   const [deleteConfirmDialog, setDeleteConfirmDialog] = useState(false);
   const [batchToDelete, setBatchToDelete] = useState<string | null>(null);
@@ -582,6 +586,39 @@ export default function AdminMarketing() {
   const handleCancelEdit = () => {
     setIsEditingTitle(false);
     setEditedTitle('');
+  };
+
+  const handleEditBatchDetails = () => {
+    if (!selectedBatch) return;
+    setEditedBatchDetails(selectedBatch);
+    setIsEditingBatchDetails(true);
+  };
+
+  const handleSaveBatchDetails = () => {
+    if (!selectedBatch) return;
+    
+    const updatedBatches = batches.map(batch => 
+      batch.id === selectedBatch.id 
+        ? { ...batch, ...editedBatchDetails }
+        : batch
+    );
+    
+    setBatches(updatedBatches);
+    localStorage.setItem('directMailBatches', JSON.stringify(updatedBatches));
+    
+    // Update selectedBatch to reflect the changes
+    setSelectedBatch({ ...selectedBatch, ...editedBatchDetails } as BatchData);
+    
+    setIsEditingBatchDetails(false);
+    toast({
+      title: "Batch Updated",
+      description: "Batch details have been updated successfully.",
+    });
+  };
+
+  const handleCancelBatchEdit = () => {
+    setIsEditingBatchDetails(false);
+    setEditedBatchDetails({});
   };
 
   // Format column names for display (convert camelCase to Title Case)
@@ -1331,7 +1368,13 @@ export default function AdminMarketing() {
                               <td className="p-3 whitespace-nowrap">{new Date(batch.createdDate).toLocaleDateString()}</td>
                               <td className="p-3 whitespace-nowrap">
                                 <button
-                                  onClick={() => setSelectedBatch(batch)}
+                                  onClick={() => {
+                                    if (selectedBatch?.id === batch.id) {
+                                      setSelectedBatch(null);
+                                    } else {
+                                      setSelectedBatch(batch);
+                                    }
+                                  }}
                                   className="text-primary hover:underline cursor-pointer font-medium"
                                   data-testid={`button-view-${batch.id}`}
                                 >
@@ -1340,7 +1383,13 @@ export default function AdminMarketing() {
                               </td>
                               <td className="p-3 whitespace-nowrap">
                                 <button
-                                  onClick={() => setSelectedBatch(batch)}
+                                  onClick={() => {
+                                    if (selectedBatch?.id === batch.id) {
+                                      setSelectedBatch(null);
+                                    } else {
+                                      setSelectedBatch(batch);
+                                    }
+                                  }}
                                   className="text-primary hover:underline cursor-pointer font-medium"
                                   data-testid={`button-view-title-${batch.id}`}
                                 >
@@ -1496,15 +1545,47 @@ export default function AdminMarketing() {
                             )}
                           </CardTitle>
                           
-                          <Button 
-                            onClick={() => setBatchStatesDialogOpen(true)}
-                            className="bg-green-600 hover:bg-green-700 text-white scale-95"
-                            data-testid="button-batch-states"
-                          >
-                            {selectedBatch.states && selectedBatch.states.length > 0 
-                              ? `${selectedBatch.states.length} States` 
-                              : 'States'}
-                          </Button>
+                          <div className="flex items-center gap-2">
+                            <Button 
+                              onClick={() => setBatchStatesDialogOpen(true)}
+                              className="bg-green-600 hover:bg-green-700 text-white scale-95"
+                              data-testid="button-batch-states"
+                            >
+                              {selectedBatch.states && selectedBatch.states.length > 0 
+                                ? `${selectedBatch.states.length} States` 
+                                : 'States'}
+                            </Button>
+                            
+                            {isEditingBatchDetails ? (
+                              <>
+                                <Button 
+                                  size="icon" 
+                                  variant="ghost" 
+                                  onClick={handleSaveBatchDetails}
+                                  data-testid="button-save-batch-details"
+                                >
+                                  <Check className="h-4 w-4 text-green-600" />
+                                </Button>
+                                <Button 
+                                  size="icon" 
+                                  variant="ghost" 
+                                  onClick={handleCancelBatchEdit}
+                                  data-testid="button-cancel-batch-edit"
+                                >
+                                  <X className="h-4 w-4 text-red-600" />
+                                </Button>
+                              </>
+                            ) : (
+                              <Button 
+                                size="icon" 
+                                variant="ghost" 
+                                onClick={handleEditBatchDetails}
+                                data-testid="button-edit-batch-details"
+                              >
+                                <Pencil className="h-4 w-4 text-green-600" />
+                              </Button>
+                            )}
+                          </div>
                         </div>
                           
                           {/* Collapsible Batch Details */}
@@ -1520,108 +1601,294 @@ export default function AdminMarketing() {
                               <div className="grid grid-cols-4 gap-4 pt-3">
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Batch #</Label>
-                                  <p className="font-medium">{selectedBatch.batchNumber}</p>
+                                  {isEditingBatchDetails ? (
+                                    <Input 
+                                      value={editedBatchDetails.batchNumber || ''}
+                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, batchNumber: e.target.value})}
+                                      className="h-8 mt-1"
+                                    />
+                                  ) : (
+                                    <p className="font-medium">{selectedBatch.batchNumber}</p>
+                                  )}
                                 </div>
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Batch Title</Label>
-                                  <p className="font-medium">{selectedBatch.batchTitle}</p>
+                                  {isEditingBatchDetails ? (
+                                    <Input 
+                                      value={editedBatchDetails.batchTitle || ''}
+                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, batchTitle: e.target.value})}
+                                      className="h-8 mt-1"
+                                    />
+                                  ) : (
+                                    <p className="font-medium">{selectedBatch.batchTitle}</p>
+                                  )}
                                 </div>
                                 <div>
                                   <Label className="text-xs text-muted-foreground">10 Year Bond</Label>
-                                  <p className="font-medium">{selectedBatch.tenYearBond || '-'}</p>
+                                  {isEditingBatchDetails ? (
+                                    <Input 
+                                      value={editedBatchDetails.tenYearBond || ''}
+                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, tenYearBond: e.target.value})}
+                                      className="h-8 mt-1"
+                                    />
+                                  ) : (
+                                    <p className="font-medium">{selectedBatch.tenYearBond || '-'}</p>
+                                  )}
                                 </div>
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Par Rate</Label>
-                                  <p className="font-medium">{selectedBatch.parRate || '-'}</p>
+                                  {isEditingBatchDetails ? (
+                                    <Input 
+                                      value={editedBatchDetails.parRate || ''}
+                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, parRate: e.target.value})}
+                                      className="h-8 mt-1"
+                                    />
+                                  ) : (
+                                    <p className="font-medium">{selectedBatch.parRate || '-'}</p>
+                                  )}
                                 </div>
                               </div>
                               
-                              {/* Row 2: Category, Data Speed, Delivery, Mail Date */}
+                              {/* Row 2: Category, Data Speed, Delivery, Duration to First Call */}
                               <div className="grid grid-cols-4 gap-4">
                                 <div>
-                                  <Label className="text-xs text-muted-foreground">Category</Label>
-                                  <p className="font-medium">
-                                    {selectedBatch.category ? (() => {
-                                      switch(selectedBatch.category) {
-                                        case 'va': return 'VA';
-                                        case 'va-jumbo': return 'VA Jumbo';
-                                        case 'conv': return 'Conv.';
-                                        case 'conv-jumbo': return 'Conv. Jumbo';
-                                        case 'fha': return 'FHA';
-                                        default: return selectedBatch.category;
-                                      }
-                                    })() : '-'}
-                                  </p>
+                                  <Label className="text-xs text-muted-foreground">Loan Category</Label>
+                                  {isEditingBatchDetails ? (
+                                    <Input 
+                                      value={editedBatchDetails.category || ''}
+                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, category: e.target.value})}
+                                      className="h-8 mt-1"
+                                    />
+                                  ) : (
+                                    <p className="font-medium">
+                                      {selectedBatch.category ? (() => {
+                                        switch(selectedBatch.category) {
+                                          case 'va': return 'VA';
+                                          case 'va-jumbo': return 'VA Jumbo';
+                                          case 'conv': return 'Conv.';
+                                          case 'conv-jumbo': return 'Conv. Jumbo';
+                                          case 'fha': return 'FHA';
+                                          default: return selectedBatch.category;
+                                        }
+                                      })() : '-'}
+                                    </p>
+                                  )}
                                 </div>
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Data Speed</Label>
-                                  <p className="font-medium">
-                                    {selectedBatch.dataType ? (selectedBatch.dataType === 'trigger' ? 'Trigger' : 'Monthly') : '-'}
-                                  </p>
+                                  {isEditingBatchDetails ? (
+                                    <Input 
+                                      value={editedBatchDetails.dataType || ''}
+                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, dataType: e.target.value})}
+                                      className="h-8 mt-1"
+                                    />
+                                  ) : (
+                                    <p className="font-medium">
+                                      {selectedBatch.dataType ? (selectedBatch.dataType === 'trigger' ? 'Trigger' : 'Monthly') : '-'}
+                                    </p>
+                                  )}
                                 </div>
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Delivery</Label>
-                                  <p className="font-medium">
-                                    {selectedBatch.delivery ? selectedBatch.delivery.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : '-'}
-                                  </p>
+                                  {isEditingBatchDetails ? (
+                                    <Input 
+                                      value={editedBatchDetails.delivery || ''}
+                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, delivery: e.target.value})}
+                                      className="h-8 mt-1"
+                                    />
+                                  ) : (
+                                    <p className="font-medium">
+                                      {selectedBatch.delivery ? selectedBatch.delivery.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : '-'}
+                                    </p>
+                                  )}
+                                </div>
+                                <div>
+                                  <Label className="text-xs text-muted-foreground">Duration to First Call</Label>
+                                  {isEditingBatchDetails ? (
+                                    <Input 
+                                      value={editedBatchDetails.durationToFirstCall || ''}
+                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, durationToFirstCall: e.target.value})}
+                                      className="h-8 mt-1"
+                                    />
+                                  ) : (
+                                    <p className="font-medium">{selectedBatch.durationToFirstCall || '-'}</p>
+                                  )}
+                                </div>
+                              </div>
+                              
+                              {/* Row 3: Date Fields */}
+                              <div className="grid grid-cols-4 gap-4">
+                                <div>
+                                  <Label className="text-xs text-muted-foreground">Data Date</Label>
+                                  {isEditingBatchDetails ? (
+                                    <Input 
+                                      value={editedBatchDetails.dataDate || ''}
+                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, dataDate: e.target.value})}
+                                      className="h-8 mt-1"
+                                      placeholder="MM/DD/YYYY"
+                                    />
+                                  ) : (
+                                    <p className="font-medium">{selectedBatch.dataDate || '-'}</p>
+                                  )}
+                                </div>
+                                <div>
+                                  <Label className="text-xs text-muted-foreground">Print Date</Label>
+                                  {isEditingBatchDetails ? (
+                                    <Input 
+                                      value={editedBatchDetails.printDate || ''}
+                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, printDate: e.target.value})}
+                                      className="h-8 mt-1"
+                                      placeholder="MM/DD/YYYY"
+                                    />
+                                  ) : (
+                                    <p className="font-medium">{selectedBatch.printDate || '-'}</p>
+                                  )}
                                 </div>
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Mail Date</Label>
-                                  <p className="font-medium">{selectedBatch.mailDate || '-'}</p>
+                                  {isEditingBatchDetails ? (
+                                    <Input 
+                                      value={editedBatchDetails.newMailDate || ''}
+                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, newMailDate: e.target.value})}
+                                      className="h-8 mt-1"
+                                      placeholder="MM/DD/YYYY"
+                                    />
+                                  ) : (
+                                    <p className="font-medium">{selectedBatch.newMailDate || '-'}</p>
+                                  )}
+                                </div>
+                                <div>
+                                  <Label className="text-xs text-muted-foreground">First Call</Label>
+                                  {isEditingBatchDetails ? (
+                                    <Input 
+                                      value={editedBatchDetails.mailDate || ''}
+                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, mailDate: e.target.value})}
+                                      className="h-8 mt-1"
+                                      placeholder="MM/DD/YYYY"
+                                    />
+                                  ) : (
+                                    <p className="font-medium">{selectedBatch.mailDate || '-'}</p>
+                                  )}
                                 </div>
                               </div>
                               
-                              {/* Row 3: Vendors */}
+                              <div className="h-4" style={{ borderTop: '1px solid hsl(var(--border))', paddingTop: '24px' }}></div>
+                              
+                              {/* Row 4: Vendors */}
                               <div className="grid grid-cols-4 gap-4">
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Data Vendor</Label>
-                                  <p className="font-medium">{selectedBatch.dataSource ? (selectedBatch.dataSource === 'dlx' ? 'DLX' : selectedBatch.dataSource) : '-'}</p>
-                                </div>
-                                <div>
-                                  <Label className="text-xs text-muted-foreground">Mail Vendor</Label>
-                                  <p className="font-medium">
-                                    {selectedBatch.mailVendor ? (selectedBatch.mailVendor === 'in-house' ? 'In House' : selectedBatch.mailVendor === 'tbd' ? 'TBD' : selectedBatch.mailVendor) : '-'}
-                                  </p>
+                                  {isEditingBatchDetails ? (
+                                    <Input 
+                                      value={editedBatchDetails.dataSource || ''}
+                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, dataSource: e.target.value})}
+                                      className="h-8 mt-1"
+                                    />
+                                  ) : (
+                                    <p className="font-medium">{selectedBatch.dataSource ? (selectedBatch.dataSource === 'dlx' ? 'DLX' : selectedBatch.dataSource) : '-'}</p>
+                                  )}
                                 </div>
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Print Vendor</Label>
-                                  <p className="font-medium">
-                                    {selectedBatch.printVendor ? (selectedBatch.printVendor === 'in-house' ? 'In House' : selectedBatch.printVendor === 'tbd' ? 'TBD' : selectedBatch.printVendor) : '-'}
-                                  </p>
+                                  {isEditingBatchDetails ? (
+                                    <Input 
+                                      value={editedBatchDetails.printVendor || ''}
+                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, printVendor: e.target.value})}
+                                      className="h-8 mt-1"
+                                    />
+                                  ) : (
+                                    <p className="font-medium">
+                                      {selectedBatch.printVendor ? (selectedBatch.printVendor === 'in-house' ? 'In House' : selectedBatch.printVendor === 'tbd' ? 'TBD' : selectedBatch.printVendor) : '-'}
+                                    </p>
+                                  )}
+                                </div>
+                                <div>
+                                  <Label className="text-xs text-muted-foreground">Mail Vendor</Label>
+                                  {isEditingBatchDetails ? (
+                                    <Input 
+                                      value={editedBatchDetails.mailVendor || ''}
+                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, mailVendor: e.target.value})}
+                                      className="h-8 mt-1"
+                                    />
+                                  ) : (
+                                    <p className="font-medium">
+                                      {selectedBatch.mailVendor ? (selectedBatch.mailVendor === 'in-house' ? 'In House' : selectedBatch.mailVendor === 'tbd' ? 'TBD' : selectedBatch.mailVendor) : '-'}
+                                    </p>
+                                  )}
                                 </div>
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Supply Vendor</Label>
-                                  <p className="font-medium">
-                                    {selectedBatch.supplyVendor ? (selectedBatch.supplyVendor === 'in-house' ? 'In House' : selectedBatch.supplyVendor === 'tbd' ? 'TBD' : selectedBatch.supplyVendor) : '-'}
-                                  </p>
+                                  {isEditingBatchDetails ? (
+                                    <Input 
+                                      value={editedBatchDetails.supplyVendor || ''}
+                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, supplyVendor: e.target.value})}
+                                      className="h-8 mt-1"
+                                    />
+                                  ) : (
+                                    <p className="font-medium">
+                                      {selectedBatch.supplyVendor ? (selectedBatch.supplyVendor === 'in-house' ? 'In House' : selectedBatch.supplyVendor === 'tbd' ? 'TBD' : selectedBatch.supplyVendor) : '-'}
+                                    </p>
+                                  )}
                                 </div>
                               </div>
                               
-                              {/* Row 4: Costs */}
+                              {/* Row 5: Costs */}
                               <div className="grid grid-cols-4 gap-4">
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Data Cost</Label>
-                                  <p className="font-medium">
-                                    {selectedBatch.dataCost && parseInt(selectedBatch.dataCost) ? `$${parseInt(selectedBatch.dataCost).toLocaleString()}` : '-'}
-                                  </p>
+                                  {isEditingBatchDetails ? (
+                                    <Input 
+                                      value={editedBatchDetails.dataCost || ''}
+                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, dataCost: e.target.value})}
+                                      className="h-8 mt-1"
+                                    />
+                                  ) : (
+                                    <p className="font-medium">
+                                      {selectedBatch.dataCost && parseInt(selectedBatch.dataCost) ? `$${parseInt(selectedBatch.dataCost).toLocaleString()}` : '-'}
+                                    </p>
+                                  )}
                                 </div>
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Mail Cost</Label>
-                                  <p className="font-medium">
-                                    {selectedBatch.mailCost && parseInt(selectedBatch.mailCost) ? `$${parseInt(selectedBatch.mailCost).toLocaleString()}` : '-'}
-                                  </p>
+                                  {isEditingBatchDetails ? (
+                                    <Input 
+                                      value={editedBatchDetails.mailCost || ''}
+                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, mailCost: e.target.value})}
+                                      className="h-8 mt-1"
+                                    />
+                                  ) : (
+                                    <p className="font-medium">
+                                      {selectedBatch.mailCost && parseInt(selectedBatch.mailCost) ? `$${parseInt(selectedBatch.mailCost).toLocaleString()}` : '-'}
+                                    </p>
+                                  )}
                                 </div>
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Print Cost</Label>
-                                  <p className="font-medium">
-                                    {selectedBatch.printCost && parseInt(selectedBatch.printCost) ? `$${parseInt(selectedBatch.printCost).toLocaleString()}` : '-'}
-                                  </p>
+                                  {isEditingBatchDetails ? (
+                                    <Input 
+                                      value={editedBatchDetails.printCost || ''}
+                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, printCost: e.target.value})}
+                                      className="h-8 mt-1"
+                                    />
+                                  ) : (
+                                    <p className="font-medium">
+                                      {selectedBatch.printCost && parseInt(selectedBatch.printCost) ? `$${parseInt(selectedBatch.printCost).toLocaleString()}` : '-'}
+                                    </p>
+                                  )}
                                 </div>
                                 <div>
                                   <Label className="text-xs text-muted-foreground">Supply Cost</Label>
-                                  <p className="font-medium">
-                                    {selectedBatch.supplyCost && parseInt(selectedBatch.supplyCost) ? `$${parseInt(selectedBatch.supplyCost).toLocaleString()}` : '-'}
-                                  </p>
+                                  {isEditingBatchDetails ? (
+                                    <Input 
+                                      value={editedBatchDetails.supplyCost || ''}
+                                      onChange={(e) => setEditedBatchDetails({...editedBatchDetails, supplyCost: e.target.value})}
+                                      className="h-8 mt-1"
+                                    />
+                                  ) : (
+                                    <p className="font-medium">
+                                      {selectedBatch.supplyCost && parseInt(selectedBatch.supplyCost) ? `$${parseInt(selectedBatch.supplyCost).toLocaleString()}` : '-'}
+                                    </p>
+                                  )}
                                 </div>
                               </div>
                             </motion.div>

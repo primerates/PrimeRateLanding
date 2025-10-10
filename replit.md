@@ -81,6 +81,22 @@ For all Excel/CSV data upload features, use sticky columns for the first two col
 - **Cost Column**: Auto-calculates total from Data Cost + Mail Cost + Print Cost + Supply Cost
 - **Sortable Columns**: Created, Batch #, Batch Title with arrow indicators
 
+### Batch Details Card
+- **Toggle Behavior**: Clicking batch title or batch number toggles the batch details card open/close
+- **Card Header**: 
+  - Batch title with edit button (green pen icon)
+  - States button (green) showing state count
+  - Edit/save/cancel buttons for batch details editing
+  - Eye icon to show/hide collapsible batch details section
+- **Batch Details Edit**: Green pen icon activates edit mode for all batch fields; green checkmark saves changes; red X cancels
+- **5-Row Layout** (matches Create Batch form):
+  - **Row 1**: Batch #, Batch Title, 10 Year Bond, Par Rate (all editable)
+  - **Row 2**: Loan Category, Data Speed, Delivery, Duration to First Call (all editable)
+  - **Row 3**: Data Date, Print Date, Mail Date, First Call (all editable, MM/DD/YYYY format)
+  - **Separation line below Row 3**
+  - **Row 4**: Data Vendor, Print Vendor, Mail Vendor, Supply Vendor (all editable)
+  - **Row 5**: Data Cost, Mail Cost, Print Cost, Supply Cost (all editable, currency formatted)
+
 ### Batch Details Table
 - **Column Order**: Reference Number, Last Name, First Name, and all other CSV columns displayed in table
 - **Reference Column**: Displays as "Reference Number" (duplicate reference columns filtered out)
