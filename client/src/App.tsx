@@ -12,6 +12,7 @@ import AdminPipeline from "@/pages/admin/AdminPipeline";
 import AdminLoanPrep from "@/pages/admin/AdminLoanPrep";
 import AdminQuotes from "@/pages/admin/AdminQuotes";
 import AdminAddClient from "@/pages/admin/AdminAddClient";
+import AdminAddClientNew from "@/pages/admin/AdminAddClient/index";
 import AdminAddComment from "@/pages/admin/AdminAddComment";
 import AdminAddVendor from "@/pages/admin/AdminAddVendor";
 import AdminSearch from "@/pages/admin/AdminSearch";
@@ -47,6 +48,11 @@ function Router() {
       <Route path="/admin/add-client">
         <ProtectedRoute>
           <AdminAddClient />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/add-client-new">
+        <ProtectedRoute>
+          <AdminAddClientNew />
         </ProtectedRoute>
       </Route>
       <Route path="/admin/add-comment">
