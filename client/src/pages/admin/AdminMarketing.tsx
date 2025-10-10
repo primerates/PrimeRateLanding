@@ -1026,10 +1026,10 @@ export default function AdminMarketing() {
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
-                          className="w-full justify-between font-normal text-foreground bg-white"
+                          className="w-full justify-between font-normal"
                           data-testid="button-batch-activity"
                         >
-                          <span className="truncate text-foreground">
+                          <span className="truncate">
                             {selectedBatchActivities.length === 0
                               ? 'Select'
                               : selectedBatchActivities.length === 1
