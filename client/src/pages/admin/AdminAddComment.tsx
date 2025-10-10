@@ -1111,7 +1111,7 @@ export default function AdminAddComment() {
                           sortedComments.map((comment, sortedIndex) => {
                             const originalIndex = postedComments.findIndex(c => c === comment);
                             return (
-                            <tr key={sortedIndex} className="border-b hover:bg-gray-50">
+                            <tr key={sortedIndex} className={`border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${sortedIndex % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'}`}>
                               <td className="p-3" data-testid={`cell-comment-date-${sortedIndex}`}>{comment.date}</td>
                               <td className="p-3" data-testid={`cell-posted-by-${sortedIndex}`}>{comment.firstName} {comment.lastName}</td>
                               <td className="p-3" data-testid={`cell-city-${sortedIndex}`}>{comment.city}</td>
@@ -1464,7 +1464,7 @@ export default function AdminAddComment() {
                             return (
                             <tr 
                               key={sortedIndex} 
-                              className="border-b hover:bg-gray-50"
+                              className={`border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${sortedIndex % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'}`}
                               data-testid={`row-post-${sortedIndex}`}
                             >
                               <td className="p-3" data-testid={`cell-republish-${sortedIndex}`}>
