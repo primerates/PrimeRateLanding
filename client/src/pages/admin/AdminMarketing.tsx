@@ -231,6 +231,7 @@ export default function AdminMarketing() {
   // States selection
   const [selectedStates, setSelectedStates] = useState<string[]>([]);
   const [statesDialogOpen, setStatesDialogOpen] = useState(false);
+  const [batchStatesDialogOpen, setBatchStatesDialogOpen] = useState(false);
 
   const requiredFields: RequiredField[] = [
     { key: 'reference', label: 'Reference Number', description: 'Unique identifier for tracking' },
@@ -1432,51 +1433,52 @@ export default function AdminMarketing() {
                     >
                       <CardHeader>
                         <div className="space-y-4">
-                          <CardTitle className="flex items-center gap-2">
-                            {isEditingTitle ? (
-                              <>
-                                <Input 
-                                  value={editedTitle}
-                                  onChange={(e) => setEditedTitle(e.target.value)}
-                                  className="flex-1 max-w-md"
-                                  data-testid="input-edit-batch-title"
-                                />
-                                <Button 
-                                  size="icon" 
-                                  variant="ghost" 
-                                  onClick={handleSaveBatchTitle}
-                                  data-testid="button-save-title"
-                                >
-                                  <Check className="h-4 w-4 text-green-600" />
-                                </Button>
-                                <Button 
-                                  size="icon" 
-                                  variant="ghost" 
-                                  onClick={handleCancelEdit}
-                                  data-testid="button-cancel-edit"
-                                >
-                                  <X className="h-4 w-4 text-red-600" />
-                                </Button>
-                              </>
-                            ) : (
-                              <>
-                                <span>{selectedBatch.batchTitle}</span>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button 
-                                      size="icon" 
-                                      variant="ghost" 
-                                      onClick={() => setIsBatchDetailsExpanded(!isBatchDetailsExpanded)}
-                                      data-testid="button-toggle-batch-details"
-                                    >
-                                      {isBatchDetailsExpanded ? (
-                                        <EyeOff className="h-4 w-4 text-green-600" />
-                                      ) : (
-                                        <Eye className="h-4 w-4 text-green-600" />
-                                      )}
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
+                          <div className="flex items-center justify-between gap-4">
+                            <CardTitle className="flex items-center gap-2">
+                              {isEditingTitle ? (
+                                <>
+                                  <Input 
+                                    value={editedTitle}
+                                    onChange={(e) => setEditedTitle(e.target.value)}
+                                    className="flex-1 max-w-md"
+                                    data-testid="input-edit-batch-title"
+                                  />
+                                  <Button 
+                                    size="icon" 
+                                    variant="ghost" 
+                                    onClick={handleSaveBatchTitle}
+                                    data-testid="button-save-title"
+                                  >
+                                    <Check className="h-4 w-4 text-green-600" />
+                                  </Button>
+                                  <Button 
+                                    size="icon" 
+                                    variant="ghost" 
+                                    onClick={handleCancelEdit}
+                                    data-testid="button-cancel-edit"
+                                  >
+                                    <X className="h-4 w-4 text-red-600" />
+                                  </Button>
+                                </>
+                              ) : (
+                                <>
+                                  <span>{selectedBatch.batchTitle}</span>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button 
+                                        size="icon" 
+                                        variant="ghost" 
+                                        onClick={() => setIsBatchDetailsExpanded(!isBatchDetailsExpanded)}
+                                        data-testid="button-toggle-batch-details"
+                                      >
+                                        {isBatchDetailsExpanded ? (
+                                          <EyeOff className="h-4 w-4 text-green-600" />
+                                        ) : (
+                                          <Eye className="h-4 w-4 text-green-600" />
+                                        )}
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
                                     {isBatchDetailsExpanded ? 'Hide' : 'Show'} Batch Details
                                   </TooltipContent>
                                 </Tooltip>
@@ -1494,6 +1496,17 @@ export default function AdminMarketing() {
                               </>
                             )}
                           </CardTitle>
+                          
+                          <Button 
+                            onClick={() => setBatchStatesDialogOpen(true)}
+                            className="bg-green-600 hover:bg-green-700 text-white scale-95"
+                            data-testid="button-batch-states"
+                          >
+                            {selectedBatch.states && selectedBatch.states.length > 0 
+                              ? `${selectedBatch.states.length} States` 
+                              : 'States'}
+                          </Button>
+                        </div>
                           
                           {/* Collapsible Batch Details */}
                           {isBatchDetailsExpanded && (
@@ -1903,6 +1916,48 @@ export default function AdminMarketing() {
               data-testid="button-done-states"
             >
               Done
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Batch States Display Dialog (Read-only) */}
+      <Dialog open={batchStatesDialogOpen} onOpenChange={setBatchStatesDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>States for This Batch</DialogTitle>
+            <DialogDescription>
+              {selectedBatch?.states && selectedBatch.states.length > 0 
+                ? `This batch covers ${selectedBatch.states.length} state${selectedBatch.states.length > 1 ? 's' : ''}`
+                : 'No states selected for this batch'}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-3 gap-3 py-4">
+            {selectedBatch?.states && selectedBatch.states.length > 0 ? (
+              US_STATES.map((state) => {
+                const isSelected = selectedBatch.states.includes(state.abbr);
+                return isSelected ? (
+                  <div
+                    key={state.abbr}
+                    className="flex items-center gap-2 p-3 rounded-md bg-green-600 text-white"
+                    data-testid={`batch-state-${state.abbr}`}
+                  >
+                    <span className="font-semibold">{state.abbr}</span>
+                    <span className="text-sm">{state.name}</span>
+                  </div>
+                ) : null;
+              })
+            ) : (
+              <p className="col-span-3 text-center text-muted-foreground">No states selected</p>
+            )}
+          </div>
+          <DialogFooter>
+            <Button 
+              onClick={() => setBatchStatesDialogOpen(false)}
+              className="bg-green-600 hover:bg-green-700"
+              data-testid="button-close-batch-states"
+            >
+              Close
             </Button>
           </DialogFooter>
         </DialogContent>
