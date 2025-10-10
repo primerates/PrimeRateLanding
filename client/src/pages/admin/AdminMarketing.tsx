@@ -1039,39 +1039,43 @@ export default function AdminMarketing() {
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-[200px] p-2" align="start">
-                        <div className="space-y-1">
+                        <div>
                           {['Select', 'Lead', 'Quote', 'Loan Prep', 'Loan', 'Funded', 'Cancelled', 'Withdrawn'].map((activity) => (
-                            <div 
-                              key={activity} 
-                              className="flex items-center space-x-2 px-2 py-1.5 rounded-md hover:bg-blue-500 hover:text-white transition-colors cursor-pointer"
-                              onClick={() => {
-                                const isChecked = selectedBatchActivities.includes(activity);
-                                if (isChecked) {
-                                  setSelectedBatchActivities(selectedBatchActivities.filter(a => a !== activity));
-                                } else {
-                                  setSelectedBatchActivities([...selectedBatchActivities, activity]);
-                                }
-                              }}
-                            >
-                              <Checkbox
-                                id={`activity-${activity}`}
-                                checked={selectedBatchActivities.includes(activity)}
-                                onCheckedChange={(checked) => {
-                                  if (checked) {
-                                    setSelectedBatchActivities([...selectedBatchActivities, activity]);
-                                  } else {
+                            <div key={activity}>
+                              <div 
+                                className="flex items-center space-x-2 px-2 py-1.5 rounded-md hover:bg-blue-500 hover:text-white transition-colors cursor-pointer mb-1"
+                                onClick={() => {
+                                  const isChecked = selectedBatchActivities.includes(activity);
+                                  if (isChecked) {
                                     setSelectedBatchActivities(selectedBatchActivities.filter(a => a !== activity));
+                                  } else {
+                                    setSelectedBatchActivities([...selectedBatchActivities, activity]);
                                   }
                                 }}
-                                data-testid={`checkbox-activity-${activity.toLowerCase().replace(' ', '-')}`}
-                                className="pointer-events-none"
-                              />
-                              <label
-                                htmlFor={`activity-${activity}`}
-                                className="text-sm font-normal cursor-pointer flex-1 pointer-events-none"
                               >
-                                {activity}
-                              </label>
+                                <Checkbox
+                                  id={`activity-${activity}`}
+                                  checked={selectedBatchActivities.includes(activity)}
+                                  onCheckedChange={(checked) => {
+                                    if (checked) {
+                                      setSelectedBatchActivities([...selectedBatchActivities, activity]);
+                                    } else {
+                                      setSelectedBatchActivities(selectedBatchActivities.filter(a => a !== activity));
+                                    }
+                                  }}
+                                  data-testid={`checkbox-activity-${activity.toLowerCase().replace(' ', '-')}`}
+                                  className="pointer-events-none"
+                                />
+                                <label
+                                  htmlFor={`activity-${activity}`}
+                                  className="text-sm font-normal cursor-pointer flex-1 pointer-events-none"
+                                >
+                                  {activity}
+                                </label>
+                              </div>
+                              {(activity === 'Funded' || activity === 'Cancelled') && (
+                                <div className="border-t border-border my-2" />
+                              )}
                             </div>
                           ))}
                         </div>
