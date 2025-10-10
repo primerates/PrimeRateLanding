@@ -227,6 +227,7 @@ export default function AdminMarketing() {
   // Query card filter values
   const [cashOutAbove, setCashOutAbove] = useState('');
   const [ficoRangeAbove, setFicoRangeAbove] = useState('');
+  const [parRateAbove, setParRateAbove] = useState('');
   
   // Query card Data Category state
   const [dataCategory, setDataCategory] = useState('Select');
@@ -1203,10 +1204,16 @@ export default function AdminMarketing() {
                   </div>
                   <div className="space-y-2">
                     <Label>Par Rate Above</Label>
-                    <Input
-                      placeholder=""
-                      data-testid="input-par-rate-above"
-                    />
+                    <div className="flex items-center border border-input bg-background px-3 rounded-md h-9">
+                      <Input
+                        value={parRateAbove}
+                        onChange={(e) => setParRateAbove(e.target.value)}
+                        placeholder="0.00"
+                        className="border-0 bg-transparent px-2 focus-visible:ring-0 h-auto"
+                        data-testid="input-par-rate-above"
+                      />
+                      <span className="text-muted-foreground text-sm">%</span>
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <Label>Cash Out Above</Label>
