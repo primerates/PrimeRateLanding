@@ -1196,6 +1196,19 @@ export default function AdminMarketing() {
                 {/* Row 3 */}
                 <div className="grid grid-cols-5 gap-6">
                   <div className="space-y-2">
+                    <Label>FICO Range Above</Label>
+                    <Input
+                      value={ficoRangeAbove}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^\d]/g, '').slice(0, 3);
+                        setFicoRangeAbove(value);
+                      }}
+                      placeholder=""
+                      maxLength={3}
+                      data-testid="input-fico-range"
+                    />
+                  </div>
+                  <div className="space-y-2">
                     <Label>10 Yr Bond Above</Label>
                     <Input
                       placeholder=""
@@ -1223,19 +1236,6 @@ export default function AdminMarketing() {
                       placeholder="$0"
                       id="cash-out-above"
                       dataTestId="input-cash-out-above"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>FICO Range Above</Label>
-                    <Input
-                      value={ficoRangeAbove}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/[^\d]/g, '').slice(0, 3);
-                        setFicoRangeAbove(value);
-                      }}
-                      placeholder=""
-                      maxLength={3}
-                      data-testid="input-fico-range"
                     />
                   </div>
                   <div className="space-y-2">
