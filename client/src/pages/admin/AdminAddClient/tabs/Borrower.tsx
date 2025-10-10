@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { useFormContext } from 'react-hook-form';
 import { type InsertClient } from '@shared/schema';
 import FormSelect from '../components/FormSelect';
@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
 import DateInput from '../components/DateInput';
+import FormInput from '../components/FormInput';
 
 interface BorrowerTabProps {
     animations?: {
@@ -18,7 +19,7 @@ interface BorrowerTabProps {
 }
 
 const BorrowerTab = ({ animations }: BorrowerTabProps) => {
-    
+
     const form = useFormContext<InsertClient>();
     const { isShowingDMBatch, setIsShowingDMBatch } = useAdminAddClientStore();
     const [hasAnimated, setHasAnimated] = useState<boolean>(false);
@@ -90,6 +91,14 @@ const BorrowerTab = ({ animations }: BorrowerTabProps) => {
                     onChange={(value) => form.setValue('borrower.startDate', value)}
                     id="borrower-startDate"
                     testId="input-borrower-startDate"
+                />
+
+                <FormInput
+                    label="Loan Duration"
+                    value={form.watch('borrower.loanDuration') || ''}
+                    onChange={(value) => form.setValue('borrower.loanDuration', value)}
+                    id="borrower-loanDuration"
+                    testId="input-borrower-loanDuration"
                 />
             </CardContent>
         </Card>

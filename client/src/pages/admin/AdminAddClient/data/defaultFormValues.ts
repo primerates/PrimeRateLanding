@@ -32,6 +32,7 @@ export const defaultClientFormValues: InsertClient = {
     subjectProperty: undefined,
     stage: 'Lead',
     leadRef: '',
+    loanDuration: '',
     source: 'Select',
     callDate: '',
     startDate: '',
