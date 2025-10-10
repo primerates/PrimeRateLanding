@@ -1199,6 +1199,10 @@ export default function AdminMarketing() {
                 if (column === 'clientName' || column === 'address') {
                   return false;
                 }
+                // Skip any column that looks like "reference" since we already have referenceNumber
+                if (column !== 'referenceNumber' && column.toLowerCase().includes('ref')) {
+                  return false;
+                }
                 return filteredRows.some(row => {
                   const value = row[column];
                   return value && value.toString().trim() !== '';
