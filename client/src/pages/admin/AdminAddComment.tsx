@@ -1383,15 +1383,6 @@ export default function AdminAddComment() {
             {/* All Posts Tab */}
             <TabsContent value="all-posts" className="mt-8">
               <Card>
-                <CardContent className="space-y-6 pt-6">
-                  <p className="text-muted-foreground">All Posts will be displayed here.</p>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            {/* All Posts Tab */}
-            <TabsContent value="all-posts" className="mt-8">
-              <Card>
                 <CardContent className="pt-6">
                   <div className="overflow-x-auto">
                     <table className="w-full border-collapse">
