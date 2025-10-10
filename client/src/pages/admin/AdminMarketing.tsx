@@ -913,11 +913,12 @@ export default function AdminMarketing() {
                 <div className="grid grid-cols-5 gap-6 mb-6">
                   <div className="space-y-2">
                     <Label>Data Category</Label>
-                    <Select defaultValue="show-all">
+                    <Select defaultValue="select">
                       <SelectTrigger data-testid="select-data-category">
-                        <SelectValue placeholder="Show All" />
+                        <SelectValue placeholder="Select" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="select">Select</SelectItem>
                         <SelectItem value="show-all">Show All</SelectItem>
                         <SelectItem value="trigger-data">Trigger Data</SelectItem>
                         <SelectItem value="monthly-data">Monthly Data</SelectItem>

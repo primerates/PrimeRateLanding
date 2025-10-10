@@ -85,7 +85,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
   - **Add New Batch Button**: Top right corner button with blue hover effect; shows Create Batch card below Query card
   - **Minimize/Expand Button**: Located to the right of "Add New Batch" button; "-" icon to minimize (collapse) the Query card and "+" icon to expand; hover tooltip shows "Minimize" or "Expand"
   - **Row 1** (5 fields): Data Category (dropdown), States, Loan Category, Loan Purpose, Property Use (dropdown)
-    - **Data Category Options**: Show All, Trigger Data, Monthly Data (default: Show All)
+    - **Data Category Options**: Select, Show All, Trigger Data, Monthly Data (default: Select)
     - **Property Use Options**: Show All, Primary Residence, Second Home, Investment Property, Home Purchase (default: Show All)
   - **Row 2** (5 fields): Property Type (dropdown), Lenders (dropdown), Data Vendors (dropdown), Mail Vendors (dropdown), Batch Activity To Date (multi-select)
     - **Property Type Options**: Show All, Single Family, Condo, Townhouse, Duplex Multi-Family, Other (default: Show All)
