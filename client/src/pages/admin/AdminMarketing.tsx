@@ -2737,7 +2737,7 @@ export default function AdminMarketing() {
       <AlertDialog open={cardAlreadyOpenDialog} onOpenChange={setCardAlreadyOpenDialog}>
         <AlertDialogContent data-testid="dialog-card-already-open">
           <AlertDialogHeader>
-            <AlertDialogTitle>A blank new batch card is currently open</AlertDialogTitle>
+            <AlertDialogTitle>A "Create New Batch" card is currently open.</AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogAction 
