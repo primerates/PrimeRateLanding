@@ -82,6 +82,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 ### Direct Mail Tab
 - **Stats Card**: Overview card displaying statistics (coming soon)
 - **Query Card**: Lead query interface with 3-row layout for filtering and searching
+  - **Add New Batch Button**: Top right corner button with blue hover effect; navigates to Create Batch tab
   - **Row 1** (6 fields): Data Category (dropdown), States, Loan Category, Loan Purpose, Property Use, Lenders (dropdown)
     - **Data Category Options**: Select, Trigger Data, Monthly Data, Show All (default: Select)
     - **Lenders Options**: Select, UWM, Pennymac (default: Select)

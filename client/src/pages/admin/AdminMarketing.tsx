@@ -852,7 +852,20 @@ export default function AdminMarketing() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Query</CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle>Query</CardTitle>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setActiveTab('create')}
+                    className="hover:bg-blue-500 hover:text-white"
+                    data-testid="button-add-new-batch"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add New Batch
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 {/* Row 1 */}
