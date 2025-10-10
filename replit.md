@@ -76,7 +76,7 @@ For all Excel/CSV data upload features, use sticky columns for the first two col
 
 ### Batch List Table
 - **Column Headers** (left to right): Created, Batch #, Batch Title, Category, Data, Delivery, 10 Yr Bond, Par Rate, Records, **States**, Cost, Actions
-- **States Column**: Displays comma-separated state abbreviations (e.g., "CA, FL") or "-" if none selected
+- **States Column**: Displays state count (e.g., "3 States") or "-" if none selected
 - **Cost Column**: Auto-calculates total from Data Cost + Mail Cost + Print Cost + Supply Cost
 - **Sortable Columns**: Created, Batch #, Batch Title with arrow indicators
 

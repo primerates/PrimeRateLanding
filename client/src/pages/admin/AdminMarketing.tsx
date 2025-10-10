@@ -1343,7 +1343,7 @@ export default function AdminMarketing() {
                               <td className="p-3 whitespace-nowrap">{batch.parRate || '-'}</td>
                               <td className="p-3 whitespace-nowrap">{actualLeadCount}</td>
                               <td className="p-3 whitespace-nowrap">
-                                {batch.states && batch.states.length > 0 ? batch.states.join(', ') : '-'}
+                                {batch.states && batch.states.length > 0 ? `${batch.states.length} States` : '-'}
                               </td>
                               <td className="p-3 whitespace-nowrap">
                                 {(() => {
