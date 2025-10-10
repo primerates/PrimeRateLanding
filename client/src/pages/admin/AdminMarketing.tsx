@@ -788,7 +788,7 @@ export default function AdminMarketing() {
                       <div key={item.path}>
                         <DropdownMenuItem
                           onClick={() => setLocation(item.path)}
-                          className="cursor-pointer hover:!bg-blue-100 dark:hover:!bg-blue-900"
+                          className="cursor-pointer hover:!bg-blue-400 dark:hover:!bg-blue-700"
                           data-testid={`shortcut-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
                         >
                           {item.label}
