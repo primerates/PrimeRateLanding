@@ -960,13 +960,6 @@ export default function AdminMarketing() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Batch Activity To Date</Label>
-                    <Input
-                      placeholder=""
-                      data-testid="input-activity"
-                    />
-                  </div>
-                  <div className="space-y-2">
                     <Label>Lenders</Label>
                     <Select defaultValue="select">
                       <SelectTrigger data-testid="select-lenders">
@@ -991,6 +984,13 @@ export default function AdminMarketing() {
                     <Input
                       placeholder=""
                       data-testid="input-mail-vendors"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Batch Activity To Date</Label>
+                    <Input
+                      placeholder=""
+                      data-testid="input-activity"
                     />
                   </div>
                 </div>
