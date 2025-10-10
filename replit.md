@@ -73,6 +73,7 @@ For all Excel/CSV data upload features, use sticky columns for the first two col
   - **CSV Upload**: UTF8 file upload with green labels below the 5 rows
 - **States Selector**: Green "States" button in card header opens dialog to select multiple states; displays count in button when states selected
 - **Date Fields**: Auto-format as MM/DD/YYYY; "First Call" renamed from "Mail Date" for clarity
+- **Column Mapping**: Required fields include Reference Number, First Name, Last Name, Street Address, City, State, Zip Code; auto-detection with manual override; Last Name and First Name stored separately and combined as "LastName, FirstName" in batch data
 
 ### Batch List Table
 - **Column Headers** (left to right): Created, Batch #, Batch Title, Category, Data, Delivery, 10 Yr Bond, Par Rate, Records, **States**, Cost, Actions
@@ -82,7 +83,7 @@ For all Excel/CSV data upload features, use sticky columns for the first two col
 
 ### Batch Details Table
 - **Sticky Columns**: First two columns (Last Name, First Name) remain frozen during horizontal scroll
-- **Reference Column**: Displays as "Reference #" (duplicate reference columns filtered out)
+- **Reference Column**: Displays as "Reference Number" (duplicate reference columns filtered out)
 
 ## External Dependencies
 

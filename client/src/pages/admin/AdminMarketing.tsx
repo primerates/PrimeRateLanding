@@ -61,6 +61,7 @@ type UploadStage = 'upload' | 'mapping' | 'preview' | 'success';
 interface ColumnMapping {
   reference: string;
   firstName: string;
+  lastName: string;
   streetAddress: string;
   city: string;
   state: string;
@@ -195,6 +196,7 @@ export default function AdminMarketing() {
   const [columnMapping, setColumnMapping] = useState<ColumnMapping>({
     reference: '',
     firstName: '',
+    lastName: '',
     streetAddress: '',
     city: '',
     state: '',
@@ -235,7 +237,8 @@ export default function AdminMarketing() {
 
   const requiredFields: RequiredField[] = [
     { key: 'reference', label: 'Reference Number', description: 'Unique identifier for tracking' },
-    { key: 'firstName', label: 'Client Name', description: 'First name or full name' },
+    { key: 'firstName', label: 'First Name', description: 'Client first name' },
+    { key: 'lastName', label: 'Last Name', description: 'Client last name' },
     { key: 'streetAddress', label: 'Street Address', description: 'Mailing address' },
     { key: 'city', label: 'City', description: 'City name' },
     { key: 'state', label: 'State', description: 'State abbreviation' },
@@ -256,6 +259,7 @@ export default function AdminMarketing() {
     const matchPatterns: Record<keyof ColumnMapping, string[]> = {
       reference: ['reference', 'ref', 'ref#', 'reference number', 'refnum'],
       firstName: ['first name', 'firstname', 'first', 'client name', 'clientname'],
+      lastName: ['last name', 'lastname', 'last', 'surname'],
       streetAddress: ['street address', 'streetaddress', 'address', 'street'],
       city: ['city'],
       state: ['state'],
@@ -361,19 +365,22 @@ export default function AdminMarketing() {
       const addressParts = [streetAddress, city, state, zip].filter(Boolean);
       const fullAddress = addressParts.join(', ');
 
-      // Get client name (handle both first/last name separately or combined)
-      let clientName = row[columnMapping.firstName] || '';
-      
-      // Check if there's a Last Name column that wasn't mapped
-      const lastNameCol = detectedColumns.find(col => 
-        col.toLowerCase().includes('last') && col !== columnMapping.firstName
-      );
-      if (lastNameCol && row[lastNameCol]) {
-        clientName = row[lastNameCol] + ', ' + clientName;
-      }
+      // Get client name (combine last name and first name)
+      const firstName = row[columnMapping.firstName] || '';
+      const lastName = row[columnMapping.lastName] || '';
+      const clientName = lastName && firstName ? `${lastName}, ${firstName}` : firstName || lastName;
 
       // Create a copy of row without the mapped columns to avoid duplicates
-      const { [columnMapping.reference]: _, [columnMapping.firstName]: __, ...otherColumns } = row;
+      const { 
+        [columnMapping.reference]: _, 
+        [columnMapping.firstName]: __, 
+        [columnMapping.lastName]: ___,
+        [columnMapping.streetAddress]: ____,
+        [columnMapping.city]: _____,
+        [columnMapping.state]: ______,
+        [columnMapping.zip]: _______,
+        ...otherColumns 
+      } = row;
       
       return {
         referenceNumber: row[columnMapping.reference] || '',
@@ -464,6 +471,7 @@ export default function AdminMarketing() {
     setColumnMapping({
       reference: '',
       firstName: '',
+      lastName: '',
       streetAddress: '',
       city: '',
       state: '',
