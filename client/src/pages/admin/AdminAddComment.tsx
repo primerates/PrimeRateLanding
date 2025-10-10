@@ -632,7 +632,7 @@ export default function AdminAddComment() {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <h1 className="text-xl font-black italic" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }}>
-                  Comments & Posts
+                  Posts
                 </h1>
               </div>
               <div className="flex items-center space-x-3">
