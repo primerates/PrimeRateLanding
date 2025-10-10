@@ -178,6 +178,9 @@ export default function AdminMarketing() {
   // Main menu selection state - no longer needed since all tabs are always visible
   const [activeTab, setActiveTab] = useState<string>('direct-mail');
   
+  // Show/hide create batch card in Direct Mail tab
+  const [showCreateBatch, setShowCreateBatch] = useState(false);
+  
   // Batch detail table sorting
   const [batchDetailSortColumn, setBatchDetailSortColumn] = useState<string>('');
   const [batchDetailSortDirection, setBatchDetailSortDirection] = useState<'asc' | 'desc'>('asc');
@@ -854,17 +857,31 @@ export default function AdminMarketing() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle>Query</CardTitle>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setActiveTab('create')}
-                    className="hover:bg-blue-500 hover:text-white"
-                    data-testid="button-add-new-batch"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add New Batch
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowCreateBatch(true)}
+                      className="hover:bg-blue-500 hover:text-white"
+                      data-testid="button-add-new-batch"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add New Batch
+                    </Button>
+                    {showCreateBatch && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowCreateBatch(false)}
+                        className="hover:bg-red-500 hover:text-white"
+                        data-testid="button-cancel-new-batch"
+                      >
+                        Cancel New Batch
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
@@ -992,6 +1009,503 @@ export default function AdminMarketing() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* CREATE BATCH CARD - Conditionally shown */}
+            {showCreateBatch && (
+              <Card className="mt-6">
+                <CardHeader>
+                  <div className="flex items-center justify-between gap-4">
+                    <CardTitle>Create New Batch</CardTitle>
+                    <Button 
+                      onClick={() => setStatesDialogOpen(true)}
+                      className="bg-green-600 hover:bg-green-700 text-white scale-90 font-medium border-0"
+                      data-testid="button-states-direct-mail"
+                    >
+                      {selectedStates.length > 0 ? `${selectedStates.length} States` : 'States'}
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {/* Stage: Upload */}
+                  {uploadStage === 'upload' && (
+                    <div className="space-y-6">
+                      {/* First Row */}
+                      <div className="grid grid-cols-4 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="batch-number-dm">Batch Number</Label>
+                          <Input
+                            id="batch-number-dm"
+                            value={batchNumber}
+                            onChange={(e) => setBatchNumber(e.target.value)}
+                            placeholder=""
+                            data-testid="input-batch-number-dm"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="batch-title-dm">Batch Title</Label>
+                          <Input
+                            id="batch-title-dm"
+                            value={batchTitle}
+                            onChange={(e) => setBatchTitle(e.target.value)}
+                            placeholder=""
+                            data-testid="input-batch-title-dm"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="ten-year-bond-dm">10 Year Bond</Label>
+                          <Input
+                            id="ten-year-bond-dm"
+                            value={tenYearBond}
+                            onChange={(e) => setTenYearBond(e.target.value)}
+                            placeholder=""
+                            data-testid="input-ten-year-bond-dm"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="par-rate-dm">Par Rate</Label>
+                          <Input
+                            id="par-rate-dm"
+                            value={parRate}
+                            onChange={(e) => setParRate(e.target.value)}
+                            placeholder=""
+                            data-testid="input-par-rate-dm"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Second Row */}
+                      <div className="grid grid-cols-4 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="category-dm">Loan Category</Label>
+                          <Select value={category} onValueChange={setCategory}>
+                            <SelectTrigger id="category-dm" data-testid="select-category-dm">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="va">VA</SelectItem>
+                              <SelectItem value="va-jumbo">VA Jumbo</SelectItem>
+                              <SelectItem value="conv">Conv.</SelectItem>
+                              <SelectItem value="conv-jumbo">Conv. Jumbo</SelectItem>
+                              <SelectItem value="fha">FHA</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="data-type-dm">Data Speed</Label>
+                          <Select value={dataType} onValueChange={setDataType}>
+                            <SelectTrigger id="data-type-dm" data-testid="select-data-type-dm">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="trigger">Trigger</SelectItem>
+                              <SelectItem value="monthly">Monthly</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="delivery-dm">Delivery</Label>
+                          <Select value={delivery} onValueChange={setDelivery}>
+                            <SelectTrigger id="delivery-dm" data-testid="select-delivery-dm">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="first-class">First Class</SelectItem>
+                              <SelectItem value="standard">Standard</SelectItem>
+                              <SelectItem value="bulk">Bulk</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="duration-first-call-dm">Duration to First Call</Label>
+                          <Input
+                            id="duration-first-call-dm"
+                            value={durationToFirstCall}
+                            onChange={(e) => setDurationToFirstCall(e.target.value)}
+                            placeholder=""
+                            data-testid="input-duration-first-call-dm"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Third Row - Date Fields */}
+                      <div className="grid grid-cols-4 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="data-date-dm">Data Date</Label>
+                          <Input
+                            id="data-date-dm"
+                            value={dataDate}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/\D/g, '');
+                              let formatted = '';
+                              
+                              if (value.length > 0) {
+                                formatted = value.substring(0, 2);
+                              }
+                              if (value.length > 2) {
+                                formatted += '/' + value.substring(2, 4);
+                              }
+                              if (value.length > 4) {
+                                formatted += '/' + value.substring(4, 8);
+                              }
+                              
+                              setDataDate(formatted);
+                            }}
+                            placeholder="MM/DD/YYYY"
+                            data-testid="input-data-date-dm"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="print-date-dm">Print Date</Label>
+                          <Input
+                            id="print-date-dm"
+                            value={printDate}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/\D/g, '');
+                              let formatted = '';
+                              
+                              if (value.length > 0) {
+                                formatted = value.substring(0, 2);
+                              }
+                              if (value.length > 2) {
+                                formatted += '/' + value.substring(2, 4);
+                              }
+                              if (value.length > 4) {
+                                formatted += '/' + value.substring(4, 8);
+                              }
+                              
+                              setPrintDate(formatted);
+                            }}
+                            placeholder="MM/DD/YYYY"
+                            data-testid="input-print-date-dm"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="new-mail-date-dm">Mail Date</Label>
+                          <Input
+                            id="new-mail-date-dm"
+                            value={newMailDate}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/\D/g, '');
+                              let formatted = '';
+                              
+                              if (value.length > 0) {
+                                formatted = value.substring(0, 2);
+                              }
+                              if (value.length > 2) {
+                                formatted += '/' + value.substring(2, 4);
+                              }
+                              if (value.length > 4) {
+                                formatted += '/' + value.substring(4, 8);
+                              }
+                              
+                              setNewMailDate(formatted);
+                            }}
+                            placeholder="MM/DD/YYYY"
+                            data-testid="input-new-mail-date-dm"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="first-call-dm">First Call</Label>
+                          <Input
+                            id="first-call-dm"
+                            value={mailDate}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/\D/g, '');
+                              let formatted = '';
+                              
+                              if (value.length > 0) {
+                                formatted = value.substring(0, 2);
+                              }
+                              if (value.length > 2) {
+                                formatted += '/' + value.substring(2, 4);
+                              }
+                              if (value.length > 4) {
+                                formatted += '/' + value.substring(4, 8);
+                              }
+                              
+                              setMailDate(formatted);
+                            }}
+                            placeholder="MM/DD/YYYY"
+                            data-testid="input-first-call-dm"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Separation Line */}
+                      <div className="h-4"></div>
+                      <div style={{ borderTop: '1px solid hsl(var(--border))', paddingTop: '24px' }}>
+                        {/* Fourth Row - Vendor Fields */}
+                        <div className="grid grid-cols-4 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="data-source-dm">Data Vendor</Label>
+                          <Select value={dataSource} onValueChange={setDataSource}>
+                            <SelectTrigger id="data-source-dm" data-testid="select-data-source-dm">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="dlx">DLX</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="print-vendor-dm">Print Vendor</Label>
+                          <Select value={printVendor} onValueChange={setPrintVendor}>
+                            <SelectTrigger id="print-vendor-dm" data-testid="select-print-vendor-dm">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="in-house">In House</SelectItem>
+                              <SelectItem value="tbd">TBD</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="mail-vendor-dm">Mail Vendor</Label>
+                          <Select value={mailVendor} onValueChange={setMailVendor}>
+                            <SelectTrigger id="mail-vendor-dm" data-testid="select-mail-vendor-dm">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="in-house">In House</SelectItem>
+                              <SelectItem value="tbd">TBD</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="supply-vendor-dm">Supply Vendor</Label>
+                          <Select value={supplyVendor} onValueChange={setSupplyVendor}>
+                            <SelectTrigger id="supply-vendor-dm" data-testid="select-supply-vendor-dm">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="in-house">In House</SelectItem>
+                              <SelectItem value="tbd">TBD</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      </div>
+
+                      {/* Fifth Row - Cost Fields */}
+                      <div className="grid grid-cols-4 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="data-cost-dm">Data Cost</Label>
+                          <CurrencyInput
+                            id="data-cost-dm"
+                            value={dataCost}
+                            onChange={setDataCost}
+                            placeholder="$"
+                            dataTestId="input-data-cost-dm"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="mail-cost-dm">Mail Cost</Label>
+                          <CurrencyInput
+                            id="mail-cost-dm"
+                            value={mailCost}
+                            onChange={setMailCost}
+                            placeholder="$"
+                            dataTestId="input-mail-cost-dm"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="print-cost-dm">Print Cost</Label>
+                          <CurrencyInput
+                            id="print-cost-dm"
+                            value={printCost}
+                            onChange={setPrintCost}
+                            placeholder="$"
+                            dataTestId="input-print-cost-dm"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="supply-cost-dm">Supply Cost</Label>
+                          <CurrencyInput
+                            id="supply-cost-dm"
+                            value={supplyCost}
+                            onChange={setSupplyCost}
+                            placeholder="$"
+                            dataTestId="input-supply-cost-dm"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Separation Line */}
+                      <div className="h-4"></div>
+                      <div style={{ borderTop: '1px solid hsl(var(--border))', paddingTop: '24px' }}>
+                        <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary transition-colors">
+                          <input
+                            type="file"
+                            accept=".csv"
+                            onChange={handleFileUpload}
+                            className="hidden"
+                            id="csv-upload-dm"
+                            data-testid="input-csv-file-dm"
+                          />
+                          <label htmlFor="csv-upload-dm" className="cursor-pointer">
+                            <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                            <p className="text-foreground mb-1">Click to upload or drag and drop</p>
+                            <p className="text-sm text-green-600">Upload Excel File Format (CSV UTF8) <span className="text-destructive">*</span></p>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Stage: Column Mapping */}
+                  {uploadStage === 'mapping' && (
+                    <div className="space-y-6">
+                      <div className="p-4 bg-primary/10 border border-primary/20 rounded-lg">
+                        <div className="flex items-start">
+                          <FileText className="w-5 h-5 text-primary mt-0.5 mr-3" />
+                          <div>
+                            <p className="text-sm text-muted-foreground">
+                              We've auto-detected some matches. Please verify your CSV columns to required fields.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        {requiredFields.map(field => (
+                          <Card key={field.key}>
+                            <CardContent className="pt-4">
+                              <div className="flex items-start justify-between mb-2">
+                                <div>
+                                  <Label className="text-sm font-medium">
+                                    {field.label} <span className="text-destructive">*</span>
+                                  </Label>
+                                </div>
+                                {columnMapping[field.key] && (
+                                  <CheckCircle className="w-5 h-5 text-green-500" />
+                                )}
+                              </div>
+                              <Select
+                                value={columnMapping[field.key]}
+                                onValueChange={(value) => handleMappingChange(field.key, value)}
+                              >
+                                <SelectTrigger data-testid={`select-${field.key}-dm`}>
+                                  <SelectValue placeholder="-- Select Column --" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {detectedColumns.map(col => (
+                                    <SelectItem key={col} value={col}>{col}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+
+                      <Card className="bg-muted/50">
+                        <CardContent className="pt-4">
+                          <h4 className="text-sm font-medium mb-2">Additional Columns</h4>
+                          <p className="text-xs text-muted-foreground">
+                            All other columns will be preserved: {detectedColumns.filter(col => !Object.values(columnMapping).includes(col)).join(', ') || 'None'}
+                          </p>
+                        </CardContent>
+                      </Card>
+
+                      {error && (
+                        <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg flex items-center text-sm text-destructive">
+                          <AlertCircle className="w-4 h-4 mr-2" />
+                          {error}
+                        </div>
+                      )}
+
+                      <div className="flex gap-3">
+                        <Button onClick={handleConfirmMapping} data-testid="button-continue-preview-dm">
+                          Continue to Preview
+                        </Button>
+                        <Button variant="outline" onClick={handleCancel} data-testid="button-cancel-mapping-dm">
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Stage: Preview */}
+                  {uploadStage === 'preview' && csvData && (
+                    <div className="space-y-6">
+                      <div>
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-lg font-semibold">Preview Mapped Data</h3>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setShowPreview(!showPreview)}
+                            data-testid="button-toggle-preview-dm"
+                          >
+                            {showPreview ? <ChevronUp className="w-4 h-4 mr-1" /> : <ChevronDown className="w-4 h-4 mr-1" />}
+                            {showPreview ? 'Hide' : 'Show'} Preview
+                          </Button>
+                        </div>
+
+                        {showPreview && (
+                          <div className="overflow-x-auto border rounded-lg">
+                            <table className="min-w-full divide-y">
+                              <thead className="bg-muted">
+                                <tr>
+                                  {requiredFields.map(field => (
+                                    <th key={field.key} className="px-4 py-3 text-left text-xs font-medium uppercase">
+                                      {field.label}
+                                    </th>
+                                  ))}
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y">
+                                {previewData.map((row, idx) => (
+                                  <tr key={idx}>
+                                    {requiredFields.map(field => (
+                                      <td key={field.key} className="px-4 py-3 text-sm">
+                                        {row[columnMapping[field.key]] || '-'}
+                                      </td>
+                                    ))}
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+
+                        <p className="text-sm text-muted-foreground mt-3">
+                          Showing first 5 of {csvData.length} records
+                        </p>
+                      </div>
+
+                      <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+                        <div className="flex items-start">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 mr-3" />
+                          <div>
+                            <p className="text-sm font-medium text-green-700 dark:text-green-400">Ready to Create</p>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              Column mapping complete. Click Create Batch to save.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {error && (
+                        <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg flex items-center text-sm text-destructive">
+                          <AlertCircle className="w-4 h-4 mr-2" />
+                          {error}
+                        </div>
+                      )}
+
+                      <div className="flex gap-3">
+                        <Button onClick={handleCreateBatch} data-testid="button-create-batch-dm">
+                          Create Batch
+                        </Button>
+                        <Button variant="outline" onClick={handleCancel} data-testid="button-cancel-preview-dm">
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           {/* CREATE BATCH TAB */}
