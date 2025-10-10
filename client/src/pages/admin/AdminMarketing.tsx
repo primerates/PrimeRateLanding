@@ -784,57 +784,50 @@ export default function AdminMarketing() {
           <TabsContent value="direct-mail" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>TBD</CardTitle>
+                <CardTitle>Query</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-7 gap-6">
+                <div className="grid grid-cols-6 gap-6">
                   <div className="space-y-2">
-                    <Label>Box 1</Label>
+                    <Label>Data Category</Label>
                     <Input
                       placeholder=""
-                      data-testid="input-box-1"
+                      data-testid="input-data-category"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Box 2</Label>
+                    <Label>States</Label>
                     <Input
                       placeholder=""
-                      data-testid="input-box-2"
+                      data-testid="input-states"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Box 3</Label>
+                    <Label>Loan Category</Label>
                     <Input
                       placeholder=""
-                      data-testid="input-box-3"
+                      data-testid="input-loan-category"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Box 4</Label>
+                    <Label>Loan Purpose</Label>
                     <Input
                       placeholder=""
-                      data-testid="input-box-4"
+                      data-testid="input-loan-purpose"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Box 5</Label>
+                    <Label>Property Use</Label>
                     <Input
                       placeholder=""
-                      data-testid="input-box-5"
+                      data-testid="input-property-use"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Box 6</Label>
+                    <Label>Lenders</Label>
                     <Input
                       placeholder=""
-                      data-testid="input-box-6"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Box 7</Label>
-                    <Input
-                      placeholder=""
-                      data-testid="input-box-7"
+                      data-testid="input-lenders"
                     />
                   </div>
                 </div>
