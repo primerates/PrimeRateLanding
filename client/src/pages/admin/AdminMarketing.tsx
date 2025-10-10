@@ -874,7 +874,7 @@ export default function AdminMarketing() {
               </CardHeader>
               <CardContent>
                 {/* Row 1 */}
-                <div className="grid grid-cols-6 gap-6 mb-6">
+                <div className="grid grid-cols-5 gap-6 mb-6">
                   <div className="space-y-2">
                     <Label>Data Category</Label>
                     <Select defaultValue="select">
@@ -907,7 +907,7 @@ export default function AdminMarketing() {
                     <Label>Loan Purpose</Label>
                     <Input
                       placeholder=""
-                      data-testid="input-loan-purpose-row1"
+                      data-testid="input-loan-purpose"
                     />
                   </div>
                   <div className="space-y-2">
@@ -915,6 +915,24 @@ export default function AdminMarketing() {
                     <Input
                       placeholder=""
                       data-testid="input-property-use"
+                    />
+                  </div>
+                </div>
+
+                {/* Row 2 */}
+                <div className="grid grid-cols-5 gap-6 mb-6">
+                  <div className="space-y-2">
+                    <Label>Property Tab</Label>
+                    <Input
+                      placeholder=""
+                      data-testid="input-property-tab"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Activity</Label>
+                    <Input
+                      placeholder=""
+                      data-testid="input-activity"
                     />
                   </div>
                   <div className="space-y-2">
@@ -930,42 +948,24 @@ export default function AdminMarketing() {
                       </SelectContent>
                     </Select>
                   </div>
-                </div>
-
-                {/* Row 2 */}
-                <div className="grid grid-cols-4 gap-6 mb-6">
                   <div className="space-y-2">
-                    <Label>Loan Purpose</Label>
+                    <Label>Data Vendors</Label>
                     <Input
                       placeholder=""
-                      data-testid="input-loan-purpose-row2"
+                      data-testid="input-data-vendors"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Activity</Label>
+                    <Label>Mail Vendors</Label>
                     <Input
                       placeholder=""
-                      data-testid="input-activity"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Results</Label>
-                    <Input
-                      placeholder=""
-                      data-testid="input-results"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Vendors</Label>
-                    <Input
-                      placeholder=""
-                      data-testid="input-vendors"
+                      data-testid="input-mail-vendors"
                     />
                   </div>
                 </div>
 
                 {/* Row 3 */}
-                <div className="grid grid-cols-4 gap-6">
+                <div className="grid grid-cols-5 gap-6">
                   <div className="space-y-2">
                     <Label>10 Yr Bond Above</Label>
                     <Input
@@ -992,6 +992,13 @@ export default function AdminMarketing() {
                     <Input
                       placeholder=""
                       data-testid="input-fico-range"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Batch Results</Label>
+                    <Input
+                      placeholder=""
+                      data-testid="input-batch-results"
                     />
                   </div>
                 </div>

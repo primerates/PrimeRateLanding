@@ -83,11 +83,11 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 - **Stats Card**: Overview card displaying statistics (coming soon)
 - **Query Card**: Lead query interface with 3-row layout for filtering and searching
   - **Add New Batch Button**: Top right corner button with blue hover effect; shows Create Batch card below Query card
-  - **Row 1** (6 fields): Data Category (dropdown), States, Loan Category, Loan Purpose, Property Use, Lenders (dropdown)
+  - **Row 1** (5 fields): Data Category (dropdown), States, Loan Category, Loan Purpose, Property Use
     - **Data Category Options**: Select, Trigger Data, Monthly Data, Show All (default: Select)
+  - **Row 2** (5 fields): Property Tab, Activity, Lenders (dropdown), Data Vendors, Mail Vendors
     - **Lenders Options**: Select, UWM, Pennymac (default: Select)
-  - **Row 2** (4 fields): Loan Purpose, Activity, Results, Vendors
-  - **Row 3** (4 fields): 10 Yr Bond Above, Par Rate Above, Cash Out Above, FICO Range
+  - **Row 3** (5 fields): 10 Yr Bond Above, Par Rate Above, Cash Out Above, FICO Range, Batch Results
 - **Create Batch Card**: Full batch creation form appears below Query card when "Add New Batch" is clicked
   - **Card Header**: Create New Batch title with States button (green) and Cancel New Batch button (red hover effect)
   - **Cancel New Batch Button**: Located in Create Batch card header to the right of States button; triggers confirmation dialog
