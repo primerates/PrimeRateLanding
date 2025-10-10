@@ -867,22 +867,6 @@ export default function AdminMarketing() {
                 <div className="flex items-center justify-between">
                   <CardTitle>Query</CardTitle>
                   <div className="flex items-center gap-2">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setIsQueryCardMinimized(!isQueryCardMinimized)}
-                          data-testid="button-toggle-query-card"
-                        >
-                          {isQueryCardMinimized ? <Plus className="h-4 w-4" /> : <Minus className="h-4 w-4" />}
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>{isQueryCardMinimized ? 'Expand' : 'Minimize'}</p>
-                      </TooltipContent>
-                    </Tooltip>
                     <Button
                       type="button"
                       variant="outline"
@@ -899,6 +883,22 @@ export default function AdminMarketing() {
                     >
                       + Add New Batch
                     </Button>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setIsQueryCardMinimized(!isQueryCardMinimized)}
+                          data-testid="button-toggle-query-card"
+                        >
+                          {isQueryCardMinimized ? <Plus className="h-4 w-4" /> : <Minus className="h-4 w-4" />}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{isQueryCardMinimized ? 'Expand' : 'Minimize'}</p>
+                      </TooltipContent>
+                    </Tooltip>
                   </div>
                 </div>
               </CardHeader>
