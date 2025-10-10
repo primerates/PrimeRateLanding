@@ -1040,7 +1040,7 @@ export default function AdminMarketing() {
                       </PopoverTrigger>
                       <PopoverContent className="w-[200px] p-2" align="start">
                         <div>
-                          {['Select', 'Lead', 'Quote', 'Loan Prep', 'Loan', 'Funded', 'Cancelled', 'Withdrawn'].map((activity) => (
+                          {['Select', 'Lead', 'Quote', 'Loan Prep', 'Loan', 'Funded', 'Withdrawn', 'Cancelled'].map((activity) => (
                             <div key={activity}>
                               <div 
                                 className="flex items-center space-x-2 px-2 py-1.5 rounded-md hover:bg-blue-500 hover:text-white transition-colors cursor-pointer mb-1"
@@ -1073,7 +1073,7 @@ export default function AdminMarketing() {
                                   {activity}
                                 </label>
                               </div>
-                              {(activity === 'Funded' || activity === 'Cancelled') && (
+                              {(activity === 'Funded' || activity === 'Withdrawn') && (
                                 <div className="border-t border-border my-2" />
                               )}
                             </div>

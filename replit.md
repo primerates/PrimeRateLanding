@@ -92,7 +92,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
     - **Lenders Options**: Show All, UWM, Pennymac (default: Show All)
     - **Data Vendors Options**: Show All, In-House, TBD (default: Show All)
     - **Mail Vendors Options**: Show All, In-House, TBD (default: Show All)
-    - **Batch Activity To Date Options**: Select, Lead, Quote, Loan Prep, Loan, Funded, Cancelled, Withdrawn (multi-select popover with checkboxes)
+    - **Batch Activity To Date Options**: Select, Lead, Quote, Loan Prep, Loan, Funded, Withdrawn, Cancelled (multi-select popover with checkboxes)
   - **Row 3** (5 fields): 10 Yr Bond Above, Par Rate Above, Cash Out Above, FICO Range Above, Batch Results To Date (dropdown)
     - **Batch Results To Date Options**: Show All, Profitable, Loss (default: Show All)
 - **Create Batch Card**: Full batch creation form appears below Query card when "Add New Batch" is clicked
