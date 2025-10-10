@@ -64,7 +64,7 @@ For all Excel/CSV data upload features, use sticky columns for the first two col
 ### Batch Creation
 - **5-Row Layout**: Campaign parameters, date tracking, vendor fields, cost tracking, and CSV upload
   - **Row 1**: Batch Number, Batch Title, 10 Year Bond, Par Rate
-  - **Row 2**: Loan Category, Data Speed, Delivery, Duration to First Call (date field with MM/DD/YYYY format)
+  - **Row 2**: Loan Category, Data Speed, Delivery, Duration to First Call (text field)
   - **Row 3**: Data Date, Print Date, Mail Date, First Call (all date fields with MM/DD/YYYY format)
   - **Separation line below Row 3**
   - **Row 4**: Data Vendor, Print Vendor (swapped positions), Mail Vendor, Supply Vendor

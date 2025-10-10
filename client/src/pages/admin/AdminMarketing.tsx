@@ -808,23 +808,8 @@ export default function AdminMarketing() {
                         <Input
                           id="duration-first-call"
                           value={durationToFirstCall}
-                          onChange={(e) => {
-                            const value = e.target.value.replace(/\D/g, '');
-                            let formatted = '';
-                            
-                            if (value.length > 0) {
-                              formatted = value.substring(0, 2);
-                            }
-                            if (value.length > 2) {
-                              formatted += '/' + value.substring(2, 4);
-                            }
-                            if (value.length > 4) {
-                              formatted += '/' + value.substring(4, 8);
-                            }
-                            
-                            setDurationToFirstCall(formatted);
-                          }}
-                          placeholder="MM/DD/YYYY"
+                          onChange={(e) => setDurationToFirstCall(e.target.value)}
+                          placeholder=""
                           data-testid="input-duration-first-call"
                         />
                       </div>
