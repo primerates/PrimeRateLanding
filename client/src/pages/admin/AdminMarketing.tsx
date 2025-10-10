@@ -964,10 +964,19 @@ export default function AdminMarketing() {
                 <div className="grid grid-cols-5 gap-6 mb-6">
                   <div className="space-y-2">
                     <Label>Property Type</Label>
-                    <Input
-                      placeholder=""
-                      data-testid="input-property-tab"
-                    />
+                    <Select defaultValue="show-all">
+                      <SelectTrigger data-testid="select-property-type">
+                        <SelectValue placeholder="Show All" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="show-all">Show All</SelectItem>
+                        <SelectItem value="single-family">Single Family</SelectItem>
+                        <SelectItem value="condo">Condo</SelectItem>
+                        <SelectItem value="townhouse">Townhouse</SelectItem>
+                        <SelectItem value="duplex-multi-family">Duplex, Multi-Family</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div className="space-y-2">
                     <Label>Lenders</Label>
