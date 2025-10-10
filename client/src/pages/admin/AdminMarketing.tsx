@@ -704,6 +704,7 @@ export default function AdminMarketing() {
                 <div className="flex items-center justify-between gap-4">
                   <CardTitle>Create New Batch</CardTitle>
                   <Button 
+                    size="sm"
                     onClick={() => setStatesDialogOpen(true)}
                     className="bg-green-600 hover:bg-green-700 text-white"
                     data-testid="button-states"
