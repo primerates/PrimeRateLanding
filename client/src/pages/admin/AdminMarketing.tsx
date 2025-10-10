@@ -1026,7 +1026,7 @@ export default function AdminMarketing() {
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
-                          className="w-full justify-between font-normal"
+                          className="w-full justify-between font-normal h-9 border-input bg-background px-3 py-2 text-sm"
                           data-testid="button-batch-activity"
                         >
                           <span className="truncate">
