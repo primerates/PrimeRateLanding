@@ -1898,6 +1898,519 @@ export default function AdminMarketing() {
                     )}
                   </CardContent>
                 </Card>
+
+                {/* Second Card - Batch Details (shows when batch is selected in Direct Mail) */}
+                {selectedBatch && selectedBatch.excelData.length > 0 && (() => {
+                  // Filter out rows with no data
+                  const filteredRows = sortedBatchDetails.filter((row) => {
+                    return Object.values(row).some(value => value && value.toString().trim() !== '');
+                  });
+                  
+                  // Filter out columns that have no data in any row, and also exclude repetitive columns
+                  const columnsWithData = Object.keys(selectedBatch.excelData[0]).filter((column) => {
+                    // Skip address column (repetitive - we show it separately)
+                    if (column === 'address') {
+                      return false;
+                    }
+                    // Skip any column that looks like "reference" since we already have referenceNumber
+                    if (column !== 'referenceNumber' && column.toLowerCase().includes('ref')) {
+                      return false;
+                    }
+                    return filteredRows.some(row => {
+                      const value = row[column];
+                      return value && value.toString().trim() !== '';
+                    });
+                  });
+
+                  return (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0, overflow: 'hidden' }}
+                      animate={{ opacity: 1, height: 'auto', overflow: 'visible' }}
+                      transition={{ duration: 0.5, ease: 'easeOut' }}
+                      className="mt-6"
+                    >
+                      <Card>
+                        <motion.div
+                          initial={{ opacity: 0, y: -20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.4, delay: 0.2, ease: 'easeOut' }}
+                        >
+                          <CardHeader>
+                            <div className="space-y-4">
+                              <div className="flex items-center justify-between gap-4">
+                                <CardTitle className="flex items-center gap-2">
+                                  {isEditingTitle ? (
+                                    <>
+                                      <Input 
+                                        value={editedTitle}
+                                        onChange={(e) => setEditedTitle(e.target.value)}
+                                        className="flex-1 max-w-md"
+                                        data-testid="input-edit-batch-title"
+                                      />
+                                      <Button 
+                                        size="icon" 
+                                        variant="ghost" 
+                                        onClick={handleSaveBatchTitle}
+                                        data-testid="button-save-title"
+                                      >
+                                        <Check className="h-4 w-4 text-green-600" />
+                                      </Button>
+                                      <Button 
+                                        size="icon" 
+                                        variant="ghost" 
+                                        onClick={handleCancelEdit}
+                                        data-testid="button-cancel-edit"
+                                      >
+                                        <X className="h-4 w-4 text-red-600" />
+                                      </Button>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <span>{selectedBatch.batchTitle}</span>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button 
+                                            size="icon" 
+                                            variant="ghost" 
+                                            onClick={() => setIsBatchDetailsExpanded(!isBatchDetailsExpanded)}
+                                            data-testid="button-toggle-batch-details"
+                                          >
+                                            {isBatchDetailsExpanded ? (
+                                              <EyeOff className="h-4 w-4 text-green-600" />
+                                            ) : (
+                                              <Eye className="h-4 w-4 text-green-600" />
+                                            )}
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                        {isBatchDetailsExpanded ? 'Hide' : 'Show'} Batch Details
+                                      </TooltipContent>
+                                    </Tooltip>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <Button 
+                                          size="icon" 
+                                          variant="ghost" 
+                                          onClick={() => {
+                                            setIsEditingTitle(true);
+                                            setEditedTitle(selectedBatch.batchTitle);
+                                          }}
+                                          data-testid="button-edit-title"
+                                        >
+                                          <Pencil className="h-4 w-4 text-green-600" />
+                                        </Button>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        Edit Batch Title
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </>
+                                )}
+                              </CardTitle>
+                              </div>
+                              
+                              <div className="flex items-center gap-2">
+                                <Button 
+                                  onClick={() => setBatchStatesDialogOpen(true)}
+                                  className="bg-green-600 hover:bg-green-700 text-white scale-95"
+                                  data-testid="button-batch-states"
+                                >
+                                  {selectedBatch.states && selectedBatch.states.length > 0 
+                                    ? `${selectedBatch.states.length} States` 
+                                    : 'States'}
+                                </Button>
+                                
+                                {isBatchDetailsExpanded && (
+                                  <>
+                                    {isEditingBatchDetails ? (
+                                      <>
+                                        <Button 
+                                          size="icon" 
+                                          variant="ghost" 
+                                          onClick={handleSaveBatchDetails}
+                                          data-testid="button-save-batch-details"
+                                        >
+                                          <Check className="h-4 w-4 text-green-600" />
+                                        </Button>
+                                        <Button 
+                                          size="icon" 
+                                          variant="ghost" 
+                                          onClick={handleCancelBatchEdit}
+                                          data-testid="button-cancel-batch-edit"
+                                        >
+                                          <X className="h-4 w-4 text-red-600" />
+                                        </Button>
+                                      </>
+                                    ) : (
+                                      <Button 
+                                        size="icon" 
+                                        variant="ghost" 
+                                        onClick={handleEditBatchDetails}
+                                        data-testid="button-edit-batch-details"
+                                      >
+                                        <Pencil className="h-4 w-4 text-green-600" />
+                                      </Button>
+                                    )}
+                                  </>
+                                )}
+                              </div>
+                            
+                              {/* Collapsible Batch Details */}
+                              {isBatchDetailsExpanded && (
+                                <motion.div
+                                  initial={{ opacity: 0, height: 0 }}
+                                  animate={{ opacity: 1, height: 'auto' }}
+                                  exit={{ opacity: 0, height: 0 }}
+                                  transition={{ duration: 0.3 }}
+                                  className="space-y-3 pt-2 border-t"
+                                >
+                                  {/* Row 1: Batch #, Title, 10 Year Bond, Par Rate */}
+                                  <div className="grid grid-cols-4 gap-4 pt-3">
+                                    <div>
+                                      <Label className="text-xs text-muted-foreground">Batch #</Label>
+                                      {isEditingBatchDetails ? (
+                                        <Input 
+                                          value={editedBatchDetails.batchNumber || ''}
+                                          onChange={(e) => setEditedBatchDetails({...editedBatchDetails, batchNumber: e.target.value})}
+                                          className="h-8 mt-1"
+                                        />
+                                      ) : (
+                                        <p className="font-medium">{selectedBatch.batchNumber}</p>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <Label className="text-xs text-muted-foreground">Batch Title</Label>
+                                      {isEditingBatchDetails ? (
+                                        <Input 
+                                          value={editedBatchDetails.batchTitle || ''}
+                                          onChange={(e) => setEditedBatchDetails({...editedBatchDetails, batchTitle: e.target.value})}
+                                          className="h-8 mt-1"
+                                        />
+                                      ) : (
+                                        <p className="font-medium">{selectedBatch.batchTitle}</p>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <Label className="text-xs text-muted-foreground">10 Year Bond</Label>
+                                      {isEditingBatchDetails ? (
+                                        <Input 
+                                          value={editedBatchDetails.tenYearBond || ''}
+                                          onChange={(e) => setEditedBatchDetails({...editedBatchDetails, tenYearBond: e.target.value})}
+                                          className="h-8 mt-1"
+                                        />
+                                      ) : (
+                                        <p className="font-medium">{selectedBatch.tenYearBond || '-'}</p>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <Label className="text-xs text-muted-foreground">Par Rate</Label>
+                                      {isEditingBatchDetails ? (
+                                        <Input 
+                                          value={editedBatchDetails.parRate || ''}
+                                          onChange={(e) => setEditedBatchDetails({...editedBatchDetails, parRate: e.target.value})}
+                                          className="h-8 mt-1"
+                                        />
+                                      ) : (
+                                        <p className="font-medium">{selectedBatch.parRate || '-'}</p>
+                                      )}
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Row 2: Category, Data Speed, Delivery, Duration to First Call */}
+                                  <div className="grid grid-cols-4 gap-4">
+                                    <div>
+                                      <Label className="text-xs text-muted-foreground">Loan Category</Label>
+                                      {isEditingBatchDetails ? (
+                                        <Input 
+                                          value={editedBatchDetails.category || ''}
+                                          onChange={(e) => setEditedBatchDetails({...editedBatchDetails, category: e.target.value})}
+                                          className="h-8 mt-1"
+                                        />
+                                      ) : (
+                                        <p className="font-medium">
+                                          {selectedBatch.category ? (() => {
+                                            switch(selectedBatch.category) {
+                                              case 'va': return 'VA';
+                                              case 'va-jumbo': return 'VA Jumbo';
+                                              case 'conv': return 'Conv.';
+                                              case 'conv-jumbo': return 'Conv. Jumbo';
+                                              case 'fha': return 'FHA';
+                                              default: return selectedBatch.category;
+                                            }
+                                          })() : '-'}
+                                        </p>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <Label className="text-xs text-muted-foreground">Data Speed</Label>
+                                      {isEditingBatchDetails ? (
+                                        <Input 
+                                          value={editedBatchDetails.dataType || ''}
+                                          onChange={(e) => setEditedBatchDetails({...editedBatchDetails, dataType: e.target.value})}
+                                          className="h-8 mt-1"
+                                        />
+                                      ) : (
+                                        <p className="font-medium">
+                                          {selectedBatch.dataType ? (selectedBatch.dataType === 'trigger' ? 'Trigger' : 'Monthly') : '-'}
+                                        </p>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <Label className="text-xs text-muted-foreground">Delivery</Label>
+                                      {isEditingBatchDetails ? (
+                                        <Input 
+                                          value={editedBatchDetails.delivery || ''}
+                                          onChange={(e) => setEditedBatchDetails({...editedBatchDetails, delivery: e.target.value})}
+                                          className="h-8 mt-1"
+                                        />
+                                      ) : (
+                                        <p className="font-medium">
+                                          {selectedBatch.delivery ? selectedBatch.delivery.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : '-'}
+                                        </p>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <Label className="text-xs text-muted-foreground">Duration to First Call</Label>
+                                      {isEditingBatchDetails ? (
+                                        <Input 
+                                          value={editedBatchDetails.durationToFirstCall || ''}
+                                          onChange={(e) => setEditedBatchDetails({...editedBatchDetails, durationToFirstCall: e.target.value})}
+                                          className="h-8 mt-1"
+                                        />
+                                      ) : (
+                                        <p className="font-medium">{selectedBatch.durationToFirstCall || '-'}</p>
+                                      )}
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Row 3: Date Fields */}
+                                  <div className="grid grid-cols-4 gap-4">
+                                    <div>
+                                      <Label className="text-xs text-muted-foreground">Data Date</Label>
+                                      {isEditingBatchDetails ? (
+                                        <Input 
+                                          value={editedBatchDetails.dataDate || ''}
+                                          onChange={(e) => setEditedBatchDetails({...editedBatchDetails, dataDate: e.target.value})}
+                                          className="h-8 mt-1"
+                                          placeholder="MM/DD/YYYY"
+                                        />
+                                      ) : (
+                                        <p className="font-medium">{selectedBatch.dataDate || '-'}</p>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <Label className="text-xs text-muted-foreground">Print Date</Label>
+                                      {isEditingBatchDetails ? (
+                                        <Input 
+                                          value={editedBatchDetails.printDate || ''}
+                                          onChange={(e) => setEditedBatchDetails({...editedBatchDetails, printDate: e.target.value})}
+                                          className="h-8 mt-1"
+                                          placeholder="MM/DD/YYYY"
+                                        />
+                                      ) : (
+                                        <p className="font-medium">{selectedBatch.printDate || '-'}</p>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <Label className="text-xs text-muted-foreground">Mail Date</Label>
+                                      {isEditingBatchDetails ? (
+                                        <Input 
+                                          value={editedBatchDetails.newMailDate || ''}
+                                          onChange={(e) => setEditedBatchDetails({...editedBatchDetails, newMailDate: e.target.value})}
+                                          className="h-8 mt-1"
+                                          placeholder="MM/DD/YYYY"
+                                        />
+                                      ) : (
+                                        <p className="font-medium">{selectedBatch.newMailDate || '-'}</p>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <Label className="text-xs text-muted-foreground">First Call</Label>
+                                      {isEditingBatchDetails ? (
+                                        <Input 
+                                          value={editedBatchDetails.mailDate || ''}
+                                          onChange={(e) => setEditedBatchDetails({...editedBatchDetails, mailDate: e.target.value})}
+                                          className="h-8 mt-1"
+                                          placeholder="MM/DD/YYYY"
+                                        />
+                                      ) : (
+                                        <p className="font-medium">{selectedBatch.mailDate || '-'}</p>
+                                      )}
+                                    </div>
+                                  </div>
+                                  
+                                  <div className="h-4" style={{ borderTop: '1px solid hsl(var(--border))', paddingTop: '24px' }}></div>
+                                  
+                                  {/* Row 4: Vendors */}
+                                  <div className="grid grid-cols-4 gap-4">
+                                    <div>
+                                      <Label className="text-xs text-muted-foreground">Data Vendor</Label>
+                                      {isEditingBatchDetails ? (
+                                        <Input 
+                                          value={editedBatchDetails.dataSource || ''}
+                                          onChange={(e) => setEditedBatchDetails({...editedBatchDetails, dataSource: e.target.value})}
+                                          className="h-8 mt-1"
+                                        />
+                                      ) : (
+                                        <p className="font-medium">{selectedBatch.dataSource ? (selectedBatch.dataSource === 'dlx' ? 'DLX' : selectedBatch.dataSource) : '-'}</p>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <Label className="text-xs text-muted-foreground">Print Vendor</Label>
+                                      {isEditingBatchDetails ? (
+                                        <Input 
+                                          value={editedBatchDetails.printVendor || ''}
+                                          onChange={(e) => setEditedBatchDetails({...editedBatchDetails, printVendor: e.target.value})}
+                                          className="h-8 mt-1"
+                                        />
+                                      ) : (
+                                        <p className="font-medium">
+                                          {selectedBatch.printVendor ? (selectedBatch.printVendor === 'in-house' ? 'In House' : selectedBatch.printVendor === 'tbd' ? 'TBD' : selectedBatch.printVendor) : '-'}
+                                        </p>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <Label className="text-xs text-muted-foreground">Mail Vendor</Label>
+                                      {isEditingBatchDetails ? (
+                                        <Input 
+                                          value={editedBatchDetails.mailVendor || ''}
+                                          onChange={(e) => setEditedBatchDetails({...editedBatchDetails, mailVendor: e.target.value})}
+                                          className="h-8 mt-1"
+                                        />
+                                      ) : (
+                                        <p className="font-medium">
+                                          {selectedBatch.mailVendor ? (selectedBatch.mailVendor === 'in-house' ? 'In House' : selectedBatch.mailVendor === 'tbd' ? 'TBD' : selectedBatch.mailVendor) : '-'}
+                                        </p>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <Label className="text-xs text-muted-foreground">Supply Vendor</Label>
+                                      {isEditingBatchDetails ? (
+                                        <Input 
+                                          value={editedBatchDetails.supplyVendor || ''}
+                                          onChange={(e) => setEditedBatchDetails({...editedBatchDetails, supplyVendor: e.target.value})}
+                                          className="h-8 mt-1"
+                                        />
+                                      ) : (
+                                        <p className="font-medium">
+                                          {selectedBatch.supplyVendor ? (selectedBatch.supplyVendor === 'in-house' ? 'In House' : selectedBatch.supplyVendor === 'tbd' ? 'TBD' : selectedBatch.supplyVendor) : '-'}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Row 5: Costs */}
+                                  <div className="grid grid-cols-4 gap-4">
+                                    <div>
+                                      <Label className="text-xs text-muted-foreground">Data Cost</Label>
+                                      {isEditingBatchDetails ? (
+                                        <Input 
+                                          value={editedBatchDetails.dataCost || ''}
+                                          onChange={(e) => setEditedBatchDetails({...editedBatchDetails, dataCost: e.target.value})}
+                                          className="h-8 mt-1"
+                                        />
+                                      ) : (
+                                        <p className="font-medium">{selectedBatch.dataCost || '-'}</p>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <Label className="text-xs text-muted-foreground">Mail Cost</Label>
+                                      {isEditingBatchDetails ? (
+                                        <Input 
+                                          value={editedBatchDetails.mailCost || ''}
+                                          onChange={(e) => setEditedBatchDetails({...editedBatchDetails, mailCost: e.target.value})}
+                                          className="h-8 mt-1"
+                                        />
+                                      ) : (
+                                        <p className="font-medium">{selectedBatch.mailCost || '-'}</p>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <Label className="text-xs text-muted-foreground">Print Cost</Label>
+                                      {isEditingBatchDetails ? (
+                                        <Input 
+                                          value={editedBatchDetails.printCost || ''}
+                                          onChange={(e) => setEditedBatchDetails({...editedBatchDetails, printCost: e.target.value})}
+                                          className="h-8 mt-1"
+                                        />
+                                      ) : (
+                                        <p className="font-medium">{selectedBatch.printCost || '-'}</p>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <Label className="text-xs text-muted-foreground">Supply Cost</Label>
+                                      {isEditingBatchDetails ? (
+                                        <Input 
+                                          value={editedBatchDetails.supplyCost || ''}
+                                          onChange={(e) => setEditedBatchDetails({...editedBatchDetails, supplyCost: e.target.value})}
+                                          className="h-8 mt-1"
+                                        />
+                                      ) : (
+                                        <p className="font-medium">{selectedBatch.supplyCost || '-'}</p>
+                                      )}
+                                    </div>
+                                  </div>
+                                </motion.div>
+                              )}
+                            </div>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="overflow-x-auto flywheel-scroll">
+                              <table className="w-full border-collapse min-w-max">
+                                <thead>
+                                  <tr className="border-b border-gray-300">
+                                    {columnsWithData.map((column) => (
+                                      <th 
+                                        key={column}
+                                        className={`text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors ${column === 'firstName' ? 'sticky-header' : ''}`}
+                                        onClick={() => handleBatchDetailSort(column)}
+                                        style={column === 'firstName' ? {
+                                          position: 'sticky',
+                                          left: 0,
+                                          zIndex: 30,
+                                        } : {}}
+                                      >
+                                        <div className="flex items-center gap-2">
+                                          {column === 'referenceNumber' ? 'Reference Number' : column.replace(/([A-Z])/g, ' $1').trim().replace(/^./, str => str.toUpperCase())}
+                                          <ArrowUpDown className="h-3 w-3" />
+                                        </div>
+                                      </th>
+                                    ))}
+                                    <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap" style={{ width: '200px' }}></th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {filteredRows.map((row, idx) => (
+                                    <tr key={idx} className={`border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'}`}>
+                                      {columnsWithData.map((column) => (
+                                        <td
+                                          key={column}
+                                          className={`p-3 whitespace-nowrap ${column === 'firstName' ? 'sticky-col-firstName' : ''}`}
+                                          style={column === 'firstName' ? {
+                                            backgroundColor: idx % 2 === 0 
+                                              ? 'hsl(var(--background))' 
+                                              : 'hsl(var(--muted) / 0.3)'
+                                          } : {}}
+                                        >
+                                          {row[column] || '-'}
+                                        </td>
+                                      ))}
+                                      {/* Empty spacer cell */}
+                                      <td className="p-3" style={{ width: '200px' }}></td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          </CardContent>
+                          <p className="text-sm text-muted-foreground mt-4 px-6 pb-4">
+                            Showing {filteredRows.length} records with {columnsWithData.length} columns
+                          </p>
+                        </motion.div>
+                      </Card>
+                    </motion.div>
+                  );
+                })()}
               </>
             )}
           </TabsContent>
