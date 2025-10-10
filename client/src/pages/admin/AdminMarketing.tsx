@@ -55,7 +55,7 @@ interface BatchData {
   };
 }
 
-type SortColumn = 'createdDate' | 'batchNumber' | 'batchTitle';
+type SortColumn = 'createdDate' | 'batchNumber' | 'batchTitle' | 'category' | 'dataType' | 'delivery' | 'tenYearBond' | 'parRate' | 'records' | 'states' | 'cost';
 type SortDirection = 'asc' | 'desc';
 type UploadStage = 'upload' | 'mapping' | 'preview' | 'success';
 
@@ -653,15 +653,33 @@ export default function AdminMarketing() {
 
   const sortedBatches = useMemo(() => {
     return [...batches].sort((a, b) => {
-      let aVal: any = a[sortColumn];
-      let bVal: any = b[sortColumn];
+      let aVal: any;
+      let bVal: any;
 
+      // Handle special sorting cases
       if (sortColumn === 'createdDate') {
-        aVal = new Date(aVal).getTime();
-        bVal = new Date(bVal).getTime();
+        aVal = new Date(a[sortColumn]).getTime();
+        bVal = new Date(b[sortColumn]).getTime();
+      } else if (sortColumn === 'records') {
+        // Count actual records (non-empty rows)
+        aVal = a.excelData.filter((row: any) => Object.values(row).some(v => v && v.toString().trim() !== '')).length;
+        bVal = b.excelData.filter((row: any) => Object.values(row).some(v => v && v.toString().trim() !== '')).length;
+      } else if (sortColumn === 'states') {
+        // Count number of states
+        aVal = a.states?.length || 0;
+        bVal = b.states?.length || 0;
+      } else if (sortColumn === 'cost') {
+        // Calculate total cost
+        aVal = (parseInt(a.dataCost || '0') + parseInt(a.mailCost || '0') + parseInt(a.printCost || '0') + parseInt(a.supplyCost || '0'));
+        bVal = (parseInt(b.dataCost || '0') + parseInt(b.mailCost || '0') + parseInt(b.printCost || '0') + parseInt(b.supplyCost || '0'));
+      } else if (sortColumn === 'tenYearBond' || sortColumn === 'parRate') {
+        // Numeric comparison
+        aVal = parseFloat(a[sortColumn] || '0');
+        bVal = parseFloat(b[sortColumn] || '0');
       } else {
-        aVal = aVal.toLowerCase();
-        bVal = bVal.toLowerCase();
+        // String comparison
+        aVal = (a[sortColumn] || '').toLowerCase();
+        bVal = (b[sortColumn] || '').toLowerCase();
       }
 
       if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
@@ -1313,14 +1331,86 @@ export default function AdminMarketing() {
                               <ArrowUpDown className="h-4 w-4" />
                             </div>
                           </th>
-                          <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">Category</th>
-                          <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">Data</th>
-                          <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">Delivery</th>
-                          <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">10 Yr Bond</th>
-                          <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">Par Rate</th>
-                          <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">Records</th>
-                          <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">States</th>
-                          <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">Cost</th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
+                            onClick={() => handleSort('category')}
+                            data-testid="sort-category"
+                          >
+                            <div className="flex items-center gap-2">
+                              Category
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
+                            onClick={() => handleSort('dataType')}
+                            data-testid="sort-data-type"
+                          >
+                            <div className="flex items-center gap-2">
+                              Data
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
+                            onClick={() => handleSort('delivery')}
+                            data-testid="sort-delivery"
+                          >
+                            <div className="flex items-center gap-2">
+                              Delivery
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
+                            onClick={() => handleSort('tenYearBond')}
+                            data-testid="sort-ten-year-bond"
+                          >
+                            <div className="flex items-center gap-2">
+                              10 Yr Bond
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
+                            onClick={() => handleSort('parRate')}
+                            data-testid="sort-par-rate"
+                          >
+                            <div className="flex items-center gap-2">
+                              Par Rate
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
+                            onClick={() => handleSort('records')}
+                            data-testid="sort-records"
+                          >
+                            <div className="flex items-center gap-2">
+                              Records
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
+                            onClick={() => handleSort('states')}
+                            data-testid="sort-states"
+                          >
+                            <div className="flex items-center gap-2">
+                              States
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
+                            onClick={() => handleSort('cost')}
+                            data-testid="sort-cost"
+                          >
+                            <div className="flex items-center gap-2">
+                              Cost
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
                           <th className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 whitespace-nowrap">Actions</th>
                         </tr>
                       </thead>
