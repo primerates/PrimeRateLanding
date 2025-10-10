@@ -922,14 +922,14 @@ export default function AdminMarketing() {
                 {/* Row 2 */}
                 <div className="grid grid-cols-5 gap-6 mb-6">
                   <div className="space-y-2">
-                    <Label>Property Tab</Label>
+                    <Label>Property Type</Label>
                     <Input
                       placeholder=""
                       data-testid="input-property-tab"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Activity</Label>
+                    <Label>Batch Activity To Date</Label>
                     <Input
                       placeholder=""
                       data-testid="input-activity"
@@ -988,14 +988,14 @@ export default function AdminMarketing() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>FICO Range</Label>
+                    <Label>FICO Range Above</Label>
                     <Input
                       placeholder=""
                       data-testid="input-fico-range"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Batch Results</Label>
+                    <Label>Batch Results To Date</Label>
                     <Input
                       placeholder=""
                       data-testid="input-batch-results"
