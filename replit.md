@@ -60,6 +60,15 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 
 ## Admin Marketing System
 
+### Header Navigation
+- **Back to Dashboard**: Return button with rotating animation
+- **Shortcut Menu**: Person walking icon with hover tooltip "Short Cut"; dropdown menu for quick access to all dashboard pages without returning to dashboard
+  - Row 1: Lead, Quote, Loan Prep, Loan, Funded
+  - Row 2: Marketing, Snapshot, Library, Audit, Settings
+  - Row 3: Vendors, Staff, Partners, Ledger, Vault
+- **Screenshare**: Launch screenshare functionality
+- **Save**: Save current work with rotating animation
+
 ### Navigation Structure
 - **Single Tab Bar**: Six tabs always visible for seamless navigation
   - **Direct Mail**: TBD card with 7 placeholder boxes for future features

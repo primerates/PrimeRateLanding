@@ -8,8 +8,9 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
-import { RotateCcw, Monitor, Save, Upload, Plus, BarChart3, FileText, Trash2, Eye, EyeOff, ArrowUpDown, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Pencil, Check, X } from 'lucide-react';
+import { RotateCcw, Monitor, Save, Upload, Plus, BarChart3, FileText, Trash2, Eye, EyeOff, ArrowUpDown, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Pencil, Check, X, PersonStanding } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Papa from 'papaparse';
 
@@ -220,6 +221,7 @@ export default function AdminMarketing() {
   const [showRevertAnimation, setShowRevertAnimation] = useState(false);
   const [screenshareLoading, setScreenshareLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
+  const [shortcutDropdownOpen, setShortcutDropdownOpen] = useState(false);
   
   // New batch fields
   const [tenYearBond, setTenYearBond] = useState('');
@@ -245,6 +247,28 @@ export default function AdminMarketing() {
   const [selectedStates, setSelectedStates] = useState<string[]>([]);
   const [statesDialogOpen, setStatesDialogOpen] = useState(false);
   const [batchStatesDialogOpen, setBatchStatesDialogOpen] = useState(false);
+
+  // Dashboard shortcuts menu items
+  const dashboardMenuItems = [
+    // Row 1
+    { label: 'Lead', path: '/admin/add-client' },
+    { label: 'Quote', path: '/admin/quotes' },
+    { label: 'Loan Prep', path: '/admin/loan-prep' },
+    { label: 'Loan', path: '/admin/pipeline' },
+    { label: 'Funded', path: '/admin/funded' },
+    // Row 2
+    { label: 'Marketing', path: '/admin/marketing' },
+    { label: 'Snapshot', path: '/admin/reports' },
+    { label: 'Library', path: '/admin/library' },
+    { label: 'Audit', path: '/admin/audit' },
+    { label: 'Settings', path: '/admin/add-comment' },
+    // Row 3
+    { label: 'Vendors', path: '/admin/add-vendor' },
+    { label: 'Staff', path: '/admin/add-staff' },
+    { label: 'Partners', path: '/admin/add-partner' },
+    { label: 'Ledger', path: '/admin/records' },
+    { label: 'Vault', path: '/admin/vault' },
+  ];
 
   const requiredFields: RequiredField[] = [
     { key: 'reference', label: 'Reference Number', description: 'Unique identifier for tracking' },
@@ -741,6 +765,38 @@ export default function AdminMarketing() {
                     <p>Back to Dashboard</p>
                   </TooltipContent>
                 </Tooltip>
+                <DropdownMenu open={shortcutDropdownOpen} onOpenChange={setShortcutDropdownOpen}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-primary-foreground hover:text-white hover:bg-green-600 p-2 transition-colors duration-200"
+                          data-testid="button-shortcut"
+                        >
+                          <PersonStanding className="h-6 w-6" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent side="left" sideOffset={10} className="text-sm">
+                      <p>Short Cut</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <DropdownMenuContent align="end" className="w-48">
+                    {dashboardMenuItems.map((item, index) => (
+                      <div key={item.path}>
+                        <DropdownMenuItem
+                          onClick={() => setLocation(item.path)}
+                          data-testid={`shortcut-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+                        >
+                          {item.label}
+                        </DropdownMenuItem>
+                        {(index === 4 || index === 9) && <DropdownMenuSeparator />}
+                      </div>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 <Button
                   onClick={handleScreenshare}
                   disabled={screenshareLoading}
