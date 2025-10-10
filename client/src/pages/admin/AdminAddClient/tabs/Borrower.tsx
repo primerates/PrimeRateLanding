@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
+import DateInput from '../components/DateInput';
 
 interface BorrowerTabProps {
     animations?: {
@@ -74,6 +75,22 @@ const BorrowerTab = ({ animations }: BorrowerTabProps) => {
                         data-testid="input-borrower-leadRef"
                     />
                 </div>
+
+                <DateInput
+                    label="Initial Call Date"
+                    value={form.watch('borrower.callDate') || ''}
+                    onChange={(value) => form.setValue('borrower.callDate', value)}
+                    id="borrower-callDate"
+                    testId="input-borrower-callDate"
+                />
+
+                <DateInput
+                    label="Loan Start Date"
+                    value={form.watch('borrower.startDate') || ''}
+                    onChange={(value) => form.setValue('borrower.startDate', value)}
+                    id="borrower-startDate"
+                    testId="input-borrower-startDate"
+                />
             </CardContent>
         </Card>
 
