@@ -255,7 +255,7 @@ export default function AdminMarketing() {
     
     const matchPatterns: Record<keyof ColumnMapping, string[]> = {
       reference: ['reference', 'ref', 'ref#', 'reference number', 'refnum'],
-      firstName: ['first name', 'firstname', 'name', 'client name', 'clientname', 'last name', 'lastname'],
+      firstName: ['first name', 'firstname', 'name', 'client name', 'clientname'],
       streetAddress: ['street address', 'streetaddress', 'address', 'street'],
       city: ['city'],
       state: ['state'],
