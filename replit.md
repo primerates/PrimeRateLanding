@@ -82,6 +82,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 ### Direct Mail Tab
 - **Stats Card**: Overview card displaying statistics (coming soon)
 - **Query Card**: Lead query interface with 3-row layout for filtering and searching
+  - **Minimize/Expand Button**: Top right corner button with "-" icon to minimize (collapse) the Query card and "+" icon to expand; hover tooltip shows "Minimize" or "Expand"
   - **Add New Batch Button**: Top right corner button with blue hover effect; shows Create Batch card below Query card
   - **Row 1** (5 fields): Data Category (dropdown), States, Loan Category, Loan Purpose, Property Use
     - **Data Category Options**: Select, Trigger Data, Monthly Data, Show All (default: Select)

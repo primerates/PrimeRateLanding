@@ -11,7 +11,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
-import { RotateCcw, Monitor, Save, Upload, Plus, BarChart3, FileText, Trash2, Eye, EyeOff, ArrowUpDown, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Pencil, Check, X, User } from 'lucide-react';
+import { RotateCcw, Monitor, Save, Upload, Plus, Minus, BarChart3, FileText, Trash2, Eye, EyeOff, ArrowUpDown, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Pencil, Check, X, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Papa from 'papaparse';
 
@@ -209,6 +209,9 @@ export default function AdminMarketing() {
   
   // Card already open warning dialog
   const [cardAlreadyOpenDialog, setCardAlreadyOpenDialog] = useState(false);
+  
+  // Query card minimize/expand state
+  const [isQueryCardMinimized, setIsQueryCardMinimized] = useState(false);
   
   // Column Mapping States
   const [uploadStage, setUploadStage] = useState<UploadStage>('upload');
@@ -863,25 +866,44 @@ export default function AdminMarketing() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle>Query</CardTitle>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      if (showCreateBatch) {
-                        setCardAlreadyOpenDialog(true);
-                      } else {
-                        setShowCreateBatch(true);
-                      }
-                    }}
-                    className="hover:bg-blue-400 hover:text-white"
-                    data-testid="button-add-new-batch"
-                  >
-                    + Add New Batch
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setIsQueryCardMinimized(!isQueryCardMinimized)}
+                          data-testid="button-toggle-query-card"
+                        >
+                          {isQueryCardMinimized ? <Plus className="h-4 w-4" /> : <Minus className="h-4 w-4" />}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{isQueryCardMinimized ? 'Expand' : 'Minimize'}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        if (showCreateBatch) {
+                          setCardAlreadyOpenDialog(true);
+                        } else {
+                          setShowCreateBatch(true);
+                        }
+                      }}
+                      className="hover:bg-blue-400 hover:text-white"
+                      data-testid="button-add-new-batch"
+                    >
+                      + Add New Batch
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
-              <CardContent>
+              {!isQueryCardMinimized && (
+                <CardContent>
                 {/* Row 1 */}
                 <div className="grid grid-cols-5 gap-6 mb-6">
                   <div className="space-y-2">
@@ -1011,7 +1033,8 @@ export default function AdminMarketing() {
                     />
                   </div>
                 </div>
-              </CardContent>
+                </CardContent>
+              )}
             </Card>
 
             {/* CREATE BATCH CARD - Conditionally shown */}
