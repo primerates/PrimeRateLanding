@@ -1076,6 +1076,7 @@ export default function AdminMarketing() {
                           <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">10 Yr Bond</th>
                           <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Par Rate</th>
                           <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Records</th>
+                          <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Cost</th>
                           <th className="text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 whitespace-nowrap">Actions</th>
                         </tr>
                       </thead>
@@ -1147,6 +1148,16 @@ export default function AdminMarketing() {
                               <td className="p-3 whitespace-nowrap">{batch.tenYearBond || '-'}</td>
                               <td className="p-3 whitespace-nowrap">{batch.parRate || '-'}</td>
                               <td className="p-3 whitespace-nowrap">{actualLeadCount}</td>
+                              <td className="p-3 whitespace-nowrap">
+                                {(() => {
+                                  const dataCost = parseInt((batch.dataCost || '0').replace(/[^\d]/g, ''), 10);
+                                  const mailCost = parseInt((batch.mailCost || '0').replace(/[^\d]/g, ''), 10);
+                                  const printCost = parseInt((batch.printCost || '0').replace(/[^\d]/g, ''), 10);
+                                  const supplyCost = parseInt((batch.supplyCost || '0').replace(/[^\d]/g, ''), 10);
+                                  const totalCost = dataCost + mailCost + printCost + supplyCost;
+                                  return totalCost > 0 ? `$${totalCost.toLocaleString()}` : '-';
+                                })()}
+                              </td>
                               <td className="p-3 whitespace-nowrap">
                                 <Tooltip>
                                   <TooltipTrigger asChild>

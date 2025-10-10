@@ -156,6 +156,27 @@ The Admin Dashboard displays tiles organized in rows:
 - **Row 2 (Operations)**: Marketing, Snapshot, Library, Audit, Settings
 - **Row 3 (Management)**: Vendors, Staff, Partners, Ledger, Vault
 
+## Admin Marketing - Direct Mail System
+
+### Overview
+The Marketing Direct Mail system (`/admin/marketing`) provides comprehensive campaign management with CSV upload, batch tracking, and lead journey monitoring.
+
+### Batch List Table
+- **Column Headers** (left to right): Created, Batch #, Batch Title, Category, Data, Delivery, 10 Yr Bond, Par Rate, Records, Cost, Actions
+- **Cost Column**: Automatically calculates and displays total cost from: Data Cost + Mail Cost + Print Cost + Supply Cost
+- **Alternating Row Colors**: Zebra striping for visual separation (white/gray-50 alternating backgrounds)
+- **Sortable Columns**: Created, Batch #, Batch Title (clickable headers with sort icons)
+
+### Batch Creation
+- **4-Row Layout**: Vendor fields, cost tracking, bond rates, and campaign parameters
+- **Cost Fields**: Data Cost, Mail Cost, Print Cost, Supply Cost (currency formatted with CurrencyInput component)
+- **Backward Compatibility**: Display functions return "-" for undefined values (vendor fields, cost fields, delivery/category/dataType) preventing errors on legacy batches
+
+### Data Management
+- **CSV Upload**: Smart column mapping with flexible header recognition
+- **Reference Numbers**: Unique batch tracking identifiers
+- **Lead Journey Tracking**: Stages include Lead → Quote → Loan Prep → Loan → Funded
+
 ## Admin Loan Management System
 
 ### Overview
