@@ -1558,34 +1558,38 @@ export default function AdminMarketing() {
                                 : 'States'}
                             </Button>
                             
-                            {isEditingBatchDetails ? (
+                            {isBatchDetailsExpanded && (
                               <>
-                                <Button 
-                                  size="icon" 
-                                  variant="ghost" 
-                                  onClick={handleSaveBatchDetails}
-                                  data-testid="button-save-batch-details"
-                                >
-                                  <Check className="h-4 w-4 text-green-600" />
-                                </Button>
-                                <Button 
-                                  size="icon" 
-                                  variant="ghost" 
-                                  onClick={handleCancelBatchEdit}
-                                  data-testid="button-cancel-batch-edit"
-                                >
-                                  <X className="h-4 w-4 text-red-600" />
-                                </Button>
+                                {isEditingBatchDetails ? (
+                                  <>
+                                    <Button 
+                                      size="icon" 
+                                      variant="ghost" 
+                                      onClick={handleSaveBatchDetails}
+                                      data-testid="button-save-batch-details"
+                                    >
+                                      <Check className="h-4 w-4 text-green-600" />
+                                    </Button>
+                                    <Button 
+                                      size="icon" 
+                                      variant="ghost" 
+                                      onClick={handleCancelBatchEdit}
+                                      data-testid="button-cancel-batch-edit"
+                                    >
+                                      <X className="h-4 w-4 text-red-600" />
+                                    </Button>
+                                  </>
+                                ) : (
+                                  <Button 
+                                    size="icon" 
+                                    variant="ghost" 
+                                    onClick={handleEditBatchDetails}
+                                    data-testid="button-edit-batch-details"
+                                  >
+                                    <Pencil className="h-4 w-4 text-green-600" />
+                                  </Button>
+                                )}
                               </>
-                            ) : (
-                              <Button 
-                                size="icon" 
-                                variant="ghost" 
-                                onClick={handleEditBatchDetails}
-                                data-testid="button-edit-batch-details"
-                              >
-                                <Pencil className="h-4 w-4 text-green-600" />
-                              </Button>
                             )}
                           </div>
                         </div>
