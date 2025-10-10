@@ -87,10 +87,12 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
   - **Row 1** (5 fields): Data Category (dropdown), States, Loan Category, Loan Purpose, Property Use (dropdown)
     - **Data Category Options**: Show All, Trigger Data, Monthly Data (default: Show All)
     - **Property Use Options**: Show All, Primary Residence, Second Home, Investment Property, Home Purchase (default: Show All)
-  - **Row 2** (5 fields): Property Type (dropdown), Lenders (dropdown), Data Vendors, Mail Vendors, Batch Activity To Date (multi-select)
-    - **Batch Activity To Date Options**: Select, Lead, Quote, Loan Prep, Loan, Funded, Cancelled, Withdrawn (multi-select popover with checkboxes)
+  - **Row 2** (5 fields): Property Type (dropdown), Lenders (dropdown), Data Vendors (dropdown), Mail Vendors (dropdown), Batch Activity To Date (multi-select)
     - **Property Type Options**: Show All, Single Family, Condo, Townhouse, Duplex Multi-Family, Other (default: Show All)
-    - **Lenders Options**: Select, UWM, Pennymac (default: Select)
+    - **Lenders Options**: Show All, UWM, Pennymac (default: Show All)
+    - **Data Vendors Options**: Show All, In-House, TBD (default: Show All)
+    - **Mail Vendors Options**: Show All, In-House, TBD (default: Show All)
+    - **Batch Activity To Date Options**: Select, Lead, Quote, Loan Prep, Loan, Funded, Cancelled, Withdrawn (multi-select popover with checkboxes)
   - **Row 3** (5 fields): 10 Yr Bond Above, Par Rate Above, Cash Out Above, FICO Range Above, Batch Results To Date
 - **Create Batch Card**: Full batch creation form appears below Query card when "Add New Batch" is clicked
   - **Card Header**: Create New Batch title with States button (green) and Cancel New Batch button (red hover effect)

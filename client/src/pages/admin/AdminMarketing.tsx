@@ -982,12 +982,12 @@ export default function AdminMarketing() {
                   </div>
                   <div className="space-y-2">
                     <Label>Lenders</Label>
-                    <Select defaultValue="select">
+                    <Select defaultValue="show-all">
                       <SelectTrigger data-testid="select-lenders">
-                        <SelectValue placeholder="Select" />
+                        <SelectValue placeholder="Show All" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="select">Select</SelectItem>
+                        <SelectItem value="show-all">Show All</SelectItem>
                         <SelectItem value="uwm">UWM</SelectItem>
                         <SelectItem value="pennymac">Pennymac</SelectItem>
                       </SelectContent>
@@ -995,17 +995,29 @@ export default function AdminMarketing() {
                   </div>
                   <div className="space-y-2">
                     <Label>Data Vendors</Label>
-                    <Input
-                      placeholder=""
-                      data-testid="input-data-vendors"
-                    />
+                    <Select defaultValue="show-all">
+                      <SelectTrigger data-testid="select-data-vendors">
+                        <SelectValue placeholder="Show All" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="show-all">Show All</SelectItem>
+                        <SelectItem value="in-house">In-House</SelectItem>
+                        <SelectItem value="tbd">TBD</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div className="space-y-2">
                     <Label>Mail Vendors</Label>
-                    <Input
-                      placeholder=""
-                      data-testid="input-mail-vendors"
-                    />
+                    <Select defaultValue="show-all">
+                      <SelectTrigger data-testid="select-mail-vendors">
+                        <SelectValue placeholder="Show All" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="show-all">Show All</SelectItem>
+                        <SelectItem value="in-house">In-House</SelectItem>
+                        <SelectItem value="tbd">TBD</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div className="space-y-2">
                     <Label>Batch Activity To Date</Label>
