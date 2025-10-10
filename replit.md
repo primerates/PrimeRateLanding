@@ -148,6 +148,14 @@ The Comments & Posts Management system (`/admin/add-comment`) provides a compreh
 - **Dashboard Display**: Only the most recent post (last in array) is displayed on AdminDashboard, not all posts
 - **Republish Feature**: "Publish" button in All Posts table updates post date to today, making it the most recent
 
+## Admin Dashboard
+
+### Tile Layout
+The Admin Dashboard displays tiles organized in rows:
+- **Row 1 (Lead Journey)**: Lead → Quote → Loan Prep → Loan → Funded
+- **Row 2 (Operations)**: Marketing, Reports, Library, Settings
+- **Row 3 (Management)**: Vendors, Staff, Partners
+
 ## Admin Loan Management System
 
 ### Overview

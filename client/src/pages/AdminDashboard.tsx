@@ -119,11 +119,11 @@ export default function AdminDashboard() {
 
   const menuItems = [
     // Row 1
-    { id: 'funded', label: 'Funded', icon: CheckCircle, path: '/admin/funded' },
-    { id: 'pipeline', label: 'Loan', icon: LayoutDashboard, path: '/admin/pipeline' },
-    { id: 'loan-prep', label: 'Loan Prep', icon: FileText, path: '/admin/loan-prep' },
-    { id: 'quotes', label: 'Quote', icon: Calculator, path: '/admin/quotes' },
     { id: 'stats', label: 'Lead', icon: UserPlus, path: '/admin/add-client' },
+    { id: 'quotes', label: 'Quote', icon: Calculator, path: '/admin/quotes' },
+    { id: 'loan-prep', label: 'Loan Prep', icon: FileText, path: '/admin/loan-prep' },
+    { id: 'pipeline', label: 'Loan', icon: LayoutDashboard, path: '/admin/pipeline' },
+    { id: 'funded', label: 'Funded', icon: CheckCircle, path: '/admin/funded' },
     // Row 2
     { id: 'search', label: 'Marketing', icon: Search, path: '/admin/marketing' },
     { id: 'reports', label: 'Reports', icon: BarChart3, path: '/admin/reports' },
