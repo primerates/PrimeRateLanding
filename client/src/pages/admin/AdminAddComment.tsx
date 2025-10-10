@@ -1027,7 +1027,7 @@ export default function AdminAddComment() {
                       <thead>
                         <tr className="border-b border-gray-300">
                           <th 
-                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                             onClick={() => handleSort('commentDate')}
                             data-testid="header-comment-date"
                           >
@@ -1037,7 +1037,7 @@ export default function AdminAddComment() {
                             </div>
                           </th>
                           <th 
-                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                             onClick={() => handleSort('postedBy')}
                             data-testid="header-posted-by"
                           >
@@ -1047,7 +1047,7 @@ export default function AdminAddComment() {
                             </div>
                           </th>
                           <th 
-                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                             onClick={() => handleSort('city')}
                             data-testid="header-city"
                           >
@@ -1057,7 +1057,7 @@ export default function AdminAddComment() {
                             </div>
                           </th>
                           <th 
-                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                             onClick={() => handleSort('state')}
                             data-testid="header-state"
                           >
@@ -1067,7 +1067,7 @@ export default function AdminAddComment() {
                             </div>
                           </th>
                           <th 
-                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                             onClick={() => handleSort('source')}
                             data-testid="header-source"
                           >
@@ -1077,7 +1077,7 @@ export default function AdminAddComment() {
                             </div>
                           </th>
                           <th 
-                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                             onClick={() => handleSort('rating')}
                             data-testid="header-rating"
                           >
@@ -1087,13 +1087,13 @@ export default function AdminAddComment() {
                             </div>
                           </th>
                           <th 
-                            className="text-left p-3 font-semibold bg-gray-50"
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700"
                             data-testid="header-last-name"
                           >
                             Last Name
                           </th>
                           <th 
-                            className="text-left p-3 font-semibold bg-gray-50"
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700"
                             data-testid="header-first-name"
                           >
                             First Name
@@ -1398,13 +1398,13 @@ export default function AdminAddComment() {
                       <thead>
                         <tr className="border-b border-gray-300">
                           <th 
-                            className="text-left p-3 font-semibold bg-gray-50"
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700"
                             data-testid="header-republish"
                           >
                             Publish
                           </th>
                           <th 
-                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                             onClick={() => handlePostSort('postDate')}
                             data-testid="header-post-date"
                           >
@@ -1414,7 +1414,7 @@ export default function AdminAddComment() {
                             </div>
                           </th>
                           <th 
-                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                             onClick={() => handlePostSort('postBy')}
                             data-testid="header-post-by"
                           >
@@ -1424,7 +1424,7 @@ export default function AdminAddComment() {
                             </div>
                           </th>
                           <th 
-                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                             onClick={() => handlePostSort('category')}
                             data-testid="header-category"
                           >
@@ -1434,7 +1434,7 @@ export default function AdminAddComment() {
                             </div>
                           </th>
                           <th 
-                            className="text-left p-3 font-semibold bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                             onClick={() => handlePostSort('author')}
                             data-testid="header-author"
                           >
@@ -1444,7 +1444,7 @@ export default function AdminAddComment() {
                             </div>
                           </th>
                           <th 
-                            className="text-left p-3 font-semibold bg-gray-50"
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700"
                             data-testid="header-post-content"
                           >
                             Post Content
