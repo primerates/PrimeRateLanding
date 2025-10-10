@@ -823,7 +823,7 @@ export default function AdminMarketing() {
 
                     <div className="space-y-2">
                       <Label htmlFor="csv-upload">
-                        Upload Excel File (CSV Format) <span className="text-destructive">*</span>
+                        Upload Excel File Format (CSV UTF8) <span className="text-destructive">*</span>
                       </Label>
                       <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary transition-colors">
                         <input
