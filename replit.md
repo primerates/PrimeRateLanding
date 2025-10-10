@@ -63,11 +63,12 @@ For all Excel/CSV data upload features, use sticky columns for the first two col
 
 ### Batch Creation
 - **5-Row Layout**: Campaign parameters, date tracking, vendor fields, cost tracking, and CSV upload
-  - **Row 1**: Loan Category, Data Speed, Delivery, First Call (date field)
-  - **Row 2**: Data Date, Print Date, Mail Date, Duration to First Call (all date fields with MM/DD/YYYY format)
-  - **Row 3**: Data Vendor, Print Vendor (swapped positions), Mail Vendor, Supply Vendor
-  - **Row 4**: Data Cost, Mail Cost, Print Cost, Supply Cost (currency formatted with CurrencyInput component)
-  - **Row 5**: CSV UTF8 file upload with green labels
+  - **Row 1**: Batch Number, Batch Title, 10 Year Bond, Par Rate
+  - **Row 2**: Loan Category, Data Speed, Delivery, Duration to First Call (date field with MM/DD/YYYY format)
+  - **Row 3**: Data Date, Print Date, Mail Date, First Call (all date fields with MM/DD/YYYY format)
+  - **Row 4**: Data Vendor, Print Vendor (swapped positions), Mail Vendor, Supply Vendor
+  - **Row 5**: Data Cost, Mail Cost, Print Cost, Supply Cost (currency formatted with CurrencyInput component)
+  - **CSV Upload**: UTF8 file upload with green labels below the 5 rows
 - **States Selector**: Green "States" button in card header opens dialog to select multiple states; displays count in button when states selected
 - **Date Fields**: Auto-format as MM/DD/YYYY; "First Call" renamed from "Mail Date" for clarity
 

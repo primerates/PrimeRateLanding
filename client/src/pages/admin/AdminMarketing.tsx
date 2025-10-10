@@ -804,28 +804,28 @@ export default function AdminMarketing() {
                         </Select>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="first-call">First Call</Label>
+                        <Label htmlFor="duration-first-call">Duration to First Call</Label>
                         <Input
-                          id="first-call"
-                          value={mailDate}
+                          id="duration-first-call"
+                          value={durationToFirstCall}
                           onChange={(e) => {
-                            const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                            const value = e.target.value.replace(/\D/g, '');
                             let formatted = '';
                             
                             if (value.length > 0) {
-                              formatted = value.substring(0, 2); // MM
+                              formatted = value.substring(0, 2);
                             }
                             if (value.length > 2) {
-                              formatted += '/' + value.substring(2, 4); // /DD
+                              formatted += '/' + value.substring(2, 4);
                             }
                             if (value.length > 4) {
-                              formatted += '/' + value.substring(4, 8); // /YYYY
+                              formatted += '/' + value.substring(4, 8);
                             }
                             
-                            setMailDate(formatted);
+                            setDurationToFirstCall(formatted);
                           }}
                           placeholder="MM/DD/YYYY"
-                          data-testid="input-first-call"
+                          data-testid="input-duration-first-call"
                         />
                       </div>
                     </div>
@@ -908,28 +908,28 @@ export default function AdminMarketing() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="duration-first-call">Duration to First Call</Label>
+                        <Label htmlFor="first-call">First Call</Label>
                         <Input
-                          id="duration-first-call"
-                          value={durationToFirstCall}
+                          id="first-call"
+                          value={mailDate}
                           onChange={(e) => {
-                            const value = e.target.value.replace(/\D/g, '');
+                            const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
                             let formatted = '';
                             
                             if (value.length > 0) {
-                              formatted = value.substring(0, 2);
+                              formatted = value.substring(0, 2); // MM
                             }
                             if (value.length > 2) {
-                              formatted += '/' + value.substring(2, 4);
+                              formatted += '/' + value.substring(2, 4); // /DD
                             }
                             if (value.length > 4) {
-                              formatted += '/' + value.substring(4, 8);
+                              formatted += '/' + value.substring(4, 8); // /YYYY
                             }
                             
-                            setDurationToFirstCall(formatted);
+                            setMailDate(formatted);
                           }}
                           placeholder="MM/DD/YYYY"
-                          data-testid="input-duration-first-call"
+                          data-testid="input-first-call"
                         />
                       </div>
                     </div>
