@@ -226,6 +226,7 @@ export default function AdminMarketing() {
   
   // Query card filter values
   const [cashOutAbove, setCashOutAbove] = useState('');
+  const [ficoRangeAbove, setFicoRangeAbove] = useState('');
   
   // Query card Data Category state
   const [dataCategory, setDataCategory] = useState('Select');
@@ -1220,7 +1221,13 @@ export default function AdminMarketing() {
                   <div className="space-y-2">
                     <Label>FICO Range Above</Label>
                     <Input
+                      value={ficoRangeAbove}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^\d]/g, '').slice(0, 3);
+                        setFicoRangeAbove(value);
+                      }}
                       placeholder=""
+                      maxLength={3}
                       data-testid="input-fico-range"
                     />
                   </div>
