@@ -1047,11 +1047,8 @@ export default function AdminMarketing() {
                       <div className="flex items-start">
                         <FileText className="w-5 h-5 text-primary mt-0.5 mr-3" />
                         <div>
-                          <h3 className="text-sm font-medium">
-                            {detectedColumns.length} columns detected • {csvData?.length} records
-                          </h3>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            Map your CSV columns to required fields. We've auto-detected some matches.
+                          <p className="text-sm text-muted-foreground">
+                            We've auto-detected some matches. Please verify your CSV columns to required fields.
                           </p>
                         </div>
                       </div>
