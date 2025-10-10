@@ -129,7 +129,7 @@ export default function AdminDashboard() {
     { id: 'funded', label: 'Funded', icon: CheckCircle, path: '/admin/funded' },
     // Row 2
     { id: 'search', label: 'Marketing', icon: Search, path: '/admin/marketing' },
-    { id: 'reports', label: 'Reports', icon: BarChart3, path: '/admin/reports' },
+    { id: 'reports', label: 'Snapshot', icon: BarChart3, path: '/admin/reports' },
     { id: 'library', label: 'Library', icon: FolderOpen, path: '/admin/library' },
     { id: 'audit', label: 'Audit', icon: ShieldCheck, path: '/admin/audit' },
     { id: 'settings', label: 'Settings', icon: Settings, path: '/admin/add-comment' },
@@ -137,7 +137,7 @@ export default function AdminDashboard() {
     { id: 'add-vendor', label: 'Vendors', icon: Building2, path: '/admin/add-vendor' },
     { id: 'add-staff', label: 'Staff', icon: UserCheck, path: '/admin/add-staff' },
     { id: 'add-partner', label: 'Partners', icon: Handshake, path: '/admin/add-partner' },
-    { id: 'records', label: 'Records', icon: Archive, path: '/admin/records' },
+    { id: 'records', label: 'Ledger', icon: Archive, path: '/admin/records' },
     { id: 'vault', label: 'Vault', icon: Lock, path: '/admin/vault' },
   ];
 
