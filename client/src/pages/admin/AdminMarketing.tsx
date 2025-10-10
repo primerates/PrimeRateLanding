@@ -782,6 +782,17 @@ export default function AdminMarketing() {
 
           {/* DIRECT MAIL TAB */}
           <TabsContent value="direct-mail" className="mt-6">
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle>Stats</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">Statistics coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader>
                 <CardTitle>Query</CardTitle>

@@ -71,9 +71,10 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 - ~~**Stats**: Removed from menu~~ (previously showed campaign statistics)
 
 ### Direct Mail Tab
+- **Stats Card**: Overview card displaying statistics (coming soon)
 - **Query Card**: Lead query interface with 6 input fields for filtering and searching
   - **Fields** (left to right): Data Category, States, Loan Category, Loan Purpose, Property Use, Lenders
-- **Design**: Matches Create Batch card aesthetics with similar styling and spacing
+- **Design**: Both cards match Create Batch card aesthetics with similar styling and spacing
 
 ### Batch Creation
 - **5-Row Layout**: Campaign parameters, date tracking, vendor fields, cost tracking, and CSV upload
