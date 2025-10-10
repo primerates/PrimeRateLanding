@@ -1529,22 +1529,28 @@ export default function AdminMarketing() {
                         <table className="w-max border-collapse">
                           <thead className="sticky top-0 z-10">
                             <tr className="border-b border-gray-300">
-                              {columnsWithData.map((column) => (
-                                <th 
-                                  key={column}
-                                  className={`text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap ${
-                                    column === 'lastName' ? 'sticky-col-lastName sticky-header' : 
-                                    column === 'firstName' ? 'sticky-col-firstName sticky-header' : ''
-                                  }`}
-                                  onClick={() => handleBatchDetailSort(column)}
-                                  data-testid={`sort-${column}`}
-                                >
-                                  <div className="flex items-center gap-2">
-                                    {formatColumnName(column)}
-                                    <ArrowUpDown className="h-4 w-4" />
-                                  </div>
-                                </th>
-                              ))}
+                              {columnsWithData.map((column, colIdx) => {
+                                const isLastName = column.toLowerCase().includes('last') && column.toLowerCase().includes('name');
+                                const isFirstName = column.toLowerCase().includes('first') && column.toLowerCase().includes('name');
+                                const isSticky = colIdx < 2 && (isLastName || isFirstName);
+                                
+                                return (
+                                  <th 
+                                    key={column}
+                                    className={`text-left p-3 font-semibold bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap ${
+                                      colIdx === 0 ? 'sticky-col-lastName sticky-header' : 
+                                      colIdx === 1 ? 'sticky-col-firstName sticky-header' : ''
+                                    }`}
+                                    onClick={() => handleBatchDetailSort(column)}
+                                    data-testid={`sort-${column}`}
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      {formatColumnName(column)}
+                                      <ArrowUpDown className="h-4 w-4" />
+                                    </div>
+                                  </th>
+                                );
+                              })}
                               {/* Empty spacer column */}
                               <th className="p-3 bg-gray-50 dark:bg-gray-800" style={{ width: '200px' }}></th>
                             </tr>
@@ -1552,12 +1558,12 @@ export default function AdminMarketing() {
                           <tbody>
                             {filteredRows.map((row, idx) => (
                               <tr key={idx} className={`border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'}`}>
-                                {columnsWithData.map((column) => (
+                                {columnsWithData.map((column, colIdx) => (
                                   <td 
                                     key={column} 
                                     className={`p-3 whitespace-nowrap ${
-                                      column === 'lastName' ? `sticky-col-lastName ${idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'}` : 
-                                      column === 'firstName' ? `sticky-col-firstName ${idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'}` : ''
+                                      colIdx === 0 ? `sticky-col-lastName ${idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'}` : 
+                                      colIdx === 1 ? `sticky-col-firstName ${idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'}` : ''
                                     }`}
                                   >
                                     {row[column] || '-'}
