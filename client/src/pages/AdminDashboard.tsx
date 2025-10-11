@@ -123,6 +123,7 @@ export default function AdminDashboard() {
   const menuItems = [
     // Row 1
     { id: 'stats', label: 'Lead', icon: UserPlus, path: '/admin/add-client' },
+    { id: 'stats-new', label: 'Lead (WIP)', icon: UserPlus, path: '/admin/add-client-new' },
     { id: 'quotes', label: 'Quote', icon: Calculator, path: '/admin/quotes' },
     { id: 'loan-prep', label: 'Loan Prep', icon: FileText, path: '/admin/loan-prep' },
     { id: 'pipeline', label: 'Loan', icon: LayoutDashboard, path: '/admin/pipeline' },
