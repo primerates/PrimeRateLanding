@@ -1348,7 +1348,7 @@ export default function AdminMarketing() {
                 </CardHeader>
                 
                 {/* Completion Bar - 18 segments */}
-                <div className="px-4 pt-2 pb-2">
+                <div className="px-4 pt-1 pb-2">
                   <div className="relative flex gap-0 h-px">
                     {Array.from({ length: 18 }).map((_, index) => (
                       <div
