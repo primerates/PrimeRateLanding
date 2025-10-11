@@ -685,23 +685,16 @@ export default function AdminAddComment() {
                   </TooltipContent>
                 </Tooltip>
                 <DropdownMenu open={shortcutDropdownOpen} onOpenChange={setShortcutDropdownOpen}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-primary-foreground hover:text-white hover:bg-green-600 p-2 transition-colors duration-200"
-                          data-testid="button-shortcut"
-                        >
-                          <User className="h-6 w-6" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent side="left" sideOffset={10} className="text-sm">
-                      <p>Short Cut</p>
-                    </TooltipContent>
-                  </Tooltip>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-primary-foreground hover:text-white hover:bg-green-600 p-2 transition-colors duration-200"
+                      data-testid="button-shortcut"
+                    >
+                      <User className="h-6 w-6" />
+                    </Button>
+                  </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
                     {dashboardMenuItems.map((item, index) => (
                       <div key={item.path}>
