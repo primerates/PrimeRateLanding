@@ -239,6 +239,9 @@ export default function AdminMarketing() {
   // Query card Data Category state
   const [dataCategory, setDataCategory] = useState('Select');
   
+  // Batch Results To Date state
+  const [batchResults, setBatchResults] = useState<'show-all' | 'profitable' | 'loss'>('show-all');
+  
   // Column Mapping States
   const [uploadStage, setUploadStage] = useState<UploadStage>('upload');
   const [csvData, setCsvData] = useState<any[] | null>(null);
@@ -1301,16 +1304,59 @@ export default function AdminMarketing() {
                   </div>
                   <div className="space-y-2">
                     <Label>Batch Results To Date</Label>
-                    <Select defaultValue="show-all">
-                      <SelectTrigger data-testid="select-batch-results">
-                        <SelectValue placeholder="Show All" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="show-all">Show All</SelectItem>
-                        <SelectItem value="profitable">Profitable</SelectItem>
-                        <SelectItem value="loss">Loss</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <div className="flex h-9">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            onClick={() => setBatchResults('show-all')}
+                            className={`flex-1 flex items-center justify-center text-sm font-medium transition-colors ${
+                              batchResults === 'show-all' 
+                                ? 'bg-blue-600 text-white' 
+                                : 'bg-blue-500 text-white/90 hover:bg-blue-600'
+                            }`}
+                            data-testid="button-batch-results-show-all"
+                          >
+                            All
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>Show All</TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            onClick={() => setBatchResults('profitable')}
+                            className={`flex-1 flex items-center justify-center text-sm font-medium transition-colors ${
+                              batchResults === 'profitable' 
+                                ? 'bg-green-600 text-white' 
+                                : 'bg-green-500 text-white/90 hover:bg-green-600'
+                            }`}
+                            data-testid="button-batch-results-profitable"
+                          >
+                            Profit
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>Profitable</TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            onClick={() => setBatchResults('loss')}
+                            className={`flex-1 flex items-center justify-center text-sm font-medium transition-colors ${
+                              batchResults === 'loss' 
+                                ? 'bg-red-600 text-white' 
+                                : 'bg-red-500 text-white/90 hover:bg-red-600'
+                            }`}
+                            data-testid="button-batch-results-loss"
+                          >
+                            Loss
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>Loss</TooltipContent>
+                      </Tooltip>
+                    </div>
                   </div>
                 </div>
                 </CardContent>

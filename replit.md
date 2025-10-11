@@ -93,8 +93,8 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
     - **Data Vendors Options**: Show All, In-House, TBD (default: Show All)
     - **Mail Vendors Options**: Show All, In-House, TBD (default: Show All)
     - **Batch Activity To Date Options**: Select, Lead, Quote, Loan Prep, Loan, Funded, Withdrawn, Cancelled (multi-select popover with checkboxes)
-  - **Row 3** (5 fields): 10 Yr Bond Above, Par Rate Above, Cash Out Above, FICO Range Above, Batch Results To Date (dropdown)
-    - **Batch Results To Date Options**: Show All, Profitable, Loss (default: Show All)
+  - **Row 3** (5 fields): 10 Yr Bond Above, Par Rate Above, Cash Out Above, FICO Range Above, Batch Results To Date (3-button selector)
+    - **Batch Results To Date**: Three borderless buttons (Blue="Show All", Green="Profitable", Red="Loss") with hover tooltips; buttons are border-to-border, combined width matches "Cash Out Above" box width; clickable to filter results
 - **Create Batch Card**: Full batch creation form appears below Query card when "Add New Batch" is clicked
   - **Card Header**: Create New Batch title with States button (green) and Cancel New Batch button (red hover effect)
   - **Completion Bar**: 17-segment progress bar below card title; dark blue (#1a3373) segments fill as fields complete; light gray (#D1D5DB) for incomplete; small circular indicator shows progress; smooth transitions
