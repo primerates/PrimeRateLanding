@@ -1304,13 +1304,13 @@ export default function AdminMarketing() {
                   </div>
                   <div className="space-y-2">
                     <Label>Batch Results To Date</Label>
-                    <div className="flex h-9">
+                    <div className="flex h-9 rounded-md overflow-hidden">
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <button
                             type="button"
                             onClick={() => setBatchResults('show-all')}
-                            className={`flex-1 flex items-center justify-center text-sm font-medium transition-colors ${
+                            className={`flex-1 flex items-center justify-center text-sm font-medium transition-colors h-full ${
                               batchResults === 'show-all' 
                                 ? 'bg-blue-600 text-white' 
                                 : 'bg-blue-500 text-white/90 hover:bg-blue-600'
@@ -1327,7 +1327,7 @@ export default function AdminMarketing() {
                           <button
                             type="button"
                             onClick={() => setBatchResults('profitable')}
-                            className={`flex-1 flex items-center justify-center text-sm font-medium transition-colors ${
+                            className={`flex-1 flex items-center justify-center text-sm font-medium transition-colors h-full ${
                               batchResults === 'profitable' 
                                 ? 'bg-green-600 text-white' 
                                 : 'bg-green-500 text-white/90 hover:bg-green-600'
@@ -1344,7 +1344,7 @@ export default function AdminMarketing() {
                           <button
                             type="button"
                             onClick={() => setBatchResults('loss')}
-                            className={`flex-1 flex items-center justify-center text-sm font-medium transition-colors ${
+                            className={`flex-1 flex items-center justify-center text-sm font-medium transition-colors h-full ${
                               batchResults === 'loss' 
                                 ? 'bg-red-600 text-white' 
                                 : 'bg-red-500 text-white/90 hover:bg-red-600'
