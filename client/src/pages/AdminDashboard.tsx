@@ -516,7 +516,7 @@ export default function AdminDashboard() {
           const mostRecentPost = companyPosts[companyPosts.length - 1];
           
           return (
-            <div className={`flex justify-center transition-all duration-500 ${isRow3Visible ? 'mt-32' : 'mt-16'}`} style={{ marginTop: isRow3Visible ? '8rem' : 'calc(8rem + 240px)' }}>
+            <div className={`flex justify-center transition-all duration-500`} style={{ marginTop: isRow3Visible ? '8rem' : '8rem' }}>
               <div className="max-w-3xl w-full">
                 <div 
                   data-testid="company-post-0"
