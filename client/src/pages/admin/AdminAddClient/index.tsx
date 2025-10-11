@@ -29,7 +29,16 @@ const AddClientPage = () => {
     });
 
     const onSubmit = (data: InsertClient) => {
-        console.log("Data", data);
+        console.log("Form submitted successfully!", data);
+    };
+
+    const onError = (errors: any) => {
+        console.log("Form validation errors:", errors);
+        toast({
+            title: "Form Validation Error",
+            description: "Please check the form for errors and try again.",
+            variant: "destructive"
+        });
     };
 
     return (
@@ -37,7 +46,7 @@ const AddClientPage = () => {
             <div className="min-h-screen bg-background">
                 <AddClientHeader 
                     toast={toast} 
-                    onSave={form.handleSubmit(onSubmit)}
+                    onSave={form.handleSubmit(onSubmit, onError)}
                     isSaving={form.formState.isSubmitting}
                 />
 

@@ -10,6 +10,8 @@ import { Switch } from '@/components/ui/switch';
 import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
 import DateInput from '../components/DateInput';
 import FormInput from '../components/FormInput';
+import ManageableSelect from '../components/ManageableSelect';
+import { BUILT_IN_SOURCES } from '../data/sourceOptions';
 
 interface BorrowerTabProps {
     animations?: {
@@ -76,6 +78,16 @@ const BorrowerTab = ({ animations }: BorrowerTabProps) => {
                         data-testid="input-borrower-leadRef"
                     />
                 </div>
+
+                <ManageableSelect
+                    label="Source"
+                    value={form.watch('borrower.source') || ''}
+                    builtInOptions={BUILT_IN_SOURCES}
+                    onValueChange={(value) => form.setValue('borrower.source', value as any)}
+                    testId="select-borrower-source"
+                    addDialogTitle='Add New Source'
+                    removeDialogTitle='Remove Source'
+                />
 
                 <DateInput
                     label="Initial Call Date"
