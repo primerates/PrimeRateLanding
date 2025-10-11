@@ -1302,58 +1302,58 @@ export default function AdminMarketing() {
                       dataTestId="input-cash-out-above"
                     />
                   </div>
-                  <div className="flex h-9 rounded-md overflow-hidden">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          type="button"
-                          onClick={() => setBatchResults('show-all')}
-                          className={`flex-1 flex items-center justify-center text-sm font-medium transition-colors h-full ${
-                            batchResults === 'show-all' 
-                              ? 'bg-blue-500 text-white' 
-                              : 'bg-blue-400 text-white/90 hover:bg-blue-500'
-                          }`}
-                          data-testid="button-batch-results-show-all"
-                        >
-                          All
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>Show All</TooltipContent>
-                    </Tooltip>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          type="button"
-                          onClick={() => setBatchResults('profitable')}
-                          className={`flex-1 flex items-center justify-center text-sm font-medium transition-colors h-full ${
-                            batchResults === 'profitable' 
-                              ? 'bg-green-500 text-white' 
-                              : 'bg-green-400 text-white/90 hover:bg-green-500'
-                          }`}
-                          data-testid="button-batch-results-profitable"
-                        >
-                          Profit
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>Profitable</TooltipContent>
-                    </Tooltip>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          type="button"
-                          onClick={() => setBatchResults('loss')}
-                          className={`flex-1 flex items-center justify-center text-sm font-medium transition-colors h-full ${
-                            batchResults === 'loss' 
-                              ? 'bg-red-500 text-white' 
-                              : 'bg-red-400 text-white/90 hover:bg-red-500'
-                          }`}
-                          data-testid="button-batch-results-loss"
-                        >
-                          Loss
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>Loss</TooltipContent>
-                    </Tooltip>
+                  <div className="space-y-2">
+                    <Label>Batch Results To Date</Label>
+                    <div className="flex h-9 rounded-md overflow-hidden">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            onClick={() => setBatchResults('show-all')}
+                            className={`flex-1 flex items-center justify-center text-sm font-medium transition-colors h-full ${
+                              batchResults === 'show-all' 
+                                ? 'bg-blue-500 text-white' 
+                                : 'bg-blue-400 text-white/90 hover:bg-blue-500'
+                            }`}
+                            data-testid="button-batch-results-show-all"
+                          >
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>Show All</TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            onClick={() => setBatchResults('profitable')}
+                            className={`flex-1 flex items-center justify-center text-sm font-medium transition-colors h-full ${
+                              batchResults === 'profitable' 
+                                ? 'bg-green-500 text-white' 
+                                : 'bg-green-400 text-white/90 hover:bg-green-500'
+                            }`}
+                            data-testid="button-batch-results-profitable"
+                          >
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>Profitable</TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            onClick={() => setBatchResults('loss')}
+                            className={`flex-1 flex items-center justify-center text-sm font-medium transition-colors h-full ${
+                              batchResults === 'loss' 
+                                ? 'bg-red-500 text-white' 
+                                : 'bg-red-400 text-white/90 hover:bg-red-500'
+                            }`}
+                            data-testid="button-batch-results-loss"
+                          >
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>Loss</TooltipContent>
+                      </Tooltip>
+                    </div>
                   </div>
                 </div>
                 </CardContent>
