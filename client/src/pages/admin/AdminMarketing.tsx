@@ -1314,7 +1314,7 @@ export default function AdminMarketing() {
                           <button
                             type="button"
                             onClick={() => setBatchResults('show-all')}
-                            className="flex-1 flex items-center justify-center text-sm font-medium transition-colors h-full text-white"
+                            className="flex-1 flex items-center justify-center text-xs font-medium transition-colors h-full text-white"
                             style={{ 
                               backgroundColor: batchResults === 'show-all' ? '#1a3373' : '#4a5f9f',
                               opacity: batchResults === 'show-all' ? 1 : 0.9
@@ -1331,7 +1331,7 @@ export default function AdminMarketing() {
                           <button
                             type="button"
                             onClick={() => setBatchResults('profitable')}
-                            className="flex-1 flex items-center justify-center text-sm font-medium transition-colors h-full text-white"
+                            className="flex-1 flex items-center justify-center text-xs font-medium transition-colors h-full text-white"
                             style={{ 
                               backgroundColor: batchResults === 'profitable' ? '#166534' : '#16a34a',
                               opacity: batchResults === 'profitable' ? 1 : 0.9
@@ -1348,7 +1348,7 @@ export default function AdminMarketing() {
                           <button
                             type="button"
                             onClick={() => setBatchResults('loss')}
-                            className="flex-1 flex items-center justify-center text-sm font-medium transition-colors h-full text-white"
+                            className="flex-1 flex items-center justify-center text-xs font-medium transition-colors h-full text-white"
                             style={{ 
                               backgroundColor: batchResults === 'loss' ? '#991b1b' : '#dc2626',
                               opacity: batchResults === 'loss' ? 1 : 0.9
