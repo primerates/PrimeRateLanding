@@ -1317,6 +1317,7 @@ export default function AdminMarketing() {
                             }`}
                             data-testid="button-batch-results-show-all"
                           >
+                            {batchResults === 'show-all' && 'Show All'}
                           </button>
                         </TooltipTrigger>
                         <TooltipContent>Show All</TooltipContent>
@@ -1333,6 +1334,7 @@ export default function AdminMarketing() {
                             }`}
                             data-testid="button-batch-results-profitable"
                           >
+                            {batchResults === 'profitable' && 'Profitable'}
                           </button>
                         </TooltipTrigger>
                         <TooltipContent>Profitable</TooltipContent>
@@ -1349,6 +1351,7 @@ export default function AdminMarketing() {
                             }`}
                             data-testid="button-batch-results-loss"
                           >
+                            {batchResults === 'loss' && 'Loss'}
                           </button>
                         </TooltipTrigger>
                         <TooltipContent>Loss</TooltipContent>
