@@ -560,12 +560,11 @@ export default function AdminDashboard() {
           const mostRecentPost = companyPosts[companyPosts.length - 1];
           
           // Calculate margin to keep post in same position
-          // When rows are hidden, reduce margin to move post up and maintain position
-          // Each row is approximately 176px + 64px spacing = 240px total
+          // When rows are hidden, ADD margin to compensate for missing row height
           let topMargin = 128; // Base 8rem = 128px when all visible
-          if (!isRow1Visible) topMargin -= 240;
-          if (!isRow2Visible) topMargin -= 240;
-          if (!isRow3Visible) topMargin -= 200;
+          if (!isRow1Visible) topMargin += 200; // Add row height + gap
+          if (!isRow2Visible) topMargin += 200; // Add row height + gap
+          if (!isRow3Visible) topMargin += 200; // Add row height + gap
           
           return (
             <div className="flex justify-center transition-all duration-500" style={{ marginTop: `${topMargin}px` }}>
