@@ -65,7 +65,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 - **Row 2**: Snapshot, Marketing, Library, Closed, Audit (blue left border on hover)
 - **Row 3**: Vendors, Staff, Partners, Settings, Vault (purple left border on hover)
 
-#### 11-Tab Menu Bar
+#### 10-Tab Menu Bar
 Comprehensive navigation system with tabs in this order (left to right):
 1. **Lead**: Lead management (coming soon)
 2. **Marketing**: Direct mail campaigns, lead vendors, social media (has content)
@@ -75,9 +75,8 @@ Comprehensive navigation system with tabs in this order (left to right):
 6. **Vendors**: Vendor management (coming soon)
 7. **Staff**: Staff management (coming soon)
 8. **Partners**: Partner relationships (coming soon)
-9. **Closed**: Financial tracking (coming soon)
-10. **Vault**: Secure storage (coming soon)
-11. **Post**: Comments, posts, and notes (default tab with full functionality)
+9. **Vault**: Secure storage (coming soon)
+10. **Post**: Comments, posts, and notes (default tab with full functionality)
 
 **Tab Styling**: Matching Lead Tile style with navy blue (#1a3373) for active state, green hover underline effect, and smooth transitions
 
