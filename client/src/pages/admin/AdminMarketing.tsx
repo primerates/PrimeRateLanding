@@ -1720,24 +1720,26 @@ export default function AdminMarketing() {
                         </div>
                       </div>
 
-                      {/* Separation Line */}
-                      <div style={{ borderTop: '1px solid hsl(var(--border))', paddingTop: '24px' }}>
-                        <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary transition-colors">
-                          <input
-                            type="file"
-                            accept=".csv"
-                            onChange={handleFileUpload}
-                            className="hidden"
-                            id="csv-upload-dm"
-                            data-testid="input-csv-file-dm"
-                          />
-                          <label htmlFor="csv-upload-dm" className="cursor-pointer">
-                            <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-                            <p className="text-foreground mb-1">Click to upload or drag and drop</p>
-                            <p className="text-sm text-green-600">Upload Excel File Format (CSV UTF8) <span className="text-destructive">*</span></p>
-                          </label>
+                      {/* Separation Line and Upload Box - Only show when completion bar is at 100% */}
+                      {getCompletedBatchFieldsCount() === 17 && (
+                        <div style={{ borderTop: '1px solid hsl(var(--border))', paddingTop: '24px' }}>
+                          <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary transition-colors">
+                            <input
+                              type="file"
+                              accept=".csv"
+                              onChange={handleFileUpload}
+                              className="hidden"
+                              id="csv-upload-dm"
+                              data-testid="input-csv-file-dm"
+                            />
+                            <label htmlFor="csv-upload-dm" className="cursor-pointer">
+                              <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                              <p className="text-foreground mb-1">Click to upload or drag and drop</p>
+                              <p className="text-sm text-green-600">Upload Excel File Format (CSV UTF8) <span className="text-destructive">*</span></p>
+                            </label>
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   )}
 
