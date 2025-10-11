@@ -873,7 +873,7 @@ export default function AdminAddComment() {
             <Card className="transition-all duration-700">
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle>Posts</CardTitle>
+                  <CardTitle>Post</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
