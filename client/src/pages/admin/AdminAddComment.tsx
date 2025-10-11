@@ -79,6 +79,7 @@ export default function AdminAddComment() {
   const [quickAccessAllComments, setQuickAccessAllComments] = useState(false);
   const [quickAccessCompanyPost, setQuickAccessCompanyPost] = useState(false);
   const [quickAccessAllPosts, setQuickAccessAllPosts] = useState(false);
+  const [quickAccessNotes, setQuickAccessNotes] = useState(false);
 
   // Posted comments storage
   const [postedComments, setPostedComments] = useState<any[]>([]);
@@ -881,7 +882,7 @@ export default function AdminAddComment() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div className="flex items-center space-x-2">
                       <Checkbox
                         id="quick-access-client-comment"
@@ -931,6 +932,19 @@ export default function AdminAddComment() {
                       />
                       <Label htmlFor="quick-access-all-posts" className="font-medium">
                         All Posts
+                      </Label>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="quick-access-notes"
+                        checked={quickAccessNotes}
+                        onCheckedChange={(checked) => setQuickAccessNotes(checked as boolean)}
+                        className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        data-testid="checkbox-quick-access-notes"
+                      />
+                      <Label htmlFor="quick-access-notes" className="font-medium">
+                        Notes
                       </Label>
                     </div>
                   </div>
