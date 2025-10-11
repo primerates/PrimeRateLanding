@@ -746,9 +746,8 @@ export default function AdminAddComment() {
         <div className="container mx-auto px-6 py-8">
           <Tabs defaultValue="posts" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             {/* Tab Menu Bar - Matching Lead Tile Style */}
-            <TabsList className="grid w-full grid-cols-4 bg-transparent h-auto p-0 relative border-b border-gray-200 group">
+            <TabsList className="grid w-full grid-cols-3 bg-transparent h-auto p-0 relative border-b border-gray-200 group">
               <TabsTrigger value="company-post" data-testid="tab-company-post" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Company Post</TabsTrigger>
-              <TabsTrigger value="all-posts" data-testid="tab-all-posts" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">All Posts</TabsTrigger>
               <TabsTrigger value="posts" data-testid="tab-posts" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Posts</TabsTrigger>
               <TabsTrigger value="notes" data-testid="tab-notes" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Notes</TabsTrigger>
             </TabsList>
@@ -1305,6 +1304,152 @@ export default function AdminAddComment() {
                                 </TooltipProvider>
                               </td>
                               <td className="p-3" data-testid={`cell-first-name-${sortedIndex}`}>{comment.firstName}</td>
+                            </tr>
+                            );
+                          })
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+              </div>
+            )}
+
+            {/* All Posts Table - Conditionally shown in Posts tab */}
+            {quickAccessAllPosts && (
+              <div 
+                className="overflow-hidden transition-all duration-500 ease-out mt-8"
+                style={{
+                  maxHeight: quickAccessAllPosts ? '2000px' : '0',
+                  opacity: quickAccessAllPosts ? 1 : 0,
+                  animation: 'slideDownCard 0.5s ease-out'
+                }}
+              >
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="border-b border-gray-300">
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700"
+                            data-testid="header-republish"
+                          >
+                            Publish
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                            onClick={() => handlePostSort('postDate')}
+                            data-testid="header-post-date"
+                          >
+                            <div className="flex items-center gap-2">
+                              Post Date
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                            onClick={() => handlePostSort('postBy')}
+                            data-testid="header-post-by"
+                          >
+                            <div className="flex items-center gap-2">
+                              Post By
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                            onClick={() => handlePostSort('category')}
+                            data-testid="header-category"
+                          >
+                            <div className="flex items-center gap-2">
+                              Category
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                            onClick={() => handlePostSort('author')}
+                            data-testid="header-author"
+                          >
+                            <div className="flex items-center gap-2">
+                              Author
+                              <ArrowUpDown className="h-4 w-4" />
+                            </div>
+                          </th>
+                          <th 
+                            className="text-left p-3 font-semibold bg-gray-200 dark:bg-gray-700"
+                            data-testid="header-post-content"
+                          >
+                            Post Content
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {sortedPosts.length === 0 ? (
+                          <tr>
+                            <td colSpan={6} className="text-center py-8 text-muted-foreground">
+                              No posts to display
+                            </td>
+                          </tr>
+                        ) : (
+                          sortedPosts.map((post, sortedIndex) => {
+                            const originalIndex = postedCompanyPosts.findIndex(p => p === post);
+                            return (
+                            <tr 
+                              key={sortedIndex} 
+                              className={`border-b hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${sortedIndex % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'}`}
+                              data-testid={`row-post-${sortedIndex}`}
+                            >
+                              <td className="p-3" data-testid={`cell-republish-${sortedIndex}`}>
+                                <Button
+                                  size="sm"
+                                  className="bg-green-600 text-white hover:bg-green-700"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleRepublishPost(originalIndex);
+                                  }}
+                                  data-testid={`button-republish-${sortedIndex}`}
+                                >
+                                  Publish
+                                </Button>
+                              </td>
+                              <td 
+                                className="p-3 cursor-pointer" 
+                                onClick={() => handlePostClick(post, originalIndex)}
+                                data-testid={`cell-post-date-${sortedIndex}`}
+                              >
+                                {post.date}
+                              </td>
+                              <td 
+                                className="p-3 cursor-pointer" 
+                                onClick={() => handlePostClick(post, originalIndex)}
+                                data-testid={`cell-post-by-${sortedIndex}`}
+                              >
+                                {post.postBy}
+                              </td>
+                              <td 
+                                className="p-3 cursor-pointer" 
+                                onClick={() => handlePostClick(post, originalIndex)}
+                                data-testid={`cell-category-${sortedIndex}`}
+                              >
+                                {post.category}
+                              </td>
+                              <td 
+                                className="p-3 cursor-pointer" 
+                                onClick={() => handlePostClick(post, originalIndex)}
+                                data-testid={`cell-author-${sortedIndex}`}
+                              >
+                                {post.postAuthor}
+                              </td>
+                              <td 
+                                className="p-3 max-w-md truncate cursor-pointer" 
+                                onClick={() => handlePostClick(post, originalIndex)}
+                                data-testid={`cell-content-${sortedIndex}`}
+                              >
+                                {post.comment}
+                              </td>
                             </tr>
                             );
                           })
