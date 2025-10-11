@@ -1310,11 +1310,11 @@ export default function AdminMarketing() {
                           <button
                             type="button"
                             onClick={() => setBatchResults('show-all')}
-                            className={`flex-1 flex items-center justify-center text-sm font-medium transition-colors h-full ${
-                              batchResults === 'show-all' 
-                                ? 'bg-blue-600 text-white' 
-                                : 'bg-blue-500 text-white/90 hover:bg-blue-600'
-                            }`}
+                            className="flex-1 flex items-center justify-center text-sm font-medium transition-colors h-full text-white"
+                            style={{ 
+                              backgroundColor: batchResults === 'show-all' ? '#1a3373' : '#4a5f9f',
+                              opacity: batchResults === 'show-all' ? 1 : 0.9
+                            }}
                             data-testid="button-batch-results-show-all"
                           >
                             {batchResults === 'show-all' && 'Show All'}
