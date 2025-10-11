@@ -1437,7 +1437,7 @@ export default function AdminMarketing() {
                           </Select>
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="data-type-dm">Data Speed</Label>
+                          <Label htmlFor="data-type-dm">Data Category</Label>
                           <Select value={dataType} onValueChange={setDataType}>
                             <SelectTrigger id="data-type-dm" data-testid="select-data-type-dm">
                               <SelectValue placeholder="Select" />
@@ -1449,7 +1449,7 @@ export default function AdminMarketing() {
                           </Select>
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="delivery-dm">Delivery</Label>
+                          <Label htmlFor="delivery-dm">Delivery Speed</Label>
                           <Select value={delivery} onValueChange={setDelivery}>
                             <SelectTrigger id="delivery-dm" data-testid="select-delivery-dm">
                               <SelectValue placeholder="Select" />
@@ -2326,7 +2326,7 @@ export default function AdminMarketing() {
                                     </div>
                                   </div>
                                   
-                                  {/* Row 2: Category, Data Speed, Delivery, Duration to First Call */}
+                                  {/* Row 2: Category, Data Category, Delivery Speed, Duration to First Call */}
                                   <div className="grid grid-cols-4 gap-4">
                                     <div>
                                       <Label className="text-xs text-muted-foreground">Loan Category</Label>
@@ -2357,7 +2357,7 @@ export default function AdminMarketing() {
                                       )}
                                     </div>
                                     <div>
-                                      <Label className="text-xs text-muted-foreground">Data Speed</Label>
+                                      <Label className="text-xs text-muted-foreground">Data Category</Label>
                                       {isEditingBatchDetails ? (
                                         <Input 
                                           value={editedBatchDetails.dataType || ''}
@@ -2371,7 +2371,7 @@ export default function AdminMarketing() {
                                       )}
                                     </div>
                                     <div>
-                                      <Label className="text-xs text-muted-foreground">Delivery</Label>
+                                      <Label className="text-xs text-muted-foreground">Delivery Speed</Label>
                                       {isEditingBatchDetails ? (
                                         <Input 
                                           value={editedBatchDetails.delivery || ''}
