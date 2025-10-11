@@ -356,7 +356,7 @@ export default function AdminMarketing() {
     if (!file) return;
 
     // Check if all required fields are completed
-    if (getCompletedBatchFieldsCount() < 18) {
+    if (getCompletedBatchFieldsCount() < 17) {
       setIncompleteFieldsDialog(true);
       // Clear the file input
       e.target.value = '';
@@ -624,7 +624,6 @@ export default function AdminMarketing() {
       !!category && category !== '' && category !== 'select',
       !!dataType && dataType !== '',
       !!delivery && delivery !== '',
-      !!durationToFirstCall && durationToFirstCall.trim() !== '',
       !!dataDate && dataDate.trim() !== '',
       !!dataSource && dataSource !== '',
       !!printVendor && printVendor !== '',
@@ -1347,22 +1346,22 @@ export default function AdminMarketing() {
                   </div>
                 </CardHeader>
                 
-                {/* Completion Bar - 18 segments */}
+                {/* Completion Bar - 17 segments */}
                 <div className="px-4 pb-2">
                   <div className="relative flex gap-0 h-px">
-                    {Array.from({ length: 18 }).map((_, index) => (
+                    {Array.from({ length: 17 }).map((_, index) => (
                       <div
                         key={index}
                         className={`flex-1 transition-colors duration-300`}
                         style={{ backgroundColor: index < getCompletedBatchFieldsCount() ? '#1a3373' : '#D1D5DB' }}
                       />
                     ))}
-                    {getCompletedBatchFieldsCount() > 0 && getCompletedBatchFieldsCount() < 18 && (
+                    {getCompletedBatchFieldsCount() > 0 && getCompletedBatchFieldsCount() < 17 && (
                       <div 
                         className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full transition-all duration-300"
                         style={{ 
                           backgroundColor: '#1a3373',
-                          left: `calc(${(getCompletedBatchFieldsCount() / 18) * 100}% - 4px)`
+                          left: `calc(${(getCompletedBatchFieldsCount() / 17) * 100}% - 4px)`
                         }}
                       />
                     )}
