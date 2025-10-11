@@ -1327,11 +1327,11 @@ export default function AdminMarketing() {
                           <button
                             type="button"
                             onClick={() => setBatchResults('profitable')}
-                            className={`flex-1 flex items-center justify-center text-sm font-medium transition-colors h-full ${
-                              batchResults === 'profitable' 
-                                ? 'bg-green-600 text-white' 
-                                : 'bg-green-500 text-white/90 hover:bg-green-600'
-                            }`}
+                            className="flex-1 flex items-center justify-center text-sm font-medium transition-colors h-full text-white"
+                            style={{ 
+                              backgroundColor: batchResults === 'profitable' ? '#166534' : '#16a34a',
+                              opacity: batchResults === 'profitable' ? 1 : 0.9
+                            }}
                             data-testid="button-batch-results-profitable"
                           >
                             {batchResults === 'profitable' && 'Profitable'}
