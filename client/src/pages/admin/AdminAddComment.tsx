@@ -1654,16 +1654,6 @@ export default function AdminAddComment() {
 
             {/* Posts Tab */}
             <TabsContent value="posts" className="mt-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Posts</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-8 text-muted-foreground">
-                    Posts content coming soon
-                  </div>
-                </CardContent>
-              </Card>
             </TabsContent>
 
             <TabsContent value="notes" className="mt-8">
