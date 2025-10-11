@@ -559,12 +559,15 @@ export default function AdminDashboard() {
           // Get the most recent post (last one in the array)
           const mostRecentPost = companyPosts[companyPosts.length - 1];
           
-          // Calculate margin based on which rows are hidden
-          const hiddenRowsCount = [!isRow1Visible, !isRow2Visible, !isRow3Visible].filter(Boolean).length;
-          const extraMargin = hiddenRowsCount * 200; // 200px per hidden row
+          // Calculate margin to keep post in same position
+          // Each row is approximately 176px + 64px spacing = 240px total
+          let topMargin = 128; // Base 8rem = 128px
+          if (!isRow1Visible) topMargin += 240;
+          if (!isRow2Visible) topMargin += 240;
+          if (!isRow3Visible) topMargin += 240;
           
           return (
-            <div className={`flex justify-center transition-all duration-500`} style={{ marginTop: `calc(8rem + ${extraMargin}px)` }}>
+            <div className="flex justify-center transition-all duration-500" style={{ marginTop: `${topMargin}px` }}>
               <div className="max-w-3xl w-full">
                 <div 
                   data-testid="company-post-0"
