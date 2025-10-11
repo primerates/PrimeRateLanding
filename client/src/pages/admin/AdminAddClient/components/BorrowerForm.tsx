@@ -13,6 +13,7 @@ import FormSelect from './FormSelect';
 import PhoneInput from './PhoneInput';
 import { MARITAL_STATUS_OPTIONS, RELATIONSHIP_OPTIONS, CONTACT_TIME_OPTIONS } from '../data/formOptions';
 import MaritalStatusDialog from '../dialogs/maritalStatusDialog';
+import ResidenceForm from './ResidenceForm';
 
 const BorrowerForm = () => {
     const form = useFormContext<InsertClient>();
@@ -172,6 +173,16 @@ const BorrowerForm = () => {
                                 testId="select-borrower-preferredContactTime"
                                 className="space-y-2"
                             />
+                        </div>
+
+                        {/* Extra spacing row */}
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-10">
+                            <div className="space-y-2 flex items-center gap-2">
+                                <ResidenceForm />
+                            </div>
                         </div>
                     </CardContent>
                 </CollapsibleContent>

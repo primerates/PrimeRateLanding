@@ -17,6 +17,16 @@ export const insertUserSchema = createInsertSchema(users).pick({
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 
+// Rental info schema for rental properties
+export const rentalInfoSchema = z.object({
+  landlordName: z.string().optional(),
+  email: z.string().optional(),
+  phone: z.string().optional(),
+  propertyType: z.string().optional(),
+  monthlyRent: z.string().optional(),
+  notes: z.string().optional(),
+});
+
 // Address schema for reusable address components
 export const addressSchema = z.object({
   street: z.string().optional(),
@@ -25,6 +35,12 @@ export const addressSchema = z.object({
   state: z.string().optional(),
   zip: z.string().optional(),
   county: z.string().optional(),
+});
+
+// Specialized residence address schema with rental info and additional info
+export const residenceAddressSchema = addressSchema.extend({
+  rentalInfo: rentalInfoSchema.optional(),
+  additionalInfo: z.string().optional(),
 });
 
 // Pension schema for multiple pensions
@@ -47,12 +63,16 @@ export const borrowerInfoSchema = z.object({
   dateOfBirth: z.string().optional(),
   ssn: z.string().optional(),
   preferredContactTime: z.enum(["Select", "Morning", "Afternoon", "Evening"]).optional(),
-  residenceAddress: addressSchema.partial().optional(),
+  currentResidenceType: z.enum(["owned", "rental", "other"]).optional(),
+  residenceAddress: residenceAddressSchema.partial().optional(),
   yearsAtAddress: z.string().optional(),
   monthsAtAddress: z.string().optional(),
-  priorResidenceAddress: addressSchema.partial().optional(),
+  priorResidenceAddress: residenceAddressSchema.partial().optional(),
   priorYearsAtAddress: z.string().optional(),
   priorMonthsAtAddress: z.string().optional(),
+  priorResidenceAddress2: residenceAddressSchema.partial().optional(),
+  priorYearsAtAddress2: z.string().optional(),
+  priorMonthsAtAddress2: z.string().optional(),
   subjectProperty: addressSchema.partial().optional(),
   stage: z.enum(["Lead", "Quote", "Loan Prep", "Loan", "Funded", "Audit", "Closed", "Cancel", "Withdraw"]).optional(),
   leadRef: z.string().optional(),
@@ -358,7 +378,9 @@ export const clientSchema = z.object({
   status: z.enum(["active", "closed", "on-hold"]).default("active"),
 });
 
+export type RentalInfo = z.infer<typeof rentalInfoSchema>;
 export type Address = z.infer<typeof addressSchema>;
+export type ResidenceAddress = z.infer<typeof residenceAddressSchema>;
 export type BorrowerInfo = z.infer<typeof borrowerInfoSchema>;
 export type Income = z.infer<typeof incomeSchema>;
 export type Property = z.infer<typeof propertySchema>;

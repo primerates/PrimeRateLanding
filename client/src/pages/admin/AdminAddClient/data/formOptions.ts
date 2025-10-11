@@ -58,3 +58,10 @@ export const CONTACT_TIME_OPTIONS: Option[] = [
   { value: 'Afternoon', label: 'Afternoon' },
   { value: 'Evening', label: 'Evening' }
 ];
+
+// Residence Type Options
+export const RESIDENCE_TYPE_OPTIONS: Option[] = [
+  { value: 'owned', label: 'Owned' },
+  { value: 'rental', label: 'Rental' },
+  { value: 'other', label: 'Other' }
+];

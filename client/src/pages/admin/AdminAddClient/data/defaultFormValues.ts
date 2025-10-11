@@ -16,6 +16,15 @@ export const defaultClientFormValues: InsertClient = {
       city: '',
       state: '',
       zip: '',
+      rentalInfo: {
+        landlordName: '',
+        email: '',
+        phone: '',
+        propertyType: '',
+        monthlyRent: '',
+        notes: ''
+      },
+      additionalInfo: ''
     },
     yearsAtAddress: '',
     monthsAtAddress: '',
@@ -25,7 +34,16 @@ export const defaultClientFormValues: InsertClient = {
       city: '',
       state: '',
       zip: '',
-      county: ''
+      county: '',
+      rentalInfo: {
+        landlordName: '',
+        email: '',
+        phone: '',
+        propertyType: '',
+        monthlyRent: '',
+        notes: ''
+      },
+      additionalInfo: ''
     },
     priorYearsAtAddress: '',
     priorMonthsAtAddress: '',
