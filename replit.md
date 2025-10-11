@@ -59,8 +59,30 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 - **Loan Management System**: Manages client loan applications, supporting multiple loan categories, rate configurations, third-party services, and quote generation.
 
 ### Admin Navigation
-- **11-Tab Menu Bar**: Comprehensive navigation includes Lead, Marketing, Snapshot, Library, Settings, Vendors, Staff, Partners, Ledger, Vault, and Post. The "Post" tab (Comments, Posts, and Notes) is fully functional.
-- **Admin Marketing System**: Features a header with "Back to Dashboard", "Shortcut Menu", "Screenshare", and "Save" options. Its navigation includes "Direct Mail", "Lead Vendor", "Social Media", and "Notes" tabs. The "Direct Mail" tab contains a Query Card for filtering and a Create Batch Card for new campaign setup, supporting 5-row layouts for campaign parameters, vendor details, and cost tracking, along with CSV upload and state selection. Batch details and lists are also managed here.
+
+#### Dashboard Tiles
+- **Row 1**: Lead, Quote, Loan Prep, Loan, Funded (green left border on hover)
+- **Row 2**: Snapshot, Marketing, Library, Settings, Audit (blue left border on hover)
+- **Row 3**: Vendors, Staff, Partners, Ledger, Vault (purple left border on hover)
+
+#### 11-Tab Menu Bar
+Comprehensive navigation system with tabs in this order (left to right):
+1. **Lead**: Lead management (coming soon)
+2. **Marketing**: Direct mail campaigns, lead vendors, social media (has content)
+3. **Snapshot**: Business overview and analytics (coming soon)
+4. **Library**: Document and resource management (coming soon)
+5. **Settings**: System configuration (coming soon)
+6. **Vendors**: Vendor management (coming soon)
+7. **Staff**: Staff management (coming soon)
+8. **Partners**: Partner relationships (coming soon)
+9. **Ledger**: Financial tracking (coming soon)
+10. **Vault**: Secure storage (coming soon)
+11. **Post**: Comments, posts, and notes (default tab with full functionality)
+
+**Tab Styling**: Matching Lead Tile style with navy blue (#1a3373) for active state, green hover underline effect, and smooth transitions
+
+#### Admin Marketing System
+Features a header with "Back to Dashboard", "Shortcut Menu", "Screenshare", and "Save" options. Its navigation includes "Direct Mail", "Lead Vendor", "Social Media", and "Notes" tabs. The "Direct Mail" tab contains a Query Card for filtering and a Create Batch Card for new campaign setup, supporting 5-row layouts for campaign parameters, vendor details, and cost tracking, along with CSV upload and state selection. Batch details and lists are also managed here.
 
 ### Background Selector System
 Allows customization of dashboard and login page backgrounds with various presets (e.g., Geometric Cubes, Infinity Grid, Neon Night). Supports mode toggling, visual previews, and persistence via localStorage.

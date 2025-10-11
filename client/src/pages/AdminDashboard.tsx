@@ -128,11 +128,11 @@ export default function AdminDashboard() {
     { id: 'pipeline', label: 'Loan', icon: LayoutDashboard, path: '/admin/pipeline' },
     { id: 'funded', label: 'Funded', icon: CheckCircle, path: '/admin/funded' },
     // Row 2
-    { id: 'search', label: 'Marketing', icon: Search, path: '/admin/marketing' },
     { id: 'reports', label: 'Snapshot', icon: BarChart3, path: '/admin/reports' },
+    { id: 'search', label: 'Marketing', icon: Search, path: '/admin/marketing' },
     { id: 'library', label: 'Library', icon: FolderOpen, path: '/admin/library' },
-    { id: 'audit', label: 'Audit', icon: ShieldCheck, path: '/admin/audit' },
     { id: 'settings', label: 'Settings', icon: Settings, path: '/admin/add-comment' },
+    { id: 'audit', label: 'Audit', icon: ShieldCheck, path: '/admin/audit' },
     // Row 3
     { id: 'add-vendor', label: 'Vendors', icon: Building2, path: '/admin/add-vendor' },
     { id: 'add-staff', label: 'Staff', icon: UserCheck, path: '/admin/add-staff' },
