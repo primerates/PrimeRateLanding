@@ -744,10 +744,9 @@ export default function AdminAddComment() {
 
         {/* Main Content */}
         <div className="container mx-auto px-6 py-8">
-          <Tabs defaultValue="company-post" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <Tabs defaultValue="notes" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             {/* Tab Menu Bar - Matching Lead Tile Style */}
-            <TabsList className="grid w-full grid-cols-2 bg-transparent h-auto p-0 relative border-b border-gray-200 group">
-              <TabsTrigger value="company-post" data-testid="tab-company-post" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Company Post</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-1 bg-transparent h-auto p-0 relative border-b border-gray-200 group">
               <TabsTrigger value="notes" data-testid="tab-notes" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Notes</TabsTrigger>
             </TabsList>
 
@@ -1459,12 +1458,17 @@ export default function AdminAddComment() {
               </Card>
               </div>
             )}
-            </>
 
-            {/* Remove empty Posts TabsContent */}
-
-            {/* Company Post Tab (Insight) */}
-            <TabsContent value="company-post" className="mt-8">
+            {/* Company Post Insight Card - Conditionally shown in Posts tab */}
+            {quickAccessCompanyPost && (
+              <div 
+                className="overflow-hidden transition-all duration-500 ease-out mt-8"
+                style={{
+                  maxHeight: quickAccessCompanyPost ? '2000px' : '0',
+                  opacity: quickAccessCompanyPost ? 1 : 0,
+                  animation: 'slideDownCard 0.5s ease-out'
+                }}
+              >
               <Card className="border-l-4 border-l-blue-500 hover:border-blue-500 focus-within:border-blue-500 transition-colors duration-200">
                 <CardHeader>
                   <CardTitle>Insight</CardTitle>
@@ -1530,11 +1534,7 @@ export default function AdminAddComment() {
 
                   {/* Comment Section with Font Controls - Wrapped in Grey Card */}
                   <Card 
-                    key={`post-${activeTab}`}
                     className="bg-gray-50 border-gray-200"
-                    style={{
-                      animation: activeTab === 'company-post' ? 'slideDownComment 0.5s ease-out' : 'none'
-                    }}
                   >
                     <CardContent className="pt-6 space-y-4">
                       {/* Font Controls */}
@@ -1687,7 +1687,9 @@ export default function AdminAddComment() {
                   </div>
                 </div>
               )}
-            </TabsContent>
+              </div>
+            )}
+            </>
 
 
             <TabsContent value="notes" className="mt-8">
