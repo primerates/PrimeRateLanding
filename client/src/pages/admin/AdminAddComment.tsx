@@ -72,7 +72,7 @@ export default function AdminAddComment() {
   const [animateCircles, setAnimateCircles] = useState(false);
   
   // Active tab state
-  const [activeTab, setActiveTab] = useState('client');
+  const [activeTab, setActiveTab] = useState('posts');
   
   // Quick access checkboxes state
   const [quickAccessClientComment, setQuickAccessClientComment] = useState(false);
@@ -744,10 +744,9 @@ export default function AdminAddComment() {
 
         {/* Main Content */}
         <div className="container mx-auto px-6 py-8">
-          <Tabs defaultValue="client" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <Tabs defaultValue="posts" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             {/* Tab Menu Bar - Matching Lead Tile Style */}
-            <TabsList className="grid w-full grid-cols-6 bg-transparent h-auto p-0 relative border-b border-gray-200 group">
-              <TabsTrigger value="client" data-testid="tab-client-comment" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Client Comment</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-5 bg-transparent h-auto p-0 relative border-b border-gray-200 group">
               <TabsTrigger value="all-comments" data-testid="tab-all-comments" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">All Comments</TabsTrigger>
               <TabsTrigger value="company-post" data-testid="tab-company-post" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Company Post</TabsTrigger>
               <TabsTrigger value="all-posts" data-testid="tab-all-posts" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">All Posts</TabsTrigger>
@@ -951,12 +950,18 @@ export default function AdminAddComment() {
                 </div>
               </CardContent>
             </Card>
-            </>
-            )}
 
-            {/* Client Comments Tab */}
-            <TabsContent value="client" className="mt-8">
-              <Card className="border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200">
+            {/* Client Comment Card - Conditionally shown in Posts tab */}
+            {quickAccessClientComment && (
+              <div 
+                className="overflow-hidden transition-all duration-500 ease-out mt-8"
+                style={{
+                  maxHeight: quickAccessClientComment ? '2000px' : '0',
+                  opacity: quickAccessClientComment ? 1 : 0,
+                  animation: 'slideDownCard 0.5s ease-out'
+                }}
+              >
+              <Card className="border-l-4 border-l-green-500 hover:border-green-500 focus-within:border-green-500 transition-colors duration-200 mt-0">
                 <CardHeader>
                   <CardTitle>Client Comment</CardTitle>
                 </CardHeader>
@@ -1165,7 +1170,10 @@ export default function AdminAddComment() {
                   </div>
                 </div>
               )}
-            </TabsContent>
+              </div>
+            )}
+            </>
+            )}
 
             {/* All Comments Tab */}
             <TabsContent value="all-comments" className="mt-8">
