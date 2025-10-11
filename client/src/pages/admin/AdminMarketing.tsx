@@ -219,6 +219,9 @@ export default function AdminMarketing() {
   const [closeBatchCardWarningDialog, setCloseBatchCardWarningDialog] = useState(false);
   const [pendingDataCategory, setPendingDataCategory] = useState<string>('');
   
+  // Incomplete fields warning dialog
+  const [incompleteFieldsDialog, setIncompleteFieldsDialog] = useState(false);
+  
   // Query card minimize/expand state
   const [isQueryCardMinimized, setIsQueryCardMinimized] = useState(false);
   
@@ -351,6 +354,14 @@ export default function AdminMarketing() {
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Check if all required fields are completed
+    if (getCompletedBatchFieldsCount() < 18) {
+      setIncompleteFieldsDialog(true);
+      // Clear the file input
+      e.target.value = '';
+      return;
+    }
 
     // Check if states are selected
     if (selectedStates.length === 0) {
@@ -601,6 +612,31 @@ export default function AdminMarketing() {
     setDataCategory(pendingDataCategory);
     // Close the warning dialog
     setCloseBatchCardWarningDialog(false);
+  };
+  
+  // Calculate completion count for Create New Batch
+  const getCompletedBatchFieldsCount = () => {
+    const fields = [
+      !!batchNumber && batchNumber.trim() !== '',
+      !!batchTitle && batchTitle.trim() !== '',
+      !!tenYearBond && tenYearBond.trim() !== '',
+      !!parRate && parRate.trim() !== '',
+      !!category && category !== '' && category !== 'select',
+      !!dataType && dataType !== '',
+      !!delivery && delivery !== '',
+      !!durationToFirstCall && durationToFirstCall.trim() !== '',
+      !!dataDate && dataDate.trim() !== '',
+      !!dataSource && dataSource !== '',
+      !!printVendor && printVendor !== '',
+      !!mailVendor && mailVendor !== '',
+      !!supplyVendor && supplyVendor !== '',
+      !!dataCost && dataCost.trim() !== '',
+      !!mailCost && mailCost.trim() !== '',
+      !!printCost && printCost.trim() !== '',
+      !!supplyCost && supplyCost.trim() !== '',
+      !!selectedStates && selectedStates.length > 0
+    ];
+    return fields.filter(Boolean).length;
   };
   
   const handleBackToDashboard = () => {
@@ -1310,6 +1346,29 @@ export default function AdminMarketing() {
                     </div>
                   </div>
                 </CardHeader>
+                
+                {/* Completion Bar - 18 segments */}
+                <div className="px-4 pt-3 pb-2">
+                  <div className="relative flex gap-0 h-px">
+                    {Array.from({ length: 18 }).map((_, index) => (
+                      <div
+                        key={index}
+                        className={`flex-1 transition-colors duration-300`}
+                        style={{ backgroundColor: index < getCompletedBatchFieldsCount() ? '#1a3373' : '#D1D5DB' }}
+                      />
+                    ))}
+                    {getCompletedBatchFieldsCount() > 0 && getCompletedBatchFieldsCount() < 18 && (
+                      <div 
+                        className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full transition-all duration-300"
+                        style={{ 
+                          backgroundColor: '#1a3373',
+                          left: `calc(${(getCompletedBatchFieldsCount() / 18) * 100}% - 4px)`
+                        }}
+                      />
+                    )}
+                  </div>
+                </div>
+                
                 <CardContent>
                   {/* Stage: Upload */}
                   {uploadStage === 'upload' && (
@@ -2815,6 +2874,24 @@ export default function AdminMarketing() {
               data-testid="button-yes-close-batch-card"
             >
               Yes
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Incomplete Fields Warning Dialog */}
+      <Dialog open={incompleteFieldsDialog} onOpenChange={setIncompleteFieldsDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Incomplete Required Fields</DialogTitle>
+          </DialogHeader>
+          <p>Please complete required fields to create a new batch</p>
+          <div className="flex justify-end gap-2 mt-4">
+            <Button
+              onClick={() => setIncompleteFieldsDialog(false)}
+              data-testid="button-ok-incomplete-fields"
+            >
+              OK
             </Button>
           </div>
         </DialogContent>

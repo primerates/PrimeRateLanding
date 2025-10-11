@@ -97,6 +97,10 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
     - **Batch Results To Date Options**: Show All, Profitable, Loss (default: Show All)
 - **Create Batch Card**: Full batch creation form appears below Query card when "Add New Batch" is clicked
   - **Card Header**: Create New Batch title with States button (green) and Cancel New Batch button (red hover effect)
+  - **Completion Bar**: 18-segment progress bar below card title; dark blue (#1a3373) segments fill as fields complete; light gray (#D1D5DB) for incomplete; small circular indicator shows progress; smooth transitions
+    - **Required Fields (18 total)**: Batch Number, Batch Title, 10 Year Bond, Par Rate, Loan Category, Data Speed, Delivery, Duration to First Call, Data Date, Data Vendor, Print Vendor, Mail Vendor, Supply Vendor, Data Cost, Mail Cost, Print Cost, Supply Cost, States (must have selection)
+    - **Non-Required Fields**: Print Date, Mail Date, First Call (excluded from completion bar)
+    - **Upload Validation**: Upload icon requires 100% completion; clicking when incomplete shows dialog: "Please complete required fields to create a new batch"
   - **Cancel New Batch Button**: Located in Create Batch card header to the right of States button; triggers confirmation dialog
   - **Cancel Confirmation Dialog**: Shows "Cancel new batch?" with "Go Back" and "Yes" buttons
   - **Single Card Enforcement**: If "Add New Batch" is clicked when a card is already open, displays alert 'A "Create New Batch" card is currently open.' (only one card allowed at a time)
