@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { BUILT_IN_SOURCES } from '../data/sourceOptions';
+import { BUILT_IN_SOURCES } from '../data/formOptions';
 import { useToast } from '@/hooks/use-toast';
 
 interface RemoveSourceDialogProps {

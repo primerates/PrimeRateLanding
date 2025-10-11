@@ -1,5 +1,5 @@
 import { SelectItem } from '@/components/ui/select';
-import { STAGE_OPTIONS, type Option } from '../data/stageOptions';
+import { STAGE_OPTIONS, type Option } from '../data/formOptions';
 
 interface SelectItemsProps {
   options?: Option[];

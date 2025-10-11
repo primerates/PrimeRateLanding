@@ -1,7 +1,7 @@
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectTrigger, SelectValue } from '@/components/ui/select';
 import SelectItems from './SelectItems';
-import { type Option } from '../data/stageOptions';
+import { type Option } from '../data/formOptions';
 
 interface FormSelectProps {
   label: string;

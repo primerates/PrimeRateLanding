@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import BorrowerHeaderForm from '../components/BorrowerHeaderForm';
-
+import BorrowerForm from '../components/BorrowerForm';
 interface BorrowerTabProps {
     animations?: {
         showEntry: boolean;
@@ -30,11 +30,12 @@ const BorrowerTab = ({ animations }: BorrowerTabProps) => {
     };
 
     return (
-        <Card className={`transition-all duration-700 ${getAnimationClasses()}`}>
-            <CardContent className="grid grid-cols-1 md:grid-cols-6 gap-4 pt-6">
+        <>
+            <div className={`transition-all duration-700 ${getAnimationClasses()}`}>
                 <BorrowerHeaderForm />
-            </CardContent>
-        </Card>
+            </div>
+            <BorrowerForm />
+        </>
     );
 };
 
