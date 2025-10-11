@@ -106,6 +106,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
   - **Single Card Enforcement**: If "Add New Batch" is clicked when a card is already open, displays alert 'A "Create New Batch" card is currently open.' (only one card allowed at a time)
   - Same functionality as Create Batch tab
   - Includes all 5 rows, vendor fields, cost tracking, CSV upload, and column mapping
+  - **Borderless Textarea**: Located below Create New Batch card with mt-4 spacing; no border, no focus ring, no shadow; only visible when Create Batch card is open
 - **Design**: Both cards match Create Batch card aesthetics with similar styling and spacing
 
 ### Batch Creation

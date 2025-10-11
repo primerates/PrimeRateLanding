@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
@@ -241,6 +242,9 @@ export default function AdminMarketing() {
   
   // Batch Results To Date state
   const [batchResults, setBatchResults] = useState<'show-all' | 'profitable' | 'loss'>('show-all');
+  
+  // Marketing notes text state
+  const [marketingNotesText, setMarketingNotesText] = useState('');
   
   // Column Mapping States
   const [uploadStage, setUploadStage] = useState<UploadStage>('upload');
@@ -1897,6 +1901,19 @@ export default function AdminMarketing() {
                   )}
                 </CardContent>
               </Card>
+            )}
+
+            {/* Borderless Text Input Box Below Create New Batch Card */}
+            {showCreateBatch && (
+              <div className="mt-4">
+                <Textarea
+                  value={marketingNotesText}
+                  onChange={(e) => setMarketingNotesText(e.target.value)}
+                  placeholder=""
+                  className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
+                  data-testid="textarea-marketing-notes"
+                />
+              </div>
             )}
 
             {/* Conditional Batch List - Show when Data Category is "Show All" */}
