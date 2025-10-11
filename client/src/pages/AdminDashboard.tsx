@@ -23,7 +23,9 @@ import {
   FolderOpen,
   ShieldCheck,
   Archive,
-  Lock
+  Lock,
+  Plus,
+  Minus
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
@@ -45,6 +47,7 @@ export default function AdminDashboard() {
   const [isBackgroundSelectorOpen, setIsBackgroundSelectorOpen] = useState(false);
   const [backgroundMode, setBackgroundMode] = useState<'dashboard' | 'login'>('dashboard');
   const [companyPosts, setCompanyPosts] = useState<any[]>([]);
+  const [isRow3Visible, setIsRow3Visible] = useState(true);
   const animationRef = useRef<number | null>(null);
   const timerRefs = useRef<{ start?: NodeJS.Timeout }>({});
   const isMountedRef = useRef(true);
@@ -457,33 +460,54 @@ export default function AdminDashboard() {
         </div>
 
         {/* Menu Grid - Third Row with extra spacing */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-16">
-          {menuItems.slice(10).map((item, index) => {
-            const Icon = item.icon;
-            return (
-              <Card 
-                key={item.id}
-                className={`cursor-pointer transition-all duration-500 ${getTileHoverClass(item.id, 3)} group ${
-                  isLoaded 
-                    ? 'transform scale-x-100 opacity-100' 
-                    : 'transform scale-x-0 opacity-0'
-                } bg-gradient-to-br from-card to-card/80`}
-                style={{
-                  transformOrigin: 'left',
-                  transitionDelay: `${1850 + (index * 150)}ms`
-                }}
-                onClick={() => handleMenuClick(item.path)}
-                data-testid={`card-admin-${item.id}`}
-              >
-                <CardHeader className="text-center pb-8 pt-8">
-                  <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-6">
-                    <Icon className="h-6 w-6 text-primary transition-transform duration-300 group-hover:rotate-[360deg]" />
-                  </div>
-                  <CardTitle className="text-lg">{item.label}</CardTitle>
-                </CardHeader>
-              </Card>
-            );
-          })}
+        <div className="flex items-start gap-4 mt-16">
+          <div 
+            className={`grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 flex-1 transition-all duration-500 ${
+              isRow3Visible ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'
+            }`}
+          >
+            {menuItems.slice(10).map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <Card 
+                  key={item.id}
+                  className={`cursor-pointer transition-all duration-500 ${getTileHoverClass(item.id, 3)} group ${
+                    isLoaded 
+                      ? 'transform scale-x-100 opacity-100' 
+                      : 'transform scale-x-0 opacity-0'
+                  } bg-gradient-to-br from-card to-card/80`}
+                  style={{
+                    transformOrigin: 'left',
+                    transitionDelay: `${1850 + (index * 150)}ms`
+                  }}
+                  onClick={() => handleMenuClick(item.path)}
+                  data-testid={`card-admin-${item.id}`}
+                >
+                  <CardHeader className="text-center pb-8 pt-8">
+                    <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-6">
+                      <Icon className="h-6 w-6 text-primary transition-transform duration-300 group-hover:rotate-[360deg]" />
+                    </div>
+                    <CardTitle className="text-lg">{item.label}</CardTitle>
+                  </CardHeader>
+                </Card>
+              );
+            })}
+          </div>
+          
+          {/* Toggle Button for Row 3 */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsRow3Visible(!isRow3Visible)}
+            className="h-8 w-8 rounded-full hover:bg-primary/10 transition-all duration-300"
+            data-testid="button-toggle-row3"
+          >
+            {isRow3Visible ? (
+              <Minus className="h-4 w-4 text-primary" />
+            ) : (
+              <Plus className="h-4 w-4 text-primary" />
+            )}
+          </Button>
         </div>
 
         {/* Company Posts Display - Centered below tiles */}
