@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import { RotateCcw, Monitor, Save, Plus, ArrowUpDown, Star, Edit, Trash2, Pin, Minimize2, Maximize2, User } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
@@ -72,6 +73,12 @@ export default function AdminAddComment() {
   
   // Active tab state
   const [activeTab, setActiveTab] = useState('client');
+  
+  // Quick access checkboxes state
+  const [quickAccessClientComment, setQuickAccessClientComment] = useState(false);
+  const [quickAccessAllComments, setQuickAccessAllComments] = useState(false);
+  const [quickAccessCompanyPost, setQuickAccessCompanyPost] = useState(false);
+  const [quickAccessAllPosts, setQuickAccessAllPosts] = useState(false);
 
   // Posted comments storage
   const [postedComments, setPostedComments] = useState<any[]>([]);
@@ -856,6 +863,72 @@ export default function AdminAddComment() {
                         transition: 'transform 0.6s ease-out 0.5s',
                         display: 'block'
                       }}>{eventsCount}</span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Access Card */}
+            <Card className="transition-all duration-700">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle>Quick Access</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="quick-access-client-comment"
+                        checked={quickAccessClientComment}
+                        onCheckedChange={(checked) => setQuickAccessClientComment(checked as boolean)}
+                        className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        data-testid="checkbox-quick-access-client-comment"
+                      />
+                      <Label htmlFor="quick-access-client-comment" className="font-medium">
+                        Client Comment
+                      </Label>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="quick-access-all-comments"
+                        checked={quickAccessAllComments}
+                        onCheckedChange={(checked) => setQuickAccessAllComments(checked as boolean)}
+                        className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        data-testid="checkbox-quick-access-all-comments"
+                      />
+                      <Label htmlFor="quick-access-all-comments" className="font-medium">
+                        All Comments
+                      </Label>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="quick-access-company-post"
+                        checked={quickAccessCompanyPost}
+                        onCheckedChange={(checked) => setQuickAccessCompanyPost(checked as boolean)}
+                        className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        data-testid="checkbox-quick-access-company-post"
+                      />
+                      <Label htmlFor="quick-access-company-post" className="font-medium">
+                        Company Post
+                      </Label>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="quick-access-all-posts"
+                        checked={quickAccessAllPosts}
+                        onCheckedChange={(checked) => setQuickAccessAllPosts(checked as boolean)}
+                        className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
+                        data-testid="checkbox-quick-access-all-posts"
+                      />
+                      <Label htmlFor="quick-access-all-posts" className="font-medium">
+                        All Posts
+                      </Label>
                     </div>
                   </div>
                 </div>
