@@ -154,6 +154,23 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 - **Reference Column**: Displays as "Reference Number" (duplicate reference columns filtered out)
 - **State Selection Validation**: Users must select at least one state before uploading CSV files
 
+## Background Selector System
+The admin dashboard header includes a background selector (Monitor icon) that allows customization of backgrounds for both the dashboard and login page.
+
+### Available Background Presets
+1. **Default** - Clean white background with logo
+2. **Geometric Cubes (Animated)** - Cool animated focus effect with geometric cubes
+3. **Infinity Grid** - Futuristic infinity grid with deep blue tones (dark)
+4. **Jellyfish of the Deep Abyss** - Ethereal jellyfish floating in deep ocean (dark)
+5. **Cubes** - Three glowing gradient cubes on dark background (dark)
+6. **Neon Night in Cyberpunk City** - Futuristic cyberpunk cityscape with neon lights reflecting on wet streets (dark)
+
+### Features
+- Mode toggle between Dashboard Background and Login Page Background
+- Visual preview cards with descriptions for each preset
+- Selected backgrounds persist in localStorage
+- Dark backgrounds automatically indicated
+
 ## External Dependencies
 
 ### Email Service

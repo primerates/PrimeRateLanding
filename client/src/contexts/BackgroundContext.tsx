@@ -3,6 +3,7 @@ import cubesBackground from '@assets/stock_images/abstract_geometric_c_b9135c5b.
 import infinityGridBackground from '@assets/Infinity_1759031666053.png';
 import jellyfishBackground from '@assets/Jelly Fish of the Deep Abyss_1759125741578.png';
 import threeGlowingCubesBackground from '@assets/Three Glowing Cubes_1759260151137.png';
+import cyberpunkCityBackground from '@assets/Neon Night in Cyberpunk City_1760171524435.png';
 
 export type BackgroundType = 'animated' | 'static' | 'pulsing';
 
@@ -58,6 +59,14 @@ export const backgroundPresets: BackgroundPreset[] = [
     type: 'static',
     assetPath: threeGlowingCubesBackground,
     description: 'Three glowing gradient cubes on dark background',
+    isDark: true
+  },
+  {
+    id: 'cyberpunk-city',
+    label: 'Neon Night in Cyberpunk City',
+    type: 'static',
+    assetPath: cyberpunkCityBackground,
+    description: 'Futuristic cyberpunk cityscape with neon lights reflecting on wet streets',
     isDark: true
   },
 ];
