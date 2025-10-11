@@ -886,7 +886,17 @@ export default function AdminAddComment() {
                       <Checkbox
                         id="quick-access-client-comment"
                         checked={quickAccessClientComment}
-                        onCheckedChange={(checked) => setQuickAccessClientComment(checked as boolean)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setQuickAccessClientComment(true);
+                            setQuickAccessAllComments(false);
+                            setQuickAccessCompanyPost(false);
+                            setQuickAccessAllPosts(false);
+                            setQuickAccessNotes(false);
+                          } else {
+                            setQuickAccessClientComment(false);
+                          }
+                        }}
                         className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         data-testid="checkbox-quick-access-client-comment"
                       />
@@ -899,7 +909,17 @@ export default function AdminAddComment() {
                       <Checkbox
                         id="quick-access-all-comments"
                         checked={quickAccessAllComments}
-                        onCheckedChange={(checked) => setQuickAccessAllComments(checked as boolean)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setQuickAccessClientComment(false);
+                            setQuickAccessAllComments(true);
+                            setQuickAccessCompanyPost(false);
+                            setQuickAccessAllPosts(false);
+                            setQuickAccessNotes(false);
+                          } else {
+                            setQuickAccessAllComments(false);
+                          }
+                        }}
                         className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         data-testid="checkbox-quick-access-all-comments"
                       />
@@ -912,7 +932,17 @@ export default function AdminAddComment() {
                       <Checkbox
                         id="quick-access-company-post"
                         checked={quickAccessCompanyPost}
-                        onCheckedChange={(checked) => setQuickAccessCompanyPost(checked as boolean)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setQuickAccessClientComment(false);
+                            setQuickAccessAllComments(false);
+                            setQuickAccessCompanyPost(true);
+                            setQuickAccessAllPosts(false);
+                            setQuickAccessNotes(false);
+                          } else {
+                            setQuickAccessCompanyPost(false);
+                          }
+                        }}
                         className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         data-testid="checkbox-quick-access-company-post"
                       />
@@ -925,7 +955,17 @@ export default function AdminAddComment() {
                       <Checkbox
                         id="quick-access-all-posts"
                         checked={quickAccessAllPosts}
-                        onCheckedChange={(checked) => setQuickAccessAllPosts(checked as boolean)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setQuickAccessClientComment(false);
+                            setQuickAccessAllComments(false);
+                            setQuickAccessCompanyPost(false);
+                            setQuickAccessAllPosts(true);
+                            setQuickAccessNotes(false);
+                          } else {
+                            setQuickAccessAllPosts(false);
+                          }
+                        }}
                         className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         data-testid="checkbox-quick-access-all-posts"
                       />
@@ -938,7 +978,17 @@ export default function AdminAddComment() {
                       <Checkbox
                         id="quick-access-notes"
                         checked={quickAccessNotes}
-                        onCheckedChange={(checked) => setQuickAccessNotes(checked as boolean)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setQuickAccessClientComment(false);
+                            setQuickAccessAllComments(false);
+                            setQuickAccessCompanyPost(false);
+                            setQuickAccessAllPosts(false);
+                            setQuickAccessNotes(true);
+                          } else {
+                            setQuickAccessNotes(false);
+                          }
+                        }}
                         className="transition-transform duration-500 hover:scale-105 data-[state=checked]:rotate-[360deg]"
                         data-testid="checkbox-quick-access-notes"
                       />
