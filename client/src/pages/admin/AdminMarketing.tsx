@@ -1373,7 +1373,8 @@ export default function AdminMarketing() {
                       <Button 
                         onClick={() => setStatesDialogOpen(true)}
                         size="sm"
-                        className="bg-green-600 text-white hover:bg-green-700 scale-90 border-0"
+                        className="text-white scale-90 border-0"
+                        style={{ backgroundColor: '#1a3373' }}
                         data-testid="button-states-direct-mail"
                       >
                         {selectedStates.length > 0 ? `${selectedStates.length} States` : 'States'}
@@ -2268,7 +2269,8 @@ export default function AdminMarketing() {
                                 <Button 
                                   onClick={() => setBatchStatesDialogOpen(true)}
                                   size="sm"
-                                  className="bg-green-600 text-white hover:bg-green-700 scale-90 border-0"
+                                  className="text-white scale-90 border-0"
+                                  style={{ backgroundColor: '#1a3373' }}
                                   data-testid="button-batch-states"
                                 >
                                   {selectedBatch.states && selectedBatch.states.length > 0 

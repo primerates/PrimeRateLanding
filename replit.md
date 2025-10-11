@@ -96,7 +96,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
   - **Row 3** (5 fields): 10 Yr Bond Above, Par Rate Above, Cash Out Above, FICO Range Above, Batch Results To Date (3-button selector)
     - **Batch Results To Date**: Three borderless buttons (Blue="Show All", Green="Profitable", Red="Loss") with hover tooltips; buttons are border-to-border, combined width matches "Cash Out Above" box width; clickable to filter results
 - **Create Batch Card**: Full batch creation form appears below Query card when "Add New Batch" is clicked
-  - **Card Header**: Create New Batch title with States button (green) and Cancel New Batch button (red hover effect)
+  - **Card Header**: Create New Batch title with States button (navy blue #1a3373) and Cancel New Batch button (red hover effect)
   - **Completion Bar**: 17-segment progress bar below card title; dark blue (#1a3373) segments fill as fields complete; light gray (#D1D5DB) for incomplete; small circular indicator shows progress; smooth transitions
     - **Required Fields (17 total)**: Batch Number, Batch Title, 10 Year Bond, Par Rate, Loan Category, Data Speed, Delivery, Data Date, Data Vendor, Print Vendor, Mail Vendor, Supply Vendor, Data Cost, Mail Cost, Print Cost, Supply Cost, States (must have selection)
     - **Non-Required Fields**: Print Date, Mail Date, First Call, Duration to First Call (excluded from completion bar)
