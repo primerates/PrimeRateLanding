@@ -746,9 +746,8 @@ export default function AdminAddComment() {
         <div className="container mx-auto px-6 py-8">
           <Tabs defaultValue="post" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             {/* Tab Menu Bar - Matching Lead Tile Style */}
-            <TabsList className="grid w-full grid-cols-2 bg-transparent h-auto p-0 relative border-b border-gray-200 group">
+            <TabsList className="grid w-full grid-cols-1 bg-transparent h-auto p-0 relative border-b border-gray-200 group">
               <TabsTrigger value="post" data-testid="tab-post" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Post</TabsTrigger>
-              <TabsTrigger value="notes" data-testid="tab-notes" className="relative bg-transparent text-gray-700 hover:text-black data-[state=active]:text-blue-900 data-[state=active]:hover:text-blue-900 data-[state=active]:bg-transparent border-0 rounded-none py-3 px-4 font-medium transition-colors duration-200 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-px hover:after:bg-green-500 data-[state=active]:after:bg-blue-900 data-[state=active]:hover:after:bg-blue-900 after:transition-all after:duration-300 hover:after:w-1/2 data-[state=active]:after:w-1/2 data-[state=active]:group-hover:after:w-0">Notes</TabsTrigger>
             </TabsList>
 
             {/* Post Tab Content */}
@@ -1692,12 +1691,17 @@ export default function AdminAddComment() {
               )}
               </div>
             )}
-            </>
-            </TabsContent>
 
-
-            <TabsContent value="notes" className="mt-8">
-              {/* Notes Display */}
+            {/* Sticky Notes - Conditionally shown in Post tab */}
+            {quickAccessNotes && (
+              <div 
+                className="overflow-hidden transition-all duration-500 ease-out mt-8"
+                style={{
+                  maxHeight: quickAccessNotes ? '2000px' : '0',
+                  opacity: quickAccessNotes ? 1 : 0,
+                  animation: 'slideDownCard 0.5s ease-out'
+                }}
+              >
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {/* Blank Template Note - Always First */}
@@ -1864,6 +1868,9 @@ export default function AdminAddComment() {
                   })}
                 </div>
               </div>
+              </div>
+            )}
+            </>
             </TabsContent>
           </Tabs>
         </div>
