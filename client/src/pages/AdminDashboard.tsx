@@ -394,14 +394,6 @@ export default function AdminDashboard() {
           transformOrigin: 'top'
         }}
       >
-        <div className="mb-16">
-          <h2 className={`text-xl font-bold mb-2 ${
-            isDarkBackground() ? 'text-white' : 'text-foreground'
-          }`} data-testid="text-dashboard-welcome">
-            Dashboard
-          </h2>
-        </div>
-
         {/* Menu Grid - First Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {menuItems.slice(0, 5).map((item, index) => {
