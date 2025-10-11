@@ -1369,7 +1369,7 @@ export default function AdminMarketing() {
                   </div>
                 </div>
                 
-                <CardContent>
+                <CardContent className="pt-6">
                   {/* Stage: Upload */}
                   {uploadStage === 'upload' && (
                     <div className="space-y-6">
