@@ -1677,7 +1677,6 @@ export default function AdminMarketing() {
                       </div>
 
                       {/* Separation Line */}
-                      <div className="h-4"></div>
                       <div style={{ borderTop: '1px solid hsl(var(--border))', paddingTop: '24px' }}>
                         <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary transition-colors">
                           <input
