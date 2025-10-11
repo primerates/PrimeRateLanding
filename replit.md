@@ -1,7 +1,7 @@
 # Prime Rate Home Loans - Landing Page
 
 ## Overview
-This project is a professional mortgage lending landing page for Prime Rate Home Loans, built with React, designed to convert visitors into loan applicants. It features a clean, trustworthy design inspired by major financial institutions and focuses on lead generation through multiple contact forms (pre-approval, rate tracking, general inquiries), all integrated with email notifications. The business vision is to streamline the mortgage application process and enhance lead management.
+This project is a professional mortgage lending landing page for Prime Rate Home Loans, built with React. Its primary purpose is lead generation, converting visitors into loan applicants through various contact forms (pre-approval, rate tracking, general inquiries) integrated with email notifications. The business vision is to streamline the mortgage application process and enhance lead management through a clean, trustworthy design inspired by major financial institutions.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -37,149 +37,43 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 
 ## System Architecture
 
-### Frontend Architecture
-- **Frameworks**: React 18 with TypeScript, Vite for build, Wouter for routing.
-- **State Management**: TanStack Query for server state, React Hook Form with Zod for form handling.
-- **UI/UX Design**: Shadcn/ui (Radix UI based) and Tailwind CSS for styling. Trust-building design with navy blue primary colors, Inter/Lora fonts, responsive design, and accessibility focus.
-- **Form Management**: Pre-approval application (with co-borrower), rate tracking, and general contact forms. Features real-time validation, zero-lag auto-sum/calculation, and phone number auto-formatting.
+### Frontend
+- **Framework**: React 18 with TypeScript and Vite.
+- **Routing**: Wouter.
+- **State Management**: TanStack Query for server state, React Hook Form with Zod for form validation.
+- **UI/UX**: Shadcn/ui (Radix UI based) and Tailwind CSS. Features a trust-building design with navy blue primary colors, Inter/Lora fonts, responsive design, and accessibility focus.
+- **Form Management**: Pre-approval (with co-borrower), rate tracking, and general contact forms with real-time validation, auto-sum/calculation, and phone number auto-formatting.
 
-### Backend Architecture
-- **Server**: Express.js with Node.js (ESM modules) for API routes and form submissions.
-- **Email Integration**: SendGrid for notifications and lead management.
+### Backend
+- **Server**: Express.js with Node.js (ESM modules).
 - **API**: RESTful design for form submissions.
 
-### Database Layer
-- **ORM**: Drizzle ORM configured for PostgreSQL.
+### Database
+- **ORM**: Drizzle ORM.
 - **Database**: PostgreSQL with type-safe schema.
-- **Tools**: Drizzle Kit for migration support.
+- **Tools**: Drizzle Kit for migrations.
 
 ### Admin Features
-- **Comments & Posts Management**: System for client testimonials and internal company posts with single-tab navigation (Post), real-time preview, statistics, localStorage persistence, sortable tables, and sticky notes functionality. The "Last Comment" and "Posts" cards (with circular indicators and 5 checkboxes: Client Comment, All Comments, Company Post, All Posts, Notes) are visible in the Post tab. The Client Comment form card, All Comments table, All Posts table, Company Post Insight card, and Sticky Notes all appear with smooth roll-down animations below the Posts card when their respective checkboxes are clicked, and each toggles open/close on every click.
-- **Marketing Direct Mail System**: Campaign management with CSV upload, batch tracking, lead journey monitoring, state selection, and auto-calculated costs. Features sticky columns for data tables, state selector dialog, and detailed batch creation forms with 5-row layout.
-- **Loan Management System**: Manages client loan applications with support for multiple loan categories, rate configurations, third-party services, and quote generation. Includes specific patterns for FHA Upfront MIP calculations, rate column totals, and value synchronization.
+- **Comments & Posts Management**: Manages client testimonials and internal company posts with real-time preview, statistics, sortable tables, and sticky notes. Features dynamic display of content sections based on user interaction.
+- **Marketing Direct Mail System**: Manages marketing campaigns, including CSV upload, batch tracking, lead journey monitoring, and cost calculation. Features sticky columns in data tables and a detailed batch creation workflow.
+- **Loan Management System**: Manages client loan applications, supporting multiple loan categories, rate configurations, third-party services, and quote generation.
 
-## Admin Marketing System
+### Admin Navigation
+- **11-Tab Menu Bar**: Comprehensive navigation includes Lead, Marketing, Snapshot, Library, Settings, Vendors, Staff, Partners, Ledger, Vault, and Post. The "Post" tab (Comments, Posts, and Notes) is fully functional.
+- **Admin Marketing System**: Features a header with "Back to Dashboard", "Shortcut Menu", "Screenshare", and "Save" options. Its navigation includes "Direct Mail", "Lead Vendor", "Social Media", and "Notes" tabs. The "Direct Mail" tab contains a Query Card for filtering and a Create Batch Card for new campaign setup, supporting 5-row layouts for campaign parameters, vendor details, and cost tracking, along with CSV upload and state selection. Batch details and lists are also managed here.
 
-### Header Navigation
-- **Back to Dashboard**: Return button with rotating animation
-- **Shortcut Menu**: Person walking icon with hover tooltip "Short Cut"; dropdown menu for quick access to all dashboard pages without returning to dashboard
-  - Row 1: Lead, Quote, Loan Prep, Loan, Funded
-  - Row 2: Marketing, Snapshot, Library, Audit, Settings
-  - Row 3: Vendors, Staff, Partners, Ledger, Vault
-- **Screenshare**: Launch screenshare functionality
-- **Save**: Save current work with rotating animation
-
-### Navigation Structure
-- **Single Tab Bar**: Four tabs always visible for seamless navigation
-  - **Direct Mail**: Query card with filtering options, integrated batch creation, batch list (when Data Category = "Show All"), and batch details display
-  - **Lead Vendor**: Vendor management (coming soon)
-  - **Social Media**: Social media marketing tools (coming soon)
-  - **Notes**: Sticky notes and annotations (coming soon)
-- ~~**Stats**: Removed from menu~~ (previously showed campaign statistics)
-- ~~**Create Batch**: Removed from menu~~ (functionality moved to Direct Mail tab)
-- ~~**Batch List**: Removed from menu~~ (functionality moved to Direct Mail tab - displays when Data Category = "Show All")
-
-### Direct Mail Tab
-- **Stats Card**: Overview card displaying statistics (coming soon)
-- **Query Card**: Lead query interface with 3-row layout for filtering and searching
-  - **Add New Batch Button**: Top right corner button with blue hover effect; shows Create Batch card below Query card
-  - **Minimize/Expand Button**: Located to the right of "Add New Batch" button; "-" icon to minimize (collapse) the Query card and "+" icon to expand; hover tooltip shows "Minimize" or "Expand"
-  - **Row 1** (5 fields): Data Category (dropdown), States, Loan Category, Loan Purpose, Property Use (dropdown)
-    - **Data Category Options**: Select, Show All, Trigger Data, Monthly Data (default: Select)
-    - **Property Use Options**: Show All, Primary Residence, Second Home, Investment Property, Home Purchase (default: Show All)
-  - **Row 2** (5 fields): Property Type (dropdown), Lenders (dropdown), Data Vendors (dropdown), Mail Vendors (dropdown), Batch Activity To Date (multi-select)
-    - **Property Type Options**: Show All, Single Family, Condo, Townhouse, Duplex Multi-Family, Other (default: Show All)
-    - **Lenders Options**: Show All, UWM, Pennymac (default: Show All)
-    - **Data Vendors Options**: Show All, In-House, TBD (default: Show All)
-    - **Mail Vendors Options**: Show All, In-House, TBD (default: Show All)
-    - **Batch Activity To Date Options**: Select, Lead, Quote, Loan Prep, Loan, Funded, Withdrawn, Cancelled (multi-select popover with checkboxes)
-  - **Row 3** (5 fields): 10 Yr Bond Above, Par Rate Above, Cash Out Above, FICO Range Above, Batch Results To Date (3-button selector)
-    - **Batch Results To Date**: Three borderless buttons (Blue="Show All", Green="Profitable", Red="Loss") with hover tooltips; buttons are border-to-border, combined width matches "Cash Out Above" box width; clickable to filter results
-- **Create Batch Card**: Full batch creation form appears below Query card when "Add New Batch" is clicked
-  - **Card Header**: Create New Batch title with States button (navy blue #1a3373) and Cancel New Batch button (red hover effect)
-  - **Completion Bar**: 17-segment progress bar below card title; dark blue (#1a3373) segments fill as fields complete; light gray (#D1D5DB) for incomplete; small circular indicator shows progress; smooth transitions
-    - **Required Fields (17 total)**: Batch Number, Batch Title, 10 Year Bond, Par Rate, Loan Category, Data Speed, Delivery, Data Date, Data Vendor, Print Vendor, Mail Vendor, Supply Vendor, Data Cost, Mail Cost, Print Cost, Supply Cost, States (must have selection)
-    - **Non-Required Fields**: Print Date, Mail Date, First Call, Duration to First Call (excluded from completion bar)
-    - **Upload Validation**: Upload icon requires 100% completion; clicking when incomplete shows dialog: "Please complete required fields to create a new batch"
-  - **Cancel New Batch Button**: Located in Create Batch card header to the right of States button; triggers confirmation dialog
-  - **Cancel Confirmation Dialog**: Shows "Cancel new batch?" with "Go Back" and "Yes" buttons
-  - **Single Card Enforcement**: If "Add New Batch" is clicked when a card is already open, displays alert 'A "Create New Batch" card is currently open.' (only one card allowed at a time)
-  - Same functionality as Create Batch tab
-  - Includes all 5 rows, vendor fields, cost tracking, CSV upload, and column mapping
-  - **Borderless Textarea**: Located below Create New Batch card with mt-4 spacing; no border, no focus ring, no shadow; only visible when Create Batch card is open
-- **Design**: Both cards match Create Batch card aesthetics with similar styling and spacing
-
-### Batch Creation
-- **5-Row Layout**: Campaign parameters, date tracking, vendor fields, cost tracking, and CSV upload
-  - **Row 1**: Batch Number, Batch Title, 10 Year Bond, Par Rate
-  - **Row 2**: Loan Category, Data Speed, Delivery, Duration to First Call (text field)
-  - **Row 3**: Data Date, Print Date, Mail Date, First Call (all date fields with MM/DD/YYYY format)
-  - **Separation line below Row 3**
-  - **Row 4**: Data Vendor, Print Vendor (swapped positions), Mail Vendor, Supply Vendor
-  - **Row 5**: Data Cost, Mail Cost, Print Cost, Supply Cost (currency formatted with CurrencyInput component)
-  - **Separation line below Row 5**
-  - **CSV Upload**: UTF8 file upload with green labels below the 5 rows
-- **States Selector**: Green "States" button in card header opens dialog to select multiple states; displays count in button when states selected
-- **Date Fields**: Auto-format as MM/DD/YYYY; "First Call" renamed from "Mail Date" for clarity
-- **Column Mapping**: Required fields include Reference Number, First Name, Last Name, Street Address, City, State, Zip Code; auto-detection with manual override; Last Name and First Name stored as separate columns in batch data
-
-### Batch List Table
-- **Column Headers** (left to right): Created, Batch #, Batch Title, Category, Data, Delivery, 10 Yr Bond, Par Rate, Records, **States**, Cost, Actions
-- **States Column**: Displays state count (e.g., "3 States") or "-" if none selected
-- **Cost Column**: Auto-calculates total from Data Cost + Mail Cost + Print Cost + Supply Cost
-- **Sortable Columns**: All columns are sortable with arrow indicators (click to toggle ascending/descending)
-  - Text columns (Category, Data, Delivery): Alphabetical sort
-  - Numeric columns (10 Yr Bond, Par Rate): Numeric sort
-  - Date column (Created): Date sort
-  - Calculated columns (Records, States, Cost): Sorts by actual count/value
-
-### Batch Details Card
-- **Toggle Behavior**: Clicking batch title or batch number toggles the batch details card open/close
-- **Card Header**: 
-  - Batch title with edit button (green pen icon)
-  - States button (green) showing state count
-  - Edit/save/cancel buttons for batch details editing
-  - Eye icon to show/hide collapsible batch details section
-- **Batch Details Edit**: Green pen icon activates edit mode for all batch fields; green checkmark saves changes; red X cancels
-- **5-Row Layout** (matches Create Batch form):
-  - **Row 1**: Batch #, Batch Title, 10 Year Bond, Par Rate (all editable)
-  - **Row 2**: Loan Category, Data Speed, Delivery, Duration to First Call (all editable)
-  - **Row 3**: Data Date, Print Date, Mail Date, First Call (all editable, MM/DD/YYYY format)
-  - **Separation line below Row 3**
-  - **Row 4**: Data Vendor, Print Vendor, Mail Vendor, Supply Vendor (all editable)
-  - **Row 5**: Data Cost, Mail Cost, Print Cost, Supply Cost (all editable, currency formatted)
-
-### Batch Details Table
-- **Column Order**: Reference Number, Last Name, First Name, and all other CSV columns displayed in table
-- **Reference Column**: Displays as "Reference Number" (duplicate reference columns filtered out)
-- **State Selection Validation**: Users must select at least one state before uploading CSV files
-
-## Background Selector System
-The admin dashboard header includes a background selector (Monitor icon) that allows customization of backgrounds for both the dashboard and login page.
-
-### Available Background Presets
-1. **Default** - Clean white background with logo
-2. **Geometric Cubes (Animated)** - Cool animated focus effect with geometric cubes
-3. **Infinity Grid** - Futuristic infinity grid with deep blue tones (dark)
-4. **Jellyfish of the Deep Abyss** - Ethereal jellyfish floating in deep ocean (dark)
-5. **Cubes** - Three glowing gradient cubes on dark background (dark)
-6. **Neon Night in Cyberpunk City** - Futuristic cyberpunk cityscape with neon lights reflecting on wet streets (dark)
-
-### Features
-- Mode toggle between Dashboard Background and Login Page Background
-- Visual preview cards with descriptions for each preset
-- Selected backgrounds persist in localStorage
-- Dark backgrounds automatically indicated
+### Background Selector System
+Allows customization of dashboard and login page backgrounds with various presets (e.g., Geometric Cubes, Infinity Grid, Neon Night). Supports mode toggling, visual previews, and persistence via localStorage.
 
 ## External Dependencies
 
 ### Email Service
-- **SendGrid**: Transactional email service.
+- **SendGrid**: Transactional email service for notifications and lead management.
 
 ### Database
 - **Neon Database**: Serverless PostgreSQL database.
 
 ### UI Components
-- **Radix UI**: Headless component library.
+- **Radix UI**: Headless component library for UI elements.
 - **Lucide Icons**: Icon library.
-- **Google Fonts**: Inter and Lora fonts.
+- **Google Fonts**: Inter and Lora fonts for typography.
