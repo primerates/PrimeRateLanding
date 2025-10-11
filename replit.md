@@ -63,7 +63,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 #### Dashboard Tiles
 - **Row 1**: Lead, Quote, Loan Prep, Loan, Funded (green left border on hover)
 - **Row 2**: Snapshot, Marketing, Library, Settings, Audit (blue left border on hover)
-- **Row 3**: Vendors, Staff, Partners, Ledger, Vault (purple left border on hover)
+- **Row 3**: Vendors, Staff, Partners, Closed, Vault (purple left border on hover)
 
 #### 11-Tab Menu Bar
 Comprehensive navigation system with tabs in this order (left to right):
@@ -75,7 +75,7 @@ Comprehensive navigation system with tabs in this order (left to right):
 6. **Vendors**: Vendor management (coming soon)
 7. **Staff**: Staff management (coming soon)
 8. **Partners**: Partner relationships (coming soon)
-9. **Ledger**: Financial tracking (coming soon)
+9. **Closed**: Financial tracking (coming soon)
 10. **Vault**: Secure storage (coming soon)
 11. **Post**: Comments, posts, and notes (default tab with full functionality)
 

@@ -142,7 +142,7 @@ export default function AdminDashboard() {
     { id: 'add-vendor', label: 'Vendors', icon: Building2, path: '/admin/add-vendor' },
     { id: 'add-staff', label: 'Staff', icon: UserCheck, path: '/admin/add-staff' },
     { id: 'add-partner', label: 'Partners', icon: Handshake, path: '/admin/add-partner' },
-    { id: 'records', label: 'Ledger', icon: Archive, path: '/admin/records' },
+    { id: 'records', label: 'Closed', icon: Archive, path: '/admin/records' },
     { id: 'vault', label: 'Vault', icon: Lock, path: '/admin/vault' },
   ];
 
