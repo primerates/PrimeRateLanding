@@ -14,6 +14,7 @@ import PhoneInput from './PhoneInput';
 import { MARITAL_STATUS_OPTIONS, RELATIONSHIP_OPTIONS, CONTACT_TIME_OPTIONS } from '../data/formOptions';
 import MaritalStatusDialog from '../dialogs/maritalStatusDialog';
 import ResidenceForm from './ResidenceForm';
+import AddressForm from './AddressForm';
 
 const BorrowerForm = () => {
     const form = useFormContext<InsertClient>();
@@ -184,6 +185,8 @@ const BorrowerForm = () => {
                                 <ResidenceForm />
                             </div>
                         </div>
+
+                        <AddressForm />
                     </CardContent>
                 </CollapsibleContent>
             </Collapsible>

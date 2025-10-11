@@ -12,6 +12,7 @@ interface FormSelectProps {
   testId?: string;
   className?: string;
   getOptionColor?: (value: string) => string;
+  displayValue?: boolean; // If true, display option.value instead of option.label
 }
 
 const FormSelect = ({
@@ -22,7 +23,8 @@ const FormSelect = ({
   placeholder = '',
   testId,
   className = 'space-y-2 max-w-[75%]',
-  getOptionColor
+  getOptionColor,
+  displayValue = false
 }: FormSelectProps) => {
   return (
     <div className={className}>
@@ -38,7 +40,7 @@ const FormSelect = ({
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItems options={options} testIdPrefix={testId} />
+          <SelectItems options={options} testIdPrefix={testId} displayValue={displayValue} />
         </SelectContent>
       </Select>
     </div>

@@ -12,6 +12,7 @@ interface FormInputProps {
   type?: string;
   maxLength?: number;
   required?: boolean;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
 const FormInput = ({
@@ -24,7 +25,8 @@ const FormInput = ({
   className = "space-y-2 max-w-[75%]",
   type = "text",
   maxLength,
-  required = false
+  required = false,
+  onBlur
 }: FormInputProps) => {
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,6 +44,7 @@ const FormInput = ({
         type={type}
         value={value || ''}
         onChange={handleChange}
+        onBlur={onBlur}
         placeholder={placeholder}
         maxLength={maxLength}
         data-testid={testId}

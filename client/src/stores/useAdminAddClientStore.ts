@@ -10,6 +10,23 @@ interface RentalInfoData {
   notes: string;
 }
 
+interface CountyOptions {
+  value: string;
+  label: string;
+}
+
+interface CountyLookupLoading {
+  borrower: boolean;
+  coBorrower: boolean;
+  borrowerPrior: boolean;
+  coBorrowerPrior: boolean;
+  borrowerEmployer: boolean;
+  borrowerPriorEmployer: boolean;
+  coBorrowerEmployer: Record<string, boolean>;
+  coBorrowerPriorEmployer: boolean;
+  coBorrowerSecondEmployer: boolean;
+}
+
 interface AddAdminClientStore {
   unsavedChangesDialog: {
     isOpen: boolean;
@@ -26,6 +43,18 @@ interface AddAdminClientStore {
   isRentalInfoDialogOpen: boolean;
   rentalInfoData: RentalInfoData;
   activeRentalSection: string;
+  // County lookup state
+  borrowerCountyOptions: CountyOptions[];
+  coBorrowerCountyOptions: CountyOptions[];
+  borrowerPriorCountyOptions: CountyOptions[];
+  coBorrowerPriorCountyOptions: CountyOptions[];
+  borrowerEmployerCountyOptions: CountyOptions[];
+  borrowerPriorEmployerCountyOptions: CountyOptions[];
+  coBorrowerEmployerCountyOptions: Record<string, CountyOptions[]>;
+  coBorrowerPriorEmployerCountyOptions: CountyOptions[];
+  coBorrowerSecondEmployerCountyOptions: Record<string, CountyOptions[]>;
+  countyLookupLoading: CountyLookupLoading;
+  isBorrowerCurrentResidencePresent: boolean;
   setUnsavedChangesDialog: (dialog: { isOpen: boolean }) => void;
   setMaritalStatusDialog: (dialog: { isOpen: boolean }) => void;
   setIsShowingDMBatch: (isShowing: boolean) => void;
@@ -39,6 +68,18 @@ interface AddAdminClientStore {
   setIsRentalInfoDialogOpen: (isOpen: boolean) => void;
   setRentalInfoData: (data: RentalInfoData) => void;
   setActiveRentalSection: (section: string) => void;
+  // County lookup setters
+  setBorrowerCountyOptions: (options: CountyOptions[]) => void;
+  setCoBorrowerCountyOptions: (options: CountyOptions[]) => void;
+  setBorrowerPriorCountyOptions: (options: CountyOptions[]) => void;
+  setCoBorrowerPriorCountyOptions: (options: CountyOptions[]) => void;
+  setBorrowerEmployerCountyOptions: (options: CountyOptions[]) => void;
+  setBorrowerPriorEmployerCountyOptions: (options: CountyOptions[]) => void;
+  setCoBorrowerEmployerCountyOptions: (options: Record<string, CountyOptions[]>) => void;
+  setCoBorrowerPriorEmployerCountyOptions: (options: CountyOptions[]) => void;
+  setCoBorrowerSecondEmployerCountyOptions: (options: Record<string, CountyOptions[]>) => void;
+  setCountyLookupLoading: (loading: (prev: CountyLookupLoading) => CountyLookupLoading) => void;
+  setIsBorrowerCurrentResidencePresent: (isPresent: boolean) => void;
 }
 
 export const useAdminAddClientStore = create<AddAdminClientStore>()(
@@ -62,6 +103,29 @@ export const useAdminAddClientStore = create<AddAdminClientStore>()(
         notes: ''
       },
       activeRentalSection: '',
+      
+      // County lookup state initialization
+      borrowerCountyOptions: [],
+      coBorrowerCountyOptions: [],
+      borrowerPriorCountyOptions: [],
+      coBorrowerPriorCountyOptions: [],
+      borrowerEmployerCountyOptions: [],
+      borrowerPriorEmployerCountyOptions: [],
+      coBorrowerEmployerCountyOptions: {},
+      coBorrowerPriorEmployerCountyOptions: [],
+      coBorrowerSecondEmployerCountyOptions: {},
+      countyLookupLoading: {
+        borrower: false,
+        coBorrower: false,
+        borrowerPrior: false,
+        coBorrowerPrior: false,
+        borrowerEmployer: false,
+        borrowerPriorEmployer: false,
+        coBorrowerEmployer: {},
+        coBorrowerPriorEmployer: false,
+        coBorrowerSecondEmployer: false
+      },
+      isBorrowerCurrentResidencePresent: false,
       
       setUnsavedChangesDialog: (dialog) =>
         set(() => ({
@@ -126,6 +190,62 @@ export const useAdminAddClientStore = create<AddAdminClientStore>()(
       setActiveRentalSection: (section) =>
         set(() => ({
           activeRentalSection: section,
+        })),
+      
+      // County lookup setters
+      setBorrowerCountyOptions: (options) =>
+        set(() => ({
+          borrowerCountyOptions: options,
+        })),
+      
+      setCoBorrowerCountyOptions: (options) =>
+        set(() => ({
+          coBorrowerCountyOptions: options,
+        })),
+      
+      setBorrowerPriorCountyOptions: (options) =>
+        set(() => ({
+          borrowerPriorCountyOptions: options,
+        })),
+      
+      setCoBorrowerPriorCountyOptions: (options) =>
+        set(() => ({
+          coBorrowerPriorCountyOptions: options,
+        })),
+      
+      setBorrowerEmployerCountyOptions: (options) =>
+        set(() => ({
+          borrowerEmployerCountyOptions: options,
+        })),
+      
+      setBorrowerPriorEmployerCountyOptions: (options) =>
+        set(() => ({
+          borrowerPriorEmployerCountyOptions: options,
+        })),
+      
+      setCoBorrowerEmployerCountyOptions: (options) =>
+        set(() => ({
+          coBorrowerEmployerCountyOptions: options,
+        })),
+      
+      setCoBorrowerPriorEmployerCountyOptions: (options) =>
+        set(() => ({
+          coBorrowerPriorEmployerCountyOptions: options,
+        })),
+      
+      setCoBorrowerSecondEmployerCountyOptions: (options) =>
+        set(() => ({
+          coBorrowerSecondEmployerCountyOptions: options,
+        })),
+      
+      setCountyLookupLoading: (loadingUpdater) =>
+        set((state) => ({
+          countyLookupLoading: loadingUpdater(state.countyLookupLoading),
+        })),
+      
+      setIsBorrowerCurrentResidencePresent: (isPresent) =>
+        set(() => ({
+          isBorrowerCurrentResidencePresent: isPresent,
         })),
     }),
     { name: 'add-client-store' }

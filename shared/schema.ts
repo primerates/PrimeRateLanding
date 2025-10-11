@@ -41,6 +41,8 @@ export const addressSchema = z.object({
 export const residenceAddressSchema = addressSchema.extend({
   rentalInfo: rentalInfoSchema.optional(),
   additionalInfo: z.string().optional(),
+  from: z.string().optional(),
+  to: z.string().optional(),
 });
 
 // Pension schema for multiple pensions

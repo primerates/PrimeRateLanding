@@ -4,11 +4,13 @@ import { STAGE_OPTIONS, type Option } from '../data/formOptions';
 interface SelectItemsProps {
   options?: Option[];
   testIdPrefix?: string;
+  displayValue?: boolean; // If true, display option.value instead of option.label
 }
 
 const SelectItems = ({ 
   options = STAGE_OPTIONS, 
-  testIdPrefix 
+  testIdPrefix,
+  displayValue = false
 }: SelectItemsProps) => {
   return (
     <>
@@ -19,7 +21,7 @@ const SelectItems = ({
           className={option.className}
           data-testid={testIdPrefix ? `${testIdPrefix}-${option.value.toLowerCase().replace(/\s+/g, '-')}` : undefined}
         >
-          {option.label}
+          {displayValue ? option.value : option.label}
         </SelectItem>
       ))}
     </>
