@@ -394,6 +394,8 @@ export default function AdminDashboard() {
           transformOrigin: 'top'
         }}
       >
+        <div className="mb-16"></div>
+        
         {/* Menu Grid - First Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {menuItems.slice(0, 5).map((item, index) => {
