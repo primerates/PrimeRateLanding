@@ -1344,11 +1344,11 @@ export default function AdminMarketing() {
                           <button
                             type="button"
                             onClick={() => setBatchResults('loss')}
-                            className={`flex-1 flex items-center justify-center text-sm font-medium transition-colors h-full ${
-                              batchResults === 'loss' 
-                                ? 'bg-red-600 text-white' 
-                                : 'bg-red-500 text-white/90 hover:bg-red-600'
-                            }`}
+                            className="flex-1 flex items-center justify-center text-sm font-medium transition-colors h-full text-white"
+                            style={{ 
+                              backgroundColor: batchResults === 'loss' ? '#991b1b' : '#dc2626',
+                              opacity: batchResults === 'loss' ? 1 : 0.9
+                            }}
                             data-testid="button-batch-results-loss"
                           >
                             {batchResults === 'loss' && 'Loss'}
