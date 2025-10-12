@@ -147,9 +147,15 @@ export class MemStorage implements IStorage {
         return true;
       }
       
-      // Search in property address
-      if (client.property?.propertyAddress?.toLowerCase().includes(lowerQuery)) {
-        return true;
+      // Search in property addresses (properties array)
+      if (client.property?.properties) {
+        for (const prop of client.property.properties) {
+          if (prop.address?.street?.toLowerCase().includes(lowerQuery) ||
+              prop.address?.city?.toLowerCase().includes(lowerQuery) ||
+              prop.address?.state?.toLowerCase().includes(lowerQuery)) {
+            return true;
+          }
+        }
       }
       
       return false;

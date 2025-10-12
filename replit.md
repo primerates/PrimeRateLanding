@@ -58,6 +58,34 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 - **Marketing Direct Mail System**: Manages marketing campaigns, including CSV upload, batch tracking, lead journey monitoring, and cost calculation. Features sticky columns in data tables and a detailed batch creation workflow.
 - **Loan Management System**: Manages client loan applications, supporting multiple loan categories, rate configurations, third-party services, and quote generation.
 
+### PDF Document Extraction System (Quote Tile)
+
+**Route**: `/admin/quotes`
+
+**Features**:
+- **PDF Upload**: Drag-and-drop or browse to upload mortgage documents (max 10MB)
+- **Document Types**: Paystub, Bank Statement, Tax Return, Mortgage Statement, Other
+- **AI-Powered Extraction**: Uses OpenAI GPT-5 via Replit AI Integrations to extract structured data
+- **Text Extraction**: pdf-parse library extracts raw text from PDFs
+- **Structured Data Display**: Custom grid layout with color-coded icons showing:
+  - Borrower info (name, address)
+  - Income data (employer, gross/net pay, YTD gross)
+  - Loan details (lender, loan number, property address, balance, payment, interest rate)
+  - Bank statements (bank name, ending balance, statement date)
+  - Tax returns (AGI, total income, filing status)
+
+**API Endpoints**:
+- `POST /api/pdf/upload` - Upload and extract PDF data
+- `GET /api/pdf/documents` - List all documents (optional clientId filter)
+- `GET /api/pdf/documents/:id` - Get single document
+- `DELETE /api/pdf/documents/:id` - Delete document
+
+**Technology Stack**:
+- Backend: pdf-parse (v2.2.9) with PDFParse class API
+- AI: OpenAI GPT-5 model via Replit AI Integrations (charges to credits, no API key needed)
+- Storage: In-memory storage with typed schema
+- Frontend: React with drag-drop upload, TanStack Query for API calls
+
 ### Admin Navigation
 
 #### Dashboard Tiles

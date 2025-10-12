@@ -10,8 +10,8 @@ import multer from 'multer';
 import * as pdfParseModule from 'pdf-parse';
 import OpenAI from 'openai';
 
-// Fix for pdf-parse ES module compatibility
-const pdfParse = (pdfParseModule as any).default || pdfParseModule;
+// Get PDFParse class from module
+const { PDFParse } = pdfParseModule as any;
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const TARGET_EMAIL = "polo.perry@yahoo.com";
@@ -1012,8 +1012,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { documentType, clientId } = req.body;
 
       // Step 1: Extract text from PDF using pdf-parse
-      const pdfData = await pdfParse(req.file.buffer);
-      const extractedText = pdfData.text;
+      const parser = new PDFParse({ data: req.file.buffer });
+      const result = await parser.getText();
+      const extractedText = result.text;
+      await parser.destroy();
 
       if (!extractedText || extractedText.trim().length === 0) {
         return res.status(400).json({
