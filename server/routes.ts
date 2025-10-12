@@ -999,6 +999,134 @@ export async function registerRoutes(app: Express): Promise<Server> {
     apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY
   });
 
+  // Credit Report Parser Function
+  function parseCreditReport(text: string) {
+    const data: any = {
+      documentType: 'Credit Report',
+      borrowerName: null,
+      ssn: null,
+      dateOfBirth: null,
+      address: null,
+      creditScore: null,
+      equifaxScore: null,
+      experianScore: null,
+      transUnionScore: null,
+      accounts: [],
+      collections: [],
+      inquiries: [],
+      publicRecords: [],
+      additionalInfo: {}
+    };
+
+    try {
+      // Extract borrower name (usually "Name" followed by: LASTNAME, FIRSTNAME)
+      const nameMatch = text.match(/Name[:\s]+([A-Z]+(?:,\s*[A-Z]+)?(?:\s+[A-Z]+)?)/);
+      if (nameMatch) {
+        data.borrowerName = nameMatch[1].trim();
+      }
+
+      // Extract SSN (format: XXX-XX-XXXX)
+      const ssnMatch = text.match(/SSN[:\s]+(\d{3}-\d{2}-\d{4})/);
+      if (ssnMatch) {
+        data.ssn = ssnMatch[1];
+      }
+
+      // Extract Date of Birth (format: MM/DD/YY or MM/DD/YYYY)
+      const dobMatch = text.match(/DOB[:\s]+(?:or Age[:\s]+)?(\d{1,2}\/\d{1,2}\/\d{2,4})/);
+      if (dobMatch) {
+        data.dateOfBirth = dobMatch[1];
+      }
+
+      // Extract Address
+      const addressMatch = text.match(/Address[:\s]+Current:[:\s]+([^\n]+)/);
+      if (addressMatch) {
+        data.address = addressMatch[1].trim();
+      }
+
+      // Extract Credit Scores
+      // BEACON 5.0 (Equifax) format: BEACON 5.0 ... [score on next line or with brackets]
+      const beaconMatch = text.match(/BEACON\s+5\.0[^\n]*[\n\r\s]*(?:\[)?(\d{3})/);
+      if (beaconMatch) {
+        data.equifaxScore = parseInt(beaconMatch[1]);
+      }
+
+      // FICO-II (Experian) format: FICO-II ... [score]
+      const ficoIIMatch = text.match(/FICO-II[^\n]*[\n\r\s]*(\d{3})/);
+      if (ficoIIMatch) {
+        data.experianScore = parseInt(ficoIIMatch[1]);
+      }
+
+      // FICO Classic 04 (TransUnion) format: FICO Classic 04 ... [score]
+      const ficoClassicMatch = text.match(/FICO\s+Classic\s+04[^\n]*[\n\r\s]*(\d{3})/);
+      if (ficoClassicMatch) {
+        data.transUnionScore = parseInt(ficoClassicMatch[1]);
+      }
+
+      // Set primary credit score (use middle score or average)
+      if (data.equifaxScore || data.experianScore || data.transUnionScore) {
+        const scores = [data.equifaxScore, data.experianScore, data.transUnionScore]
+          .filter(s => s !== null)
+          .sort((a, b) => a - b);
+        
+        // Use middle score if 3 scores available, otherwise use average
+        data.creditScore = scores.length === 3 ? scores[1] : Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+      }
+
+      // Extract inquiries count
+      const inquiriesMatch = text.match(/(\d+)\s+[Ii]nquir(?:y|ies)\s*\/\s*180\s+days/);
+      if (inquiriesMatch) {
+        data.additionalInfo.inquiries180Days = parseInt(inquiriesMatch[1]);
+      }
+
+      // Extract accounts with maxed balances
+      const maxedBalancesMatch = text.match(/(\d+)\s+Account[s\s]+with\s+maxed\s+balances/);
+      if (maxedBalancesMatch) {
+        data.additionalInfo.accountsWithMaxedBalances = parseInt(maxedBalancesMatch[1]);
+      }
+
+      // Extract derogatory/collection information from factors
+      const derogatoryMatch = text.match(/DEROGATORY\s+PUBLIC\s+RECORD\s+OR\s+COLLECTION\s+FILED/);
+      if (derogatoryMatch) {
+        data.additionalInfo.hasDerogatoryRecords = true;
+      }
+
+      // Extract alert/red flag information
+      const redFlagsMatch = text.match(/Possible Red Flags detected/);
+      if (redFlagsMatch) {
+        data.additionalInfo.hasRedFlags = true;
+      }
+
+      // Extract alert summary counts if available
+      const alertSummaryMatch = text.match(/PROSCAN ALERT SUMMARY[\s\S]*?Total\s+(\d+)/);
+      if (alertSummaryMatch) {
+        data.additionalInfo.totalAlerts = parseInt(alertSummaryMatch[1]);
+      }
+
+      // Extract prepared for (lender/company)
+      const preparedForMatch = text.match(/Prepared For:\s+([^\n]+)/);
+      if (preparedForMatch) {
+        data.additionalInfo.preparedFor = preparedForMatch[1].trim();
+      }
+
+      // Extract report date
+      const reportDateMatch = text.match(/(\d{2}\/\d{2}\/\d{4})\s+\d{2}:\d{2}:\d{2}/);
+      if (reportDateMatch) {
+        data.additionalInfo.reportDate = reportDateMatch[1];
+      }
+
+      console.log('Credit report parsed successfully:', {
+        name: data.borrowerName,
+        scores: { equifax: data.equifaxScore, experian: data.experianScore, transUnion: data.transUnionScore },
+        primaryScore: data.creditScore
+      });
+
+    } catch (error) {
+      console.error('Error parsing credit report:', error);
+    }
+
+    return data;
+  }
+
   // PDF Upload and Extraction Route
   app.post("/api/pdf/upload", upload.single('pdf'), async (req, res) => {
     try {
@@ -1165,24 +1293,34 @@ Return a JSON object with any/all relevant fields found. Include ANY field you f
         ? extractedText.substring(0, MAX_TEXT_LENGTH) + '\n\n[Document truncated - showing first 15,000 characters]'
         : extractedText;
 
-      console.log(`Sending ${textToProcess.length} characters to OpenAI for structuring...`);
+      let structuredData: any = {};
 
-      // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
-      const completion = await openai.chat.completions.create({
-        model: "gpt-5",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: textToProcess }
-        ],
-        response_format: { type: "json_object" },
-        max_completion_tokens: 4096
-      });
+      // For credit reports, use pattern matching instead of OpenAI
+      if (documentType?.toLowerCase() === 'credit report') {
+        console.log('Using pattern matching for credit report extraction...');
+        structuredData = parseCreditReport(extractedText);
+        console.log(`Extracted fields: ${Object.keys(structuredData).join(', ')}`);
+      } else {
+        // For other documents, use OpenAI
+        console.log(`Sending ${textToProcess.length} characters to OpenAI for structuring...`);
 
-      const rawResponse = completion.choices[0].message.content || '{}';
-      console.log(`OpenAI response (first 500 chars): ${rawResponse.substring(0, 500)}`);
-      
-      const structuredData = JSON.parse(rawResponse);
-      console.log(`Extracted fields: ${Object.keys(structuredData).join(', ')}`);
+        // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
+        const completion = await openai.chat.completions.create({
+          model: "gpt-5",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: textToProcess }
+          ],
+          response_format: { type: "json_object" },
+          max_completion_tokens: 4096
+        });
+
+        const rawResponse = completion.choices[0].message.content || '{}';
+        console.log(`OpenAI response (first 500 chars): ${rawResponse.substring(0, 500)}`);
+        
+        structuredData = JSON.parse(rawResponse);
+        console.log(`Extracted fields: ${Object.keys(structuredData).join(', ')}`);
+      }
 
       // Step 3: Save to storage
       const pdfDocument = await storage.createPdfDocument({
