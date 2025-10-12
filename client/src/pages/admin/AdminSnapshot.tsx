@@ -379,7 +379,7 @@ export default function AdminSnapshot() {
         {/* Header with Back Button */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2" data-testid="heading-analytics-dashboard">Dashboard</h1>
+            <h1 className="text-4xl font-bold text-white mb-2" data-testid="heading-analytics-dashboard">LoanView GPT</h1>
             <div className="flex items-center gap-2">
               <p 
                 className="text-purple-300 cursor-pointer hover:text-purple-200 transition-colors"
@@ -418,7 +418,7 @@ export default function AdminSnapshot() {
         {/* Top Card - Filters and Metrics */}
         <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-white">Metrics Overview</h3>
+            <h3 className="text-xl font-bold text-white">Dashboard</h3>
             <button
               onClick={() => setIsFiltersMinimized(!isFiltersMinimized)}
               className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
