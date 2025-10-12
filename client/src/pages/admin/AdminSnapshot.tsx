@@ -16,6 +16,7 @@ export default function AdminSnapshot() {
   const [isExpenseTableMinimized, setIsExpenseTableMinimized] = useState(false);
   const [areChartsMinimized, setAreChartsMinimized] = useState(false);
   const [isTransactionsMinimized, setIsTransactionsMinimized] = useState(false);
+  const [isFiltersMinimized, setIsFiltersMinimized] = useState(false);
   const [transactionDateFilter, setTransactionDateFilter] = useState('today');
   const [transactionDateRange, setTransactionDateRange] = useState({
     fromDate: '',
@@ -386,6 +387,7 @@ export default function AdminSnapshot() {
                 size="icon"
                 onClick={() => setLocation('/admin/dashboard')}
                 className="text-purple-300 hover:text-white hover:bg-purple-500/20 h-6 w-6"
+                title="Back to Snapshot"
                 data-testid="button-back-to-dashboard"
               >
                 <ArrowLeft className="h-4 w-4" />
@@ -410,36 +412,54 @@ export default function AdminSnapshot() {
 
         {/* Top Card - Filters and Metrics */}
         <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
-          <div className="flex flex-wrap items-center gap-4 mb-6">
-            <div className="flex items-center gap-2">
-              <Filter className="w-5 h-5 text-purple-400" />
-              <select 
-                value={entityFilter}
-                onChange={(e) => setEntityFilter(e.target.value)}
-                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
-                data-testid="select-entity-filter"
-              >
-                <option value="all">Show All</option>
-                <option value="company">Company</option>
-                <option value="branch">Branch</option>
-                <option value="partners">Partners</option>
-              </select>
-            </div>
-            
-            <select 
-              value={timeFilter}
-              onChange={(e) => setTimeFilter(e.target.value)}
-              className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
-              data-testid="select-time-filter"
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-bold text-white">Metrics Overview</h3>
+            <button
+              onClick={() => setIsFiltersMinimized(!isFiltersMinimized)}
+              className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+              title={isFiltersMinimized ? "Expand" : "Minimize"}
+              data-testid="button-toggle-filters"
             >
-              <option value="today">Today</option>
-              <option value="mtd">Month to Date</option>
-              <option value="ytd">Year to Date</option>
-              <option value="custom">Custom Date Range</option>
-            </select>
+              {isFiltersMinimized ? (
+                <Plus className="w-5 h-5 text-purple-300" />
+              ) : (
+                <Minus className="w-5 h-5 text-purple-300" />
+              )}
+            </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {!isFiltersMinimized && (
+            <>
+              <div className="flex flex-wrap items-center gap-4 mb-6">
+                <div className="flex items-center gap-2">
+                  <Filter className="w-5 h-5 text-purple-400" />
+                  <select 
+                    value={entityFilter}
+                    onChange={(e) => setEntityFilter(e.target.value)}
+                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                    data-testid="select-entity-filter"
+                  >
+                    <option value="all">Show All</option>
+                    <option value="company">Company</option>
+                    <option value="branch">Branch</option>
+                    <option value="partners">Partners</option>
+                  </select>
+                </div>
+                
+                <select 
+                  value={timeFilter}
+                  onChange={(e) => setTimeFilter(e.target.value)}
+                  className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                  data-testid="select-time-filter"
+                >
+                  <option value="today">Today</option>
+                  <option value="mtd">Month to Date</option>
+                  <option value="ytd">Year to Date</option>
+                  <option value="custom">Custom Date Range</option>
+                </select>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Gross Income */}
             <div className="bg-gradient-to-br from-green-500/20 to-emerald-600/20 rounded-xl p-6 border border-green-500/30 hover:border-green-500/50 transition-all" data-testid="card-gross-income">
               <div className="flex items-center justify-between mb-2">
@@ -479,6 +499,8 @@ export default function AdminSnapshot() {
               </div>
             </div>
           </div>
+            </>
+          )}
         </div>
 
         {/* Second Card - Charts */}
