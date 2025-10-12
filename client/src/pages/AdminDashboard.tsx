@@ -143,7 +143,6 @@ export default function AdminDashboard() {
     { id: 'add-staff', label: 'Staff', icon: UserCheck, path: '/admin/add-staff' },
     { id: 'add-partner', label: 'Partners', icon: Handshake, path: '/admin/add-partner' },
     { id: 'settings', label: 'Settings', icon: Settings, path: '/admin/add-comment' },
-    { id: 'vault', label: 'Vault', icon: Lock, path: '/admin/vault' },
   ];
 
   const handleLogout = async () => {
