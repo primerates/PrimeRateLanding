@@ -256,6 +256,7 @@ export default function AdminSnapshot() {
     setIsEditMode(true);
     setEditingExpenseId(expense.id);
     setShowExpenseForm(true);
+    setAreChartsMinimized(true); // Minimize charts to reduce clutter
     setOpenActionMenu(null);
   };
 
@@ -324,6 +325,7 @@ export default function AdminSnapshot() {
     setEditingRevenueId(revenue.id);
     setShowRevenueForm(true);
     setIsRevenueFormMinimized(false); // Expand form when editing
+    setAreChartsMinimized(true); // Minimize charts to reduce clutter
     setOpenActionMenu(null);
   };
 
@@ -1361,6 +1363,7 @@ export default function AdminSnapshot() {
                     setEntryType('revenue');
                     setShowRevenueForm(true);
                     setIsRevenueFormMinimized(false); // Ensure form is expanded when adding new revenue
+                    setAreChartsMinimized(true); // Minimize charts to reduce clutter
                     setShowAddModal(false);
                   }}
                   className="w-full p-6 bg-gradient-to-br from-blue-500/20 to-indigo-600/20 hover:from-blue-500/30 hover:to-indigo-600/30 rounded-xl border border-blue-500/30 hover:border-blue-500/50 transition-all group"
@@ -1379,6 +1382,7 @@ export default function AdminSnapshot() {
                   onClick={() => {
                     setEntryType('expense');
                     setShowExpenseForm(true);
+                    setAreChartsMinimized(true); // Minimize charts to reduce clutter
                     setShowAddModal(false);
                   }}
                   className="w-full p-6 bg-gradient-to-br from-red-500/20 to-pink-600/20 hover:from-red-500/30 hover:to-pink-600/30 rounded-xl border border-red-500/30 hover:border-red-500/50 transition-all group"
