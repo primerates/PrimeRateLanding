@@ -303,17 +303,14 @@ export default function AdminMarketing() {
     { label: 'Loan', path: '/admin/pipeline' },
     { label: 'Funded', path: '/admin/funded' },
     // Row 2
-    { label: 'Marketing', path: '/admin/marketing' },
-    { label: 'Snapshot', path: '/admin/reports' },
+    { label: 'Closed', path: '/admin/records' },
     { label: 'Library', path: '/admin/library' },
-    { label: 'Audit', path: '/admin/audit' },
-    { label: 'Settings', path: '/admin/add-comment' },
+    { label: 'Marketing', path: '/admin/marketing' },
+    { label: 'Dashboard', path: '/admin/reports' },
     // Row 3
     { label: 'Vendors', path: '/admin/add-vendor' },
     { label: 'Staff', path: '/admin/add-staff' },
-    { label: 'Partners', path: '/admin/add-partner' },
-    { label: 'Ledger', path: '/admin/records' },
-    { label: 'Vault', path: '/admin/vault' },
+    { label: 'Settings', path: '/admin/add-comment' },
   ];
 
   const requiredFields: RequiredField[] = [
@@ -902,7 +899,7 @@ export default function AdminMarketing() {
                         >
                           {item.label}
                         </DropdownMenuItem>
-                        {(index === 4 || index === 9) && <DropdownMenuSeparator />}
+                        {(index === 4 || index === 8) && <DropdownMenuSeparator />}
                       </div>
                     ))}
                   </DropdownMenuContent>
