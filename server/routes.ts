@@ -1044,8 +1044,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Extract Credit Scores
-      // BEACON 5.0 (Equifax) format: BEACON 5.0 ... [score on next line or with brackets]
-      const beaconMatch = text.match(/BEACON\s+5\.0[^\n]*[\n\r\s]*(?:\[)?(\d{3})/);
+      // BEACON 5.0 (Equifax) format: Look for 3-digit score near BEACON, not in brackets
+      const beaconMatch = text.match(/BEACON\s+5\.0[^\d]*?(\d{3})(?!\])/);
       if (beaconMatch) {
         data.equifaxScore = parseInt(beaconMatch[1]);
       }
@@ -1177,45 +1177,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
 
         try {
-          // AWS Textract's AnalyzeDocument only supports single-page PDFs for synchronous processing
-          // For multi-page PDFs, extract only the first page
-          let pdfBuffer = req.file.buffer;
-          
+          // AWS Textract's AnalyzeDocument only supports single-page PDFs
+          // For multi-page PDFs, process each page separately and combine results
           const pdfDoc = await PDFDocument.load(req.file.buffer);
           const pageCount = pdfDoc.getPageCount();
           
-          if (pageCount > 1) {
-            console.log(`Multi-page PDF detected (${pageCount} pages). Extracting first page only...`);
-            
-            // Create a new PDF with only the first page
-            const newPdf = await PDFDocument.create();
-            const [firstPage] = await newPdf.copyPages(pdfDoc, [0]);
-            newPdf.addPage(firstPage);
-            
-            pdfBuffer = Buffer.from(await newPdf.save());
-            console.log(`Created single-page PDF for Textract processing`);
-          }
-
-          const command = new AnalyzeDocumentCommand({
-            Document: {
-              Bytes: pdfBuffer,
-            },
-            FeatureTypes: ["TABLES", "FORMS"],
-          });
-
-          const textractResponse = await textractClient.send(command);
+          console.log(`Processing ${pageCount} page(s) with AWS Textract...`);
           
-          // Combine all detected text blocks into a single string
-          if (textractResponse.Blocks) {
-            const textBlocks = textractResponse.Blocks
-              .filter(block => block.BlockType === 'LINE' && block.Text)
-              .map(block => block.Text)
-              .join('\n');
+          let allExtractedText = '';
+          
+          // Process each page
+          for (let pageIndex = 0; pageIndex < pageCount; pageIndex++) {
+            console.log(`Processing page ${pageIndex + 1}/${pageCount}...`);
             
-            extractedText = textBlocks;
-            console.log(`AWS Textract extracted ${extractedText.length} characters from PDF`);
-            console.log(`First 300 chars: ${extractedText.substring(0, 300)}`);
+            // Create a new PDF with just this page
+            const singlePagePdf = await PDFDocument.create();
+            const [copiedPage] = await singlePagePdf.copyPages(pdfDoc, [pageIndex]);
+            singlePagePdf.addPage(copiedPage);
+            
+            const pdfBuffer = Buffer.from(await singlePagePdf.save());
+
+            const command = new AnalyzeDocumentCommand({
+              Document: {
+                Bytes: pdfBuffer,
+              },
+              FeatureTypes: ["TABLES", "FORMS"],
+            });
+
+            const textractResponse = await textractClient.send(command);
+            
+            // Combine all detected text blocks from this page
+            if (textractResponse.Blocks) {
+              const pageText = textractResponse.Blocks
+                .filter(block => block.BlockType === 'LINE' && block.Text)
+                .map(block => block.Text)
+                .join('\n');
+              
+              allExtractedText += pageText + '\n\n--- Page Break ---\n\n';
+              console.log(`Page ${pageIndex + 1}: Extracted ${pageText.length} characters`);
+            }
           }
+          
+          extractedText = allExtractedText;
+          console.log(`AWS Textract completed! Total ${extractedText.length} characters from ${pageCount} pages`);
+          console.log(`First 300 chars: ${extractedText.substring(0, 300)}`);
 
           if (!extractedText || extractedText.trim().length === 0) {
             return res.status(400).json({
