@@ -15,6 +15,11 @@ export default function AdminSnapshot() {
   const [isExpenseTableMinimized, setIsExpenseTableMinimized] = useState(false);
   const [areChartsMinimized, setAreChartsMinimized] = useState(false);
   const [isTransactionsMinimized, setIsTransactionsMinimized] = useState(false);
+  const [transactionDateFilter, setTransactionDateFilter] = useState('today');
+  const [transactionDateRange, setTransactionDateRange] = useState({
+    fromDate: '',
+    toDate: ''
+  });
   const [expenseEntries, setExpenseEntries] = useState([
     {
       id: 1,
@@ -118,6 +123,17 @@ export default function AdminSnapshot() {
     const numValue = parseInt(value);
     const formatted = '$' + numValue.toLocaleString('en-US');
     setNewExpense({ ...newExpense, expense: formatted });
+  };
+
+  const handleTransactionDateInput = (e: React.ChangeEvent<HTMLInputElement>, field: 'fromDate' | 'toDate') => {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length >= 2) {
+      value = value.slice(0, 2) + '/' + value.slice(2);
+    }
+    if (value.length >= 5) {
+      value = value.slice(0, 5) + '/' + value.slice(5, 9);
+    }
+    setTransactionDateRange({ ...transactionDateRange, [field]: value });
   };
 
   const handleSort = (key: string) => {
@@ -609,6 +625,53 @@ export default function AdminSnapshot() {
                 )}
               </button>
             </div>
+
+            {/* Date Filter Dropdown */}
+            {!isTransactionsMinimized && (
+              <div className="mb-4">
+                <select 
+                  value={transactionDateFilter}
+                  onChange={(e) => setTransactionDateFilter(e.target.value)}
+                  className="bg-transparent text-purple-300 px-0 py-1 focus:outline-none border-none cursor-pointer"
+                  data-testid="select-transaction-date-filter"
+                >
+                  <option value="today">Today</option>
+                  <option value="mtd">MTD</option>
+                  <option value="ytd">YTD</option>
+                  <option value="dateRange">Date Range</option>
+                </select>
+
+                {/* Date Range Inputs */}
+                {transactionDateFilter === 'dateRange' && (
+                  <div className="flex items-center gap-4 mt-3">
+                    <div className="flex items-center gap-2">
+                      <label className="text-purple-300 text-sm">From Date:</label>
+                      <input
+                        type="text"
+                        placeholder="MM/DD/YYYY"
+                        value={transactionDateRange.fromDate}
+                        onChange={(e) => handleTransactionDateInput(e, 'fromDate')}
+                        className="bg-slate-700/50 text-white px-3 py-1 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors text-sm"
+                        data-testid="input-from-date"
+                        maxLength={10}
+                      />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <label className="text-purple-300 text-sm">To Date:</label>
+                      <input
+                        type="text"
+                        placeholder="MM/DD/YYYY"
+                        value={transactionDateRange.toDate}
+                        onChange={(e) => handleTransactionDateInput(e, 'toDate')}
+                        className="bg-slate-700/50 text-white px-3 py-1 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors text-sm"
+                        data-testid="input-to-date"
+                        maxLength={10}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
             
             {/* Separation line */}
             <div className="border-t border-purple-500/30 mb-6"></div>
