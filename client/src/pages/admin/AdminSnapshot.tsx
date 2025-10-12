@@ -164,7 +164,7 @@ export default function AdminSnapshot() {
           
           {/* Revenue Breakdown */}
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl" data-testid="card-revenue-sources">
-            <h3 className="text-xl font-bold text-white mb-4">Revenue Sources</h3>
+            <h3 className="text-xl font-bold text-white mb-4">Revenue</h3>
             {!revenueDetailView ? (
               <>
                 <ResponsiveContainer width="100%" height={300}>
@@ -192,7 +192,6 @@ export default function AdminSnapshot() {
                       formatter={(value) => formatCurrency(value as number)}
                       contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #8b5cf6', borderRadius: '8px' }}
                     />
-                    <Legend />
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="mt-4 space-y-2">
@@ -223,7 +222,7 @@ export default function AdminSnapshot() {
                   className="mb-4 text-purple-400 hover:text-purple-300 text-sm"
                   data-testid="button-back-to-revenue"
                 >
-                  ← Back to Revenue Sources
+                  ← Back to Revenue
                 </button>
                 <h4 className="text-lg font-semibold text-white mb-4">Direct Mail - State Breakdown</h4>
                 <ResponsiveContainer width="100%" height={250}>
@@ -254,7 +253,7 @@ export default function AdminSnapshot() {
 
           {/* Expense Breakdown */}
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl" data-testid="card-expense-breakdown">
-            <h3 className="text-xl font-bold text-white mb-4">Expense Breakdown</h3>
+            <h3 className="text-xl font-bold text-white mb-4">Expense</h3>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -274,7 +273,6 @@ export default function AdminSnapshot() {
                   formatter={(value) => formatCurrency(value as number)}
                   contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #8b5cf6', borderRadius: '8px' }}
                 />
-                <Legend />
               </PieChart>
             </ResponsiveContainer>
             <div className="mt-4 space-y-2">
