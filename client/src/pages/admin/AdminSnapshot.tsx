@@ -42,7 +42,8 @@ export default function AdminSnapshot() {
     expenseCategory: '',
     paidTo: '',
     transactionDate: '',
-    clearanceDate: ''
+    clearanceDate: '',
+    paymentTerm: ''
   });
 
   // Sample data - in production, this would come from your API
@@ -149,7 +150,8 @@ export default function AdminSnapshot() {
         expenseCategory: '',
         paidTo: '',
         transactionDate: '',
-        clearanceDate: ''
+        clearanceDate: '',
+        paymentTerm: ''
       });
       setShowExpenseForm(false);
     }
@@ -457,8 +459,8 @@ export default function AdminSnapshot() {
               />
             </div>
 
-            {/* Second Row: Expense Category, Paid To, Paid By, Expense Amount */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            {/* Second Row: Expense Category, Paid To, Paid By, Amount, Payment Term */}
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
               <select
                 value={newExpense.expenseCategory}
                 onChange={(e) => setNewExpense({ ...newExpense, expenseCategory: e.target.value })}
@@ -494,12 +496,22 @@ export default function AdminSnapshot() {
               </select>
               <input
                 type="text"
-                placeholder="Expense Amount"
+                placeholder="Amount"
                 value={newExpense.expense}
                 onChange={handleDollarInput}
                 className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
                 data-testid="input-expense"
               />
+              <select
+                value={newExpense.paymentTerm}
+                onChange={(e) => setNewExpense({ ...newExpense, paymentTerm: e.target.value })}
+                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                data-testid="select-payment-term"
+              >
+                <option value="" disabled>Payment Term</option>
+                <option value="Monthly Payment">Monthly Payment</option>
+                <option value="One Time Payment">One Time Payment</option>
+              </select>
             </div>
 
             <button
@@ -581,7 +593,17 @@ export default function AdminSnapshot() {
                       data-testid="header-expense"
                     >
                       <div className="flex items-center gap-1">
-                        Expense Amount
+                        Amount
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                      onClick={() => handleSort('paymentTerm')}
+                      data-testid="header-payment-term"
+                    >
+                      <div className="flex items-center gap-1">
+                        Payment Term
                         <ArrowUpDown className="w-4 h-4" />
                       </div>
                     </th>
@@ -601,6 +623,7 @@ export default function AdminSnapshot() {
                       <td className="py-3 px-2 text-purple-200">{entry.paidTo}</td>
                       <td className="py-3 px-2 text-purple-200">{entry.paidWith}</td>
                       <td className="py-3 px-2 text-white">{entry.expense}</td>
+                      <td className="py-3 px-2 text-purple-200">{entry.paymentTerm || '-'}</td>
                     </tr>
                   ))}
                 </tbody>
