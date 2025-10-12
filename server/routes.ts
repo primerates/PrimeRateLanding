@@ -1288,9 +1288,18 @@ Return a JSON object with any/all relevant fields found. Include ANY field you f
 
       let structuredData: any = {};
 
+      // Auto-detect if this is a credit report (regardless of selected type)
+      const isCreditReport = extractedText.includes('BEACON') || 
+                            extractedText.includes('FICO') || 
+                            extractedText.includes('Credit Score') ||
+                            extractedText.includes('Equifax') ||
+                            extractedText.includes('Experian') ||
+                            extractedText.includes('TransUnion') ||
+                            extractedText.match(/\d{3}\s+credit\s+score/i);
+
       // For credit reports, use pattern matching on FULL text (no truncation needed)
-      if (documentType?.toLowerCase() === 'credit report') {
-        console.log(`Using pattern matching for credit report extraction (${extractedText.length} characters)...`);
+      if (isCreditReport || documentType?.toLowerCase() === 'credit report') {
+        console.log(`Auto-detected credit report! Using pattern matching (${extractedText.length} characters)...`);
         structuredData = parseCreditReport(extractedText);
         console.log(`Extracted fields: ${Object.keys(structuredData).join(', ')}`);
       } else {
