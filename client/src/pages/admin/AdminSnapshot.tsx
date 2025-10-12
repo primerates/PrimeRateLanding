@@ -428,8 +428,8 @@ export default function AdminSnapshot() {
               </button>
             </div>
 
-            {/* First Row: Date Fields Only */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            {/* First Row: Log Date, Transaction Date, Clear Date, Expense Category */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
               <input
                 type="text"
                 placeholder="Log Date (MM/DD/YYYY)"
@@ -450,17 +450,13 @@ export default function AdminSnapshot() {
               />
               <input
                 type="text"
-                placeholder="Clearance Date (MM/DD/YYYY)"
+                placeholder="Clear Date (MM/DD/YYYY)"
                 value={newExpense.clearanceDate}
                 onChange={(e) => handleDateInput(e, 'clearanceDate')}
                 maxLength={10}
                 className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
-                data-testid="input-clearance-date"
+                data-testid="input-clear-date"
               />
-            </div>
-
-            {/* Second Row: Expense Category, Paid To, Paid By, Amount, Payment Term */}
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
               <select
                 value={newExpense.expenseCategory}
                 onChange={(e) => setNewExpense({ ...newExpense, expenseCategory: e.target.value })}
@@ -473,6 +469,20 @@ export default function AdminSnapshot() {
                 <option value="Vendors">Vendors</option>
                 <option value="Services">Services</option>
                 <option value="Supplies">Supplies</option>
+              </select>
+            </div>
+
+            {/* Second Row: Payment Term, Paid To, Paid By, Amount */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <select
+                value={newExpense.paymentTerm}
+                onChange={(e) => setNewExpense({ ...newExpense, paymentTerm: e.target.value })}
+                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                data-testid="select-payment-term"
+              >
+                <option value="" disabled>Payment Term</option>
+                <option value="Monthly Payment">Monthly Payment</option>
+                <option value="One Time Payment">One Time Payment</option>
               </select>
               <select
                 value={newExpense.paidTo}
@@ -502,16 +512,6 @@ export default function AdminSnapshot() {
                 className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
                 data-testid="input-expense"
               />
-              <select
-                value={newExpense.paymentTerm}
-                onChange={(e) => setNewExpense({ ...newExpense, paymentTerm: e.target.value })}
-                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
-                data-testid="select-payment-term"
-              >
-                <option value="" disabled>Payment Term</option>
-                <option value="Monthly Payment">Monthly Payment</option>
-                <option value="One Time Payment">One Time Payment</option>
-              </select>
             </div>
 
             <button
@@ -550,10 +550,10 @@ export default function AdminSnapshot() {
                     <th 
                       className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
                       onClick={() => handleSort('clearanceDate')}
-                      data-testid="header-clearance-date"
+                      data-testid="header-clear-date"
                     >
                       <div className="flex items-center gap-1">
-                        Clearance Date
+                        Clear Date
                         <ArrowUpDown className="w-4 h-4" />
                       </div>
                     </th>
@@ -564,6 +564,16 @@ export default function AdminSnapshot() {
                     >
                       <div className="flex items-center gap-1">
                         Category
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                      onClick={() => handleSort('paymentTerm')}
+                      data-testid="header-payment-term"
+                    >
+                      <div className="flex items-center gap-1">
+                        Payment Term
                         <ArrowUpDown className="w-4 h-4" />
                       </div>
                     </th>
@@ -597,16 +607,6 @@ export default function AdminSnapshot() {
                         <ArrowUpDown className="w-4 h-4" />
                       </div>
                     </th>
-                    <th 
-                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                      onClick={() => handleSort('paymentTerm')}
-                      data-testid="header-payment-term"
-                    >
-                      <div className="flex items-center gap-1">
-                        Payment Term
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -620,10 +620,10 @@ export default function AdminSnapshot() {
                       <td className="py-3 px-2 text-purple-200">{entry.transactionDate}</td>
                       <td className="py-3 px-2 text-purple-200">{entry.clearanceDate}</td>
                       <td className="py-3 px-2 text-purple-200">{entry.expenseCategory}</td>
+                      <td className="py-3 px-2 text-purple-200">{entry.paymentTerm || '-'}</td>
                       <td className="py-3 px-2 text-purple-200">{entry.paidTo}</td>
                       <td className="py-3 px-2 text-purple-200">{entry.paidWith}</td>
                       <td className="py-3 px-2 text-white">{entry.expense}</td>
-                      <td className="py-3 px-2 text-purple-200">{entry.paymentTerm || '-'}</td>
                     </tr>
                   ))}
                 </tbody>
