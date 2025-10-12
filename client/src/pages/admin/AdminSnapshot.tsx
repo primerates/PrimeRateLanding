@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown } from 'lucide-react';
+import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus } from 'lucide-react';
 
 export default function AdminSnapshot() {
   const [, setLocation] = useLocation();
@@ -12,6 +12,7 @@ export default function AdminSnapshot() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [entryType, setEntryType] = useState<string | null>(null);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
+  const [isExpenseTableMinimized, setIsExpenseTableMinimized] = useState(false);
   const [expenseEntries, setExpenseEntries] = useState([
     {
       id: 1,
@@ -417,218 +418,239 @@ export default function AdminSnapshot() {
         {/* Expense Entry Form */}
         {showExpenseForm && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl animate-in">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-white">Log Expense</h3>
-              <button
-                onClick={() => setShowExpenseForm(false)}
-                className="text-purple-300 hover:text-white transition-colors"
-                data-testid="button-close-expense-form"
-              >
-                <X className="w-6 h-6" />
-              </button>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-2xl font-bold text-white">Expense log</h3>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsExpenseTableMinimized(!isExpenseTableMinimized)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title={isExpenseTableMinimized ? "Expand" : "Minimize"}
+                  data-testid="button-toggle-expense-form"
+                >
+                  {isExpenseTableMinimized ? (
+                    <Plus className="w-5 h-5 text-purple-300" />
+                  ) : (
+                    <Minus className="w-5 h-5 text-purple-300" />
+                  )}
+                </button>
+                <button
+                  onClick={() => setShowExpenseForm(false)}
+                  className="text-purple-300 hover:text-white transition-colors"
+                  data-testid="button-close-expense-form"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
             </div>
+            
+            {/* Separation line */}
+            <div className="border-t border-purple-500/30 mb-6"></div>
 
-            {/* First Row: Log Date, Transaction Date, Clear Date, Expense Category */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-              <input
-                type="text"
-                placeholder="Log Date (MM/DD/YYYY)"
-                value={newExpense.logDate}
-                onChange={(e) => handleDateInput(e, 'logDate')}
-                maxLength={10}
-                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
-                data-testid="input-log-date"
-              />
-              <input
-                type="text"
-                placeholder="Transaction Date (MM/DD/YYYY)"
-                value={newExpense.transactionDate}
-                onChange={(e) => handleDateInput(e, 'transactionDate')}
-                maxLength={10}
-                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
-                data-testid="input-transaction-date"
-              />
-              <input
-                type="text"
-                placeholder="Clear Date (MM/DD/YYYY)"
-                value={newExpense.clearanceDate}
-                onChange={(e) => handleDateInput(e, 'clearanceDate')}
-                maxLength={10}
-                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
-                data-testid="input-clear-date"
-              />
-              <select
-                value={newExpense.expenseCategory}
-                onChange={(e) => setNewExpense({ ...newExpense, expenseCategory: e.target.value })}
-                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
-                data-testid="select-expense-category"
-              >
-                <option value="">Expense Category</option>
-                <option value="Marketing">Marketing</option>
-                <option value="Staff">Staff</option>
-                <option value="Vendors">Vendors</option>
-                <option value="Services">Services</option>
-                <option value="Supplies">Supplies</option>
-              </select>
-            </div>
+            {!isExpenseTableMinimized && (
+              <>
+                {/* First Row: Log Date, Transaction Date, Clear Date, Expense Category */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                  <input
+                    type="text"
+                    placeholder="Log Date (MM/DD/YYYY)"
+                    value={newExpense.logDate}
+                    onChange={(e) => handleDateInput(e, 'logDate')}
+                    maxLength={10}
+                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                    data-testid="input-log-date"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Transaction Date (MM/DD/YYYY)"
+                    value={newExpense.transactionDate}
+                    onChange={(e) => handleDateInput(e, 'transactionDate')}
+                    maxLength={10}
+                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                    data-testid="input-transaction-date"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Clear Date (MM/DD/YYYY)"
+                    value={newExpense.clearanceDate}
+                    onChange={(e) => handleDateInput(e, 'clearanceDate')}
+                    maxLength={10}
+                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                    data-testid="input-clear-date"
+                  />
+                  <select
+                    value={newExpense.expenseCategory}
+                    onChange={(e) => setNewExpense({ ...newExpense, expenseCategory: e.target.value })}
+                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                    data-testid="select-expense-category"
+                  >
+                    <option value="">Expense Category</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Staff">Staff</option>
+                    <option value="Vendors">Vendors</option>
+                    <option value="Services">Services</option>
+                    <option value="Supplies">Supplies</option>
+                  </select>
+                </div>
 
-            {/* Second Row: Payment Term, Paid To, Paid By, Amount */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-              <select
-                value={newExpense.paymentTerm}
-                onChange={(e) => setNewExpense({ ...newExpense, paymentTerm: e.target.value })}
-                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
-                data-testid="select-payment-term"
-              >
-                <option value="" disabled>Payment Term</option>
-                <option value="Monthly Payment">Monthly Payment</option>
-                <option value="One Time Payment">One Time Payment</option>
-              </select>
-              <select
-                value={newExpense.paidTo}
-                onChange={(e) => setNewExpense({ ...newExpense, paidTo: e.target.value })}
-                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
-                data-testid="select-paid-to"
-              >
-                <option value="" disabled>Paid To</option>
-                <option value="Select">Select</option>
-                <option value="TBD">TBD</option>
-              </select>
-              <select
-                value={newExpense.paidWith}
-                onChange={(e) => setNewExpense({ ...newExpense, paidWith: e.target.value })}
-                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
-                data-testid="select-paid-by"
-              >
-                <option value="" disabled>Paid By</option>
-                <option value="Select">Select</option>
-                <option value="TBD">TBD</option>
-              </select>
-              <input
-                type="text"
-                placeholder="Amount"
-                value={newExpense.expense}
-                onChange={handleDollarInput}
-                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
-                data-testid="input-expense"
-              />
-            </div>
+                {/* Second Row: Payment Term, Paid To, Paid By, Amount */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                  <select
+                    value={newExpense.paymentTerm}
+                    onChange={(e) => setNewExpense({ ...newExpense, paymentTerm: e.target.value })}
+                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                    data-testid="select-payment-term"
+                  >
+                    <option value="" disabled>Payment Term</option>
+                    <option value="Monthly Payment">Monthly Payment</option>
+                    <option value="One Time Payment">One Time Payment</option>
+                  </select>
+                  <select
+                    value={newExpense.paidTo}
+                    onChange={(e) => setNewExpense({ ...newExpense, paidTo: e.target.value })}
+                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                    data-testid="select-paid-to"
+                  >
+                    <option value="" disabled>Paid To</option>
+                    <option value="Select">Select</option>
+                    <option value="TBD">TBD</option>
+                  </select>
+                  <select
+                    value={newExpense.paidWith}
+                    onChange={(e) => setNewExpense({ ...newExpense, paidWith: e.target.value })}
+                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                    data-testid="select-paid-by"
+                  >
+                    <option value="" disabled>Paid By</option>
+                    <option value="Select">Select</option>
+                    <option value="TBD">TBD</option>
+                  </select>
+                  <input
+                    type="text"
+                    placeholder="Amount"
+                    value={newExpense.expense}
+                    onChange={handleDollarInput}
+                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                    data-testid="input-expense"
+                  />
+                </div>
 
-            <button
-              onClick={handleAddExpense}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold py-3 rounded-lg border border-purple-400/30 transition-all shadow-lg hover:shadow-purple-500/50"
-              data-testid="button-submit-expense"
-            >
-              Add Expense
-            </button>
+                <button
+                  onClick={handleAddExpense}
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold py-3 rounded-lg border border-purple-400/30 transition-all shadow-lg hover:shadow-purple-500/50"
+                  data-testid="button-submit-expense"
+                >
+                  Add Expense
+                </button>
 
-            {/* Expense Entries Table */}
-            <div className="mt-8 overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-purple-500/30">
-                    <th 
-                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                      onClick={() => handleSort('logDate')}
-                      data-testid="header-log-date"
-                    >
-                      <div className="flex items-center gap-1">
-                        Log Date
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                      onClick={() => handleSort('transactionDate')}
-                      data-testid="header-transaction-date"
-                    >
-                      <div className="flex items-center gap-1">
-                        Transaction Date
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                      onClick={() => handleSort('clearanceDate')}
-                      data-testid="header-clear-date"
-                    >
-                      <div className="flex items-center gap-1">
-                        Clear Date
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                      onClick={() => handleSort('expenseCategory')}
-                      data-testid="header-expense-category"
-                    >
-                      <div className="flex items-center gap-1">
-                        Category
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                      onClick={() => handleSort('paymentTerm')}
-                      data-testid="header-payment-term"
-                    >
-                      <div className="flex items-center gap-1">
-                        Payment Term
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                      onClick={() => handleSort('paidTo')}
-                      data-testid="header-paid-to"
-                    >
-                      <div className="flex items-center gap-1">
-                        Paid To
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                      onClick={() => handleSort('paidWith')}
-                      data-testid="header-paid-by"
-                    >
-                      <div className="flex items-center gap-1">
-                        Paid By
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                      onClick={() => handleSort('expense')}
-                      data-testid="header-expense"
-                    >
-                      <div className="flex items-center gap-1">
-                        Amount
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sortedExpenses.map((entry: any) => (
-                    <tr 
-                      key={entry.id} 
-                      className="border-b border-purple-500/10 hover:bg-slate-700/30 transition-colors"
-                      data-testid={`expense-row-${entry.id}`}
-                    >
-                      <td className="py-3 px-2 text-purple-200">{entry.logDate}</td>
-                      <td className="py-3 px-2 text-purple-200">{entry.transactionDate}</td>
-                      <td className="py-3 px-2 text-purple-200">{entry.clearanceDate}</td>
-                      <td className="py-3 px-2 text-purple-200">{entry.expenseCategory}</td>
-                      <td className="py-3 px-2 text-purple-200">{entry.paymentTerm || '-'}</td>
-                      <td className="py-3 px-2 text-purple-200">{entry.paidTo}</td>
-                      <td className="py-3 px-2 text-purple-200">{entry.paidWith}</td>
-                      <td className="py-3 px-2 text-white">{entry.expense}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                {/* Expense Entries Table */}
+                <div className="mt-8 overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-purple-500/30">
+                        <th 
+                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                          onClick={() => handleSort('logDate')}
+                          data-testid="header-log-date"
+                        >
+                          <div className="flex items-center gap-1">
+                            Log Date
+                            <ArrowUpDown className="w-4 h-4" />
+                          </div>
+                        </th>
+                        <th 
+                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                          onClick={() => handleSort('transactionDate')}
+                          data-testid="header-transaction-date"
+                        >
+                          <div className="flex items-center gap-1">
+                            Transaction Date
+                            <ArrowUpDown className="w-4 h-4" />
+                          </div>
+                        </th>
+                        <th 
+                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                          onClick={() => handleSort('clearanceDate')}
+                          data-testid="header-clear-date"
+                        >
+                          <div className="flex items-center gap-1">
+                            Clear Date
+                            <ArrowUpDown className="w-4 h-4" />
+                          </div>
+                        </th>
+                        <th 
+                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                          onClick={() => handleSort('expenseCategory')}
+                          data-testid="header-expense-category"
+                        >
+                          <div className="flex items-center gap-1">
+                            Category
+                            <ArrowUpDown className="w-4 h-4" />
+                          </div>
+                        </th>
+                        <th 
+                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                          onClick={() => handleSort('paymentTerm')}
+                          data-testid="header-payment-term"
+                        >
+                          <div className="flex items-center gap-1">
+                            Payment Term
+                            <ArrowUpDown className="w-4 h-4" />
+                          </div>
+                        </th>
+                        <th 
+                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                          onClick={() => handleSort('paidTo')}
+                          data-testid="header-paid-to"
+                        >
+                          <div className="flex items-center gap-1">
+                            Paid To
+                            <ArrowUpDown className="w-4 h-4" />
+                          </div>
+                        </th>
+                        <th 
+                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                          onClick={() => handleSort('paidWith')}
+                          data-testid="header-paid-by"
+                        >
+                          <div className="flex items-center gap-1">
+                            Paid By
+                            <ArrowUpDown className="w-4 h-4" />
+                          </div>
+                        </th>
+                        <th 
+                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                          onClick={() => handleSort('expense')}
+                          data-testid="header-expense"
+                        >
+                          <div className="flex items-center gap-1">
+                            Amount
+                            <ArrowUpDown className="w-4 h-4" />
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sortedExpenses.map((entry: any) => (
+                        <tr 
+                          key={entry.id} 
+                          className="border-b border-purple-500/10 hover:bg-slate-700/30 transition-colors"
+                          data-testid={`expense-row-${entry.id}`}
+                        >
+                          <td className="py-3 px-2 text-purple-200">{entry.logDate}</td>
+                          <td className="py-3 px-2 text-purple-200">{entry.transactionDate}</td>
+                          <td className="py-3 px-2 text-purple-200">{entry.clearanceDate}</td>
+                          <td className="py-3 px-2 text-purple-200">{entry.expenseCategory}</td>
+                          <td className="py-3 px-2 text-purple-200">{entry.paymentTerm || '-'}</td>
+                          <td className="py-3 px-2 text-purple-200">{entry.paidTo}</td>
+                          <td className="py-3 px-2 text-purple-200">{entry.paidWith}</td>
+                          <td className="py-3 px-2 text-white">{entry.expense}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
           </div>
         )}
 

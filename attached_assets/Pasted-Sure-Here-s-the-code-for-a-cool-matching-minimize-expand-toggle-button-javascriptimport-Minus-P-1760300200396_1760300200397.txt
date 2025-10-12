@@ -1,0 +1,46 @@
+Sure! Here's the code for a cool matching minimize/expand toggle button:
+javascriptimport { Minus, Plus } from 'lucide-react';
+
+// Add this state variable with your other useState declarations
+const [isExpenseTableMinimized, setIsExpenseTableMinimized] = useState(false);
+
+// The toggle button component (you can place this wherever you need it)
+<button
+  onClick={() => setIsExpenseTableMinimized(!isExpenseTableMinimized)}
+  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+  title={isExpenseTableMinimized ? "Expand" : "Minimize"}
+>
+  {isExpenseTableMinimized ? (
+    <Plus className="w-5 h-5 text-purple-300" />
+  ) : (
+    <Minus className="w-5 h-5 text-purple-300" />
+  )}
+</button>
+Example usage in your expense table section:
+javascript{/* Expense Table */}
+{expenseEntries.length > 0 && (
+  <div className="mt-8">
+    <div className="flex items-center justify-between mb-4">
+      <h4 className="text-xl font-bold text-white">Recent Expenses</h4>
+      <button
+        onClick={() => setIsExpenseTableMinimized(!isExpenseTableMinimized)}
+        className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+        title={isExpenseTableMinimized ? "Expand" : "Minimize"}
+      >
+        {isExpenseTableMinimized ? (
+          <Plus className="w-5 h-5 text-purple-300" />
+        ) : (
+          <Minus className="w-5 h-5 text-purple-300" />
+        )}
+      </button>
+    </div>
+    
+    {!isExpenseTableMinimized && (
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          {/* Your table content here */}
+        </table>
+      </div>
+    )}
+  </div>
+)}
