@@ -222,8 +222,8 @@ export default function AdminDashboard() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <h1 className="text-xl font-black italic" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="text-admin-header">
-                LOANVIEW GPT
+              <h1 className="text-4xl font-bold" data-testid="text-admin-header">
+                Loanview GPT
               </h1>
             </div>
             
