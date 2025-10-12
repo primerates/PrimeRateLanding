@@ -14,6 +14,7 @@ export default function AdminSnapshot() {
   const [showExpenseForm, setShowExpenseForm] = useState(false);
   const [isExpenseTableMinimized, setIsExpenseTableMinimized] = useState(false);
   const [areChartsMinimized, setAreChartsMinimized] = useState(false);
+  const [isTransactionsMinimized, setIsTransactionsMinimized] = useState(false);
   const [expenseEntries, setExpenseEntries] = useState([
     {
       id: 1,
@@ -580,115 +581,140 @@ export default function AdminSnapshot() {
                 >
                   Add Expense
                 </button>
-
-                {/* Expense Entries Table */}
-                <div className="mt-8 overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-purple-500/30">
-                        <th 
-                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                          onClick={() => handleSort('logDate')}
-                          data-testid="header-log-date"
-                        >
-                          <div className="flex items-center gap-1">
-                            Log Date
-                            <ArrowUpDown className="w-4 h-4" />
-                          </div>
-                        </th>
-                        <th 
-                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                          onClick={() => handleSort('transactionDate')}
-                          data-testid="header-transaction-date"
-                        >
-                          <div className="flex items-center gap-1">
-                            Transaction Date
-                            <ArrowUpDown className="w-4 h-4" />
-                          </div>
-                        </th>
-                        <th 
-                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                          onClick={() => handleSort('clearanceDate')}
-                          data-testid="header-clear-date"
-                        >
-                          <div className="flex items-center gap-1">
-                            Clear Date
-                            <ArrowUpDown className="w-4 h-4" />
-                          </div>
-                        </th>
-                        <th 
-                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                          onClick={() => handleSort('expenseCategory')}
-                          data-testid="header-expense-category"
-                        >
-                          <div className="flex items-center gap-1">
-                            Category
-                            <ArrowUpDown className="w-4 h-4" />
-                          </div>
-                        </th>
-                        <th 
-                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                          onClick={() => handleSort('paymentTerm')}
-                          data-testid="header-payment-term"
-                        >
-                          <div className="flex items-center gap-1">
-                            Payment Term
-                            <ArrowUpDown className="w-4 h-4" />
-                          </div>
-                        </th>
-                        <th 
-                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                          onClick={() => handleSort('paidTo')}
-                          data-testid="header-paid-to"
-                        >
-                          <div className="flex items-center gap-1">
-                            Paid To
-                            <ArrowUpDown className="w-4 h-4" />
-                          </div>
-                        </th>
-                        <th 
-                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                          onClick={() => handleSort('paidWith')}
-                          data-testid="header-paid-by"
-                        >
-                          <div className="flex items-center gap-1">
-                            Paid By
-                            <ArrowUpDown className="w-4 h-4" />
-                          </div>
-                        </th>
-                        <th 
-                          className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                          onClick={() => handleSort('expense')}
-                          data-testid="header-expense"
-                        >
-                          <div className="flex items-center gap-1">
-                            Amount
-                            <ArrowUpDown className="w-4 h-4" />
-                          </div>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sortedExpenses.map((entry: any) => (
-                        <tr 
-                          key={entry.id} 
-                          className="border-b border-purple-500/10 hover:bg-slate-700/30 transition-colors"
-                          data-testid={`expense-row-${entry.id}`}
-                        >
-                          <td className="py-3 px-2 text-purple-200">{entry.logDate}</td>
-                          <td className="py-3 px-2 text-purple-200">{entry.transactionDate}</td>
-                          <td className="py-3 px-2 text-purple-200">{entry.clearanceDate}</td>
-                          <td className="py-3 px-2 text-purple-200">{entry.expenseCategory}</td>
-                          <td className="py-3 px-2 text-purple-200">{entry.paymentTerm || '-'}</td>
-                          <td className="py-3 px-2 text-purple-200">{entry.paidTo}</td>
-                          <td className="py-3 px-2 text-purple-200">{entry.paidWith}</td>
-                          <td className="py-3 px-2 text-white">{entry.expense}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
               </>
+            )}
+          </div>
+        )}
+
+        {/* Transactions Table - Separate Card */}
+        {showExpenseForm && (
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl animate-in">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-2xl font-bold text-white">Transactions</h3>
+              <button
+                onClick={() => setIsTransactionsMinimized(!isTransactionsMinimized)}
+                className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                title={isTransactionsMinimized ? "Expand" : "Minimize"}
+                data-testid="button-toggle-transactions"
+              >
+                {isTransactionsMinimized ? (
+                  <Plus className="w-5 h-5 text-purple-300" />
+                ) : (
+                  <Minus className="w-5 h-5 text-purple-300" />
+                )}
+              </button>
+            </div>
+            
+            {/* Separation line */}
+            <div className="border-t border-purple-500/30 mb-6"></div>
+
+            {!isTransactionsMinimized && (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-purple-500/30">
+                      <th 
+                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                        onClick={() => handleSort('logDate')}
+                        data-testid="header-log-date"
+                      >
+                        <div className="flex items-center gap-1">
+                          Log Date
+                          <ArrowUpDown className="w-4 h-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                        onClick={() => handleSort('transactionDate')}
+                        data-testid="header-transaction-date"
+                      >
+                        <div className="flex items-center gap-1">
+                          Transaction Date
+                          <ArrowUpDown className="w-4 h-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                        onClick={() => handleSort('clearanceDate')}
+                        data-testid="header-clear-date"
+                      >
+                        <div className="flex items-center gap-1">
+                          Clear Date
+                          <ArrowUpDown className="w-4 h-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                        onClick={() => handleSort('expenseCategory')}
+                        data-testid="header-expense-category"
+                      >
+                        <div className="flex items-center gap-1">
+                          Category
+                          <ArrowUpDown className="w-4 h-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                        onClick={() => handleSort('paymentTerm')}
+                        data-testid="header-payment-term"
+                      >
+                        <div className="flex items-center gap-1">
+                          Payment Term
+                          <ArrowUpDown className="w-4 h-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                        onClick={() => handleSort('paidTo')}
+                        data-testid="header-paid-to"
+                      >
+                        <div className="flex items-center gap-1">
+                          Paid To
+                          <ArrowUpDown className="w-4 h-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                        onClick={() => handleSort('paidWith')}
+                        data-testid="header-paid-by"
+                      >
+                        <div className="flex items-center gap-1">
+                          Paid By
+                          <ArrowUpDown className="w-4 h-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                        onClick={() => handleSort('expense')}
+                        data-testid="header-expense"
+                      >
+                        <div className="flex items-center gap-1">
+                          Amount
+                          <ArrowUpDown className="w-4 h-4" />
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sortedExpenses.map((entry: any) => (
+                      <tr 
+                        key={entry.id} 
+                        className="border-b border-purple-500/10 hover:bg-slate-700/30 transition-colors"
+                        data-testid={`expense-row-${entry.id}`}
+                      >
+                        <td className="py-3 px-2 text-purple-200">{entry.logDate}</td>
+                        <td className="py-3 px-2 text-purple-200">{entry.transactionDate}</td>
+                        <td className="py-3 px-2 text-purple-200">{entry.clearanceDate}</td>
+                        <td className="py-3 px-2 text-purple-200">{entry.expenseCategory}</td>
+                        <td className="py-3 px-2 text-purple-200">{entry.paymentTerm || '-'}</td>
+                        <td className="py-3 px-2 text-purple-200">{entry.paidTo}</td>
+                        <td className="py-3 px-2 text-purple-200">{entry.paidWith}</td>
+                        <td className="py-3 px-2 text-white">{entry.expense}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         )}
