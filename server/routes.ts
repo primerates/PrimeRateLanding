@@ -1023,50 +1023,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log("PDF parse failed, text layer may not exist:", pdfParseError);
       }
 
-      // Step 2: If no text was extracted or only page markers found, use OCR.space API
+      // Step 2: If no text was extracted or only page markers found, use AWS Textract
       const hasOnlyPageMarkers = extractedText && extractedText.includes('--') && extractedText.split('\n').filter(line => line.trim() && !line.includes('--')).length < 5;
       
       if (!extractedText || extractedText.trim().length < 100 || hasOnlyPageMarkers) {
-        console.log("Using OCR.space for text extraction (no text layer, insufficient text, or only page markers found)");
+        console.log("Using AWS Textract for text extraction (no text layer, insufficient text, or only page markers found)");
         
-        const ocrApiKey = process.env.OCR_SPACE_API_KEY;
-        if (!ocrApiKey) {
+        // Check AWS credentials are configured
+        if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
           return res.status(500).json({
             success: false,
-            message: "OCR service not configured. Please contact administrator."
+            message: "AWS Textract is not configured. Please contact administrator."
           });
         }
-
-        // Convert buffer to base64 for OCR.space API
-        const base64Pdf = req.file.buffer.toString('base64');
         
-        const formData = new URLSearchParams();
-        formData.append('base64Image', `data:application/pdf;base64,${base64Pdf}`);
-        formData.append('apikey', ocrApiKey);
-        formData.append('filetype', 'PDF');
-        formData.append('OCREngine', '2'); // Use OCR Engine 2 for better accuracy
-        formData.append('isTable', 'true'); // Enable table detection
-        formData.append('scale', 'true'); // Scale image for better OCR
-
-        const ocrResponse = await fetch('https://api.ocr.space/parse/image', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+        const { TextractClient, DetectDocumentTextCommand } = await import('@aws-sdk/client-textract');
+        
+        const textractClient = new TextractClient({
+          region: process.env.AWS_REGION || 'us-east-1',
+          credentials: {
+            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
           },
-          body: formData.toString()
         });
 
-        const ocrResult = await ocrResponse.json() as any;
-        
-        if (ocrResult.OCRExitCode !== 1 || !ocrResult.ParsedResults?.[0]?.ParsedText) {
-          return res.status(400).json({
+        try {
+          const command = new DetectDocumentTextCommand({
+            Document: {
+              Bytes: req.file.buffer,
+            },
+          });
+
+          const textractResponse = await textractClient.send(command);
+          
+          // Combine all detected text blocks into a single string
+          if (textractResponse.Blocks) {
+            const textBlocks = textractResponse.Blocks
+              .filter(block => block.BlockType === 'LINE' && block.Text)
+              .map(block => block.Text)
+              .join('\n');
+            
+            extractedText = textBlocks;
+            console.log(`AWS Textract extracted ${extractedText.length} characters from PDF`);
+          }
+
+          if (!extractedText || extractedText.trim().length === 0) {
+            return res.status(400).json({
+              success: false,
+              message: "AWS Textract could not extract any text from this document"
+            });
+          }
+        } catch (textractError: any) {
+          console.error("AWS Textract error:", textractError);
+          return res.status(500).json({
             success: false,
-            message: `OCR extraction failed: ${ocrResult.ErrorMessage || 'No text found in document'}`
+            message: `OCR extraction failed: ${textractError.message || 'Unknown error'}`
           });
         }
-
-        extractedText = ocrResult.ParsedResults[0].ParsedText;
-        console.log(`OCR extracted ${extractedText.length} characters from PDF`);
       }
 
       if (!extractedText || extractedText.trim().length === 0) {
