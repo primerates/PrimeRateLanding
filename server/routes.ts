@@ -1297,36 +1297,19 @@ Return a JSON object with any/all relevant fields found. Include ANY field you f
                             extractedText.includes('TransUnion') ||
                             extractedText.match(/\d{3}\s+credit\s+score/i);
 
-      // For credit reports, use pattern matching on FULL text (no truncation needed)
+      // Use pattern matching for credit reports, basic extraction for others
       if (isCreditReport || documentType?.toLowerCase() === 'credit report') {
-        console.log(`Auto-detected credit report! Using pattern matching (${extractedText.length} characters)...`);
+        console.log(`Credit report detected! Using pattern matching (${extractedText.length} characters)...`);
         structuredData = parseCreditReport(extractedText);
         console.log(`Extracted fields: ${Object.keys(structuredData).join(', ')}`);
       } else {
-        // For other documents, limit text sent to OpenAI
-        const MAX_TEXT_LENGTH = 15000;
-        const textToProcess = extractedText.length > MAX_TEXT_LENGTH 
-          ? extractedText.substring(0, MAX_TEXT_LENGTH) + '\n\n[Document truncated - showing first 15,000 characters]'
-          : extractedText;
-        
-        console.log(`Sending ${textToProcess.length} characters to OpenAI for structuring...`);
-
-        // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
-        const completion = await openai.chat.completions.create({
-          model: "gpt-5",
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: textToProcess }
-          ],
-          response_format: { type: "json_object" },
-          max_completion_tokens: 4096
-        });
-
-        const rawResponse = completion.choices[0].message.content || '{}';
-        console.log(`OpenAI response (first 500 chars): ${rawResponse.substring(0, 500)}`);
-        
-        structuredData = JSON.parse(rawResponse);
-        console.log(`Extracted fields: ${Object.keys(structuredData).join(', ')}`);
+        // For other documents, just store raw text for now
+        console.log(`Processing ${documentType || 'document'} - storing extracted text (${extractedText.length} characters)`);
+        structuredData = {
+          documentType: documentType || 'other',
+          extractedTextPreview: extractedText.substring(0, 500),
+          note: 'Full text available in extractedText field. Pattern matching parsers can be added for this document type.'
+        };
       }
 
       // Step 3: Save to storage
