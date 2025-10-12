@@ -426,8 +426,8 @@ export default function AdminSnapshot() {
               </button>
             </div>
 
-            {/* First Row: Log Date, Expense, Transaction Date, Clearance Date */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            {/* First Row: Date Fields Only */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <input
                 type="text"
                 placeholder="Log Date (MM/DD/YYYY)"
@@ -436,14 +436,6 @@ export default function AdminSnapshot() {
                 maxLength={10}
                 className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
                 data-testid="input-log-date"
-              />
-              <input
-                type="text"
-                placeholder="Expense Amount"
-                value={newExpense.expense}
-                onChange={handleDollarInput}
-                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
-                data-testid="input-expense"
               />
               <input
                 type="text"
@@ -465,17 +457,8 @@ export default function AdminSnapshot() {
               />
             </div>
 
-            {/* Second Row: Paid With, Expense Category, Paid To */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <select
-                value={newExpense.paidWith}
-                onChange={(e) => setNewExpense({ ...newExpense, paidWith: e.target.value })}
-                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
-                data-testid="select-paid-with"
-              >
-                <option value="">Select</option>
-                <option value="TBD">TBD</option>
-              </select>
+            {/* Second Row: Expense Category, Paid To, Paid By, Expense Amount */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
               <select
                 value={newExpense.expenseCategory}
                 onChange={(e) => setNewExpense({ ...newExpense, expenseCategory: e.target.value })}
@@ -495,9 +478,28 @@ export default function AdminSnapshot() {
                 className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
                 data-testid="select-paid-to"
               >
-                <option value="">Select</option>
+                <option value="" disabled>Paid To</option>
+                <option value="Select">Select</option>
                 <option value="TBD">TBD</option>
               </select>
+              <select
+                value={newExpense.paidWith}
+                onChange={(e) => setNewExpense({ ...newExpense, paidWith: e.target.value })}
+                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                data-testid="select-paid-by"
+              >
+                <option value="" disabled>Paid By</option>
+                <option value="Select">Select</option>
+                <option value="TBD">TBD</option>
+              </select>
+              <input
+                type="text"
+                placeholder="Expense Amount"
+                value={newExpense.expense}
+                onChange={handleDollarInput}
+                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                data-testid="input-expense"
+              />
             </div>
 
             <button
@@ -525,16 +527,6 @@ export default function AdminSnapshot() {
                     </th>
                     <th 
                       className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                      onClick={() => handleSort('expense')}
-                      data-testid="header-expense"
-                    >
-                      <div className="flex items-center gap-1">
-                        Expense
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
                       onClick={() => handleSort('transactionDate')}
                       data-testid="header-transaction-date"
                     >
@@ -550,16 +542,6 @@ export default function AdminSnapshot() {
                     >
                       <div className="flex items-center gap-1">
                         Clearance Date
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                      onClick={() => handleSort('paidWith')}
-                      data-testid="header-paid-with"
-                    >
-                      <div className="flex items-center gap-1">
-                        Paid With
                         <ArrowUpDown className="w-4 h-4" />
                       </div>
                     </th>
@@ -583,6 +565,26 @@ export default function AdminSnapshot() {
                         <ArrowUpDown className="w-4 h-4" />
                       </div>
                     </th>
+                    <th 
+                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                      onClick={() => handleSort('paidWith')}
+                      data-testid="header-paid-by"
+                    >
+                      <div className="flex items-center gap-1">
+                        Paid By
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                      onClick={() => handleSort('expense')}
+                      data-testid="header-expense"
+                    >
+                      <div className="flex items-center gap-1">
+                        Expense Amount
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -593,12 +595,12 @@ export default function AdminSnapshot() {
                       data-testid={`expense-row-${entry.id}`}
                     >
                       <td className="py-3 px-2 text-purple-200">{entry.logDate}</td>
-                      <td className="py-3 px-2 text-white">{entry.expense}</td>
                       <td className="py-3 px-2 text-purple-200">{entry.transactionDate}</td>
                       <td className="py-3 px-2 text-purple-200">{entry.clearanceDate}</td>
-                      <td className="py-3 px-2 text-purple-200">{entry.paidWith}</td>
                       <td className="py-3 px-2 text-purple-200">{entry.expenseCategory}</td>
                       <td className="py-3 px-2 text-purple-200">{entry.paidTo}</td>
+                      <td className="py-3 px-2 text-purple-200">{entry.paidWith}</td>
+                      <td className="py-3 px-2 text-white">{entry.expense}</td>
                     </tr>
                   ))}
                 </tbody>
