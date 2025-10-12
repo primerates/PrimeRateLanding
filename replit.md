@@ -64,15 +64,16 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 
 **Features**:
 - **PDF Upload**: Drag-and-drop or browse to upload mortgage documents (max 10MB)
-- **Document Types**: Paystub, Bank Statement, Tax Return, Mortgage Statement, Other
-- **AI-Powered Extraction**: Uses OpenAI GPT-5 via Replit AI Integrations to extract structured data
-- **Text Extraction**: pdf-parse library extracts raw text from PDFs
+- **Document Types**: Paystub, Bank Statement, Tax Return, Mortgage Statement, Credit Report, Other
+- **Multi-Page OCR**: AWS Textract processes all pages of complex documents (credit reports, tax returns)
+- **AI-Powered Extraction**: Uses Claude (Anthropic) claude-sonnet-4-20250514 to extract structured data
 - **Structured Data Display**: Custom grid layout with color-coded icons showing:
   - Borrower info (name, address)
   - Income data (employer, gross/net pay, YTD gross)
   - Loan details (lender, loan number, property address, balance, payment, interest rate)
   - Bank statements (bank name, ending balance, statement date)
   - Tax returns (AGI, total income, filing status)
+  - Credit reports (scores, accounts, collections, inquiries, public records)
 
 **API Endpoints**:
 - `POST /api/pdf/upload` - Upload and extract PDF data
@@ -82,18 +83,24 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 
 **Technology Stack**:
 - Backend: pdf-parse (v2.2.9) with PDFParse class API for text-based PDFs
-- OCR: OCR.space API for scanned/image-based PDFs (automatic fallback)
-- AI: OpenAI GPT-5 model via Replit AI Integrations (charges to credits, no API key needed)
+- OCR: AWS Textract for multi-page document processing (processes all pages, not just first)
+- AI: Anthropic Claude (claude-sonnet-4-20250514) for intelligent structured data extraction
 - Storage: In-memory storage with typed schema
 - Frontend: React with drag-drop upload, TanStack Query for API calls
 
 **How It Works**:
 1. User uploads PDF (mortgage docs, credit reports, paystubs, etc.)
-2. System tries to extract text using pdf-parse
-3. If no text found or insufficient text (< 50 chars), automatically uses OCR.space
-4. Extracted text sent to OpenAI GPT-5 for intelligent structuring
+2. AWS Textract processes ALL pages of the PDF (using pdf-lib to split multi-page PDFs)
+3. Each page is extracted separately and combined into complete text
+4. Extracted text sent to Claude AI for intelligent structuring into JSON format
 5. All extracted fields displayed dynamically in UI
-6. Supports credit reports with score, accounts, collections, inquiries, public records
+6. Supports complex multi-page documents like 25-page credit reports (48K+ characters)
+
+**Required Environment Variables**:
+- `ANTHROPIC_API_KEY` - Anthropic Claude API key for AI extraction
+- `AWS_ACCESS_KEY_ID` - AWS access key for Textract
+- `AWS_SECRET_ACCESS_KEY` - AWS secret key for Textract
+- `AWS_REGION` - AWS region (defaults to us-east-1)
 
 ### Admin Navigation
 
