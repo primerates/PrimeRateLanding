@@ -136,7 +136,7 @@ export default function AdminDashboard() {
     { id: 'records', label: 'Closed', icon: Archive, path: '/admin/records' },
     { id: 'library', label: 'Library', icon: FolderOpen, path: '/admin/library' },
     { id: 'search', label: 'Marketing', icon: Search, path: '/admin/marketing' },
-    { id: 'reports', label: 'Snapshot', icon: BarChart3, path: '/admin/reports' },
+    { id: 'reports', label: 'Dashboard', icon: BarChart3, path: '/admin/reports' },
     { id: 'add-vendor', label: 'Vendors', icon: Building2, path: '/admin/add-vendor' },
     // Row 3 (items 10+)
     { id: 'add-staff', label: 'Staff', icon: UserCheck, path: '/admin/add-staff' },
@@ -223,7 +223,7 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <h1 className="text-xl font-black italic" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="text-admin-header">
-                PRIME RATE HOME LOANS
+                LOANVIEW GPT
               </h1>
             </div>
             
