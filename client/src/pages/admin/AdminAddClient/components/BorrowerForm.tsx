@@ -4,8 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Plus, Minus } from 'lucide-react';
 import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { type InsertClient } from '@shared/schema';
+import { useMemo } from 'react';
 import FormInput from './FormInput';
 import DateInput from './DateInput';
 import SSNInput from './SSNInput';
@@ -36,6 +37,60 @@ const BorrowerForm = ({ isPrimary = true }: BorrowerFormProps) => {
     const fieldPrefix = isPrimary ? 'borrower' : 'coBorrower';
     const title = isPrimary ? 'Borrower' : 'Co-Borrower';
     const borderColor = isPrimary ? 'border-l-green-500 hover:border-green-500' : 'border-l-blue-500 hover:border-blue-500';
+
+    // Use useWatch to watch specific fields without causing infinite loops
+    const currentYears = useWatch({ name: `${fieldPrefix}.yearsAtAddress` as any, control: form.control });
+    const currentMonths = useWatch({ name: `${fieldPrefix}.monthsAtAddress` as any, control: form.control });
+    const priorYears = useWatch({ name: `${fieldPrefix}.yearsAtPriorAddress` as any, control: form.control });
+    const priorMonths = useWatch({ name: `${fieldPrefix}.monthsAtPriorAddress` as any, control: form.control });
+
+    // Memoized conditional logic to prevent excessive re-renders
+    const showPriorResidence = useMemo(() => {
+        // Check if any time value has been entered and is not empty/zero
+        const hasYears = currentYears && String(currentYears).trim() !== '' && String(currentYears).trim() !== '0';
+        const hasMonths = currentMonths && String(currentMonths).trim() !== '' && String(currentMonths).trim() !== '0';
+        
+        // Only show if there's actual duration data entered
+        if (!hasYears && !hasMonths) return false;
+        
+        const years = parseFloat(currentYears) || 0;
+        const months = parseFloat(currentMonths) || 0;
+        const totalTimeInYears = years + (months / 12);
+        
+        // Only show prior residence if less than 2 years total
+        return totalTimeInYears < 2;
+    }, [currentYears, currentMonths]);
+
+    const showPriorResidence2 = useMemo(() => {
+        // Check if any time value has been entered in current residence and is not empty/zero
+        const hasCurrentYears = currentYears && String(currentYears).trim() !== '' && String(currentYears).trim() !== '0';
+        const hasCurrentMonths = currentMonths && String(currentMonths).trim() !== '' && String(currentMonths).trim() !== '0';
+        
+        // Must have current duration data first
+        if (!hasCurrentYears && !hasCurrentMonths) return false;
+        
+        const currentYearsNum = parseFloat(currentYears) || 0;
+        const currentMonthsNum = parseFloat(currentMonths) || 0;
+        const currentTotalInYears = currentYearsNum + (currentMonthsNum / 12);
+        
+        // If current residence is 2+ years, don't show any prior
+        if (currentTotalInYears >= 2) return false;
+        
+        // Check if prior residence has values and is not empty/zero
+        const hasPriorYears = priorYears && String(priorYears).trim() !== '' && String(priorYears).trim() !== '0';
+        const hasPriorMonths = priorMonths && String(priorMonths).trim() !== '' && String(priorMonths).trim() !== '0';
+        
+        // Must have prior duration data to show prior2
+        if (!hasPriorYears && !hasPriorMonths) return false;
+        
+        const priorYearsNum = parseFloat(priorYears) || 0;
+        const priorMonthsNum = parseFloat(priorMonths) || 0;
+        const priorTotalInYears = priorYearsNum + (priorMonthsNum / 12);
+        
+        const combinedTotalInYears = currentTotalInYears + priorTotalInYears;
+        
+        return combinedTotalInYears < 2;
+    }, [currentYears, currentMonths, priorYears, priorMonths]);
 
     return (
         <Card className={`border-l-4 ${borderColor} focus-within:border-green-500 transition-colors duration-200`}>
@@ -203,11 +258,35 @@ const BorrowerForm = ({ isPrimary = true }: BorrowerFormProps) => {
 
                         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-10">
                             <div className="space-y-2 flex items-center gap-2">
-                                <ResidenceForm />
+                                <ResidenceForm borrowerType={fieldPrefix} addressType="current" />
                             </div>
                         </div>
 
-                        <AddressForm isPrimary={isPrimary} />
+                        <AddressForm isPrimary={isPrimary} addressType="current" />
+
+                        {/* Prior Residence - Show if less than 2 years at current address */}
+                        {showPriorResidence && (
+                            <>
+                                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-10">
+                                    <div className="space-y-2 flex items-center gap-2">
+                                        <ResidenceForm borrowerType={fieldPrefix} addressType="prior" />
+                                    </div>
+                                </div>
+                                <AddressForm isPrimary={isPrimary} addressType="prior" />
+                            </>
+                        )}
+
+                        {/* Second Prior Residence - Show if combined current + first prior is less than 2 years */}
+                        {showPriorResidence2 && (
+                            <>
+                                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-10">
+                                    <div className="space-y-2 flex items-center gap-2">
+                                        <ResidenceForm borrowerType={fieldPrefix} addressType="prior2" />
+                                    </div>
+                                </div>
+                                <AddressForm isPrimary={isPrimary} addressType="prior2" />
+                            </>
+                        )}
                     </CardContent>
                 </CollapsibleContent>
             </Collapsible>

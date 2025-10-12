@@ -20,6 +20,8 @@ interface CountyLookupLoading {
   coBorrower: boolean;
   borrowerPrior: boolean;
   coBorrowerPrior: boolean;
+  borrowerPrior2: boolean;
+  coBorrowerPrior2: boolean;
   borrowerEmployer: boolean;
   borrowerPriorEmployer: boolean;
   coBorrowerEmployer: Record<string, boolean>;
@@ -48,6 +50,8 @@ interface AddAdminClientStore {
   coBorrowerCountyOptions: CountyOptions[];
   borrowerPriorCountyOptions: CountyOptions[];
   coBorrowerPriorCountyOptions: CountyOptions[];
+  borrowerPrior2CountyOptions: CountyOptions[];
+  coBorrowerPrior2CountyOptions: CountyOptions[];
   borrowerEmployerCountyOptions: CountyOptions[];
   borrowerPriorEmployerCountyOptions: CountyOptions[];
   coBorrowerEmployerCountyOptions: Record<string, CountyOptions[]>;
@@ -73,6 +77,8 @@ interface AddAdminClientStore {
   setCoBorrowerCountyOptions: (options: CountyOptions[]) => void;
   setBorrowerPriorCountyOptions: (options: CountyOptions[]) => void;
   setCoBorrowerPriorCountyOptions: (options: CountyOptions[]) => void;
+  setBorrowerPrior2CountyOptions: (options: CountyOptions[]) => void;
+  setCoBorrowerPrior2CountyOptions: (options: CountyOptions[]) => void;
   setBorrowerEmployerCountyOptions: (options: CountyOptions[]) => void;
   setBorrowerPriorEmployerCountyOptions: (options: CountyOptions[]) => void;
   setCoBorrowerEmployerCountyOptions: (options: Record<string, CountyOptions[]>) => void;
@@ -109,6 +115,8 @@ export const useAdminAddClientStore = create<AddAdminClientStore>()(
       coBorrowerCountyOptions: [],
       borrowerPriorCountyOptions: [],
       coBorrowerPriorCountyOptions: [],
+      borrowerPrior2CountyOptions: [],
+      coBorrowerPrior2CountyOptions: [],
       borrowerEmployerCountyOptions: [],
       borrowerPriorEmployerCountyOptions: [],
       coBorrowerEmployerCountyOptions: {},
@@ -119,6 +127,8 @@ export const useAdminAddClientStore = create<AddAdminClientStore>()(
         coBorrower: false,
         borrowerPrior: false,
         coBorrowerPrior: false,
+        borrowerPrior2: false,
+        coBorrowerPrior2: false,
         borrowerEmployer: false,
         borrowerPriorEmployer: false,
         coBorrowerEmployer: {},
@@ -211,6 +221,16 @@ export const useAdminAddClientStore = create<AddAdminClientStore>()(
       setCoBorrowerPriorCountyOptions: (options) =>
         set(() => ({
           coBorrowerPriorCountyOptions: options,
+        })),
+      
+      setBorrowerPrior2CountyOptions: (options) =>
+        set(() => ({
+          borrowerPrior2CountyOptions: options,
+        })),
+      
+      setCoBorrowerPrior2CountyOptions: (options) =>
+        set(() => ({
+          coBorrowerPrior2CountyOptions: options,
         })),
       
       setBorrowerEmployerCountyOptions: (options) =>

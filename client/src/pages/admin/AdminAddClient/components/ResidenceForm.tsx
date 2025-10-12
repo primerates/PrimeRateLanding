@@ -7,7 +7,12 @@ import RentalInfoDialog from '../dialogs/rentalInfoDialog';
 import { useFormContext } from 'react-hook-form';
 import { type InsertClient } from '@shared/schema';
 
-const ResidenceForm = () => {
+interface ResidenceFormProps {
+    borrowerType?: 'borrower' | 'coBorrower';
+    addressType?: 'current' | 'prior' | 'prior2';
+}
+
+const ResidenceForm = ({ borrowerType = 'borrower', addressType = 'current' }: ResidenceFormProps) => {
     const form = useFormContext<InsertClient>();
     const {
         setActiveResidenceSection,
@@ -18,13 +23,27 @@ const ResidenceForm = () => {
         setIsRentalInfoDialogOpen,
     } = useAdminAddClientStore();
     
-    const currentResidenceType = form.watch('borrower.currentResidenceType');
+    // Get dynamic field path for residence type
+    const getResidenceTypeField = () => {
+        const suffix = addressType === 'current' ? 'currentResidenceType' :
+                      addressType === 'prior' ? 'priorResidenceType' :
+                      'priorResidenceType2';
+        return `${borrowerType}.${suffix}`;
+    };
+    
+    const residenceTypeField = getResidenceTypeField();
+    const currentResidenceType = form.watch(residenceTypeField as any);
     const showInfoIcon = currentResidenceType === 'rental' || currentResidenceType === 'other';
 
     const handleInfoClick = () => {
+        const addressSuffix = addressType === 'current' ? 'residenceAddress' :
+                             addressType === 'prior' ? 'priorResidenceAddress' :
+                             'priorResidenceAddress2';
+        const sectionId = `${borrowerType}-${addressType}`;
+        
         if (currentResidenceType === 'rental') {
-            setActiveRentalSection('borrower-current');
-            const savedData = form.getValues('borrower.residenceAddress.rentalInfo') || {};
+            setActiveRentalSection(sectionId);
+            const savedData = form.getValues(`${borrowerType}.${addressSuffix}.rentalInfo` as any) || {};
             setRentalInfoData({
                 landlordName: savedData.landlordName || '',
                 email: savedData.email || '',
@@ -35,8 +54,8 @@ const ResidenceForm = () => {
             });
             setIsRentalInfoDialogOpen(true);
         } else {
-            setActiveResidenceSection('borrower-current');
-            setResidenceInfoText(form.getValues('borrower.residenceAddress.additionalInfo') || '');
+            setActiveResidenceSection(sectionId);
+            setResidenceInfoText(form.getValues(`${borrowerType}.${addressSuffix}.additionalInfo` as any) || '');
             setIsResidenceInfoDialogOpen(true);
         }
     };
@@ -45,12 +64,16 @@ const ResidenceForm = () => {
         <>
             <div className="flex items-center gap-12">
                 <div className="flex items-center gap-2">
-                    <Label htmlFor="borrower-firstName" className="text-xl whitespace-nowrap">Current Residence</Label>
+                    <Label htmlFor={`${borrowerType}-${addressType}-residence`} className="text-xl whitespace-nowrap">
+                        {addressType === 'current' ? 'Current Residence' :
+                         addressType === 'prior' ? 'Prior Residence' :
+                         'Prior Residence 2'}
+                    </Label>
                     <div className="w-4 h-4 flex items-center justify-center">
                         {showInfoIcon && (
                             <Info
                                 className="w-4 h-4 text-blue-500 cursor-pointer hover:text-blue-600 transition-colors"
-                                data-testid="icon-current-residence-info"
+                                data-testid={`icon-${borrowerType}-${addressType}-residence-info`}
                                 onClick={handleInfoClick}
                             />
                         )}
@@ -58,8 +81,8 @@ const ResidenceForm = () => {
                 </div>
 
                 <ResidenceTypeSelector
-                    fieldPath="borrower.currentResidenceType"
-                    testIdPrefix="current-residence"
+                    fieldPath={residenceTypeField}
+                    testIdPrefix={`${borrowerType}-${addressType}-residence`}
                 />
             </div>
             <ResidenceInfoDialog />
