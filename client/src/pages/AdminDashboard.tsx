@@ -30,7 +30,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { useBackground, backgroundPresets } from '@/contexts/BackgroundContext';
-import primeRateLogo from '@assets/Prime Rate Logo PNG_1759280639082.png';
+import primeRateLogo from '@assets/Loanview GPT - Image Oct 12, 2025, 03_38_40 PM_1760308805575.png';
 
 export default function AdminDashboard() {
   const [location, setLocation] = useLocation();
