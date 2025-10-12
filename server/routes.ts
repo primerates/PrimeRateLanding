@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { sendEmail, formatPreApprovalEmail, formatRateTrackerEmail, formatScheduleCallEmail, formatContactEmail } from "./email";
@@ -6,6 +6,12 @@ import { insertClientSchema, clientSchema, preApprovalSubmissionSchema } from "@
 import { ZodError } from "zod";
 import fetch from "node-fetch";
 import jwt from 'jsonwebtoken';
+import multer from 'multer';
+import * as pdfParseModule from 'pdf-parse';
+import OpenAI from 'openai';
+
+// Fix for pdf-parse ES module compatibility
+const pdfParse = (pdfParseModule as any).default || pdfParseModule;
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const TARGET_EMAIL = "polo.perry@yahoo.com";
@@ -968,6 +974,207 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ 
         success: false, 
         message: 'Failed to retrieve Realtor.com valuation' 
+      });
+    }
+  });
+
+  // Configure multer for PDF file uploads (in-memory storage)
+  const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+    fileFilter: (req, file, cb) => {
+      if (file.mimetype === 'application/pdf') {
+        cb(null, true);
+      } else {
+        cb(new Error('Only PDF files are allowed'));
+      }
+    }
+  });
+
+  // Initialize OpenAI client using Replit AI Integrations
+  // This internally uses Replit AI Integrations for OpenAI access, 
+  // does not require your own API key, and charges are billed to your credits
+  const openai = new OpenAI({
+    baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+    apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY
+  });
+
+  // PDF Upload and Extraction Route
+  app.post("/api/pdf/upload", upload.single('pdf'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "No PDF file uploaded" 
+        });
+      }
+
+      const { documentType, clientId } = req.body;
+
+      // Step 1: Extract text from PDF using pdf-parse
+      const pdfData = await pdfParse(req.file.buffer);
+      const extractedText = pdfData.text;
+
+      if (!extractedText || extractedText.trim().length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: "No text could be extracted from the PDF"
+        });
+      }
+
+      // Step 2: Use AI to structure the data based on document type
+      const systemPrompt = `You are a mortgage document processing expert. Extract structured data from the following ${documentType || 'mortgage'} document.
+
+Return a JSON object with these fields (use null for missing data):
+{
+  "documentType": "string (paystub, tax_return, bank_statement, mortgage_statement, or other)",
+  "borrowerName": "string or null",
+  "borrowerAddress": "string or null",
+  "employerName": "string or null (for paystubs)",
+  "grossPay": number or null (for paystubs),
+  "netPay": number or null (for paystubs),
+  "payPeriod": "string or null (for paystubs)",
+  "yearToDateGross": number or null (for paystubs)",
+  "loanNumber": "string or null (for mortgage statements)",
+  "lenderName": "string or null (for mortgage statements)",
+  "propertyAddress": "string or null (for mortgage statements)",
+  "loanAmount": number or null,
+  "currentBalance": number or null,
+  "interestRate": number or null,
+  "monthlyPayment": number or null,
+  "principalAndInterest": number or null,
+  "escrowAmount": number or null,
+  "filingStatus": "string or null (for tax returns)",
+  "taxYear": "string or null (for tax returns)",
+  "adjustedGrossIncome": number or null (for tax returns)",
+  "totalIncome": number or null (for tax returns)",
+  "accountNumber": "string or null (for bank statements)",
+  "bankName": "string or null (for bank statements)",
+  "statementDate": "string or null",
+  "beginningBalance": number or null (for bank statements)",
+  "endingBalance": number or null (for bank statements)",
+  "totalDeposits": number or null (for bank statements)",
+  "totalWithdrawals": number or null (for bank statements)",
+  "additionalInfo": {} (object with any other relevant extracted data)
+}`;
+
+      // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
+      const completion = await openai.chat.completions.create({
+        model: "gpt-5",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: extractedText }
+        ],
+        response_format: { type: "json_object" },
+        max_completion_tokens: 4096
+      });
+
+      const structuredData = JSON.parse(completion.choices[0].message.content || '{}');
+
+      // Step 3: Save to storage
+      const pdfDocument = await storage.createPdfDocument({
+        fileName: req.file.originalname,
+        fileSize: `${(req.file.size / 1024).toFixed(2)} KB`,
+        uploadDate: new Date().toISOString(),
+        documentType: structuredData.documentType || documentType || 'other',
+        extractedText,
+        structuredData: JSON.stringify(structuredData),
+        clientId: clientId || null,
+        status: 'processed'
+      });
+
+      res.json({
+        success: true,
+        message: "PDF processed successfully",
+        data: {
+          id: pdfDocument.id,
+          fileName: pdfDocument.fileName,
+          documentType: pdfDocument.documentType,
+          uploadDate: pdfDocument.uploadDate,
+          structuredData
+        }
+      });
+
+    } catch (error) {
+      console.error("PDF upload/extraction error:", error);
+      res.status(500).json({
+        success: false,
+        message: error instanceof Error ? error.message : "Failed to process PDF"
+      });
+    }
+  });
+
+  // Get all PDF documents (optionally filtered by clientId)
+  app.get("/api/pdf/documents", async (req, res) => {
+    try {
+      const { clientId } = req.query;
+      const documents = await storage.getPdfDocuments(clientId as string | undefined);
+      
+      // Return documents with parsed structured data
+      const documentsWithData = documents.map(doc => ({
+        ...doc,
+        structuredData: doc.structuredData ? JSON.parse(doc.structuredData) : null
+      }));
+
+      res.json({ success: true, data: documentsWithData });
+    } catch (error) {
+      console.error("Get PDF documents error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to retrieve documents"
+      });
+    }
+  });
+
+  // Get a single PDF document by ID
+  app.get("/api/pdf/documents/:id", async (req, res) => {
+    try {
+      const document = await storage.getPdfDocument(req.params.id);
+      
+      if (!document) {
+        return res.status(404).json({
+          success: false,
+          message: "Document not found"
+        });
+      }
+
+      res.json({
+        success: true,
+        data: {
+          ...document,
+          structuredData: document.structuredData ? JSON.parse(document.structuredData) : null
+        }
+      });
+    } catch (error) {
+      console.error("Get PDF document error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to retrieve document"
+      });
+    }
+  });
+
+  // Delete a PDF document
+  app.delete("/api/pdf/documents/:id", async (req, res) => {
+    try {
+      const deleted = await storage.deletePdfDocument(req.params.id);
+      
+      if (!deleted) {
+        return res.status(404).json({
+          success: false,
+          message: "Document not found"
+        });
+      }
+
+      res.json({
+        success: true,
+        message: "Document deleted successfully"
+      });
+    } catch (error) {
+      console.error("Delete PDF document error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to delete document"
       });
     }
   });

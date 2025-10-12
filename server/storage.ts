@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Client, type InsertClient } from "@shared/schema";
+import { type User, type InsertUser, type Client, type InsertClient, type PdfDocument, type InsertPdfDocument } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 // modify the interface with any CRUD methods
@@ -16,15 +16,23 @@ export interface IStorage {
   updateClient(id: string, patch: Partial<Client>): Promise<Client | undefined>;
   deleteClient(id: string): Promise<boolean>;
   searchClients(query: string): Promise<Client[]>;
+  
+  // PDF Document methods
+  createPdfDocument(doc: InsertPdfDocument): Promise<PdfDocument>;
+  getPdfDocument(id: string): Promise<PdfDocument | undefined>;
+  getPdfDocuments(clientId?: string): Promise<PdfDocument[]>;
+  deletePdfDocument(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
   private clients: Map<string, Client>;
+  private pdfDocuments: Map<string, PdfDocument>;
 
   constructor() {
     this.users = new Map();
     this.clients = new Map();
+    this.pdfDocuments = new Map();
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -146,6 +154,39 @@ export class MemStorage implements IStorage {
       
       return false;
     });
+  }
+
+  // PDF Document methods
+  async createPdfDocument(doc: InsertPdfDocument): Promise<PdfDocument> {
+    const id = randomUUID();
+    const pdfDocument: PdfDocument = { 
+      ...doc, 
+      id,
+      documentType: doc.documentType || null,
+      fileSize: doc.fileSize || null,
+      extractedText: doc.extractedText || null,
+      structuredData: doc.structuredData || null,
+      clientId: doc.clientId || null,
+      status: doc.status || 'processed'
+    };
+    this.pdfDocuments.set(id, pdfDocument);
+    return pdfDocument;
+  }
+
+  async getPdfDocument(id: string): Promise<PdfDocument | undefined> {
+    return this.pdfDocuments.get(id);
+  }
+
+  async getPdfDocuments(clientId?: string): Promise<PdfDocument[]> {
+    const allDocs = Array.from(this.pdfDocuments.values());
+    if (clientId) {
+      return allDocs.filter(doc => doc.clientId === clientId);
+    }
+    return allDocs;
+  }
+
+  async deletePdfDocument(id: string): Promise<boolean> {
+    return this.pdfDocuments.delete(id);
   }
 }
 
