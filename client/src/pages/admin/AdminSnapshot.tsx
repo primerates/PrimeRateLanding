@@ -12,6 +12,7 @@ export default function AdminSnapshot() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [entryType, setEntryType] = useState<string | null>(null);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
+  const [showRevenueForm, setShowRevenueForm] = useState(false);
   const [isExpenseTableMinimized, setIsExpenseTableMinimized] = useState(false);
   const [areChartsMinimized, setAreChartsMinimized] = useState(false);
   const [isTransactionsMinimized, setIsTransactionsMinimized] = useState(false);
@@ -23,8 +24,10 @@ export default function AdminSnapshot() {
   const [openActionMenu, setOpenActionMenu] = useState<number | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingExpenseId, setEditingExpenseId] = useState<number | null>(null);
+  const [editingRevenueId, setEditingRevenueId] = useState<number | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteExpenseId, setDeleteExpenseId] = useState<number | null>(null);
+  const [deleteRevenueId, setDeleteRevenueId] = useState<number | null>(null);
   const [adminCode, setAdminCode] = useState('');
   const [expenseEntries, setExpenseEntries] = useState([
     {
@@ -48,6 +51,19 @@ export default function AdminSnapshot() {
       clearanceDate: '10/06/2025'
     }
   ]);
+  const [revenueEntries, setRevenueEntries] = useState([
+    {
+      id: 1,
+      logDate: '10/03/2025',
+      revenue: '$15,000',
+      paymentForm: 'Wire Transfer',
+      revenueCategory: 'Select',
+      paymentFrom: 'ABC Mortgage',
+      transactionDate: '10/03/2025',
+      clearanceDate: '10/04/2025',
+      revenueTerm: 'One-Time Payment'
+    }
+  ]);
   const [sortConfig, setSortConfig] = useState<{ key: string | null; direction: 'asc' | 'desc' }>({ key: null, direction: 'asc' });
   const [newExpense, setNewExpense] = useState({
     logDate: '',
@@ -58,6 +74,16 @@ export default function AdminSnapshot() {
     transactionDate: '',
     clearanceDate: '',
     paymentTerm: ''
+  });
+  const [newRevenue, setNewRevenue] = useState({
+    logDate: '',
+    revenue: '',
+    paymentForm: '',
+    revenueCategory: '',
+    paymentFrom: '',
+    transactionDate: '',
+    clearanceDate: '',
+    revenueTerm: ''
   });
 
   // Sample data - in production, this would come from your API
@@ -120,6 +146,17 @@ export default function AdminSnapshot() {
     setNewExpense({ ...newExpense, [field]: value });
   };
 
+  const handleRevenueDateInput = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length >= 2) {
+      value = value.slice(0, 2) + '/' + value.slice(2);
+    }
+    if (value.length >= 5) {
+      value = value.slice(0, 5) + '/' + value.slice(5, 9);
+    }
+    setNewRevenue({ ...newRevenue, [field]: value });
+  };
+
   const handleDollarInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/[^0-9]/g, '');
     if (value === '') {
@@ -129,6 +166,17 @@ export default function AdminSnapshot() {
     const numValue = parseInt(value);
     const formatted = '$' + numValue.toLocaleString('en-US');
     setNewExpense({ ...newExpense, expense: formatted });
+  };
+
+  const handleRevenueDollarInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/[^0-9]/g, '');
+    if (value === '') {
+      setNewRevenue({ ...newRevenue, revenue: '' });
+      return;
+    }
+    const numValue = parseInt(value);
+    const formatted = '$' + numValue.toLocaleString('en-US');
+    setNewRevenue({ ...newRevenue, revenue: formatted });
   };
 
   const handleTransactionDateInput = (e: React.ChangeEvent<HTMLInputElement>, field: 'fromDate' | 'toDate') => {
@@ -223,7 +271,78 @@ export default function AdminSnapshot() {
       setDeleteExpenseId(null);
       setAdminCode('');
     }
+    if (deleteRevenueId) {
+      setRevenueEntries(revenueEntries.filter(entry => entry.id !== deleteRevenueId));
+      setShowDeleteModal(false);
+      setDeleteRevenueId(null);
+      setAdminCode('');
+    }
   };
+
+  const handleAddRevenue = () => {
+    if (newRevenue.logDate && newRevenue.revenue) {
+      if (isEditMode && editingRevenueId) {
+        // Update existing revenue
+        setRevenueEntries(revenueEntries.map(entry => 
+          entry.id === editingRevenueId ? { ...newRevenue, id: editingRevenueId } : entry
+        ));
+        setIsEditMode(false);
+        setEditingRevenueId(null);
+      } else {
+        // Add new revenue
+        setRevenueEntries([...revenueEntries, { ...newRevenue, id: revenueEntries.length + 1 }]);
+      }
+      setNewRevenue({
+        logDate: '',
+        revenue: '',
+        paymentForm: '',
+        revenueCategory: '',
+        paymentFrom: '',
+        transactionDate: '',
+        clearanceDate: '',
+        revenueTerm: ''
+      });
+      setShowRevenueForm(false);
+    }
+  };
+
+  const handleEditRevenue = (revenue: any) => {
+    setNewRevenue({
+      logDate: revenue.logDate,
+      revenue: revenue.revenue,
+      paymentForm: revenue.paymentForm,
+      revenueCategory: revenue.revenueCategory,
+      paymentFrom: revenue.paymentFrom,
+      transactionDate: revenue.transactionDate,
+      clearanceDate: revenue.clearanceDate,
+      revenueTerm: revenue.revenueTerm || ''
+    });
+    setIsEditMode(true);
+    setEditingRevenueId(revenue.id);
+    setShowRevenueForm(true);
+    setOpenActionMenu(null);
+  };
+
+  const handleDeleteRevenue = (revenueId: number) => {
+    setDeleteRevenueId(revenueId);
+    setShowDeleteModal(true);
+    setOpenActionMenu(null);
+  };
+
+  const sortedRevenues = [...revenueEntries].sort((a: any, b: any) => {
+    if (!sortConfig.key) return 0;
+    
+    const aValue = a[sortConfig.key];
+    const bValue = b[sortConfig.key];
+    
+    if (aValue < bValue) {
+      return sortConfig.direction === 'asc' ? -1 : 1;
+    }
+    if (aValue > bValue) {
+      return sortConfig.direction === 'asc' ? 1 : -1;
+    }
+    return 0;
+  });
 
   // Custom tooltip that matches the pie slice color
   const CustomTooltip = ({ active, payload }: any) => {
@@ -868,6 +987,320 @@ export default function AdminSnapshot() {
           </div>
         )}
 
+        {/* Revenue Log - Similar structure to Expense Log */}
+        {showRevenueForm && (
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl animate-in">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold text-white">Revenue Log</h3>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setShowRevenueForm(false)}
+                  className="text-sm text-purple-300 hover:text-white transition-colors"
+                  data-testid="button-close-revenue-form"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+
+            {entryType === 'revenue' && (
+              <>
+                {/* First Row: Log Date, Transaction Date, Clear Date, Revenue Category */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                  <input
+                    type="text"
+                    placeholder="Log Date (MM/DD/YYYY)"
+                    value={newRevenue.logDate}
+                    onChange={(e) => handleRevenueDateInput(e, 'logDate')}
+                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                    data-testid="input-revenue-log-date"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Transaction Date (MM/DD/YYYY)"
+                    value={newRevenue.transactionDate}
+                    onChange={(e) => handleRevenueDateInput(e, 'transactionDate')}
+                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                    data-testid="input-revenue-transaction-date"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Clear Date (MM/DD/YYYY)"
+                    value={newRevenue.clearanceDate}
+                    onChange={(e) => handleRevenueDateInput(e, 'clearanceDate')}
+                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                    data-testid="input-revenue-clear-date"
+                  />
+                  <select
+                    value={newRevenue.revenueCategory}
+                    onChange={(e) => setNewRevenue({ ...newRevenue, revenueCategory: e.target.value })}
+                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                    data-testid="select-revenue-category"
+                  >
+                    <option value="" disabled>Revenue Category</option>
+                    <option value="Select">Select</option>
+                    <option value="TBD">TBD</option>
+                  </select>
+                </div>
+
+                {/* Second Row: Revenue Term, Payment From, Payment Form, Amount */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                  <select
+                    value={newRevenue.revenueTerm}
+                    onChange={(e) => setNewRevenue({ ...newRevenue, revenueTerm: e.target.value })}
+                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                    data-testid="select-revenue-term"
+                  >
+                    <option value="" disabled>Revenue Term</option>
+                    <option value="Monthly Payment">Monthly Payment</option>
+                    <option value="One-Time Payment">One-Time Payment</option>
+                  </select>
+                  <select
+                    value={newRevenue.paymentFrom}
+                    onChange={(e) => setNewRevenue({ ...newRevenue, paymentFrom: e.target.value })}
+                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                    data-testid="select-payment-from"
+                  >
+                    <option value="" disabled>Payment From</option>
+                    <option value="Select">Select</option>
+                    <option value="TBD">TBD</option>
+                  </select>
+                  <select
+                    value={newRevenue.paymentForm}
+                    onChange={(e) => setNewRevenue({ ...newRevenue, paymentForm: e.target.value })}
+                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                    data-testid="select-payment-form"
+                  >
+                    <option value="" disabled>Payment Form</option>
+                    <option value="Select">Select</option>
+                    <option value="TBD">TBD</option>
+                  </select>
+                  <input
+                    type="text"
+                    placeholder="Amount"
+                    value={newRevenue.revenue}
+                    onChange={handleRevenueDollarInput}
+                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                    data-testid="input-revenue"
+                  />
+                </div>
+
+                <button
+                  onClick={handleAddRevenue}
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold py-3 rounded-lg border border-purple-400/30 transition-all shadow-lg hover:shadow-purple-500/50"
+                  data-testid="button-submit-revenue"
+                >
+                  {isEditMode ? 'Update Revenue' : 'Add Revenue'}
+                </button>
+              </>
+            )}
+          </div>
+        )}
+
+        {/* Transactions Table for Revenue - Separate Card */}
+        {showRevenueForm && (
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl animate-in">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-2xl font-bold text-white">Transactions</h3>
+              <button
+                onClick={() => setIsTransactionsMinimized(!isTransactionsMinimized)}
+                className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                title={isTransactionsMinimized ? "Expand" : "Minimize"}
+                data-testid="button-toggle-revenue-transactions"
+              >
+                {isTransactionsMinimized ? (
+                  <Plus className="w-5 h-5 text-purple-300" />
+                ) : (
+                  <Minus className="w-5 h-5 text-purple-300" />
+                )}
+              </button>
+            </div>
+
+            {!isTransactionsMinimized && (
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <select
+                    value={transactionDateFilter}
+                    onChange={(e) => setTransactionDateFilter(e.target.value)}
+                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors text-sm"
+                    data-testid="select-revenue-date-filter"
+                  >
+                    <option value="today">Today</option>
+                    <option value="mtd">MTD</option>
+                    <option value="ytd">YTD</option>
+                    <option value="dateRange">Date Range</option>
+                  </select>
+
+                  {transactionDateFilter === 'dateRange' && (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        placeholder="From (MM/DD/YYYY)"
+                        value={transactionDateRange.fromDate}
+                        onChange={(e) => handleTransactionDateInput(e, 'fromDate')}
+                        className="bg-slate-700/50 text-white px-3 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors text-sm w-36"
+                        data-testid="input-revenue-from-date"
+                      />
+                      <input
+                        type="text"
+                        placeholder="To (MM/DD/YYYY)"
+                        value={transactionDateRange.toDate}
+                        onChange={(e) => handleTransactionDateInput(e, 'toDate')}
+                        className="bg-slate-700/50 text-white px-3 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors text-sm w-36"
+                        data-testid="input-revenue-to-date"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            
+            {/* Separation line */}
+            <div className="border-t border-purple-500/30 mb-6"></div>
+
+            {!isTransactionsMinimized && (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-purple-500/30">
+                      <th 
+                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                        onClick={() => handleSort('logDate')}
+                        data-testid="header-revenue-log-date"
+                      >
+                        <div className="flex items-center gap-1">
+                          Log Date
+                          <ArrowUpDown className="w-4 h-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                        onClick={() => handleSort('transactionDate')}
+                        data-testid="header-revenue-transaction-date"
+                      >
+                        <div className="flex items-center gap-1">
+                          Transaction Date
+                          <ArrowUpDown className="w-4 h-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                        onClick={() => handleSort('clearanceDate')}
+                        data-testid="header-revenue-clear-date"
+                      >
+                        <div className="flex items-center gap-1">
+                          Clear Date
+                          <ArrowUpDown className="w-4 h-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                        onClick={() => handleSort('revenueCategory')}
+                        data-testid="header-revenue-category"
+                      >
+                        <div className="flex items-center gap-1">
+                          Revenue Category
+                          <ArrowUpDown className="w-4 h-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                        onClick={() => handleSort('revenueTerm')}
+                        data-testid="header-revenue-term"
+                      >
+                        <div className="flex items-center gap-1">
+                          Revenue Term
+                          <ArrowUpDown className="w-4 h-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                        onClick={() => handleSort('paymentFrom')}
+                        data-testid="header-payment-from"
+                      >
+                        <div className="flex items-center gap-1">
+                          Payment From
+                          <ArrowUpDown className="w-4 h-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                        onClick={() => handleSort('paymentForm')}
+                        data-testid="header-payment-form"
+                      >
+                        <div className="flex items-center gap-1">
+                          Payment Form
+                          <ArrowUpDown className="w-4 h-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                        onClick={() => handleSort('revenue')}
+                        data-testid="header-revenue"
+                      >
+                        <div className="flex items-center gap-1">
+                          Amount
+                          <ArrowUpDown className="w-4 h-4" />
+                        </div>
+                      </th>
+                      <th className="text-left text-purple-300 font-semibold py-3 px-2">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sortedRevenues.map((entry: any) => (
+                      <tr 
+                        key={entry.id} 
+                        className="border-b border-purple-500/10 hover:bg-slate-700/30 transition-colors"
+                        data-testid={`revenue-row-${entry.id}`}
+                      >
+                        <td className="py-3 px-2 text-purple-200">{entry.logDate}</td>
+                        <td className="py-3 px-2 text-purple-200">{entry.transactionDate}</td>
+                        <td className="py-3 px-2 text-purple-200">{entry.clearanceDate}</td>
+                        <td className="py-3 px-2 text-purple-200">{entry.revenueCategory}</td>
+                        <td className="py-3 px-2 text-purple-200">{entry.revenueTerm || '-'}</td>
+                        <td className="py-3 px-2 text-purple-200">{entry.paymentFrom}</td>
+                        <td className="py-3 px-2 text-purple-200">{entry.paymentForm}</td>
+                        <td className="py-3 px-2 text-white">{entry.revenue}</td>
+                        <td className="py-3 px-2 relative">
+                          <button
+                            onClick={() => setOpenActionMenu(openActionMenu === entry.id ? null : entry.id)}
+                            className="text-purple-300 hover:text-white transition-colors"
+                            data-testid={`button-revenue-action-menu-${entry.id}`}
+                          >
+                            <MoreVertical className="w-5 h-5" />
+                          </button>
+                          
+                          {/* Action Menu Popup */}
+                          {openActionMenu === entry.id && (
+                            <div className="absolute right-0 mt-2 w-32 bg-slate-800 rounded-lg border border-purple-500/30 shadow-xl z-50 overflow-hidden">
+                              <button
+                                onClick={() => handleEditRevenue(entry)}
+                                className="w-full px-4 py-2 text-left text-purple-200 hover:bg-purple-500/20 transition-colors"
+                                data-testid={`button-revenue-edit-${entry.id}`}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDeleteRevenue(entry.id)}
+                                className="w-full px-4 py-2 text-left text-purple-200 hover:bg-purple-500/20 transition-colors"
+                                data-testid={`button-revenue-delete-${entry.id}`}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Add Entry Modal */}
         {showAddModal && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -886,7 +1319,8 @@ export default function AdminSnapshot() {
                 <button
                   onClick={() => {
                     setEntryType('revenue');
-                    console.log('Add Revenue clicked');
+                    setShowRevenueForm(true);
+                    setShowAddModal(false);
                   }}
                   className="w-full p-6 bg-gradient-to-br from-blue-500/20 to-indigo-600/20 hover:from-blue-500/30 hover:to-indigo-600/30 rounded-xl border border-blue-500/30 hover:border-blue-500/50 transition-all group"
                   data-testid="button-add-revenue"
@@ -926,7 +1360,9 @@ export default function AdminSnapshot() {
         {showDeleteModal && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div className="bg-slate-800 rounded-2xl border border-purple-500/30 shadow-2xl max-w-md w-full p-6 relative animate-in">
-              <h2 className="text-2xl font-bold text-white mb-6">Delete Expense</h2>
+              <h2 className="text-2xl font-bold text-white mb-6">
+                {deleteExpenseId ? 'Delete Expense' : 'Delete Revenue'}
+              </h2>
               
               <p className="text-purple-300 mb-6">Enter admin code to confirm deletion</p>
               
@@ -946,6 +1382,7 @@ export default function AdminSnapshot() {
                     onClick={() => {
                       setShowDeleteModal(false);
                       setDeleteExpenseId(null);
+                      setDeleteRevenueId(null);
                       setAdminCode('');
                     }}
                     className="flex-1 px-4 py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg border border-purple-500/30 transition-all"
