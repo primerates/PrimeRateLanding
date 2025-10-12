@@ -1023,9 +1023,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log("PDF parse failed, text layer may not exist:", pdfParseError);
       }
 
-      // Step 2: If no text was extracted, use OCR.space API
-      if (!extractedText || extractedText.trim().length < 50) {
-        console.log("Using OCR.space for text extraction (no text layer or insufficient text found)");
+      // Step 2: If no text was extracted or only page markers found, use OCR.space API
+      const hasOnlyPageMarkers = extractedText && extractedText.includes('--') && extractedText.split('\n').filter(line => line.trim() && !line.includes('--')).length < 5;
+      
+      if (!extractedText || extractedText.trim().length < 100 || hasOnlyPageMarkers) {
+        console.log("Using OCR.space for text extraction (no text layer, insufficient text, or only page markers found)");
         
         const ocrApiKey = process.env.OCR_SPACE_API_KEY;
         if (!ocrApiKey) {
