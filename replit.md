@@ -113,7 +113,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 Comprehensive navigation system with tabs in this order (left to right):
 1. **Lead**: Lead management (coming soon)
 2. **Marketing**: Direct mail campaigns, lead vendors, social media (has content)
-3. **Snapshot**: Business overview and analytics (coming soon)
+3. **Snapshot**: Business overview and analytics with real-time financial insights, revenue sources breakdown, expense tracking, and drill-down capabilities
 4. **Library**: Document and resource management (coming soon)
 5. **Settings**: System configuration (coming soon)
 6. **Vendors**: Vendor management (coming soon)
@@ -126,6 +126,23 @@ Comprehensive navigation system with tabs in this order (left to right):
 
 #### Admin Marketing System
 Features a header with "Back to Dashboard", "Shortcut Menu", "Screenshare", and "Save" options. Its navigation includes "Direct Mail", "Lead Vendor", "Social Media", and "Notes" tabs. The "Direct Mail" tab contains a Query Card for filtering and a Create Batch Card for new campaign setup, supporting 5-row layouts for campaign parameters, vendor details, and cost tracking, along with CSV upload and state selection. Batch details and lists are also managed here.
+
+### Snapshot Analytics Dashboard
+**Route**: `/admin/reports`
+
+**Features**:
+- **Real-time Financial Metrics**: Displays Gross Income, Revenue, and Expense with trend indicators
+- **Interactive Filters**: Entity filter (Show All, Company, Branch, Partners) and time period filter (Today, MTD, YTD, Custom)
+- **Revenue Sources Visualization**: Pie chart with detailed breakdown by source (Direct Mail, Lead Vendors, Social Media, Repeat Clients, Referrals)
+- **Expense Breakdown**: Pie chart categorizing expenses (Marketing, Staff, Vendors, Services, Supplies)
+- **Drill-down Capabilities**: Click on "Direct Mail" to view state-by-state breakdown and loan program distribution
+- **Visual Design**: Dark gradient theme (slate-900 to purple-900) with glassmorphism cards and animated elements
+
+**Technology Stack**:
+- Recharts library for data visualization (PieChart, BarChart with responsive containers)
+- Interactive drill-down with state management
+- Custom tooltips with currency formatting
+- Live status indicator with animation
 
 ### Background Selector System
 Allows customization of dashboard and login page backgrounds with various presets (e.g., Geometric Cubes, Infinity Grid, Neon Night). Supports mode toggling, visual previews, and persistence via localStorage.
