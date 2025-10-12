@@ -1038,6 +1038,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
         
         const { TextractClient, DetectDocumentTextCommand } = await import('@aws-sdk/client-textract');
+        const { PDFDocument } = await import('pdf-lib');
         
         const textractClient = new TextractClient({
           region: process.env.AWS_REGION || 'us-east-1',
@@ -1048,9 +1049,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
 
         try {
+          // AWS Textract's DetectDocumentTextCommand only supports single-page PDFs
+          // For multi-page PDFs, extract only the first page
+          let pdfBuffer = req.file.buffer;
+          
+          const pdfDoc = await PDFDocument.load(req.file.buffer);
+          const pageCount = pdfDoc.getPageCount();
+          
+          if (pageCount > 1) {
+            console.log(`Multi-page PDF detected (${pageCount} pages). Extracting first page only...`);
+            
+            // Create a new PDF with only the first page
+            const newPdf = await PDFDocument.create();
+            const [firstPage] = await newPdf.copyPages(pdfDoc, [0]);
+            newPdf.addPage(firstPage);
+            
+            pdfBuffer = Buffer.from(await newPdf.save());
+            console.log(`Created single-page PDF for Textract processing`);
+          }
+
           const command = new DetectDocumentTextCommand({
             Document: {
-              Bytes: req.file.buffer,
+              Bytes: pdfBuffer,
             },
           });
 
