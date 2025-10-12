@@ -162,7 +162,7 @@ export default function AdminDashboard() {
   };
 
   const handleMenuClick = (path: string) => {
-    if (path === '/admin/funded' || path === '/admin/reports' || path === '/admin/library' || path === '/admin/audit' || path === '/admin/records' || path === '/admin/vault') {
+    if (path === '/admin/funded' || path === '/admin/reports' || path === '/admin/library' || path === '/admin/audit' || path === '/admin/records') {
       toast({
         title: "Coming Soon",
         description: "This page is under development.",
