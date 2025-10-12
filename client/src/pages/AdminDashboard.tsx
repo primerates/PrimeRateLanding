@@ -396,12 +396,12 @@ export default function AdminDashboard() {
           transformOrigin: 'top'
         }}
       >
-        <div className="mb-16"></div>
+        <div className="mb-20"></div>
         
         {/* Menu Grid - First Row */}
-        <div className="flex items-start gap-4">
+        <div className="flex items-start gap-4 justify-center">
           <div 
-            className={`grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 flex-1 transition-all duration-500 ${
+            className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl transition-all duration-500 ${
               isRow1Visible ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'
             }`}
           >
@@ -450,9 +450,9 @@ export default function AdminDashboard() {
         </div>
 
         {/* Menu Grid - Second Row with extra spacing */}
-        <div className="flex items-start gap-4 mt-16">
+        <div className="flex items-start gap-4 mt-24 justify-center">
           <div 
-            className={`grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 flex-1 transition-all duration-500 ${
+            className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl transition-all duration-500 ${
               isRow2Visible ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'
             }`}
           >
@@ -501,9 +501,9 @@ export default function AdminDashboard() {
         </div>
 
         {/* Menu Grid - Third Row with extra spacing */}
-        <div className="flex items-start gap-4 mt-16">
+        <div className="flex items-start gap-4 mt-24 justify-center">
           <div 
-            className={`grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 flex-1 transition-all duration-500 ${
+            className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl transition-all duration-500 ${
               isRow3Visible ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'
             }`}
           >
