@@ -13,6 +13,7 @@ export default function AdminSnapshot() {
   const [entryType, setEntryType] = useState<string | null>(null);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
   const [showRevenueForm, setShowRevenueForm] = useState(false);
+  const [isRevenueFormMinimized, setIsRevenueFormMinimized] = useState(false);
   const [isExpenseTableMinimized, setIsExpenseTableMinimized] = useState(false);
   const [areChartsMinimized, setAreChartsMinimized] = useState(false);
   const [isTransactionsMinimized, setIsTransactionsMinimized] = useState(false);
@@ -303,7 +304,8 @@ export default function AdminSnapshot() {
         clearanceDate: '',
         revenueTerm: ''
       });
-      setShowRevenueForm(false);
+      // Minimize the form but keep transactions visible
+      setIsRevenueFormMinimized(true);
     }
   };
 
@@ -321,6 +323,7 @@ export default function AdminSnapshot() {
     setIsEditMode(true);
     setEditingRevenueId(revenue.id);
     setShowRevenueForm(true);
+    setIsRevenueFormMinimized(false); // Expand form when editing
     setOpenActionMenu(null);
   };
 
@@ -1012,20 +1015,35 @@ export default function AdminSnapshot() {
         {/* Revenue Log - Similar structure to Expense Log */}
         {showRevenueForm && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl animate-in">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-4">
               <h3 className="text-2xl font-bold text-white">Revenue Log</h3>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsRevenueFormMinimized(!isRevenueFormMinimized)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title={isRevenueFormMinimized ? "Expand" : "Minimize"}
+                  data-testid="button-toggle-revenue-form"
+                >
+                  {isRevenueFormMinimized ? (
+                    <Plus className="w-5 h-5 text-purple-300" />
+                  ) : (
+                    <Minus className="w-5 h-5 text-purple-300" />
+                  )}
+                </button>
                 <button
                   onClick={() => setShowRevenueForm(false)}
-                  className="text-sm text-purple-300 hover:text-white transition-colors"
+                  className="text-purple-300 hover:text-white transition-colors"
                   data-testid="button-close-revenue-form"
                 >
-                  Close
+                  <X className="w-6 h-6" />
                 </button>
               </div>
             </div>
+            
+            {/* Separation line */}
+            <div className="border-t border-purple-500/30 mb-6"></div>
 
-            {entryType === 'revenue' && (
+            {!isRevenueFormMinimized && (
               <>
                 {/* First Row: Log Date, Transaction Date, Clear Date, Revenue Category */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
@@ -1342,6 +1360,7 @@ export default function AdminSnapshot() {
                   onClick={() => {
                     setEntryType('revenue');
                     setShowRevenueForm(true);
+                    setIsRevenueFormMinimized(false); // Ensure form is expanded when adding new revenue
                     setShowAddModal(false);
                   }}
                   className="w-full p-6 bg-gradient-to-br from-blue-500/20 to-indigo-600/20 hover:from-blue-500/30 hover:to-indigo-600/30 rounded-xl border border-blue-500/30 hover:border-blue-500/50 transition-all group"
