@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X } from 'lucide-react';
+import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown } from 'lucide-react';
 
 export default function AdminSnapshot() {
   const [, setLocation] = useLocation();
@@ -11,6 +11,39 @@ export default function AdminSnapshot() {
   const [revenueDetailView, setRevenueDetailView] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [entryType, setEntryType] = useState<string | null>(null);
+  const [showExpenseForm, setShowExpenseForm] = useState(false);
+  const [expenseEntries, setExpenseEntries] = useState([
+    {
+      id: 1,
+      logDate: '10/01/2025',
+      expense: 'Marketing Campaign',
+      paidWith: 'Amex',
+      expenseCategory: 'Marketing',
+      paidTo: 'Google Ads',
+      transactionDate: '10/01/2025',
+      clearanceDate: '10/02/2025'
+    },
+    {
+      id: 2,
+      logDate: '10/05/2025',
+      expense: 'Office Supplies',
+      paidWith: 'Capital One',
+      expenseCategory: 'Supplies',
+      paidTo: 'Staples',
+      transactionDate: '10/04/2025',
+      clearanceDate: '10/06/2025'
+    }
+  ]);
+  const [sortConfig, setSortConfig] = useState<{ key: string | null; direction: 'asc' | 'desc' }>({ key: null, direction: 'asc' });
+  const [newExpense, setNewExpense] = useState({
+    logDate: '',
+    expense: '',
+    paidWith: '',
+    expenseCategory: '',
+    paidTo: '',
+    transactionDate: '',
+    clearanceDate: ''
+  });
 
   // Sample data - in production, this would come from your API
   const metricsData = {
@@ -59,6 +92,56 @@ export default function AdminSnapshot() {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(value);
+  };
+
+  const handleDateInput = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length >= 2) {
+      value = value.slice(0, 2) + '/' + value.slice(2);
+    }
+    if (value.length >= 5) {
+      value = value.slice(0, 5) + '/' + value.slice(5, 9);
+    }
+    setNewExpense({ ...newExpense, [field]: value });
+  };
+
+  const handleSort = (key: string) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedExpenses = [...expenseEntries].sort((a: any, b: any) => {
+    if (!sortConfig.key) return 0;
+    
+    const aValue = a[sortConfig.key];
+    const bValue = b[sortConfig.key];
+    
+    if (aValue < bValue) {
+      return sortConfig.direction === 'asc' ? -1 : 1;
+    }
+    if (aValue > bValue) {
+      return sortConfig.direction === 'asc' ? 1 : -1;
+    }
+    return 0;
+  });
+
+  const handleAddExpense = () => {
+    if (newExpense.logDate && newExpense.expense) {
+      setExpenseEntries([...expenseEntries, { ...newExpense, id: expenseEntries.length + 1 }]);
+      setNewExpense({
+        logDate: '',
+        expense: '',
+        paidWith: '',
+        expenseCategory: '',
+        paidTo: '',
+        transactionDate: '',
+        clearanceDate: ''
+      });
+      setShowExpenseForm(false);
+    }
   };
 
   // Custom tooltip that matches the pie slice color
@@ -318,6 +401,197 @@ export default function AdminSnapshot() {
           </div>
         </div>
 
+        {/* Expense Entry Form */}
+        {showExpenseForm && (
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl animate-in">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold text-white">Add Expense Entry</h3>
+              <button
+                onClick={() => setShowExpenseForm(false)}
+                className="text-purple-300 hover:text-white transition-colors"
+                data-testid="button-close-expense-form"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <input
+                type="text"
+                placeholder="Log Date (MM/DD/YYYY)"
+                value={newExpense.logDate}
+                onChange={(e) => handleDateInput(e, 'logDate')}
+                maxLength={10}
+                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                data-testid="input-log-date"
+              />
+              <input
+                type="text"
+                placeholder="Expense"
+                value={newExpense.expense}
+                onChange={(e) => setNewExpense({ ...newExpense, expense: e.target.value })}
+                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                data-testid="input-expense"
+              />
+              <input
+                type="text"
+                placeholder="Paid With"
+                value={newExpense.paidWith}
+                onChange={(e) => setNewExpense({ ...newExpense, paidWith: e.target.value })}
+                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                data-testid="input-paid-with"
+              />
+              <select
+                value={newExpense.expenseCategory}
+                onChange={(e) => setNewExpense({ ...newExpense, expenseCategory: e.target.value })}
+                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                data-testid="select-expense-category"
+              >
+                <option value="">Expense Category</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Staff">Staff</option>
+                <option value="Vendors">Vendors</option>
+                <option value="Services">Services</option>
+                <option value="Supplies">Supplies</option>
+              </select>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <input
+                type="text"
+                placeholder="Paid To"
+                value={newExpense.paidTo}
+                onChange={(e) => setNewExpense({ ...newExpense, paidTo: e.target.value })}
+                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                data-testid="input-paid-to"
+              />
+              <input
+                type="text"
+                placeholder="Transaction Date (MM/DD/YYYY)"
+                value={newExpense.transactionDate}
+                onChange={(e) => handleDateInput(e, 'transactionDate')}
+                maxLength={10}
+                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                data-testid="input-transaction-date"
+              />
+              <input
+                type="text"
+                placeholder="Clearance Date (MM/DD/YYYY)"
+                value={newExpense.clearanceDate}
+                onChange={(e) => handleDateInput(e, 'clearanceDate')}
+                maxLength={10}
+                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                data-testid="input-clearance-date"
+              />
+            </div>
+
+            <button
+              onClick={handleAddExpense}
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold py-3 rounded-lg border border-purple-400/30 transition-all shadow-lg hover:shadow-purple-500/50"
+              data-testid="button-submit-expense"
+            >
+              Add Expense
+            </button>
+
+            {/* Expense Entries Table */}
+            <div className="mt-8 overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-purple-500/30">
+                    <th 
+                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                      onClick={() => handleSort('logDate')}
+                      data-testid="header-log-date"
+                    >
+                      <div className="flex items-center gap-1">
+                        Log Date
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                      onClick={() => handleSort('expense')}
+                      data-testid="header-expense"
+                    >
+                      <div className="flex items-center gap-1">
+                        Expense
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                      onClick={() => handleSort('paidWith')}
+                      data-testid="header-paid-with"
+                    >
+                      <div className="flex items-center gap-1">
+                        Paid With
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                      onClick={() => handleSort('expenseCategory')}
+                      data-testid="header-expense-category"
+                    >
+                      <div className="flex items-center gap-1">
+                        Category
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                      onClick={() => handleSort('paidTo')}
+                      data-testid="header-paid-to"
+                    >
+                      <div className="flex items-center gap-1">
+                        Paid To
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                      onClick={() => handleSort('transactionDate')}
+                      data-testid="header-transaction-date"
+                    >
+                      <div className="flex items-center gap-1">
+                        Transaction Date
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                      onClick={() => handleSort('clearanceDate')}
+                      data-testid="header-clearance-date"
+                    >
+                      <div className="flex items-center gap-1">
+                        Clearance Date
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedExpenses.map((entry: any) => (
+                    <tr 
+                      key={entry.id} 
+                      className="border-b border-purple-500/10 hover:bg-slate-700/30 transition-colors"
+                      data-testid={`expense-row-${entry.id}`}
+                    >
+                      <td className="py-3 px-2 text-purple-200">{entry.logDate}</td>
+                      <td className="py-3 px-2 text-white">{entry.expense}</td>
+                      <td className="py-3 px-2 text-purple-200">{entry.paidWith}</td>
+                      <td className="py-3 px-2 text-purple-200">{entry.expenseCategory}</td>
+                      <td className="py-3 px-2 text-purple-200">{entry.paidTo}</td>
+                      <td className="py-3 px-2 text-purple-200">{entry.transactionDate}</td>
+                      <td className="py-3 px-2 text-purple-200">{entry.clearanceDate}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
         {/* Add Entry Modal */}
         {showAddModal && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -353,7 +627,8 @@ export default function AdminSnapshot() {
                 <button
                   onClick={() => {
                     setEntryType('expense');
-                    console.log('Add Expense clicked');
+                    setShowExpenseForm(true);
+                    setShowAddModal(false);
                   }}
                   className="w-full p-6 bg-gradient-to-br from-red-500/20 to-pink-600/20 hover:from-red-500/30 hover:to-pink-600/30 rounded-xl border border-red-500/30 hover:border-red-500/50 transition-all group"
                   data-testid="button-add-expense"
