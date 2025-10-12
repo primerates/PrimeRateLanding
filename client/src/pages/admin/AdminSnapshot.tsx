@@ -379,7 +379,7 @@ export default function AdminSnapshot() {
         {/* Header with Back Button */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2" data-testid="heading-analytics-dashboard">Loanview GPT</h1>
+            <h1 className="text-xl font-black italic text-white mb-2" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="heading-analytics-dashboard">LOANVIEW GPT</h1>
             <div className="flex items-center gap-2">
               <p 
                 className="text-purple-300 cursor-pointer hover:text-purple-200 transition-colors"
