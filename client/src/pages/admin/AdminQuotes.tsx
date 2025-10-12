@@ -39,7 +39,6 @@ export default function AdminQuotes() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [documentType, setDocumentType] = useState<string>('paystub');
   const [isDragging, setIsDragging] = useState(false);
-  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch all documents
@@ -78,9 +77,11 @@ export default function AdminQuotes() {
       });
     },
     onError: (error: Error) => {
+      // Clear selected file on error so UI doesn't show stale state
+      setSelectedFile(null);
       toast({
         title: 'Upload Failed',
-        description: error.message,
+        description: error.message || 'Could not process the PDF file. Please ensure it is a valid PDF document.',
         variant: 'destructive',
       });
     },
@@ -144,17 +145,22 @@ export default function AdminQuotes() {
   const handleUpload = async () => {
     if (!selectedFile) return;
     
-    setUploading(true);
     try {
       await uploadMutation.mutateAsync({ file: selectedFile, docType: documentType });
-    } finally {
-      setUploading(false);
+    } catch (error) {
+      // Error is handled by mutation onError
     }
   };
 
   // Render structured data display
   const renderStructuredData = (data: any) => {
-    if (!data) return null;
+    if (!data) {
+      return (
+        <div className="text-sm text-muted-foreground italic">
+          No structured data could be extracted from this document.
+        </div>
+      );
+    }
 
     const dataItems = [];
 
@@ -307,6 +313,14 @@ export default function AdminQuotes() {
       });
     }
 
+    if (dataItems.length === 0) {
+      return (
+        <div className="text-sm text-muted-foreground italic">
+          No structured data could be extracted from this document.
+        </div>
+      );
+    }
+
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {dataItems.map((item, index) => (
@@ -412,10 +426,10 @@ export default function AdminQuotes() {
                   <div className="flex justify-center gap-2">
                     <Button
                       onClick={handleUpload}
-                      disabled={uploading}
+                      disabled={uploadMutation.isPending}
                       data-testid="button-upload-pdf"
                     >
-                      {uploading ? (
+                      {uploadMutation.isPending ? (
                         <>
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                           Processing...
@@ -430,7 +444,7 @@ export default function AdminQuotes() {
                     <Button
                       variant="outline"
                       onClick={() => setSelectedFile(null)}
-                      disabled={uploading}
+                      disabled={uploadMutation.isPending}
                       data-testid="button-cancel-upload"
                     >
                       Cancel
