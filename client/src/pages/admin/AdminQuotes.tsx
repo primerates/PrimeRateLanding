@@ -90,13 +90,23 @@ export default function AdminQuotes() {
   // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      return apiRequest('DELETE', `/api/pdf/documents/${id}`);
+      const response = await apiRequest('DELETE', `/api/pdf/documents/${id}`);
+      return response;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/pdf/documents'] });
+    onSuccess: async () => {
+      // Invalidate and refetch to ensure UI updates
+      await queryClient.invalidateQueries({ queryKey: ['/api/pdf/documents'] });
+      await queryClient.refetchQueries({ queryKey: ['/api/pdf/documents'] });
       toast({
         title: 'Deleted',
         description: 'Document deleted successfully',
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: 'Delete Failed',
+        description: error.message || 'Failed to delete document',
+        variant: 'destructive',
       });
     },
   });
