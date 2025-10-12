@@ -50,6 +50,16 @@ const BorrowerForm = ({ isPrimary = true }: BorrowerFormProps) => {
     const priorYears = useWatch({ name: `${fieldPrefix}.yearsAtPriorAddress` as any, control: form.control });
     const priorMonths = useWatch({ name: `${fieldPrefix}.monthsAtPriorAddress` as any, control: form.control });
 
+    // Copy borrower data to co-borrower function
+    const copyBorrowerToCoResidence = () => {        
+        const borrowerResidenceAddress = form.getValues('borrower.residenceAddress');
+        const borrowerYearsAtAddress = form.getValues('borrower.yearsAtAddress');
+        const borrowerMonthsAtAddress = form.getValues('borrower.monthsAtAddress');
+        form.setValue('coBorrower.residenceAddress', borrowerResidenceAddress);
+        form.setValue('coBorrower.yearsAtAddress', borrowerYearsAtAddress);
+        form.setValue('coBorrower.monthsAtAddress', borrowerMonthsAtAddress);
+    };
+
     // Memoized conditional logic to prevent excessive re-renders
     const showPriorResidence = useMemo(() => {
         // Check if any time value has been entered and is not empty/zero
@@ -139,6 +149,18 @@ const BorrowerForm = ({ isPrimary = true }: BorrowerFormProps) => {
                                         </Button>
                                     )}
                                 </>
+                            )}
+                            {!isPrimary && (
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={copyBorrowerToCoResidence}
+                                    className="hover:bg-green-500 hover:text-white"
+                                    data-testid="button-copy-borrower-address"
+                                >
+                                    Same as Borrower
+                                </Button>
                             )}
                             <Tooltip>
                                 <TooltipTrigger asChild>
