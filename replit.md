@@ -102,6 +102,46 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 - `AWS_SECRET_ACCESS_KEY` - AWS secret key for Textract
 - `AWS_REGION` - AWS region (defaults to us-east-1)
 
+### Business Snapshot Dashboard (Snapshot Tile)
+
+**Route**: `/admin/snapshot`
+
+**Features**:
+- **Revenue & Expense Tracking**: Quick entry management with channel/category-based organization
+- **Summary Analytics**: Real-time calculation of total revenue, total expense, and net income
+- **Period Filtering**: 
+  - Year to Date (YTD): Entries from selected year up to current date
+  - Month to Date (MTD): Entries from selected year and current month
+  - Year: All entries from selected year
+- **Data Entry Forms**: 
+  - Add Revenue: Select channel and amount
+  - Add Expense: Select category and amount
+  - Built-in validation to prevent invalid entries
+- **File Upload**: 
+  - Upload invoices and receipts (.pdf, .jpg, .jpeg, .png)
+  - Multiple file support
+  - File management with remove functionality
+  - Period-filtered file count display
+- **History Tables**: 
+  - Revenue history with channel, amount, and date
+  - Expense history with category, amount, and date
+  - Period-filtered display
+
+**Technology Stack**:
+- Frontend: React with TypeScript, shadcn/ui components
+- State Management: React hooks with useMemo for performance optimization
+- File Handling: HTML5 file input with ref-based accessibility
+- Validation: Client-side validation with toast notifications
+
+**Data Structures**:
+- `RevenueEntry`: Channel, amount, date
+- `ExpenseEntry`: Category, amount, date
+- `UploadedFile`: ID, name, type, size, upload date
+
+**Pre-configured Channels/Categories**:
+- Revenue Channels: Product Sales, Consulting, Affiliate, Services, Licensing
+- Expense Categories: Marketing, Tech, Payroll, Operations, Software
+
 ### Financial Dashboard (Vault Tile)
 
 **Route**: `/admin/vault`
@@ -152,7 +192,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 Comprehensive navigation system with tabs in this order (left to right):
 1. **Lead**: Lead management (coming soon)
 2. **Marketing**: Direct mail campaigns, lead vendors, social media (has content)
-3. **Snapshot**: Business overview and analytics (coming soon)
+3. **Snapshot**: Business overview with revenue/expense tracking and file uploads (has content)
 4. **Library**: Document and resource management (coming soon)
 5. **Settings**: System configuration (coming soon)
 6. **Vendors**: Vendor management (coming soon)
