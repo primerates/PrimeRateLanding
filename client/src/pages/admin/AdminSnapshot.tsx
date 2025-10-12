@@ -188,19 +188,24 @@ export default function AdminSnapshot() {
         
         {/* Header with Back Button */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setLocation('/admin/dashboard')}
-              className="text-purple-300 hover:text-white hover:bg-purple-500/20"
-              data-testid="button-back-to-dashboard"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <div>
-              <h1 className="text-4xl font-bold text-white mb-2" data-testid="heading-analytics-dashboard">Dashboard</h1>
-              <p className="text-purple-300">Real-time insight</p>
+          <div>
+            <h1 className="text-4xl font-bold text-white mb-2" data-testid="heading-analytics-dashboard">Dashboard</h1>
+            <div className="flex items-center gap-2">
+              <p 
+                className="text-purple-300 cursor-pointer hover:text-purple-200 transition-colors"
+                onClick={() => setLocation('/admin/dashboard')}
+              >
+                Real-time insight
+              </p>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setLocation('/admin/dashboard')}
+                className="text-purple-300 hover:text-white hover:bg-purple-500/20 h-6 w-6"
+                data-testid="button-back-to-dashboard"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -214,7 +219,7 @@ export default function AdminSnapshot() {
               data-testid="button-add-entry"
             >
               <Plus className="w-5 h-5 text-white" />
-              <span className="text-white font-semibold">Add Entry</span>
+              <span className="text-white text-sm font-semibold">Add Entry</span>
             </button>
           </div>
         </div>
