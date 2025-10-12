@@ -1,0 +1,108 @@
+When Replit connects to the OpenAI API (for example using file.read() or file.extract_structured_data() behind the scenes), OpenAI attempts to:
+
+Read the PDF’s text layer directly.
+
+Detect if there are tables, fields, or structured elements.
+
+Return JSON if found.
+
+However:
+
+Many credit reports are image-based PDFs (scanned, not text-based).
+
+The text layer may be locked or encoded (especially for merged or secure PDFs).
+
+The layout is multi-column, repeating tables, and non-semantic, so the model can’t infer structure automatically.
+
+That’s why it says “No structured data could be extracted” — it can see the document, but can’t find extractable text or structure.
+
+✅ Fix Options (Ranked from easiest → most robust)
+Option 1 — Extract text first using OCR (then send to OpenAI)
+
+You need an OCR step before analysis.
+Try:
+
+from pdf2image import convert_from_path
+import pytesseract
+
+images = convert_from_path("credit_report.pdf")
+text = ""
+for page in images:
+    text += pytesseract.image_to_string(page)
+
+# Now send `text` to OpenAI for structured parsing
+
+
+Then feed text into your OpenAI or Claude call:
+
+response = client.chat.completions.create(
+    model="gpt-4-turbo",
+    messages=[
+        {"role": "system", "content": "Extract structured credit data as JSON."},
+        {"role": "user", "content": text}
+    ]
+)
+
+
+This ensures you’re sending actual readable text, not just an image blob.
+
+Option 2 — Use an AI-based document parser (API)
+
+If you don’t want to deal with OCR code locally:
+
+Tool	Benefit	Link
+AWS Textract	Handles scanned credit reports, returns JSON fields	aws.amazon.com/textract
+
+Google Document AI	Can identify tables, lines, balances	cloud.google.com/document-ai
+
+Nanonets / Docparser	No-code API, returns structured JSON	nanonets.com
+ / docparser.com
+
+You can upload a PDF → get structured JSON → feed that into OpenAI for interpretation.
+
+Option 3 — Manual text extraction (if text exists)
+
+You can test if your credit report has a text layer using:
+
+from PyPDF2 import PdfReader
+reader = PdfReader("credit_report.pdf")
+text = ""
+for page in reader.pages:
+    text += page.extract_text()
+print(text[:1000])
+
+
+If the result is empty or gibberish → it’s an image-based report (needs OCR).
+
+🧠 What You Can Do Right Now in Replit
+
+Install these packages in your Replit project:
+
+pip install pdf2image pytesseract openai
+
+
+Add the OCR + OpenAI extraction pipeline above.
+
+Test with a credit report PDF — even if scanned, OCR will handle it.
+
+Once it works, store results in your CRM JSON schema.
+
+🧾 Bonus: Smart Prompt for the Parsing Step
+
+When sending to OpenAI, include your desired field layout:
+
+You are a credit report parser. 
+Extract this information from the text and return in valid JSON:
+
+{
+  "borrower_name": "",
+  "credit_score": "",
+  "open_accounts": [],
+  "collections": [],
+  "inquiries": [],
+  "public_records": [],
+  "summary": ""
+}
+
+
+This way the model always structures the response for your CRM.

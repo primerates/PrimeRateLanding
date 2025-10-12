@@ -163,9 +163,11 @@ export default function AdminQuotes() {
     }
 
     const dataItems = [];
+    const displayedFields = new Set<string>();
 
     // Borrower Information
     if (data.borrowerName) {
+      displayedFields.add('borrowerName');
       dataItems.push({
         icon: <User className="h-4 w-4" />,
         label: 'Borrower Name',
@@ -175,6 +177,7 @@ export default function AdminQuotes() {
     }
 
     if (data.borrowerAddress) {
+      displayedFields.add('borrowerAddress');
       dataItems.push({
         icon: <MapPin className="h-4 w-4" />,
         label: 'Address',
@@ -185,6 +188,7 @@ export default function AdminQuotes() {
 
     // Income Information (Paystub)
     if (data.employerName) {
+      displayedFields.add('employerName');
       dataItems.push({
         icon: <Briefcase className="h-4 w-4" />,
         label: 'Employer',
@@ -194,6 +198,7 @@ export default function AdminQuotes() {
     }
 
     if (data.grossPay) {
+      displayedFields.add('grossPay');
       dataItems.push({
         icon: <DollarSign className="h-4 w-4" />,
         label: 'Gross Pay',
@@ -203,6 +208,7 @@ export default function AdminQuotes() {
     }
 
     if (data.netPay) {
+      displayedFields.add('netPay');
       dataItems.push({
         icon: <DollarSign className="h-4 w-4" />,
         label: 'Net Pay',
@@ -212,6 +218,7 @@ export default function AdminQuotes() {
     }
 
     if (data.yearToDateGross) {
+      displayedFields.add('yearToDateGross');
       dataItems.push({
         icon: <TrendingUp className="h-4 w-4" />,
         label: 'YTD Gross',
@@ -222,6 +229,7 @@ export default function AdminQuotes() {
 
     // Loan Information
     if (data.lenderName) {
+      displayedFields.add('lenderName');
       dataItems.push({
         icon: <Building2 className="h-4 w-4" />,
         label: 'Lender',
@@ -231,6 +239,7 @@ export default function AdminQuotes() {
     }
 
     if (data.loanNumber) {
+      displayedFields.add('loanNumber');
       dataItems.push({
         icon: <FileText className="h-4 w-4" />,
         label: 'Loan Number',
@@ -240,6 +249,7 @@ export default function AdminQuotes() {
     }
 
     if (data.propertyAddress) {
+      displayedFields.add('propertyAddress');
       dataItems.push({
         icon: <Home className="h-4 w-4" />,
         label: 'Property Address',
@@ -249,6 +259,7 @@ export default function AdminQuotes() {
     }
 
     if (data.currentBalance) {
+      displayedFields.add('currentBalance');
       dataItems.push({
         icon: <DollarSign className="h-4 w-4" />,
         label: 'Current Balance',
@@ -258,6 +269,7 @@ export default function AdminQuotes() {
     }
 
     if (data.monthlyPayment) {
+      displayedFields.add('monthlyPayment');
       dataItems.push({
         icon: <CreditCard className="h-4 w-4" />,
         label: 'Monthly Payment',
@@ -267,6 +279,7 @@ export default function AdminQuotes() {
     }
 
     if (data.interestRate) {
+      displayedFields.add('interestRate');
       dataItems.push({
         icon: <TrendingUp className="h-4 w-4" />,
         label: 'Interest Rate',
@@ -277,6 +290,7 @@ export default function AdminQuotes() {
 
     // Bank Statement
     if (data.bankName) {
+      displayedFields.add('bankName');
       dataItems.push({
         icon: <Building2 className="h-4 w-4" />,
         label: 'Bank',
@@ -286,6 +300,7 @@ export default function AdminQuotes() {
     }
 
     if (data.endingBalance) {
+      displayedFields.add('endingBalance');
       dataItems.push({
         icon: <DollarSign className="h-4 w-4" />,
         label: 'Ending Balance',
@@ -296,6 +311,7 @@ export default function AdminQuotes() {
 
     // Tax Return
     if (data.adjustedGrossIncome) {
+      displayedFields.add('adjustedGrossIncome');
       dataItems.push({
         icon: <DollarSign className="h-4 w-4" />,
         label: 'Adjusted Gross Income',
@@ -305,6 +321,7 @@ export default function AdminQuotes() {
     }
 
     if (data.statementDate) {
+      displayedFields.add('statementDate');
       dataItems.push({
         icon: <Calendar className="h-4 w-4" />,
         label: 'Statement Date',
@@ -312,6 +329,37 @@ export default function AdminQuotes() {
         color: 'text-gray-600'
       });
     }
+
+    // Add any other fields from the data that weren't explicitly handled above
+    displayedFields.add('documentType'); // Don't show document type as a field
+    displayedFields.add('additionalInfo'); // Handle additionalInfo separately if needed
+    
+    Object.keys(data).forEach(key => {
+      if (!displayedFields.has(key) && data[key] !== null && data[key] !== undefined && data[key] !== '') {
+        let displayValue = data[key];
+        
+        // Format value based on type
+        if (typeof displayValue === 'object' && !Array.isArray(displayValue)) {
+          displayValue = JSON.stringify(displayValue, null, 2);
+        } else if (Array.isArray(displayValue)) {
+          displayValue = displayValue.join(', ');
+        }
+        
+        // Convert camelCase/snake_case to readable label
+        const label = key
+          .replace(/([A-Z])/g, ' $1')
+          .replace(/_/g, ' ')
+          .replace(/^./, str => str.toUpperCase())
+          .trim();
+        
+        dataItems.push({
+          icon: <FileText className="h-4 w-4" />,
+          label: label,
+          value: String(displayValue),
+          color: 'text-slate-600'
+        });
+      }
+    });
 
     if (dataItems.length === 0) {
       return (
