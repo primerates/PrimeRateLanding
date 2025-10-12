@@ -1086,6 +1086,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             extractedText = textBlocks;
             console.log(`AWS Textract extracted ${extractedText.length} characters from PDF`);
+            console.log(`First 300 chars: ${extractedText.substring(0, 300)}`);
           }
 
           if (!extractedText || extractedText.trim().length === 0) {
@@ -1157,18 +1158,31 @@ Return a JSON object with any/all relevant fields found. Include ANY field you f
   "additionalInfo": {} (object with any other relevant extracted data - include EVERYTHING you find)
 }`;
 
+      // For large documents (like credit reports), limit text sent to OpenAI
+      // Credit score and key info are usually in the first pages
+      const MAX_TEXT_LENGTH = 15000;
+      const textToProcess = extractedText.length > MAX_TEXT_LENGTH 
+        ? extractedText.substring(0, MAX_TEXT_LENGTH) + '\n\n[Document truncated - showing first 15,000 characters]'
+        : extractedText;
+
+      console.log(`Sending ${textToProcess.length} characters to OpenAI for structuring...`);
+
       // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
       const completion = await openai.chat.completions.create({
         model: "gpt-5",
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: extractedText }
+          { role: "user", content: textToProcess }
         ],
         response_format: { type: "json_object" },
         max_completion_tokens: 4096
       });
 
-      const structuredData = JSON.parse(completion.choices[0].message.content || '{}');
+      const rawResponse = completion.choices[0].message.content || '{}';
+      console.log(`OpenAI response (first 500 chars): ${rawResponse.substring(0, 500)}`);
+      
+      const structuredData = JSON.parse(rawResponse);
+      console.log(`Extracted fields: ${Object.keys(structuredData).join(', ')}`);
 
       // Step 3: Save to storage
       const pdfDocument = await storage.createPdfDocument({
