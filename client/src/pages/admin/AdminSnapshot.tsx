@@ -405,7 +405,10 @@ export default function AdminSnapshot() {
               <span className="text-purple-200 text-sm">Live</span>
             </div>
             <button 
-              onClick={() => setShowAddModal(true)}
+              onClick={() => {
+                setShowAddModal(true);
+                setIsFiltersMinimized(true); // Minimize Dashboard card for cleaner data entry
+              }}
               className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-lg border border-purple-400/30 transition-all shadow-lg hover:shadow-purple-500/50"
               data-testid="button-add-entry"
             >
