@@ -1286,22 +1286,20 @@ Return a JSON object with any/all relevant fields found. Include ANY field you f
   "additionalInfo": {} (object with any other relevant extracted data - include EVERYTHING you find)
 }`;
 
-      // For large documents (like credit reports), limit text sent to OpenAI
-      // Credit score and key info are usually in the first pages
-      const MAX_TEXT_LENGTH = 15000;
-      const textToProcess = extractedText.length > MAX_TEXT_LENGTH 
-        ? extractedText.substring(0, MAX_TEXT_LENGTH) + '\n\n[Document truncated - showing first 15,000 characters]'
-        : extractedText;
-
       let structuredData: any = {};
 
-      // For credit reports, use pattern matching instead of OpenAI
+      // For credit reports, use pattern matching on FULL text (no truncation needed)
       if (documentType?.toLowerCase() === 'credit report') {
-        console.log('Using pattern matching for credit report extraction...');
+        console.log(`Using pattern matching for credit report extraction (${extractedText.length} characters)...`);
         structuredData = parseCreditReport(extractedText);
         console.log(`Extracted fields: ${Object.keys(structuredData).join(', ')}`);
       } else {
-        // For other documents, use OpenAI
+        // For other documents, limit text sent to OpenAI
+        const MAX_TEXT_LENGTH = 15000;
+        const textToProcess = extractedText.length > MAX_TEXT_LENGTH 
+          ? extractedText.substring(0, MAX_TEXT_LENGTH) + '\n\n[Document truncated - showing first 15,000 characters]'
+          : extractedText;
+        
         console.log(`Sending ${textToProcess.length} characters to OpenAI for structuring...`);
 
         // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
