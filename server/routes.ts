@@ -1011,53 +1011,114 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const { documentType, clientId } = req.body;
 
-      // Step 1: Extract text from PDF using pdf-parse
-      const parser = new PDFParse({ data: req.file.buffer });
-      const result = await parser.getText();
-      const extractedText = result.text;
-      await parser.destroy();
+      let extractedText = '';
+      
+      // Step 1: Try to extract text from PDF using pdf-parse first
+      try {
+        const parser = new PDFParse({ data: req.file.buffer });
+        const result = await parser.getText();
+        extractedText = result.text;
+        await parser.destroy();
+      } catch (pdfParseError) {
+        console.log("PDF parse failed, text layer may not exist:", pdfParseError);
+      }
+
+      // Step 2: If no text was extracted, use OCR.space API
+      if (!extractedText || extractedText.trim().length < 50) {
+        console.log("Using OCR.space for text extraction (no text layer or insufficient text found)");
+        
+        const ocrApiKey = process.env.OCR_SPACE_API_KEY;
+        if (!ocrApiKey) {
+          return res.status(500).json({
+            success: false,
+            message: "OCR service not configured. Please contact administrator."
+          });
+        }
+
+        // Convert buffer to base64 for OCR.space API
+        const base64Pdf = req.file.buffer.toString('base64');
+        
+        const formData = new URLSearchParams();
+        formData.append('base64Image', `data:application/pdf;base64,${base64Pdf}`);
+        formData.append('apikey', ocrApiKey);
+        formData.append('filetype', 'PDF');
+        formData.append('OCREngine', '2'); // Use OCR Engine 2 for better accuracy
+        formData.append('isTable', 'true'); // Enable table detection
+        formData.append('scale', 'true'); // Scale image for better OCR
+
+        const ocrResponse = await fetch('https://api.ocr.space/parse/image', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: formData.toString()
+        });
+
+        const ocrResult = await ocrResponse.json() as any;
+        
+        if (ocrResult.OCRExitCode !== 1 || !ocrResult.ParsedResults?.[0]?.ParsedText) {
+          return res.status(400).json({
+            success: false,
+            message: `OCR extraction failed: ${ocrResult.ErrorMessage || 'No text found in document'}`
+          });
+        }
+
+        extractedText = ocrResult.ParsedResults[0].ParsedText;
+        console.log(`OCR extracted ${extractedText.length} characters from PDF`);
+      }
 
       if (!extractedText || extractedText.trim().length === 0) {
         return res.status(400).json({
           success: false,
-          message: "No text could be extracted from the PDF"
+          message: "No text could be extracted from the PDF using either text extraction or OCR"
         });
       }
 
-      // Step 2: Use AI to structure the data based on document type
-      const systemPrompt = `You are a mortgage document processing expert. Extract structured data from the following ${documentType || 'mortgage'} document.
+      // Step 3: Use AI to structure the data based on document type
+      const systemPrompt = `You are a mortgage and financial document processing expert. Extract ALL available structured data from the following ${documentType || 'document'}.
 
-Return a JSON object with these fields (use null for missing data):
+For credit reports, extract: borrower name, address, credit score, accounts, collections, inquiries, public records.
+For paystubs, extract: borrower name, employer, gross pay, net pay, YTD gross, pay period.
+For tax returns, extract: borrower name, filing status, AGI, total income, tax year.
+For bank statements, extract: bank name, account number, beginning/ending balance, statement date.
+For mortgage statements, extract: lender, loan number, property address, balance, payment, interest rate.
+
+Return a JSON object with any/all relevant fields found. Include ANY field you find, even if not in this list. Use null for missing data:
 {
-  "documentType": "string (paystub, tax_return, bank_statement, mortgage_statement, or other)",
+  "documentType": "string",
   "borrowerName": "string or null",
   "borrowerAddress": "string or null",
-  "employerName": "string or null (for paystubs)",
-  "grossPay": number or null (for paystubs),
-  "netPay": number or null (for paystubs),
-  "payPeriod": "string or null (for paystubs)",
-  "yearToDateGross": number or null (for paystubs)",
-  "loanNumber": "string or null (for mortgage statements)",
-  "lenderName": "string or null (for mortgage statements)",
-  "propertyAddress": "string or null (for mortgage statements)",
-  "loanAmount": number or null,
-  "currentBalance": number or null,
-  "interestRate": number or null,
-  "monthlyPayment": number or null,
-  "principalAndInterest": number or null,
-  "escrowAmount": number or null,
-  "filingStatus": "string or null (for tax returns)",
-  "taxYear": "string or null (for tax returns)",
-  "adjustedGrossIncome": number or null (for tax returns)",
-  "totalIncome": number or null (for tax returns)",
-  "accountNumber": "string or null (for bank statements)",
-  "bankName": "string or null (for bank statements)",
+  "creditScore": "number or null (for credit reports)",
+  "employerName": "string or null",
+  "grossPay": "number or null",
+  "netPay": "number or null",
+  "payPeriod": "string or null",
+  "yearToDateGross": "number or null",
+  "loanNumber": "string or null",
+  "lenderName": "string or null",
+  "propertyAddress": "string or null",
+  "loanAmount": "number or null",
+  "currentBalance": "number or null",
+  "interestRate": "number or null",
+  "monthlyPayment": "number or null",
+  "principalAndInterest": "number or null",
+  "escrowAmount": "number or null",
+  "filingStatus": "string or null",
+  "taxYear": "string or null",
+  "adjustedGrossIncome": "number or null",
+  "totalIncome": "number or null",
+  "accountNumber": "string or null",
+  "bankName": "string or null",
   "statementDate": "string or null",
-  "beginningBalance": number or null (for bank statements)",
-  "endingBalance": number or null (for bank statements)",
-  "totalDeposits": number or null (for bank statements)",
-  "totalWithdrawals": number or null (for bank statements)",
-  "additionalInfo": {} (object with any other relevant extracted data)
+  "beginningBalance": "number or null",
+  "endingBalance": "number or null",
+  "totalDeposits": "number or null",
+  "totalWithdrawals": "number or null",
+  "openAccounts": "array or null (for credit reports)",
+  "collections": "array or null (for credit reports)",
+  "inquiries": "array or null (for credit reports)",
+  "publicRecords": "array or null (for credit reports)",
+  "additionalInfo": {} (object with any other relevant extracted data - include EVERYTHING you find)
 }`;
 
       // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
