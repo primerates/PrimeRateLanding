@@ -137,11 +137,9 @@ export default function AdminDashboard() {
     { id: 'search', label: 'Marketing', icon: Search, path: '/admin/marketing' },
     { id: 'library', label: 'Library', icon: FolderOpen, path: '/admin/library' },
     { id: 'records', label: 'Closed', icon: Archive, path: '/admin/records' },
-    { id: 'audit', label: 'Audit', icon: ShieldCheck, path: '/admin/audit' },
     // Row 3
     { id: 'add-vendor', label: 'Vendors', icon: Building2, path: '/admin/add-vendor' },
     { id: 'add-staff', label: 'Staff', icon: UserCheck, path: '/admin/add-staff' },
-    { id: 'add-partner', label: 'Partners', icon: Handshake, path: '/admin/add-partner' },
     { id: 'settings', label: 'Settings', icon: Settings, path: '/admin/add-comment' },
   ];
 
@@ -161,7 +159,7 @@ export default function AdminDashboard() {
   };
 
   const handleMenuClick = (path: string) => {
-    if (path === '/admin/funded' || path === '/admin/reports' || path === '/admin/library' || path === '/admin/audit' || path === '/admin/records') {
+    if (path === '/admin/funded' || path === '/admin/reports' || path === '/admin/library' || path === '/admin/records') {
       toast({
         title: "Coming Soon",
         description: "This page is under development.",
