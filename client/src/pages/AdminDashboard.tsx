@@ -131,15 +131,15 @@ export default function AdminDashboard() {
     { id: 'quotes', label: 'Quote', icon: Calculator, path: '/admin/quotes' },
     { id: 'loan-prep', label: 'Loan Prep', icon: FileText, path: '/admin/loan-prep' },
     { id: 'pipeline', label: 'Loan', icon: LayoutDashboard, path: '/admin/pipeline' },
-    { id: 'add-staff', label: 'Staff', icon: UserCheck, path: '/admin/add-staff' },
-    // Row 2 (items 5-9)
     { id: 'funded', label: 'Funded', icon: CheckCircle, path: '/admin/funded' },
+    // Row 2 (items 5-9) - Snapshot, Marketing, Library, Closed + empty slot at index 9
     { id: 'reports', label: 'Snapshot', icon: BarChart3, path: '/admin/reports' },
     { id: 'search', label: 'Marketing', icon: Search, path: '/admin/marketing' },
     { id: 'library', label: 'Library', icon: FolderOpen, path: '/admin/library' },
     { id: 'records', label: 'Closed', icon: Archive, path: '/admin/records' },
-    // Row 3 (items 10+)
     { id: 'add-vendor', label: 'Vendors', icon: Building2, path: '/admin/add-vendor' },
+    // Row 3 (items 10+)
+    { id: 'add-staff', label: 'Staff', icon: UserCheck, path: '/admin/add-staff' },
     { id: 'settings', label: 'Settings', icon: Settings, path: '/admin/add-comment' },
   ];
 
