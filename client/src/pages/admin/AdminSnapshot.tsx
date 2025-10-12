@@ -76,8 +76,8 @@ export default function AdminSnapshot() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2" data-testid="heading-analytics-dashboard">Analytics Dashboard</h1>
-              <p className="text-purple-300">Real-time financial insights</p>
+              <h1 className="text-4xl font-bold text-white mb-2" data-testid="heading-analytics-dashboard">Dashboard</h1>
+              <p className="text-purple-300">Real-time insight</p>
             </div>
           </div>
           <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 rounded-lg border border-purple-500/30">
