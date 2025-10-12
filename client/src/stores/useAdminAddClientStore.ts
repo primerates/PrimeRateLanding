@@ -38,6 +38,7 @@ interface AddAdminClientStore {
   };
   isShowingDMBatch: boolean;
   isBorrowerOpen: boolean;
+  isCoBorrowerOpen: boolean;
   hasCoBorrower: boolean;
   isResidenceInfoDialogOpen: boolean;
   residenceInfoText: string;
@@ -63,6 +64,7 @@ interface AddAdminClientStore {
   setMaritalStatusDialog: (dialog: { isOpen: boolean }) => void;
   setIsShowingDMBatch: (isShowing: boolean) => void;
   setIsBorrowerOpen: (isOpen: boolean) => void;
+  setIsCoBorrowerOpen: (isOpen: boolean) => void;
   setHasCoBorrower: (hasCoBorrower: boolean) => void;
   addCoBorrower: () => void;
   removeCoBorrower: () => void;
@@ -95,6 +97,7 @@ export const useAdminAddClientStore = create<AddAdminClientStore>()(
       maritalStatusDialog: { isOpen: false },
       isShowingDMBatch: false,
       isBorrowerOpen: true,
+      isCoBorrowerOpen: true,
       hasCoBorrower: false,
       isResidenceInfoDialogOpen: false,
       residenceInfoText: '',
@@ -155,6 +158,11 @@ export const useAdminAddClientStore = create<AddAdminClientStore>()(
       setIsBorrowerOpen: (isOpen) =>
         set(() => ({
           isBorrowerOpen: isOpen,
+        })),
+      
+      setIsCoBorrowerOpen: (isOpen) =>
+        set(() => ({
+          isCoBorrowerOpen: isOpen,
         })),
       
       setHasCoBorrower: (hasCoBorrower) =>

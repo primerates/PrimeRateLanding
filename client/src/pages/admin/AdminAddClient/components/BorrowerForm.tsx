@@ -25,7 +25,9 @@ const BorrowerForm = ({ isPrimary = true }: BorrowerFormProps) => {
     const form = useFormContext<InsertClient>();
     const {
         isBorrowerOpen,
+        isCoBorrowerOpen,
         setIsBorrowerOpen,
+        setIsCoBorrowerOpen,
         hasCoBorrower,
         addCoBorrower,
         removeCoBorrower,
@@ -37,6 +39,10 @@ const BorrowerForm = ({ isPrimary = true }: BorrowerFormProps) => {
     const fieldPrefix = isPrimary ? 'borrower' : 'coBorrower';
     const title = isPrimary ? 'Borrower' : 'Co-Borrower';
     const borderColor = isPrimary ? 'border-l-green-500 hover:border-green-500' : 'border-l-blue-500 hover:border-blue-500';
+    
+    // Dynamic state selection based on borrower type
+    const isOpen = isPrimary ? isBorrowerOpen : isCoBorrowerOpen;
+    const setIsOpen = isPrimary ? setIsBorrowerOpen : setIsCoBorrowerOpen;
 
     // Use useWatch to watch specific fields without causing infinite loops
     const currentYears = useWatch({ name: `${fieldPrefix}.yearsAtAddress` as any, control: form.control });
@@ -94,7 +100,7 @@ const BorrowerForm = ({ isPrimary = true }: BorrowerFormProps) => {
 
     return (
         <Card className={`border-l-4 ${borderColor} focus-within:border-green-500 transition-colors duration-200`}>
-            <Collapsible open={isBorrowerOpen} onOpenChange={setIsBorrowerOpen}>
+            <Collapsible open={isOpen} onOpenChange={setIsOpen}>
                 <CardHeader>
                     <div className="flex items-center justify-between">
                         <CardTitle>{title}</CardTitle>
@@ -143,12 +149,12 @@ const BorrowerForm = ({ isPrimary = true }: BorrowerFormProps) => {
                                             className="hover:bg-orange-500 hover:text-black"
                                             data-testid="button-toggle-borrower"
                                         >
-                                            {isBorrowerOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                                            {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                                         </Button>
                                     </CollapsibleTrigger>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    <p>{isBorrowerOpen ? 'Minimize' : 'Expand'}</p>
+                                    <p>{isOpen ? 'Minimize' : 'Expand'}</p>
                                 </TooltipContent>
                             </Tooltip>
                         </div>
