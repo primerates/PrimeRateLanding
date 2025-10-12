@@ -59,6 +59,28 @@ export default function AdminSnapshot() {
     }).format(value);
   };
 
+  // Custom tooltip that matches the pie slice color
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      const data = payload[0];
+      // Use the color from the data if available (pie chart), otherwise use the fill color (bar chart)
+      const bgColor = data.payload.color || data.fill || '#6366f1';
+      return (
+        <div
+          className="px-3 py-2 rounded-lg shadow-lg"
+          style={{
+            backgroundColor: bgColor,
+            border: `1px solid ${bgColor}`,
+          }}
+        >
+          <p className="text-white font-semibold text-sm">{data.name}</p>
+          <p className="text-white text-sm">{formatCurrency(data.value)}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -188,10 +210,7 @@ export default function AdminSnapshot() {
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip 
-                      formatter={(value) => formatCurrency(value as number)}
-                      contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #8b5cf6', borderRadius: '8px' }}
-                    />
+                    <Tooltip content={<CustomTooltip />} />
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="mt-4 space-y-2">
@@ -230,10 +249,7 @@ export default function AdminSnapshot() {
                     <CartesianGrid strokeDasharray="3 3" stroke="#475569" />
                     <XAxis dataKey="name" stroke="#a78bfa" />
                     <YAxis stroke="#a78bfa" />
-                    <Tooltip 
-                      formatter={(value) => formatCurrency(value as number)}
-                      contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #8b5cf6', borderRadius: '8px' }}
-                    />
+                    <Tooltip content={<CustomTooltip />} />
                     <Bar dataKey="value" fill="#6366f1" radius={[8, 8, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
