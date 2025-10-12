@@ -222,7 +222,7 @@ export default function AdminDashboard() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <h1 className="text-4xl font-bold" data-testid="text-admin-header">
+              <h1 className="text-4xl font-bold text-primary-foreground" data-testid="text-admin-header">
                 Loanview GPT
               </h1>
             </div>
