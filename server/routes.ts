@@ -1037,7 +1037,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
         
-        const { TextractClient, DetectDocumentTextCommand } = await import('@aws-sdk/client-textract');
+        const { TextractClient, AnalyzeDocumentCommand } = await import('@aws-sdk/client-textract');
         const { PDFDocument } = await import('pdf-lib');
         
         const textractClient = new TextractClient({
@@ -1049,7 +1049,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
 
         try {
-          // AWS Textract's DetectDocumentTextCommand only supports single-page PDFs
+          // AWS Textract's AnalyzeDocument only supports single-page PDFs for synchronous processing
           // For multi-page PDFs, extract only the first page
           let pdfBuffer = req.file.buffer;
           
@@ -1068,10 +1068,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
             console.log(`Created single-page PDF for Textract processing`);
           }
 
-          const command = new DetectDocumentTextCommand({
+          const command = new AnalyzeDocumentCommand({
             Document: {
               Bytes: pdfBuffer,
             },
+            FeatureTypes: ["TABLES", "FORMS"],
           });
 
           const textractResponse = await textractClient.send(command);
