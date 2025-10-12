@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
 import BorrowerHeaderForm from '../components/BorrowerHeaderForm';
 import BorrowerForm from '../components/BorrowerForm';
 interface BorrowerTabProps {
@@ -11,6 +12,7 @@ interface BorrowerTabProps {
 
 const BorrowerTab = ({ animations }: BorrowerTabProps) => {
     const [hasAnimated, setHasAnimated] = useState<boolean>(false);
+    const { hasCoBorrower } = useAdminAddClientStore();
 
     useEffect(() => {
         if (animations?.showEntry || animations?.showBorrower) {
@@ -34,7 +36,12 @@ const BorrowerTab = ({ animations }: BorrowerTabProps) => {
             <div className={`transition-all duration-700 ${getAnimationClasses()}`}>
                 <BorrowerHeaderForm />
             </div>
-            <BorrowerForm />
+
+            <BorrowerForm isPrimary={true} />
+            
+            {hasCoBorrower && (
+                <BorrowerForm isPrimary={false} />
+            )}
         </>
     );
 };

@@ -10,21 +10,35 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 
-const AddressForm = () => {
+interface AddressFormProps {
+    isPrimary?: boolean;
+}
+
+const AddressForm = ({ isPrimary = true }: AddressFormProps) => {
     const form = useFormContext<InsertClient>();
     const {
         borrowerCountyOptions,
+        coBorrowerCountyOptions,
         countyLookupLoading,
         isBorrowerCurrentResidencePresent,
         setBorrowerCountyOptions,
+        setCoBorrowerCountyOptions,
         setCountyLookupLoading,
         setIsBorrowerCurrentResidencePresent
     } = useAdminAddClientStore();
 
+    // Field prefix based on whether this is primary borrower or co-borrower
+    const fieldPrefix = isPrimary ? 'borrower' : 'coBorrower';
+    
+    // Dynamic county options and setters based on borrower type
+    const countyOptions = isPrimary ? borrowerCountyOptions : coBorrowerCountyOptions;
+    const setCountyOptions = isPrimary ? setBorrowerCountyOptions : setCoBorrowerCountyOptions;
+    const loadingKey = isPrimary ? 'borrower' : 'coBorrower';
+
     // Duration calculator
     const { displayValue, years, months } = useMemo(() => {
-        const fromDate = form.watch('borrower.residenceAddress.from') || '';
-        const toDate = form.watch('borrower.residenceAddress.to') || '';
+        const fromDate = form.watch(`${fieldPrefix}.residenceAddress.from` as any) || '';
+        const toDate = form.watch(`${fieldPrefix}.residenceAddress.to` as any) || '';
         
         if (!fromDate || !toDate) return { displayValue: '', years: 0, months: 0 };
         
@@ -62,16 +76,19 @@ const AddressForm = () => {
         }
         
         return { displayValue: display, years: calcYears, months: calcMonths };
-    }, [form.watch('borrower.residenceAddress.from'), form.watch('borrower.residenceAddress.to')]);
+    }, [form.watch(`${fieldPrefix}.residenceAddress.from` as any), form.watch(`${fieldPrefix}.residenceAddress.to` as any)]);
 
     // Update form values for years and months
     useMemo(() => {
-        form.setValue('borrower.yearsAtAddress', years.toString(), { shouldDirty: false });
-        form.setValue('borrower.monthsAtAddress', months.toString(), { shouldDirty: false });
-    }, [years, months, form]);
+        form.setValue(`${fieldPrefix}.yearsAtAddress` as any, years.toString(), { shouldDirty: false });
+        form.setValue(`${fieldPrefix}.monthsAtAddress` as any, months.toString(), { shouldDirty: false });
+    }, [years, months, form, fieldPrefix]);
 
     const autoCopyBorrowerAddressToPrimaryProperty = () => {
-        const borrowerAddress = form.getValues('borrower.residenceAddress');
+        // Only auto-copy for primary borrower, not co-borrower
+        if (!isPrimary) return;
+        
+        const borrowerAddress = form.getValues(`${fieldPrefix}.residenceAddress` as any);
         const properties = form.watch('property.properties') || [];
         const primaryPropertyIndex = properties.findIndex(p => p.use === 'primary');
 
@@ -102,28 +119,28 @@ const AddressForm = () => {
         return [];
     };
 
-    const handleBorrowerZipCodeLookup = async (zipCode: string) => {
+    const handleZipCodeLookup = async (zipCode: string) => {
         if (!zipCode || zipCode.length < 5) {
-            setBorrowerCountyOptions([]);
+            setCountyOptions([]);
             return;
         }
 
-        setCountyLookupLoading((prev) => ({ ...prev, borrower: true }));
+        setCountyLookupLoading((prev) => ({ ...prev, [loadingKey]: true }));
         const counties = await lookupCountyFromZip(zipCode);
 
         if (counties.length === 1) {
             // Auto-fill single county result
-            form.setValue('borrower.residenceAddress.county', counties[0].label, { shouldDirty: true });
-            setBorrowerCountyOptions([]); // Keep as input field but with value filled
+            form.setValue(`${fieldPrefix}.residenceAddress.county` as any, counties[0].label, { shouldDirty: true });
+            setCountyOptions([]); // Keep as input field but with value filled
         } else if (counties.length > 1) {
             // Show dropdown for multiple counties
-            setBorrowerCountyOptions(counties);
+            setCountyOptions(counties);
         } else {
             // No counties found, keep as input field
-            setBorrowerCountyOptions([]);
+            setCountyOptions([]);
         }
 
-        setCountyLookupLoading((prev) => ({ ...prev, borrower: false }));
+        setCountyLookupLoading((prev) => ({ ...prev, [loadingKey]: false }));
     };
 
     return (
@@ -133,13 +150,13 @@ const AddressForm = () => {
                     <div className="md:col-span-3">
                         <FormInput
                             label="Street Address"
-                            value={form.watch('borrower.residenceAddress.street') || ''}
+                            value={form.watch(`${fieldPrefix}.residenceAddress.street` as any) || ''}
                             onChange={(value) => {
-                                form.setValue('borrower.residenceAddress.street', value);
+                                form.setValue(`${fieldPrefix}.residenceAddress.street` as any, value);
                                 setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100);
                             }}
-                            id="borrower-residence-street"
-                            testId="input-borrower-residence-street"
+                            id={`${fieldPrefix}-residence-street`}
+                            testId={`input-${fieldPrefix}-residence-street`}
                             className="space-y-2"
                         />
                     </div>
@@ -147,13 +164,13 @@ const AddressForm = () => {
                     <div className="md:col-span-1">
                         <FormInput
                             label="Unit/Apt"
-                            value={form.watch('borrower.residenceAddress.unit') || ''}
+                            value={form.watch(`${fieldPrefix}.residenceAddress.unit` as any) || ''}
                             onChange={(value) => {
-                                form.setValue('borrower.residenceAddress.unit', value);
+                                form.setValue(`${fieldPrefix}.residenceAddress.unit` as any, value);
                                 setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100);
                             }}
-                            id="borrower-residence-unit"
-                            testId="input-borrower-residence-unit"
+                            id={`${fieldPrefix}-residence-unit`}
+                            testId={`input-${fieldPrefix}-residence-unit`}
                             className="space-y-2"
                         />
                     </div>
@@ -161,13 +178,13 @@ const AddressForm = () => {
                     <div className="md:col-span-2">
                         <FormInput
                             label="City"
-                            value={form.watch('borrower.residenceAddress.city') || ''}
+                            value={form.watch(`${fieldPrefix}.residenceAddress.city` as any) || ''}
                             onChange={(value) => {
-                                form.setValue('borrower.residenceAddress.city', value);
+                                form.setValue(`${fieldPrefix}.residenceAddress.city` as any, value);
                                 setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100);
                             }}
-                            id="borrower-residence-city"
-                            testId="input-borrower-residence-city"
+                            id={`${fieldPrefix}-residence-city`}
+                            testId={`input-${fieldPrefix}-residence-city`}
                             className="space-y-2"
                         />
                     </div>
@@ -175,14 +192,14 @@ const AddressForm = () => {
                     <div className="md:col-span-1">
                         <FormSelect
                             label="State"
-                            value={form.watch('borrower.residenceAddress.state') || ''}
+                            value={form.watch(`${fieldPrefix}.residenceAddress.state` as any) || ''}
                             onValueChange={(value) => {
-                                form.setValue('borrower.residenceAddress.state', value);
+                                form.setValue(`${fieldPrefix}.residenceAddress.state` as any, value);
                                 setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100);
                             }}
                             options={US_STATES_OPTIONS}
                             placeholder="State"
-                            testId="select-borrower-residence-state"
+                            testId={`select-${fieldPrefix}-residence-state`}
                             className="space-y-2"
                             displayValue={true}
                         />
@@ -191,78 +208,78 @@ const AddressForm = () => {
                     <div className="md:col-span-1">
                         <FormInput
                             label="ZIP Code"
-                            value={form.watch('borrower.residenceAddress.zip') || ''}
+                            value={form.watch(`${fieldPrefix}.residenceAddress.zip` as any) || ''}
                             onChange={(value) => {
-                                form.setValue('borrower.residenceAddress.zip', value);
+                                form.setValue(`${fieldPrefix}.residenceAddress.zip` as any, value);
                                 setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100);
                             }}
-                            onBlur={(e) => handleBorrowerZipCodeLookup(e.target.value)}
-                            id="borrower-residence-zip"
-                            testId="input-borrower-residence-zip"
+                            onBlur={(e) => handleZipCodeLookup(e.target.value)}
+                            id={`${fieldPrefix}-residence-zip`}
+                            testId={`input-${fieldPrefix}-residence-zip`}
                             className="space-y-2"
                         />
                     </div>
 
                     <div className="md:col-span-2">
-                        {borrowerCountyOptions.length > 0 ? (
+                        {countyOptions.length > 0 ? (
                             <FormSelect
                                 label="County"
-                                value={form.watch('borrower.residenceAddress.county') || ''}
+                                value={form.watch(`${fieldPrefix}.residenceAddress.county` as any) || ''}
                                 onValueChange={(value) => {
                                     if (value === 'manual-entry') {
-                                        form.setValue('borrower.residenceAddress.county', '');
-                                        setBorrowerCountyOptions([]);
+                                        form.setValue(`${fieldPrefix}.residenceAddress.county` as any, '');
+                                        setCountyOptions([]);
                                     } else {
                                         // Find the selected county to get its label for display
-                                        const selectedCounty = borrowerCountyOptions.find(county => county.value === value);
-                                        form.setValue('borrower.residenceAddress.county', selectedCounty?.label || value, { shouldDirty: true });
+                                        const selectedCounty = countyOptions.find(county => county.value === value);
+                                        form.setValue(`${fieldPrefix}.residenceAddress.county` as any, selectedCounty?.label || value, { shouldDirty: true });
                                     }
                                 }}
                                 options={[
-                                    ...borrowerCountyOptions,
+                                    ...countyOptions,
                                     { value: 'manual-entry', label: 'Enter county manually' }
                                 ]}
-                                placeholder={countyLookupLoading.borrower ? "Looking up counties..." : "Select county"}
-                                testId="select-borrower-residence-county"
+                                placeholder={countyLookupLoading[loadingKey] ? "Looking up counties..." : "Select county"}
+                                testId={`select-${fieldPrefix}-residence-county`}
                                 className="space-y-2"
                             />
                         ) : (
                             <FormInput
                                 label="County"
-                                value={form.watch('borrower.residenceAddress.county') || ''}
+                                value={form.watch(`${fieldPrefix}.residenceAddress.county` as any) || ''}
                                 onChange={(value) => {
-                                    form.setValue('borrower.residenceAddress.county', value);
+                                    form.setValue(`${fieldPrefix}.residenceAddress.county` as any, value);
                                     setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100);
                                 }}
-                                placeholder={countyLookupLoading.borrower ? "Looking up counties..." : ""}
-                                id="borrower-residence-county"
-                                testId="input-borrower-residence-county"
+                                placeholder={countyLookupLoading[loadingKey] ? "Looking up counties..." : ""}
+                                id={`${fieldPrefix}-residence-county`}
+                                testId={`input-${fieldPrefix}-residence-county`}
                                 className="space-y-2"
                             />
                         )}
                     </div>
 
                     <div className="space-y-2 md:col-span-1">
-                        <Label htmlFor="borrower-residence-from">From</Label>
+                        <Label htmlFor={`${fieldPrefix}-residence-from`}>From</Label>
                         <Input
-                            id="borrower-residence-from"
+                            id={`${fieldPrefix}-residence-from`}
                             type="text"
                             placeholder="mm/dd/yyyy"
-                            value={form.watch('borrower.residenceAddress.from') || ''}
+                            value={form.watch(`${fieldPrefix}.residenceAddress.from` as any) || ''}
                             onChange={(e) => {
                                 const input = e.target.value;
-                                const currentValue = form.getValues('borrower.residenceAddress.from') || '';
+                                const currentValue = form.getValues(`${fieldPrefix}.residenceAddress.from` as any) || '';
 
                                 // If input is empty or being deleted, allow it
                                 if (input.length === 0) {
-                                    form.setValue('borrower.residenceAddress.from', '');
+                                    form.setValue(`${fieldPrefix}.residenceAddress.from` as any, '');
                                     setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100);
                                     return;
                                 }
 
                                 // If user is deleting (input shorter than current), just update without formatting
                                 if (typeof currentValue === 'string' && input.length < currentValue.length) {
-                                    form.setValue('borrower.residenceAddress.from', input);
+                                    form.setValue(`${fieldPrefix}.residenceAddress.from` as any, input);
                                     setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100);
                                     return;
                                 }
@@ -276,17 +293,17 @@ const AddressForm = () => {
                                     value = value.slice(0, 5) + '/' + value.slice(5);
                                 }
                                 value = value.slice(0, 10); // Limit to mm/dd/yyyy
-                                form.setValue('borrower.residenceAddress.from', value);
+                                form.setValue(`${fieldPrefix}.residenceAddress.from` as any, value);
                                 setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100);
                             }}
-                            data-testid="input-borrower-residence-from"
+                            data-testid={`input-${fieldPrefix}-residence-from`}
                             className="!text-[13px] placeholder:text-[10px]"
                         />
                     </div>
 
                     <div className="space-y-2 md:col-span-1">
                         <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor="borrower-residence-to" className="text-sm">
+                            <Label htmlFor={`${fieldPrefix}-residence-to`} className="text-sm">
                                 {isBorrowerCurrentResidencePresent ? 'Present' : 'To'}
                             </Label>
                             <Switch
@@ -295,37 +312,37 @@ const AddressForm = () => {
                                     setIsBorrowerCurrentResidencePresent(checked);
                                     if (checked) {
                                         // Set to "Present" and store current date for calculations
-                                        form.setValue('borrower.residenceAddress.to', 'Present');
+                                        form.setValue(`${fieldPrefix}.residenceAddress.to` as any, 'Present');
                                     } else {
                                         // Clear the field when toggled off
-                                        form.setValue('borrower.residenceAddress.to', '');
+                                        form.setValue(`${fieldPrefix}.residenceAddress.to` as any, '');
                                     }
                                     setTimeout(() => autoCopyBorrowerAddressToPrimaryProperty(), 100);
                                 }}
-                                data-testid="toggle-borrower-residence-present"
+                                data-testid={`toggle-${fieldPrefix}-residence-present`}
                                 className="scale-[0.8]"
                             />
                         </div>
                         <Input
-                            id="borrower-residence-to"
+                            id={`${fieldPrefix}-residence-to`}
                             type="text"
                             placeholder="mm/dd/yyyy"
-                            value={isBorrowerCurrentResidencePresent ? 'Present' : form.watch('borrower.residenceAddress.to') || ''}
+                            value={isBorrowerCurrentResidencePresent ? 'Present' : form.watch(`${fieldPrefix}.residenceAddress.to` as any) || ''}
                             onChange={(e) => {
                                 if (isBorrowerCurrentResidencePresent) return; // Disable editing when Present
 
                                 const input = e.target.value;
-                                const currentValue = form.getValues('borrower.residenceAddress.to') || '';
+                                const currentValue = form.getValues(`${fieldPrefix}.residenceAddress.to` as any) || '';
 
                                 // If input is empty or being deleted, allow it
                                 if (input.length === 0) {
-                                    form.setValue('borrower.residenceAddress.to', '');
+                                    form.setValue(`${fieldPrefix}.residenceAddress.to` as any, '');
                                     return;
                                 }
 
                                 // If user is deleting (input shorter than current), just update without formatting
                                 if (typeof currentValue === 'string' && input.length < currentValue.length) {
-                                    form.setValue('borrower.residenceAddress.to', input);
+                                    form.setValue(`${fieldPrefix}.residenceAddress.to` as any, input);
                                     return;
                                 }
 
@@ -338,16 +355,16 @@ const AddressForm = () => {
                                     value = value.slice(0, 5) + '/' + value.slice(5);
                                 }
                                 value = value.slice(0, 10); // Limit to mm/dd/yyyy
-                                form.setValue('borrower.residenceAddress.to', value);
+                                form.setValue(`${fieldPrefix}.residenceAddress.to` as any, value);
                             }}
-                            data-testid="input-borrower-residence-to"
+                            data-testid={`input-${fieldPrefix}-residence-to`}
                             className="!text-[13px] placeholder:text-[10px]"
                             readOnly={isBorrowerCurrentResidencePresent}
                         />
                     </div>
 
                     <div className="space-y-2 md:col-span-1">
-                        <Label htmlFor="borrower-time-address" className="text-sm">
+                        <Label htmlFor={`${fieldPrefix}-time-address`} className="text-sm">
                             Duration
                         </Label>
                         <div className="h-9 px-3 py-2 border border-input bg-background rounded-md flex items-center text-sm">
