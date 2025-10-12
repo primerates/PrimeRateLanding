@@ -456,7 +456,7 @@ export default function AdminDashboard() {
               isRow2Visible ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'
             }`}
           >
-            {menuItems.slice(5, 10).map((item, index) => {
+            {menuItems.slice(5, 9).map((item, index) => {
               const Icon = item.icon;
               return (
                 <Card 
@@ -507,7 +507,7 @@ export default function AdminDashboard() {
               isRow3Visible ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'
             }`}
           >
-            {menuItems.slice(10).map((item, index) => {
+            {menuItems.slice(9).map((item, index) => {
               const Icon = item.icon;
               return (
                 <Card 
