@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus } from 'lucide-react';
+import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical } from 'lucide-react';
 
 export default function AdminSnapshot() {
   const [, setLocation] = useLocation();
@@ -20,6 +20,12 @@ export default function AdminSnapshot() {
     fromDate: '',
     toDate: ''
   });
+  const [openActionMenu, setOpenActionMenu] = useState<number | null>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingExpenseId, setEditingExpenseId] = useState<number | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteExpenseId, setDeleteExpenseId] = useState<number | null>(null);
+  const [adminCode, setAdminCode] = useState('');
   const [expenseEntries, setExpenseEntries] = useState([
     {
       id: 1,
@@ -161,7 +167,17 @@ export default function AdminSnapshot() {
 
   const handleAddExpense = () => {
     if (newExpense.logDate && newExpense.expense) {
-      setExpenseEntries([...expenseEntries, { ...newExpense, id: expenseEntries.length + 1 }]);
+      if (isEditMode && editingExpenseId) {
+        // Update existing expense
+        setExpenseEntries(expenseEntries.map(entry => 
+          entry.id === editingExpenseId ? { ...newExpense, id: editingExpenseId } : entry
+        ));
+        setIsEditMode(false);
+        setEditingExpenseId(null);
+      } else {
+        // Add new expense
+        setExpenseEntries([...expenseEntries, { ...newExpense, id: expenseEntries.length + 1 }]);
+      }
       setNewExpense({
         logDate: '',
         expense: '',
@@ -173,6 +189,39 @@ export default function AdminSnapshot() {
         paymentTerm: ''
       });
       setShowExpenseForm(false);
+    }
+  };
+
+  const handleEditExpense = (expense: any) => {
+    setNewExpense({
+      logDate: expense.logDate,
+      expense: expense.expense,
+      paidWith: expense.paidWith,
+      expenseCategory: expense.expenseCategory,
+      paidTo: expense.paidTo,
+      transactionDate: expense.transactionDate,
+      clearanceDate: expense.clearanceDate,
+      paymentTerm: expense.paymentTerm || ''
+    });
+    setIsEditMode(true);
+    setEditingExpenseId(expense.id);
+    setShowExpenseForm(true);
+    setOpenActionMenu(null);
+  };
+
+  const handleDeleteExpense = (expenseId: number) => {
+    setDeleteExpenseId(expenseId);
+    setShowDeleteModal(true);
+    setOpenActionMenu(null);
+  };
+
+  const confirmDelete = () => {
+    // In production, validate admin code here
+    if (deleteExpenseId) {
+      setExpenseEntries(expenseEntries.filter(entry => entry.id !== deleteExpenseId));
+      setShowDeleteModal(false);
+      setDeleteExpenseId(null);
+      setAdminCode('');
     }
   };
 
@@ -600,7 +649,7 @@ export default function AdminSnapshot() {
                   className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold py-3 rounded-lg border border-purple-400/30 transition-all shadow-lg hover:shadow-purple-500/50"
                   data-testid="button-submit-expense"
                 >
-                  Add Expense
+                  {isEditMode ? 'Update Expense' : 'Add Expense'}
                 </button>
               </>
             )}
@@ -761,6 +810,9 @@ export default function AdminSnapshot() {
                           <ArrowUpDown className="w-4 h-4" />
                         </div>
                       </th>
+                      <th className="text-left text-purple-300 font-semibold py-3 px-2">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -778,6 +830,35 @@ export default function AdminSnapshot() {
                         <td className="py-3 px-2 text-purple-200">{entry.paidTo}</td>
                         <td className="py-3 px-2 text-purple-200">{entry.paidWith}</td>
                         <td className="py-3 px-2 text-white">{entry.expense}</td>
+                        <td className="py-3 px-2 relative">
+                          <button
+                            onClick={() => setOpenActionMenu(openActionMenu === entry.id ? null : entry.id)}
+                            className="text-purple-300 hover:text-white transition-colors"
+                            data-testid={`button-action-menu-${entry.id}`}
+                          >
+                            <MoreVertical className="w-5 h-5" />
+                          </button>
+                          
+                          {/* Action Menu Popup */}
+                          {openActionMenu === entry.id && (
+                            <div className="absolute right-0 mt-2 w-32 bg-slate-800 rounded-lg border border-purple-500/30 shadow-xl z-50 overflow-hidden">
+                              <button
+                                onClick={() => handleEditExpense(entry)}
+                                className="w-full px-4 py-2 text-left text-purple-200 hover:bg-purple-500/20 transition-colors"
+                                data-testid={`button-edit-${entry.id}`}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDeleteExpense(entry.id)}
+                                className="w-full px-4 py-2 text-left text-purple-200 hover:bg-purple-500/20 transition-colors"
+                                data-testid={`button-delete-${entry.id}`}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -836,6 +917,50 @@ export default function AdminSnapshot() {
                     <ArrowDownRight className="w-8 h-8 text-red-400 group-hover:scale-110 transition-transform" />
                   </div>
                 </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Delete Confirmation Modal */}
+        {showDeleteModal && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-slate-800 rounded-2xl border border-purple-500/30 shadow-2xl max-w-md w-full p-6 relative animate-in">
+              <h2 className="text-2xl font-bold text-white mb-6">Delete Expense</h2>
+              
+              <p className="text-purple-300 mb-6">Enter admin code to confirm deletion</p>
+              
+              <div className="space-y-4">
+                <input
+                  type="password"
+                  placeholder="Enter 4-digit Admin Code"
+                  value={adminCode}
+                  onChange={(e) => setAdminCode(e.target.value)}
+                  maxLength={4}
+                  className="w-full bg-slate-700/50 text-white px-4 py-3 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                  data-testid="input-admin-code"
+                />
+                
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => {
+                      setShowDeleteModal(false);
+                      setDeleteExpenseId(null);
+                      setAdminCode('');
+                    }}
+                    className="flex-1 px-4 py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg border border-purple-500/30 transition-all"
+                    data-testid="button-go-back"
+                  >
+                    Go Back
+                  </button>
+                  <button
+                    onClick={confirmDelete}
+                    className="flex-1 px-4 py-3 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white font-semibold rounded-lg border border-red-400/30 transition-all shadow-lg hover:shadow-red-500/50"
+                    data-testid="button-confirm-delete"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
           </div>
