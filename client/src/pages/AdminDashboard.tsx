@@ -131,16 +131,19 @@ export default function AdminDashboard() {
     { id: 'quotes', label: 'Quote', icon: Calculator, path: '/admin/quotes' },
     { id: 'loan-prep', label: 'Loan Prep', icon: FileText, path: '/admin/loan-prep' },
     { id: 'pipeline', label: 'Loan', icon: LayoutDashboard, path: '/admin/pipeline' },
-    // Row 2
     { id: 'funded', label: 'Funded', icon: CheckCircle, path: '/admin/funded' },
-    { id: 'records', label: 'Closed', icon: Archive, path: '/admin/records' },
-    { id: 'search', label: 'Marketing', icon: Search, path: '/admin/marketing' },
+    // Row 2
     { id: 'reports', label: 'Snapshot', icon: BarChart3, path: '/admin/reports' },
-    // Row 3
-    { id: 'add-staff', label: 'Staff', icon: UserCheck, path: '/admin/add-staff' },
-    { id: 'add-vendor', label: 'Vendors', icon: Building2, path: '/admin/add-vendor' },
+    { id: 'search', label: 'Marketing', icon: Search, path: '/admin/marketing' },
     { id: 'library', label: 'Library', icon: FolderOpen, path: '/admin/library' },
+    { id: 'records', label: 'Closed', icon: Archive, path: '/admin/records' },
+    { id: 'audit', label: 'Audit', icon: ShieldCheck, path: '/admin/audit' },
+    // Row 3
+    { id: 'add-vendor', label: 'Vendors', icon: Building2, path: '/admin/add-vendor' },
+    { id: 'add-staff', label: 'Staff', icon: UserCheck, path: '/admin/add-staff' },
+    { id: 'add-partner', label: 'Partners', icon: Handshake, path: '/admin/add-partner' },
     { id: 'settings', label: 'Settings', icon: Settings, path: '/admin/add-comment' },
+    { id: 'vault', label: 'Vault', icon: Lock, path: '/admin/vault' },
   ];
 
   const handleLogout = async () => {
@@ -159,7 +162,7 @@ export default function AdminDashboard() {
   };
 
   const handleMenuClick = (path: string) => {
-    if (path === '/admin/funded' || path === '/admin/reports' || path === '/admin/library' || path === '/admin/records') {
+    if (path === '/admin/funded' || path === '/admin/reports' || path === '/admin/library' || path === '/admin/audit' || path === '/admin/records' || path === '/admin/vault') {
       toast({
         title: "Coming Soon",
         description: "This page is under development.",
@@ -396,16 +399,16 @@ export default function AdminDashboard() {
           transformOrigin: 'top'
         }}
       >
-        <div className="mb-20"></div>
+        <div className="mb-16"></div>
         
         {/* Menu Grid - First Row */}
-        <div className="flex items-start gap-4 justify-center">
+        <div className="flex items-start gap-4">
           <div 
-            className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl transition-all duration-500 ${
+            className={`grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 flex-1 transition-all duration-500 ${
               isRow1Visible ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'
             }`}
           >
-            {menuItems.slice(0, 4).map((item, index) => {
+            {menuItems.slice(0, 5).map((item, index) => {
               const Icon = item.icon;
               return (
                 <Card 
@@ -450,13 +453,13 @@ export default function AdminDashboard() {
         </div>
 
         {/* Menu Grid - Second Row with extra spacing */}
-        <div className="flex items-start gap-4 mt-24 justify-center">
+        <div className="flex items-start gap-4 mt-16">
           <div 
-            className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl transition-all duration-500 ${
+            className={`grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 flex-1 transition-all duration-500 ${
               isRow2Visible ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'
             }`}
           >
-            {menuItems.slice(4, 8).map((item, index) => {
+            {menuItems.slice(5, 10).map((item, index) => {
               const Icon = item.icon;
               return (
                 <Card 
@@ -501,13 +504,13 @@ export default function AdminDashboard() {
         </div>
 
         {/* Menu Grid - Third Row with extra spacing */}
-        <div className="flex items-start gap-4 mt-24 justify-center">
+        <div className="flex items-start gap-4 mt-16">
           <div 
-            className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl transition-all duration-500 ${
+            className={`grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 flex-1 transition-all duration-500 ${
               isRow3Visible ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'
             }`}
           >
-            {menuItems.slice(8).map((item, index) => {
+            {menuItems.slice(10).map((item, index) => {
               const Icon = item.icon;
               return (
                 <Card 
