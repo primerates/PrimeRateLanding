@@ -439,3 +439,69 @@ export type PreApprovalSubmission = z.infer<typeof preApprovalSubmissionSchema>;
 // Create insert schema (excluding auto-generated fields)
 export const insertClientSchema = clientSchema.omit({ id: true, createdAt: true, updatedAt: true });
 export type InsertClient = z.infer<typeof insertClientSchema>;
+
+// PDF Document schema for uploaded mortgage documents
+export const pdfDocuments = pgTable("pdf_documents", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  fileName: text("file_name").notNull(),
+  fileSize: varchar("file_size"),
+  uploadDate: varchar("upload_date").notNull(),
+  documentType: text("document_type"), // e.g., "paystub", "tax_return", "bank_statement", "mortgage_statement", "other"
+  extractedText: text("extracted_text"),
+  structuredData: text("structured_data"), // JSON string of AI-extracted data
+  clientId: varchar("client_id"), // Optional link to client
+  status: varchar("status").default("processed"), // "processing", "processed", "error"
+});
+
+export const insertPdfDocumentSchema = createInsertSchema(pdfDocuments).omit({
+  id: true,
+});
+
+export type PdfDocument = typeof pdfDocuments.$inferSelect;
+export type InsertPdfDocument = z.infer<typeof insertPdfDocumentSchema>;
+
+// Structured mortgage document data schema (for AI extraction)
+export const mortgageDocumentDataSchema = z.object({
+  documentType: z.string().optional(),
+  // Borrower information
+  borrowerName: z.string().optional(),
+  borrowerAddress: z.string().optional(),
+  
+  // Income information (for paystubs)
+  employerName: z.string().optional(),
+  grossPay: z.number().optional(),
+  netPay: z.number().optional(),
+  payPeriod: z.string().optional(),
+  yearToDateGross: z.number().optional(),
+  
+  // Mortgage/Loan information
+  loanNumber: z.string().optional(),
+  lenderName: z.string().optional(),
+  propertyAddress: z.string().optional(),
+  loanAmount: z.number().optional(),
+  currentBalance: z.number().optional(),
+  interestRate: z.number().optional(),
+  monthlyPayment: z.number().optional(),
+  principalAndInterest: z.number().optional(),
+  escrowAmount: z.number().optional(),
+  
+  // Tax return information
+  filingStatus: z.string().optional(),
+  taxYear: z.string().optional(),
+  adjustedGrossIncome: z.number().optional(),
+  totalIncome: z.number().optional(),
+  
+  // Bank statement information
+  accountNumber: z.string().optional(),
+  bankName: z.string().optional(),
+  statementDate: z.string().optional(),
+  beginningBalance: z.number().optional(),
+  endingBalance: z.number().optional(),
+  totalDeposits: z.number().optional(),
+  totalWithdrawals: z.number().optional(),
+  
+  // Additional fields
+  additionalInfo: z.record(z.any()).optional(),
+});
+
+export type MortgageDocumentData = z.infer<typeof mortgageDocumentDataSchema>;
