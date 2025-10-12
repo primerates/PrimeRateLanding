@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
 import BorrowerHeaderForm from '../components/BorrowerHeaderForm';
 import BorrowerForm from '../components/BorrowerForm';
