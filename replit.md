@@ -81,10 +81,19 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 - `DELETE /api/pdf/documents/:id` - Delete document
 
 **Technology Stack**:
-- Backend: pdf-parse (v2.2.9) with PDFParse class API
+- Backend: pdf-parse (v2.2.9) with PDFParse class API for text-based PDFs
+- OCR: OCR.space API for scanned/image-based PDFs (automatic fallback)
 - AI: OpenAI GPT-5 model via Replit AI Integrations (charges to credits, no API key needed)
 - Storage: In-memory storage with typed schema
 - Frontend: React with drag-drop upload, TanStack Query for API calls
+
+**How It Works**:
+1. User uploads PDF (mortgage docs, credit reports, paystubs, etc.)
+2. System tries to extract text using pdf-parse
+3. If no text found or insufficient text (< 50 chars), automatically uses OCR.space
+4. Extracted text sent to OpenAI GPT-5 for intelligent structuring
+5. All extracted fields displayed dynamically in UI
+6. Supports credit reports with score, accounts, collections, inquiries, public records
 
 ### Admin Navigation
 
