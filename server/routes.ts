@@ -1044,8 +1044,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Extract Credit Scores
-      // BEACON 5.0 (Equifax) format: Look for 3-digit score near BEACON, not in brackets
-      const beaconMatch = text.match(/BEACON\s+5\.0[^\d]*?(\d{3})(?!\])/);
+      // BEACON 5.0 (Equifax) format: Score appears in brackets like [648] or 1648]
+      const beaconMatch = text.match(/BEACON\s+5\.0[^\n]*[\n\r\s]*\[?1?(\d{3})\]/);
       if (beaconMatch) {
         data.equifaxScore = parseInt(beaconMatch[1]);
       }
@@ -1151,11 +1151,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log("PDF parse failed, text layer may not exist:", pdfParseError);
       }
 
-      // Step 2: If no text was extracted or only page markers found, use AWS Textract
-      const hasOnlyPageMarkers = extractedText && extractedText.includes('--') && extractedText.split('\n').filter(line => line.trim() && !line.includes('--')).length < 5;
+      // Step 2: Always use AWS Textract for better multi-page extraction
+      // (pdf-parse only extracts from first page reliably)
+      console.log("Using AWS Textract for comprehensive multi-page text extraction");
       
-      if (!extractedText || extractedText.trim().length < 100 || hasOnlyPageMarkers) {
-        console.log("Using AWS Textract for text extraction (no text layer, insufficient text, or only page markers found)");
+      if (true) { // Always use Textract
         
         // Check AWS credentials are configured
         if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
