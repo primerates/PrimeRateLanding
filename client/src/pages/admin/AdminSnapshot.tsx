@@ -16,7 +16,7 @@ export default function AdminSnapshot() {
     {
       id: 1,
       logDate: '10/01/2025',
-      expense: 'Marketing Campaign',
+      expense: '$5,000',
       paidWith: 'Amex',
       expenseCategory: 'Marketing',
       paidTo: 'Google Ads',
@@ -26,7 +26,7 @@ export default function AdminSnapshot() {
     {
       id: 2,
       logDate: '10/05/2025',
-      expense: 'Office Supplies',
+      expense: '$1,250',
       paidWith: 'Capital One',
       expenseCategory: 'Supplies',
       paidTo: 'Staples',
@@ -103,6 +103,17 @@ export default function AdminSnapshot() {
       value = value.slice(0, 5) + '/' + value.slice(5, 9);
     }
     setNewExpense({ ...newExpense, [field]: value });
+  };
+
+  const handleDollarInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/[^0-9]/g, '');
+    if (value === '') {
+      setNewExpense({ ...newExpense, expense: '' });
+      return;
+    }
+    const numValue = parseInt(value);
+    const formatted = '$' + numValue.toLocaleString('en-US');
+    setNewExpense({ ...newExpense, expense: formatted });
   };
 
   const handleSort = (key: string) => {
@@ -405,7 +416,7 @@ export default function AdminSnapshot() {
         {showExpenseForm && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl animate-in">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-white">Add Expense Entry</h3>
+              <h3 className="text-2xl font-bold text-white">Log Expense</h3>
               <button
                 onClick={() => setShowExpenseForm(false)}
                 className="text-purple-300 hover:text-white transition-colors"
@@ -415,6 +426,7 @@ export default function AdminSnapshot() {
               </button>
             </div>
 
+            {/* First Row: Log Date, Expense, Transaction Date, Clearance Date */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
               <input
                 type="text"
@@ -427,43 +439,11 @@ export default function AdminSnapshot() {
               />
               <input
                 type="text"
-                placeholder="Expense"
+                placeholder="Expense Amount"
                 value={newExpense.expense}
-                onChange={(e) => setNewExpense({ ...newExpense, expense: e.target.value })}
+                onChange={handleDollarInput}
                 className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
                 data-testid="input-expense"
-              />
-              <input
-                type="text"
-                placeholder="Paid With"
-                value={newExpense.paidWith}
-                onChange={(e) => setNewExpense({ ...newExpense, paidWith: e.target.value })}
-                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
-                data-testid="input-paid-with"
-              />
-              <select
-                value={newExpense.expenseCategory}
-                onChange={(e) => setNewExpense({ ...newExpense, expenseCategory: e.target.value })}
-                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
-                data-testid="select-expense-category"
-              >
-                <option value="">Expense Category</option>
-                <option value="Marketing">Marketing</option>
-                <option value="Staff">Staff</option>
-                <option value="Vendors">Vendors</option>
-                <option value="Services">Services</option>
-                <option value="Supplies">Supplies</option>
-              </select>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <input
-                type="text"
-                placeholder="Paid To"
-                value={newExpense.paidTo}
-                onChange={(e) => setNewExpense({ ...newExpense, paidTo: e.target.value })}
-                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
-                data-testid="input-paid-to"
               />
               <input
                 type="text"
@@ -483,6 +463,41 @@ export default function AdminSnapshot() {
                 className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
                 data-testid="input-clearance-date"
               />
+            </div>
+
+            {/* Second Row: Paid With, Expense Category, Paid To */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <select
+                value={newExpense.paidWith}
+                onChange={(e) => setNewExpense({ ...newExpense, paidWith: e.target.value })}
+                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                data-testid="select-paid-with"
+              >
+                <option value="">Select</option>
+                <option value="TBD">TBD</option>
+              </select>
+              <select
+                value={newExpense.expenseCategory}
+                onChange={(e) => setNewExpense({ ...newExpense, expenseCategory: e.target.value })}
+                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                data-testid="select-expense-category"
+              >
+                <option value="">Expense Category</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Staff">Staff</option>
+                <option value="Vendors">Vendors</option>
+                <option value="Services">Services</option>
+                <option value="Supplies">Supplies</option>
+              </select>
+              <select
+                value={newExpense.paidTo}
+                onChange={(e) => setNewExpense({ ...newExpense, paidTo: e.target.value })}
+                className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                data-testid="select-paid-to"
+              >
+                <option value="">Select</option>
+                <option value="TBD">TBD</option>
+              </select>
             </div>
 
             <button
@@ -520,6 +535,26 @@ export default function AdminSnapshot() {
                     </th>
                     <th 
                       className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                      onClick={() => handleSort('transactionDate')}
+                      data-testid="header-transaction-date"
+                    >
+                      <div className="flex items-center gap-1">
+                        Transaction Date
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
+                      onClick={() => handleSort('clearanceDate')}
+                      data-testid="header-clearance-date"
+                    >
+                      <div className="flex items-center gap-1">
+                        Clearance Date
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
                       onClick={() => handleSort('paidWith')}
                       data-testid="header-paid-with"
                     >
@@ -548,26 +583,6 @@ export default function AdminSnapshot() {
                         <ArrowUpDown className="w-4 h-4" />
                       </div>
                     </th>
-                    <th 
-                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                      onClick={() => handleSort('transactionDate')}
-                      data-testid="header-transaction-date"
-                    >
-                      <div className="flex items-center gap-1">
-                        Transaction Date
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      className="text-left text-purple-300 font-semibold py-3 px-2 cursor-pointer hover:text-purple-200"
-                      onClick={() => handleSort('clearanceDate')}
-                      data-testid="header-clearance-date"
-                    >
-                      <div className="flex items-center gap-1">
-                        Clearance Date
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -579,11 +594,11 @@ export default function AdminSnapshot() {
                     >
                       <td className="py-3 px-2 text-purple-200">{entry.logDate}</td>
                       <td className="py-3 px-2 text-white">{entry.expense}</td>
+                      <td className="py-3 px-2 text-purple-200">{entry.transactionDate}</td>
+                      <td className="py-3 px-2 text-purple-200">{entry.clearanceDate}</td>
                       <td className="py-3 px-2 text-purple-200">{entry.paidWith}</td>
                       <td className="py-3 px-2 text-purple-200">{entry.expenseCategory}</td>
                       <td className="py-3 px-2 text-purple-200">{entry.paidTo}</td>
-                      <td className="py-3 px-2 text-purple-200">{entry.transactionDate}</td>
-                      <td className="py-3 px-2 text-purple-200">{entry.clearanceDate}</td>
                     </tr>
                   ))}
                 </tbody>
