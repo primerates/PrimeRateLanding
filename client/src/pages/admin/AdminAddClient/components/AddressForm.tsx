@@ -220,7 +220,7 @@ const AddressForm = ({ isPrimary = true }: AddressFormProps) => {
                         />
                     </div>
 
-                    <div className="md:col-span-2">
+                    <div className="md:col-span-1">
                         {countyOptions.length > 0 ? (
                             <FormSelect
                                 label="County"
