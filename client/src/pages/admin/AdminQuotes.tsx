@@ -447,6 +447,7 @@ export default function AdminQuotes() {
                   <SelectItem value="bank_statement">Bank Statement</SelectItem>
                   <SelectItem value="tax_return">Tax Return</SelectItem>
                   <SelectItem value="mortgage_statement">Mortgage Statement</SelectItem>
+                  <SelectItem value="credit_report">Credit Report</SelectItem>
                   <SelectItem value="other">Other</SelectItem>
                 </SelectContent>
               </Select>
