@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft } from 'lucide-react';
+import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X } from 'lucide-react';
 
 export default function AdminSnapshot() {
   const [, setLocation] = useLocation();
   const [entityFilter, setEntityFilter] = useState('all');
   const [timeFilter, setTimeFilter] = useState('mtd');
   const [revenueDetailView, setRevenueDetailView] = useState<string | null>(null);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [entryType, setEntryType] = useState<string | null>(null);
 
   // Sample data - in production, this would come from your API
   const metricsData = {
@@ -102,9 +104,19 @@ export default function AdminSnapshot() {
               <p className="text-purple-300">Real-time insight</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 rounded-lg border border-purple-500/30">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-purple-200 text-sm">Live</span>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 rounded-lg border border-purple-500/30">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-purple-200 text-sm">Live</span>
+            </div>
+            <button 
+              onClick={() => setShowAddModal(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-lg border border-purple-400/30 transition-all shadow-lg hover:shadow-purple-500/50"
+              data-testid="button-add-entry"
+            >
+              <Plus className="w-5 h-5 text-white" />
+              <span className="text-white font-semibold">Add Entry</span>
+            </button>
           </div>
         </div>
 
@@ -305,6 +317,59 @@ export default function AdminSnapshot() {
             </div>
           </div>
         </div>
+
+        {/* Add Entry Modal */}
+        {showAddModal && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-slate-800 rounded-2xl border border-purple-500/30 shadow-2xl max-w-md w-full p-6 relative animate-in">
+              <button 
+                onClick={() => setShowAddModal(false)}
+                className="absolute top-4 right-4 text-purple-300 hover:text-white transition-colors"
+                data-testid="button-close-modal"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              
+              <h2 className="text-2xl font-bold text-white mb-6">Add New Entry</h2>
+              
+              <div className="space-y-4">
+                <button
+                  onClick={() => {
+                    setEntryType('revenue');
+                    console.log('Add Revenue clicked');
+                  }}
+                  className="w-full p-6 bg-gradient-to-br from-blue-500/20 to-indigo-600/20 hover:from-blue-500/30 hover:to-indigo-600/30 rounded-xl border border-blue-500/30 hover:border-blue-500/50 transition-all group"
+                  data-testid="button-add-revenue"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="text-left">
+                      <h3 className="text-xl font-bold text-white mb-1">Add Revenue</h3>
+                      <p className="text-blue-300 text-sm">Record new income or revenue</p>
+                    </div>
+                    <DollarSign className="w-8 h-8 text-blue-400 group-hover:scale-110 transition-transform" />
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setEntryType('expense');
+                    console.log('Add Expense clicked');
+                  }}
+                  className="w-full p-6 bg-gradient-to-br from-red-500/20 to-pink-600/20 hover:from-red-500/30 hover:to-pink-600/30 rounded-xl border border-red-500/30 hover:border-red-500/50 transition-all group"
+                  data-testid="button-add-expense"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="text-left">
+                      <h3 className="text-xl font-bold text-white mb-1">Add Expense</h3>
+                      <p className="text-red-300 text-sm">Record new cost or expense</p>
+                    </div>
+                    <ArrowDownRight className="w-8 h-8 text-red-400 group-hover:scale-110 transition-transform" />
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
