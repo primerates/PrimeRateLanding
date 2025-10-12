@@ -102,45 +102,6 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 - `AWS_SECRET_ACCESS_KEY` - AWS secret key for Textract
 - `AWS_REGION` - AWS region (defaults to us-east-1)
 
-### Financial Dashboard (Vault Tile)
-
-**Route**: `/admin/vault`
-
-**Features**:
-- **Revenue & Expense Tracking**: Comprehensive financial entry management with category and account-based organization
-- **Summary Analytics**: Real-time calculation of total revenue, total expense, net income, and budget variance
-- **Interactive Charts**: 
-  - Monthly Trend (line chart) showing revenue vs. expense over time
-  - Category Breakdown (pie chart) for visual expense/revenue distribution
-- **Budget Management**: Track actual vs. budgeted amounts with variance analysis
-- **Filtering & Views**: 
-  - View modes: Year to Date (YTD), Month to Date (MTD), Specific Year, Compare Years
-  - Type filters: All, Revenue Only, Expense Only
-  - Entry filters: All, Revenue, Expense
-- **Data Tables**: 
-  - Category Analysis with actual vs. budget comparison
-  - Account Breakdown with variance tracking
-  - Complete entry history with delete functionality
-- **Entry Form**: Add new revenue/expense entries with:
-  - Date selection
-  - Type (revenue/expense)
-  - Category and account (with autocomplete suggestions)
-  - Amount and budget fields
-  - Form validation to prevent invalid entries
-
-**Technology Stack**:
-- Frontend: React with TypeScript, shadcn/ui components, recharts for data visualization
-- State Management: React hooks with useMemo for performance optimization
-- Data Storage: In-memory storage with properly typed interfaces (VaultEntry, CategorySummary, AccountSummary)
-- Charts: Recharts library for line charts, pie charts, and data visualization
-- Validation: Client-side validation with toast notifications for user feedback
-
-**Data Structures**:
-- `VaultEntry`: Date, type (revenue/expense), category, account, amount, budget
-- `CategorySummary`: Name, type, amount, budget totals
-- `AccountSummary`: Name, type, amount, budget totals
-- `MonthlyTrend`: Month key, revenue total, expense total
-
 ### Admin Navigation
 
 #### Dashboard Tiles
@@ -158,7 +119,7 @@ Comprehensive navigation system with tabs in this order (left to right):
 6. **Vendors**: Vendor management (coming soon)
 7. **Staff**: Staff management (coming soon)
 8. **Partners**: Partner relationships (coming soon)
-9. **Vault**: Financial dashboard for revenue/expense tracking (has content)
+9. **Vault**: Secure storage (coming soon)
 10. **Post**: Comments, posts, and notes (default tab with full functionality)
 
 **Tab Styling**: Matching Lead Tile style with navy blue (#1a3373) for active state, green hover underline effect, and smooth transitions
