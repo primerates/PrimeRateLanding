@@ -7,8 +7,43 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
 
-const sampleData = [
+interface VaultEntry {
+  date: string;
+  type: 'revenue' | 'expense';
+  category: string;
+  account: string;
+  amount: number;
+  budget: number;
+}
+
+interface CategorySummary {
+  name: string;
+  type: 'revenue' | 'expense';
+  amount: number;
+  budget: number;
+}
+
+interface AccountSummary {
+  name: string;
+  amount: number;
+  budget: number;
+  type: 'revenue' | 'expense';
+}
+
+interface MonthlyTrend {
+  month: string;
+  revenue: number;
+  expense: number;
+}
+
+interface PieData {
+  name: string;
+  value: number;
+}
+
+const sampleData: VaultEntry[] = [
   { date: '2023-01-15', type: 'revenue', category: 'Sales', account: 'Product A', amount: 5000, budget: 4500 },
   { date: '2023-02-20', type: 'revenue', category: 'Sales', account: 'Product B', amount: 7500, budget: 7000 },
   { date: '2023-03-10', type: 'expense', category: 'Marketing', account: 'Advertising', amount: 2000, budget: 2500 },
@@ -30,17 +65,18 @@ const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'
 
 export default function AdminVault() {
   const [, setLocation] = useLocation();
-  const [data, setData] = useState(sampleData);
+  const { toast } = useToast();
+  const [data, setData] = useState<VaultEntry[]>(sampleData);
   const [showEntryForm, setShowEntryForm] = useState(false);
-  const [viewMode, setViewMode] = useState('ytd');
+  const [viewMode, setViewMode] = useState<'ytd' | 'mtd' | 'year' | 'compare'>('ytd');
   const [selectedYear, setSelectedYear] = useState('2024');
   const [compareYears, setCompareYears] = useState(['2023', '2024']);
-  const [filterType, setFilterType] = useState('all');
-  const [entriesFilter, setEntriesFilter] = useState('all');
+  const [filterType, setFilterType] = useState<'all' | 'revenue' | 'expense'>('all');
+  const [entriesFilter, setEntriesFilter] = useState<'all' | 'revenue' | 'expense'>('all');
   
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
-    type: 'expense',
+    type: 'expense' as 'revenue' | 'expense',
     category: '',
     account: '',
     amount: '',
@@ -95,7 +131,7 @@ export default function AdminVault() {
   }, [filteredData]);
 
   const categoryBreakdown = useMemo(() => {
-    const breakdown: Record<string, any> = {};
+    const breakdown: Record<string, CategorySummary> = {};
     filteredData.forEach(item => {
       const key = `${item.type}-${item.category}`;
       if (!breakdown[key]) {
@@ -113,7 +149,7 @@ export default function AdminVault() {
   }, [filteredData]);
 
   const accountBreakdown = useMemo(() => {
-    const breakdown: Record<string, any> = {};
+    const breakdown: Record<string, AccountSummary> = {};
     filteredData.forEach(item => {
       if (!breakdown[item.account]) {
         breakdown[item.account] = {
@@ -130,7 +166,7 @@ export default function AdminVault() {
   }, [filteredData]);
 
   const monthlyTrend = useMemo(() => {
-    const monthly: Record<string, any> = {};
+    const monthly: Record<string, MonthlyTrend> = {};
     filteredData.forEach(item => {
       const date = new Date(item.date);
       const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
@@ -143,13 +179,13 @@ export default function AdminVault() {
         monthly[key].expense += item.amount;
       }
     });
-    return Object.values(monthly).sort((a: any, b: any) => a.month.localeCompare(b.month));
+    return Object.values(monthly).sort((a, b) => a.month.localeCompare(b.month));
   }, [filteredData]);
 
   const pieData = useMemo(() => {
     return categoryBreakdown
-      .filter((d: any) => d.type === (filterType === 'all' ? 'expense' : filterType))
-      .map((d: any) => ({ name: d.name, value: d.amount }));
+      .filter((d) => d.type === (filterType === 'all' ? 'expense' : filterType))
+      .map((d) => ({ name: d.name, value: d.amount }));
   }, [categoryBreakdown, filterType]);
 
   const filteredEntries = useMemo(() => {
@@ -160,10 +196,52 @@ export default function AdminVault() {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const newEntry = {
-      ...formData,
-      amount: parseFloat(formData.amount),
-      budget: parseFloat(formData.budget || formData.amount),
+    // Validation
+    if (!formData.category.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "Category is required",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!formData.account.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "Account is required",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    const amount = parseFloat(formData.amount);
+    if (isNaN(amount) || amount <= 0) {
+      toast({
+        title: "Validation Error",
+        description: "Amount must be a valid positive number",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    const budget = formData.budget ? parseFloat(formData.budget) : amount;
+    if (isNaN(budget) || budget < 0) {
+      toast({
+        title: "Validation Error",
+        description: "Budget must be a valid positive number",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    const newEntry: VaultEntry = {
+      date: formData.date,
+      type: formData.type,
+      category: formData.category.trim(),
+      account: formData.account.trim(),
+      amount,
+      budget,
     };
     
     setData([...data, newEntry]);
@@ -178,6 +256,11 @@ export default function AdminVault() {
     });
     
     setShowEntryForm(false);
+    
+    toast({
+      title: "Entry Added",
+      description: `${newEntry.type === 'revenue' ? 'Revenue' : 'Expense'} entry for $${newEntry.amount.toLocaleString()} added successfully`,
+    });
   };
 
   const handleDeleteEntry = (index: number) => {
@@ -552,7 +635,7 @@ export default function AdminVault() {
                   </tr>
                 </thead>
                 <tbody>
-                  {categoryBreakdown.map((cat: any, idx) => (
+                  {categoryBreakdown.map((cat, idx) => (
                     <tr key={idx} className="border-b hover-elevate" data-testid={`row-category-${idx}`}>
                       <td className="py-2 px-4">{cat.name}</td>
                       <td className="py-2 px-4">
@@ -591,7 +674,7 @@ export default function AdminVault() {
                   </tr>
                 </thead>
                 <tbody>
-                  {accountBreakdown.map((acc: any, idx) => (
+                  {accountBreakdown.map((acc, idx) => (
                     <tr key={idx} className="border-b hover-elevate" data-testid={`row-account-${idx}`}>
                       <td className="py-2 px-4">{acc.name}</td>
                       <td className="py-2 px-4">
