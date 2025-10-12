@@ -17,6 +17,7 @@ import AdminAddVendor from "@/pages/admin/AdminAddVendor";
 import AdminSearch from "@/pages/admin/AdminSearch";
 import AdminMarketing from "@/pages/admin/AdminMarketing";
 import AdminVault from "@/pages/admin/AdminVault";
+import AdminSnapshot from "@/pages/admin/AdminSnapshot";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -73,6 +74,11 @@ function Router() {
       <Route path="/admin/vault">
         <ProtectedRoute>
           <AdminVault />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/snapshot">
+        <ProtectedRoute>
+          <AdminSnapshot />
         </ProtectedRoute>
       </Route>
       {/* Fallback to 404 */}

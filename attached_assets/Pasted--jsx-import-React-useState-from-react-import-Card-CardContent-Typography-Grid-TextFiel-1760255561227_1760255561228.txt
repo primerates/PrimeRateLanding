@@ -1,0 +1,129 @@
+ jsx
+import React, { useState } from "react";
+import { Card, CardContent, Typography, Grid, TextField, Select, MenuItem, Button } from "@mui/material";
+import { Upload } from "antd";const revenueChannels = ["Product Sales", "Consulting", "Affiliate"];
+const expenseCategories = ["Marketing", "Tech", "Payroll"];export default function Dashboard() {
+  const [revenue, setRevenue] = useState([]);
+  const [expense, setExpense] = useState([]);
+  const [fileList, setFileList] = useState([]);
+  const [filters, setFilters] = useState({ period: "YTD", year: "2025" });  // Example handlers for adding revenue/expense
+  function handleAddRevenue(channel, amount) {
+    setRevenue([...revenue, { channel, amount, date: new Date() }]);
+  }  function handleAddExpense(category, amount) {
+    setExpense([...expense, { category, amount, date: new Date() }]);
+  }  return (
+    <Grid container spacing={2}>
+      {/* Summary Tiles */}
+      <Grid item xs={12} md={4}>
+        <Card>
+          <CardContent>
+            <Typography variant="h6">Total Revenue (YTD)</Typography>
+            <Typography variant="h4">
+              ${revenue.filter(r => r.date.getFullYear() === parseInt(filters.year)).reduce((sum, r) => sum + r.amount, 0)}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <Card>
+          <CardContent>
+            <Typography variant="h6">Total Expense (YTD)</Typography>
+            <Typography variant="h4">
+              ${expense.filter(e => e.date.getFullYear() === parseInt(filters.year)).reduce((sum, e) => sum + e.amount, 0)}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Grid>
+      {/* Filter Bar */}
+      <Grid item xs={12}>
+        <Card>
+          <CardContent>
+            <Select
+              value={filters.period}
+              onChange={e => setFilters({ ...filters, period: e.target.value })}
+            >
+              <MenuItem value="YTD">Year to Date</MenuItem>
+              <MenuItem value="MTD">Month to Date</MenuItem>
+              <MenuItem value="Year">Year</MenuItem>
+            </Select>
+            <TextField
+              type="number"
+              label="Year"
+              variant="outlined"
+              value={filters.year}
+              onChange={e => setFilters({ ...filters, year: e.target.value })}
+            />
+          </CardContent>
+        </Card>
+      </Grid>  {/* Data Entry Forms */}
+  <Grid item xs={12} md={6}>
+    <Card>
+      <CardContent>
+        <Typography variant="h6">Add Revenue</Typography>
+        <Select defaultValue={revenueChannels[0]} onChange={e => setFilters({ ...filters, channel: e.target.value })}>
+          {revenueChannels.map(c => (<MenuItem key={c} value={c}>{c}</MenuItem>))}
+        </Select>
+        <TextField
+          type="number"
+          label="Amount"
+          variant="outlined"
+          onChange={e => setFilters({ ...filters, amount: parseFloat(e.target.value) })}
+        />
+        <Button onClick={() => handleAddRevenue(filters.channel, filters.amount)}>Add</Button>
+      </CardContent>
+    </Card>
+  </Grid>
+  <Grid item xs={12} md={6}>
+    <Card>
+      <CardContent>
+        <Typography variant="h6">Add Expense</Typography>
+        <Select defaultValue={expenseCategories[0]} onChange={e => setFilters({ ...filters, category: e.target.value })}>
+          {expenseCategories.map(c => (<MenuItem key={c} value={c}>{c}</MenuItem>))}
+        </Select>
+        <TextField
+          type="number"
+          label="Amount"
+          variant="outlined"
+          onChange={e => setFilters({ ...filters, amount: parseFloat(e.target.value) })}
+        />
+        <Button onClick={() => handleAddExpense(filters.category, filters.amount)}>Add</Button>
+      </CardContent>
+    </Card>
+  </Grid>
+
+  {/* File Upload Section */}
+  <Grid item xs={12} md={6}>
+    <Card>
+      <CardContent>
+        <Typography variant="h6">Upload Invoice/Receipt</Typography>
+        <Upload
+          fileList={fileList}
+          onChange={({ fileList }) => setFileList(fileList)}
+          multiple={true}
+          accept=".pdf,.jpg,.png"
+        >
+          <Button>Upload</Button>
+        </Upload>
+        <Typography variant="body2">
+          Files this {filters.period}: {fileList.length}
+        </Typography>
+      </CardContent>
+    </Card>
+  </Grid>
+
+  {/* Data Table Preview Section */}
+  <Grid item xs={12}>
+    <Card>
+      <CardContent>
+        <Typography variant="h6">Revenue/Expense History</Typography>
+        {/* Replace below with DataGrid or Table */}
+        <pre>
+          Revenue: {JSON.stringify(revenue.filter(r => filters.period === "YTD" ? r.date.getFullYear() === parseInt(filters.year) : true), null, 2)}
+          Expense: {JSON.stringify(expense.filter(e => filters.period === "YTD" ? e.date.getFullYear() === parseInt(filters.year) : true), null, 2)}
+        </pre>
+      </CardContent>
+    </Card>
+  </Grid>
+</Grid>  );
+}
+
