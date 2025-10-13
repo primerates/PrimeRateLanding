@@ -5,6 +5,7 @@ import IncomeHeader from '../components/IncomeHeader';
 import IncomeTypes from '../components/IncomeTypes';
 import EmploymentForm from '../components/EmploymentForm';
 import SocialSecurityForm from '../components/SocialSecurityForm';
+import PensionForm from '../components/PensionForm';
 import PropertyRentalDialog from '../dialogs/PropertyRentalDialog';
 import DeleteConfirmationDialog from '../dialogs/DeleteConfirmationDialog';
 import { InsertClient } from '@shared/schema';
@@ -28,6 +29,9 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
 
     // State for Social Security form
     const [isSocialSecurityOpen, setIsSocialSecurityOpen] = useState(false);
+
+    // State for Pension form
+    const [isPensionOpen, setIsPensionOpen] = useState(true);
 
     // Property rental dialog state
     const [propertyRentalDialog, setPropertyRentalDialog] = useState<{
@@ -78,6 +82,23 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
             setBorrowerEmployerCards(['default']);
         }
     }, [isEmploymentChecked, borrowerEmployerCards.length]);
+
+    // Watch for pension checkbox changes and ensure default pension exists when checked
+    const isPensionChecked = form.watch('income.incomeTypes.pension');
+    useEffect(() => {
+        if (isPensionChecked) {
+            const currentPensions = form.watch('income.pensions') || [];
+            if (currentPensions.length === 0) {
+                const defaultPension = {
+                    id: `pension-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
+                    payerName: '',
+                    monthlyAmount: '',
+                    startDate: ''
+                };
+                form.setValue('income.pensions', [defaultPension]);
+            }
+        }
+    }, [isPensionChecked, form]);
 
 
     // Watch all individual employer income fields dynamically
@@ -154,6 +175,11 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         if (form.watch('income.incomeTypes.socialSecurity')) {
             setIsSocialSecurityOpen(true);
         }
+        
+        // Open pension form if it exists
+        if (form.watch('income.incomeTypes.pension')) {
+            setIsPensionOpen(true);
+        }
     };
 
     const handleMinimizeAll = () => {
@@ -172,6 +198,11 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         if (form.watch('income.incomeTypes.socialSecurity')) {
             setIsSocialSecurityOpen(false);
         }
+        
+        // Close pension form if it exists
+        if (form.watch('income.incomeTypes.pension')) {
+            setIsPensionOpen(false);
+        }
     };
 
     const handleDeleteSocialSecurity = () => {
@@ -180,6 +211,13 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         form.setValue('income.socialSecurityMonthlyAmount', '');
         form.setValue('income.socialSecurityStartDate', '');
         setIsSocialSecurityOpen(false);
+    };
+
+    const handleDeletePension = () => {
+        // Clear the income type checkbox and close the section
+        form.setValue('income.incomeTypes.pension', false);
+        form.setValue('income.pensions', []);
+        setIsPensionOpen(false);
     };
 
     const handleDeleteEmployer = (cardId: string) => {        
@@ -283,6 +321,17 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
                     isOpen={isSocialSecurityOpen}
                     onOpenChange={setIsSocialSecurityOpen}
                     onDeleteSocialSecurity={handleDeleteSocialSecurity}
+                />
+            )}
+
+            {/* Pension Form - Show when pension is selected */}
+            {form.watch('income.incomeTypes.pension') && (
+                <PensionForm
+                    isOpen={isPensionOpen}
+                    onOpenChange={setIsPensionOpen}
+                    onDeletePension={handleDeletePension}
+                    showAnimation={showIncomeCardAnimation['pension']}
+                    setShowAnimation={setShowIncomeCardAnimation}
                 />
             )}
 
