@@ -1314,16 +1314,17 @@ export default function AdminSnapshot() {
                     </div>
                     <div className="space-y-2">
                       <Label className="text-purple-200">Batch Results To Date</Label>
-                      <div className="flex h-8 rounded-md overflow-hidden">
+                      <div className="flex h-8 rounded-md overflow-hidden border border-purple-500/30">
                         <TooltipComponent>
                           <TooltipTrigger asChild>
                             <button
                               type="button"
                               onClick={() => setBatchResults('show-all')}
-                              className="flex-1 flex items-center justify-center text-xs font-medium transition-colors h-full text-white"
+                              className="flex-1 flex items-center justify-center text-xs font-medium transition-all h-full text-white"
                               style={{ 
-                                backgroundColor: batchResults === 'show-all' ? '#6366f1' : '#8b5cf6',
-                                opacity: batchResults === 'show-all' ? 1 : 0.7
+                                background: batchResults === 'show-all' 
+                                  ? 'linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)' 
+                                  : '#475569'
                               }}
                               data-testid="button-batch-results-show-all"
                             >
@@ -1337,10 +1338,11 @@ export default function AdminSnapshot() {
                             <button
                               type="button"
                               onClick={() => setBatchResults('profitable')}
-                              className="flex-1 flex items-center justify-center text-xs font-medium transition-colors h-full text-white"
+                              className="flex-1 flex items-center justify-center text-xs font-medium transition-all h-full text-white border-x border-purple-500/30"
                               style={{ 
-                                backgroundColor: batchResults === 'profitable' ? '#10b981' : '#34d399',
-                                opacity: batchResults === 'profitable' ? 1 : 0.7
+                                background: batchResults === 'profitable' 
+                                  ? 'linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%)' 
+                                  : '#475569'
                               }}
                               data-testid="button-batch-results-profitable"
                             >
@@ -1354,10 +1356,11 @@ export default function AdminSnapshot() {
                             <button
                               type="button"
                               onClick={() => setBatchResults('loss')}
-                              className="flex-1 flex items-center justify-center text-xs font-medium transition-colors h-full text-white"
+                              className="flex-1 flex items-center justify-center text-xs font-medium transition-all h-full text-white"
                               style={{ 
-                                backgroundColor: batchResults === 'loss' ? '#ef4444' : '#f87171',
-                                opacity: batchResults === 'loss' ? 1 : 0.7
+                                background: batchResults === 'loss' 
+                                  ? 'linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)' 
+                                  : '#475569'
                               }}
                               data-testid="button-batch-results-loss"
                             >
