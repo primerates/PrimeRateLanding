@@ -34,6 +34,7 @@ interface EmploymentFormProps {
   calculatedAdjustedNewFhaMip: string;
   setShowIncomeCardAnimation: (updater: (prev: any) => any) => void;
   showAddButton?: boolean;
+  title?: string;
 }
 
 const EmploymentForm = ({
@@ -50,7 +51,8 @@ const EmploymentForm = ({
   setEmploymentDates,
   calculatedAdjustedNewFhaMip,
   setShowIncomeCardAnimation,
-  showAddButton = true
+  showAddButton = true,
+  title = "Borrower Employer"
 }: EmploymentFormProps) => {  
   const form = useFormContext<InsertClient>();
 
@@ -74,7 +76,7 @@ const EmploymentForm = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-8">
               <CardTitle className="flex items-center gap-2">
-                Borrower Employer
+                {title}
               </CardTitle>
             </div>
             <div className="flex items-center gap-2">

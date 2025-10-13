@@ -28,6 +28,11 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
     const [showIncomeCardAnimation, setShowIncomeCardAnimation] = useState<Record<string, boolean>>({});
     const [employmentDates, setEmploymentDates] = useState<Record<string, any>>({});
 
+    // State for second employment forms
+    const [secondEmployerCards, setSecondEmployerCards] = useState<string[]>(['default']);
+    const [secondPropertyCardStates, setSecondPropertyCardStates] = useState<Record<string, boolean>>({});
+    const [secondEmploymentDates, setSecondEmploymentDates] = useState<Record<string, any>>({});
+
     // State for Social Security form
     const [isSocialSecurityOpen, setIsSocialSecurityOpen] = useState(false);
 
@@ -49,10 +54,22 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         cardId: string;
     }>({ isOpen: false, cardId: '' });
 
+    // Delete second employer dialog state
+    const [deleteSecondEmployerDialog, setDeleteSecondEmployerDialog] = useState<{
+        isOpen: boolean;
+        cardId: string;
+    }>({ isOpen: false, cardId: '' });
+
     // Helper function to generate dynamic field paths for employer cards
     const getEmployerFieldPath = (cardId: string, fieldName: string) => {
         const cleanCardId = cardId === 'default' ? 'default' : cardId;
         return `income.employers.${cleanCardId}.${fieldName}` as const;
+    };
+
+    // Helper function to generate dynamic field paths for second employer cards
+    const getSecondEmployerFieldPath = (cardId: string, fieldName: string) => {
+        const cleanCardId = cardId === 'default' ? 'default' : cardId;
+        return `income.secondEmployers.${cleanCardId}.${fieldName}` as const;
     };
 
     // Update employment duration when dates change
@@ -79,6 +96,30 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         form.setValue(monthsPath as any, months);
     };
 
+    // Update second employment duration when dates change
+    const updateSecondEmploymentDuration = (cardId: string, startDate: string, endDate: string, isPresent: boolean) => {
+        // Use utility function to calculate duration
+        const { years, months, duration } = calculateEmploymentDuration(startDate, endDate, isPresent);
+
+        // Update local state for UI
+        setSecondEmploymentDates(prev => ({
+            ...prev,
+            [cardId]: {
+                ...prev[cardId],
+                startDate,
+                endDate,
+                isPresent,
+                duration
+            }
+        }));
+
+        // Update form data using schema-compliant fields
+        const yearsPath = `income.secondEmployers.${cardId}.yearsEmployedYears`;
+        const monthsPath = `income.secondEmployers.${cardId}.yearsEmployedMonths`;
+        form.setValue(yearsPath as any, years);
+        form.setValue(monthsPath as any, months);
+    };
+
     // Watch for employment checkbox changes and ensure default card exists when checked
     const isEmploymentChecked = form.watch('income.incomeTypes.employment');
     useEffect(() => {
@@ -86,6 +127,14 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
             setBorrowerEmployerCards(['default']);
         }
     }, [isEmploymentChecked, borrowerEmployerCards.length]);
+
+    // Watch for second employment checkbox changes and ensure default card exists when checked
+    const isSecondEmploymentChecked = form.watch('income.incomeTypes.secondEmployment');
+    useEffect(() => {
+        if (isSecondEmploymentChecked && secondEmployerCards.length === 0) {
+            setSecondEmployerCards(['default']);
+        }
+    }, [isSecondEmploymentChecked, secondEmployerCards.length]);
 
     // Watch for pension checkbox changes and ensure default pension exists when checked
     const isPensionChecked = form.watch('income.incomeTypes.pension');
@@ -175,6 +224,17 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
             return newState;
         });
         
+        // Open all second employment form cards
+        setSecondPropertyCardStates(prev => {
+            const newState = { ...prev };
+            // Set all cards to open (true)
+            secondEmployerCards.forEach(cardId => {
+                const propertyId = cardId === 'default' ? 'default' : cardId;
+                newState[propertyId] = true;
+            });
+            return newState;
+        });
+        
         // Open social security form if it exists
         if (form.watch('income.incomeTypes.socialSecurity')) {
             setIsSocialSecurityOpen(true);
@@ -197,6 +257,17 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
             const newState = { ...prev };
             // Set all cards to closed (false)
             borrowerEmployerCards.forEach(cardId => {
+                const propertyId = cardId === 'default' ? 'default' : cardId;
+                newState[propertyId] = false;
+            });
+            return newState;
+        });
+        
+        // Close all second employment form cards
+        setSecondPropertyCardStates(prev => {
+            const newState = { ...prev };
+            // Set all cards to closed (false)
+            secondEmployerCards.forEach(cardId => {
                 const propertyId = cardId === 'default' ? 'default' : cardId;
                 newState[propertyId] = false;
             });
@@ -286,6 +357,48 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         });
     };
 
+    const handleDeleteSecondEmployer = (cardId: string) => {        
+        // Remove the card from the array
+        const updatedCards = secondEmployerCards.filter(id => id !== cardId);
+        setSecondEmployerCards(updatedCards);
+        
+        // If this was the last employer, uncheck the second employment checkbox
+        if (updatedCards.length === 0) {
+            form.setValue('income.incomeTypes.secondEmployment', false);
+        }
+        
+        // Clean up related state
+        const propertyId = cardId === 'default' ? 'default' : cardId;
+        setSecondPropertyCardStates(prev => {
+            const newState = { ...prev };
+            delete newState[propertyId];
+            return newState;
+        });
+        
+        setSecondEmploymentDates(prev => {
+            const newState = { ...prev };
+            delete newState[cardId];
+            return newState;
+        });
+        
+        // Clear form data for this second employer
+        const fieldsToClean = [
+            'employerName', 'jobTitle', 'monthlyIncome', 'employmentType',
+            'yearsEmployedYears', 'yearsEmployedMonths', 'employerPhone',
+            'employmentVerificationPhone', 'isShowingEmploymentVerification'
+        ];
+        const addressFieldsToClean = [
+            'employerAddress.street', 'employerAddress.unit', 'employerAddress.city',
+            'employerAddress.state', 'employerAddress.zip', 'employerAddress.county'
+        ];
+        fieldsToClean.forEach(field => {
+            form.setValue(`income.secondEmployers.${cardId}.${field}` as any, '');
+        });
+        addressFieldsToClean.forEach(field => {
+            form.setValue(`income.secondEmployers.${cardId}.${field}` as any, '');
+        });
+    };
+
     return (
         <>
             <Card>
@@ -339,6 +452,42 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
                 );
             })}
 
+            {/* Second Employment Form - Show when second employment is selected */}
+            {form.watch('income.incomeTypes.secondEmployment') && (secondEmployerCards || ['default']).map((cardId) => {
+                const propertyId = cardId === 'default' ? 'default' : cardId;
+                const isOpen = secondPropertyCardStates[propertyId] ?? true;
+
+                return (
+                    <EmploymentForm
+                        key={`second-${cardId}`}
+                        cardId={cardId}
+                        propertyId={propertyId}
+                        isOpen={isOpen}
+                        onOpenChange={(open) => {
+                            setSecondPropertyCardStates(prev => ({ ...prev, [propertyId]: open }));
+                        }}
+                        onAddEmployer={() => {
+                            if (secondEmployerCards.length < 2) {
+                                const newId = `employer-${Date.now()}`;
+                                setSecondEmployerCards(prev => [...prev, newId]);
+                            }
+                        }}
+                        onDeleteEmployer={() => {
+                            setDeleteSecondEmployerDialog({ isOpen: true, cardId: cardId });
+                        }}
+                        showAnimation={showIncomeCardAnimation['borrower-second-employment']}
+                        getEmployerFieldPath={getSecondEmployerFieldPath}
+                        employmentDates={secondEmploymentDates}
+                        updateEmploymentDuration={updateSecondEmploymentDuration}
+                        setEmploymentDates={setSecondEmploymentDates}
+                        calculatedAdjustedNewFhaMip=""
+                        setShowIncomeCardAnimation={setShowIncomeCardAnimation}
+                        showAddButton={secondEmployerCards.length < 2}
+                        title="Second Employer"
+                    />
+                );
+            })}
+
             {/* Social Security Form - Show when social security is selected */}
             {form.watch('income.incomeTypes.socialSecurity') && (
                 <SocialSecurityForm
@@ -385,6 +534,18 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
                 testId="dialog-delete-employer"
                 confirmButtonTestId="button-delete-employer-confirm"
                 cancelButtonTestId="button-delete-employer-cancel"
+            />
+
+            {/* Delete Second Employer Confirmation Dialog */}
+            <DeleteConfirmationDialog
+                isOpen={deleteSecondEmployerDialog.isOpen}
+                onClose={() => setDeleteSecondEmployerDialog({ isOpen: false, cardId: '' })}
+                onConfirm={() => handleDeleteSecondEmployer(deleteSecondEmployerDialog.cardId)}
+                title="Delete Second Employer"
+                description="Are you sure you want to delete this second employer? This action cannot be undone and will remove all associated employment information."
+                testId="dialog-delete-second-employer"
+                confirmButtonTestId="button-delete-second-employer-confirm"
+                cancelButtonTestId="button-delete-second-employer-cancel"
             />
         </>
     );
