@@ -713,7 +713,7 @@ export default function AdminSnapshot() {
                     >
                       {item.label}
                     </DropdownMenuItem>
-                    {(index === 4 || index === 8) && <DropdownMenuSeparator className="bg-purple-500/30" />}
+                    {(index === 4 || index === 7) && <DropdownMenuSeparator className="bg-purple-500/30" />}
                   </div>
                 ))}
               </DropdownMenuContent>
