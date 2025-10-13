@@ -9,7 +9,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
-import { ArrowLeft, Plus, Minus, User, Sun } from 'lucide-react';
+import { ArrowLeft, Plus, Minus, User, Sun, Moon } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 
 // Dashboard shortcuts menu items
@@ -197,16 +197,22 @@ export default function AdminLibrary() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-6">
             <h1 className={`text-xl font-black italic transition-colors ${getTextColor()}`} style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="heading-library">LOANVIEW GPT</h1>
-            <div className="flex items-center gap-2">
-              <span className={`text-sm font-medium transition-colors ${isLightMode ? (pageBrightness >= 50 ? 'text-slate-600' : 'text-slate-300') : 'text-purple-300'}`}>Dark</span>
-              <Switch
-                checked={isLightMode}
-                onCheckedChange={setIsLightMode}
-                className="data-[state=checked]:bg-purple-600 scale-90"
-                data-testid="switch-theme-toggle"
-              />
-              <span className={`text-sm font-medium ${isLightMode ? 'text-purple-600' : 'text-slate-400'}`}>Light</span>
-            </div>
+            <button
+              onClick={() => setIsLightMode(!isLightMode)}
+              className={`flex items-center justify-center w-10 h-10 rounded-lg border transition-all ${
+                isLightMode
+                  ? 'bg-white border-purple-200 hover:border-purple-300 shadow-sm'
+                  : 'bg-purple-500/20 border-purple-500/30 hover:bg-purple-500/30'
+              }`}
+              title={isLightMode ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+              data-testid="button-theme-toggle"
+            >
+              {isLightMode ? (
+                <Moon className="w-5 h-5 text-purple-600" />
+              ) : (
+                <Sun className="w-5 h-5 text-yellow-300" />
+              )}
+            </button>
             
             {/* Brightness Slider - Only visible in light mode */}
             {isLightMode && (

@@ -1,0 +1,54 @@
+Sure! Here's the code for the dark/light mode toggle button:
+javascriptimport { Sun, Moon } from 'lucide-react';
+
+// State variable (add with your other useState declarations)
+const [isDarkMode, setIsDarkMode] = useState(true);
+
+// The toggle button
+<button
+  onClick={() => setIsDarkMode(!isDarkMode)}
+  className={`flex items-center justify-center w-10 h-10 rounded-lg border transition-all ${
+    isDarkMode
+      ? 'bg-purple-500/20 border-purple-500/30 hover:bg-purple-500/30'
+      : 'bg-white border-purple-200 hover:border-purple-300 shadow-sm'
+  }`}
+  title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+>
+  {isDarkMode ? (
+    <Sun className="w-5 h-5 text-yellow-300" />
+  ) : (
+    <Moon className="w-5 h-5 text-purple-600" />
+  )}
+</button>
+Features:
+
+Square button (w-10 h-10) with rounded corners
+Conditional styling - dark mode shows purple/translucent background, light mode shows white with shadow
+Icon switches - Sun icon (yellow) in dark mode, Moon icon (purple) in light mode
+Hover effects - subtle background change on hover
+Tooltip - shows "Switch to Light/Dark Mode" on hover
+Smooth transitions - all style changes animate smoothly
+
+To use the state throughout your app:
+javascript// Example: Apply dark/light mode to container
+<div className={`min-h-screen p-6 transition-colors duration-300 ${
+  isDarkMode 
+    ? 'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900' 
+    : 'bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50'
+}`}>
+Alternative circular button style:
+javascript<button
+  onClick={() => setIsDarkMode(!isDarkMode)}
+  className={`flex items-center justify-center w-10 h-10 rounded-full border transition-all ${
+    isDarkMode
+      ? 'bg-purple-500/20 border-purple-500/30 hover:bg-purple-500/30 hover:rotate-180'
+      : 'bg-white border-purple-200 hover:border-purple-300 shadow-md hover:rotate-180'
+  }`}
+  title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+>
+  {isDarkMode ? (
+    <Sun className="w-5 h-5 text-yellow-300" />
+  ) : (
+    <Moon className="w-5 h-5 text-purple-600" />
+  )}
+</button>
