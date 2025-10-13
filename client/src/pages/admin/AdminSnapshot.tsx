@@ -385,7 +385,7 @@ export default function AdminSnapshot() {
                 className="text-purple-300 cursor-pointer hover:text-purple-200 transition-colors"
                 onClick={() => setLocation('/admin/dashboard')}
               >
-                Real-time insight
+                Dashboard
               </p>
               <Button
                 variant="ghost"
@@ -421,7 +421,7 @@ export default function AdminSnapshot() {
         {/* Top Card - Filters and Metrics */}
         <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-white">Dashboard</h3>
+            <h3 className="text-xl font-bold text-white">Performance</h3>
             <button
               onClick={() => setIsFiltersMinimized(!isFiltersMinimized)}
               className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
