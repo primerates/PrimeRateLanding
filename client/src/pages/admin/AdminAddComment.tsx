@@ -112,7 +112,6 @@ export default function AdminAddComment() {
     // Row 2
     { label: 'Closed', path: '/admin/records' },
     { label: 'Library', path: '/admin/library' },
-    { label: 'Marketing', path: '/admin/marketing' },
     { label: 'Dashboard', path: '/admin/reports' },
     // Row 3
     { label: 'Vendors', path: '/admin/add-vendor' },

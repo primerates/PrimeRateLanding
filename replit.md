@@ -55,8 +55,8 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 
 ### Admin Features
 - **Comments & Posts Management**: Manages client testimonials and internal company posts with real-time preview, statistics, sortable tables, and sticky notes. Features dynamic display of content sections based on user interaction.
-- **Marketing Direct Mail System**: Manages marketing campaigns, including CSV upload, batch tracking, lead journey monitoring, and cost calculation. Features sticky columns in data tables and a detailed batch creation workflow.
 - **Loan Management System**: Manages client loan applications, supporting multiple loan categories, rate configurations, third-party services, and quote generation.
+- **Snapshot Analytics Dashboard**: Comprehensive dashboard combining financial analytics, marketing campaign management (Direct Mail, Lead Vendors, Social Media), expense/revenue tracking, and data visualization. All marketing features are now integrated within the Dashboard.
 
 ### PDF Document Extraction System (Quote Tile)
 
@@ -106,46 +106,36 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 
 #### Dashboard Tiles
 - **Row 1**: Lead, Quote, Loan Prep, Loan, Funded (green left border on hover)
-- **Row 2**: Closed, Library, Marketing, Snapshot (blue left border on hover)
+- **Row 2**: Closed, Library, Dashboard (blue left border on hover)
 - **Row 3**: Vendors, Staff, Settings (purple left border on hover)
 
-#### 10-Tab Menu Bar
-Comprehensive navigation system with tabs in this order (left to right):
-1. **Lead**: Lead management (coming soon)
-2. **Marketing**: Direct mail campaigns, lead vendors, social media (has content)
-3. **Snapshot**: Business overview and analytics with real-time financial insights, revenue sources breakdown, expense tracking, and drill-down capabilities
-4. **Library**: Document and resource management (coming soon)
-5. **Settings**: System configuration (coming soon)
-6. **Vendors**: Vendor management (coming soon)
-7. **Staff**: Staff management (coming soon)
-8. **Partners**: Partner relationships (coming soon)
-9. **Vault**: Secure storage (coming soon)
-10. **Post**: Comments, posts, and notes (default tab with full functionality)
-
-**Tab Styling**: Matching Lead Tile style with navy blue (#1a3373) for active state, green hover underline effect, and smooth transitions
-
-#### Admin Marketing System
-Features a header with "Back to Dashboard", "Shortcut Menu", "Screenshare", and "Save" options. Its navigation includes "Direct Mail", "Lead Vendor", "Social Media", and "Notes" tabs. The "Direct Mail" tab contains a Query Card for filtering and a Create Batch Card for new campaign setup, supporting 5-row layouts for campaign parameters, vendor details, and cost tracking, along with CSV upload and state selection. Batch details and lists are also managed here.
-
 ### Snapshot Analytics Dashboard
-**Route**: `/admin/dashboard`
+**Route**: `/admin/reports`
 
-**Features**:
+**Overview**: Comprehensive command center combining financial analytics, marketing campaign management, expense/revenue tracking, and data visualization. All marketing features are fully integrated within the Dashboard.
+
+**Core Features**:
 - **Real-time Financial Metrics**: Displays Gross Income, Revenue, and Expense with trend indicators
-- **Interactive Filters**: Entity filter (Show All, Company, Branch, Partners) and time period filter (Today, MTD, YTD, Custom)
+- **Interactive Filters**: 
+  - Entity filter (Prime Rate, Branch, Partners) - defaults to Prime Rate
+  - Category filter (Financials, Direct Mail, Lead Vendor, Social Media, Staff, Vendor)
+  - Time period filter with dropdown (Today with auto date display, MTD, YTD, From Date, To Date, Compare)
 - **Revenue Sources Visualization**: Pie chart with detailed breakdown by source (Direct Mail, Lead Vendors, Social Media, Repeat Clients, Referrals)
 - **Expense Breakdown**: Pie chart categorizing expenses (Marketing, Staff, Vendors, Services, Supplies)
 - **Drill-down Capabilities**: Click on "Direct Mail" to view state-by-state breakdown and loan program distribution
 - **Visual Design**: Dark gradient theme (slate-900 to purple-900) with glassmorphism cards and animated elements
+- **Expense & Revenue Logging**: Add entry functionality with transaction tracking, date filtering, sortable tables, action menus (edit/delete)
 
-**Direct Mail Batch Creation** (within Dashboard):
-- **17 Required Fields**: Batch Number, Batch Title, 10 Yr Bond, Par Rate, Category, Data Category, Delivery Speed, Data Date, Data Vendor, Print Vendor, Mail Vendor, Supply Vendor, Data Cost, Mail Cost, Print Cost, Supply Cost, and **States** (mandatory)
-- **States Selection**: Button located in batch card header (above completion bar) opens dialog with US states checkboxes
-- **Completion Bar**: Shows 17 segments tracking field completion progress
-- **CSV Upload**: Three-stage workflow (Upload → Column Mapping → Preview) only appears when all 17 fields are complete
-- **Validation**: States-specific warning shows when no states selected; generic warning shows for other incomplete fields
-- **Auto-mapping**: Fuzzy matching (threshold 0.6) for CSV columns to required fields
-- **Styling**: Purple/pink gradient buttons matching Dashboard theme
+**Marketing Campaign Management** (integrated within Dashboard):
+- **Direct Mail Batch Creation**:
+  - **17 Required Fields**: Batch Number, Batch Title, 10 Yr Bond, Par Rate, Category, Data Category, Delivery Speed, Data Date, Data Vendor, Print Vendor, Mail Vendor, Supply Vendor, Data Cost, Mail Cost, Print Cost, Supply Cost, and **States** (mandatory)
+  - **States Selection**: Button in batch card header (above completion bar) opens dialog with US states checkboxes
+  - **Completion Bar**: Shows 17 segments tracking field completion progress
+  - **CSV Upload**: Three-stage workflow (Upload → Column Mapping → Preview) only appears when all 17 fields are complete
+  - **Validation**: States-specific warning when no states selected; generic warning for incomplete fields
+  - **Auto-mapping**: Fuzzy matching (threshold 0.6) for CSV columns to required fields
+  - **Batch Management**: Action menu (three dots) with delete functionality, confirmation dialogs, localStorage persistence
+  - **Batch List**: Sortable table with batch details, cost tracking, record counts, date formatting
 
 **Technology Stack**:
 - Recharts library for data visualization (PieChart, BarChart with responsive containers)
@@ -153,6 +143,7 @@ Features a header with "Back to Dashboard", "Shortcut Menu", "Screenshare", and 
 - Interactive drill-down with state management
 - Custom tooltips with currency formatting
 - Live status indicator with animation
+- Shadcn/ui DropdownMenu components matching header design theme
 
 ### Background Selector System
 Allows customization of dashboard and login page backgrounds with various presets (e.g., Geometric Cubes, Infinity Grid, Neon Night). Supports mode toggling, visual previews, and persistence via localStorage.

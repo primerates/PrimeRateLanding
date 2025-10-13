@@ -15,7 +15,6 @@ import AdminAddClient from "@/pages/admin/AdminAddClient";
 import AdminAddComment from "@/pages/admin/AdminAddComment";
 import AdminAddVendor from "@/pages/admin/AdminAddVendor";
 import AdminSearch from "@/pages/admin/AdminSearch";
-import AdminMarketing from "@/pages/admin/AdminMarketing";
 import AdminSnapshot from "@/pages/admin/AdminSnapshot";
 import NotFound from "@/pages/not-found";
 
@@ -63,11 +62,6 @@ function Router() {
       <Route path="/admin/search">
         <ProtectedRoute>
           <AdminSearch />
-        </ProtectedRoute>
-      </Route>
-      <Route path="/admin/marketing">
-        <ProtectedRoute>
-          <AdminMarketing />
         </ProtectedRoute>
       </Route>
       <Route path="/admin/reports">
