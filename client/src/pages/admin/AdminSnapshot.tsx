@@ -202,6 +202,7 @@ export default function AdminSnapshot() {
   const [incompleteFieldsDialog, setIncompleteFieldsDialog] = useState(false);
   const [noStatesWarningDialog, setNoStatesWarningDialog] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [statesDialogOpen, setStatesDialogOpen] = useState(false);
   const [showPreview, setShowPreview] = useState(true);
   const [transactionDateRange, setTransactionDateRange] = useState({
     fromDate: '',
@@ -434,7 +435,7 @@ export default function AdminSnapshot() {
     if (!file) return;
 
     // Check if all required fields are completed
-    if (getCompletedBatchFieldsCount() < 16) {
+    if (getCompletedBatchFieldsCount() < 17) {
       setIncompleteFieldsDialog(true);
       // Clear the file input
       e.target.value = '';
@@ -681,7 +682,8 @@ export default function AdminSnapshot() {
       !!dataCost && dataCost.trim() !== '',
       !!mailCost && mailCost.trim() !== '',
       !!printCost && printCost.trim() !== '',
-      !!supplyCost && supplyCost.trim() !== ''
+      !!supplyCost && supplyCost.trim() !== '',
+      !!selectedStates && selectedStates.length > 0
     ];
     return fields.filter(Boolean).length;
   };
@@ -1926,28 +1928,46 @@ export default function AdminSnapshot() {
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold text-white">New Batch</h3>
               <div className="flex items-center gap-3">
+                <Button 
+                  onClick={() => setStatesDialogOpen(true)}
+                  size="sm"
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white border-0"
+                  data-testid="button-states-batch"
+                >
+                  {selectedStates.length > 0 ? `${selectedStates.length} States` : 'States'}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCancelDialogOpen(true)}
+                  className="border-purple-500/30 text-purple-300 hover:bg-red-500 hover:text-white hover:border-red-500"
+                  data-testid="button-cancel-new-batch"
+                >
+                  Cancel New Batch
+                </Button>
                 <div className="text-xs text-purple-300">
-                  {getCompletedBatchFieldsCount()} / 16 fields complete
+                  {getCompletedBatchFieldsCount()} / 17 fields complete
                 </div>
               </div>
             </div>
             
-            {/* Completion Bar - 16 segments */}
+            {/* Completion Bar - 17 segments */}
             <div className="px-4 pb-2">
               <div className="relative flex gap-0 h-px">
-                {Array.from({ length: 16 }).map((_, index) => (
+                {Array.from({ length: 17 }).map((_, index) => (
                   <div
                     key={index}
                     className={`flex-1 transition-colors duration-300`}
                     style={{ backgroundColor: index < getCompletedBatchFieldsCount() ? 'rgb(168, 85, 247)' : '#D1D5DB' }}
                   />
                 ))}
-                {getCompletedBatchFieldsCount() > 0 && getCompletedBatchFieldsCount() < 16 && (
+                {getCompletedBatchFieldsCount() > 0 && getCompletedBatchFieldsCount() < 17 && (
                   <div 
                     className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full transition-all duration-300"
                     style={{ 
                       backgroundColor: 'rgb(168, 85, 247)',
-                      left: `calc(${(getCompletedBatchFieldsCount() / 16) * 100}% - 4px)`
+                      left: `calc(${(getCompletedBatchFieldsCount() / 17) * 100}% - 4px)`
                     }}
                   />
                 )}
@@ -2213,7 +2233,7 @@ export default function AdminSnapshot() {
                   </div>
 
                   {/* Separation Line and Upload Box - Only show when completion bar is at 100% */}
-                  {getCompletedBatchFieldsCount() === 16 && (
+                  {getCompletedBatchFieldsCount() === 17 && (
                     <div style={{ borderTop: '1px solid rgba(168, 85, 247, 0.3)', paddingTop: '24px' }}>
                       <div className="border-2 border-dashed border-purple-500/30 rounded-lg p-8 text-center hover:border-purple-500/60 transition-colors bg-slate-900/30">
                         <input
@@ -3302,7 +3322,7 @@ export default function AdminSnapshot() {
             <DialogHeader>
               <DialogTitle className="text-xl font-bold text-white">Incomplete Required Fields</DialogTitle>
             </DialogHeader>
-            <p className="text-purple-200 pt-2">Please complete all 16 required fields before uploading a CSV file.</p>
+            <p className="text-purple-200 pt-2">Please complete all 17 required fields (including States) before uploading a CSV file.</p>
             <div className="flex justify-end gap-2 mt-4">
               <Button
                 onClick={() => setIncompleteFieldsDialog(false)}
@@ -3329,6 +3349,59 @@ export default function AdminSnapshot() {
                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white"
               >
                 OK
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* States Selection Dialog for Batch Creation */}
+        <Dialog open={statesDialogOpen} onOpenChange={setStatesDialogOpen}>
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-white">Select States for This Batch</DialogTitle>
+              <DialogDescription className="text-purple-200 pt-2">
+                Choose which states this batch covers. Selected: {selectedStates.length}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid grid-cols-2 gap-3 py-4">
+              {US_STATES.map((state) => (
+                <div key={state.abbr} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={`batch-create-state-${state.abbr}`}
+                    checked={selectedStates.includes(state.abbr)}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setSelectedStates([...selectedStates, state.abbr]);
+                      } else {
+                        setSelectedStates(selectedStates.filter(s => s !== state.abbr));
+                      }
+                    }}
+                    data-testid={`checkbox-batch-state-${state.abbr}`}
+                  />
+                  <label
+                    htmlFor={`batch-create-state-${state.abbr}`}
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer text-purple-200"
+                  >
+                    {state.name}
+                  </label>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-end gap-2 mt-4">
+              <Button
+                variant="outline"
+                onClick={() => setStatesDialogOpen(false)}
+                data-testid="button-cancel-states"
+                className="border-purple-500/30 text-purple-300 hover:bg-purple-500/10"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => setStatesDialogOpen(false)}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white border-0"
+                data-testid="button-confirm-states"
+              >
+                Confirm
               </Button>
             </div>
           </DialogContent>
