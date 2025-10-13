@@ -111,11 +111,12 @@ export default function AdminLibrary() {
   const getBackgroundGradient = () => {
     if (!isLightMode) return 'from-slate-900 via-purple-900 to-slate-900';
     
-    // Map brightness to appropriate slate shades
-    // 100 = slate-50, 50 = slate-200, 0 = slate-700
-    if (pageBrightness >= 75) return 'from-slate-50 via-purple-50 to-slate-100';
-    if (pageBrightness >= 50) return 'from-slate-100 via-purple-100 to-slate-200';
+    // Map brightness to appropriate slate shades with smoother transitions
+    if (pageBrightness >= 80) return 'from-slate-50 via-purple-50 to-slate-100';
+    if (pageBrightness >= 60) return 'from-slate-100 via-purple-100 to-slate-200';
+    if (pageBrightness >= 40) return 'from-slate-200 via-purple-150 to-slate-300';
     if (pageBrightness >= 25) return 'from-slate-300 via-purple-200 to-slate-400';
+    if (pageBrightness >= 15) return 'from-slate-400 via-purple-300 to-slate-500';
     return 'from-slate-600 via-purple-700 to-slate-700';
   };
 
@@ -134,18 +135,22 @@ export default function AdminLibrary() {
   // Calculate card background based on CARD brightness
   const getCardBackground = () => {
     if (!isLightMode) return 'bg-slate-800/50';
-    if (cardBrightness >= 75) return 'bg-white/80';
-    if (cardBrightness >= 50) return 'bg-slate-50/80';
+    if (cardBrightness >= 80) return 'bg-white/80';
+    if (cardBrightness >= 60) return 'bg-slate-50/80';
+    if (cardBrightness >= 40) return 'bg-slate-100/80';
     if (cardBrightness >= 25) return 'bg-slate-200/80';
+    if (cardBrightness >= 15) return 'bg-slate-300/80';
     return 'bg-slate-500/80';
   };
 
   // Calculate input background based on CARD brightness
   const getInputBackground = () => {
     if (!isLightMode) return 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500';
-    if (cardBrightness >= 75) return 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500';
-    if (cardBrightness >= 50) return 'bg-white text-slate-900 border-purple-300 focus:border-purple-500';
+    if (cardBrightness >= 80) return 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500';
+    if (cardBrightness >= 60) return 'bg-white text-slate-900 border-purple-300 focus:border-purple-500';
+    if (cardBrightness >= 40) return 'bg-slate-50 text-slate-900 border-purple-400 focus:border-purple-500';
     if (cardBrightness >= 25) return 'bg-slate-100 text-slate-900 border-purple-400 focus:border-purple-500';
+    if (cardBrightness >= 15) return 'bg-slate-200 text-slate-900 border-purple-400 focus:border-purple-500';
     return 'bg-slate-400 text-white border-purple-500 focus:border-purple-600';
   };
 
