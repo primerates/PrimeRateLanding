@@ -3,7 +3,7 @@ import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Monitor, ChevronDown, Upload } from 'lucide-react';
+import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Monitor, ChevronDown, Upload, CheckCircle, AlertCircle, FileText } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -11,6 +11,22 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tooltip as TooltipComponent, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
+import Papa from 'papaparse';
+
+// CSV Upload types
+type UploadStage = 'upload' | 'mapping' | 'preview' | 'success';
+
+interface ColumnMapping {
+  reference: string;
+  firstName: string;
+  lastName: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  zip: string;
+}
 
 // US States list
 const US_STATES = [
@@ -101,6 +117,7 @@ const CurrencyInput = ({ value, onChange, placeholder = '$0', id, dataTestId }: 
 
 export default function AdminSnapshot() {
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
   const [entityFilter, setEntityFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('financials');
   const [teamFilter, setTeamFilter] = useState('select');
@@ -159,6 +176,26 @@ export default function AdminSnapshot() {
   const [printDate, setPrintDate] = useState('');
   const [mailDate, setMailDate] = useState('');
   const [firstCallDate, setFirstCallDate] = useState('');
+  
+  // CSV Upload state variables
+  const [uploadStage, setUploadStage] = useState<UploadStage>('upload');
+  const [csvData, setCsvData] = useState<any[] | null>(null);
+  const [detectedColumns, setDetectedColumns] = useState<string[]>([]);
+  const [previewData, setPreviewData] = useState<any[]>([]);
+  const [columnMapping, setColumnMapping] = useState<ColumnMapping>({
+    reference: '',
+    firstName: '',
+    lastName: '',
+    streetAddress: '',
+    city: '',
+    state: '',
+    zip: ''
+  });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [error, setError] = useState('');
+  const [incompleteFieldsDialog, setIncompleteFieldsDialog] = useState(false);
+  const [noStatesWarningDialog, setNoStatesWarningDialog] = useState(false);
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [transactionDateRange, setTransactionDateRange] = useState({
     fromDate: '',
     toDate: ''
