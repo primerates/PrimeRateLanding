@@ -1183,13 +1183,6 @@ export default function AdminSnapshot() {
               <Filter className="w-5 h-5 text-purple-400" />
             </div>
             <div className="flex items-center gap-3">
-              {/* Auto date display when Today is selected */}
-              {timeFilter === 'today' && (
-                <span className="text-purple-300 text-sm">
-                  {new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}
-                </span>
-              )}
-              
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
@@ -1197,7 +1190,7 @@ export default function AdminSnapshot() {
                     data-testid="button-time-filter"
                   >
                     <span className="text-purple-200 text-sm">
-                      {timeFilter === 'today' && 'Today'}
+                      {timeFilter === 'today' && new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}
                       {timeFilter === 'mtd' && 'MTD'}
                       {timeFilter === 'ytd' && 'YTD'}
                       {timeFilter === 'fromDate' && 'From Date'}
@@ -1213,7 +1206,7 @@ export default function AdminSnapshot() {
                     className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
                     data-testid="option-today"
                   >
-                    Today
+                    Today ({new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })})
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => setTimeFilter('mtd')}
