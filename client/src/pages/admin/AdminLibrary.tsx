@@ -202,7 +202,7 @@ export default function AdminLibrary() {
               <Switch
                 checked={isLightMode}
                 onCheckedChange={setIsLightMode}
-                className="data-[state=checked]:bg-purple-600"
+                className="data-[state=checked]:bg-purple-600 scale-90"
                 data-testid="switch-theme-toggle"
               />
               <span className={`text-sm font-medium ${isLightMode ? 'text-purple-600' : 'text-slate-400'}`}>Light</span>
