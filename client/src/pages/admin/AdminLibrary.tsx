@@ -32,6 +32,7 @@ export default function AdminLibrary() {
   const [isBorrowerOpen, setIsBorrowerOpen] = useState(true);
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
   const [shortcutDropdownOpen, setShortcutDropdownOpen] = useState(false);
+  const [isLightMode, setIsLightMode] = useState(false);
 
   // Form state
   const [firstName, setFirstName] = useState('');
@@ -103,35 +104,61 @@ export default function AdminLibrary() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
+    <div className={`min-h-screen p-6 transition-colors ${
+      isLightMode 
+        ? 'bg-gradient-to-br from-slate-50 via-purple-50 to-slate-100' 
+        : 'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900'
+    }`}>
       <div className="container mx-auto space-y-6">
         
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-black italic text-white" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="heading-library">LOANVIEW GPT</h1>
+          <div className="flex items-center gap-4">
+            <h1 className={`text-xl font-black italic ${isLightMode ? 'text-slate-900' : 'text-white'}`} style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="heading-library">LOANVIEW GPT</h1>
+            <div className="flex items-center gap-2">
+              <span className={`text-sm font-medium ${isLightMode ? 'text-slate-600' : 'text-purple-300'}`}>Dark</span>
+              <Switch
+                checked={isLightMode}
+                onCheckedChange={setIsLightMode}
+                className="data-[state=checked]:bg-purple-600"
+                data-testid="switch-theme-toggle"
+              />
+              <span className={`text-sm font-medium ${isLightMode ? 'text-purple-600' : 'text-slate-400'}`}>Light</span>
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <DropdownMenu open={shortcutDropdownOpen} onOpenChange={setShortcutDropdownOpen}>
               <DropdownMenuTrigger asChild>
                 <button
-                  className="p-2 bg-purple-500/20 hover:bg-purple-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all"
+                  className={`p-2 rounded-lg border transition-all ${
+                    isLightMode
+                      ? 'bg-purple-100 hover:bg-purple-200 border-purple-300 hover:border-purple-400'
+                      : 'bg-purple-500/20 hover:bg-purple-500/40 border-purple-500/30 hover:border-purple-500/50'
+                  }`}
                   data-testid="button-shortcut"
                 >
-                  <User className="h-5 w-5 text-purple-300" />
+                  <User className={`h-5 w-5 ${isLightMode ? 'text-purple-700' : 'text-purple-300'}`} />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+              <DropdownMenuContent align="end" className={`w-48 backdrop-blur-xl ${
+                isLightMode
+                  ? 'bg-white/95 border-purple-300'
+                  : 'bg-slate-800/95 border-purple-500/30'
+              }`}>
                 {dashboardMenuItems.map((item, index) => (
                   <div key={item.path}>
                     <DropdownMenuItem
                       onClick={() => setLocation(item.path)}
-                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                      className={`cursor-pointer transition-all ${
+                        isLightMode
+                          ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white'
+                          : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white'
+                      }`}
                       data-testid={`shortcut-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
                     >
                       {item.label}
                     </DropdownMenuItem>
-                    {(index === 4 || index === 6) && <DropdownMenuSeparator className="bg-purple-500/30" />}
+                    {(index === 4 || index === 6) && <DropdownMenuSeparator className={isLightMode ? 'bg-purple-300' : 'bg-purple-500/30'} />}
                   </div>
                 ))}
               </DropdownMenuContent>
@@ -139,7 +166,11 @@ export default function AdminLibrary() {
             <Button
               variant="ghost"
               onClick={() => setLocation('/admin/dashboard')}
-              className="flex items-center gap-2 text-purple-200 hover:text-white hover:bg-purple-500/20"
+              className={`flex items-center gap-2 ${
+                isLightMode
+                  ? 'text-slate-700 hover:text-slate-900 hover:bg-purple-100'
+                  : 'text-purple-200 hover:text-white hover:bg-purple-500/20'
+              }`}
               data-testid="button-back-to-dashboard"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -149,9 +180,13 @@ export default function AdminLibrary() {
         </div>
 
         {/* Main Content - Borrower Card with Dashboard Theme */}
-        <Card className="bg-slate-800/50 backdrop-blur-xl border-l-4 border-l-purple-500 hover:border-purple-400 focus-within:border-purple-400 transition-all duration-200 shadow-2xl">
+        <Card className={`backdrop-blur-xl border-l-4 hover:border-purple-400 focus-within:border-purple-400 transition-all duration-200 shadow-2xl ${
+          isLightMode
+            ? 'bg-white/80 border-l-purple-600'
+            : 'bg-slate-800/50 border-l-purple-500'
+        }`}>
             <Collapsible open={isBorrowerOpen} onOpenChange={setIsBorrowerOpen}>
-              <CardHeader className="border-b border-purple-500/20">
+              <CardHeader className={`border-b ${isLightMode ? 'border-purple-200' : 'border-purple-500/20'}`}>
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
                     Borrower
@@ -187,15 +222,23 @@ export default function AdminLibrary() {
                           <Button 
                             variant="ghost" 
                             size="sm" 
-                            className="bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 hover:text-white transition-all"
+                            className={`transition-all ${
+                              isLightMode
+                                ? 'bg-purple-100 hover:bg-purple-200 text-purple-700 hover:text-purple-900'
+                                : 'bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 hover:text-white'
+                            }`}
                             data-testid="button-toggle-borrower"
                           >
                             {isBorrowerOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                           </Button>
                         </CollapsibleTrigger>
                       </TooltipTrigger>
-                      <TooltipContent className="bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
-                        <p className="text-purple-200">{isBorrowerOpen ? 'Minimize' : 'Expand'}</p>
+                      <TooltipContent className={`backdrop-blur-xl ${
+                        isLightMode
+                          ? 'bg-white/95 border-purple-300'
+                          : 'bg-slate-800/95 border-purple-500/30'
+                      }`}>
+                        <p className={isLightMode ? 'text-purple-700' : 'text-purple-200'}>{isBorrowerOpen ? 'Minimize' : 'Expand'}</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -206,60 +249,75 @@ export default function AdminLibrary() {
                   {/* Row 1: First Name, Middle Name, Last Name, Date of Birth, SSN */}
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="firstName" className="text-purple-200">First Name</Label>
+                      <Label htmlFor="firstName" className={isLightMode ? 'text-slate-700 font-medium' : 'text-purple-200'}>First Name</Label>
                       <Input
                         id="firstName"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
-                        className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400"
+                        className={isLightMode 
+                          ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
+                          : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
+                        }
                         data-testid="input-firstName"
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="middleName" className="text-purple-200">Middle Name</Label>
+                      <Label htmlFor="middleName" className={isLightMode ? 'text-slate-700 font-medium' : 'text-purple-200'}>Middle Name</Label>
                       <Input
                         id="middleName"
                         value={middleName}
                         onChange={(e) => setMiddleName(e.target.value)}
-                        className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400"
+                        className={isLightMode 
+                          ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
+                          : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
+                        }
                         data-testid="input-middleName"
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="lastName" className="text-purple-200">Last Name</Label>
+                      <Label htmlFor="lastName" className={isLightMode ? 'text-slate-700 font-medium' : 'text-purple-200'}>Last Name</Label>
                       <Input
                         id="lastName"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
-                        className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400"
+                        className={isLightMode 
+                          ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
+                          : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
+                        }
                         data-testid="input-lastName"
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="dateOfBirth" className="text-purple-200">Date of Birth</Label>
+                      <Label htmlFor="dateOfBirth" className={isLightMode ? 'text-slate-700 font-medium' : 'text-purple-200'}>Date of Birth</Label>
                       <Input
                         id="dateOfBirth"
                         value={dateOfBirth}
                         onChange={(e) => setDateOfBirth(formatDateOfBirth(e.target.value))}
                         placeholder="MM/DD/YYYY"
                         maxLength={10}
-                        className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400"
+                        className={isLightMode 
+                          ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
+                          : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
+                        }
                         data-testid="input-dateOfBirth"
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="ssn" className="text-purple-200">SSN</Label>
+                      <Label htmlFor="ssn" className={isLightMode ? 'text-slate-700 font-medium' : 'text-purple-200'}>SSN</Label>
                       <Input
                         id="ssn"
                         value={ssn}
                         onChange={(e) => setSsn(formatSSN(e.target.value))}
                         placeholder="XXX-XX-XXXX"
                         maxLength={11}
-                        className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400"
+                        className={isLightMode 
+                          ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
+                          : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
+                        }
                         data-testid="input-ssn"
                       />
                     </div>
@@ -268,84 +326,111 @@ export default function AdminLibrary() {
                   {/* Row 2: Marital Status, Relationship to Co-Borrower, Phone, Email, Preferred Contact Time */}
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="maritalStatus" className="text-purple-200">Marital Status</Label>
+                      <Label htmlFor="maritalStatus" className={isLightMode ? 'text-slate-700 font-medium' : 'text-purple-200'}>Marital Status</Label>
                       <Select value={maritalStatus} onValueChange={setMaritalStatus}>
                         <SelectTrigger 
-                          className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                          className={isLightMode 
+                            ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500'
+                            : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                          }
                           data-testid="select-maritalStatus"
                         >
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
-                        <SelectContent className="bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
-                          <SelectItem value="Select" className="text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white">Select</SelectItem>
-                          <SelectItem value="single" className="text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white">Single</SelectItem>
-                          <SelectItem value="married" className="text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white">Married</SelectItem>
-                          <SelectItem value="divorced" className="text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white">Divorced</SelectItem>
-                          <SelectItem value="widowed" className="text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white">Widowed</SelectItem>
+                        <SelectContent className={`backdrop-blur-xl ${
+                          isLightMode
+                            ? 'bg-white/95 border-purple-300'
+                            : 'bg-slate-800/95 border-purple-500/30'
+                        }`}>
+                          <SelectItem value="Select" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Select</SelectItem>
+                          <SelectItem value="single" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Single</SelectItem>
+                          <SelectItem value="married" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Married</SelectItem>
+                          <SelectItem value="divorced" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Divorced</SelectItem>
+                          <SelectItem value="widowed" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Widowed</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="relationshipToCoBorrower" className="text-purple-200">Relationship to Co-borrower</Label>
+                      <Label htmlFor="relationshipToCoBorrower" className={isLightMode ? 'text-slate-700 font-medium' : 'text-purple-200'}>Relationship to Co-borrower</Label>
                       <Select value={relationshipToCoBorrower} onValueChange={setRelationshipToCoBorrower}>
                         <SelectTrigger 
-                          className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                          className={isLightMode 
+                            ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500'
+                            : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                          }
                           data-testid="select-relationshipToCoBorrower"
                         >
                           <SelectValue placeholder="N/A" />
                         </SelectTrigger>
-                        <SelectContent className="bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
-                          <SelectItem value="N/A" className="text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white">N/A</SelectItem>
-                          <SelectItem value="spouse" className="text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white">Spouse</SelectItem>
-                          <SelectItem value="partner" className="text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white">Partner</SelectItem>
-                          <SelectItem value="sibling" className="text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white">Sibling</SelectItem>
-                          <SelectItem value="parent" className="text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white">Parent</SelectItem>
-                          <SelectItem value="child" className="text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white">Child</SelectItem>
-                          <SelectItem value="other" className="text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white">Other</SelectItem>
+                        <SelectContent className={`backdrop-blur-xl ${
+                          isLightMode
+                            ? 'bg-white/95 border-purple-300'
+                            : 'bg-slate-800/95 border-purple-500/30'
+                        }`}>
+                          <SelectItem value="N/A" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>N/A</SelectItem>
+                          <SelectItem value="spouse" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Spouse</SelectItem>
+                          <SelectItem value="partner" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Partner</SelectItem>
+                          <SelectItem value="sibling" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Sibling</SelectItem>
+                          <SelectItem value="parent" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Parent</SelectItem>
+                          <SelectItem value="child" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Child</SelectItem>
+                          <SelectItem value="other" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Other</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="phone" className="text-purple-200">Phone</Label>
+                      <Label htmlFor="phone" className={isLightMode ? 'text-slate-700 font-medium' : 'text-purple-200'}>Phone</Label>
                       <Input
                         id="phone"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="(XXX) XXX-XXXX"
-                        className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400"
+                        className={isLightMode 
+                          ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
+                          : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
+                        }
                         data-testid="input-phone"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="email" className="text-purple-200">Email</Label>
+                      <Label htmlFor="email" className={isLightMode ? 'text-slate-700 font-medium' : 'text-purple-200'}>Email</Label>
                       <Input
                         id="email"
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="email@example.com"
-                        className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400"
+                        className={isLightMode 
+                          ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
+                          : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
+                        }
                         data-testid="input-email"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="preferredContactTime" className="text-purple-200">Preferred Contact Time</Label>
+                      <Label htmlFor="preferredContactTime" className={isLightMode ? 'text-slate-700 font-medium' : 'text-purple-200'}>Preferred Contact Time</Label>
                       <Select value={preferredContactTime} onValueChange={setPreferredContactTime}>
                         <SelectTrigger 
-                          className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                          className={isLightMode 
+                            ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500'
+                            : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                          }
                           data-testid="select-preferredContactTime"
                         >
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
-                        <SelectContent className="bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
-                          <SelectItem value="Select" className="text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white">Select</SelectItem>
-                          <SelectItem value="morning" className="text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white">Morning</SelectItem>
-                          <SelectItem value="afternoon" className="text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white">Afternoon</SelectItem>
-                          <SelectItem value="evening" className="text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white">Evening</SelectItem>
+                        <SelectContent className={`backdrop-blur-xl ${
+                          isLightMode
+                            ? 'bg-white/95 border-purple-300'
+                            : 'bg-slate-800/95 border-purple-500/30'
+                        }`}>
+                          <SelectItem value="Select" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Select</SelectItem>
+                          <SelectItem value="morning" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Morning</SelectItem>
+                          <SelectItem value="afternoon" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Afternoon</SelectItem>
+                          <SelectItem value="evening" className={isLightMode ? 'text-slate-700 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white' : 'text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white'}>Evening</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -366,10 +451,12 @@ export default function AdminLibrary() {
                         <div className={`w-3 h-3 rounded-full transition-colors ${
                           currentResidenceType === 'owned' 
                             ? 'bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg shadow-purple-500/50' 
-                            : 'border-2 border-purple-400/50 bg-slate-700/50 hover:border-purple-400'
+                            : isLightMode
+                              ? 'border-2 border-purple-400 bg-slate-50 hover:border-purple-500'
+                              : 'border-2 border-purple-400/50 bg-slate-700/50 hover:border-purple-400'
                         }`}>
                         </div>
-                        <span className="text-sm font-medium text-purple-200">Owned</span>
+                        <span className={`text-sm font-medium ${isLightMode ? 'text-slate-700' : 'text-purple-200'}`}>Owned</span>
                       </button>
                       <button
                         type="button"
@@ -380,10 +467,12 @@ export default function AdminLibrary() {
                         <div className={`w-3 h-3 rounded-full transition-colors ${
                           currentResidenceType === 'rental' 
                             ? 'bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg shadow-purple-500/50' 
-                            : 'border-2 border-purple-400/50 bg-slate-700/50 hover:border-purple-400'
+                            : isLightMode
+                              ? 'border-2 border-purple-400 bg-slate-50 hover:border-purple-500'
+                              : 'border-2 border-purple-400/50 bg-slate-700/50 hover:border-purple-400'
                         }`}>
                         </div>
-                        <span className="text-sm font-medium text-purple-200">Rental</span>
+                        <span className={`text-sm font-medium ${isLightMode ? 'text-slate-700' : 'text-purple-200'}`}>Rental</span>
                       </button>
                       <button
                         type="button"
@@ -394,104 +483,132 @@ export default function AdminLibrary() {
                         <div className={`w-3 h-3 rounded-full transition-colors ${
                           currentResidenceType === 'other' 
                             ? 'bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg shadow-purple-500/50' 
-                            : 'border-2 border-purple-400/50 bg-slate-700/50 hover:border-purple-400'
+                            : isLightMode
+                              ? 'border-2 border-purple-400 bg-slate-50 hover:border-purple-500'
+                              : 'border-2 border-purple-400/50 bg-slate-700/50 hover:border-purple-400'
                         }`}>
                         </div>
-                        <span className="text-sm font-medium text-purple-200">Other</span>
+                        <span className={`text-sm font-medium ${isLightMode ? 'text-slate-700' : 'text-purple-200'}`}>Other</span>
                       </button>
                     </div>
                   </div>
 
                   {/* Address Card with Dashboard Theme */}
-                  <Card className="bg-slate-800/50 backdrop-blur-xl border-purple-500/20 shadow-2xl mt-6">
+                  <Card className={`backdrop-blur-xl shadow-2xl mt-6 ${
+                    isLightMode
+                      ? 'bg-slate-50/80 border-purple-200'
+                      : 'bg-slate-800/50 border-purple-500/20'
+                  }`}>
                     <CardContent className="pt-6">
                       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                         <div className="space-y-2 md:col-span-3">
-                          <Label htmlFor="street" className="text-white font-semibold">Street Address</Label>
+                          <Label htmlFor="street" className={`font-semibold ${isLightMode ? 'text-slate-700' : 'text-white'}`}>Street Address</Label>
                           <Input
                             id="street"
                             value={street}
                             onChange={(e) => setStreet(e.target.value)}
-                            className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400"
+                            className={isLightMode 
+                              ? 'bg-white text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
+                              : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
+                            }
                             data-testid="input-street"
                           />
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="unit" className="text-white font-semibold">Unit/Apt</Label>
+                          <Label htmlFor="unit" className={`font-semibold ${isLightMode ? 'text-slate-700' : 'text-white'}`}>Unit/Apt</Label>
                           <Input
                             id="unit"
                             value={unit}
                             onChange={(e) => setUnit(e.target.value)}
-                            className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400"
+                            className={isLightMode 
+                              ? 'bg-white text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
+                              : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
+                            }
                             data-testid="input-unit"
                           />
                         </div>
                         
                         <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="city" className="text-white font-semibold">City</Label>
+                          <Label htmlFor="city" className={`font-semibold ${isLightMode ? 'text-slate-700' : 'text-white'}`}>City</Label>
                           <Input
                             id="city"
                             value={city}
                             onChange={(e) => setCity(e.target.value)}
-                            className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400"
+                            className={isLightMode 
+                              ? 'bg-white text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
+                              : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
+                            }
                             data-testid="input-city"
                           />
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="state" className="text-white font-semibold">State</Label>
+                          <Label htmlFor="state" className={`font-semibold ${isLightMode ? 'text-slate-700' : 'text-white'}`}>State</Label>
                           <Input
                             id="state"
                             value={state}
                             onChange={(e) => setState(e.target.value)}
                             placeholder="CA"
                             maxLength={2}
-                            className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400"
+                            className={isLightMode 
+                              ? 'bg-white text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
+                              : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
+                            }
                             data-testid="input-state"
                           />
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="zipCode" className="text-white font-semibold">ZIP Code</Label>
+                          <Label htmlFor="zipCode" className={`font-semibold ${isLightMode ? 'text-slate-700' : 'text-white'}`}>ZIP Code</Label>
                           <Input
                             id="zipCode"
                             value={zipCode}
                             onChange={(e) => setZipCode(e.target.value)}
                             placeholder="12345"
                             maxLength={5}
-                            className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400"
+                            className={isLightMode 
+                              ? 'bg-white text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
+                              : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
+                            }
                             data-testid="input-zipCode"
                           />
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="county" className="text-white font-semibold">County</Label>
+                          <Label htmlFor="county" className={`font-semibold ${isLightMode ? 'text-slate-700' : 'text-white'}`}>County</Label>
                           <Input
                             id="county"
                             value={county}
                             onChange={(e) => setCounty(e.target.value)}
-                            className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400"
+                            className={isLightMode 
+                              ? 'bg-white text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
+                              : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
+                            }
                             data-testid="input-county"
                           />
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="fromDate" className="text-white font-semibold">From</Label>
+                          <Label htmlFor="fromDate" className={`font-semibold ${isLightMode ? 'text-slate-700' : 'text-white'}`}>From</Label>
                           <Input
                             id="fromDate"
                             value={fromDate}
                             onChange={(e) => setFromDate(formatDate(e.target.value))}
                             placeholder="mm/dd/yyyy"
                             maxLength={10}
-                            className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400 !text-[13px] placeholder:text-[10px]"
+                            className={`!text-[13px] placeholder:text-[10px] ${
+                              isLightMode 
+                                ? 'bg-white text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
+                                : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
+                            }`}
                             data-testid="input-fromDate"
                           />
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
                           <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor="toDate" className="text-sm text-white font-semibold">
+                            <Label htmlFor="toDate" className={`text-sm font-semibold ${isLightMode ? 'text-slate-700' : 'text-white'}`}>
                               {isPresent ? 'Present' : 'To'}
                             </Label>
                             <Switch
@@ -515,18 +632,26 @@ export default function AdminLibrary() {
                             placeholder="mm/dd/yyyy"
                             maxLength={10}
                             readOnly={isPresent}
-                            className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400 !text-[13px] placeholder:text-[10px]"
+                            className={`!text-[13px] placeholder:text-[10px] ${
+                              isLightMode 
+                                ? 'bg-white text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
+                                : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
+                            }`}
                             data-testid="input-toDate"
                           />
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="duration" className="text-sm text-white font-semibold">Duration</Label>
+                          <Label htmlFor="duration" className={`text-sm font-semibold ${isLightMode ? 'text-slate-700' : 'text-white'}`}>Duration</Label>
                           <Input
                             id="duration"
                             value="0 Yrs 0 Mos"
                             readOnly
-                            className="bg-slate-700/50 text-purple-300 border-purple-500/30 cursor-not-allowed !text-[13px]"
+                            className={`cursor-not-allowed !text-[13px] ${
+                              isLightMode
+                                ? 'bg-purple-50 text-purple-700 border-purple-300'
+                                : 'bg-slate-700/50 text-purple-300 border-purple-500/30'
+                            }`}
                             data-testid="input-duration"
                           />
                         </div>
