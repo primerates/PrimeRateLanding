@@ -133,6 +133,8 @@ export default function AdminSnapshot() {
   // Batch List sorting state
   const [batchSortColumn, setBatchSortColumn] = useState<string>('createdDate');
   const [batchSortDirection, setBatchSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [showStatesDialog, setShowStatesDialog] = useState(false);
+  const [selectedBatchStates, setSelectedBatchStates] = useState<string[]>([]);
   
   // Create New Batch card state (only shown when categoryFilter is 'direct-mail')
   const [showCreateBatch, setShowCreateBatch] = useState(false);
@@ -1581,6 +1583,7 @@ export default function AdminSnapshot() {
                   <tbody>
                     {sortedBatches.map((batch: any) => {
                       const totalCost = parseInt(batch.dataCost) + parseInt(batch.mailCost) + parseInt(batch.printCost) + parseInt(batch.supplyCost);
+                      const stateCount = batch.states?.length || 0;
                       return (
                         <tr key={batch.id} className="border-b border-purple-500/20 hover:bg-slate-700/30 transition-colors">
                           <td className="p-3 text-white whitespace-nowrap">{batch.createdDate}</td>
@@ -1590,7 +1593,18 @@ export default function AdminSnapshot() {
                           <td className="p-3 text-white whitespace-nowrap">{batch.tenYearBond}%</td>
                           <td className="p-3 text-white whitespace-nowrap">{batch.parRate}%</td>
                           <td className="p-3 text-purple-300 whitespace-nowrap">{batch.records.toLocaleString()}</td>
-                          <td className="p-3 text-white whitespace-nowrap">{batch.states.join(', ')}</td>
+                          <td className="p-3 text-white whitespace-nowrap">
+                            <button
+                              onClick={() => {
+                                setSelectedBatchStates(batch.states || []);
+                                setShowStatesDialog(true);
+                              }}
+                              className="text-purple-400 hover:text-purple-300 underline cursor-pointer transition-colors"
+                              data-testid={`states-count-${batch.id}`}
+                            >
+                              {stateCount}
+                            </button>
+                          </td>
                           <td className="p-3 text-green-400 whitespace-nowrap font-semibold">${totalCost.toLocaleString()}</td>
                         </tr>
                       );
@@ -2724,6 +2738,44 @@ export default function AdminSnapshot() {
                 data-testid="button-close-batch-warning"
               >
                 OK
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* States Dialog - Shows list of states when count is clicked */}
+        <Dialog open={showStatesDialog} onOpenChange={setShowStatesDialog}>
+          <DialogContent className="bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-white">Selected States</DialogTitle>
+              <DialogDescription className="text-purple-200 pt-2">
+                States included in this batch
+              </DialogDescription>
+            </DialogHeader>
+            <div className="mt-4">
+              {selectedBatchStates.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {selectedBatchStates.map((state, index) => (
+                    <div
+                      key={index}
+                      className="px-3 py-1 bg-purple-600/30 text-purple-200 rounded-md border border-purple-500/30"
+                      data-testid={`state-badge-${state}`}
+                    >
+                      {state}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-purple-300">No states selected</p>
+              )}
+            </div>
+            <div className="flex justify-end mt-6">
+              <Button
+                onClick={() => setShowStatesDialog(false)}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white"
+                data-testid="button-close-states-dialog"
+              >
+                Close
               </Button>
             </div>
           </DialogContent>
