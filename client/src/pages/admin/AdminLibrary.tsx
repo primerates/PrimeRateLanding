@@ -34,7 +34,9 @@ export default function AdminLibrary() {
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
   const [shortcutDropdownOpen, setShortcutDropdownOpen] = useState(false);
   const [isLightMode, setIsLightMode] = useState(false);
-  const [brightness, setBrightness] = useState(50); // 0-100 scale
+  const [pageBrightness, setPageBrightness] = useState(50); // 0-100 scale for page
+  const [cardBrightness, setCardBrightness] = useState(50); // 0-100 scale for cards
+  const [activeControl, setActiveControl] = useState<'page' | 'card'>('page'); // Which element to control
 
   // Form state
   const [firstName, setFirstName] = useState('');
@@ -105,45 +107,45 @@ export default function AdminLibrary() {
     return formatted;
   };
 
-  // Calculate background colors based on brightness (0=darkest, 100=brightest)
+  // Calculate background colors based on PAGE brightness (0=darkest, 100=brightest)
   const getBackgroundGradient = () => {
     if (!isLightMode) return 'from-slate-900 via-purple-900 to-slate-900';
     
     // Map brightness to appropriate slate shades
     // 100 = slate-50, 50 = slate-200, 0 = slate-700
-    if (brightness >= 75) return 'from-slate-50 via-purple-50 to-slate-100';
-    if (brightness >= 50) return 'from-slate-100 via-purple-100 to-slate-200';
-    if (brightness >= 25) return 'from-slate-300 via-purple-200 to-slate-400';
+    if (pageBrightness >= 75) return 'from-slate-50 via-purple-50 to-slate-100';
+    if (pageBrightness >= 50) return 'from-slate-100 via-purple-100 to-slate-200';
+    if (pageBrightness >= 25) return 'from-slate-300 via-purple-200 to-slate-400';
     return 'from-slate-600 via-purple-700 to-slate-700';
   };
 
-  // Calculate text colors based on brightness
+  // Calculate text colors based on PAGE brightness
   const getTextColor = () => {
     if (!isLightMode) return 'text-white';
-    return brightness >= 50 ? 'text-slate-900' : 'text-white';
+    return pageBrightness >= 50 ? 'text-slate-900' : 'text-white';
   };
 
-  // Calculate label colors based on brightness
+  // Calculate label colors based on CARD brightness
   const getLabelColor = () => {
     if (!isLightMode) return 'text-purple-200';
-    return brightness >= 50 ? 'text-slate-700 font-medium' : 'text-slate-200 font-medium';
+    return cardBrightness >= 50 ? 'text-slate-700 font-medium' : 'text-slate-200 font-medium';
   };
 
-  // Calculate card background based on brightness
+  // Calculate card background based on CARD brightness
   const getCardBackground = () => {
     if (!isLightMode) return 'bg-slate-800/50';
-    if (brightness >= 75) return 'bg-white/80';
-    if (brightness >= 50) return 'bg-slate-50/80';
-    if (brightness >= 25) return 'bg-slate-200/80';
+    if (cardBrightness >= 75) return 'bg-white/80';
+    if (cardBrightness >= 50) return 'bg-slate-50/80';
+    if (cardBrightness >= 25) return 'bg-slate-200/80';
     return 'bg-slate-500/80';
   };
 
-  // Calculate input background based on brightness
+  // Calculate input background based on CARD brightness
   const getInputBackground = () => {
     if (!isLightMode) return 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500';
-    if (brightness >= 75) return 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500';
-    if (brightness >= 50) return 'bg-white text-slate-900 border-purple-300 focus:border-purple-500';
-    if (brightness >= 25) return 'bg-slate-100 text-slate-900 border-purple-400 focus:border-purple-500';
+    if (cardBrightness >= 75) return 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500';
+    if (cardBrightness >= 50) return 'bg-white text-slate-900 border-purple-300 focus:border-purple-500';
+    if (cardBrightness >= 25) return 'bg-slate-100 text-slate-900 border-purple-400 focus:border-purple-500';
     return 'bg-slate-400 text-white border-purple-500 focus:border-purple-600';
   };
 
@@ -156,7 +158,7 @@ export default function AdminLibrary() {
           <div className="flex items-center gap-6">
             <h1 className={`text-xl font-black italic transition-colors ${getTextColor()}`} style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="heading-library">LOANVIEW GPT</h1>
             <div className="flex items-center gap-2">
-              <span className={`text-sm font-medium transition-colors ${isLightMode ? (brightness >= 50 ? 'text-slate-600' : 'text-slate-300') : 'text-purple-300'}`}>Dark</span>
+              <span className={`text-sm font-medium transition-colors ${isLightMode ? (pageBrightness >= 50 ? 'text-slate-600' : 'text-slate-300') : 'text-purple-300'}`}>Dark</span>
               <Switch
                 checked={isLightMode}
                 onCheckedChange={setIsLightMode}
@@ -170,17 +172,51 @@ export default function AdminLibrary() {
             {isLightMode && (
               <div className="flex items-center gap-3 px-4 py-2 rounded-lg bg-purple-100/50 border border-purple-300">
                 <Sun className="h-4 w-4 text-purple-600" />
-                <span className="text-sm font-medium text-slate-700 min-w-[80px]">Brightness</span>
+                
+                {/* Picker Buttons */}
+                <div className="flex gap-1">
+                  <button
+                    onClick={() => setActiveControl('page')}
+                    className={`px-2 py-1 text-xs font-medium rounded transition-all ${
+                      activeControl === 'page'
+                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
+                        : 'bg-white text-slate-600 hover:bg-purple-50'
+                    }`}
+                    data-testid="button-page-picker"
+                  >
+                    Page
+                  </button>
+                  <button
+                    onClick={() => setActiveControl('card')}
+                    className={`px-2 py-1 text-xs font-medium rounded transition-all ${
+                      activeControl === 'card'
+                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
+                        : 'bg-white text-slate-600 hover:bg-purple-50'
+                    }`}
+                    data-testid="button-card-picker"
+                  >
+                    Card
+                  </button>
+                </div>
+                
                 <Slider
-                  value={[brightness]}
-                  onValueChange={(values) => setBrightness(values[0])}
+                  value={[activeControl === 'page' ? pageBrightness : cardBrightness]}
+                  onValueChange={(values) => {
+                    if (activeControl === 'page') {
+                      setPageBrightness(values[0]);
+                    } else {
+                      setCardBrightness(values[0]);
+                    }
+                  }}
                   min={0}
                   max={100}
                   step={1}
                   className="w-32"
                   data-testid="slider-brightness"
                 />
-                <span className="text-sm font-medium text-purple-600 min-w-[35px] text-right">{brightness}%</span>
+                <span className="text-sm font-medium text-purple-600 min-w-[35px] text-right">
+                  {activeControl === 'page' ? pageBrightness : cardBrightness}%
+                </span>
               </div>
             )}
           </div>
