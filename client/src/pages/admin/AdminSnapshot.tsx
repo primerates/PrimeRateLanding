@@ -1150,10 +1150,6 @@ export default function AdminSnapshot() {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-            <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 rounded-lg border border-purple-500/30">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-purple-200 text-sm">Live</span>
-            </div>
             <button
               onClick={handleScreenshare}
               disabled={screenshareLoading}
@@ -1163,6 +1159,10 @@ export default function AdminSnapshot() {
               <Monitor className={`h-4 w-4 text-purple-300 transition-transform duration-500 ${screenshareLoading ? 'animate-spin' : ''}`} />
               <span className="text-purple-200 text-sm">{screenshareLoading ? 'Starting...' : 'Screenshare'}</span>
             </button>
+            <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 rounded-lg border border-purple-500/30">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-purple-200 text-sm">Live</span>
+            </div>
             <button 
               onClick={() => {
                 setShowAddModal(true);
