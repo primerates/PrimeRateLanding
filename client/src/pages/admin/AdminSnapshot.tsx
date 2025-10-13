@@ -3,7 +3,7 @@ import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Monitor, ChevronDown } from 'lucide-react';
+import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Monitor, ChevronDown, Upload } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -1646,6 +1646,26 @@ export default function AdminSnapshot() {
                   />
                 </div>
               </div>
+
+              {/* Separation Line and Upload Box - Only show when completion bar is at 100% */}
+              {getCompletedBatchFieldsCount() === 20 && (
+                <div style={{ borderTop: '1px solid rgba(168, 85, 247, 0.3)', paddingTop: '24px' }}>
+                  <div className="border-2 border-dashed border-purple-500/30 rounded-lg p-8 text-center hover:border-purple-500/60 transition-colors bg-slate-900/30">
+                    <input
+                      type="file"
+                      accept=".csv"
+                      className="hidden"
+                      id="csv-upload-dashboard"
+                      data-testid="input-csv-file-dashboard"
+                    />
+                    <label htmlFor="csv-upload-dashboard" className="cursor-pointer">
+                      <Upload className="w-12 h-12 text-purple-400 mx-auto mb-3" />
+                      <p className="text-white mb-1">Click to upload or drag and drop</p>
+                      <p className="text-sm text-green-400">Upload Excel File Format (CSV UTF8) <span className="text-red-400">*</span></p>
+                    </label>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
