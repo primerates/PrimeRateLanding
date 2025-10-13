@@ -531,7 +531,16 @@ export default function AdminSnapshot() {
                 
                 <select 
                   value={categoryFilter}
-                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  onChange={(e) => {
+                    setCategoryFilter(e.target.value);
+                    // Reset teamFilter when category changes
+                    if (e.target.value === 'financials') setTeamFilter('select');
+                    else if (e.target.value === 'direct-mail') setTeamFilter('va');
+                    else if (e.target.value === 'lead-vendor') setTeamFilter('select');
+                    else if (e.target.value === 'social-media') setTeamFilter('facebook');
+                    else if (e.target.value === 'staff') setTeamFilter('team');
+                    else if (e.target.value === 'vendor') setTeamFilter('select');
+                  }}
                   className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
                   data-testid="select-category-filter"
                 >
@@ -539,6 +548,8 @@ export default function AdminSnapshot() {
                   <option value="direct-mail">Direct Mail</option>
                   <option value="lead-vendor">Lead Vendor</option>
                   <option value="social-media">Social Media</option>
+                  <option value="staff">Staff</option>
+                  <option value="vendor">Vendor</option>
                 </select>
 
                 <select 
@@ -547,11 +558,56 @@ export default function AdminSnapshot() {
                   className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
                   data-testid="select-team-filter"
                 >
-                  <option value="select">Select</option>
-                  <option value="team">Team</option>
-                  <option value="team-lead">Team Lead</option>
-                  <option value="mlo">MLO</option>
-                  <option value="processor">Processor</option>
+                  {categoryFilter === 'financials' && (
+                    <>
+                      <option value="select">Select</option>
+                      <option value="pl">P & L</option>
+                    </>
+                  )}
+                  {categoryFilter === 'direct-mail' && (
+                    <>
+                      <option value="va">VA</option>
+                      <option value="va-jumbo">VA Jumbo</option>
+                      <option value="fnm">FNM</option>
+                      <option value="fnm-jumbo">FNM Jumbo</option>
+                      <option value="fha">FHA</option>
+                      <option value="non-qm">Non-QM</option>
+                    </>
+                  )}
+                  {categoryFilter === 'lead-vendor' && (
+                    <>
+                      <option value="select">Select</option>
+                      <option value="tbd">TBD</option>
+                    </>
+                  )}
+                  {categoryFilter === 'social-media' && (
+                    <>
+                      <option value="facebook">Facebook</option>
+                      <option value="x">X</option>
+                      <option value="ig">IG</option>
+                      <option value="tiktok">Tik Tok</option>
+                      <option value="youtube">YouTube</option>
+                    </>
+                  )}
+                  {categoryFilter === 'staff' && (
+                    <>
+                      <option value="team">Team</option>
+                      <option value="team-lead">Team Lead</option>
+                      <option value="mlo">MLO</option>
+                      <option value="processor">Processor</option>
+                      <option value="uw">UW</option>
+                      <option value="funder">Funder</option>
+                    </>
+                  )}
+                  {categoryFilter === 'vendor' && (
+                    <>
+                      <option value="select">Select</option>
+                      <option value="wdo">WDO</option>
+                      <option value="water">Water</option>
+                      <option value="inspection">Inspection</option>
+                      <option value="handyman">Handyman</option>
+                    </>
+                  )}
                 </select>
               </div>
 
