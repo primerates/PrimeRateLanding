@@ -114,6 +114,13 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 
 **Overview**: Comprehensive command center combining financial analytics, marketing campaign management, expense/revenue tracking, and data visualization. All marketing features are fully integrated within the Dashboard.
 
+**Architecture** (October 2025 Refactoring):
+- **Main Component**: AdminSnapshot.tsx (4,066 lines, reduced from 4,563)
+- **Extracted Components**:
+  - `DashboardFilters.tsx` - Entity, Category, and Team filter dropdowns with purple accent glassmorphism styling
+  - `RevenueSourcesChart.tsx` - Pie chart with drill-down (Direct Mail state breakdown + loan programs)
+  - `ExpenseBreakdownChart.tsx` - Pie chart for expense/geography data
+
 **Core Features**:
 - **Real-time Financial Metrics**: Displays Gross Income, Revenue, and Expense with trend indicators
 - **Interactive Filters**: 
