@@ -1378,55 +1378,6 @@ export default function AdminSnapshot() {
           </TooltipProvider>
         )}
 
-        {/* Loan Program Chart - Only shown when Data Category is "Show All" */}
-        {categoryFilter === 'direct-mail' && dataCategory === 'Show All' && (
-          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
-            <h3 className="text-xl font-bold text-white mb-6">Loan Program Distribution</h3>
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={loanProgramData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
-                    paddingAngle={2}
-                    dataKey="value"
-                  >
-                    {loanProgramData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    content={({ active, payload }) => {
-                      if (active && payload && payload.length) {
-                        return (
-                          <div className="bg-slate-800/95 backdrop-blur-sm p-3 rounded-lg border border-purple-500/30">
-                            <p className="text-white font-semibold">{payload[0].name}</p>
-                            <p className="text-purple-300">
-                              ${(payload[0].value as number).toLocaleString()}
-                            </p>
-                          </div>
-                        );
-                      }
-                      return null;
-                    }}
-                  />
-                  <Legend
-                    verticalAlign="middle"
-                    align="right"
-                    layout="vertical"
-                    formatter={(value, entry: any) => (
-                      <span className="text-white text-sm">{value}</span>
-                    )}
-                    iconType="circle"
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        )}
 
         {/* Create New Batch Card - Only shown when Direct Mail category is selected and Add New Batch is clicked */}
         {categoryFilter === 'direct-mail' && showCreateBatch && (
