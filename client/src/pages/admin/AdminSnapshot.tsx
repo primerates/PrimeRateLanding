@@ -133,6 +133,7 @@ export default function AdminSnapshot() {
   const [revenueDetailView, setRevenueDetailView] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [entryType, setEntryType] = useState<string | null>(null);
+  const [showExpenseNotesDialog, setShowExpenseNotesDialog] = useState(false);
   const [shortcutDropdownOpen, setShortcutDropdownOpen] = useState(false);
   const [screenshareLoading, setScreenshareLoading] = useState(false);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
@@ -266,7 +267,10 @@ export default function AdminSnapshot() {
     paidTo: '',
     transactionDate: '',
     clearanceDate: '',
-    paymentTerm: ''
+    paymentTerm: '',
+    notes: '',
+    checkNumber: '',
+    invoiceNumber: ''
   });
   const [newRevenue, setNewRevenue] = useState({
     logDate: '',
@@ -2606,6 +2610,14 @@ export default function AdminSnapshot() {
               <h3 className="text-xl font-bold text-white">Expense log</h3>
               <div className="flex items-center gap-2">
                 <button
+                  onClick={() => setShowExpenseNotesDialog(true)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title="Expense Notes"
+                  data-testid="button-expense-notes"
+                >
+                  <FileText className="w-5 h-5 text-purple-300" />
+                </button>
+                <button
                   onClick={() => setIsExpenseTableMinimized(!isExpenseTableMinimized)}
                   className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
                   title={isExpenseTableMinimized ? "Expand" : "Minimize"}
@@ -3599,6 +3611,61 @@ export default function AdminSnapshot() {
                 data-testid="button-confirm-delete-batch"
               >
                 Delete
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Expense Notes Dialog */}
+        <Dialog open={showExpenseNotesDialog} onOpenChange={setShowExpenseNotesDialog}>
+          <DialogContent className="bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-white">Expense Notes</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 pt-4">
+              <div className="space-y-2">
+                <Label htmlFor="expense-notes" className="text-sm text-purple-200">Notes</Label>
+                <textarea
+                  id="expense-notes"
+                  value={newExpense.notes}
+                  onChange={(e) => setNewExpense({ ...newExpense, notes: e.target.value })}
+                  placeholder="Enter notes..."
+                  rows={4}
+                  className="w-full bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors resize-none"
+                  data-testid="textarea-expense-notes"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="check-number" className="text-sm text-purple-200">Check Number</Label>
+                <Input
+                  id="check-number"
+                  value={newExpense.checkNumber}
+                  onChange={(e) => setNewExpense({ ...newExpense, checkNumber: e.target.value })}
+                  placeholder="Enter check number..."
+                  className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                  data-testid="input-check-number"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="invoice-number" className="text-sm text-purple-200">Invoice Number</Label>
+                <Input
+                  id="invoice-number"
+                  value={newExpense.invoiceNumber}
+                  onChange={(e) => setNewExpense({ ...newExpense, invoiceNumber: e.target.value })}
+                  placeholder="Enter invoice number..."
+                  className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                  data-testid="input-invoice-number"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 mt-6">
+              <Button
+                variant="outline"
+                onClick={() => setShowExpenseNotesDialog(false)}
+                data-testid="button-close-expense-notes"
+                className="border-purple-500/30 text-purple-300 hover:bg-purple-500/10"
+              >
+                Close
               </Button>
             </div>
           </DialogContent>
