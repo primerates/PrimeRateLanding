@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import { queryClient } from '@/lib/queryClient';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
@@ -2920,13 +2921,16 @@ export default function AdminSnapshot() {
                         <td className="py-3 px-2 text-purple-200">{entry.paidWith}</td>
                         <td className="py-3 px-2 text-white">{entry.expense}</td>
                         <td className="py-3 px-2 relative">
-                          <button
-                            onClick={() => setOpenActionMenu(openActionMenu === entry.id ? null : entry.id)}
-                            className="text-purple-300 hover:text-white transition-colors"
-                            data-testid={`button-action-menu-${entry.id}`}
-                          >
-                            <MoreVertical className="w-5 h-5" />
-                          </button>
+                          <div className="relative inline-block">
+                            <button
+                              onClick={() => setOpenActionMenu(openActionMenu === entry.id ? null : entry.id)}
+                              className="text-purple-300 hover:text-white transition-colors"
+                              data-testid={`button-action-menu-${entry.id}`}
+                            >
+                              <MoreVertical className="w-5 h-5" />
+                            </button>
+                            <AttachmentCountBadge transactionId={entry.id} transactionType="expense" />
+                          </div>
                           
                           {/* Action Menu Popup */}
                           {openActionMenu === entry.id && (
@@ -3260,13 +3264,16 @@ export default function AdminSnapshot() {
                         <td className="py-3 px-2 text-purple-200">{entry.paymentForm}</td>
                         <td className="py-3 px-2 text-white">{entry.revenue}</td>
                         <td className="py-3 px-2 relative">
-                          <button
-                            onClick={() => setOpenActionMenu(openActionMenu === entry.id ? null : entry.id)}
-                            className="text-purple-300 hover:text-white transition-colors"
-                            data-testid={`button-revenue-action-menu-${entry.id}`}
-                          >
-                            <MoreVertical className="w-5 h-5" />
-                          </button>
+                          <div className="relative inline-block">
+                            <button
+                              onClick={() => setOpenActionMenu(openActionMenu === entry.id ? null : entry.id)}
+                              className="text-purple-300 hover:text-white transition-colors"
+                              data-testid={`button-revenue-action-menu-${entry.id}`}
+                            >
+                              <MoreVertical className="w-5 h-5" />
+                            </button>
+                            <AttachmentCountBadge transactionId={entry.id} transactionType="revenue" />
+                          </div>
                           
                           {/* Action Menu Popup */}
                           {openActionMenu === entry.id && (
@@ -3711,6 +3718,32 @@ export default function AdminSnapshot() {
   );
 }
 
+function AttachmentCountBadge({ 
+  transactionId, 
+  transactionType 
+}: { 
+  transactionId: string | number; 
+  transactionType: 'expense' | 'revenue';
+}) {
+  const { data: attachments = [], isLoading } = useQuery({
+    queryKey: ['/api/transactions', transactionType, transactionId, 'attachments'],
+    queryFn: async () => {
+      const res = await fetch(`/api/transactions/${transactionId}/attachments`);
+      if (!res.ok) throw new Error('Failed to fetch attachments');
+      return res.json();
+    },
+  });
+
+  if (isLoading) return null;
+  if (attachments.length === 0) return null;
+
+  return (
+    <div className="absolute -top-1 -right-1 bg-purple-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold">
+      {attachments.length}
+    </div>
+  );
+}
+
 function AttachmentsDialog({ 
   open, 
   onClose, 
@@ -3728,7 +3761,12 @@ function AttachmentsDialog({
 
   // Query to fetch attachments
   const { data: attachments = [], isLoading, refetch } = useQuery({
-    queryKey: ['/api/transactions', transactionId, 'attachments'],
+    queryKey: ['/api/transactions', transactionType, transactionId, 'attachments'],
+    queryFn: async () => {
+      const res = await fetch(`/api/transactions/${transactionId}/attachments`);
+      if (!res.ok) throw new Error('Failed to fetch attachments');
+      return res.json();
+    },
     enabled: open && !!transactionId,
   });
 
@@ -3752,7 +3790,9 @@ function AttachmentsDialog({
       return res.json();
     },
     onSuccess: () => {
-      refetch();
+      queryClient.invalidateQueries({ 
+        queryKey: ['/api/transactions', transactionType, transactionId, 'attachments'] 
+      });
       setUploadError(null);
     },
     onError: (error: Error) => {
@@ -3774,7 +3814,9 @@ function AttachmentsDialog({
       return res.json();
     },
     onSuccess: () => {
-      refetch();
+      queryClient.invalidateQueries({ 
+        queryKey: ['/api/transactions', transactionType, transactionId, 'attachments'] 
+      });
     },
   });
 
