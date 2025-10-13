@@ -126,9 +126,7 @@ export default function AdminLogin() {
                 className={`h-12 text-base transition-colors border-0 border-b-2 rounded-none px-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-0 ${
                   errors.email 
                     ? 'border-b-red-500' 
-                    : email.trim() 
-                      ? 'border-b-green-600'
-                      : 'border-b-border'
+                    : 'border-b-border'
                 }`}
                 data-testid="input-admin-email"
                 required
@@ -149,9 +147,7 @@ export default function AdminLogin() {
                   className={`h-12 text-base pr-10 transition-colors border-0 border-b-2 rounded-none px-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-0 ${
                     errors.password 
                       ? 'border-b-red-500' 
-                      : password.trim() 
-                        ? 'border-b-green-600'
-                        : 'border-b-border'
+                      : 'border-b-border'
                   }`}
                   data-testid="input-admin-password"
                   required
