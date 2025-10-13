@@ -1940,16 +1940,6 @@ export default function AdminSnapshot() {
                 <div className="text-xs text-purple-300">
                   {getCompletedBatchFieldsCount()} / 17 fields complete
                 </div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCancelDialogOpen(true)}
-                  className="border-purple-500/30 text-purple-300 hover:bg-red-500 hover:text-white hover:border-red-500"
-                  data-testid="button-cancel-new-batch"
-                >
-                  Cancel New Batch
-                </Button>
                 <Button 
                   onClick={() => setStatesDialogOpen(true)}
                   size="sm"
@@ -1958,6 +1948,13 @@ export default function AdminSnapshot() {
                 >
                   {selectedStates.length > 0 ? `${selectedStates.length} States` : 'States'}
                 </Button>
+                <button
+                  onClick={() => setCancelDialogOpen(true)}
+                  className="text-purple-300 hover:text-white transition-colors"
+                  data-testid="button-cancel-new-batch"
+                >
+                  <X className="w-6 h-6" />
+                </button>
               </div>
             </div>
             
