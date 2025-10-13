@@ -142,6 +142,11 @@ export default function AdminSnapshot() {
   const [mailCost, setMailCost] = useState('');
   const [printCost, setPrintCost] = useState('');
   const [supplyCost, setSupplyCost] = useState('');
+  const [dataDate, setDataDate] = useState('');
+  const [dataSource, setDataSource] = useState('');
+  const [printVendor, setPrintVendor] = useState('');
+  const [mailVendor, setMailVendor] = useState('');
+  const [supplyVendor, setSupplyVendor] = useState('');
   const [transactionDateRange, setTransactionDateRange] = useState({
     fromDate: '',
     toDate: ''
@@ -291,6 +296,30 @@ export default function AdminSnapshot() {
     setTimeout(() => {
       setScreenshareLoading(false);
     }, 1000);
+  };
+
+  // Calculate completion count for Create New Batch (17 fields)
+  const getCompletedBatchFieldsCount = () => {
+    const fields = [
+      !!batchNumber && batchNumber.trim() !== '',
+      !!batchTitle && batchTitle.trim() !== '',
+      !!tenYearBond && tenYearBond.trim() !== '',
+      !!parRate && parRate.trim() !== '',
+      !!category && category !== '' && category !== 'select',
+      !!dataType && dataType !== '' && dataType !== 'select',
+      !!delivery && delivery !== '' && delivery !== 'select',
+      !!dataDate && dataDate.trim() !== '',
+      !!dataSource && dataSource.trim() !== '',
+      !!printVendor && printVendor.trim() !== '',
+      !!mailVendor && mailVendor.trim() !== '',
+      !!supplyVendor && supplyVendor.trim() !== '',
+      !!dataCost && dataCost.trim() !== '',
+      !!mailCost && mailCost.trim() !== '',
+      !!printCost && printCost.trim() !== '',
+      !!supplyCost && supplyCost.trim() !== '',
+      !!selectedStates && selectedStates.length > 0
+    ];
+    return fields.filter(Boolean).length;
   };
 
   const formatCurrency = (value: number) => {
@@ -1334,6 +1363,28 @@ export default function AdminSnapshot() {
               </div>
             </div>
             
+            {/* Completion Bar - 17 segments */}
+            <div className="px-0 pb-4">
+              <div className="relative flex gap-0 h-1">
+                {Array.from({ length: 17 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className={`flex-1 transition-colors duration-300`}
+                    style={{ backgroundColor: index < getCompletedBatchFieldsCount() ? '#8b5cf6' : '#475569' }}
+                  />
+                ))}
+                {getCompletedBatchFieldsCount() > 0 && getCompletedBatchFieldsCount() < 17 && (
+                  <div 
+                    className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full transition-all duration-300"
+                    style={{ 
+                      backgroundColor: '#ec4899',
+                      left: `calc(${(getCompletedBatchFieldsCount() / 17) * 100}% - 4px)`
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+            
             {/* Separation line */}
             <div className="border-t border-purple-500/30 mb-6"></div>
             
@@ -1439,7 +1490,65 @@ export default function AdminSnapshot() {
                 </div>
               </div>
 
-              {/* Row 3: Costs */}
+              {/* Row 3: Data Details */}
+              <div className="grid grid-cols-4 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-purple-200">Data Date</Label>
+                  <Input
+                    value={dataDate}
+                    onChange={(e) => setDataDate(e.target.value)}
+                    placeholder="MM/DD/YYYY"
+                    className="bg-slate-900/50 border-purple-500/30 text-white placeholder:text-slate-500"
+                    data-testid="input-data-date-dm"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-purple-200">Data Source</Label>
+                  <Input
+                    value={dataSource}
+                    onChange={(e) => setDataSource(e.target.value)}
+                    placeholder=""
+                    className="bg-slate-900/50 border-purple-500/30 text-white placeholder:text-slate-500"
+                    data-testid="input-data-source-dm"
+                  />
+                </div>
+              </div>
+
+              {/* Row 4: Vendors */}
+              <div className="grid grid-cols-4 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-purple-200">Print Vendor</Label>
+                  <Input
+                    value={printVendor}
+                    onChange={(e) => setPrintVendor(e.target.value)}
+                    placeholder=""
+                    className="bg-slate-900/50 border-purple-500/30 text-white placeholder:text-slate-500"
+                    data-testid="input-print-vendor-dm"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-purple-200">Mail Vendor</Label>
+                  <Input
+                    value={mailVendor}
+                    onChange={(e) => setMailVendor(e.target.value)}
+                    placeholder=""
+                    className="bg-slate-900/50 border-purple-500/30 text-white placeholder:text-slate-500"
+                    data-testid="input-mail-vendor-dm"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-purple-200">Supply Vendor</Label>
+                  <Input
+                    value={supplyVendor}
+                    onChange={(e) => setSupplyVendor(e.target.value)}
+                    placeholder=""
+                    className="bg-slate-900/50 border-purple-500/30 text-white placeholder:text-slate-500"
+                    data-testid="input-supply-vendor-dm"
+                  />
+                </div>
+              </div>
+
+              {/* Row 5: Costs */}
               <div className="grid grid-cols-4 gap-6">
                 <div className="space-y-2">
                   <Label className="text-purple-200">Data Cost</Label>
