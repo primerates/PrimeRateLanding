@@ -524,9 +524,9 @@
   }
 
   /* Form input focus states - blue highlight when typing */
-  input:focus-visible,
-  textarea:focus-visible,
-  select:focus-visible {
+  input:focus-visible:not([data-no-focus-ring]),
+  textarea:focus-visible:not([data-no-focus-ring]),
+  select:focus-visible:not([data-no-focus-ring]) {
     outline: none;
     border-color: hsl(var(--ring)) !important;
     box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2) !important;
@@ -544,12 +544,12 @@
   }
 
   /* Ensure error state takes priority over focus state */
-  input[aria-invalid="true"]:focus-visible,
-  textarea[aria-invalid="true"]:focus-visible,
-  select[aria-invalid="true"]:focus-visible,
-  .form-field-error input:focus-visible,
-  .form-field-error textarea:focus-visible,
-  .form-field-error select:focus-visible {
+  input[aria-invalid="true"]:focus-visible:not([data-no-focus-ring]),
+  textarea[aria-invalid="true"]:focus-visible:not([data-no-focus-ring]),
+  select[aria-invalid="true"]:focus-visible:not([data-no-focus-ring]),
+  .form-field-error input:focus-visible:not([data-no-focus-ring]),
+  .form-field-error textarea:focus-visible:not([data-no-focus-ring]),
+  .form-field-error select:focus-visible:not([data-no-focus-ring]) {
     border-color: hsl(var(--destructive)) !important;
     box-shadow: 0 0 0 2px hsl(var(--destructive) / 0.3) !important;
   }

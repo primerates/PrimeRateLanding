@@ -123,12 +123,13 @@ export default function AdminLogin() {
                 placeholder=""
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`h-12 text-base transition-colors border-0 border-b-2 rounded-none px-0 focus-visible:outline-none focus-visible:ring-0! focus-visible:ring-offset-0! ${
+                className={`h-12 text-base transition-colors border-0 border-b-2 rounded-none px-0 focus-visible:outline-none ${
                   errors.email 
                     ? 'border-b-red-500' 
                     : 'border-b-border'
                 }`}
                 data-testid="input-admin-email"
+                data-no-focus-ring="true"
                 required
               />
             </div>
@@ -144,12 +145,13 @@ export default function AdminLogin() {
                   placeholder=""
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`h-12 text-base pr-10 transition-colors border-0 border-b-2 rounded-none px-0 focus-visible:outline-none focus-visible:ring-0! focus-visible:ring-offset-0! ${
+                  className={`h-12 text-base pr-10 transition-colors border-0 border-b-2 rounded-none px-0 focus-visible:outline-none ${
                     errors.password 
                       ? 'border-b-red-500' 
                       : 'border-b-border'
                   }`}
                   data-testid="input-admin-password"
+                  data-no-focus-ring="true"
                   required
                 />
                 <button
