@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Switch } from '@/components/ui/switch';
 import { ArrowLeft, Plus, Minus, User } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 
@@ -43,6 +44,18 @@ export default function AdminLibrary() {
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [preferredContactTime, setPreferredContactTime] = useState('Select');
+  
+  // Current Residence fields
+  const [currentResidenceType, setCurrentResidenceType] = useState<'owned' | 'rental' | 'other'>('owned');
+  const [street, setStreet] = useState('');
+  const [unit, setUnit] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [zipCode, setZipCode] = useState('');
+  const [county, setCounty] = useState('');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
+  const [isPresent, setIsPresent] = useState(false);
 
   const formatDateOfBirth = (value: string) => {
     const digitsOnly = value.replace(/\D/g, '');
@@ -68,6 +81,21 @@ export default function AdminLibrary() {
         formatted += '-' + digitsOnly.substring(3, 5);
         if (digitsOnly.length > 5) {
           formatted += '-' + digitsOnly.substring(5, 9);
+        }
+      }
+    }
+    return formatted;
+  };
+
+  const formatDate = (value: string) => {
+    const digitsOnly = value.replace(/\D/g, '');
+    let formatted = '';
+    if (digitsOnly.length > 0) {
+      formatted = digitsOnly.substring(0, 2);
+      if (digitsOnly.length > 2) {
+        formatted += '/' + digitsOnly.substring(2, 4);
+        if (digitsOnly.length > 4) {
+          formatted += '/' + digitsOnly.substring(4, 8);
         }
       }
     }
@@ -323,6 +351,189 @@ export default function AdminLibrary() {
                       </Select>
                     </div>
                   </div>
+
+                  {/* Current Residence Section */}
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-10">
+                    <div className="space-y-2 flex items-center gap-2">
+                      <Label className="text-xl bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Current Residence</Label>
+                    </div>
+                    <div className="flex items-center gap-4 ml-1">
+                      <button
+                        type="button"
+                        onClick={() => setCurrentResidenceType('owned')}
+                        className="flex items-center gap-1.5 group"
+                        data-testid="button-residence-owned"
+                      >
+                        <div className={`w-3 h-3 rounded-full transition-colors ${
+                          currentResidenceType === 'owned' 
+                            ? 'bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg shadow-purple-500/50' 
+                            : 'border-2 border-purple-400/50 bg-slate-700/50 hover:border-purple-400'
+                        }`}>
+                        </div>
+                        <span className="text-sm font-medium text-purple-200">Owned</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setCurrentResidenceType('rental')}
+                        className="flex items-center gap-1.5 group"
+                        data-testid="button-residence-rental"
+                      >
+                        <div className={`w-3 h-3 rounded-full transition-colors ${
+                          currentResidenceType === 'rental' 
+                            ? 'bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg shadow-purple-500/50' 
+                            : 'border-2 border-purple-400/50 bg-slate-700/50 hover:border-purple-400'
+                        }`}>
+                        </div>
+                        <span className="text-sm font-medium text-purple-200">Rental</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setCurrentResidenceType('other')}
+                        className="flex items-center gap-1.5 group"
+                        data-testid="button-residence-other"
+                      >
+                        <div className={`w-3 h-3 rounded-full transition-colors ${
+                          currentResidenceType === 'other' 
+                            ? 'bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg shadow-purple-500/50' 
+                            : 'border-2 border-purple-400/50 bg-slate-700/50 hover:border-purple-400'
+                        }`}>
+                        </div>
+                        <span className="text-sm font-medium text-purple-200">Other</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Address Card with Dashboard Theme */}
+                  <Card className="bg-gradient-to-br from-slate-700/40 to-slate-800/40 backdrop-blur-sm border-purple-500/20 mt-6">
+                    <CardContent className="pt-6">
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                        <div className="space-y-2 md:col-span-3">
+                          <Label htmlFor="street" className="text-purple-200">Street Address</Label>
+                          <Input
+                            id="street"
+                            value={street}
+                            onChange={(e) => setStreet(e.target.value)}
+                            className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400"
+                            data-testid="input-street"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2 md:col-span-1">
+                          <Label htmlFor="unit" className="text-purple-200">Unit/Apt</Label>
+                          <Input
+                            id="unit"
+                            value={unit}
+                            onChange={(e) => setUnit(e.target.value)}
+                            className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400"
+                            data-testid="input-unit"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2 md:col-span-2">
+                          <Label htmlFor="city" className="text-purple-200">City</Label>
+                          <Input
+                            id="city"
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)}
+                            className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400"
+                            data-testid="input-city"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2 md:col-span-1">
+                          <Label htmlFor="state" className="text-purple-200">State</Label>
+                          <Input
+                            id="state"
+                            value={state}
+                            onChange={(e) => setState(e.target.value)}
+                            placeholder="CA"
+                            maxLength={2}
+                            className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400"
+                            data-testid="input-state"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2 md:col-span-1">
+                          <Label htmlFor="zipCode" className="text-purple-200">ZIP Code</Label>
+                          <Input
+                            id="zipCode"
+                            value={zipCode}
+                            onChange={(e) => setZipCode(e.target.value)}
+                            placeholder="12345"
+                            maxLength={5}
+                            className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400"
+                            data-testid="input-zipCode"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2 md:col-span-1">
+                          <Label htmlFor="county" className="text-purple-200">County</Label>
+                          <Input
+                            id="county"
+                            value={county}
+                            onChange={(e) => setCounty(e.target.value)}
+                            className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400"
+                            data-testid="input-county"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2 md:col-span-1">
+                          <Label htmlFor="fromDate" className="text-purple-200">From</Label>
+                          <Input
+                            id="fromDate"
+                            value={fromDate}
+                            onChange={(e) => setFromDate(formatDate(e.target.value))}
+                            placeholder="mm/dd/yyyy"
+                            maxLength={10}
+                            className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400 !text-[13px] placeholder:text-[10px]"
+                            data-testid="input-fromDate"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2 md:col-span-1">
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="toDate" className="text-sm text-purple-200">
+                              {isPresent ? 'Present' : 'To'}
+                            </Label>
+                            <Switch
+                              checked={isPresent}
+                              onCheckedChange={(checked) => {
+                                setIsPresent(checked);
+                                if (checked) {
+                                  setToDate('Present');
+                                } else {
+                                  setToDate('');
+                                }
+                              }}
+                              data-testid="toggle-present"
+                              className="scale-[0.8] data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-purple-500 data-[state=checked]:to-pink-500"
+                            />
+                          </div>
+                          <Input
+                            id="toDate"
+                            value={isPresent ? 'Present' : toDate}
+                            onChange={(e) => !isPresent && setToDate(formatDate(e.target.value))}
+                            placeholder="mm/dd/yyyy"
+                            maxLength={10}
+                            readOnly={isPresent}
+                            className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400 !text-[13px] placeholder:text-[10px]"
+                            data-testid="input-toDate"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2 md:col-span-1">
+                          <Label htmlFor="duration" className="text-sm text-purple-200">Duration</Label>
+                          <Input
+                            id="duration"
+                            value="0 Yrs 0 Mos"
+                            readOnly
+                            className="bg-slate-700/50 text-purple-300 border-purple-500/30 cursor-not-allowed !text-[13px]"
+                            data-testid="input-duration"
+                          />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </CardContent>
               </CollapsibleContent>
             </Collapsible>
