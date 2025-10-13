@@ -6,6 +6,7 @@ import IncomeTypes from '../components/IncomeTypes';
 import EmploymentForm from '../components/EmploymentForm';
 import SocialSecurityForm from '../components/SocialSecurityForm';
 import PensionForm from '../components/PensionForm';
+import DisabilityCard from '../components/DisabilityCard';
 import PropertyRentalDialog from '../dialogs/PropertyRentalDialog';
 import DeleteConfirmationDialog from '../dialogs/DeleteConfirmationDialog';
 import { InsertClient } from '@shared/schema';
@@ -32,6 +33,9 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
 
     // State for Pension form
     const [isPensionOpen, setIsPensionOpen] = useState(true);
+
+    // State for Disability form
+    const [isDisabilityOpen, setIsDisabilityOpen] = useState(true);
 
     // Property rental dialog state
     const [propertyRentalDialog, setPropertyRentalDialog] = useState<{
@@ -180,6 +184,11 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         if (form.watch('income.incomeTypes.pension')) {
             setIsPensionOpen(true);
         }
+        
+        // Open disability form if it exists
+        if (form.watch('income.incomeTypes.vaBenefits')) {
+            setIsDisabilityOpen(true);
+        }
     };
 
     const handleMinimizeAll = () => {
@@ -203,6 +212,11 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         if (form.watch('income.incomeTypes.pension')) {
             setIsPensionOpen(false);
         }
+        
+        // Close disability form if it exists
+        if (form.watch('income.incomeTypes.vaBenefits')) {
+            setIsDisabilityOpen(false);
+        }
     };
 
     const handleDeleteSocialSecurity = () => {
@@ -218,6 +232,16 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         form.setValue('income.incomeTypes.pension', false);
         form.setValue('income.pensions', []);
         setIsPensionOpen(false);
+    };
+
+    const handleDeleteDisability = () => {
+        // Clear the income type checkbox and close the section
+        form.setValue('income.incomeTypes.vaBenefits', false);
+        form.setValue('income.vaBenefitsMonthlyAmount', '');
+        form.setValue('income.vaBenefitsStartDate', '');
+        form.setValue('income.disabilityMonthlyAmount', '');
+        form.setValue('income.disabilityStartDate', '');
+        setIsDisabilityOpen(false);
     };
 
     const handleDeleteEmployer = (cardId: string) => {        
@@ -332,6 +356,15 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
                     onDeletePension={handleDeletePension}
                     showAnimation={showIncomeCardAnimation['pension']}
                     setShowAnimation={setShowIncomeCardAnimation}
+                />
+            )}
+
+            {/* Disability Card - Show when VA benefits is selected */}
+            {form.watch('income.incomeTypes.vaBenefits') && (
+                <DisabilityCard
+                    isOpen={isDisabilityOpen}
+                    onOpenChange={setIsDisabilityOpen}
+                    onDeleteDisability={handleDeleteDisability}
                 />
             )}
 
