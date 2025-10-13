@@ -360,7 +360,7 @@ export default function AdminMarketing() {
     if (!file) return;
 
     // Check if all required fields are completed
-    if (getCompletedBatchFieldsCount() < 17) {
+    if (getCompletedBatchFieldsCount() < 16) {
       setIncompleteFieldsDialog(true);
       // Clear the file input
       e.target.value = '';
@@ -985,22 +985,22 @@ export default function AdminMarketing() {
                   </div>
                 </CardHeader>
                 
-                {/* Completion Bar - 17 segments */}
+                {/* Completion Bar - 16 segments */}
                 <div className="px-4 pb-2">
                   <div className="relative flex gap-0 h-px">
-                    {Array.from({ length: 17 }).map((_, index) => (
+                    {Array.from({ length: 16 }).map((_, index) => (
                       <div
                         key={index}
                         className={`flex-1 transition-colors duration-300`}
                         style={{ backgroundColor: index < getCompletedBatchFieldsCount() ? '#1a3373' : '#D1D5DB' }}
                       />
                     ))}
-                    {getCompletedBatchFieldsCount() > 0 && getCompletedBatchFieldsCount() < 17 && (
+                    {getCompletedBatchFieldsCount() > 0 && getCompletedBatchFieldsCount() < 16 && (
                       <div 
                         className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full transition-all duration-300"
                         style={{ 
                           backgroundColor: '#1a3373',
-                          left: `calc(${(getCompletedBatchFieldsCount() / 17) * 100}% - 4px)`
+                          left: `calc(${(getCompletedBatchFieldsCount() / 16) * 100}% - 4px)`
                         }}
                       />
                     )}
@@ -1316,7 +1316,7 @@ export default function AdminMarketing() {
                       </div>
 
                       {/* Separation Line and Upload Box - Only show when completion bar is at 100% */}
-                      {getCompletedBatchFieldsCount() === 17 && (
+                      {getCompletedBatchFieldsCount() === 16 && (
                         <div style={{ borderTop: '1px solid hsl(var(--border))', paddingTop: '24px' }}>
                           <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary transition-colors">
                             <input
