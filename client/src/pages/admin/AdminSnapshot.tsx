@@ -163,6 +163,7 @@ export default function AdminSnapshot() {
   const [role, setRole] = useState('');
   const [authorization, setAuthorization] = useState('');
   const [access, setAccess] = useState('');
+  const [specialAccess, setSpecialAccess] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [backgroundCheck, setBackgroundCheck] = useState('');
@@ -174,6 +175,7 @@ export default function AdminSnapshot() {
   const [employmentAgreement, setEmploymentAgreement] = useState('');
   const [policy, setPolicy] = useState('');
   const [ndaAgreement, setNdaAgreement] = useState('');
+  const [interviewGrade, setInterviewGrade] = useState('');
   
   const [isRevenueFormMinimized, setIsRevenueFormMinimized] = useState(false);
   const [isExpenseTableMinimized, setIsExpenseTableMinimized] = useState(false);
@@ -1587,6 +1589,22 @@ export default function AdminSnapshot() {
                     <option value="processor">Processor</option>
                   </select>
                 </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">
+                    Special Access
+                  </label>
+                  <select 
+                    value={specialAccess}
+                    onChange={(e) => setSpecialAccess(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  >
+                    <option value="">Select</option>
+                    <option value="team">Team</option>
+                    <option value="department">Department</option>
+                    <option value="company">Company</option>
+                  </select>
+                </div>
               </div>
             </div>
 
@@ -1773,6 +1791,23 @@ export default function AdminSnapshot() {
                   <select 
                     value={ndaAgreement}
                     onChange={(e) => setNdaAgreement(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  >
+                    <option value="">Select</option>
+                    <option value="pending">Pending</option>
+                    <option value="cleared">Cleared</option>
+                    <option value="failed">Failed</option>
+                    <option value="na">Not Applicable</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">
+                    Interview Grade
+                  </label>
+                  <select 
+                    value={interviewGrade}
+                    onChange={(e) => setInterviewGrade(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
                   >
                     <option value="">Select</option>
