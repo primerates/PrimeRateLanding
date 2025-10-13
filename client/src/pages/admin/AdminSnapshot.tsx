@@ -1367,6 +1367,12 @@ export default function AdminSnapshot() {
                 >
                   Cancel New Batch
                 </button>
+                <button
+                  className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold rounded-lg border border-purple-400/30 transition-all shadow-lg hover:shadow-purple-500/50 text-sm"
+                  data-testid="button-create-batch"
+                >
+                  Create Batch
+                </button>
               </div>
             </div>
             
@@ -1639,16 +1645,6 @@ export default function AdminSnapshot() {
                     dataTestId="input-supply-cost-dm"
                   />
                 </div>
-              </div>
-
-              {/* Submit Button */}
-              <div className="flex justify-end pt-4">
-                <button
-                  className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold rounded-lg border border-purple-400/30 transition-all shadow-lg hover:shadow-purple-500/50"
-                  data-testid="button-create-batch"
-                >
-                  Create Batch
-                </button>
               </div>
             </div>
           </div>
