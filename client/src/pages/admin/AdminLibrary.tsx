@@ -155,8 +155,8 @@ export default function AdminLibrary() {
   // Calculate label colors based on CARD brightness
   const getLabelColor = () => {
     if (!isLightMode) return 'text-purple-200';
-    // Keep labels dark/readable until card background gets very dark (below 8%)
-    return cardBrightness >= 8 ? 'text-slate-700 font-medium' : 'text-slate-200 font-medium';
+    // Always keep labels dark in light mode for maximum readability
+    return 'text-slate-700 font-medium';
   };
 
   // Calculate card background based on CARD brightness
