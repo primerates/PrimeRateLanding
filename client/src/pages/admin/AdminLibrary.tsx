@@ -397,7 +397,7 @@ export default function AdminLibrary() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="middleName" className={isLightMode ? 'text-slate-700 font-medium' : 'text-purple-200'}>Middle Name</Label>
+                      <Label htmlFor="middleName" className={`transition-colors ${getLabelColor()}`}>Middle Name</Label>
                       <Input
                         id="middleName"
                         value={middleName}
@@ -411,7 +411,7 @@ export default function AdminLibrary() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="lastName" className={isLightMode ? 'text-slate-700 font-medium' : 'text-purple-200'}>Last Name</Label>
+                      <Label htmlFor="lastName" className={`transition-colors ${getLabelColor()}`}>Last Name</Label>
                       <Input
                         id="lastName"
                         value={lastName}
@@ -425,7 +425,7 @@ export default function AdminLibrary() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="dateOfBirth" className={isLightMode ? 'text-slate-700 font-medium' : 'text-purple-200'}>Date of Birth</Label>
+                      <Label htmlFor="dateOfBirth" className={`transition-colors ${getLabelColor()}`}>Date of Birth</Label>
                       <Input
                         id="dateOfBirth"
                         value={dateOfBirth}
@@ -441,7 +441,7 @@ export default function AdminLibrary() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="ssn" className={isLightMode ? 'text-slate-700 font-medium' : 'text-purple-200'}>SSN</Label>
+                      <Label htmlFor="ssn" className={`transition-colors ${getLabelColor()}`}>SSN</Label>
                       <Input
                         id="ssn"
                         value={ssn}
@@ -460,7 +460,7 @@ export default function AdminLibrary() {
                   {/* Row 2: Marital Status, Relationship to Co-Borrower, Phone, Email, Preferred Contact Time */}
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="maritalStatus" className={isLightMode ? 'text-slate-700 font-medium' : 'text-purple-200'}>Marital Status</Label>
+                      <Label htmlFor="maritalStatus" className={`transition-colors ${getLabelColor()}`}>Marital Status</Label>
                       <Select value={maritalStatus} onValueChange={setMaritalStatus}>
                         <SelectTrigger 
                           className={isLightMode 
@@ -486,7 +486,7 @@ export default function AdminLibrary() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="relationshipToCoBorrower" className={isLightMode ? 'text-slate-700 font-medium' : 'text-purple-200'}>Relationship to Co-borrower</Label>
+                      <Label htmlFor="relationshipToCoBorrower" className={`transition-colors ${getLabelColor()}`}>Relationship to Co-borrower</Label>
                       <Select value={relationshipToCoBorrower} onValueChange={setRelationshipToCoBorrower}>
                         <SelectTrigger 
                           className={isLightMode 
@@ -514,7 +514,7 @@ export default function AdminLibrary() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="phone" className={isLightMode ? 'text-slate-700 font-medium' : 'text-purple-200'}>Phone</Label>
+                      <Label htmlFor="phone" className={`transition-colors ${getLabelColor()}`}>Phone</Label>
                       <Input
                         id="phone"
                         value={phone}
@@ -529,7 +529,7 @@ export default function AdminLibrary() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="email" className={isLightMode ? 'text-slate-700 font-medium' : 'text-purple-200'}>Email</Label>
+                      <Label htmlFor="email" className={`transition-colors ${getLabelColor()}`}>Email</Label>
                       <Input
                         id="email"
                         type="email"
@@ -545,7 +545,7 @@ export default function AdminLibrary() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="preferredContactTime" className={isLightMode ? 'text-slate-700 font-medium' : 'text-purple-200'}>Preferred Contact Time</Label>
+                      <Label htmlFor="preferredContactTime" className={`transition-colors ${getLabelColor()}`}>Preferred Contact Time</Label>
                       <Select value={preferredContactTime} onValueChange={setPreferredContactTime}>
                         <SelectTrigger 
                           className={isLightMode 
@@ -636,7 +636,7 @@ export default function AdminLibrary() {
                     <CardContent className="pt-6">
                       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                         <div className="space-y-2 md:col-span-3">
-                          <Label htmlFor="street" className={`font-semibold ${isLightMode ? 'text-slate-700' : 'text-white'}`}>Street Address</Label>
+                          <Label htmlFor="street" className={`font-semibold transition-colors ${getLabelColor()}`}>Street Address</Label>
                           <Input
                             id="street"
                             value={street}
@@ -650,7 +650,7 @@ export default function AdminLibrary() {
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="unit" className={`font-semibold ${isLightMode ? 'text-slate-700' : 'text-white'}`}>Unit/Apt</Label>
+                          <Label htmlFor="unit" className={`font-semibold transition-colors ${getLabelColor()}`}>Unit/Apt</Label>
                           <Input
                             id="unit"
                             value={unit}
@@ -664,7 +664,7 @@ export default function AdminLibrary() {
                         </div>
                         
                         <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="city" className={`font-semibold ${isLightMode ? 'text-slate-700' : 'text-white'}`}>City</Label>
+                          <Label htmlFor="city" className={`font-semibold transition-colors ${getLabelColor()}`}>City</Label>
                           <Input
                             id="city"
                             value={city}
@@ -678,7 +678,7 @@ export default function AdminLibrary() {
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="state" className={`font-semibold ${isLightMode ? 'text-slate-700' : 'text-white'}`}>State</Label>
+                          <Label htmlFor="state" className={`font-semibold transition-colors ${getLabelColor()}`}>State</Label>
                           <Input
                             id="state"
                             value={state}
@@ -694,7 +694,7 @@ export default function AdminLibrary() {
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="zipCode" className={`font-semibold ${isLightMode ? 'text-slate-700' : 'text-white'}`}>ZIP Code</Label>
+                          <Label htmlFor="zipCode" className={`font-semibold transition-colors ${getLabelColor()}`}>ZIP Code</Label>
                           <Input
                             id="zipCode"
                             value={zipCode}
@@ -710,7 +710,7 @@ export default function AdminLibrary() {
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="county" className={`font-semibold ${isLightMode ? 'text-slate-700' : 'text-white'}`}>County</Label>
+                          <Label htmlFor="county" className={`font-semibold transition-colors ${getLabelColor()}`}>County</Label>
                           <Input
                             id="county"
                             value={county}
@@ -724,7 +724,7 @@ export default function AdminLibrary() {
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="fromDate" className={`font-semibold ${isLightMode ? 'text-slate-700' : 'text-white'}`}>From</Label>
+                          <Label htmlFor="fromDate" className={`font-semibold transition-colors ${getLabelColor()}`}>From</Label>
                           <Input
                             id="fromDate"
                             value={fromDate}
@@ -742,7 +742,7 @@ export default function AdminLibrary() {
                         
                         <div className="space-y-2 md:col-span-1">
                           <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor="toDate" className={`text-sm font-semibold ${isLightMode ? 'text-slate-700' : 'text-white'}`}>
+                            <Label htmlFor="toDate" className={`text-sm font-semibold transition-colors ${getLabelColor()}`}>
                               {isPresent ? 'Present' : 'To'}
                             </Label>
                             <Switch
@@ -776,7 +776,7 @@ export default function AdminLibrary() {
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="duration" className={`text-sm font-semibold ${isLightMode ? 'text-slate-700' : 'text-white'}`}>Duration</Label>
+                          <Label htmlFor="duration" className={`text-sm font-semibold transition-colors ${getLabelColor()}`}>Duration</Label>
                           <Input
                             id="duration"
                             value="0 Yrs 0 Mos"
