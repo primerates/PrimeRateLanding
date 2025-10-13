@@ -1421,44 +1421,65 @@ export default function AdminSnapshot() {
               <h2 className="text-2xl font-bold text-white mb-6">Add New Entry</h2>
               
               <div className="space-y-4">
-                <button
-                  onClick={() => {
-                    setEntryType('revenue');
-                    setShowRevenueForm(true);
-                    setIsRevenueFormMinimized(false); // Ensure form is expanded when adding new revenue
-                    setAreChartsMinimized(true); // Minimize charts to reduce clutter
-                    setShowAddModal(false);
-                  }}
-                  className="w-full p-6 bg-gradient-to-br from-blue-500/20 to-indigo-600/20 hover:from-blue-500/30 hover:to-indigo-600/30 rounded-xl border border-blue-500/30 hover:border-blue-500/50 transition-all group"
-                  data-testid="button-add-revenue"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="text-left">
-                      <h3 className="text-xl font-bold text-white mb-1">Add Revenue</h3>
-                      <p className="text-blue-300 text-sm">Record new income or revenue</p>
-                    </div>
-                    <DollarSign className="w-8 h-8 text-blue-400 group-hover:scale-110 transition-transform" />
-                  </div>
-                </button>
+                {categoryFilter === 'financials' ? (
+                  <>
+                    <button
+                      onClick={() => {
+                        setEntryType('revenue');
+                        setShowRevenueForm(true);
+                        setIsRevenueFormMinimized(false); // Ensure form is expanded when adding new revenue
+                        setAreChartsMinimized(true); // Minimize charts to reduce clutter
+                        setShowAddModal(false);
+                      }}
+                      className="w-full p-6 bg-gradient-to-br from-blue-500/20 to-indigo-600/20 hover:from-blue-500/30 hover:to-indigo-600/30 rounded-xl border border-blue-500/30 hover:border-blue-500/50 transition-all group"
+                      data-testid="button-add-revenue"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="text-left">
+                          <h3 className="text-xl font-bold text-white mb-1">Add Revenue</h3>
+                          <p className="text-blue-300 text-sm">Record new income or revenue</p>
+                        </div>
+                        <DollarSign className="w-8 h-8 text-blue-400 group-hover:scale-110 transition-transform" />
+                      </div>
+                    </button>
 
-                <button
-                  onClick={() => {
-                    setEntryType('expense');
-                    setShowExpenseForm(true);
-                    setAreChartsMinimized(true); // Minimize charts to reduce clutter
-                    setShowAddModal(false);
-                  }}
-                  className="w-full p-6 bg-gradient-to-br from-red-500/20 to-pink-600/20 hover:from-red-500/30 hover:to-pink-600/30 rounded-xl border border-red-500/30 hover:border-red-500/50 transition-all group"
-                  data-testid="button-add-expense"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="text-left">
-                      <h3 className="text-xl font-bold text-white mb-1">Add Expense</h3>
-                      <p className="text-red-300 text-sm">Record new cost or expense</p>
+                    <button
+                      onClick={() => {
+                        setEntryType('expense');
+                        setShowExpenseForm(true);
+                        setAreChartsMinimized(true); // Minimize charts to reduce clutter
+                        setShowAddModal(false);
+                      }}
+                      className="w-full p-6 bg-gradient-to-br from-red-500/20 to-pink-600/20 hover:from-red-500/30 hover:to-pink-600/30 rounded-xl border border-red-500/30 hover:border-red-500/50 transition-all group"
+                      data-testid="button-add-expense"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="text-left">
+                          <h3 className="text-xl font-bold text-white mb-1">Add Expense</h3>
+                          <p className="text-red-300 text-sm">Record new cost or expense</p>
+                        </div>
+                        <ArrowDownRight className="w-8 h-8 text-red-400 group-hover:scale-110 transition-transform" />
+                      </div>
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setLocation('/admin/marketing');
+                      setShowAddModal(false);
+                    }}
+                    className="w-full p-6 bg-gradient-to-br from-purple-500/20 to-pink-600/20 hover:from-purple-500/30 hover:to-pink-600/30 rounded-xl border border-purple-500/30 hover:border-purple-500/50 transition-all group"
+                    data-testid="button-add-batch"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="text-left">
+                        <h3 className="text-xl font-bold text-white mb-1">Add New Batch</h3>
+                        <p className="text-purple-300 text-sm">Record new marketing information</p>
+                      </div>
+                      <TrendingUp className="w-8 h-8 text-purple-400 group-hover:scale-110 transition-transform" />
                     </div>
-                    <ArrowDownRight className="w-8 h-8 text-red-400 group-hover:scale-110 transition-transform" />
-                  </div>
-                </button>
+                  </button>
+                )}
               </div>
             </div>
           </div>
