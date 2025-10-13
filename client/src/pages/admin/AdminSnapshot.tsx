@@ -2956,7 +2956,7 @@ export default function AdminSnapshot() {
                 <button
                   onClick={() => setShowExpenseNotesDialog(true)}
                   className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
-                  title="Expense Notes"
+                  title="Add Check#, Invoice, Notes"
                   data-testid="button-expense-notes"
                 >
                   <FileText className="w-5 h-5 text-purple-300" />
