@@ -15,6 +15,7 @@ interface PensionFormProps {
     onDeletePension: () => void;
     showAnimation?: boolean;
     setShowAnimation?: (callback: (prev: Record<string, boolean>) => Record<string, boolean>) => void;
+    fieldPrefix?: string;
 }
 
 const PensionForm = ({ 
@@ -22,7 +23,8 @@ const PensionForm = ({
     onOpenChange, 
     onDeletePension,
     showAnimation,
-    setShowAnimation 
+    setShowAnimation,
+    fieldPrefix = 'income'
 }: PensionFormProps) => {
     const form = useFormContext<InsertClient>();
     const [deleteDialog, setDeleteDialog] = useState({ isOpen: false });
@@ -37,14 +39,14 @@ const PensionForm = ({
     };
 
     const addPension = () => {
-        const currentPensions = form.watch('income.pensions') || [];
+        const currentPensions = form.watch(`${fieldPrefix}.pensions` as any) || [];
         const newPension = {
             id: generateUniqueId(),
             payerName: '',
             monthlyAmount: '',
             startDate: ''
         };
-        form.setValue('income.pensions', [...currentPensions, newPension]);
+        form.setValue(`${fieldPrefix}.pensions` as any, [...currentPensions, newPension]);
     };
 
     const removePension = (pensionId: string) => {
@@ -52,13 +54,13 @@ const PensionForm = ({
     };
 
     const handleConfirmRemovePension = (pensionId: string) => {
-        const currentPensions = form.watch('income.pensions') || [];
+        const currentPensions = form.watch(`${fieldPrefix}.pensions` as any) || [];
         const updatedPensions = currentPensions.filter(p => p.id !== pensionId);
-        form.setValue('income.pensions', updatedPensions);
+        form.setValue(`${fieldPrefix}.pensions` as any, updatedPensions);
         
         // If no pensions left, uncheck the pension checkbox
         if (updatedPensions.length === 0) {
-            form.setValue('income.incomeTypes.pension', false);
+            form.setValue(`${fieldPrefix}.incomeTypes.pension` as any, false);
         }
         
         setDeletePensionDialog({ isOpen: false, pensionId: '' });
@@ -76,7 +78,7 @@ const PensionForm = ({
         }
     };
 
-    const pensions = form.watch('income.pensions') || [];
+    const pensions = form.watch(`${fieldPrefix}.pensions` as any) || [];
 
     return (
         <>
@@ -146,33 +148,33 @@ const PensionForm = ({
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                         <FormInput
                                             label="Payer Name"
-                                            value={form.watch(`income.pensions.${index}.payerName`) || ''}
-                                            onChange={(value) => form.setValue(`income.pensions.${index}.payerName`, value)}
-                                            id={`income-pension-${index}-payerName`}
+                                            value={form.watch(`${fieldPrefix}.pensions.${index}.payerName` as any) || ''}
+                                            onChange={(value) => form.setValue(`${fieldPrefix}.pensions.${index}.payerName` as any, value)}
+                                            id={`${fieldPrefix}-pension-${index}-payerName`}
                                             placeholder="e.g., Federal Retirement Fund"
-                                            testId={`input-income-pension-${index}-payerName`}
+                                            testId={`input-${fieldPrefix}-pension-${index}-payerName`}
                                         />
                                         <FormInput
                                             label="Gross Monthly Income"
                                             value={(() => {
-                                                const rawValue = form.watch(`income.pensions.${index}.monthlyAmount`) || '';
+                                                const rawValue = form.watch(`${fieldPrefix}.pensions.${index}.monthlyAmount` as any) || '';
                                                 const numVal = rawValue.replace(/[^\d]/g, '');
                                                 return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
                                             })()}
                                             onChange={(value) => {
                                                 const cleanValue = value.replace(/[^\d]/g, '');
-                                                form.setValue(`income.pensions.${index}.monthlyAmount`, cleanValue);
+                                                form.setValue(`${fieldPrefix}.pensions.${index}.monthlyAmount` as any, cleanValue);
                                             }}
-                                            id={`income-pension-${index}-monthlyAmount`}
+                                            id={`${fieldPrefix}-pension-${index}-monthlyAmount`}
                                             placeholder="$0"
-                                            testId={`input-income-pension-${index}-monthlyAmount`}
+                                            testId={`input-${fieldPrefix}-pension-${index}-monthlyAmount`}
                                         />
                                         <DateInput
                                             label="Start Date"
-                                            value={form.watch(`income.pensions.${index}.startDate`) || ''}
-                                            onChange={(value) => form.setValue(`income.pensions.${index}.startDate`, value)}
-                                            id={`income-pension-${index}-startDate`}
-                                            testId={`input-income-pension-${index}-startDate`}
+                                            value={form.watch(`${fieldPrefix}.pensions.${index}.startDate` as any) || ''}
+                                            onChange={(value) => form.setValue(`${fieldPrefix}.pensions.${index}.startDate` as any, value)}
+                                            id={`${fieldPrefix}-pension-${index}-startDate`}
+                                            testId={`input-${fieldPrefix}-pension-${index}-startDate`}
                                         />
                                     </div>
                                 </Card>

@@ -2,13 +2,8 @@ import { useMemo, useState, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Card, CardContent } from '@/components/ui/card';
 import IncomeHeader from '../components/IncomeHeader';
-import IncomeTypes from '../components/IncomeTypes';
-import EmploymentForm from '../components/EmploymentForm';
-import SocialSecurityForm from '../components/SocialSecurityForm';
-import PensionForm from '../components/PensionForm';
-import DisabilityCard from '../components/DisabilityCard';
-import PropertyRentalDialog from '../dialogs/PropertyRentalDialog';
-import DeleteConfirmationDialog from '../dialogs/DeleteConfirmationDialog';
+import IncomeFormsSection from '../components/IncomeFormsSection';
+import { useAdminAddClientStore } from '@/stores/useAdminAddClientStore';
 import { InsertClient } from '@shared/schema';
 import { parseMonetaryValue, formatCurrency, calculateEmploymentDuration } from '../utils/formUtils';
 
@@ -21,6 +16,7 @@ interface IncomeTabProps {
 
 const IncomeTab = ({ animations }: IncomeTabProps) => {
     const form = useFormContext<InsertClient>();
+    const { hasCoBorrower } = useAdminAddClientStore();
 
     // State for employment forms
     const [borrowerEmployerCards, setBorrowerEmployerCards] = useState<string[]>(['default']);
@@ -60,6 +56,32 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         cardId: string;
     }>({ isOpen: false, cardId: '' });
 
+    // Co-borrower state variables
+    const [coBorrowerEmployerCards, setCoBorrowerEmployerCards] = useState<string[]>(['default']);
+    const [coBorrowerPropertyCardStates, setCoBorrowerPropertyCardStates] = useState<Record<string, boolean>>({});
+    const [coBorrowerSecondEmployerCards, setCoBorrowerSecondEmployerCards] = useState<string[]>(['default']);
+    const [coBorrowerSecondPropertyCardStates, setCoBorrowerSecondPropertyCardStates] = useState<Record<string, boolean>>({});
+    const [coBorrowerEmploymentDates, setCoBorrowerEmploymentDates] = useState<Record<string, any>>({});
+    const [coBorrowerSecondEmploymentDates, setCoBorrowerSecondEmploymentDates] = useState<Record<string, any>>({});
+    const [isCoBorrowerSocialSecurityOpen, setIsCoBorrowerSocialSecurityOpen] = useState(false);
+    const [isCoBorrowerPensionOpen, setIsCoBorrowerPensionOpen] = useState(true);
+    const [isCoBorrowerDisabilityOpen, setIsCoBorrowerDisabilityOpen] = useState(true);
+
+    // Co-borrower dialog states
+    const [coBorrowerPropertyRentalDialog, setCoBorrowerPropertyRentalDialog] = useState<{
+        isOpen: boolean;
+        type: 'add' | 'remove' | null;
+    }>({ isOpen: false, type: null });
+    const [deleteCoBorrowerEmployerDialog, setDeleteCoBorrowerEmployerDialog] = useState<{
+        isOpen: boolean;
+        cardId: string;
+    }>({ isOpen: false, cardId: '' });
+    const [deleteCoBorrowerSecondEmployerDialog, setDeleteCoBorrowerSecondEmployerDialog] = useState<{
+        isOpen: boolean;
+        cardId: string;
+    }>({ isOpen: false, cardId: '' });
+
+
     // Helper function to generate dynamic field paths for employer cards
     const getEmployerFieldPath = (cardId: string, fieldName: string) => {
         const cleanCardId = cardId === 'default' ? 'default' : cardId;
@@ -70,6 +92,18 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
     const getSecondEmployerFieldPath = (cardId: string, fieldName: string) => {
         const cleanCardId = cardId === 'default' ? 'default' : cardId;
         return `income.secondEmployers.${cleanCardId}.${fieldName}` as const;
+    };
+
+    // Helper function to generate dynamic field paths for co-borrower employer cards
+    const getCoBorrowerEmployerFieldPath = (cardId: string, fieldName: string) => {
+        const cleanCardId = cardId === 'default' ? 'default' : cardId;
+        return `coBorrowerIncome.employers.${cleanCardId}.${fieldName}` as const;
+    };
+
+    // Helper function to generate dynamic field paths for co-borrower second employer cards
+    const getCoBorrowerSecondEmployerFieldPath = (cardId: string, fieldName: string) => {
+        const cleanCardId = cardId === 'default' ? 'default' : cardId;
+        return `coBorrowerIncome.secondEmployers.${cleanCardId}.${fieldName}` as const;
     };
 
     // Update employment duration when dates change
@@ -120,6 +154,48 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         form.setValue(monthsPath as any, months);
     };
 
+    // Update co-borrower employment duration when dates change
+    const updateCoBorrowerEmploymentDuration = (cardId: string, startDate: string, endDate: string, isPresent: boolean) => {
+        const { years, months, duration } = calculateEmploymentDuration(startDate, endDate, isPresent);
+
+        setCoBorrowerEmploymentDates(prev => ({
+            ...prev,
+            [cardId]: {
+                ...prev[cardId],
+                startDate,
+                endDate,
+                isPresent,
+                duration
+            }
+        }));
+
+        const yearsPath = `coBorrowerIncome.employers.${cardId}.yearsEmployedYears`;
+        const monthsPath = `coBorrowerIncome.employers.${cardId}.yearsEmployedMonths`;
+        form.setValue(yearsPath as any, years);
+        form.setValue(monthsPath as any, months);
+    };
+
+    // Update co-borrower second employment duration when dates change
+    const updateCoBorrowerSecondEmploymentDuration = (cardId: string, startDate: string, endDate: string, isPresent: boolean) => {
+        const { years, months, duration } = calculateEmploymentDuration(startDate, endDate, isPresent);
+
+        setCoBorrowerSecondEmploymentDates(prev => ({
+            ...prev,
+            [cardId]: {
+                ...prev[cardId],
+                startDate,
+                endDate,
+                isPresent,
+                duration
+            }
+        }));
+
+        const yearsPath = `coBorrowerIncome.secondEmployers.${cardId}.yearsEmployedYears`;
+        const monthsPath = `coBorrowerIncome.secondEmployers.${cardId}.yearsEmployedMonths`;
+        form.setValue(yearsPath as any, years);
+        form.setValue(monthsPath as any, months);
+    };
+
     // Watch for employment checkbox changes and ensure default card exists when checked
     const isEmploymentChecked = form.watch('income.incomeTypes.employment');
     useEffect(() => {
@@ -153,6 +229,38 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         }
     }, [isPensionChecked, form]);
 
+    // Watch for co-borrower employment checkbox changes and ensure default card exists when checked
+    const isCoBorrowerEmploymentChecked = form.watch('coBorrowerIncome.incomeTypes.employment');
+    useEffect(() => {
+        if (isCoBorrowerEmploymentChecked && coBorrowerEmployerCards.length === 0) {
+            setCoBorrowerEmployerCards(['default']);
+        }
+    }, [isCoBorrowerEmploymentChecked, coBorrowerEmployerCards.length]);
+
+    // Watch for co-borrower second employment checkbox changes and ensure default card exists when checked
+    const isCoBorrowerSecondEmploymentChecked = form.watch('coBorrowerIncome.incomeTypes.secondEmployment');
+    useEffect(() => {
+        if (isCoBorrowerSecondEmploymentChecked && coBorrowerSecondEmployerCards.length === 0) {
+            setCoBorrowerSecondEmployerCards(['default']);
+        }
+    }, [isCoBorrowerSecondEmploymentChecked, coBorrowerSecondEmployerCards.length]);
+
+    // Watch for co-borrower pension checkbox changes and ensure default pension exists when checked
+    const isCoBorrowerPensionChecked = form.watch('coBorrowerIncome.incomeTypes.pension');
+    useEffect(() => {
+        if (isCoBorrowerPensionChecked) {
+            const currentPensions = form.watch('coBorrowerIncome.pensions') || [];
+            if (currentPensions.length === 0) {
+                const defaultPension = {
+                    id: `pension-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
+                    payerName: '',
+                    monthlyAmount: '',
+                    startDate: ''
+                };
+                form.setValue('coBorrowerIncome.pensions', [defaultPension]);
+            }
+        }
+    }, [isCoBorrowerPensionChecked, form]);
 
     // Watch all individual employer income fields dynamically
     const allEmployerIncomes = borrowerEmployerCards.map(cardId =>
@@ -200,6 +308,54 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
     const totalBorrowerIncomeFormatted = useMemo(() =>
         formatCurrency(totalBorrowerIncome),
         [totalBorrowerIncome]
+    );
+
+    // Calculate total co-borrower income
+    const allCoBorrowerEmployerIncomes = coBorrowerEmployerCards.map(cardId =>
+        form.watch(getCoBorrowerEmployerFieldPath(cardId, 'monthlyIncome') as any)
+    );
+
+    const totalCoBorrowerIncome = useMemo(() => {
+        const coBorrowerIncomeData = form.watch('coBorrowerIncome');
+
+        // Calculate total main employment income from all employer cards
+        const employmentIncome = coBorrowerIncomeData?.employers && typeof coBorrowerIncomeData.employers === 'object'
+            ? Object.values(coBorrowerIncomeData.employers).reduce((total, employer: any) => {
+                return total + (employer && typeof employer === 'object' ? parseMonetaryValue(employer.monthlyIncome) : 0);
+            }, 0)
+            : parseMonetaryValue(coBorrowerIncomeData?.monthlyIncome);
+
+        // Calculate total second employment income from all cards
+        const secondEmploymentIncome = coBorrowerIncomeData?.secondEmployers && typeof coBorrowerIncomeData.secondEmployers === 'object'
+            ? Object.values(coBorrowerIncomeData.secondEmployers).reduce((total, employer: any) => {
+                return total + (employer && typeof employer === 'object' ? parseMonetaryValue(employer.monthlyIncome) : 0);
+            }, 0)
+            : 0;
+
+        const businessIncome = parseMonetaryValue(coBorrowerIncomeData?.businessMonthlyIncome);
+        
+        // Calculate pension income from pensions array
+        const pensionIncome = coBorrowerIncomeData?.pensions && Array.isArray(coBorrowerIncomeData.pensions)
+            ? coBorrowerIncomeData.pensions.reduce((total, pension: any) => {
+                return total + parseMonetaryValue(pension?.monthlyAmount);
+            }, 0)
+            : 0;
+            
+        const socialSecurityIncome = parseMonetaryValue(coBorrowerIncomeData?.socialSecurityMonthlyAmount);
+        const vaBenefitsIncome = parseMonetaryValue(coBorrowerIncomeData?.vaBenefitsMonthlyAmount);
+        const disabilityIncome = parseMonetaryValue(coBorrowerIncomeData?.disabilityMonthlyAmount);
+        const otherIncome = parseMonetaryValue(coBorrowerIncomeData?.otherIncomeMonthlyAmount);
+
+        const total = employmentIncome + secondEmploymentIncome + businessIncome +
+            pensionIncome + socialSecurityIncome + vaBenefitsIncome +
+            disabilityIncome + otherIncome;
+
+        return total;
+    }, [form.watch('coBorrowerIncome'), form.watch('coBorrowerIncome.employers'), allCoBorrowerEmployerIncomes]);
+
+    const totalCoBorrowerIncomeFormatted = useMemo(() =>
+        formatCurrency(totalCoBorrowerIncome),
+        [totalCoBorrowerIncome]
     );
 
     const handlePropertyRentalChange = (checked: boolean) => {
@@ -399,6 +555,161 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
         });
     };
 
+    // Co-borrower event handlers
+    const handleCoBorrowerPropertyRentalChange = (checked: boolean) => {
+        if (checked) {
+            setCoBorrowerPropertyRentalDialog({ isOpen: true, type: 'add' });
+        } else {
+            setCoBorrowerPropertyRentalDialog({ isOpen: true, type: 'remove' });
+        }
+    };
+
+    const handleCoBorrowerExpandAll = () => {
+        setCoBorrowerPropertyCardStates(prev => {
+            const newState = { ...prev };
+            coBorrowerEmployerCards.forEach(cardId => {
+                const propertyId = cardId === 'default' ? 'default' : cardId;
+                newState[propertyId] = true;
+            });
+            return newState;
+        });
+
+        setCoBorrowerSecondPropertyCardStates(prev => {
+            const newState = { ...prev };
+            coBorrowerSecondEmployerCards.forEach(cardId => {
+                const propertyId = cardId === 'default' ? 'default' : cardId;
+                newState[propertyId] = true;
+            });
+            return newState;
+        });
+
+        setIsCoBorrowerSocialSecurityOpen(true);
+        setIsCoBorrowerPensionOpen(true);
+        setIsCoBorrowerDisabilityOpen(true);
+    };
+
+    const handleCoBorrowerMinimizeAll = () => {
+        setCoBorrowerPropertyCardStates(prev => {
+            const newState = { ...prev };
+            coBorrowerEmployerCards.forEach(cardId => {
+                const propertyId = cardId === 'default' ? 'default' : cardId;
+                newState[propertyId] = false;
+            });
+            return newState;
+        });
+
+        setCoBorrowerSecondPropertyCardStates(prev => {
+            const newState = { ...prev };
+            coBorrowerSecondEmployerCards.forEach(cardId => {
+                const propertyId = cardId === 'default' ? 'default' : cardId;
+                newState[propertyId] = false;
+            });
+            return newState;
+        });
+
+        setIsCoBorrowerSocialSecurityOpen(false);
+        setIsCoBorrowerPensionOpen(false);
+        setIsCoBorrowerDisabilityOpen(false);
+    };
+
+    const handleDeleteCoBorrowerSocialSecurity = () => {
+        form.setValue('coBorrowerIncome.incomeTypes.socialSecurity', false);
+        form.setValue('coBorrowerIncome.socialSecurityMonthlyAmount', '');
+        form.setValue('coBorrowerIncome.socialSecurityStartDate', '');
+        setIsCoBorrowerSocialSecurityOpen(false);
+    };
+
+    const handleDeleteCoBorrowerPension = () => {
+        form.setValue('coBorrowerIncome.incomeTypes.pension', false);
+        form.setValue('coBorrowerIncome.pensions', []);
+        setIsCoBorrowerPensionOpen(false);
+    };
+
+    const handleDeleteCoBorrowerDisability = () => {
+        form.setValue('coBorrowerIncome.incomeTypes.vaBenefits', false);
+        form.setValue('coBorrowerIncome.vaBenefitsMonthlyAmount', '');
+        form.setValue('coBorrowerIncome.vaBenefitsStartDate', '');
+        form.setValue('coBorrowerIncome.disabilityMonthlyAmount', '');
+        form.setValue('coBorrowerIncome.disabilityStartDate', '');
+        setIsCoBorrowerDisabilityOpen(false);
+    };
+
+    const handleDeleteCoBorrowerEmployer = (cardId: string) => {        
+        const updatedCards = coBorrowerEmployerCards.filter(id => id !== cardId);
+        setCoBorrowerEmployerCards(updatedCards);
+        
+        if (updatedCards.length === 0) {
+            form.setValue('coBorrowerIncome.incomeTypes.employment', false);
+        }
+        
+        const propertyId = cardId === 'default' ? 'default' : cardId;
+        setCoBorrowerPropertyCardStates(prev => {
+            const newState = { ...prev };
+            delete newState[propertyId];
+            return newState;
+        });
+        
+        setCoBorrowerEmploymentDates(prev => {
+            const newState = { ...prev };
+            delete newState[cardId];
+            return newState;
+        });
+        
+        const fieldsToClean = [
+            'employerName', 'jobTitle', 'monthlyIncome', 'employmentType',
+            'yearsEmployedYears', 'yearsEmployedMonths', 'employerPhone',
+            'employmentVerificationPhone', 'isShowingEmploymentVerification'
+        ];
+        const addressFieldsToClean = [
+            'employerAddress.street', 'employerAddress.unit', 'employerAddress.city',
+            'employerAddress.state', 'employerAddress.zip', 'employerAddress.county'
+        ];
+        fieldsToClean.forEach(field => {
+            form.setValue(`coBorrowerIncome.employers.${cardId}.${field}` as any, '');
+        });
+        addressFieldsToClean.forEach(field => {
+            form.setValue(`coBorrowerIncome.employers.${cardId}.${field}` as any, '');
+        });
+    };
+
+    const handleDeleteCoBorrowerSecondEmployer = (cardId: string) => {        
+        const updatedCards = coBorrowerSecondEmployerCards.filter(id => id !== cardId);
+        setCoBorrowerSecondEmployerCards(updatedCards);
+        
+        if (updatedCards.length === 0) {
+            form.setValue('coBorrowerIncome.incomeTypes.secondEmployment', false);
+        }
+        
+        const propertyId = cardId === 'default' ? 'default' : cardId;
+        setCoBorrowerSecondPropertyCardStates(prev => {
+            const newState = { ...prev };
+            delete newState[propertyId];
+            return newState;
+        });
+        
+        setCoBorrowerSecondEmploymentDates(prev => {
+            const newState = { ...prev };
+            delete newState[cardId];
+            return newState;
+        });
+        
+        const fieldsToClean = [
+            'employerName', 'jobTitle', 'monthlyIncome', 'employmentType',
+            'yearsEmployedYears', 'yearsEmployedMonths', 'employerPhone',
+            'employmentVerificationPhone', 'isShowingEmploymentVerification'
+        ];
+        const addressFieldsToClean = [
+            'employerAddress.street', 'employerAddress.unit', 'employerAddress.city',
+            'employerAddress.state', 'employerAddress.zip', 'employerAddress.county'
+        ];
+        fieldsToClean.forEach(field => {
+            form.setValue(`coBorrowerIncome.secondEmployers.${cardId}.${field}` as any, '');
+        });
+        addressFieldsToClean.forEach(field => {
+            form.setValue(`coBorrowerIncome.secondEmployers.${cardId}.${field}` as any, '');
+        });
+    };
+
     return (
         <>
             <Card>
@@ -407,146 +718,98 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
                 </CardContent>
             </Card>
 
-            <IncomeTypes
-                prefix="income"
+            <IncomeFormsSection
+                fieldPrefix="income"
                 title="Borrower Income"
-                totalIncome={totalBorrowerIncomeFormatted}
-                onPropertyRentalChange={handlePropertyRentalChange}
-                onExpandAll={handleExpandAll}
-                onMinimizeAll={handleMinimizeAll}
                 borderColor="green"
+                totalIncome={totalBorrowerIncomeFormatted}
+                employerCards={borrowerEmployerCards}
+                setEmployerCards={setBorrowerEmployerCards}
+                secondEmployerCards={secondEmployerCards}
+                setSecondEmployerCards={setSecondEmployerCards}
+                propertyCardStates={propertyCardStates}
+                setPropertyCardStates={setPropertyCardStates}
+                secondPropertyCardStates={secondPropertyCardStates}
+                setSecondPropertyCardStates={setSecondPropertyCardStates}
+                getEmployerFieldPath={getEmployerFieldPath}
+                getSecondEmployerFieldPath={getSecondEmployerFieldPath}
+                employmentDates={employmentDates}
+                setEmploymentDates={setEmploymentDates}
+                secondEmploymentDates={secondEmploymentDates}
+                setSecondEmploymentDates={setSecondEmploymentDates}
+                updateEmploymentDuration={updateEmploymentDuration}
+                updateSecondEmploymentDuration={updateSecondEmploymentDuration}
+                showIncomeCardAnimation={showIncomeCardAnimation}
+                setShowIncomeCardAnimation={setShowIncomeCardAnimation}
+                isSocialSecurityOpen={isSocialSecurityOpen}
+                setIsSocialSecurityOpen={setIsSocialSecurityOpen}
+                isPensionOpen={isPensionOpen}
+                setIsPensionOpen={setIsPensionOpen}
+                isDisabilityOpen={isDisabilityOpen}
+                setIsDisabilityOpen={setIsDisabilityOpen}
+                propertyRentalDialog={propertyRentalDialog}
+                setPropertyRentalDialog={setPropertyRentalDialog}
+                deleteEmployerDialog={deleteEmployerDialog}
+                setDeleteEmployerDialog={setDeleteEmployerDialog}
+                deleteSecondEmployerDialog={deleteSecondEmployerDialog}
+                setDeleteSecondEmployerDialog={setDeleteSecondEmployerDialog}
+                handlePropertyRentalChange={handlePropertyRentalChange}
+                handleExpandAll={handleExpandAll}
+                handleMinimizeAll={handleMinimizeAll}
+                handleDeleteSocialSecurity={handleDeleteSocialSecurity}
+                handleDeletePension={handleDeletePension}
+                handleDeleteDisability={handleDeleteDisability}
+                handleDeleteEmployer={handleDeleteEmployer}
+                handleDeleteSecondEmployer={handleDeleteSecondEmployer}
             />
 
-            {/* Employment Form - Show when employment is selected */}
-            {form.watch('income.incomeTypes.employment') && (borrowerEmployerCards || ['default']).map((cardId) => {
-                const propertyId = cardId === 'default' ? 'default' : cardId;
-                const isOpen = propertyCardStates[propertyId] ?? true;
-
-                return (
-                    <EmploymentForm
-                        key={cardId}
-                        cardId={cardId}
-                        propertyId={propertyId}
-                        isOpen={isOpen}
-                        onOpenChange={(open) => {
-                            setPropertyCardStates(prev => ({ ...prev, [propertyId]: open }));
-                        }}
-                        onAddEmployer={() => {
-                            if (borrowerEmployerCards.length < 3) {
-                                const newId = `employer-${Date.now()}`;
-                                setBorrowerEmployerCards(prev => [...prev, newId]);
-                            }
-                        }}
-                        onDeleteEmployer={() => {
-                            setDeleteEmployerDialog({ isOpen: true, cardId: cardId });
-                        }}
-                        showAnimation={showIncomeCardAnimation['borrower-employment']}
-                        getEmployerFieldPath={getEmployerFieldPath}
-                        employmentDates={employmentDates}
-                        updateEmploymentDuration={updateEmploymentDuration}
-                        setEmploymentDates={setEmploymentDates}
-                        calculatedAdjustedNewFhaMip=""
-                        setShowIncomeCardAnimation={setShowIncomeCardAnimation}
-                        showAddButton={borrowerEmployerCards.length < 3}
-                    />
-                );
-            })}
-
-            {/* Second Employment Form - Show when second employment is selected */}
-            {form.watch('income.incomeTypes.secondEmployment') && (secondEmployerCards || ['default']).map((cardId) => {
-                const propertyId = cardId === 'default' ? 'default' : cardId;
-                const isOpen = secondPropertyCardStates[propertyId] ?? true;
-
-                return (
-                    <EmploymentForm
-                        key={`second-${cardId}`}
-                        cardId={cardId}
-                        propertyId={propertyId}
-                        isOpen={isOpen}
-                        onOpenChange={(open) => {
-                            setSecondPropertyCardStates(prev => ({ ...prev, [propertyId]: open }));
-                        }}
-                        onAddEmployer={() => {
-                            if (secondEmployerCards.length < 2) {
-                                const newId = `employer-${Date.now()}`;
-                                setSecondEmployerCards(prev => [...prev, newId]);
-                            }
-                        }}
-                        onDeleteEmployer={() => {
-                            setDeleteSecondEmployerDialog({ isOpen: true, cardId: cardId });
-                        }}
-                        showAnimation={showIncomeCardAnimation['borrower-second-employment']}
-                        getEmployerFieldPath={getSecondEmployerFieldPath}
-                        employmentDates={secondEmploymentDates}
-                        updateEmploymentDuration={updateSecondEmploymentDuration}
-                        setEmploymentDates={setSecondEmploymentDates}
-                        calculatedAdjustedNewFhaMip=""
-                        setShowIncomeCardAnimation={setShowIncomeCardAnimation}
-                        showAddButton={secondEmployerCards.length < 2}
-                        title="Second Employer"
-                    />
-                );
-            })}
-
-            {/* Social Security Form - Show when social security is selected */}
-            {form.watch('income.incomeTypes.socialSecurity') && (
-                <SocialSecurityForm
-                    isOpen={isSocialSecurityOpen}
-                    onOpenChange={setIsSocialSecurityOpen}
-                    onDeleteSocialSecurity={handleDeleteSocialSecurity}
+            {/* Co-borrower Income Section - Only show when co-borrower is added */}
+            {hasCoBorrower && (
+                <IncomeFormsSection
+                    fieldPrefix="coBorrowerIncome"
+                    title="Co-Borrower Income"
+                    borderColor="blue"
+                    totalIncome={totalCoBorrowerIncomeFormatted}
+                    employerCards={coBorrowerEmployerCards}
+                    setEmployerCards={setCoBorrowerEmployerCards}
+                    secondEmployerCards={coBorrowerSecondEmployerCards}
+                    setSecondEmployerCards={setCoBorrowerSecondEmployerCards}
+                    propertyCardStates={coBorrowerPropertyCardStates}
+                    setPropertyCardStates={setCoBorrowerPropertyCardStates}
+                    secondPropertyCardStates={coBorrowerSecondPropertyCardStates}
+                    setSecondPropertyCardStates={setCoBorrowerSecondPropertyCardStates}
+                    getEmployerFieldPath={getCoBorrowerEmployerFieldPath}
+                    getSecondEmployerFieldPath={getCoBorrowerSecondEmployerFieldPath}
+                    employmentDates={coBorrowerEmploymentDates}
+                    setEmploymentDates={setCoBorrowerEmploymentDates}
+                    secondEmploymentDates={coBorrowerSecondEmploymentDates}
+                    setSecondEmploymentDates={setCoBorrowerSecondEmploymentDates}
+                    updateEmploymentDuration={updateCoBorrowerEmploymentDuration}
+                    updateSecondEmploymentDuration={updateCoBorrowerSecondEmploymentDuration}
+                    showIncomeCardAnimation={showIncomeCardAnimation}
+                    setShowIncomeCardAnimation={setShowIncomeCardAnimation}
+                    isSocialSecurityOpen={isCoBorrowerSocialSecurityOpen}
+                    setIsSocialSecurityOpen={setIsCoBorrowerSocialSecurityOpen}
+                    isPensionOpen={isCoBorrowerPensionOpen}
+                    setIsPensionOpen={setIsCoBorrowerPensionOpen}
+                    isDisabilityOpen={isCoBorrowerDisabilityOpen}
+                    setIsDisabilityOpen={setIsCoBorrowerDisabilityOpen}
+                    propertyRentalDialog={coBorrowerPropertyRentalDialog}
+                    setPropertyRentalDialog={setCoBorrowerPropertyRentalDialog}
+                    deleteEmployerDialog={deleteCoBorrowerEmployerDialog}
+                    setDeleteEmployerDialog={setDeleteCoBorrowerEmployerDialog}
+                    deleteSecondEmployerDialog={deleteCoBorrowerSecondEmployerDialog}
+                    setDeleteSecondEmployerDialog={setDeleteCoBorrowerSecondEmployerDialog}
+                    handlePropertyRentalChange={handleCoBorrowerPropertyRentalChange}
+                    handleExpandAll={handleCoBorrowerExpandAll}
+                    handleMinimizeAll={handleCoBorrowerMinimizeAll}
+                    handleDeleteSocialSecurity={handleDeleteCoBorrowerSocialSecurity}
+                    handleDeletePension={handleDeleteCoBorrowerPension}
+                    handleDeleteDisability={handleDeleteCoBorrowerDisability}
+                    handleDeleteEmployer={handleDeleteCoBorrowerEmployer}
+                    handleDeleteSecondEmployer={handleDeleteCoBorrowerSecondEmployer}
                 />
             )}
-
-            {/* Pension Form - Show when pension is selected */}
-            {form.watch('income.incomeTypes.pension') && (
-                <PensionForm
-                    isOpen={isPensionOpen}
-                    onOpenChange={setIsPensionOpen}
-                    onDeletePension={handleDeletePension}
-                    showAnimation={showIncomeCardAnimation['pension']}
-                    setShowAnimation={setShowIncomeCardAnimation}
-                />
-            )}
-
-            {/* Disability Card - Show when VA benefits is selected */}
-            {form.watch('income.incomeTypes.vaBenefits') && (
-                <DisabilityCard
-                    isOpen={isDisabilityOpen}
-                    onOpenChange={setIsDisabilityOpen}
-                    onDeleteDisability={handleDeleteDisability}
-                />
-            )}
-
-            {/* Property Rental Dialog */}
-            <PropertyRentalDialog
-                isOpen={propertyRentalDialog.isOpen}
-                type={propertyRentalDialog.type}
-                onClose={() => setPropertyRentalDialog({ isOpen: false, type: null })}
-            />
-
-            {/* Delete Employer Confirmation Dialog */}
-            <DeleteConfirmationDialog
-                isOpen={deleteEmployerDialog.isOpen}
-                onClose={() => setDeleteEmployerDialog({ isOpen: false, cardId: '' })}
-                onConfirm={() => handleDeleteEmployer(deleteEmployerDialog.cardId)}
-                title="Delete Employer"
-                description="Are you sure you want to delete this employer? This action cannot be undone and will remove all associated employment information."
-                testId="dialog-delete-employer"
-                confirmButtonTestId="button-delete-employer-confirm"
-                cancelButtonTestId="button-delete-employer-cancel"
-            />
-
-            {/* Delete Second Employer Confirmation Dialog */}
-            <DeleteConfirmationDialog
-                isOpen={deleteSecondEmployerDialog.isOpen}
-                onClose={() => setDeleteSecondEmployerDialog({ isOpen: false, cardId: '' })}
-                onConfirm={() => handleDeleteSecondEmployer(deleteSecondEmployerDialog.cardId)}
-                title="Delete Second Employer"
-                description="Are you sure you want to delete this second employer? This action cannot be undone and will remove all associated employment information."
-                testId="dialog-delete-second-employer"
-                confirmButtonTestId="button-delete-second-employer-confirm"
-                cancelButtonTestId="button-delete-second-employer-cancel"
-            />
         </>
     );
 };

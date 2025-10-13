@@ -14,9 +14,10 @@ interface DisabilityCardProps {
     isOpen: boolean;
     onOpenChange: (open: boolean) => void;
     onDeleteDisability: () => void;
+    fieldPrefix?: string;
 }
 
-const DisabilityCard = ({ isOpen, onOpenChange, onDeleteDisability }: DisabilityCardProps) => {
+const DisabilityCard = ({ isOpen, onOpenChange, onDeleteDisability, fieldPrefix = 'income' }: DisabilityCardProps) => {
     const form = useFormContext<InsertClient>();
     
     // Local state for disability type selections
@@ -47,16 +48,16 @@ const DisabilityCard = ({ isOpen, onOpenChange, onDeleteDisability }: Disability
     const handleConfirmDeleteVaType = () => {
         setVaDisabilitySelected(false);
         // Clear VA disability form fields
-        form.setValue('income.vaBenefitsMonthlyAmount', '');
-        form.setValue('income.vaBenefitsStartDate', '');
+        form.setValue(`${fieldPrefix}.vaBenefitsMonthlyAmount` as any, '');
+        form.setValue(`${fieldPrefix}.vaBenefitsStartDate` as any, '');
         setDeleteVaTypeDialog({ isOpen: false });
     };
 
     const handleConfirmDeleteOtherType = () => {
         setOtherDisabilitySelected(false);
         // Clear other disability form fields
-        form.setValue('income.disabilityMonthlyAmount', '');
-        form.setValue('income.disabilityStartDate', '');
+        form.setValue(`${fieldPrefix}.disabilityMonthlyAmount` as any, '');
+        form.setValue(`${fieldPrefix}.disabilityStartDate` as any, '');
         setDeleteOtherTypeDialog({ isOpen: false });
     };
 
@@ -128,24 +129,24 @@ const DisabilityCard = ({ isOpen, onOpenChange, onDeleteDisability }: Disability
                                     <FormInput
                                         label="VA Disability Benefits - Gross Monthly Income"
                                         value={(() => {
-                                            const rawValue = form.watch('income.vaBenefitsMonthlyAmount') || '';
+                                            const rawValue = form.watch(`${fieldPrefix}.vaBenefitsMonthlyAmount` as any) || '';
                                             const numVal = rawValue.replace(/[^\d]/g, '');
                                             return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
                                         })()}
                                         onChange={(value) => {
                                             const cleanValue = value.replace(/[^\d]/g, '');
-                                            form.setValue('income.vaBenefitsMonthlyAmount', cleanValue);
+                                            form.setValue(`${fieldPrefix}.vaBenefitsMonthlyAmount` as any, cleanValue);
                                         }}
-                                        id="income-vaBenefitsMonthlyAmount"
+                                        id={`${fieldPrefix}-vaBenefitsMonthlyAmount`}
                                         placeholder="$0"
-                                        testId="input-income-vaBenefitsMonthlyAmount"
+                                        testId={`input-${fieldPrefix}-vaBenefitsMonthlyAmount`}
                                     />
                                     <DateInput
                                         label="Start Date"
-                                        value={form.watch('income.vaBenefitsStartDate') || ''}
-                                        onChange={(value) => form.setValue('income.vaBenefitsStartDate', value)}
-                                        id="income-vaBenefitsStartDate"
-                                        testId="input-income-vaBenefitsStartDate"
+                                        value={form.watch(`${fieldPrefix}.vaBenefitsStartDate` as any) || ''}
+                                        onChange={(value) => form.setValue(`${fieldPrefix}.vaBenefitsStartDate` as any, value)}
+                                        id={`${fieldPrefix}-vaBenefitsStartDate`}
+                                        testId={`input-${fieldPrefix}-vaBenefitsStartDate`}
                                     />
                                 </div>
                             )}
@@ -156,24 +157,24 @@ const DisabilityCard = ({ isOpen, onOpenChange, onDeleteDisability }: Disability
                                     <FormInput
                                         label="Disability - Gross Monthly Income"
                                         value={(() => {
-                                            const rawValue = form.watch('income.disabilityMonthlyAmount') || '';
+                                            const rawValue = form.watch(`${fieldPrefix}.disabilityMonthlyAmount` as any) || '';
                                             const numVal = rawValue.replace(/[^\d]/g, '');
                                             return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
                                         })()}
                                         onChange={(value) => {
                                             const cleanValue = value.replace(/[^\d]/g, '');
-                                            form.setValue('income.disabilityMonthlyAmount', cleanValue);
+                                            form.setValue(`${fieldPrefix}.disabilityMonthlyAmount` as any, cleanValue);
                                         }}
-                                        id="income-disabilityMonthlyAmount"
+                                        id={`${fieldPrefix}-disabilityMonthlyAmount`}
                                         placeholder="$0"
-                                        testId="input-income-disabilityMonthlyAmount"
+                                        testId={`input-${fieldPrefix}-disabilityMonthlyAmount`}
                                     />
                                     <DateInput
                                         label="Start Date"
-                                        value={form.watch('income.disabilityStartDate') || ''}
-                                        onChange={(value) => form.setValue('income.disabilityStartDate', value)}
-                                        id="income-disabilityStartDate"
-                                        testId="input-income-disabilityStartDate"
+                                        value={form.watch(`${fieldPrefix}.disabilityStartDate` as any) || ''}
+                                        onChange={(value) => form.setValue(`${fieldPrefix}.disabilityStartDate` as any, value)}
+                                        id={`${fieldPrefix}-disabilityStartDate`}
+                                        testId={`input-${fieldPrefix}-disabilityStartDate`}
                                     />
                                 </div>
                             )}

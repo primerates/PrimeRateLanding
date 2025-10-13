@@ -13,9 +13,10 @@ interface SocialSecurityFormProps {
     isOpen: boolean;
     onOpenChange: (open: boolean) => void;
     onDeleteSocialSecurity: () => void;
+    fieldPrefix?: string;
 }
 
-const SocialSecurityForm = ({ isOpen, onOpenChange, onDeleteSocialSecurity }: SocialSecurityFormProps) => {
+const SocialSecurityForm = ({ isOpen, onOpenChange, onDeleteSocialSecurity, fieldPrefix = 'income' }: SocialSecurityFormProps) => {
     const form = useFormContext<InsertClient>();
     const [deleteDialog, setDeleteDialog] = useState({ isOpen: false });
 
@@ -60,24 +61,24 @@ const SocialSecurityForm = ({ isOpen, onOpenChange, onDeleteSocialSecurity }: So
                                 <FormInput
                                     label="Gross Monthly Income"
                                     value={(() => {
-                                        const rawValue = form.watch('income.socialSecurityMonthlyAmount') || '';
+                                        const rawValue = form.watch(`${fieldPrefix}.socialSecurityMonthlyAmount` as any) || '';
                                         const numVal = rawValue.replace(/[^\d]/g, '');
                                         return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
                                     })()}
                                     onChange={(value) => {
                                         const cleanValue = value.replace(/[^\d]/g, '');
-                                        form.setValue('income.socialSecurityMonthlyAmount', cleanValue);
+                                        form.setValue(`${fieldPrefix}.socialSecurityMonthlyAmount` as any, cleanValue);
                                     }}
-                                    id="income-socialSecurityMonthlyAmount"
+                                    id={`${fieldPrefix}-socialSecurityMonthlyAmount`}
                                     placeholder="$0"
-                                    testId="input-income-socialSecurityMonthlyAmount"
+                                    testId={`input-${fieldPrefix}-socialSecurityMonthlyAmount`}
                                 />
                                 <DateInput
                                     label="Start Date"
-                                    value={form.watch('income.socialSecurityStartDate') || ''}
-                                    onChange={(value) => form.setValue('income.socialSecurityStartDate', value)}
-                                    id="income-socialSecurityStartDate"
-                                    testId="input-income-socialSecurityStartDate"
+                                    value={form.watch(`${fieldPrefix}.socialSecurityStartDate` as any) || ''}
+                                    onChange={(value) => form.setValue(`${fieldPrefix}.socialSecurityStartDate` as any, value)}
+                                    id={`${fieldPrefix}-socialSecurityStartDate`}
+                                    testId={`input-${fieldPrefix}-socialSecurityStartDate`}
                                 />
                             </div>
                         </CardContent>
