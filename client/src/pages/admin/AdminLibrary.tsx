@@ -197,22 +197,6 @@ export default function AdminLibrary() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-6">
             <h1 className={`text-xl font-black italic transition-colors ${getTextColor()}`} style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="heading-library">LOANVIEW GPT</h1>
-            <button
-              onClick={() => setIsLightMode(!isLightMode)}
-              className={`flex items-center justify-center w-10 h-10 rounded-lg border transition-all ${
-                isLightMode
-                  ? 'bg-white border-purple-200 hover:border-purple-300 shadow-sm'
-                  : 'bg-purple-500/20 border-purple-500/30 hover:bg-purple-500/30'
-              }`}
-              title={isLightMode ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
-              data-testid="button-theme-toggle"
-            >
-              {isLightMode ? (
-                <Moon className="w-5 h-5 text-purple-600" />
-              ) : (
-                <Sun className="w-5 h-5 text-yellow-300" />
-              )}
-            </button>
             
             {/* Brightness Slider - Only visible in light mode */}
             {isLightMode && (
@@ -281,6 +265,22 @@ export default function AdminLibrary() {
             )}
           </div>
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsLightMode(!isLightMode)}
+              className={`flex items-center justify-center w-10 h-10 rounded-lg border transition-all ${
+                isLightMode
+                  ? 'bg-white border-purple-200 hover:border-purple-300 shadow-sm'
+                  : 'bg-purple-500/20 border-purple-500/30 hover:bg-purple-500/30'
+              }`}
+              title={isLightMode ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+              data-testid="button-theme-toggle"
+            >
+              {isLightMode ? (
+                <Moon className="w-5 h-5 text-purple-600" />
+              ) : (
+                <Sun className="w-5 h-5 text-yellow-300" />
+              )}
+            </button>
             <DropdownMenu open={shortcutDropdownOpen} onOpenChange={setShortcutDropdownOpen}>
               <DropdownMenuTrigger asChild>
                 <button
