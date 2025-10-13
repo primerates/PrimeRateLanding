@@ -1365,7 +1365,7 @@ export default function AdminSnapshot() {
                   className="px-4 py-2 bg-gradient-to-r from-red-500/20 to-pink-500/20 hover:from-red-500/30 hover:to-pink-500/30 rounded-lg border border-red-500/30 hover:border-red-500/50 text-red-300 hover:text-white transition-all text-sm font-semibold"
                   data-testid="button-cancel-new-batch"
                 >
-                  Cancel New Batch
+                  Cancel Batch
                 </button>
                 <button
                   className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold rounded-lg border border-purple-400/30 transition-all shadow-lg hover:shadow-purple-500/50 text-sm"
