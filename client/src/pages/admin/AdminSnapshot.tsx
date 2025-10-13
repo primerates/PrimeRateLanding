@@ -1937,6 +1937,9 @@ export default function AdminSnapshot() {
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold text-white">New Batch</h3>
               <div className="flex items-center gap-3">
+                <div className="text-xs text-purple-300">
+                  {getCompletedBatchFieldsCount()} / 17 fields complete
+                </div>
                 <Button
                   type="button"
                   variant="outline"
@@ -1947,9 +1950,6 @@ export default function AdminSnapshot() {
                 >
                   Cancel New Batch
                 </Button>
-                <div className="text-xs text-purple-300">
-                  {getCompletedBatchFieldsCount()} / 17 fields complete
-                </div>
                 <Button 
                   onClick={() => setStatesDialogOpen(true)}
                   size="sm"
