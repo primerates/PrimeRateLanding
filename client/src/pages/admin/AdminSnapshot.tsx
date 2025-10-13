@@ -1177,9 +1177,6 @@ export default function AdminSnapshot() {
           </div>
         </div>
 
-        {/* Separation Line */}
-        <div className="border-t border-purple-500/20"></div>
-
         {/* Top Card - Filters and Metrics */}
         <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
           <div className="flex items-center justify-between mb-6">
