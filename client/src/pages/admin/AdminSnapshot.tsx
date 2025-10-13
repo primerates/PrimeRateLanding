@@ -124,7 +124,7 @@ const CurrencyInput = ({ value, onChange, placeholder = '$0', id, dataTestId }: 
 export default function AdminSnapshot() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const [entityFilter, setEntityFilter] = useState('all');
+  const [entityFilter, setEntityFilter] = useState('prime-rate');
   const [categoryFilter, setCategoryFilter] = useState('financials');
   const [teamFilter, setTeamFilter] = useState('select');
   const [timeFilter, setTimeFilter] = useState('today');
@@ -1241,8 +1241,7 @@ export default function AdminSnapshot() {
                   className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
                   data-testid="select-entity-filter"
                 >
-                  <option value="all">Show All</option>
-                  <option value="company">Company</option>
+                  <option value="prime-rate">Prime Rate</option>
                   <option value="branch">Branch</option>
                   <option value="partners">Partners</option>
                 </select>
