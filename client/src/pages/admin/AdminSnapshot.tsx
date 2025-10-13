@@ -3918,6 +3918,12 @@ function AttachmentsDialog({
 
   const startCamera = async () => {
     try {
+      // Check if getUserMedia is supported
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setUploadError('Camera not supported in this browser. Try opening in a new window.');
+        return;
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { facingMode: 'environment' }, // Use rear camera on mobile
         audio: false 
@@ -3929,9 +3935,26 @@ function AttachmentsDialog({
         setIsCameraOpen(true);
         setUploadError(null);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Camera error:', error);
-      setUploadError('Unable to access camera. Please check permissions.');
+      
+      let errorMessage = 'Unable to access camera. ';
+      
+      if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+        errorMessage += 'Camera permission denied. Try opening this page in a new browser tab.';
+      } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
+        errorMessage += 'No camera found on this device.';
+      } else if (error.name === 'NotReadableError' || error.name === 'TrackStartError') {
+        errorMessage += 'Camera is already in use by another application.';
+      } else if (error.name === 'OverconstrainedError') {
+        errorMessage += 'Camera constraints not supported.';
+      } else if (error.name === 'SecurityError') {
+        errorMessage += 'Camera blocked due to security settings. Open in a new window.';
+      } else {
+        errorMessage += 'Please check permissions or open in a new browser tab.';
+      }
+      
+      setUploadError(errorMessage);
     }
   };
 
@@ -4095,9 +4118,22 @@ function AttachmentsDialog({
 
           {/* Upload Error */}
           {uploadError && (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-red-400" />
-              <p className="text-red-300 text-sm">{uploadError}</p>
+            <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <AlertCircle className="w-5 h-5 text-red-400" />
+                <p className="text-red-300 text-sm">{uploadError}</p>
+              </div>
+              {uploadError.includes('new') && (
+                <Button
+                  onClick={() => window.open(window.location.href, '_blank')}
+                  variant="outline"
+                  size="sm"
+                  className="border-purple-500/30 text-purple-300 hover:bg-purple-500/10 w-full"
+                  data-testid="button-open-new-window"
+                >
+                  Open in New Window
+                </Button>
+              )}
             </div>
           )}
 
