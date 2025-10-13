@@ -117,19 +117,24 @@ export default function AdminLogin() {
               <Label htmlFor="email" className="text-base" data-testid="label-admin-email">
                 Username
               </Label>
-              <Input
+              <input
                 id="email"
                 type="email"
                 placeholder=""
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`h-12 text-base transition-colors border-0 border-b-2 rounded-none px-0 focus-visible:outline-none ${
-                  errors.email 
-                    ? 'border-b-red-500' 
-                    : 'border-b-border'
-                }`}
+                className="w-full bg-transparent text-foreground"
+                style={{
+                  height: '3rem',
+                  fontSize: '1rem',
+                  border: 'none',
+                  borderBottom: errors.email ? '2px solid hsl(var(--destructive))' : '2px solid hsl(var(--border))',
+                  paddingLeft: '0',
+                  paddingRight: '0',
+                  outline: 'none !important',
+                  boxShadow: 'none !important'
+                }}
                 data-testid="input-admin-email"
-                data-no-focus-ring="true"
                 required
               />
             </div>
@@ -139,19 +144,24 @@ export default function AdminLogin() {
                 Password
               </Label>
               <div className="relative">
-                <Input
+                <input
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder=""
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`h-12 text-base pr-10 transition-colors border-0 border-b-2 rounded-none px-0 focus-visible:outline-none ${
-                    errors.password 
-                      ? 'border-b-red-500' 
-                      : 'border-b-border'
-                  }`}
+                  className="w-full bg-transparent text-foreground"
+                  style={{
+                    height: '3rem',
+                    fontSize: '1rem',
+                    border: 'none',
+                    borderBottom: errors.password ? '2px solid hsl(var(--destructive))' : '2px solid hsl(var(--border))',
+                    paddingLeft: '0',
+                    paddingRight: '2.5rem',
+                    outline: 'none !important',
+                    boxShadow: 'none !important'
+                  }}
                   data-testid="input-admin-password"
-                  data-no-focus-ring="true"
                   required
                 />
                 <button
