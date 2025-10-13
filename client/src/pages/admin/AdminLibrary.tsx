@@ -8,7 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Switch } from '@/components/ui/switch';
-import { ArrowLeft, Plus, Minus, User } from 'lucide-react';
+import { Slider } from '@/components/ui/slider';
+import { ArrowLeft, Plus, Minus, User, Sun } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 
 // Dashboard shortcuts menu items
@@ -33,6 +34,7 @@ export default function AdminLibrary() {
   const [hasCoBorrower, setHasCoBorrower] = useState(false);
   const [shortcutDropdownOpen, setShortcutDropdownOpen] = useState(false);
   const [isLightMode, setIsLightMode] = useState(false);
+  const [brightness, setBrightness] = useState(50); // 0-100 scale
 
   // Form state
   const [firstName, setFirstName] = useState('');
@@ -103,17 +105,30 @@ export default function AdminLibrary() {
     return formatted;
   };
 
+  // Calculate darkness level based on brightness (0=darkest, 100=brightest)
+  const getDarknessOpacity = () => {
+    // Invert the brightness: 100 brightness = 0 darkness, 0 brightness = max darkness
+    return (100 - brightness) / 100;
+  };
+
   return (
-    <div className={`min-h-screen p-6 transition-colors ${
+    <div className={`min-h-screen p-6 transition-colors relative ${
       isLightMode 
         ? 'bg-gradient-to-br from-slate-50 via-purple-50 to-slate-100' 
         : 'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900'
     }`}>
-      <div className="container mx-auto space-y-6">
+      {/* Darkness overlay for brightness control */}
+      {isLightMode && (
+        <div 
+          className="absolute inset-0 bg-slate-900 pointer-events-none transition-opacity duration-300"
+          style={{ opacity: getDarknessOpacity() }}
+        />
+      )}
+      <div className="container mx-auto space-y-6 relative z-10">
         
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             <h1 className={`text-xl font-black italic ${isLightMode ? 'text-slate-900' : 'text-white'}`} style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="heading-library">LOANVIEW GPT</h1>
             <div className="flex items-center gap-2">
               <span className={`text-sm font-medium ${isLightMode ? 'text-slate-600' : 'text-purple-300'}`}>Dark</span>
@@ -125,6 +140,24 @@ export default function AdminLibrary() {
               />
               <span className={`text-sm font-medium ${isLightMode ? 'text-purple-600' : 'text-slate-400'}`}>Light</span>
             </div>
+            
+            {/* Brightness Slider - Only visible in light mode */}
+            {isLightMode && (
+              <div className="flex items-center gap-3 px-4 py-2 rounded-lg bg-purple-100/50 border border-purple-300">
+                <Sun className="h-4 w-4 text-purple-600" />
+                <span className="text-sm font-medium text-slate-700 min-w-[80px]">Brightness</span>
+                <Slider
+                  value={[brightness]}
+                  onValueChange={(values) => setBrightness(values[0])}
+                  min={0}
+                  max={100}
+                  step={1}
+                  className="w-32"
+                  data-testid="slider-brightness"
+                />
+                <span className="text-sm font-medium text-purple-600 min-w-[35px] text-right">{brightness}%</span>
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-3">
             <DropdownMenu open={shortcutDropdownOpen} onOpenChange={setShortcutDropdownOpen}>
