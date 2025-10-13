@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import IncomeHeader from '../components/IncomeHeader';
 import IncomeTypes from '../components/IncomeTypes';
 import EmploymentForm from '../components/EmploymentForm';
+import SocialSecurityForm from '../components/SocialSecurityForm';
 import PropertyRentalDialog from '../dialogs/PropertyRentalDialog';
 import DeleteEmployerDialog from '../dialogs/DeleteEmployerDialog';
 import { InsertClient } from '@shared/schema';
@@ -24,6 +25,9 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
     const [propertyCardStates, setPropertyCardStates] = useState<Record<string, boolean>>({});
     const [showIncomeCardAnimation, setShowIncomeCardAnimation] = useState<Record<string, boolean>>({});
     const [employmentDates, setEmploymentDates] = useState<Record<string, any>>({});
+
+    // State for Social Security form
+    const [isSocialSecurityOpen, setIsSocialSecurityOpen] = useState(false);
 
     // Property rental dialog state
     const [propertyRentalDialog, setPropertyRentalDialog] = useState<{
@@ -145,6 +149,11 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
             });
             return newState;
         });
+        
+        // Open social security form if it exists
+        if (form.watch('income.incomeTypes.socialSecurity')) {
+            setIsSocialSecurityOpen(true);
+        }
     };
 
     const handleMinimizeAll = () => {
@@ -158,6 +167,19 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
             });
             return newState;
         });
+        
+        // Close social security form if it exists
+        if (form.watch('income.incomeTypes.socialSecurity')) {
+            setIsSocialSecurityOpen(false);
+        }
+    };
+
+    const handleDeleteSocialSecurity = () => {
+        // Clear the income type checkbox and close the section
+        form.setValue('income.incomeTypes.socialSecurity', false);
+        form.setValue('income.socialSecurityMonthlyAmount', '');
+        form.setValue('income.socialSecurityStartDate', '');
+        setIsSocialSecurityOpen(false);
     };
 
     const handleDeleteEmployer = (cardId: string) => {        
@@ -254,6 +276,15 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
                     />
                 );
             })}
+
+            {/* Social Security Form - Show when social security is selected */}
+            {form.watch('income.incomeTypes.socialSecurity') && (
+                <SocialSecurityForm
+                    isOpen={isSocialSecurityOpen}
+                    onOpenChange={setIsSocialSecurityOpen}
+                    onDeleteSocialSecurity={handleDeleteSocialSecurity}
+                />
+            )}
 
             {/* Property Rental Dialog */}
             <PropertyRentalDialog
