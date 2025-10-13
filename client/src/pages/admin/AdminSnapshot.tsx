@@ -1128,19 +1128,69 @@ export default function AdminSnapshot() {
                 </span>
               )}
               
-              <select 
-                value={timeFilter}
-                onChange={(e) => setTimeFilter(e.target.value)}
-                className="bg-slate-700/50 text-white px-3 py-1 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors cursor-pointer"
-                data-testid="select-time-filter"
-              >
-                <option value="today" className="bg-slate-800 text-white">Today</option>
-                <option value="mtd" className="bg-slate-800 text-white">MTD</option>
-                <option value="ytd" className="bg-slate-800 text-white">YTD</option>
-                <option value="fromDate" className="bg-slate-800 text-white">From Date</option>
-                <option value="toDate" className="bg-slate-800 text-white">To Date</option>
-                <option value="compare" className="bg-slate-800 text-white">Compare</option>
-              </select>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 hover:bg-purple-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all"
+                    data-testid="button-time-filter"
+                  >
+                    <span className="text-purple-200 text-sm">
+                      {timeFilter === 'today' && 'Today'}
+                      {timeFilter === 'mtd' && 'MTD'}
+                      {timeFilter === 'ytd' && 'YTD'}
+                      {timeFilter === 'fromDate' && 'From Date'}
+                      {timeFilter === 'toDate' && 'To Date'}
+                      {timeFilter === 'compare' && 'Compare'}
+                    </span>
+                    <ChevronDown className="h-4 w-4 text-purple-300" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+                  <DropdownMenuItem
+                    onClick={() => setTimeFilter('today')}
+                    className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    data-testid="option-today"
+                  >
+                    Today
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setTimeFilter('mtd')}
+                    className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    data-testid="option-mtd"
+                  >
+                    MTD
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setTimeFilter('ytd')}
+                    className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    data-testid="option-ytd"
+                  >
+                    YTD
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setTimeFilter('fromDate')}
+                    className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    data-testid="option-from-date"
+                  >
+                    From Date
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setTimeFilter('toDate')}
+                    className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    data-testid="option-to-date"
+                  >
+                    To Date
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-purple-500/30" />
+                  <DropdownMenuItem
+                    onClick={() => setTimeFilter('compare')}
+                    className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
+                    data-testid="option-compare"
+                  >
+                    Compare
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               
               {/* Date input fields for From Date and To Date */}
               {timeFilter === 'fromDate' && (
