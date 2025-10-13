@@ -105,33 +105,58 @@ export default function AdminLibrary() {
     return formatted;
   };
 
-  // Calculate darkness level based on brightness (0=darkest, 100=brightest)
-  const getDarknessOpacity = () => {
-    // Invert the brightness: 100 brightness = 0 darkness, 0 brightness = max darkness
-    return (100 - brightness) / 100;
+  // Calculate background colors based on brightness (0=darkest, 100=brightest)
+  const getBackgroundGradient = () => {
+    if (!isLightMode) return 'from-slate-900 via-purple-900 to-slate-900';
+    
+    // Map brightness to appropriate slate shades
+    // 100 = slate-50, 50 = slate-200, 0 = slate-700
+    if (brightness >= 75) return 'from-slate-50 via-purple-50 to-slate-100';
+    if (brightness >= 50) return 'from-slate-100 via-purple-100 to-slate-200';
+    if (brightness >= 25) return 'from-slate-300 via-purple-200 to-slate-400';
+    return 'from-slate-600 via-purple-700 to-slate-700';
+  };
+
+  // Calculate text colors based on brightness
+  const getTextColor = () => {
+    if (!isLightMode) return 'text-white';
+    return brightness >= 50 ? 'text-slate-900' : 'text-white';
+  };
+
+  // Calculate label colors based on brightness
+  const getLabelColor = () => {
+    if (!isLightMode) return 'text-purple-200';
+    return brightness >= 50 ? 'text-slate-700 font-medium' : 'text-slate-200 font-medium';
+  };
+
+  // Calculate card background based on brightness
+  const getCardBackground = () => {
+    if (!isLightMode) return 'bg-slate-800/50';
+    if (brightness >= 75) return 'bg-white/80';
+    if (brightness >= 50) return 'bg-slate-50/80';
+    if (brightness >= 25) return 'bg-slate-200/80';
+    return 'bg-slate-500/80';
+  };
+
+  // Calculate input background based on brightness
+  const getInputBackground = () => {
+    if (!isLightMode) return 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500';
+    if (brightness >= 75) return 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500';
+    if (brightness >= 50) return 'bg-white text-slate-900 border-purple-300 focus:border-purple-500';
+    if (brightness >= 25) return 'bg-slate-100 text-slate-900 border-purple-400 focus:border-purple-500';
+    return 'bg-slate-400 text-white border-purple-500 focus:border-purple-600';
   };
 
   return (
-    <div className={`min-h-screen p-6 transition-colors relative ${
-      isLightMode 
-        ? 'bg-gradient-to-br from-slate-50 via-purple-50 to-slate-100' 
-        : 'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900'
-    }`}>
-      {/* Darkness overlay for brightness control */}
-      {isLightMode && (
-        <div 
-          className="absolute inset-0 bg-slate-900 pointer-events-none transition-opacity duration-300"
-          style={{ opacity: getDarknessOpacity() }}
-        />
-      )}
-      <div className="container mx-auto space-y-6 relative z-10">
+    <div className={`min-h-screen p-6 transition-all duration-300 bg-gradient-to-br ${getBackgroundGradient()}`}>
+      <div className="container mx-auto space-y-6">
         
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <h1 className={`text-xl font-black italic ${isLightMode ? 'text-slate-900' : 'text-white'}`} style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="heading-library">LOANVIEW GPT</h1>
+            <h1 className={`text-xl font-black italic transition-colors ${getTextColor()}`} style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="heading-library">LOANVIEW GPT</h1>
             <div className="flex items-center gap-2">
-              <span className={`text-sm font-medium ${isLightMode ? 'text-slate-600' : 'text-purple-300'}`}>Dark</span>
+              <span className={`text-sm font-medium transition-colors ${isLightMode ? (brightness >= 50 ? 'text-slate-600' : 'text-slate-300') : 'text-purple-300'}`}>Dark</span>
               <Switch
                 checked={isLightMode}
                 onCheckedChange={setIsLightMode}
@@ -213,10 +238,10 @@ export default function AdminLibrary() {
         </div>
 
         {/* Main Content - Borrower Card with Dashboard Theme */}
-        <Card className={`backdrop-blur-xl border-l-4 hover:border-purple-400 focus-within:border-purple-400 transition-all duration-200 shadow-2xl ${
+        <Card className={`backdrop-blur-xl border-l-4 hover:border-purple-400 focus-within:border-purple-400 transition-all duration-300 shadow-2xl ${getCardBackground()} ${
           isLightMode
-            ? 'bg-white/80 border-l-purple-600'
-            : 'bg-slate-800/50 border-l-purple-500'
+            ? 'border-l-purple-600'
+            : 'border-l-purple-500'
         }`}>
             <Collapsible open={isBorrowerOpen} onOpenChange={setIsBorrowerOpen}>
               <CardHeader className={`border-b ${isLightMode ? 'border-purple-200' : 'border-purple-500/20'}`}>
@@ -282,15 +307,12 @@ export default function AdminLibrary() {
                   {/* Row 1: First Name, Middle Name, Last Name, Date of Birth, SSN */}
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="firstName" className={isLightMode ? 'text-slate-700 font-medium' : 'text-purple-200'}>First Name</Label>
+                      <Label htmlFor="firstName" className={`transition-colors ${getLabelColor()}`}>First Name</Label>
                       <Input
                         id="firstName"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
-                        className={isLightMode 
-                          ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
-                          : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
-                        }
+                        className={`transition-all placeholder:text-slate-400 ${getInputBackground()}`}
                         data-testid="input-firstName"
                       />
                     </div>
