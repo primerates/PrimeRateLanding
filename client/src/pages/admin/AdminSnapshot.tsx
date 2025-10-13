@@ -134,6 +134,8 @@ export default function AdminSnapshot() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [entryType, setEntryType] = useState<string | null>(null);
   const [showExpenseNotesDialog, setShowExpenseNotesDialog] = useState(false);
+  const [showAttachmentsDialog, setShowAttachmentsDialog] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState<{ id: string | number; type: 'expense' | 'revenue' } | null>(null);
   const [shortcutDropdownOpen, setShortcutDropdownOpen] = useState(false);
   const [screenshareLoading, setScreenshareLoading] = useState(false);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
@@ -2927,7 +2929,18 @@ export default function AdminSnapshot() {
                           
                           {/* Action Menu Popup */}
                           {openActionMenu === entry.id && (
-                            <div className="absolute right-0 mt-2 w-32 bg-slate-800 rounded-lg border border-purple-500/30 shadow-xl z-50 overflow-hidden">
+                            <div className="absolute right-0 mt-2 w-48 bg-slate-800 rounded-lg border border-purple-500/30 shadow-xl z-50 overflow-hidden">
+                              <button
+                                onClick={() => {
+                                  setSelectedTransaction({ id: entry.id, type: 'expense' });
+                                  setShowAttachmentsDialog(true);
+                                  setOpenActionMenu(null);
+                                }}
+                                className="w-full px-4 py-2 text-left text-purple-200 hover:bg-purple-500/20 transition-colors"
+                                data-testid={`button-manage-attachments-${entry.id}`}
+                              >
+                                Manage Attachments
+                              </button>
                               <button
                                 onClick={() => handleEditExpense(entry)}
                                 className="w-full px-4 py-2 text-left text-purple-200 hover:bg-purple-500/20 transition-colors"
@@ -3256,7 +3269,18 @@ export default function AdminSnapshot() {
                           
                           {/* Action Menu Popup */}
                           {openActionMenu === entry.id && (
-                            <div className="absolute right-0 mt-2 w-32 bg-slate-800 rounded-lg border border-purple-500/30 shadow-xl z-50 overflow-hidden">
+                            <div className="absolute right-0 mt-2 w-48 bg-slate-800 rounded-lg border border-purple-500/30 shadow-xl z-50 overflow-hidden">
+                              <button
+                                onClick={() => {
+                                  setSelectedTransaction({ id: entry.id, type: 'revenue' });
+                                  setShowAttachmentsDialog(true);
+                                  setOpenActionMenu(null);
+                                }}
+                                className="w-full px-4 py-2 text-left text-purple-200 hover:bg-purple-500/20 transition-colors"
+                                data-testid={`button-revenue-manage-attachments-${entry.id}`}
+                              >
+                                Manage Attachments
+                              </button>
                               <button
                                 onClick={() => handleEditRevenue(entry)}
                                 className="w-full px-4 py-2 text-left text-purple-200 hover:bg-purple-500/20 transition-colors"
