@@ -1913,7 +1913,7 @@ export default function AdminSnapshot() {
                           <td className="p-3 text-purple-300 whitespace-nowrap">{batch.category}</td>
                           <td className="p-3 text-white whitespace-nowrap">{batch.tenYearBond}%</td>
                           <td className="p-3 text-white whitespace-nowrap">{batch.parRate}%</td>
-                          <td className="p-3 text-purple-300 whitespace-nowrap">{batch.records.toLocaleString()}</td>
+                          <td className="p-3 text-purple-300 whitespace-nowrap">{(batch.records || 0).toLocaleString()}</td>
                           <td className="p-3 text-white whitespace-nowrap">
                             <button
                               onClick={() => {
