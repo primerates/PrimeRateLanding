@@ -877,7 +877,7 @@ export default function AdminAddComment() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:pl-12">
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:pl-24">
                     <div className="flex items-center space-x-2">
                       <Checkbox
                         id="quick-access-client-comment"
