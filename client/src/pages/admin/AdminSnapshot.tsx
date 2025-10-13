@@ -1396,6 +1396,9 @@ export default function AdminSnapshot() {
                   />
                 )}
               </div>
+              <div className="text-xs text-purple-300 mt-1">
+                {getCompletedBatchFieldsCount()} / 20 fields complete
+              </div>
             </div>
             
             {/* Separation line */}
