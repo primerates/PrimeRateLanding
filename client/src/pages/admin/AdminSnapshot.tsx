@@ -100,21 +100,37 @@ export default function AdminSnapshot() {
     expense: 924100
   };
 
-  const revenueData = [
-    { name: 'Direct Mail', value: 685020, color: '#6366f1' },
-    { name: 'Lead Vendors', value: 480850, color: '#8b5cf6' },
-    { name: 'Social Media', value: 365510, color: '#ec4899' },
-    { name: 'Repeat Clients', value: 250340, color: '#f59e0b' },
-    { name: 'Referrals', value: 141680, color: '#10b981' }
-  ];
+  const revenueData = categoryFilter === 'financials' 
+    ? [
+        { name: 'Direct Mail', value: 685020, color: '#6366f1' },
+        { name: 'Lead Vendors', value: 480850, color: '#8b5cf6' },
+        { name: 'Social Media', value: 365510, color: '#ec4899' },
+        { name: 'Repeat Clients', value: 250340, color: '#f59e0b' },
+        { name: 'Referrals', value: 141680, color: '#10b981' }
+      ]
+    : [
+        { name: 'Funded', value: 685020, color: '#6366f1' },
+        { name: 'Loan', value: 480850, color: '#8b5cf6' },
+        { name: 'Loan Prep', value: 365510, color: '#ec4899' },
+        { name: 'Quote', value: 250340, color: '#f59e0b' },
+        { name: 'Lead', value: 141680, color: '#10b981' }
+      ];
 
-  const expenseData = [
-    { name: 'Marketing', value: 323435, color: '#ef4444' },
-    { name: 'Staff', value: 277230, color: '#f97316' },
-    { name: 'Vendors', value: 184820, color: '#eab308' },
-    { name: 'Services', value: 92410, color: '#06b6d4' },
-    { name: 'Supplies', value: 46205, color: '#8b5cf6' }
-  ];
+  const expenseData = categoryFilter === 'financials'
+    ? [
+        { name: 'Marketing', value: 323435, color: '#ef4444' },
+        { name: 'Staff', value: 277230, color: '#f97316' },
+        { name: 'Vendors', value: 184820, color: '#eab308' },
+        { name: 'Services', value: 92410, color: '#06b6d4' },
+        { name: 'Supplies', value: 46205, color: '#8b5cf6' }
+      ]
+    : [
+        { name: 'Florida', value: 323435, color: '#ef4444' },
+        { name: 'California', value: 277230, color: '#f97316' },
+        { name: 'Washington', value: 184820, color: '#eab308' },
+        { name: 'Virginia', value: 92410, color: '#06b6d4' },
+        { name: 'Tennessee', value: 46205, color: '#8b5cf6' }
+      ];
 
   // Drill-down data for Direct Mail example
   const directMailByState = [
