@@ -341,8 +341,8 @@ export default function AdminSnapshot() {
     { label: 'Loan Prep', path: '/admin/loan-prep' },
     { label: 'Loan', path: '/admin/pipeline' },
     { label: 'Funded', path: '/admin/funded' },
-    // Row 2
     { label: 'Closed', path: '/admin/records' },
+    // Row 2
     { label: 'Dashboard', path: '/admin/reports' },
     { label: 'Settings', path: '/admin/settings' },
     // Navigation options
@@ -713,7 +713,7 @@ export default function AdminSnapshot() {
                     >
                       {item.label}
                     </DropdownMenuItem>
-                    {(index === 4 || index === 7) && <DropdownMenuSeparator className="bg-purple-500/30" />}
+                    {(index === 5 || index === 7) && <DropdownMenuSeparator className="bg-purple-500/30" />}
                   </div>
                 ))}
               </DropdownMenuContent>
