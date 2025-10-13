@@ -140,7 +140,9 @@ export default function AdminLibrary() {
     if (cardBrightness >= 40) return 'bg-slate-100/80';
     if (cardBrightness >= 25) return 'bg-slate-200/80';
     if (cardBrightness >= 15) return 'bg-slate-300/80';
-    return 'bg-slate-500/80';
+    if (cardBrightness >= 8) return 'bg-slate-400/80';
+    if (cardBrightness >= 3) return 'bg-slate-500/80';
+    return 'bg-slate-600/80';
   };
 
   // Calculate input background based on CARD brightness
@@ -151,7 +153,9 @@ export default function AdminLibrary() {
     if (cardBrightness >= 40) return 'bg-slate-50 text-slate-900 border-purple-400 focus:border-purple-500';
     if (cardBrightness >= 25) return 'bg-slate-100 text-slate-900 border-purple-400 focus:border-purple-500';
     if (cardBrightness >= 15) return 'bg-slate-200 text-slate-900 border-purple-400 focus:border-purple-500';
-    return 'bg-slate-400 text-white border-purple-500 focus:border-purple-600';
+    if (cardBrightness >= 8) return 'bg-slate-300 text-slate-900 border-purple-500 focus:border-purple-600';
+    if (cardBrightness >= 3) return 'bg-slate-400 text-white border-purple-500 focus:border-purple-600';
+    return 'bg-slate-500 text-white border-purple-600 focus:border-purple-700';
   };
 
   return (
