@@ -404,95 +404,95 @@ export default function AdminLibrary() {
                   </div>
 
                   {/* Address Card with Dashboard Theme */}
-                  <Card className="bg-gradient-to-br from-slate-700 to-slate-800 border-slate-600/50 hover:border-slate-500/70 mt-6">
+                  <Card className="bg-gradient-to-br from-indigo-900 to-blue-900 border-indigo-600/50 hover:border-indigo-500/70 mt-6">
                     <CardContent className="pt-6">
                       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                         <div className="space-y-2 md:col-span-3">
-                          <Label htmlFor="street" className="text-slate-200 font-semibold">Street Address</Label>
+                          <Label htmlFor="street" className="text-indigo-200 font-semibold">Street Address</Label>
                           <Input
                             id="street"
                             value={street}
                             onChange={(e) => setStreet(e.target.value)}
-                            className="bg-slate-600/50 text-white border-slate-500/30 focus:border-slate-400 placeholder:text-slate-400"
+                            className="bg-indigo-800/50 text-white border-indigo-500/30 focus:border-indigo-400 placeholder:text-indigo-300/50"
                             data-testid="input-street"
                           />
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="unit" className="text-slate-200 font-semibold">Unit/Apt</Label>
+                          <Label htmlFor="unit" className="text-indigo-200 font-semibold">Unit/Apt</Label>
                           <Input
                             id="unit"
                             value={unit}
                             onChange={(e) => setUnit(e.target.value)}
-                            className="bg-slate-600/50 text-white border-slate-500/30 focus:border-slate-400 placeholder:text-slate-400"
+                            className="bg-indigo-800/50 text-white border-indigo-500/30 focus:border-indigo-400 placeholder:text-indigo-300/50"
                             data-testid="input-unit"
                           />
                         </div>
                         
                         <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="city" className="text-slate-200 font-semibold">City</Label>
+                          <Label htmlFor="city" className="text-indigo-200 font-semibold">City</Label>
                           <Input
                             id="city"
                             value={city}
                             onChange={(e) => setCity(e.target.value)}
-                            className="bg-slate-600/50 text-white border-slate-500/30 focus:border-slate-400 placeholder:text-slate-400"
+                            className="bg-indigo-800/50 text-white border-indigo-500/30 focus:border-indigo-400 placeholder:text-indigo-300/50"
                             data-testid="input-city"
                           />
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="state" className="text-slate-200 font-semibold">State</Label>
+                          <Label htmlFor="state" className="text-indigo-200 font-semibold">State</Label>
                           <Input
                             id="state"
                             value={state}
                             onChange={(e) => setState(e.target.value)}
                             placeholder="CA"
                             maxLength={2}
-                            className="bg-slate-600/50 text-white border-slate-500/30 focus:border-slate-400 placeholder:text-slate-400"
+                            className="bg-indigo-800/50 text-white border-indigo-500/30 focus:border-indigo-400 placeholder:text-indigo-300/50"
                             data-testid="input-state"
                           />
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="zipCode" className="text-slate-200 font-semibold">ZIP Code</Label>
+                          <Label htmlFor="zipCode" className="text-indigo-200 font-semibold">ZIP Code</Label>
                           <Input
                             id="zipCode"
                             value={zipCode}
                             onChange={(e) => setZipCode(e.target.value)}
                             placeholder="12345"
                             maxLength={5}
-                            className="bg-slate-600/50 text-white border-slate-500/30 focus:border-slate-400 placeholder:text-slate-400"
+                            className="bg-indigo-800/50 text-white border-indigo-500/30 focus:border-indigo-400 placeholder:text-indigo-300/50"
                             data-testid="input-zipCode"
                           />
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="county" className="text-slate-200 font-semibold">County</Label>
+                          <Label htmlFor="county" className="text-indigo-200 font-semibold">County</Label>
                           <Input
                             id="county"
                             value={county}
                             onChange={(e) => setCounty(e.target.value)}
-                            className="bg-slate-600/50 text-white border-slate-500/30 focus:border-slate-400 placeholder:text-slate-400"
+                            className="bg-indigo-800/50 text-white border-indigo-500/30 focus:border-indigo-400 placeholder:text-indigo-300/50"
                             data-testid="input-county"
                           />
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="fromDate" className="text-slate-200 font-semibold">From</Label>
+                          <Label htmlFor="fromDate" className="text-indigo-200 font-semibold">From</Label>
                           <Input
                             id="fromDate"
                             value={fromDate}
                             onChange={(e) => setFromDate(formatDate(e.target.value))}
                             placeholder="mm/dd/yyyy"
                             maxLength={10}
-                            className="bg-slate-600/50 text-white border-slate-500/30 focus:border-slate-400 placeholder:text-slate-400 !text-[13px] placeholder:text-[10px]"
+                            className="bg-indigo-800/50 text-white border-indigo-500/30 focus:border-indigo-400 placeholder:text-indigo-300/50 !text-[13px] placeholder:text-[10px]"
                             data-testid="input-fromDate"
                           />
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
                           <div className="flex items-center justify-between mb-2">
-                            <Label htmlFor="toDate" className="text-sm text-slate-200 font-semibold">
+                            <Label htmlFor="toDate" className="text-sm text-indigo-200 font-semibold">
                               {isPresent ? 'Present' : 'To'}
                             </Label>
                             <Switch
@@ -506,7 +506,7 @@ export default function AdminLibrary() {
                                 }
                               }}
                               data-testid="toggle-present"
-                              className="scale-[0.8] data-[state=checked]:bg-slate-500"
+                              className="scale-[0.8] data-[state=checked]:bg-indigo-500"
                             />
                           </div>
                           <Input
@@ -516,18 +516,18 @@ export default function AdminLibrary() {
                             placeholder="mm/dd/yyyy"
                             maxLength={10}
                             readOnly={isPresent}
-                            className="bg-slate-600/50 text-white border-slate-500/30 focus:border-slate-400 placeholder:text-slate-400 !text-[13px] placeholder:text-[10px]"
+                            className="bg-indigo-800/50 text-white border-indigo-500/30 focus:border-indigo-400 placeholder:text-indigo-300/50 !text-[13px] placeholder:text-[10px]"
                             data-testid="input-toDate"
                           />
                         </div>
                         
                         <div className="space-y-2 md:col-span-1">
-                          <Label htmlFor="duration" className="text-sm text-slate-200 font-semibold">Duration</Label>
+                          <Label htmlFor="duration" className="text-sm text-indigo-200 font-semibold">Duration</Label>
                           <Input
                             id="duration"
                             value="0 Yrs 0 Mos"
                             readOnly
-                            className="bg-slate-600/50 text-slate-300 border-slate-500/30 cursor-not-allowed !text-[13px]"
+                            className="bg-indigo-800/50 text-indigo-300 border-indigo-500/30 cursor-not-allowed !text-[13px]"
                             data-testid="input-duration"
                           />
                         </div>
