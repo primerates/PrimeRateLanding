@@ -163,6 +163,8 @@ export default function AdminSnapshot() {
   const [dataCategory, setDataCategory] = useState('Select');
   const [batchResults, setBatchResults] = useState<'show-all' | 'profitable' | 'loss'>('show-all');
   const [showBatchWarning, setShowBatchWarning] = useState(false);
+  const [showFormConflictWarning, setShowFormConflictWarning] = useState(false);
+  const [conflictFormType, setConflictFormType] = useState<'expense' | 'revenue'>('expense');
   
   // Batch List sorting state
   const [batchSortColumn, setBatchSortColumn] = useState<string>('createdDate');
@@ -3197,11 +3199,16 @@ export default function AdminSnapshot() {
                   <>
                     <button
                       onClick={() => {
-                        setEntryType('revenue');
-                        setShowRevenueForm(true);
-                        setIsRevenueFormMinimized(false); // Ensure form is expanded when adding new revenue
-                        setAreChartsMinimized(true); // Minimize charts to reduce clutter
-                        setShowAddModal(false);
+                        if (showExpenseForm) {
+                          setConflictFormType('expense');
+                          setShowFormConflictWarning(true);
+                        } else {
+                          setEntryType('revenue');
+                          setShowRevenueForm(true);
+                          setIsRevenueFormMinimized(false); // Ensure form is expanded when adding new revenue
+                          setAreChartsMinimized(true); // Minimize charts to reduce clutter
+                          setShowAddModal(false);
+                        }
                       }}
                       className="w-full p-6 bg-gradient-to-br from-blue-500/20 to-indigo-600/20 hover:from-blue-500/30 hover:to-indigo-600/30 rounded-xl border border-blue-500/30 hover:border-blue-500/50 transition-all group"
                       data-testid="button-add-revenue"
@@ -3217,10 +3224,15 @@ export default function AdminSnapshot() {
 
                     <button
                       onClick={() => {
-                        setEntryType('expense');
-                        setShowExpenseForm(true);
-                        setAreChartsMinimized(true); // Minimize charts to reduce clutter
-                        setShowAddModal(false);
+                        if (showRevenueForm) {
+                          setConflictFormType('revenue');
+                          setShowFormConflictWarning(true);
+                        } else {
+                          setEntryType('expense');
+                          setShowExpenseForm(true);
+                          setAreChartsMinimized(true); // Minimize charts to reduce clutter
+                          setShowAddModal(false);
+                        }
                       }}
                       className="w-full p-6 bg-gradient-to-br from-red-500/20 to-pink-600/20 hover:from-red-500/30 hover:to-pink-600/30 rounded-xl border border-red-500/30 hover:border-red-500/50 transition-all group"
                       data-testid="button-add-expense"
@@ -3321,6 +3333,29 @@ export default function AdminSnapshot() {
                 onClick={() => setShowBatchWarning(false)}
                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white"
                 data-testid="button-close-batch-warning"
+              >
+                OK
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Form Conflict Warning Dialog */}
+        <Dialog open={showFormConflictWarning} onOpenChange={setShowFormConflictWarning}>
+          <DialogContent className="bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-white">
+                {conflictFormType === 'expense' ? 'Expense Log Open' : 'Revenue Log Open'}
+              </DialogTitle>
+              <DialogDescription className="text-purple-200 pt-2">
+                Please complete or cancel the open {conflictFormType} card log
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-end mt-4">
+              <Button
+                onClick={() => setShowFormConflictWarning(false)}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white"
+                data-testid="button-close-form-conflict-warning"
               >
                 OK
               </Button>
