@@ -9,6 +9,7 @@ export default function AdminSnapshot() {
   const [, setLocation] = useLocation();
   const [entityFilter, setEntityFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('financials');
+  const [teamFilter, setTeamFilter] = useState('select');
   const [timeFilter, setTimeFilter] = useState('mtd');
   const [revenueDetailView, setRevenueDetailView] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -522,8 +523,19 @@ export default function AdminSnapshot() {
                   <option value="direct-mail">Direct Mail</option>
                   <option value="lead-vendor">Lead Vendor</option>
                   <option value="social-media">Social Media</option>
-                  <option value="loan-agent">Loan Agent</option>
-                  <option value="loan-processor">Loan Processor</option>
+                </select>
+
+                <select 
+                  value={teamFilter}
+                  onChange={(e) => setTeamFilter(e.target.value)}
+                  className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                  data-testid="select-team-filter"
+                >
+                  <option value="select">Select</option>
+                  <option value="team">Team</option>
+                  <option value="team-lead">Team Lead</option>
+                  <option value="mlo">MLO</option>
+                  <option value="processor">Processor</option>
                 </select>
               </div>
 
