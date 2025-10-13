@@ -2957,7 +2957,7 @@ export default function AdminSnapshot() {
                                 className="w-full px-4 py-2 text-left text-purple-200 hover:bg-purple-500/20 transition-colors"
                                 data-testid={`button-manage-attachments-${entry.id}`}
                               >
-                                Manage Attachments
+                                Attach Doc
                               </button>
                               <button
                                 onClick={() => handleEditExpense(entry)}
@@ -3313,7 +3313,7 @@ export default function AdminSnapshot() {
                                 className="w-full px-4 py-2 text-left text-purple-200 hover:bg-purple-500/20 transition-colors"
                                 data-testid={`button-revenue-manage-attachments-${entry.id}`}
                               >
-                                Manage Attachments
+                                Attach Doc
                               </button>
                               <button
                                 onClick={() => handleEditRevenue(entry)}
