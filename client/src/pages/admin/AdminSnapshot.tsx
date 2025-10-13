@@ -1376,33 +1376,17 @@ export default function AdminSnapshot() {
               </div>
             </div>
             
-            {/* Completion Bar - 20 segments */}
-            <div className="px-0 pb-4">
-              <div className="relative flex gap-0 h-1">
-                {Array.from({ length: 20 }).map((_, index) => (
-                  <div
-                    key={index}
-                    className={`flex-1 transition-colors duration-300`}
-                    style={{ backgroundColor: index < getCompletedBatchFieldsCount() ? '#8b5cf6' : '#475569' }}
-                  />
-                ))}
-                {getCompletedBatchFieldsCount() > 0 && getCompletedBatchFieldsCount() < 20 && (
-                  <div 
-                    className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full transition-all duration-300"
-                    style={{ 
-                      backgroundColor: '#ec4899',
-                      left: `calc(${(getCompletedBatchFieldsCount() / 20) * 100}% - 4px)`
-                    }}
-                  />
-                )}
-              </div>
+            {/* Completion Bar */}
+            <div className="relative mb-6">
+              <div className="border-t border-purple-500/30"></div>
+              <div 
+                className="absolute top-0 left-0 h-px bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300"
+                style={{ width: `${(getCompletedBatchFieldsCount() / 20) * 100}%` }}
+              ></div>
               <div className="text-xs text-purple-300 mt-1">
                 {getCompletedBatchFieldsCount()} / 20 fields complete
               </div>
             </div>
-            
-            {/* Separation line */}
-            <div className="border-t border-purple-500/30 mb-6"></div>
             
             <div className="space-y-6">
               {/* Row 1: Batch Info */}
