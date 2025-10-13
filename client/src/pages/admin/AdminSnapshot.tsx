@@ -1,11 +1,11 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useLocation } from 'wouter';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { queryClient } from '@/lib/queryClient';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Monitor, ChevronDown, ChevronUp, Upload, CheckCircle, AlertCircle, FileText, Paperclip, Download, Trash2 } from 'lucide-react';
+import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Monitor, ChevronDown, ChevronUp, Upload, CheckCircle, AlertCircle, FileText, Paperclip, Download, Trash2, Camera } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -3812,7 +3812,10 @@ function AttachmentsDialog({
 }) {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
-  const fileInputRef = useState<HTMLInputElement | null>(null)[0];
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   // Query to fetch attachments
   const { data: attachments = [], isLoading, refetch } = useQuery({
@@ -3913,6 +3916,70 @@ function AttachmentsDialog({
     setIsDragging(false);
   };
 
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' }, // Use rear camera on mobile
+        audio: false 
+      });
+      
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        streamRef.current = stream;
+        setIsCameraOpen(true);
+        setUploadError(null);
+      }
+    } catch (error) {
+      console.error('Camera error:', error);
+      setUploadError('Unable to access camera. Please check permissions.');
+    }
+  };
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    setIsCameraOpen(false);
+  };
+
+  const capturePhoto = () => {
+    if (!videoRef.current || !canvasRef.current) return;
+
+    const context = canvasRef.current.getContext('2d');
+    if (!context) return;
+
+    // Set canvas dimensions to match video
+    canvasRef.current.width = videoRef.current.videoWidth;
+    canvasRef.current.height = videoRef.current.videoHeight;
+
+    // Draw the video frame to canvas
+    context.drawImage(videoRef.current, 0, 0);
+
+    // Convert canvas to blob
+    canvasRef.current.toBlob((blob) => {
+      if (!blob) return;
+
+      // Create a file from the blob
+      const file = new File([blob], `invoice-${Date.now()}.jpg`, { type: 'image/jpeg' });
+      
+      // Upload the captured photo
+      uploadMutation.mutate(file);
+      
+      // Stop camera
+      stopCamera();
+    }, 'image/jpeg', 0.95);
+  };
+
+  // Cleanup: Stop camera when dialog closes
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, []);
+
   const formatFileSize = (bytes: number) => {
     if (bytes < 1024) return bytes + ' B';
     if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
@@ -3936,38 +4003,95 @@ function AttachmentsDialog({
         </DialogHeader>
 
         <div className="space-y-6 pt-4">
-          {/* Upload Dropzone */}
-          <div
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            className={`
-              border-2 border-dashed rounded-lg p-8 text-center transition-all cursor-pointer
-              ${isDragging 
-                ? 'border-purple-500 bg-purple-500/10' 
-                : 'border-purple-500/30 hover:border-purple-500/50'
-              }
-            `}
-            onClick={() => document.getElementById('file-upload')?.click()}
-            data-testid="dropzone-attachment-upload"
-          >
-            <input
-              id="file-upload"
-              type="file"
-              className="hidden"
-              accept=".pdf,.jpg,.jpeg,.png"
-              onChange={(e) => handleFileSelect(e.target.files)}
-              data-testid="input-file-upload"
-            />
-            
-            <Upload className="w-12 h-12 mx-auto mb-4 text-purple-300" />
-            <p className="text-white font-medium mb-2">
-              {uploadMutation.isPending ? 'Uploading...' : 'Drop files here or click to browse'}
-            </p>
-            <p className="text-sm text-purple-300">
-              Supported: PDF, JPG, PNG (max 5MB)
-            </p>
-          </div>
+          {/* Camera View */}
+          {isCameraOpen ? (
+            <div className="space-y-4">
+              <div className="relative bg-black rounded-lg overflow-hidden">
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  className="w-full h-auto"
+                  data-testid="camera-preview"
+                />
+                <canvas
+                  ref={canvasRef}
+                  className="hidden"
+                />
+              </div>
+              <div className="flex gap-3 justify-center">
+                <Button
+                  onClick={capturePhoto}
+                  className="bg-purple-600 hover:bg-purple-700 text-white"
+                  data-testid="button-capture-photo"
+                >
+                  <Camera className="w-4 h-4 mr-2" />
+                  Capture Photo
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={stopCamera}
+                  className="border-purple-500/30 text-purple-300 hover:bg-purple-500/10"
+                  data-testid="button-cancel-camera"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Upload Options */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* Upload Dropzone */}
+                <div
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  className={`
+                    border-2 border-dashed rounded-lg p-6 text-center transition-all cursor-pointer
+                    ${isDragging 
+                      ? 'border-purple-500 bg-purple-500/10' 
+                      : 'border-purple-500/30 hover:border-purple-500/50'
+                    }
+                  `}
+                  onClick={() => document.getElementById('file-upload')?.click()}
+                  data-testid="dropzone-attachment-upload"
+                >
+                  <input
+                    id="file-upload"
+                    type="file"
+                    className="hidden"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    onChange={(e) => handleFileSelect(e.target.files)}
+                    data-testid="input-file-upload"
+                  />
+                  
+                  <Upload className="w-10 h-10 mx-auto mb-3 text-purple-300" />
+                  <p className="text-white font-medium mb-1 text-sm">
+                    {uploadMutation.isPending ? 'Uploading...' : 'Upload File'}
+                  </p>
+                  <p className="text-xs text-purple-300">
+                    PDF, JPG, PNG
+                  </p>
+                </div>
+
+                {/* Camera Option */}
+                <div
+                  onClick={startCamera}
+                  className="border-2 border-dashed rounded-lg p-6 text-center transition-all cursor-pointer border-purple-500/30 hover:border-purple-500/50"
+                  data-testid="button-open-camera"
+                >
+                  <Camera className="w-10 h-10 mx-auto mb-3 text-purple-300" />
+                  <p className="text-white font-medium mb-1 text-sm">
+                    Take Photo
+                  </p>
+                  <p className="text-xs text-purple-300">
+                    Scan invoice
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
 
           {/* Upload Error */}
           {uploadError && (

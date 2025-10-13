@@ -128,17 +128,22 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 **Transaction Attachments System**: Upload and manage receipts/invoices for expense and revenue transactions
   - File upload support: PDF, JPG, PNG (max 5MB)
   - Drag-and-drop or browse file selection
+  - **Camera Capture Feature**: 
+    - Take photos directly from device camera (phone or webcam)
+    - Uses MediaDevices API with rear camera preference on mobile
+    - Auto-converts captured photos to JPG and uploads
+    - Video preview with capture and cancel controls
   - **Visual Indicators**: Paperclip icon column in transaction tables showing:
-    - Clickable paperclip icon when attachments exist
-    - "PDF" label for PDF attachments
-    - Count badge for multiple attachments
-    - Direct access to Manage Attachments dialog
-  - Attachment count badges on action menu buttons
+    - Attachment count number (clickable to open dialog)
+    - Clean display without badges on action menu
+    - Direct access to Manage Attachments dialog via count
   - Download and delete functionality
+  - In-browser PDF viewing (opens in new tab)
   - Secure storage with base64 encoding
   - API Endpoints:
     - `POST /api/transactions/:id/attachments` - Upload attachment
     - `GET /api/transactions/:id/attachments` - List attachments
+    - `GET /api/transactions/:id/attachments/:attachmentId/view` - View attachment in browser
     - `DELETE /api/transactions/:id/attachments/:attachmentId` - Delete attachment
 
 **Marketing Campaign Management** (integrated within Dashboard):
