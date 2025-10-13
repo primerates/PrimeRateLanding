@@ -138,10 +138,13 @@ export default function AdminSnapshot() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [entryType, setEntryType] = useState<string | null>(null);
   const [showExpenseNotesDialog, setShowExpenseNotesDialog] = useState(false);
+  const [showRevenueNotesDialog, setShowRevenueNotesDialog] = useState(false);
   const [showAttachmentsDialog, setShowAttachmentsDialog] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<{ id: string | number; type: 'expense' | 'revenue' } | null>(null);
   const [showExpenseLogAttachmentsDialog, setShowExpenseLogAttachmentsDialog] = useState(false);
+  const [showRevenueLogAttachmentsDialog, setShowRevenueLogAttachmentsDialog] = useState(false);
   const [tempExpenseLogId, setTempExpenseLogId] = useState(() => `temp-expense-${Date.now()}`);
+  const [tempRevenueLogId, setTempRevenueLogId] = useState(() => `temp-revenue-${Date.now()}`);
   const [shortcutDropdownOpen, setShortcutDropdownOpen] = useState(false);
   const [screenshareLoading, setScreenshareLoading] = useState(false);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
@@ -290,7 +293,10 @@ export default function AdminSnapshot() {
     paymentFrom: '',
     transactionDate: '',
     clearanceDate: '',
-    revenueTerm: ''
+    revenueTerm: '',
+    notes: '',
+    reference: '',
+    checkNumber: ''
   });
 
   // Sample data - in production, this would come from your API
@@ -980,7 +986,10 @@ export default function AdminSnapshot() {
         paidTo: '',
         transactionDate: '',
         clearanceDate: '',
-        paymentTerm: ''
+        paymentTerm: '',
+        notes: '',
+        checkNumber: '',
+        invoiceNumber: ''
       });
       setShowExpenseForm(false);
     }
@@ -995,7 +1004,10 @@ export default function AdminSnapshot() {
       paidTo: expense.paidTo,
       transactionDate: expense.transactionDate,
       clearanceDate: expense.clearanceDate,
-      paymentTerm: expense.paymentTerm || ''
+      paymentTerm: expense.paymentTerm || '',
+      notes: expense.notes || '',
+      checkNumber: expense.checkNumber || '',
+      invoiceNumber: expense.invoiceNumber || ''
     });
     setIsEditMode(true);
     setEditingExpenseId(expense.id);
@@ -1047,7 +1059,10 @@ export default function AdminSnapshot() {
         paymentFrom: '',
         transactionDate: '',
         clearanceDate: '',
-        revenueTerm: ''
+        revenueTerm: '',
+        notes: '',
+        reference: '',
+        checkNumber: ''
       });
       // Minimize the form but keep transactions visible
       setIsRevenueFormMinimized(true);
@@ -1063,7 +1078,10 @@ export default function AdminSnapshot() {
       paymentFrom: revenue.paymentFrom,
       transactionDate: revenue.transactionDate,
       clearanceDate: revenue.clearanceDate,
-      revenueTerm: revenue.revenueTerm || ''
+      revenueTerm: revenue.revenueTerm || '',
+      notes: revenue.notes || '',
+      reference: revenue.reference || '',
+      checkNumber: revenue.checkNumber || ''
     });
     setIsEditMode(true);
     setEditingRevenueId(revenue.id);
@@ -2833,6 +2851,26 @@ export default function AdminSnapshot() {
               <h3 className="text-xl font-bold text-white">Revenue Log</h3>
               <div className="flex items-center gap-2">
                 <button
+                  onClick={() => setShowRevenueLogAttachmentsDialog(true)}
+                  className="relative flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title="Add Doc"
+                  data-testid="button-revenue-log-attachments"
+                >
+                  <Paperclip className="w-5 h-5 text-purple-300" />
+                  <AttachmentCountBadge 
+                    transactionId={tempRevenueLogId} 
+                    transactionType="revenue" 
+                  />
+                </button>
+                <button
+                  onClick={() => setShowRevenueNotesDialog(true)}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title="Add Note, Ref, Check#"
+                  data-testid="button-revenue-notes"
+                >
+                  <FileText className="w-5 h-5 text-purple-300" />
+                </button>
+                <button
                   onClick={() => setIsRevenueFormMinimized(!isRevenueFormMinimized)}
                   className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
                   title={isRevenueFormMinimized ? "Expand" : "Minimize"}
@@ -3619,6 +3657,69 @@ export default function AdminSnapshot() {
           onClose={() => setShowExpenseLogAttachmentsDialog(false)}
           transactionId={tempExpenseLogId}
           transactionType="expense"
+        />
+
+        {/* Revenue Notes Dialog */}
+        <Dialog open={showRevenueNotesDialog} onOpenChange={setShowRevenueNotesDialog}>
+          <DialogContent className="bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-white">Revenue Notes</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 pt-4">
+              <div className="space-y-2">
+                <Label htmlFor="revenue-notes" className="text-sm text-purple-200">Note</Label>
+                <textarea
+                  id="revenue-notes"
+                  value={newRevenue.notes}
+                  onChange={(e) => setNewRevenue({ ...newRevenue, notes: e.target.value })}
+                  placeholder="Enter note..."
+                  rows={4}
+                  className="w-full bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors resize-none"
+                  data-testid="textarea-revenue-notes"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="revenue-reference" className="text-sm text-purple-200">Reference</Label>
+                <Input
+                  id="revenue-reference"
+                  value={newRevenue.reference}
+                  onChange={(e) => setNewRevenue({ ...newRevenue, reference: e.target.value })}
+                  placeholder="Enter reference..."
+                  className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                  data-testid="input-revenue-reference"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="revenue-check-number" className="text-sm text-purple-200">Check #</Label>
+                <Input
+                  id="revenue-check-number"
+                  value={newRevenue.checkNumber}
+                  onChange={(e) => setNewRevenue({ ...newRevenue, checkNumber: e.target.value })}
+                  placeholder="Enter check number..."
+                  className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                  data-testid="input-revenue-check-number"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 mt-6">
+              <Button
+                variant="outline"
+                onClick={() => setShowRevenueNotesDialog(false)}
+                data-testid="button-close-revenue-notes"
+                className="border-purple-500/30 text-purple-300 hover:bg-purple-500/10"
+              >
+                Close
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Revenue Log Attachments Dialog */}
+        <AttachmentsDialog
+          open={showRevenueLogAttachmentsDialog}
+          onClose={() => setShowRevenueLogAttachmentsDialog(false)}
+          transactionId={tempRevenueLogId}
+          transactionType="revenue"
         />
       </div>
     </div>
