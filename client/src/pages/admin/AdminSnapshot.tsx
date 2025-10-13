@@ -591,7 +591,8 @@ export default function AdminSnapshot() {
       tenYearBond: tenYearBond,
       parRate: parRate,
       states: selectedStates,
-      createdDate: new Date().toISOString(),
+      records: mappedData.length,
+      createdDate: new Date().toLocaleDateString('en-US'),
       excelData: mappedData,
       stats: {
         totalLeads: mappedData.length,
