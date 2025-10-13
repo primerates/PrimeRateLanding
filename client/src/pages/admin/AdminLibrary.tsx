@@ -159,6 +159,13 @@ export default function AdminLibrary() {
     return 'text-slate-700 font-medium';
   };
 
+  // Calculate section title colors based on CARD brightness (for "Borrower" and "Current Residence")
+  const getSectionTitleClasses = () => {
+    if (!isLightMode) return 'bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent';
+    // In light mode, keep section titles dark/readable all the way to 0%
+    return 'text-slate-800 font-bold';
+  };
+
   // Calculate card background based on CARD brightness
   const getCardBackground = () => {
     if (!isLightMode) return 'bg-slate-800/50';
@@ -326,7 +333,7 @@ export default function AdminLibrary() {
             <Collapsible open={isBorrowerOpen} onOpenChange={setIsBorrowerOpen}>
               <CardHeader className={`border-b ${isLightMode ? 'border-purple-200' : 'border-purple-500/20'}`}>
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  <CardTitle className={`text-2xl transition-colors ${getSectionTitleClasses()}`}>
                     Borrower
                   </CardTitle>
                   <div className="flex items-center gap-2">
@@ -574,7 +581,7 @@ export default function AdminLibrary() {
                   {/* Current Residence Section */}
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-10">
                     <div className="space-y-2 flex items-center gap-2">
-                      <Label className="text-xl bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Current Residence</Label>
+                      <Label className={`text-xl transition-colors ${getSectionTitleClasses()}`}>Current Residence</Label>
                     </div>
                     <div className="flex items-center gap-4 ml-1">
                       <button
