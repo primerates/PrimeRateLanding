@@ -434,17 +434,17 @@ export default function AdminSnapshot() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Check if all required fields are completed
-    if (getCompletedBatchFieldsCount() < 17) {
-      setIncompleteFieldsDialog(true);
+    // Check if states are selected first (specific warning)
+    if (selectedStates.length === 0) {
+      setNoStatesWarningDialog(true);
       // Clear the file input
       e.target.value = '';
       return;
     }
 
-    // Check if states are selected
-    if (selectedStates.length === 0) {
-      setNoStatesWarningDialog(true);
+    // Then check if all other required fields are completed
+    if (getCompletedBatchFieldsCount() < 17) {
+      setIncompleteFieldsDialog(true);
       // Clear the file input
       e.target.value = '';
       return;
