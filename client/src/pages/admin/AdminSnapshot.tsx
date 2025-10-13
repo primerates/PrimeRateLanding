@@ -1906,6 +1906,12 @@ export default function AdminSnapshot() {
                     <input
                       type="file"
                       accept=".csv"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          alert(`CSV file "${file.name}" uploaded successfully! (This is a demo - full implementation pending)`);
+                        }
+                      }}
                       className="hidden"
                       id="csv-upload-dashboard"
                       data-testid="input-csv-file-dashboard"
