@@ -127,7 +127,9 @@ export default function AdminSnapshot() {
   const [entityFilter, setEntityFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('financials');
   const [teamFilter, setTeamFilter] = useState('select');
-  const [timeFilter, setTimeFilter] = useState('mtd');
+  const [timeFilter, setTimeFilter] = useState('today');
+  const [timeFilterFromDate, setTimeFilterFromDate] = useState('');
+  const [timeFilterToDate, setTimeFilterToDate] = useState('');
   const [revenueDetailView, setRevenueDetailView] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [entryType, setEntryType] = useState<string | null>(null);
@@ -855,6 +857,21 @@ export default function AdminSnapshot() {
     setTransactionDateRange({ ...transactionDateRange, [field]: value });
   };
 
+  const handleTimeFilterDateInput = (e: React.ChangeEvent<HTMLInputElement>, field: 'from' | 'to') => {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length >= 2) {
+      value = value.slice(0, 2) + '/' + value.slice(2);
+    }
+    if (value.length >= 5) {
+      value = value.slice(0, 5) + '/' + value.slice(5, 9);
+    }
+    if (field === 'from') {
+      setTimeFilterFromDate(value);
+    } else {
+      setTimeFilterToDate(value);
+    }
+  };
+
   const handleSort = (key: string) => {
     let direction: 'asc' | 'desc' = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -1104,6 +1121,13 @@ export default function AdminSnapshot() {
               <Filter className="w-5 h-5 text-purple-400" />
             </div>
             <div className="flex items-center gap-3">
+              {/* Auto date display when Today is selected */}
+              {timeFilter === 'today' && (
+                <span className="text-purple-300 text-sm">
+                  {new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}
+                </span>
+              )}
+              
               <select 
                 value={timeFilter}
                 onChange={(e) => setTimeFilter(e.target.value)}
@@ -1111,10 +1135,38 @@ export default function AdminSnapshot() {
                 data-testid="select-time-filter"
               >
                 <option value="today">Today</option>
-                <option value="mtd">Month to Date</option>
-                <option value="ytd">Year to Date</option>
-                <option value="custom">Custom Date Range</option>
+                <option value="mtd">MTD</option>
+                <option value="ytd">YTD</option>
+                <option value="fromDate">From Date</option>
+                <option value="toDate">To Date</option>
+                <option value="compare">Compare</option>
               </select>
+              
+              {/* Date input fields for From Date and To Date */}
+              {timeFilter === 'fromDate' && (
+                <input
+                  type="text"
+                  placeholder="MM/DD/YYYY"
+                  value={timeFilterFromDate}
+                  onChange={(e) => handleTimeFilterDateInput(e, 'from')}
+                  className="bg-slate-700/50 text-white px-3 py-1 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors text-sm w-32"
+                  data-testid="input-time-filter-from-date"
+                  maxLength={10}
+                />
+              )}
+              
+              {timeFilter === 'toDate' && (
+                <input
+                  type="text"
+                  placeholder="MM/DD/YYYY"
+                  value={timeFilterToDate}
+                  onChange={(e) => handleTimeFilterDateInput(e, 'to')}
+                  className="bg-slate-700/50 text-white px-3 py-1 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors text-sm w-32"
+                  data-testid="input-time-filter-to-date"
+                  maxLength={10}
+                />
+              )}
+              
               <button
                 onClick={() => setIsFiltersMinimized(!isFiltersMinimized)}
                 className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
