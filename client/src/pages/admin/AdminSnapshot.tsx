@@ -3,7 +3,7 @@ import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Monitor, ChevronDown, Upload, CheckCircle, AlertCircle, FileText } from 'lucide-react';
+import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Monitor, ChevronDown, ChevronUp, Upload, CheckCircle, AlertCircle, FileText } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -202,6 +202,7 @@ export default function AdminSnapshot() {
   const [incompleteFieldsDialog, setIncompleteFieldsDialog] = useState(false);
   const [noStatesWarningDialog, setNoStatesWarningDialog] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [showPreview, setShowPreview] = useState(true);
   const [transactionDateRange, setTransactionDateRange] = useState({
     fromDate: '',
     toDate: ''
@@ -1928,303 +1929,479 @@ export default function AdminSnapshot() {
                 <div className="text-xs text-purple-300">
                   {getCompletedBatchFieldsCount()} / 16 fields complete
                 </div>
-                <button
-                  onClick={() => setShowCreateBatch(false)}
-                  className="px-4 py-2 bg-gradient-to-r from-red-500/20 to-pink-500/20 hover:from-red-500/30 hover:to-pink-500/30 rounded-lg border border-red-500/30 hover:border-red-500/50 text-red-300 hover:text-white transition-all text-sm font-semibold"
-                  data-testid="button-cancel-new-batch"
-                >
-                  Cancel Batch
-                </button>
-                <button
-                  className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold rounded-lg border border-purple-400/30 transition-all shadow-lg hover:shadow-purple-500/50 text-sm"
-                  data-testid="button-create-batch"
-                >
-                  Create Batch
-                </button>
               </div>
             </div>
             
-            {/* Completion Bar */}
-            <div className="relative mb-6">
-              <div className="border-t border-purple-500/30"></div>
-              <div 
-                className="absolute top-0 left-0 h-px bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300"
-                style={{ width: `${(getCompletedBatchFieldsCount() / 16) * 100}%` }}
-              ></div>
+            {/* Completion Bar - 16 segments */}
+            <div className="px-4 pb-2">
+              <div className="relative flex gap-0 h-px">
+                {Array.from({ length: 16 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className={`flex-1 transition-colors duration-300`}
+                    style={{ backgroundColor: index < getCompletedBatchFieldsCount() ? 'rgb(168, 85, 247)' : '#D1D5DB' }}
+                  />
+                ))}
+                {getCompletedBatchFieldsCount() > 0 && getCompletedBatchFieldsCount() < 16 && (
+                  <div 
+                    className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full transition-all duration-300"
+                    style={{ 
+                      backgroundColor: 'rgb(168, 85, 247)',
+                      left: `calc(${(getCompletedBatchFieldsCount() / 16) * 100}% - 4px)`
+                    }}
+                  />
+                )}
+              </div>
             </div>
             
-            <div className="space-y-6">
-              {/* Row 1: Batch Info */}
-              <div className="grid grid-cols-4 gap-6">
-                <div className="space-y-2">
-                  <Label className="text-purple-200">Batch Number</Label>
-                  <Input
-                    value={batchNumber}
-                    onChange={(e) => setBatchNumber(e.target.value)}
-                    placeholder=""
-                    data-testid="input-batch-number-dm"
-                    className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-purple-200">Batch Title</Label>
-                  <Input
-                    value={batchTitle}
-                    onChange={(e) => setBatchTitle(e.target.value)}
-                    placeholder=""
-                    data-testid="input-batch-title-dm"
-                    className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-purple-200">10 Year Bond</Label>
-                  <Input
-                    value={tenYearBond}
-                    onChange={(e) => setTenYearBond(e.target.value)}
-                    placeholder=""
-                    data-testid="input-ten-year-bond-dm"
-                    className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-purple-200">Par Rate</Label>
-                  <Input
-                    value={parRate}
-                    onChange={(e) => setParRate(e.target.value)}
-                    placeholder=""
-                    data-testid="input-par-rate-dm"
-                    className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
-                  />
-                </div>
-              </div>
+            <div className="pt-6">
+              {/* Stage: Upload */}
+              {uploadStage === 'upload' && (
+                <div className="space-y-6">
+                  {/* First Row */}
+                  <div className="grid grid-cols-4 gap-6">
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Batch Number</Label>
+                      <Input
+                        value={batchNumber}
+                        onChange={(e) => setBatchNumber(e.target.value)}
+                        placeholder=""
+                        data-testid="input-batch-number-dm"
+                        className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Batch Title</Label>
+                      <Input
+                        value={batchTitle}
+                        onChange={(e) => setBatchTitle(e.target.value)}
+                        placeholder=""
+                        data-testid="input-batch-title-dm"
+                        className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">10 Year Bond</Label>
+                      <Input
+                        value={tenYearBond}
+                        onChange={(e) => setTenYearBond(e.target.value)}
+                        placeholder=""
+                        data-testid="input-ten-year-bond-dm"
+                        className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Par Rate</Label>
+                      <Input
+                        value={parRate}
+                        onChange={(e) => setParRate(e.target.value)}
+                        placeholder=""
+                        data-testid="input-par-rate-dm"
+                        className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                      />
+                    </div>
+                  </div>
 
-              {/* Row 2: Categories & Duration */}
-              <div className="grid grid-cols-4 gap-6">
-                <div className="space-y-2">
-                  <Label className="text-purple-200">Loan Category</Label>
-                  <Select value={category} onValueChange={setCategory}>
-                    <SelectTrigger data-testid="select-category-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="va">VA</SelectItem>
-                      <SelectItem value="va-jumbo">VA Jumbo</SelectItem>
-                      <SelectItem value="conventional">Conventional</SelectItem>
-                      <SelectItem value="conventional-jumbo">Conventional Jumbo</SelectItem>
-                      <SelectItem value="fha">FHA</SelectItem>
-                      <SelectItem value="second-loan">Second Loan</SelectItem>
-                      <SelectItem value="non-qm">Non-QM</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-purple-200">Data Category</Label>
-                  <Select value={dataType} onValueChange={setDataType}>
-                    <SelectTrigger data-testid="select-data-type-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="trigger">Trigger Data</SelectItem>
-                      <SelectItem value="monthly">Monthly Data</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-purple-200">Delivery Speed</Label>
-                  <Select value={delivery} onValueChange={setDelivery}>
-                    <SelectTrigger data-testid="select-delivery-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="mail">Mail</SelectItem>
-                      <SelectItem value="email">Email</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-purple-200">Duration to First Call</Label>
-                  <Input
-                    value={durationToFirstCall}
-                    onChange={(e) => setDurationToFirstCall(e.target.value)}
-                    placeholder=""
-                    className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
-                    data-testid="input-duration-first-call-dm"
-                  />
-                </div>
-              </div>
+                  {/* Second Row */}
+                  <div className="grid grid-cols-4 gap-6">
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Loan Category</Label>
+                      <Select value={category} onValueChange={setCategory}>
+                        <SelectTrigger data-testid="select-category-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="select">Select</SelectItem>
+                          <SelectItem value="va">VA</SelectItem>
+                          <SelectItem value="va-jumbo">VA Jumbo</SelectItem>
+                          <SelectItem value="conventional">Conventional</SelectItem>
+                          <SelectItem value="conventional-jumbo">Conventional Jumbo</SelectItem>
+                          <SelectItem value="fha">FHA</SelectItem>
+                          <SelectItem value="second-loan">Second Loan</SelectItem>
+                          <SelectItem value="non-qm">Non-QM</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Data Category</Label>
+                      <Select value={dataType} onValueChange={setDataType}>
+                        <SelectTrigger data-testid="select-data-type-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="select">Select</SelectItem>
+                          <SelectItem value="trigger">Trigger</SelectItem>
+                          <SelectItem value="monthly">Monthly</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Delivery Speed</Label>
+                      <Select value={delivery} onValueChange={setDelivery}>
+                        <SelectTrigger data-testid="select-delivery-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="select">Select</SelectItem>
+                          <SelectItem value="first-class">First Class</SelectItem>
+                          <SelectItem value="standard">Standard</SelectItem>
+                          <SelectItem value="bulk">Bulk</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Duration to First Call</Label>
+                      <Input
+                        value={durationToFirstCall}
+                        onChange={(e) => setDurationToFirstCall(e.target.value)}
+                        placeholder=""
+                        className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                        data-testid="input-duration-first-call-dm"
+                      />
+                    </div>
+                  </div>
 
-              {/* Row 3: Date Fields */}
-              <div className="grid grid-cols-4 gap-6">
-                <div className="space-y-2">
-                  <Label className="text-purple-200">Data Date</Label>
-                  <Input
-                    value={dataDate}
-                    onChange={(e) => setDataDate(handleDateFormat(e.target.value))}
-                    placeholder="MM/DD/YYYY"
-                    maxLength={10}
-                    className="bg-slate-700/50 border-purple-500/30 text-white placeholder:text-slate-500 focus:border-purple-500"
-                    data-testid="input-data-date-dm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-purple-200">Print Date</Label>
-                  <Input
-                    value={printDate}
-                    onChange={(e) => setPrintDate(handleDateFormat(e.target.value))}
-                    placeholder="MM/DD/YYYY"
-                    maxLength={10}
-                    className="bg-slate-700/50 border-purple-500/30 text-white placeholder:text-slate-500 focus:border-purple-500"
-                    data-testid="input-print-date-dm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-purple-200">Mail Date</Label>
-                  <Input
-                    value={mailDate}
-                    onChange={(e) => setMailDate(handleDateFormat(e.target.value))}
-                    placeholder="MM/DD/YYYY"
-                    maxLength={10}
-                    className="bg-slate-700/50 border-purple-500/30 text-white placeholder:text-slate-500 focus:border-purple-500"
-                    data-testid="input-mail-date-dm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-purple-200">First Call</Label>
-                  <Input
-                    value={firstCallDate}
-                    onChange={(e) => setFirstCallDate(handleDateFormat(e.target.value))}
-                    placeholder="MM/DD/YYYY"
-                    maxLength={10}
-                    className="bg-slate-700/50 border-purple-500/30 text-white placeholder:text-slate-500 focus:border-purple-500"
-                    data-testid="input-first-call-dm"
-                  />
-                </div>
-              </div>
+                  {/* Third Row - Date Fields */}
+                  <div className="grid grid-cols-4 gap-6">
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Data Date</Label>
+                      <Input
+                        value={dataDate}
+                        onChange={(e) => setDataDate(handleDateFormat(e.target.value))}
+                        placeholder="MM/DD/YYYY"
+                        maxLength={10}
+                        className="bg-slate-700/50 border-purple-500/30 text-white placeholder:text-slate-500 focus:border-purple-500"
+                        data-testid="input-data-date-dm"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Print Date</Label>
+                      <Input
+                        value={printDate}
+                        onChange={(e) => setPrintDate(handleDateFormat(e.target.value))}
+                        placeholder="MM/DD/YYYY"
+                        maxLength={10}
+                        className="bg-slate-700/50 border-purple-500/30 text-white placeholder:text-slate-500 focus:border-purple-500"
+                        data-testid="input-print-date-dm"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Mail Date</Label>
+                      <Input
+                        value={mailDate}
+                        onChange={(e) => setMailDate(handleDateFormat(e.target.value))}
+                        placeholder="MM/DD/YYYY"
+                        maxLength={10}
+                        className="bg-slate-700/50 border-purple-500/30 text-white placeholder:text-slate-500 focus:border-purple-500"
+                        data-testid="input-mail-date-dm"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">First Call</Label>
+                      <Input
+                        value={firstCallDate}
+                        onChange={(e) => setFirstCallDate(handleDateFormat(e.target.value))}
+                        placeholder="MM/DD/YYYY"
+                        maxLength={10}
+                        className="bg-slate-700/50 border-purple-500/30 text-white placeholder:text-slate-500 focus:border-purple-500"
+                        data-testid="input-first-call-dm"
+                      />
+                    </div>
+                  </div>
 
-              {/* Separation Line */}
-              <div className="border-t border-purple-500/30"></div>
+                  {/* Separation Line */}
+                  <div className="h-4"></div>
+                  <div style={{ borderTop: '1px solid rgba(168, 85, 247, 0.3)', paddingTop: '24px' }}>
+                    {/* Fourth Row - Vendor Fields */}
+                    <div className="grid grid-cols-4 gap-6">
+                      <div className="space-y-2">
+                        <Label className="text-purple-200">Data Vendor</Label>
+                        <Select value={dataSource} onValueChange={setDataSource}>
+                          <SelectTrigger data-testid="select-data-source-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="select">Select</SelectItem>
+                            <SelectItem value="dlx">DLX</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-purple-200">Print Vendor</Label>
+                        <Select value={printVendor} onValueChange={setPrintVendor}>
+                          <SelectTrigger data-testid="select-print-vendor-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="select">Select</SelectItem>
+                            <SelectItem value="in-house">In House</SelectItem>
+                            <SelectItem value="tbd">TBD</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-purple-200">Mail Vendor</Label>
+                        <Select value={mailVendor} onValueChange={setMailVendor}>
+                          <SelectTrigger data-testid="select-mail-vendor-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="select">Select</SelectItem>
+                            <SelectItem value="in-house">In House</SelectItem>
+                            <SelectItem value="tbd">TBD</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-purple-200">Supply Vendor</Label>
+                        <Select value={supplyVendor} onValueChange={setSupplyVendor}>
+                          <SelectTrigger data-testid="select-supply-vendor-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="select">Select</SelectItem>
+                            <SelectItem value="in-house">In House</SelectItem>
+                            <SelectItem value="tbd">TBD</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
 
-              {/* Row 4: Data Source & Vendors */}
-              <div className="grid grid-cols-4 gap-6">
-                <div className="space-y-2">
-                  <Label className="text-purple-200">Data Source</Label>
-                  <Select value={dataSource} onValueChange={setDataSource}>
-                    <SelectTrigger data-testid="select-data-source-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="tbd">TBD</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-purple-200">Print Vendor</Label>
-                  <Select value={printVendor} onValueChange={setPrintVendor}>
-                    <SelectTrigger data-testid="select-print-vendor-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="tbd">TBD</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-purple-200">Mail Vendor</Label>
-                  <Select value={mailVendor} onValueChange={setMailVendor}>
-                    <SelectTrigger data-testid="select-mail-vendor-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="tbd">TBD</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-purple-200">Supply Vendor</Label>
-                  <Select value={supplyVendor} onValueChange={setSupplyVendor}>
-                    <SelectTrigger data-testid="select-supply-vendor-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="tbd">TBD</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+                  {/* Fifth Row - Cost Fields */}
+                  <div className="grid grid-cols-4 gap-6">
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Data Cost</Label>
+                      <CurrencyInput
+                        value={dataCost}
+                        onChange={setDataCost}
+                        placeholder="$"
+                        id="data-cost-dm"
+                        dataTestId="input-data-cost-dm"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Mail Cost</Label>
+                      <CurrencyInput
+                        value={mailCost}
+                        onChange={setMailCost}
+                        placeholder="$"
+                        id="mail-cost-dm"
+                        dataTestId="input-mail-cost-dm"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Print Cost</Label>
+                      <CurrencyInput
+                        value={printCost}
+                        onChange={setPrintCost}
+                        placeholder="$"
+                        id="print-cost-dm"
+                        dataTestId="input-print-cost-dm"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Supply Cost</Label>
+                      <CurrencyInput
+                        value={supplyCost}
+                        onChange={setSupplyCost}
+                        placeholder="$"
+                        id="supply-cost-dm"
+                        dataTestId="input-supply-cost-dm"
+                      />
+                    </div>
+                  </div>
 
-              {/* Row 5: Costs */}
-              <div className="grid grid-cols-4 gap-6">
-                <div className="space-y-2">
-                  <Label className="text-purple-200">Data Cost</Label>
-                  <CurrencyInput
-                    value={dataCost}
-                    onChange={setDataCost}
-                    placeholder="$0"
-                    id="data-cost-dm"
-                    dataTestId="input-data-cost-dm"
-                  />
+                  {/* Separation Line and Upload Box - Only show when completion bar is at 100% */}
+                  {getCompletedBatchFieldsCount() === 16 && (
+                    <div style={{ borderTop: '1px solid rgba(168, 85, 247, 0.3)', paddingTop: '24px' }}>
+                      <div className="border-2 border-dashed border-purple-500/30 rounded-lg p-8 text-center hover:border-purple-500/60 transition-colors bg-slate-900/30">
+                        <input
+                          type="file"
+                          accept=".csv"
+                          onChange={handleFileUpload}
+                          className="hidden"
+                          id="csv-upload-dm"
+                          data-testid="input-csv-file-dm"
+                        />
+                        <label htmlFor="csv-upload-dm" className="cursor-pointer">
+                          <Upload className="w-12 h-12 text-purple-400 mx-auto mb-3" />
+                          <p className="text-white mb-1">Click to upload or drag and drop</p>
+                          <p className="text-sm text-green-400">Upload Excel File Format (CSV UTF8) <span className="text-red-400">*</span></p>
+                        </label>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-purple-200">Mail Cost</Label>
-                  <CurrencyInput
-                    value={mailCost}
-                    onChange={setMailCost}
-                    placeholder="$0"
-                    id="mail-cost-dm"
-                    dataTestId="input-mail-cost-dm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-purple-200">Print Cost</Label>
-                  <CurrencyInput
-                    value={printCost}
-                    onChange={setPrintCost}
-                    placeholder="$0"
-                    id="print-cost-dm"
-                    dataTestId="input-print-cost-dm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-purple-200">Supply Cost</Label>
-                  <CurrencyInput
-                    value={supplyCost}
-                    onChange={setSupplyCost}
-                    placeholder="$0"
-                    id="supply-cost-dm"
-                    dataTestId="input-supply-cost-dm"
-                  />
-                </div>
-              </div>
+              )}
 
-              {/* Separation Line and Upload Box - Only show when completion bar is at 100% */}
-              {getCompletedBatchFieldsCount() === 16 && (
-                <div style={{ borderTop: '1px solid rgba(168, 85, 247, 0.3)', paddingTop: '24px' }}>
-                  <div className="border-2 border-dashed border-purple-500/30 rounded-lg p-8 text-center hover:border-purple-500/60 transition-colors bg-slate-900/30">
-                    <input
-                      type="file"
-                      accept=".csv"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          alert(`CSV file "${file.name}" uploaded successfully! (This is a demo - full implementation pending)`);
-                        }
-                      }}
-                      className="hidden"
-                      id="csv-upload-dashboard"
-                      data-testid="input-csv-file-dashboard"
-                    />
-                    <label htmlFor="csv-upload-dashboard" className="cursor-pointer">
-                      <Upload className="w-12 h-12 text-purple-400 mx-auto mb-3" />
-                      <p className="text-white mb-1">Click to upload or drag and drop</p>
-                      <p className="text-sm text-green-400">Upload Excel File Format (CSV UTF8) <span className="text-red-400">*</span></p>
-                    </label>
+              {/* Stage: Column Mapping */}
+              {uploadStage === 'mapping' && (
+                <div className="space-y-6">
+                  <div className="p-4 bg-purple-500/10 border border-purple-500/20 rounded-lg">
+                    <div className="flex items-start">
+                      <FileText className="w-5 h-5 text-purple-400 mt-0.5 mr-3" />
+                      <div>
+                        <p className="text-sm text-purple-200">
+                          We've auto-detected some matches. Please verify your CSV columns to required fields.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    {requiredFields.map(field => (
+                      <Card key={field.key} className="bg-slate-700/30 border-purple-500/20">
+                        <CardContent className="pt-4">
+                          <div className="flex items-start justify-between mb-2">
+                            <div>
+                              <Label className="text-sm font-medium text-purple-200">
+                                {field.label} <span className="text-red-400">*</span>
+                              </Label>
+                            </div>
+                            {columnMapping[field.key] && (
+                              <CheckCircle className="w-5 h-5 text-green-500" />
+                            )}
+                          </div>
+                          <Select
+                            value={columnMapping[field.key]}
+                            onValueChange={(value) => handleMappingChange(field.key, value)}
+                          >
+                            <SelectTrigger data-testid={`select-${field.key}-dm`} className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
+                              <SelectValue placeholder="-- Select Column --" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {detectedColumns.map(col => (
+                                <SelectItem key={col} value={col}>{col}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+
+                  <Card className="bg-purple-500/10 border-purple-500/20">
+                    <CardContent className="pt-4">
+                      <h4 className="text-sm font-medium text-purple-200 mb-2">Additional Columns</h4>
+                      <p className="text-xs text-purple-300">
+                        All other columns will be preserved: {detectedColumns.filter(col => !Object.values(columnMapping).includes(col)).join(', ') || 'None'}
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  {error && (
+                    <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center text-sm text-red-400">
+                      <AlertCircle className="w-4 h-4 mr-2" />
+                      {error}
+                    </div>
+                  )}
+
+                  <div className="flex gap-3">
+                    <Button 
+                      onClick={handleConfirmMapping} 
+                      data-testid="button-continue-preview-dm"
+                      className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500"
+                    >
+                      Continue to Preview
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={handleCancel} 
+                      data-testid="button-cancel-mapping-dm"
+                      className="border-purple-500/30 text-purple-300 hover:bg-purple-500/10"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Stage: Preview */}
+              {uploadStage === 'preview' && csvData && (
+                <div className="space-y-6">
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-white">Preview Mapped Data</h3>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowPreview(!showPreview)}
+                        data-testid="button-toggle-preview-dm"
+                        className="text-purple-300 hover:text-white hover:bg-purple-500/20"
+                      >
+                        {showPreview ? <ChevronUp className="w-4 h-4 mr-1" /> : <ChevronDown className="w-4 h-4 mr-1" />}
+                        {showPreview ? 'Hide' : 'Show'} Preview
+                      </Button>
+                    </div>
+
+                    {showPreview && (
+                      <div className="overflow-x-auto border border-purple-500/30 rounded-lg">
+                        <table className="min-w-full divide-y divide-purple-500/20">
+                          <thead className="bg-purple-500/10">
+                            <tr>
+                              {requiredFields.map(field => (
+                                <th key={field.key} className="px-4 py-3 text-left text-xs font-medium uppercase text-purple-200">
+                                  {field.label}
+                                </th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-purple-500/10">
+                            {previewData.map((row, idx) => (
+                              <tr key={idx}>
+                                {requiredFields.map(field => (
+                                  <td key={field.key} className="px-4 py-3 text-sm text-purple-100">
+                                    {row[columnMapping[field.key]] || '-'}
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+
+                    <p className="text-sm text-purple-300 mt-3">
+                      Showing first 5 of {csvData.length} records
+                    </p>
+                  </div>
+
+                  <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+                    <div className="flex items-start">
+                      <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 mr-3" />
+                      <div>
+                        <p className="text-sm font-medium text-green-400">Ready to Create</p>
+                        <p className="text-sm text-purple-200 mt-1">
+                          Column mapping complete. Click Create Batch to save.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {error && (
+                    <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center text-sm text-red-400">
+                      <AlertCircle className="w-4 h-4 mr-2" />
+                      {error}
+                    </div>
+                  )}
+
+                  <div className="flex gap-3">
+                    <Button 
+                      onClick={handleCreateBatch} 
+                      data-testid="button-create-batch-dm"
+                      className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500"
+                    >
+                      Create Batch
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={handleCancel} 
+                      data-testid="button-cancel-preview-dm"
+                      className="border-purple-500/30 text-purple-300 hover:bg-purple-500/10"
+                    >
+                      Cancel
+                    </Button>
                   </div>
                 </div>
               )}
@@ -3085,6 +3262,73 @@ export default function AdminSnapshot() {
                 data-testid="button-close-states-dialog"
               >
                 Close
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Cancel New Batch Confirmation Dialog */}
+        <Dialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
+          <DialogContent className="bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-white">Cancel new batch?</DialogTitle>
+            </DialogHeader>
+            <div className="flex justify-end gap-2 mt-4">
+              <Button
+                variant="outline"
+                onClick={() => setCancelDialogOpen(false)}
+                data-testid="button-go-back"
+                className="border-purple-500/30 text-purple-300 hover:bg-purple-500/10"
+              >
+                Go Back
+              </Button>
+              <Button
+                onClick={() => {
+                  setCancelDialogOpen(false);
+                  resetForm();
+                }}
+                className="bg-red-600 hover:bg-red-700 text-white border-0"
+                data-testid="button-yes-cancel"
+              >
+                Yes
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Incomplete Fields Warning Dialog */}
+        <Dialog open={incompleteFieldsDialog} onOpenChange={setIncompleteFieldsDialog}>
+          <DialogContent className="bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-white">Incomplete Required Fields</DialogTitle>
+            </DialogHeader>
+            <p className="text-purple-200 pt-2">Please complete all 16 required fields before uploading a CSV file.</p>
+            <div className="flex justify-end gap-2 mt-4">
+              <Button
+                onClick={() => setIncompleteFieldsDialog(false)}
+                data-testid="button-ok-incomplete-fields"
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white"
+              >
+                OK
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* No States Selected Warning Dialog */}
+        <Dialog open={noStatesWarningDialog} onOpenChange={setNoStatesWarningDialog}>
+          <DialogContent className="bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-white">No States Selected</DialogTitle>
+            </DialogHeader>
+            <p className="text-purple-200 pt-2">Please select at least one state before uploading a CSV file.</p>
+            <div className="flex justify-end gap-2 mt-4">
+              <Button
+                onClick={() => setNoStatesWarningDialog(false)}
+                data-testid="button-ok-no-states"
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white"
+              >
+                OK
               </Button>
             </div>
           </DialogContent>
