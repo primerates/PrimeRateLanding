@@ -128,7 +128,12 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 **Transaction Attachments System**: Upload and manage receipts/invoices for expense and revenue transactions
   - File upload support: PDF, JPG, PNG (max 5MB)
   - Drag-and-drop or browse file selection
-  - Attachment count badges on transaction rows
+  - **Visual Indicators**: Paperclip icon column in transaction tables showing:
+    - Clickable paperclip icon when attachments exist
+    - "PDF" label for PDF attachments
+    - Count badge for multiple attachments
+    - Direct access to Manage Attachments dialog
+  - Attachment count badges on action menu buttons
   - Download and delete functionality
   - Secure storage with base64 encoding
   - API Endpoints:

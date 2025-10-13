@@ -2900,6 +2900,9 @@ export default function AdminSnapshot() {
                           <ArrowUpDown className="w-4 h-4" />
                         </div>
                       </th>
+                      <th className="text-center text-purple-300 font-semibold py-3 px-2">
+                        <Paperclip className="w-4 h-4 mx-auto" />
+                      </th>
                       <th className="text-left text-purple-300 font-semibold py-3 px-2">
                         Actions
                       </th>
@@ -2920,6 +2923,16 @@ export default function AdminSnapshot() {
                         <td className="py-3 px-2 text-purple-200">{entry.paidTo}</td>
                         <td className="py-3 px-2 text-purple-200">{entry.paidWith}</td>
                         <td className="py-3 px-2 text-white">{entry.expense}</td>
+                        <td className="py-3 px-2 text-center">
+                          <AttachmentIndicator 
+                            transactionId={entry.id} 
+                            transactionType="expense"
+                            onOpenDialog={() => {
+                              setSelectedTransaction({ id: entry.id, type: 'expense' });
+                              setShowAttachmentsDialog(true);
+                            }}
+                          />
+                        </td>
                         <td className="py-3 px-2 relative">
                           <div className="relative inline-block">
                             <button
@@ -3243,6 +3256,9 @@ export default function AdminSnapshot() {
                           <ArrowUpDown className="w-4 h-4" />
                         </div>
                       </th>
+                      <th className="text-center text-purple-300 font-semibold py-3 px-2">
+                        <Paperclip className="w-4 h-4 mx-auto" />
+                      </th>
                       <th className="text-left text-purple-300 font-semibold py-3 px-2">
                         Actions
                       </th>
@@ -3263,6 +3279,16 @@ export default function AdminSnapshot() {
                         <td className="py-3 px-2 text-purple-200">{entry.paymentFrom}</td>
                         <td className="py-3 px-2 text-purple-200">{entry.paymentForm}</td>
                         <td className="py-3 px-2 text-white">{entry.revenue}</td>
+                        <td className="py-3 px-2 text-center">
+                          <AttachmentIndicator 
+                            transactionId={entry.id} 
+                            transactionType="revenue"
+                            onOpenDialog={() => {
+                              setSelectedTransaction({ id: entry.id, type: 'revenue' });
+                              setShowAttachmentsDialog(true);
+                            }}
+                          />
+                        </td>
                         <td className="py-3 px-2 relative">
                           <div className="relative inline-block">
                             <button
@@ -3715,6 +3741,54 @@ export default function AdminSnapshot() {
         />
       </div>
     </div>
+  );
+}
+
+function AttachmentIndicator({ 
+  transactionId, 
+  transactionType,
+  onOpenDialog
+}: { 
+  transactionId: string | number; 
+  transactionType: 'expense' | 'revenue';
+  onOpenDialog: () => void;
+}) {
+  const { data: attachments = [], isLoading } = useQuery({
+    queryKey: ['/api/transactions', transactionType, transactionId, 'attachments'],
+    queryFn: async () => {
+      const res = await fetch(`/api/transactions/${transactionId}/attachments`);
+      if (!res.ok) throw new Error('Failed to fetch attachments');
+      return res.json();
+    },
+  });
+
+  if (isLoading) return <div className="w-8 h-8"></div>;
+  if (attachments.length === 0) return <div className="w-8 h-8"></div>;
+
+  // Get file type icon for first attachment
+  const firstAttachment = attachments[0];
+  const isPDF = firstAttachment?.fileType?.includes('pdf');
+  
+  return (
+    <button
+      onClick={onOpenDialog}
+      className="group inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors cursor-pointer"
+      data-testid={`button-attachment-indicator-${transactionId}`}
+    >
+      <div className="relative">
+        <Paperclip className="w-5 h-5" />
+        {attachments.length > 1 && (
+          <span className="absolute -top-1 -right-1 bg-purple-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-semibold">
+            {attachments.length}
+          </span>
+        )}
+      </div>
+      {isPDF && (
+        <span className="text-xs font-semibold text-purple-400 group-hover:text-purple-300">
+          PDF
+        </span>
+      )}
+    </button>
   );
 }
 
