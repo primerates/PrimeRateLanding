@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tooltip as TooltipComponent, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 // US States list
 const US_STATES = [
@@ -127,6 +128,7 @@ export default function AdminSnapshot() {
   const [parRateAbove, setParRateAbove] = useState('');
   const [dataCategory, setDataCategory] = useState('Select');
   const [batchResults, setBatchResults] = useState<'show-all' | 'profitable' | 'loss'>('show-all');
+  const [showBatchWarning, setShowBatchWarning] = useState(false);
   
   // Create New Batch card state (only shown when categoryFilter is 'direct-mail')
   const [showCreateBatch, setShowCreateBatch] = useState(false);
@@ -977,7 +979,13 @@ export default function AdminSnapshot() {
                 <TooltipComponent>
                   <TooltipTrigger asChild>
                     <button
-                      onClick={() => setIsQueryCardMinimized(!isQueryCardMinimized)}
+                      onClick={() => {
+                        if (showCreateBatch && isQueryCardMinimized) {
+                          setShowBatchWarning(true);
+                        } else {
+                          setIsQueryCardMinimized(!isQueryCardMinimized);
+                        }
+                      }}
                       className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
                       data-testid="button-toggle-query-card"
                     >
@@ -2451,6 +2459,27 @@ export default function AdminSnapshot() {
             </div>
           </div>
         )}
+
+        {/* Batch Warning Dialog */}
+        <Dialog open={showBatchWarning} onOpenChange={setShowBatchWarning}>
+          <DialogContent className="bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-white">Batch Card Open</DialogTitle>
+              <DialogDescription className="text-purple-200 pt-2">
+                Please create or cancel the open batch card first
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-end mt-4">
+              <Button
+                onClick={() => setShowBatchWarning(false)}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white"
+                data-testid="button-close-batch-warning"
+              >
+                OK
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
