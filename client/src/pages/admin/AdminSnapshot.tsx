@@ -3756,9 +3756,10 @@ function AttachmentIndicator({
   const { data: attachments = [], isLoading } = useQuery({
     queryKey: ['/api/transactions', transactionType, transactionId, 'attachments'],
     queryFn: async () => {
-      const res = await fetch(`/api/transactions/${transactionId}/attachments`);
+      const res = await fetch(`/api/transactions/${transactionId}/attachments?transactionType=${transactionType}`);
       if (!res.ok) throw new Error('Failed to fetch attachments');
-      return res.json();
+      const result = await res.json();
+      return result.data || [];
     },
   });
 
@@ -3802,9 +3803,10 @@ function AttachmentCountBadge({
   const { data: attachments = [], isLoading } = useQuery({
     queryKey: ['/api/transactions', transactionType, transactionId, 'attachments'],
     queryFn: async () => {
-      const res = await fetch(`/api/transactions/${transactionId}/attachments`);
+      const res = await fetch(`/api/transactions/${transactionId}/attachments?transactionType=${transactionType}`);
       if (!res.ok) throw new Error('Failed to fetch attachments');
-      return res.json();
+      const result = await res.json();
+      return result.data || [];
     },
   });
 
@@ -3837,9 +3839,10 @@ function AttachmentsDialog({
   const { data: attachments = [], isLoading, refetch } = useQuery({
     queryKey: ['/api/transactions', transactionType, transactionId, 'attachments'],
     queryFn: async () => {
-      const res = await fetch(`/api/transactions/${transactionId}/attachments`);
+      const res = await fetch(`/api/transactions/${transactionId}/attachments?transactionType=${transactionType}`);
       if (!res.ok) throw new Error('Failed to fetch attachments');
-      return res.json();
+      const result = await res.json();
+      return result.data || [];
     },
     enabled: open && !!transactionId,
   });
