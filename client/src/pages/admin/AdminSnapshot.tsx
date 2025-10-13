@@ -1131,15 +1131,15 @@ export default function AdminSnapshot() {
               <select 
                 value={timeFilter}
                 onChange={(e) => setTimeFilter(e.target.value)}
-                className="bg-transparent text-white px-3 py-1 rounded-lg focus:outline-none transition-colors cursor-pointer"
+                className="bg-slate-700/50 text-white px-3 py-1 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors cursor-pointer"
                 data-testid="select-time-filter"
               >
-                <option value="today">Today</option>
-                <option value="mtd">MTD</option>
-                <option value="ytd">YTD</option>
-                <option value="fromDate">From Date</option>
-                <option value="toDate">To Date</option>
-                <option value="compare">Compare</option>
+                <option value="today" className="bg-slate-800 text-white">Today</option>
+                <option value="mtd" className="bg-slate-800 text-white">MTD</option>
+                <option value="ytd" className="bg-slate-800 text-white">YTD</option>
+                <option value="fromDate" className="bg-slate-800 text-white">From Date</option>
+                <option value="toDate" className="bg-slate-800 text-white">To Date</option>
+                <option value="compare" className="bg-slate-800 text-white">Compare</option>
               </select>
               
               {/* Date input fields for From Date and To Date */}
