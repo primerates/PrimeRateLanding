@@ -4,7 +4,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { queryClient } from '@/lib/queryClient';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Monitor, ChevronDown, ChevronUp, Upload, CheckCircle, AlertCircle, FileText, Paperclip, Download, Trash2, Camera } from 'lucide-react';
+import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Monitor, ChevronDown, ChevronUp, Upload, CheckCircle, AlertCircle, FileText, Paperclip, Download, Trash2, Camera, Phone, Mail, Briefcase, Calendar, Shield } from 'lucide-react';
 import { RevenueSourcesChart } from '@/components/dashboard/RevenueSourcesChart';
 import { ExpenseBreakdownChart } from '@/components/dashboard/ExpenseBreakdownChart';
 import { DashboardFilters } from '@/components/dashboard/DashboardFilters';
@@ -149,6 +149,32 @@ export default function AdminSnapshot() {
   const [screenshareLoading, setScreenshareLoading] = useState(false);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
   const [showRevenueForm, setShowRevenueForm] = useState(false);
+  const [showStaffForm, setShowStaffForm] = useState(false);
+  
+  // Staff form state
+  const [staffFirstName, setStaffFirstName] = useState('');
+  const [staffLastName, setStaffLastName] = useState('');
+  const [staffPhone, setStaffPhone] = useState('');
+  const [staffEmail, setStaffEmail] = useState('');
+  const [emergencyContactName, setEmergencyContactName] = useState('');
+  const [emergencyPhone, setEmergencyPhone] = useState('');
+  const [payrollType, setPayrollType] = useState('');
+  const [level, setLevel] = useState('');
+  const [role, setRole] = useState('');
+  const [authorization, setAuthorization] = useState('');
+  const [access, setAccess] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [backgroundCheck, setBackgroundCheck] = useState('');
+  const [references, setReferences] = useState('');
+  const [creditReview, setCreditReview] = useState('');
+  const [identification, setIdentification] = useState('');
+  const [workAuthorization, setWorkAuthorization] = useState('');
+  const [drugScreening, setDrugScreening] = useState('');
+  const [employmentAgreement, setEmploymentAgreement] = useState('');
+  const [policy, setPolicy] = useState('');
+  const [ndaAgreement, setNdaAgreement] = useState('');
+  
   const [isRevenueFormMinimized, setIsRevenueFormMinimized] = useState(false);
   const [isExpenseTableMinimized, setIsExpenseTableMinimized] = useState(false);
   const [areChartsMinimized, setAreChartsMinimized] = useState(false);
@@ -1366,6 +1392,400 @@ export default function AdminSnapshot() {
             </>
           )}
         </div>
+
+        {/* Staff Form Cards - Only shown when Staff category is selected and Add Entry is clicked */}
+        {categoryFilter === 'staff' && showStaffForm && (
+          <>
+            {/* Staff Information Card */}
+            <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 rounded-lg bg-purple-500/20 border border-purple-500/30">
+                  <User className="w-5 h-5 text-purple-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">Staff Information</h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">
+                    First Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={staffFirstName}
+                    onChange={(e) => setStaffFirstName(e.target.value)}
+                    placeholder="Enter first name"
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">
+                    Last Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={staffLastName}
+                    onChange={(e) => setStaffLastName(e.target.value)}
+                    placeholder="Enter last name"
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 flex items-center gap-2 text-purple-300">
+                    <Phone className="w-4 h-4" />
+                    Phone *
+                  </label>
+                  <input
+                    type="text"
+                    value={staffPhone}
+                    onChange={(e) => setStaffPhone(e.target.value)}
+                    placeholder="(555) 123-4567"
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 flex items-center gap-2 text-purple-300">
+                    <Mail className="w-4 h-4" />
+                    Email *
+                  </label>
+                  <input
+                    type="email"
+                    value={staffEmail}
+                    onChange={(e) => setStaffEmail(e.target.value)}
+                    placeholder="email@company.com"
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Emergency Contact Card */}
+            <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 rounded-lg bg-red-500/20 border border-red-500/30">
+                  <AlertCircle className="w-5 h-5 text-red-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">Emergency Contact</h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">
+                    Emergency Contact Name
+                  </label>
+                  <input
+                    type="text"
+                    value={emergencyContactName}
+                    onChange={(e) => setEmergencyContactName(e.target.value)}
+                    placeholder="Contact name"
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">
+                    Emergency Phone
+                  </label>
+                  <input
+                    type="text"
+                    value={emergencyPhone}
+                    onChange={(e) => setEmergencyPhone(e.target.value)}
+                    placeholder="(555) 123-4567"
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Scope & Permissions Card */}
+            <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 rounded-lg bg-blue-500/20 border border-blue-500/30">
+                  <Briefcase className="w-5 h-5 text-blue-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">Scope & Permissions</h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">
+                    Payroll Type
+                  </label>
+                  <select 
+                    value={payrollType}
+                    onChange={(e) => setPayrollType(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  >
+                    <option value="">Select</option>
+                    <option value="w2">W2</option>
+                    <option value="1099">1099</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">
+                    Level
+                  </label>
+                  <select 
+                    value={level}
+                    onChange={(e) => setLevel(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  >
+                    <option value="">Select</option>
+                    <option value="company">Company</option>
+                    <option value="branch">Branch</option>
+                    <option value="partner">Partner</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">
+                    Role
+                  </label>
+                  <select 
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  >
+                    <option value="">Select</option>
+                    <option value="mlo">MLO</option>
+                    <option value="processor">Processor</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">
+                    Authorization
+                  </label>
+                  <select 
+                    value={authorization}
+                    onChange={(e) => setAuthorization(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  >
+                    <option value="">Select</option>
+                    <option value="company">Company</option>
+                    <option value="department">Department</option>
+                    <option value="team">Team</option>
+                    <option value="pipeline">Pipeline</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">
+                    Access
+                  </label>
+                  <select 
+                    value={access}
+                    onChange={(e) => setAccess(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  >
+                    <option value="">Select</option>
+                    <option value="mlo">MLO</option>
+                    <option value="processor">Processor</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* HR & Compliance Card */}
+            <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 rounded-lg bg-green-500/20 border border-green-500/30">
+                  <FileText className="w-5 h-5 text-green-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">HR & Compliance</h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label className="block text-sm font-medium mb-2 flex items-center gap-2 text-purple-300">
+                    <Calendar className="w-4 h-4" />
+                    Start Date
+                  </label>
+                  <input
+                    type="text"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    placeholder="MM/DD/YYYY"
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 flex items-center gap-2 text-purple-300">
+                    <Calendar className="w-4 h-4" />
+                    End Date
+                  </label>
+                  <input
+                    type="text"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    placeholder="MM/DD/YYYY"
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500 focus:outline-none transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2 flex items-center gap-2 text-purple-300">
+                    <Shield className="w-4 h-4" />
+                    Background Check
+                  </label>
+                  <select 
+                    value={backgroundCheck}
+                    onChange={(e) => setBackgroundCheck(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  >
+                    <option value="">Select</option>
+                    <option value="pending">Pending</option>
+                    <option value="cleared">Cleared</option>
+                    <option value="failed">Failed</option>
+                    <option value="na">Not Applicable</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">
+                    References
+                  </label>
+                  <select 
+                    value={references}
+                    onChange={(e) => setReferences(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  >
+                    <option value="">Select</option>
+                    <option value="pending">Pending</option>
+                    <option value="cleared">Cleared</option>
+                    <option value="failed">Failed</option>
+                    <option value="na">Not Applicable</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">
+                    Credit Review
+                  </label>
+                  <select 
+                    value={creditReview}
+                    onChange={(e) => setCreditReview(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  >
+                    <option value="">Select</option>
+                    <option value="pending">Pending</option>
+                    <option value="cleared">Cleared</option>
+                    <option value="failed">Failed</option>
+                    <option value="na">Not Applicable</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">
+                    Identification
+                  </label>
+                  <select 
+                    value={identification}
+                    onChange={(e) => setIdentification(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  >
+                    <option value="">Select</option>
+                    <option value="pending">Pending</option>
+                    <option value="cleared">Cleared</option>
+                    <option value="failed">Failed</option>
+                    <option value="na">Not Applicable</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">
+                    Work Authorization
+                  </label>
+                  <select 
+                    value={workAuthorization}
+                    onChange={(e) => setWorkAuthorization(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  >
+                    <option value="">Select</option>
+                    <option value="pending">Pending</option>
+                    <option value="cleared">Cleared</option>
+                    <option value="failed">Failed</option>
+                    <option value="na">Not Applicable</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">
+                    Drug Screening
+                  </label>
+                  <select 
+                    value={drugScreening}
+                    onChange={(e) => setDrugScreening(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  >
+                    <option value="">Select</option>
+                    <option value="pending">Pending</option>
+                    <option value="cleared">Cleared</option>
+                    <option value="failed">Failed</option>
+                    <option value="na">Not Applicable</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">
+                    Employment Agreement
+                  </label>
+                  <select 
+                    value={employmentAgreement}
+                    onChange={(e) => setEmploymentAgreement(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  >
+                    <option value="">Select</option>
+                    <option value="pending">Pending</option>
+                    <option value="signed">Signed</option>
+                    <option value="na">Not Applicable</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">
+                    Policy
+                  </label>
+                  <select 
+                    value={policy}
+                    onChange={(e) => setPolicy(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  >
+                    <option value="">Select</option>
+                    <option value="pending">Pending</option>
+                    <option value="cleared">Cleared</option>
+                    <option value="failed">Failed</option>
+                    <option value="na">Not Applicable</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-purple-300">
+                    NDA Agreement
+                  </label>
+                  <select 
+                    value={ndaAgreement}
+                    onChange={(e) => setNdaAgreement(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-lg border bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 focus:outline-none transition-colors"
+                  >
+                    <option value="">Select</option>
+                    <option value="pending">Pending</option>
+                    <option value="cleared">Cleared</option>
+                    <option value="failed">Failed</option>
+                    <option value="na">Not Applicable</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Second Card - Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -3283,6 +3703,25 @@ export default function AdminSnapshot() {
                       </div>
                     </button>
                   </>
+                ) : categoryFilter === 'staff' ? (
+                  <button
+                    onClick={() => {
+                      setShowStaffForm(true);
+                      setIsFiltersMinimized(true); // Minimize Performance card
+                      setAreChartsMinimized(true); // Minimize Charts
+                      setShowAddModal(false);
+                    }}
+                    className="w-full p-6 bg-gradient-to-br from-purple-500/20 to-indigo-600/20 hover:from-purple-500/30 hover:to-indigo-600/30 rounded-xl border border-purple-500/30 hover:border-purple-500/50 transition-all group"
+                    data-testid="button-add-staff"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="text-left">
+                        <h3 className="text-xl font-bold text-white mb-1">Add Staff Member</h3>
+                        <p className="text-purple-300 text-sm">Add new employee to the team</p>
+                      </div>
+                      <User className="w-8 h-8 text-purple-400 group-hover:scale-110 transition-transform" />
+                    </div>
+                  </button>
                 ) : (
                   <button
                     onClick={() => {

@@ -1,0 +1,565 @@
+import React, { useState } from 'react';
+import { User, Briefcase, FileText, X, AlertCircle, Shield, Calendar, Phone, Mail } from 'lucide-react';
+
+const StaffFormDesign = () => {
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  return (
+    <div className={`min-h-screen p-6 transition-colors duration-300 ${
+      isDarkMode 
+        ? 'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900' 
+        : 'bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50'
+    }`}>
+      <div className="max-w-6xl mx-auto space-y-6">
+        
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className={`text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+              Add New Staff Member
+            </h1>
+            <p className={isDarkMode ? 'text-purple-300' : 'text-purple-600'}>
+              Complete staff onboarding information
+            </p>
+          </div>
+          <button className={`p-2 rounded-lg transition-colors ${
+            isDarkMode 
+              ? 'text-purple-300 hover:text-white hover:bg-purple-500/20' 
+              : 'text-purple-600 hover:text-purple-900 hover:bg-purple-100'
+          }`}>
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+
+        {/* Staff Information Section */}
+        <div className={`backdrop-blur-xl rounded-2xl p-6 border shadow-2xl ${
+          isDarkMode 
+            ? 'bg-slate-800/50 border-purple-500/20' 
+            : 'bg-white/80 border-purple-200'
+        }`}>
+          <div className="flex items-center gap-3 mb-6">
+            <div className={`p-2 rounded-lg ${
+              isDarkMode 
+                ? 'bg-purple-500/20 border border-purple-500/30' 
+                : 'bg-purple-100 border border-purple-200'
+            }`}>
+              <User className={`w-5 h-5 ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`} />
+            </div>
+            <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+              Staff Information
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                First Name *
+              </label>
+              <input
+                type="text"
+                placeholder="Enter first name"
+                className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500 placeholder-slate-400'
+                }`}
+              />
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                Last Name *
+              </label>
+              <input
+                type="text"
+                placeholder="Enter last name"
+                className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500 placeholder-slate-400'
+                }`}
+              />
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 flex items-center gap-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                <Phone className="w-4 h-4" />
+                Phone *
+              </label>
+              <input
+                type="text"
+                placeholder="(555) 123-4567"
+                className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500 placeholder-slate-400'
+                }`}
+              />
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 flex items-center gap-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                <Mail className="w-4 h-4" />
+                Email *
+              </label>
+              <input
+                type="email"
+                placeholder="email@company.com"
+                className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500 placeholder-slate-400'
+                }`}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Emergency Contact Section */}
+        <div className={`backdrop-blur-xl rounded-2xl p-6 border shadow-2xl ${
+          isDarkMode 
+            ? 'bg-slate-800/50 border-purple-500/20' 
+            : 'bg-white/80 border-purple-200'
+        }`}>
+          <div className="flex items-center gap-3 mb-6">
+            <div className={`p-2 rounded-lg ${
+              isDarkMode 
+                ? 'bg-red-500/20 border border-red-500/30' 
+                : 'bg-red-100 border border-red-200'
+            }`}>
+              <AlertCircle className={`w-5 h-5 ${isDarkMode ? 'text-red-400' : 'text-red-600'}`} />
+            </div>
+            <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+              Emergency Contact
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                Emergency Contact Name
+              </label>
+              <input
+                type="text"
+                placeholder="Contact name"
+                className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500 placeholder-slate-400'
+                }`}
+              />
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                Emergency Phone
+              </label>
+              <input
+                type="text"
+                placeholder="(555) 123-4567"
+                className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500 placeholder-slate-400'
+                }`}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Scope & Permissions Section */}
+        <div className={`backdrop-blur-xl rounded-2xl p-6 border shadow-2xl ${
+          isDarkMode 
+            ? 'bg-slate-800/50 border-purple-500/20' 
+            : 'bg-white/80 border-purple-200'
+        }`}>
+          <div className="flex items-center gap-3 mb-6">
+            <div className={`p-2 rounded-lg ${
+              isDarkMode 
+                ? 'bg-blue-500/20 border border-blue-500/30' 
+                : 'bg-blue-100 border border-blue-200'
+            }`}>
+              <Briefcase className={`w-5 h-5 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} />
+            </div>
+            <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+              Scope & Permissions
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                Payroll Type
+              </label>
+              <select className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500'
+                }`}>
+                <option value="">Select</option>
+                <option value="w2">W2</option>
+                <option value="1099">1099</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                Level
+              </label>
+              <select className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500'
+                }`}>
+                <option value="">Select</option>
+                <option value="company">Company</option>
+                <option value="branch">Branch</option>
+                <option value="partner">Partner</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                Role
+              </label>
+              <select className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500'
+                }`}>
+                <option value="">Select</option>
+                <option value="mlo">MLO</option>
+                <option value="processor">Processor</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                Authorization
+              </label>
+              <select className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500'
+                }`}>
+                <option value="">Select</option>
+                <option value="company">Company</option>
+                <option value="department">Department</option>
+                <option value="team">Team</option>
+                <option value="pipeline">Pipeline</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                Access
+              </label>
+              <select className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500'
+                }`}>
+                <option value="">Select</option>
+                <option value="mlo">MLO</option>
+                <option value="processor">Processor</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* HR & Compliance Section */}
+        <div className={`backdrop-blur-xl rounded-2xl p-6 border shadow-2xl ${
+          isDarkMode 
+            ? 'bg-slate-800/50 border-purple-500/20' 
+            : 'bg-white/80 border-purple-200'
+        }`}>
+          <div className="flex items-center gap-3 mb-6">
+            <div className={`p-2 rounded-lg ${
+              isDarkMode 
+                ? 'bg-green-500/20 border border-green-500/30' 
+                : 'bg-green-100 border border-green-200'
+            }`}>
+              <FileText className={`w-5 h-5 ${isDarkMode ? 'text-green-400' : 'text-green-600'}`} />
+            </div>
+            <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+              HR & Compliance
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div>
+              <label className={`block text-sm font-medium mb-2 flex items-center gap-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                <Calendar className="w-4 h-4" />
+                Start Date
+              </label>
+              <input
+                type="text"
+                placeholder="MM/DD/YYYY"
+                className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500 placeholder-slate-400'
+                }`}
+              />
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 flex items-center gap-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                <Calendar className="w-4 h-4" />
+                End Date
+              </label>
+              <input
+                type="text"
+                placeholder="MM/DD/YYYY"
+                className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder-slate-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500 placeholder-slate-400'
+                }`}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className={`block text-sm font-medium mb-2 flex items-center gap-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                <Shield className="w-4 h-4" />
+                Background Check
+              </label>
+              <select className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500'
+                }`}>
+                <option value="">Select</option>
+                <option value="pending">Pending</option>
+                <option value="cleared">Cleared</option>
+                <option value="failed">Failed</option>
+                <option value="na">Not Applicable</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                References
+              </label>
+              <select className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500'
+                }`}>
+                <option value="">Select</option>
+                <option value="pending">Pending</option>
+                <option value="cleared">Cleared</option>
+                <option value="failed">Failed</option>
+                <option value="na">Not Applicable</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                Credit Review
+              </label>
+              <select className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500'
+                }`}>
+                <option value="">Select</option>
+                <option value="pending">Pending</option>
+                <option value="cleared">Cleared</option>
+                <option value="failed">Failed</option>
+                <option value="na">Not Applicable</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                Identification
+              </label>
+              <select className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500'
+                }`}>
+                <option value="">Select</option>
+                <option value="pending">Pending</option>
+                <option value="cleared">Cleared</option>
+                <option value="failed">Failed</option>
+                <option value="na">Not Applicable</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                Work Authorization
+              </label>
+              <select className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500'
+                }`}>
+                <option value="">Select</option>
+                <option value="pending">Pending</option>
+                <option value="cleared">Cleared</option>
+                <option value="failed">Failed</option>
+                <option value="na">Not Applicable</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                Drug Screening
+              </label>
+              <select className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500'
+                }`}>
+                <option value="">Select</option>
+                <option value="pending">Pending</option>
+                <option value="cleared">Cleared</option>
+                <option value="failed">Failed</option>
+                <option value="na">Not Applicable</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                Employment Agreement
+              </label>
+              <select className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500'
+                }`}>
+                <option value="">Select</option>
+                <option value="pending">Pending</option>
+                <option value="signed">Signed</option>
+                <option value="na">Not Applicable</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                Policy
+              </label>
+              <select className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500'
+                }`}>
+                <option value="">Select</option>
+                <option value="pending">Pending</option>
+                <option value="cleared">Cleared</option>
+                <option value="failed">Failed</option>
+                <option value="na">Not Applicable</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                NDA Agreement
+              </label>
+              <select className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500'
+                }`}>
+                <option value="">Select</option>
+                <option value="pending">Pending</option>
+                <option value="cleared">Cleared</option>
+                <option value="failed">Failed</option>
+                <option value="na">Not Applicable</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${
+                isDarkMode ? 'text-purple-300' : 'text-purple-700'
+              }`}>
+                Source
+              </label>
+              <select className={`w-full px-4 py-2.5 rounded-lg border focus:outline-none transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500'
+                    : 'bg-white text-slate-900 border-purple-200 focus:border-purple-500'
+                }`}>
+                <option value="">Select</option>
+                <option value="referral">Referral</option>
+                <option value="repeat">Repeat</option>
+                <option value="indeed">Indeed</option>
+                <option value="ziprecruiter">Zip Recruiter</option>
+                <option value="jobrecruiter">Job Recruiter</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex justify-end gap-3">
+          <button className={`px-6 py-3 rounded-lg border transition-colors font-medium ${
+              isDarkMode
+                ? 'bg-slate-700/50 text-white border-slate-600 hover:bg-slate-700'
+                : 'bg-white text-slate-900 border-slate-300 hover:bg-slate-50'
+            }`}>
+            Cancel
+          </button>
+          <button className={`px-6 py-3 rounded-lg shadow-lg transition-all font-medium ${
+              isDarkMode
+                ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white hover:shadow-purple-500/50'
+                : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white hover:shadow-purple-500/30'
+            }`}>
+            Add Staff Member
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default StaffFormDesign;
