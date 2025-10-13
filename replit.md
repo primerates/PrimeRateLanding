@@ -128,7 +128,7 @@ Comprehensive navigation system with tabs in this order (left to right):
 Features a header with "Back to Dashboard", "Shortcut Menu", "Screenshare", and "Save" options. Its navigation includes "Direct Mail", "Lead Vendor", "Social Media", and "Notes" tabs. The "Direct Mail" tab contains a Query Card for filtering and a Create Batch Card for new campaign setup, supporting 5-row layouts for campaign parameters, vendor details, and cost tracking, along with CSV upload and state selection. Batch details and lists are also managed here.
 
 ### Snapshot Analytics Dashboard
-**Route**: `/admin/reports`
+**Route**: `/admin/dashboard`
 
 **Features**:
 - **Real-time Financial Metrics**: Displays Gross Income, Revenue, and Expense with trend indicators
@@ -138,8 +138,18 @@ Features a header with "Back to Dashboard", "Shortcut Menu", "Screenshare", and 
 - **Drill-down Capabilities**: Click on "Direct Mail" to view state-by-state breakdown and loan program distribution
 - **Visual Design**: Dark gradient theme (slate-900 to purple-900) with glassmorphism cards and animated elements
 
+**Direct Mail Batch Creation** (within Dashboard):
+- **17 Required Fields**: Batch Number, Batch Title, 10 Yr Bond, Par Rate, Category, Data Category, Delivery Speed, Data Date, Data Vendor, Print Vendor, Mail Vendor, Supply Vendor, Data Cost, Mail Cost, Print Cost, Supply Cost, and **States** (mandatory)
+- **States Selection**: Button located in batch card header (above completion bar) opens dialog with US states checkboxes
+- **Completion Bar**: Shows 17 segments tracking field completion progress
+- **CSV Upload**: Three-stage workflow (Upload → Column Mapping → Preview) only appears when all 17 fields are complete
+- **Validation**: States-specific warning shows when no states selected; generic warning shows for other incomplete fields
+- **Auto-mapping**: Fuzzy matching (threshold 0.6) for CSV columns to required fields
+- **Styling**: Purple/pink gradient buttons matching Dashboard theme
+
 **Technology Stack**:
 - Recharts library for data visualization (PieChart, BarChart with responsive containers)
+- Papa Parse for CSV processing with auto-column detection
 - Interactive drill-down with state management
 - Custom tooltips with currency formatting
 - Live status indicator with animation
