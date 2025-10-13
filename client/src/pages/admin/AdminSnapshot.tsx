@@ -28,6 +28,12 @@ interface ColumnMapping {
   zip: string;
 }
 
+interface RequiredField {
+  key: keyof ColumnMapping;
+  label: string;
+  description: string;
+}
+
 // US States list
 const US_STATES = [
   { abbr: 'AL', name: 'Alabama' },
@@ -387,6 +393,267 @@ export default function AdminSnapshot() {
     { label: 'Back to Site', path: '/' },
     { label: 'Log Out', path: '/logout' }
   ];
+
+  const requiredFields: RequiredField[] = [
+    { key: 'reference', label: 'Reference Number', description: 'Unique identifier for tracking' },
+    { key: 'firstName', label: 'First Name', description: 'Client first name' },
+    { key: 'lastName', label: 'Last Name', description: 'Client last name' },
+    { key: 'streetAddress', label: 'Street Address', description: 'Mailing address' },
+    { key: 'city', label: 'City', description: 'City name' },
+    { key: 'state', label: 'State', description: 'State abbreviation' },
+    { key: 'zip', label: 'Zip Code', description: 'Postal code' }
+  ];
+
+  const autoMapColumns = (columns: string[]) => {
+    const mapping: Partial<ColumnMapping> = {};
+    
+    const matchPatterns: Record<keyof ColumnMapping, string[]> = {
+      reference: ['reference', 'ref', 'ref#', 'reference number', 'refnum'],
+      firstName: ['first name', 'firstname', 'first', 'client name', 'clientname'],
+      lastName: ['last name', 'lastname', 'last', 'surname'],
+      streetAddress: ['street address', 'streetaddress', 'address', 'street'],
+      city: ['city'],
+      state: ['state'],
+      zip: ['zip', 'zipcode', 'zip code', 'postal']
+    };
+
+    Object.entries(matchPatterns).forEach(([field, patterns]) => {
+      const match = columns.find(col => {
+        const normalized = col.toLowerCase().trim();
+        return patterns.some(pattern => normalized.includes(pattern));
+      });
+      mapping[field as keyof ColumnMapping] = match || '';
+    });
+
+    setColumnMapping(mapping as ColumnMapping);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check if all required fields are completed
+    if (getCompletedBatchFieldsCount() < 16) {
+      setIncompleteFieldsDialog(true);
+      // Clear the file input
+      e.target.value = '';
+      return;
+    }
+
+    // Check if states are selected
+    if (selectedStates.length === 0) {
+      setNoStatesWarningDialog(true);
+      // Clear the file input
+      e.target.value = '';
+      return;
+    }
+
+    setError('');
+    
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => {
+        if (results.errors.length > 0 && results.data.length === 0) {
+          setError('Error parsing CSV file. Please check the file format.');
+          return;
+        }
+
+        if (results.data.length === 0) {
+          setError('CSV file is empty.');
+          return;
+        }
+
+        // Get column headers - filter out empty column names
+        const allColumns = Object.keys(results.data[0] as any);
+        const columns = allColumns.filter(col => col && col.trim() !== '');
+        
+        setDetectedColumns(columns);
+        setCsvData(results.data);
+        setPreviewData(results.data.slice(0, 5));
+
+        // Auto-detect columns with fuzzy matching
+        autoMapColumns(columns);
+        
+        setUploadStage('mapping');
+      },
+      error: (error) => {
+        setError(`Failed to read file: ${error.message}`);
+      }
+    });
+  };
+
+  const handleMappingChange = (field: keyof ColumnMapping, value: string) => {
+    setColumnMapping(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const validateMapping = () => {
+    const missing = requiredFields.filter(field => !columnMapping[field.key]);
+    if (missing.length > 0) {
+      setError(`Please map the following required fields: ${missing.map(f => f.label).join(', ')}`);
+      return false;
+    }
+    setError('');
+    return true;
+  };
+
+  const handleConfirmMapping = () => {
+    if (validateMapping()) {
+      setUploadStage('preview');
+    }
+  };
+
+  const handleCreateBatch = () => {
+    if (!batchNumber.trim()) {
+      setError('Please enter a batch number');
+      return;
+    }
+    if (!batchTitle.trim()) {
+      setError('Please enter a batch title');
+      return;
+    }
+    if (!csvData) {
+      setError('No data to import');
+      return;
+    }
+
+    // Map the CSV data to our format
+    const mappedData = csvData.map((row: any) => {
+      // Get address components
+      const streetAddress = row[columnMapping.streetAddress] || '';
+      const city = row[columnMapping.city] || '';
+      const state = row[columnMapping.state] || '';
+      const zip = row[columnMapping.zip] || '';
+      
+      // Combine address
+      const addressParts = [streetAddress, city, state, zip].filter(Boolean);
+      const fullAddress = addressParts.join(', ');
+
+      // Get client name (keep last name and first name separate)
+      const firstName = row[columnMapping.firstName] || '';
+      const lastName = row[columnMapping.lastName] || '';
+
+      // Create a copy of row without the mapped columns to avoid duplicates
+      const { 
+        [columnMapping.reference]: _, 
+        [columnMapping.firstName]: __,
+        [columnMapping.lastName]: ___,
+        [columnMapping.streetAddress]: ____,
+        [columnMapping.city]: _____,
+        [columnMapping.state]: ______,
+        [columnMapping.zip]: _______,
+        ...otherColumns 
+      } = row;
+      
+      return {
+        referenceNumber: row[columnMapping.reference] || '',
+        lastName: lastName,
+        firstName: firstName,
+        address: fullAddress,
+        ...otherColumns // Preserve all other original columns (excluding mapped ones)
+      };
+    });
+
+    const newBatch: any = {
+      id: Date.now().toString(),
+      batchNumber: batchNumber,
+      batchTitle: batchTitle,
+      category: category,
+      dataType: dataType,
+      delivery: delivery,
+      mailDate: mailDate,
+      dataDate: dataDate,
+      printDate: printDate,
+      firstCallDate: firstCallDate,
+      durationToFirstCall: durationToFirstCall,
+      dataSource: dataSource,
+      mailVendor: mailVendor,
+      printVendor: printVendor,
+      supplyVendor: supplyVendor,
+      dataCost: dataCost,
+      mailCost: mailCost,
+      printCost: printCost,
+      supplyCost: supplyCost,
+      tenYearBond: tenYearBond,
+      parRate: parRate,
+      states: selectedStates,
+      createdDate: new Date().toISOString(),
+      excelData: mappedData,
+      stats: {
+        totalLeads: mappedData.length,
+        totalQuotes: 0,
+        totalLoanPreps: 0,
+        totalLoans: 0,
+        totalFunded: 0,
+        totalCancelled: 0,
+        totalWithdrawn: 0
+      }
+    };
+
+    const storedBatches = localStorage.getItem('directMailBatches');
+    const batches = storedBatches ? JSON.parse(storedBatches) : [];
+    const updatedBatches = [...batches, newBatch];
+    localStorage.setItem('directMailBatches', JSON.stringify(updatedBatches));
+
+    setUploadStage('success');
+    
+    toast({
+      title: "Batch Created Successfully",
+      description: `${batchNumber} - ${batchTitle} with ${mappedData.length} records`,
+    });
+
+    // Reset after 3 seconds
+    setTimeout(() => {
+      resetForm();
+    }, 3000);
+  };
+
+  const resetForm = () => {
+    setBatchNumber('');
+    setBatchTitle('');
+    setCategory('select');
+    setDataType('select');
+    setDelivery('select');
+    setMailDate('');
+    setDataDate('');
+    setPrintDate('');
+    setFirstCallDate('');
+    setDurationToFirstCall('');
+    setDataSource('select');
+    setMailVendor('select');
+    setPrintVendor('select');
+    setSupplyVendor('select');
+    setDataCost('');
+    setMailCost('');
+    setPrintCost('');
+    setSupplyCost('');
+    setTenYearBond('');
+    setParRate('');
+    setSelectedStates([]);
+    setCsvData(null);
+    setDetectedColumns([]);
+    setPreviewData([]);
+    setColumnMapping({
+      reference: '',
+      firstName: '',
+      lastName: '',
+      streetAddress: '',
+      city: '',
+      state: '',
+      zip: ''
+    });
+    setUploadStage('upload');
+    setError('');
+    setSelectedFile(null);
+    setShowCreateBatch(false);
+  };
+
+  const handleCancel = () => {
+    setCancelDialogOpen(true);
+  };
 
   const handleScreenshare = () => {
     setScreenshareLoading(true);
