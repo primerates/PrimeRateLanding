@@ -302,7 +302,7 @@ export default function AdminSnapshot() {
     }, 1000);
   };
 
-  // Calculate completion count for Create New Batch (20 fields)
+  // Calculate completion count for Create New Batch (16 fields)
   const getCompletedBatchFieldsCount = () => {
     const fields = [
       !!batchNumber && batchNumber.trim() !== '',
@@ -312,11 +312,7 @@ export default function AdminSnapshot() {
       !!category && category !== '' && category !== 'select',
       !!dataType && dataType !== '' && dataType !== 'select',
       !!delivery && delivery !== '' && delivery !== 'select',
-      !!durationToFirstCall && durationToFirstCall.trim() !== '',
       !!dataDate && dataDate.trim() !== '',
-      !!printDate && printDate.trim() !== '',
-      !!mailDate && mailDate.trim() !== '',
-      !!firstCallDate && firstCallDate.trim() !== '',
       !!dataSource && dataSource !== '' && dataSource !== 'select',
       !!printVendor && printVendor !== '' && printVendor !== 'select',
       !!mailVendor && mailVendor !== '' && mailVendor !== 'select',
@@ -1359,7 +1355,10 @@ export default function AdminSnapshot() {
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold text-white">New Batch</h3>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
+                <div className="text-xs text-purple-300">
+                  {getCompletedBatchFieldsCount()} / 16 fields complete
+                </div>
                 <button
                   onClick={() => setShowCreateBatch(false)}
                   className="px-4 py-2 bg-gradient-to-r from-red-500/20 to-pink-500/20 hover:from-red-500/30 hover:to-pink-500/30 rounded-lg border border-red-500/30 hover:border-red-500/50 text-red-300 hover:text-white transition-all text-sm font-semibold"
@@ -1381,11 +1380,8 @@ export default function AdminSnapshot() {
               <div className="border-t border-purple-500/30"></div>
               <div 
                 className="absolute top-0 left-0 h-px bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300"
-                style={{ width: `${(getCompletedBatchFieldsCount() / 20) * 100}%` }}
+                style={{ width: `${(getCompletedBatchFieldsCount() / 16) * 100}%` }}
               ></div>
-              <div className="text-xs text-purple-300 mt-1">
-                {getCompletedBatchFieldsCount()} / 20 fields complete
-              </div>
             </div>
             
             <div className="space-y-6">
@@ -1467,7 +1463,7 @@ export default function AdminSnapshot() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-purple-200">Delivery</Label>
+                  <Label className="text-purple-200">Delivery Speed</Label>
                   <Select value={delivery} onValueChange={setDelivery}>
                     <SelectTrigger data-testid="select-delivery-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
                       <SelectValue placeholder="Select" />
@@ -1635,7 +1631,7 @@ export default function AdminSnapshot() {
               </div>
 
               {/* Separation Line and Upload Box - Only show when completion bar is at 100% */}
-              {getCompletedBatchFieldsCount() === 20 && (
+              {getCompletedBatchFieldsCount() === 16 && (
                 <div style={{ borderTop: '1px solid rgba(168, 85, 247, 0.3)', paddingTop: '24px' }}>
                   <div className="border-2 border-dashed border-purple-500/30 rounded-lg p-8 text-center hover:border-purple-500/60 transition-colors bg-slate-900/30">
                     <input
