@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Client, type InsertClient, type PdfDocument, type InsertPdfDocument } from "@shared/schema";
+import { type User, type InsertUser, type Client, type InsertClient, type PdfDocument, type InsertPdfDocument, type TransactionAttachment, type InsertTransactionAttachment } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 // modify the interface with any CRUD methods
@@ -22,17 +22,24 @@ export interface IStorage {
   getPdfDocument(id: string): Promise<PdfDocument | undefined>;
   getPdfDocuments(clientId?: string): Promise<PdfDocument[]>;
   deletePdfDocument(id: string): Promise<boolean>;
+  
+  // Transaction Attachment methods
+  uploadTransactionAttachment(attachment: InsertTransactionAttachment): Promise<TransactionAttachment>;
+  listTransactionAttachments(transactionId: string, transactionType: string): Promise<TransactionAttachment[]>;
+  deleteTransactionAttachment(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
   private clients: Map<string, Client>;
   private pdfDocuments: Map<string, PdfDocument>;
+  private transactionAttachments: Map<string, TransactionAttachment>;
 
   constructor() {
     this.users = new Map();
     this.clients = new Map();
     this.pdfDocuments = new Map();
+    this.transactionAttachments = new Map();
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -193,6 +200,29 @@ export class MemStorage implements IStorage {
 
   async deletePdfDocument(id: string): Promise<boolean> {
     return this.pdfDocuments.delete(id);
+  }
+
+  // Transaction Attachment methods
+  async uploadTransactionAttachment(attachment: InsertTransactionAttachment): Promise<TransactionAttachment> {
+    const id = randomUUID();
+    const uploadedAt = new Date().toISOString();
+    const transactionAttachment: TransactionAttachment = { 
+      ...attachment, 
+      id,
+      uploadedAt
+    };
+    this.transactionAttachments.set(id, transactionAttachment);
+    return transactionAttachment;
+  }
+
+  async listTransactionAttachments(transactionId: string, transactionType: string): Promise<TransactionAttachment[]> {
+    return Array.from(this.transactionAttachments.values()).filter(
+      attachment => attachment.transactionId === transactionId && attachment.transactionType === transactionType
+    );
+  }
+
+  async deleteTransactionAttachment(id: string): Promise<boolean> {
+    return this.transactionAttachments.delete(id);
   }
 }
 
