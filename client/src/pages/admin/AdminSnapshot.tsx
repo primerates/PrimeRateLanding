@@ -413,17 +413,17 @@ export default function AdminSnapshot() {
                   <User className="h-5 w-5 text-purple-300" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent align="end" className="w-48 bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
                 {dashboardMenuItems.map((item, index) => (
                   <div key={item.path}>
                     <DropdownMenuItem
                       onClick={() => setLocation(item.path)}
-                      className="cursor-pointer hover:!bg-purple-500 hover:!text-white dark:hover:!bg-purple-600"
+                      className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
                       data-testid={`shortcut-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
                     >
                       {item.label}
                     </DropdownMenuItem>
-                    {(index === 4 || index === 8) && <DropdownMenuSeparator />}
+                    {(index === 4 || index === 8) && <DropdownMenuSeparator className="bg-purple-500/30" />}
                   </div>
                 ))}
               </DropdownMenuContent>
