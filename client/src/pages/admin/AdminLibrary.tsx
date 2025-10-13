@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -62,6 +62,30 @@ export default function AdminLibrary() {
   const [toDate, setToDate] = useState('');
   const [isPresent, setIsPresent] = useState(false);
 
+  // Load saved brightness settings when switching to light mode
+  useEffect(() => {
+    if (isLightMode) {
+      const savedPageBrightness = localStorage.getItem('library-page-brightness');
+      const savedCardBrightness = localStorage.getItem('library-card-brightness');
+      if (savedPageBrightness) setPageBrightness(Number(savedPageBrightness));
+      if (savedCardBrightness) setCardBrightness(Number(savedCardBrightness));
+    }
+  }, [isLightMode]);
+
+  // Save brightness settings
+  const handleKeepSettings = () => {
+    localStorage.setItem('library-page-brightness', pageBrightness.toString());
+    localStorage.setItem('library-card-brightness', cardBrightness.toString());
+    // Visual feedback
+    const button = document.querySelector('[data-keep-settings]');
+    if (button) {
+      button.textContent = '✓ Saved';
+      setTimeout(() => {
+        button.textContent = 'Keep';
+      }, 1500);
+    }
+  };
+
   const formatDateOfBirth = (value: string) => {
     const digitsOnly = value.replace(/\D/g, '');
     let formatted = '';
@@ -117,7 +141,9 @@ export default function AdminLibrary() {
     if (pageBrightness >= 40) return 'from-slate-200 via-purple-150 to-slate-300';
     if (pageBrightness >= 25) return 'from-slate-300 via-purple-200 to-slate-400';
     if (pageBrightness >= 15) return 'from-slate-400 via-purple-300 to-slate-500';
-    return 'from-slate-600 via-purple-700 to-slate-700';
+    if (pageBrightness >= 8) return 'from-slate-500 via-purple-400 to-slate-600';
+    if (pageBrightness >= 3) return 'from-slate-600 via-purple-500 to-slate-700';
+    return 'from-slate-700 via-purple-600 to-slate-800';
   };
 
   // Calculate text colors based on PAGE brightness
@@ -205,6 +231,14 @@ export default function AdminLibrary() {
                     data-testid="button-card-picker"
                   >
                     Card
+                  </button>
+                  <button
+                    onClick={handleKeepSettings}
+                    className="px-2 py-1 text-xs font-medium rounded transition-all bg-green-500 text-white hover:bg-green-600 ml-1"
+                    data-testid="button-keep-settings"
+                    data-keep-settings
+                  >
+                    Keep
                   </button>
                 </div>
                 
