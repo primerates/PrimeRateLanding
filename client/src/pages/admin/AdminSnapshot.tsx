@@ -7,6 +7,7 @@ import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft
 export default function AdminSnapshot() {
   const [, setLocation] = useLocation();
   const [entityFilter, setEntityFilter] = useState('all');
+  const [categoryFilter, setCategoryFilter] = useState('financials');
   const [timeFilter, setTimeFilter] = useState('mtd');
   const [revenueDetailView, setRevenueDetailView] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -466,6 +467,20 @@ export default function AdminSnapshot() {
                     <option value="partners">Partners</option>
                   </select>
                 </div>
+                
+                <select 
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                  data-testid="select-category-filter"
+                >
+                  <option value="financials">Financials</option>
+                  <option value="direct-mail">Direct Mail</option>
+                  <option value="lead-vendor">Lead Vendor</option>
+                  <option value="social-media">Social Media</option>
+                  <option value="loan-agent">Loan Agent</option>
+                  <option value="loan-processor">Loan Processor</option>
+                </select>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
