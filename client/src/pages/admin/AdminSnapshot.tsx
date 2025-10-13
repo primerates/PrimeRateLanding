@@ -1358,7 +1358,7 @@ export default function AdminSnapshot() {
         {categoryFilter === 'direct-mail' && showCreateBatch && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-white">Create New Batch</h3>
+              <h3 className="text-xl font-bold text-white">New Batch</h3>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowCreateBatch(false)}
