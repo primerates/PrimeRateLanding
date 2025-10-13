@@ -143,10 +143,10 @@ export default function AdminSnapshot() {
   const [printCost, setPrintCost] = useState('');
   const [supplyCost, setSupplyCost] = useState('');
   const [dataDate, setDataDate] = useState('');
-  const [dataSource, setDataSource] = useState('');
-  const [printVendor, setPrintVendor] = useState('');
-  const [mailVendor, setMailVendor] = useState('');
-  const [supplyVendor, setSupplyVendor] = useState('');
+  const [dataSource, setDataSource] = useState('select');
+  const [printVendor, setPrintVendor] = useState('select');
+  const [mailVendor, setMailVendor] = useState('select');
+  const [supplyVendor, setSupplyVendor] = useState('select');
   const [durationToFirstCall, setDurationToFirstCall] = useState('');
   const [printDate, setPrintDate] = useState('');
   const [mailDate, setMailDate] = useState('');
@@ -302,7 +302,7 @@ export default function AdminSnapshot() {
     }, 1000);
   };
 
-  // Calculate completion count for Create New Batch (21 fields)
+  // Calculate completion count for Create New Batch (20 fields)
   const getCompletedBatchFieldsCount = () => {
     const fields = [
       !!batchNumber && batchNumber.trim() !== '',
@@ -317,15 +317,14 @@ export default function AdminSnapshot() {
       !!printDate && printDate.trim() !== '',
       !!mailDate && mailDate.trim() !== '',
       !!firstCallDate && firstCallDate.trim() !== '',
-      !!dataSource && dataSource.trim() !== '',
-      !!printVendor && printVendor.trim() !== '',
-      !!mailVendor && mailVendor.trim() !== '',
-      !!supplyVendor && supplyVendor.trim() !== '',
+      !!dataSource && dataSource !== '' && dataSource !== 'select',
+      !!printVendor && printVendor !== '' && printVendor !== 'select',
+      !!mailVendor && mailVendor !== '' && mailVendor !== 'select',
+      !!supplyVendor && supplyVendor !== '' && supplyVendor !== 'select',
       !!dataCost && dataCost.trim() !== '',
       !!mailCost && mailCost.trim() !== '',
       !!printCost && printCost.trim() !== '',
-      !!supplyCost && supplyCost.trim() !== '',
-      !!selectedStates && selectedStates.length > 0
+      !!supplyCost && supplyCost.trim() !== ''
     ];
     return fields.filter(Boolean).length;
   };
@@ -1371,22 +1370,22 @@ export default function AdminSnapshot() {
               </div>
             </div>
             
-            {/* Completion Bar - 21 segments */}
+            {/* Completion Bar - 20 segments */}
             <div className="px-0 pb-4">
               <div className="relative flex gap-0 h-1">
-                {Array.from({ length: 21 }).map((_, index) => (
+                {Array.from({ length: 20 }).map((_, index) => (
                   <div
                     key={index}
                     className={`flex-1 transition-colors duration-300`}
                     style={{ backgroundColor: index < getCompletedBatchFieldsCount() ? '#8b5cf6' : '#475569' }}
                   />
                 ))}
-                {getCompletedBatchFieldsCount() > 0 && getCompletedBatchFieldsCount() < 21 && (
+                {getCompletedBatchFieldsCount() > 0 && getCompletedBatchFieldsCount() < 20 && (
                   <div 
                     className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full transition-all duration-300"
                     style={{ 
                       backgroundColor: '#ec4899',
-                      left: `calc(${(getCompletedBatchFieldsCount() / 21) * 100}% - 4px)`
+                      left: `calc(${(getCompletedBatchFieldsCount() / 20) * 100}% - 4px)`
                     }}
                   />
                 )}
@@ -1543,51 +1542,62 @@ export default function AdminSnapshot() {
                 </div>
               </div>
 
+              {/* Separation Line */}
+              <div className="border-t border-purple-500/30"></div>
+
               {/* Row 4: Data Source & Vendors */}
               <div className="grid grid-cols-4 gap-6">
                 <div className="space-y-2">
                   <Label className="text-purple-200">Data Source</Label>
-                  <Input
-                    value={dataSource}
-                    onChange={(e) => setDataSource(e.target.value)}
-                    placeholder=""
-                    className="bg-slate-900/50 border-purple-500/30 text-white placeholder:text-slate-500"
-                    data-testid="input-data-source-dm"
-                  />
+                  <Select value={dataSource} onValueChange={setDataSource}>
+                    <SelectTrigger data-testid="select-data-source-dm" className="bg-slate-900/50 text-white border-purple-500/30 focus:border-purple-500">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      <SelectItem value="tbd">TBD</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-2">
                   <Label className="text-purple-200">Print Vendor</Label>
-                  <Input
-                    value={printVendor}
-                    onChange={(e) => setPrintVendor(e.target.value)}
-                    placeholder=""
-                    className="bg-slate-900/50 border-purple-500/30 text-white placeholder:text-slate-500"
-                    data-testid="input-print-vendor-dm"
-                  />
+                  <Select value={printVendor} onValueChange={setPrintVendor}>
+                    <SelectTrigger data-testid="select-print-vendor-dm" className="bg-slate-900/50 text-white border-purple-500/30 focus:border-purple-500">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      <SelectItem value="tbd">TBD</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-2">
                   <Label className="text-purple-200">Mail Vendor</Label>
-                  <Input
-                    value={mailVendor}
-                    onChange={(e) => setMailVendor(e.target.value)}
-                    placeholder=""
-                    className="bg-slate-900/50 border-purple-500/30 text-white placeholder:text-slate-500"
-                    data-testid="input-mail-vendor-dm"
-                  />
+                  <Select value={mailVendor} onValueChange={setMailVendor}>
+                    <SelectTrigger data-testid="select-mail-vendor-dm" className="bg-slate-900/50 text-white border-purple-500/30 focus:border-purple-500">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      <SelectItem value="tbd">TBD</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-2">
                   <Label className="text-purple-200">Supply Vendor</Label>
-                  <Input
-                    value={supplyVendor}
-                    onChange={(e) => setSupplyVendor(e.target.value)}
-                    placeholder=""
-                    className="bg-slate-900/50 border-purple-500/30 text-white placeholder:text-slate-500"
-                    data-testid="input-supply-vendor-dm"
-                  />
+                  <Select value={supplyVendor} onValueChange={setSupplyVendor}>
+                    <SelectTrigger data-testid="select-supply-vendor-dm" className="bg-slate-900/50 text-white border-purple-500/30 focus:border-purple-500">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      <SelectItem value="tbd">TBD</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
-              {/* Row 5: Costs & States */}
+              {/* Row 5: Costs */}
               <div className="grid grid-cols-4 gap-6">
                 <div className="space-y-2">
                   <Label className="text-purple-200">Data Cost</Label>
@@ -1628,19 +1638,6 @@ export default function AdminSnapshot() {
                     id="supply-cost-dm"
                     dataTestId="input-supply-cost-dm"
                   />
-                </div>
-              </div>
-
-              {/* Row 6: States */}
-              <div className="grid grid-cols-4 gap-6">
-                <div className="space-y-2">
-                  <Label className="text-purple-200">States</Label>
-                  <button
-                    className="w-full h-9 px-3 bg-slate-700/50 text-white border border-purple-500/30 hover:border-purple-500 rounded-md text-left transition-colors"
-                    data-testid="button-states-dashboard"
-                  >
-                    {selectedStates.length > 0 ? `${selectedStates.length} States` : 'Select States'}
-                  </button>
                 </div>
               </div>
 
