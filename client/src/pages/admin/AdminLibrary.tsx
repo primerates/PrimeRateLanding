@@ -408,7 +408,10 @@ export default function AdminLibrary() {
                         id="firstName"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
-                        className={`transition-all placeholder:text-slate-400 ${getInputBackground()}`}
+                        className={isLightMode 
+                          ? 'bg-slate-50 text-slate-900 border-purple-300 focus:border-purple-500 placeholder:text-slate-400'
+                          : 'bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500 placeholder:text-slate-400'
+                        }
                         data-testid="input-firstName"
                       />
                     </div>
