@@ -1,9 +1,102 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Monitor } from 'lucide-react';
+import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Monitor, ChevronDown } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Tooltip as TooltipComponent, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
+
+// US States list
+const US_STATES = [
+  { abbr: 'AL', name: 'Alabama' },
+  { abbr: 'AK', name: 'Alaska' },
+  { abbr: 'AZ', name: 'Arizona' },
+  { abbr: 'AR', name: 'Arkansas' },
+  { abbr: 'CA', name: 'California' },
+  { abbr: 'CO', name: 'Colorado' },
+  { abbr: 'CT', name: 'Connecticut' },
+  { abbr: 'DE', name: 'Delaware' },
+  { abbr: 'FL', name: 'Florida' },
+  { abbr: 'GA', name: 'Georgia' },
+  { abbr: 'HI', name: 'Hawaii' },
+  { abbr: 'ID', name: 'Idaho' },
+  { abbr: 'IL', name: 'Illinois' },
+  { abbr: 'IN', name: 'Indiana' },
+  { abbr: 'IA', name: 'Iowa' },
+  { abbr: 'KS', name: 'Kansas' },
+  { abbr: 'KY', name: 'Kentucky' },
+  { abbr: 'LA', name: 'Louisiana' },
+  { abbr: 'ME', name: 'Maine' },
+  { abbr: 'MD', name: 'Maryland' },
+  { abbr: 'MA', name: 'Massachusetts' },
+  { abbr: 'MI', name: 'Michigan' },
+  { abbr: 'MN', name: 'Minnesota' },
+  { abbr: 'MS', name: 'Mississippi' },
+  { abbr: 'MO', name: 'Missouri' },
+  { abbr: 'MT', name: 'Montana' },
+  { abbr: 'NE', name: 'Nebraska' },
+  { abbr: 'NV', name: 'Nevada' },
+  { abbr: 'NH', name: 'New Hampshire' },
+  { abbr: 'NJ', name: 'New Jersey' },
+  { abbr: 'NM', name: 'New Mexico' },
+  { abbr: 'NY', name: 'New York' },
+  { abbr: 'NC', name: 'North Carolina' },
+  { abbr: 'ND', name: 'North Dakota' },
+  { abbr: 'OH', name: 'Ohio' },
+  { abbr: 'OK', name: 'Oklahoma' },
+  { abbr: 'OR', name: 'Oregon' },
+  { abbr: 'PA', name: 'Pennsylvania' },
+  { abbr: 'RI', name: 'Rhode Island' },
+  { abbr: 'SC', name: 'South Carolina' },
+  { abbr: 'SD', name: 'South Dakota' },
+  { abbr: 'TN', name: 'Tennessee' },
+  { abbr: 'TX', name: 'Texas' },
+  { abbr: 'UT', name: 'Utah' },
+  { abbr: 'VT', name: 'Vermont' },
+  { abbr: 'VA', name: 'Virginia' },
+  { abbr: 'WA', name: 'Washington' },
+  { abbr: 'WV', name: 'West Virginia' },
+  { abbr: 'WI', name: 'Wisconsin' },
+  { abbr: 'WY', name: 'Wyoming' }
+];
+
+// CurrencyInput component for dollar values
+const CurrencyInput = ({ value, onChange, placeholder = '$0', id, dataTestId }: {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  id?: string;
+  dataTestId?: string;
+}) => {
+  // Display value with $ and comma formatting
+  const displayValue = useMemo(() => {
+    if (!value) return '';
+    const numVal = value.replace(/[^\d]/g, '');
+    return numVal ? `$${numVal.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '';
+  }, [value]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/[^\d]/g, '');
+    onChange(val);
+  };
+
+  return (
+    <Input
+      id={id}
+      type="text"
+      placeholder={placeholder}
+      value={displayValue}
+      onChange={handleChange}
+      data-testid={dataTestId}
+      className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+    />
+  );
+};
 
 export default function AdminSnapshot() {
   const [, setLocation] = useLocation();
@@ -24,6 +117,16 @@ export default function AdminSnapshot() {
   const [isTransactionsMinimized, setIsTransactionsMinimized] = useState(false);
   const [isFiltersMinimized, setIsFiltersMinimized] = useState(false);
   const [transactionDateFilter, setTransactionDateFilter] = useState('today');
+  
+  // Query card state variables (only shown when categoryFilter is 'direct-mail')
+  const [isQueryCardMinimized, setIsQueryCardMinimized] = useState(false);
+  const [selectedQueryStates, setSelectedQueryStates] = useState<string[]>([]);
+  const [selectedBatchActivities, setSelectedBatchActivities] = useState<string[]>([]);
+  const [cashOutAbove, setCashOutAbove] = useState('');
+  const [ficoRangeAbove, setFicoRangeAbove] = useState('');
+  const [parRateAbove, setParRateAbove] = useState('');
+  const [dataCategory, setDataCategory] = useState('Select');
+  const [batchResults, setBatchResults] = useState<'show-all' | 'profitable' | 'loss'>('show-all');
   const [transactionDateRange, setTransactionDateRange] = useState({
     fromDate: '',
     toDate: ''
@@ -817,6 +920,388 @@ export default function AdminSnapshot() {
             )}
           </div>
         </div>
+
+        {/* Query Card - Only shown when Direct Mail category is selected */}
+        {categoryFilter === 'direct-mail' && (
+          <TooltipProvider>
+            <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-white">Query</h3>
+                <TooltipComponent>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setIsQueryCardMinimized(!isQueryCardMinimized)}
+                      className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                      data-testid="button-toggle-query-card"
+                    >
+                      {isQueryCardMinimized ? <Plus className="h-4 w-4 text-purple-300" /> : <Minus className="h-4 w-4 text-purple-300" />}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{isQueryCardMinimized ? 'Expand' : 'Minimize'}</p>
+                  </TooltipContent>
+                </TooltipComponent>
+              </div>
+              {!isQueryCardMinimized && (
+                <div>
+                  {/* Row 1 */}
+                  <div className="grid grid-cols-5 gap-6 mb-6">
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Data Category</Label>
+                      <Select value={dataCategory} onValueChange={setDataCategory}>
+                        <SelectTrigger data-testid="select-data-category" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Select">Select</SelectItem>
+                          <SelectItem value="Show All">Show All</SelectItem>
+                          <SelectItem value="Trigger Data">Trigger Data</SelectItem>
+                          <SelectItem value="Monthly Data">Monthly Data</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">States</Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className="w-full justify-between font-normal h-9 bg-slate-700/50 text-white border-purple-500/30 hover:border-purple-500 px-3 py-2 text-sm"
+                            data-testid="button-query-states"
+                          >
+                            <span className="truncate">
+                              {selectedQueryStates.length === 0
+                                ? 'Select'
+                                : selectedQueryStates.length === 1
+                                ? selectedQueryStates[0]
+                                : `${selectedQueryStates.length} selected`}
+                            </span>
+                            <ChevronDown className="h-4 w-4 opacity-50 ml-2 flex-shrink-0" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[300px] p-2 max-h-[400px] overflow-y-auto" align="start">
+                          <div className="grid grid-cols-2 gap-1">
+                            {US_STATES.map((state) => (
+                              <div key={state.abbr}>
+                                <div 
+                                  className="flex items-center space-x-2 px-2 py-1.5 rounded-md hover:bg-purple-500 hover:text-white transition-colors cursor-pointer"
+                                  onClick={() => {
+                                    const isChecked = selectedQueryStates.includes(state.abbr);
+                                    if (isChecked) {
+                                      setSelectedQueryStates(selectedQueryStates.filter(s => s !== state.abbr));
+                                    } else {
+                                      setSelectedQueryStates([...selectedQueryStates, state.abbr]);
+                                    }
+                                  }}
+                                >
+                                  <Checkbox
+                                    id={`query-state-${state.abbr}`}
+                                    checked={selectedQueryStates.includes(state.abbr)}
+                                    onCheckedChange={(checked) => {
+                                      if (checked) {
+                                        setSelectedQueryStates([...selectedQueryStates, state.abbr]);
+                                      } else {
+                                        setSelectedQueryStates(selectedQueryStates.filter(s => s !== state.abbr));
+                                      }
+                                    }}
+                                    data-testid={`checkbox-query-state-${state.abbr}`}
+                                    className="pointer-events-none"
+                                  />
+                                  <label
+                                    htmlFor={`query-state-${state.abbr}`}
+                                    className="text-sm font-normal cursor-pointer flex-1 pointer-events-none"
+                                  >
+                                    {state.abbr}
+                                  </label>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Loan Category</Label>
+                      <Select defaultValue="show-all">
+                        <SelectTrigger data-testid="select-loan-category" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
+                          <SelectValue placeholder="Show All" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="show-all">Show All</SelectItem>
+                          <SelectItem value="va">VA</SelectItem>
+                          <SelectItem value="va-jumbo">VA Jumbo</SelectItem>
+                          <SelectItem value="conventional">Conventional</SelectItem>
+                          <SelectItem value="conventional-jumbo">Conventional Jumbo</SelectItem>
+                          <SelectItem value="fha">FHA</SelectItem>
+                          <SelectItem value="second-loan">Second Loan</SelectItem>
+                          <SelectItem value="non-qm">Non-QM</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Loan Purpose</Label>
+                      <Select defaultValue="show-all">
+                        <SelectTrigger data-testid="select-loan-purpose" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
+                          <SelectValue placeholder="Show All" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="show-all">Show All</SelectItem>
+                          <SelectItem value="cash-out">Cash Out</SelectItem>
+                          <SelectItem value="rate-term">Rate & Term</SelectItem>
+                          <SelectItem value="purchase">Purchase</SelectItem>
+                          <SelectItem value="streamline">Streamline</SelectItem>
+                          <SelectItem value="irrrl">IRRRL</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Property Use</Label>
+                      <Select defaultValue="show-all">
+                        <SelectTrigger data-testid="select-property-use" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
+                          <SelectValue placeholder="Show All" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="show-all">Show All</SelectItem>
+                          <SelectItem value="primary-residence">Primary Residence</SelectItem>
+                          <SelectItem value="second-home">Second Home</SelectItem>
+                          <SelectItem value="investment-property">Investment Property</SelectItem>
+                          <SelectItem value="home-purchase">Home Purchase</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  {/* Row 2 */}
+                  <div className="grid grid-cols-5 gap-6 mb-6">
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Property Type</Label>
+                      <Select defaultValue="show-all">
+                        <SelectTrigger data-testid="select-property-type" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
+                          <SelectValue placeholder="Show All" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="show-all">Show All</SelectItem>
+                          <SelectItem value="single-family">Single Family</SelectItem>
+                          <SelectItem value="condo">Condo</SelectItem>
+                          <SelectItem value="townhouse">Townhouse</SelectItem>
+                          <SelectItem value="duplex-multi-family">Duplex, Multi-Family</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Lenders</Label>
+                      <Select defaultValue="show-all">
+                        <SelectTrigger data-testid="select-lenders" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
+                          <SelectValue placeholder="Show All" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="show-all">Show All</SelectItem>
+                          <SelectItem value="uwm">UWM</SelectItem>
+                          <SelectItem value="pennymac">Pennymac</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Data Vendors</Label>
+                      <Select defaultValue="show-all">
+                        <SelectTrigger data-testid="select-data-vendors" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
+                          <SelectValue placeholder="Show All" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="show-all">Show All</SelectItem>
+                          <SelectItem value="in-house">In-House</SelectItem>
+                          <SelectItem value="tbd">TBD</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Mail Vendors</Label>
+                      <Select defaultValue="show-all">
+                        <SelectTrigger data-testid="select-mail-vendors" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
+                          <SelectValue placeholder="Show All" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="show-all">Show All</SelectItem>
+                          <SelectItem value="in-house">In-House</SelectItem>
+                          <SelectItem value="tbd">TBD</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Batch Activity To Date</Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className="w-full justify-between font-normal h-9 bg-slate-700/50 text-white border-purple-500/30 hover:border-purple-500 px-3 py-2 text-sm"
+                            data-testid="button-batch-activity"
+                          >
+                            <span className="truncate">
+                              {selectedBatchActivities.length === 0
+                                ? 'Select'
+                                : selectedBatchActivities.length === 1
+                                ? selectedBatchActivities[0]
+                                : `${selectedBatchActivities.length} selected`}
+                            </span>
+                            <ChevronDown className="h-4 w-4 opacity-50 ml-2 flex-shrink-0" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[200px] p-2" align="start">
+                          <div>
+                            {['Select', 'Lead', 'Quote', 'Loan Prep', 'Loan', 'Funded', 'Withdrawn', 'Cancelled'].map((activity) => (
+                              <div key={activity}>
+                                <div 
+                                  className="flex items-center space-x-2 px-2 py-1.5 rounded-md hover:bg-purple-500 hover:text-white transition-colors cursor-pointer mb-1"
+                                  onClick={() => {
+                                    const isChecked = selectedBatchActivities.includes(activity);
+                                    if (isChecked) {
+                                      setSelectedBatchActivities(selectedBatchActivities.filter(a => a !== activity));
+                                    } else {
+                                      setSelectedBatchActivities([...selectedBatchActivities, activity]);
+                                    }
+                                  }}
+                                >
+                                  <Checkbox
+                                    id={`activity-${activity}`}
+                                    checked={selectedBatchActivities.includes(activity)}
+                                    onCheckedChange={(checked) => {
+                                      if (checked) {
+                                        setSelectedBatchActivities([...selectedBatchActivities, activity]);
+                                      } else {
+                                        setSelectedBatchActivities(selectedBatchActivities.filter(a => a !== activity));
+                                      }
+                                    }}
+                                    data-testid={`checkbox-activity-${activity.toLowerCase().replace(' ', '-')}`}
+                                    className="pointer-events-none"
+                                  />
+                                  <label
+                                    htmlFor={`activity-${activity}`}
+                                    className="text-sm font-normal cursor-pointer flex-1 pointer-events-none"
+                                  >
+                                    {activity}
+                                  </label>
+                                </div>
+                                {(activity === 'Funded' || activity === 'Withdrawn') && (
+                                  <div className="border-t border-border my-2" />
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  </div>
+
+                  {/* Row 3 */}
+                  <div className="grid grid-cols-5 gap-6">
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">FICO Range Above</Label>
+                      <Input
+                        value={ficoRangeAbove}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^\d]/g, '').slice(0, 3);
+                          setFicoRangeAbove(value);
+                        }}
+                        placeholder=""
+                        maxLength={3}
+                        data-testid="input-fico-range"
+                        className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">10 Yr Bond Above</Label>
+                      <Input
+                        placeholder=""
+                        data-testid="input-bond-above"
+                        className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Par Rate Above</Label>
+                      <div className="flex items-center border border-purple-500/30 bg-slate-700/50 px-3 rounded-md h-9">
+                        <Input
+                          value={parRateAbove}
+                          onChange={(e) => setParRateAbove(e.target.value)}
+                          placeholder="0.00"
+                          className="border-0 bg-transparent px-2 focus-visible:ring-0 h-auto text-white"
+                          data-testid="input-par-rate-above"
+                        />
+                        <span className="text-purple-300 text-sm">%</span>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Cash Out Above</Label>
+                      <CurrencyInput
+                        value={cashOutAbove}
+                        onChange={setCashOutAbove}
+                        placeholder="$0"
+                        id="cash-out-above"
+                        dataTestId="input-cash-out-above"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-purple-200">Batch Results To Date</Label>
+                      <div className="flex h-8 rounded-md overflow-hidden">
+                        <TooltipComponent>
+                          <TooltipTrigger asChild>
+                            <button
+                              type="button"
+                              onClick={() => setBatchResults('show-all')}
+                              className="flex-1 flex items-center justify-center text-xs font-medium transition-colors h-full text-white"
+                              style={{ 
+                                backgroundColor: batchResults === 'show-all' ? '#6366f1' : '#8b5cf6',
+                                opacity: batchResults === 'show-all' ? 1 : 0.7
+                              }}
+                              data-testid="button-batch-results-show-all"
+                            >
+                              {batchResults === 'show-all' && 'Show All'}
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent>Show All</TooltipContent>
+                        </TooltipComponent>
+                        <TooltipComponent>
+                          <TooltipTrigger asChild>
+                            <button
+                              type="button"
+                              onClick={() => setBatchResults('profitable')}
+                              className="flex-1 flex items-center justify-center text-xs font-medium transition-colors h-full text-white"
+                              style={{ 
+                                backgroundColor: batchResults === 'profitable' ? '#10b981' : '#34d399',
+                                opacity: batchResults === 'profitable' ? 1 : 0.7
+                              }}
+                              data-testid="button-batch-results-profitable"
+                            >
+                              {batchResults === 'profitable' && 'Profitable'}
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent>Profitable</TooltipContent>
+                        </TooltipComponent>
+                        <TooltipComponent>
+                          <TooltipTrigger asChild>
+                            <button
+                              type="button"
+                              onClick={() => setBatchResults('loss')}
+                              className="flex-1 flex items-center justify-center text-xs font-medium transition-colors h-full text-white"
+                              style={{ 
+                                backgroundColor: batchResults === 'loss' ? '#ef4444' : '#f87171',
+                                opacity: batchResults === 'loss' ? 1 : 0.7
+                              }}
+                              data-testid="button-batch-results-loss"
+                            >
+                              {batchResults === 'loss' && 'Loss'}
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent>Loss</TooltipContent>
+                        </TooltipComponent>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </TooltipProvider>
+        )}
 
         {/* Expense Entry Form */}
         {showExpenseForm && (
