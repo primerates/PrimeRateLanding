@@ -133,10 +133,18 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
     - Uses MediaDevices API with rear camera preference on mobile
     - Auto-converts captured photos to JPG and uploads
     - Video preview with capture and cancel controls
+  - **Expense Log Attachment Feature**:
+    - Paperclip icon in Expense Log card header (left of paper icon) with "Add Doc" hover message
+    - Upload attachments before creating expense entry
+    - Temporary ID system (`temp-expense-{timestamp}`) for pre-submission attachments
+    - Automatic transfer of attachments to final transaction ID when expense is saved
+    - New temp ID generated for each new expense form to prevent attachment conflicts
+    - Cache invalidation and success/error feedback on transfer
   - **Visual Indicators**: Paperclip icon column in transaction tables showing:
     - Attachment count number (clickable to open dialog)
     - Clean display without badges on action menu
     - Direct access to Manage Attachments dialog via count
+    - Count badge on Expense Log paperclip when attachments present
   - Download and delete functionality
   - In-browser PDF viewing (opens in new tab)
   - Secure storage with base64 encoding
@@ -145,6 +153,7 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
     - `GET /api/transactions/:id/attachments` - List attachments
     - `GET /api/transactions/:id/attachments/:attachmentId/view` - View attachment in browser
     - `DELETE /api/transactions/:id/attachments/:attachmentId` - Delete attachment
+    - `POST /api/transactions/transfer-attachments` - Transfer attachments between transaction IDs
 
 **Marketing Campaign Management** (integrated within Dashboard):
 - **Direct Mail Batch Creation**:

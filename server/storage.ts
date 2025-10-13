@@ -28,6 +28,7 @@ export interface IStorage {
   getTransactionAttachment(id: string): Promise<TransactionAttachment | undefined>;
   listTransactionAttachments(transactionId: string, transactionType: string): Promise<TransactionAttachment[]>;
   deleteTransactionAttachment(id: string): Promise<boolean>;
+  transferTransactionAttachments(fromTransactionId: string, toTransactionId: string, transactionType: string): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -228,6 +229,24 @@ export class MemStorage implements IStorage {
 
   async deleteTransactionAttachment(id: string): Promise<boolean> {
     return this.transactionAttachments.delete(id);
+  }
+
+  async transferTransactionAttachments(fromTransactionId: string, toTransactionId: string, transactionType: string): Promise<void> {
+    const attachments = await this.listTransactionAttachments(fromTransactionId, transactionType);
+    
+    for (const attachment of attachments) {
+      // Create new attachment with the new transaction ID
+      const newAttachment: TransactionAttachment = {
+        ...attachment,
+        id: randomUUID(),
+        transactionId: toTransactionId,
+        uploadedAt: new Date().toISOString()
+      };
+      this.transactionAttachments.set(newAttachment.id, newAttachment);
+      
+      // Delete the old attachment
+      this.transactionAttachments.delete(attachment.id);
+    }
   }
 }
 

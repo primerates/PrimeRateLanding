@@ -138,6 +138,8 @@ export default function AdminSnapshot() {
   const [showExpenseNotesDialog, setShowExpenseNotesDialog] = useState(false);
   const [showAttachmentsDialog, setShowAttachmentsDialog] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<{ id: string | number; type: 'expense' | 'revenue' } | null>(null);
+  const [showExpenseLogAttachmentsDialog, setShowExpenseLogAttachmentsDialog] = useState(false);
+  const [tempExpenseLogId, setTempExpenseLogId] = useState(() => `temp-expense-${Date.now()}`);
   const [shortcutDropdownOpen, setShortcutDropdownOpen] = useState(false);
   const [screenshareLoading, setScreenshareLoading] = useState(false);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
@@ -903,7 +905,7 @@ export default function AdminSnapshot() {
     return 0;
   });
 
-  const handleAddExpense = () => {
+  const handleAddExpense = async () => {
     if (newExpense.logDate && newExpense.expense) {
       if (isEditMode && editingExpenseId) {
         // Update existing expense
@@ -914,7 +916,57 @@ export default function AdminSnapshot() {
         setEditingExpenseId(null);
       } else {
         // Add new expense
-        setExpenseEntries([...expenseEntries, { ...newExpense, id: expenseEntries.length + 1 }]);
+        const newExpenseId = expenseEntries.length + 1;
+        setExpenseEntries([...expenseEntries, { ...newExpense, id: newExpenseId }]);
+        
+        // Transfer attachments from temp expense log to the new transaction
+        try {
+          const response = await fetch('/api/transactions/transfer-attachments', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              fromTransactionId: tempExpenseLogId,
+              toTransactionId: newExpenseId.toString(),
+              transactionType: 'expense'
+            })
+          });
+          
+          if (!response.ok) {
+            const error = await response.json();
+            toast({
+              title: "Attachment Transfer Failed",
+              description: error.message || "Failed to transfer attachments to expense",
+              variant: "destructive",
+            });
+          } else {
+            // Invalidate attachment queries to refresh counts
+            queryClient.invalidateQueries({ 
+              queryKey: ['/api/transactions', 'expense', tempExpenseLogId, 'attachments'] 
+            });
+            queryClient.invalidateQueries({ 
+              queryKey: ['/api/transactions', 'expense', newExpenseId.toString(), 'attachments'] 
+            });
+            
+            // Show success toast
+            const result = await response.json();
+            if (result.success) {
+              toast({
+                title: "Expense Added",
+                description: "Expense and attachments saved successfully",
+              });
+            }
+            
+            // Generate new temp ID for next expense
+            setTempExpenseLogId(`temp-expense-${Date.now()}`);
+          }
+        } catch (error) {
+          console.error('Error transferring attachments:', error);
+          toast({
+            title: "Attachment Transfer Error",
+            description: "An error occurred while transferring attachments",
+            variant: "destructive",
+          });
+        }
       }
       setNewExpense({
         logDate: '',
@@ -2890,6 +2942,18 @@ export default function AdminSnapshot() {
               <h3 className="text-xl font-bold text-white">Expense log</h3>
               <div className="flex items-center gap-2">
                 <button
+                  onClick={() => setShowExpenseLogAttachmentsDialog(true)}
+                  className="relative flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title="Add Doc"
+                  data-testid="button-expense-log-attachments"
+                >
+                  <Paperclip className="w-5 h-5 text-purple-300" />
+                  <AttachmentCountBadge 
+                    transactionId={tempExpenseLogId} 
+                    transactionType="expense" 
+                  />
+                </button>
+                <button
                   onClick={() => setShowExpenseNotesDialog(true)}
                   className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
                   title="Expense Notes"
@@ -4008,6 +4072,14 @@ export default function AdminSnapshot() {
           }}
           transactionId={selectedTransaction?.id}
           transactionType={selectedTransaction?.type}
+        />
+
+        {/* Expense Log Attachments Dialog */}
+        <AttachmentsDialog
+          open={showExpenseLogAttachmentsDialog}
+          onClose={() => setShowExpenseLogAttachmentsDialog(false)}
+          transactionId={tempExpenseLogId}
+          transactionType="expense"
         />
       </div>
     </div>

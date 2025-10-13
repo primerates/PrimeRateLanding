@@ -1615,6 +1615,40 @@ Return a JSON object with any/all relevant fields found. Include ANY field you f
     }
   });
 
+  // Transfer attachments from one transaction to another
+  app.post("/api/transactions/transfer-attachments", async (req, res) => {
+    try {
+      const { fromTransactionId, toTransactionId, transactionType } = req.body;
+      
+      if (!fromTransactionId || !toTransactionId || !transactionType) {
+        return res.status(400).json({
+          success: false,
+          message: "Missing required fields: fromTransactionId, toTransactionId, transactionType"
+        });
+      }
+
+      if (transactionType !== 'expense' && transactionType !== 'revenue') {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid transaction type. Must be 'expense' or 'revenue'"
+        });
+      }
+
+      await storage.transferTransactionAttachments(fromTransactionId, toTransactionId, transactionType);
+
+      res.json({
+        success: true,
+        message: "Attachments transferred successfully"
+      });
+    } catch (error) {
+      console.error("Transfer attachments error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to transfer attachments"
+      });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
