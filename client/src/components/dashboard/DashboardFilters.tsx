@@ -24,7 +24,7 @@ export function DashboardFilters({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className="bg-purple-500/20 hover:bg-purple-500/40 text-white px-4 py-2 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all min-w-[140px] text-left flex items-center justify-between"
+            className="bg-purple-500/20 hover:bg-purple-500/40 text-white px-4 py-2 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all min-w-[140px] text-left flex items-center justify-between text-sm"
             data-testid="select-entity-filter"
           >
             <span>
@@ -64,7 +64,7 @@ export function DashboardFilters({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className="bg-purple-500/20 hover:bg-purple-500/40 text-white px-4 py-2 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all min-w-[150px] text-left flex items-center justify-between"
+            className="bg-purple-500/20 hover:bg-purple-500/40 text-white px-4 py-2 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all min-w-[150px] text-left flex items-center justify-between text-sm"
             data-testid="select-category-filter"
           >
             <span>
@@ -146,7 +146,7 @@ export function DashboardFilters({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className="bg-purple-500/20 hover:bg-purple-500/40 text-white px-4 py-2 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all min-w-[130px] text-left flex items-center justify-between"
+            className="bg-purple-500/20 hover:bg-purple-500/40 text-white px-4 py-2 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all min-w-[130px] text-left flex items-center justify-between text-sm"
             data-testid="select-team-filter"
           >
             <span>
