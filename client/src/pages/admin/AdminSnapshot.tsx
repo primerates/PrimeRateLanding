@@ -807,7 +807,7 @@ export default function AdminSnapshot() {
 
         {/* Transactions Table - Separate Card */}
         {showExpenseForm && (
-          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl animate-in">
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl animate-roll-down">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-2xl font-bold text-white">Transactions</h3>
               <button
@@ -1144,7 +1144,7 @@ export default function AdminSnapshot() {
 
         {/* Transactions Table for Revenue - Separate Card */}
         {showRevenueForm && (
-          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl animate-in">
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl animate-roll-down">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-2xl font-bold text-white">Transactions</h3>
               <button
