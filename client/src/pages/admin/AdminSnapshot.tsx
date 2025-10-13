@@ -147,6 +147,10 @@ export default function AdminSnapshot() {
   const [printVendor, setPrintVendor] = useState('');
   const [mailVendor, setMailVendor] = useState('');
   const [supplyVendor, setSupplyVendor] = useState('');
+  const [durationToFirstCall, setDurationToFirstCall] = useState('');
+  const [printDate, setPrintDate] = useState('');
+  const [mailDate, setMailDate] = useState('');
+  const [firstCallDate, setFirstCallDate] = useState('');
   const [transactionDateRange, setTransactionDateRange] = useState({
     fromDate: '',
     toDate: ''
@@ -298,7 +302,7 @@ export default function AdminSnapshot() {
     }, 1000);
   };
 
-  // Calculate completion count for Create New Batch (17 fields)
+  // Calculate completion count for Create New Batch (21 fields)
   const getCompletedBatchFieldsCount = () => {
     const fields = [
       !!batchNumber && batchNumber.trim() !== '',
@@ -308,7 +312,11 @@ export default function AdminSnapshot() {
       !!category && category !== '' && category !== 'select',
       !!dataType && dataType !== '' && dataType !== 'select',
       !!delivery && delivery !== '' && delivery !== 'select',
+      !!durationToFirstCall && durationToFirstCall.trim() !== '',
       !!dataDate && dataDate.trim() !== '',
+      !!printDate && printDate.trim() !== '',
+      !!mailDate && mailDate.trim() !== '',
+      !!firstCallDate && firstCallDate.trim() !== '',
       !!dataSource && dataSource.trim() !== '',
       !!printVendor && printVendor.trim() !== '',
       !!mailVendor && mailVendor.trim() !== '',
@@ -1363,22 +1371,22 @@ export default function AdminSnapshot() {
               </div>
             </div>
             
-            {/* Completion Bar - 17 segments */}
+            {/* Completion Bar - 21 segments */}
             <div className="px-0 pb-4">
               <div className="relative flex gap-0 h-1">
-                {Array.from({ length: 17 }).map((_, index) => (
+                {Array.from({ length: 21 }).map((_, index) => (
                   <div
                     key={index}
                     className={`flex-1 transition-colors duration-300`}
                     style={{ backgroundColor: index < getCompletedBatchFieldsCount() ? '#8b5cf6' : '#475569' }}
                   />
                 ))}
-                {getCompletedBatchFieldsCount() > 0 && getCompletedBatchFieldsCount() < 17 && (
+                {getCompletedBatchFieldsCount() > 0 && getCompletedBatchFieldsCount() < 21 && (
                   <div 
                     className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full transition-all duration-300"
                     style={{ 
                       backgroundColor: '#ec4899',
-                      left: `calc(${(getCompletedBatchFieldsCount() / 17) * 100}% - 4px)`
+                      left: `calc(${(getCompletedBatchFieldsCount() / 21) * 100}% - 4px)`
                     }}
                   />
                 )}
@@ -1433,7 +1441,7 @@ export default function AdminSnapshot() {
                 </div>
               </div>
 
-              {/* Row 2: Categories */}
+              {/* Row 2: Categories & Duration */}
               <div className="grid grid-cols-4 gap-6">
                 <div className="space-y-2">
                   <Label className="text-purple-200">Loan Category</Label>
@@ -1480,17 +1488,18 @@ export default function AdminSnapshot() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-purple-200">States</Label>
-                  <button
-                    className="w-full h-9 px-3 bg-slate-700/50 text-white border border-purple-500/30 hover:border-purple-500 rounded-md text-left transition-colors"
-                    data-testid="button-states-dashboard"
-                  >
-                    {selectedStates.length > 0 ? `${selectedStates.length} States` : 'Select States'}
-                  </button>
+                  <Label className="text-purple-200">Duration to First Call</Label>
+                  <Input
+                    value={durationToFirstCall}
+                    onChange={(e) => setDurationToFirstCall(e.target.value)}
+                    placeholder=""
+                    className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                    data-testid="input-duration-first-call-dm"
+                  />
                 </div>
               </div>
 
-              {/* Row 3: Data Details & Vendors */}
+              {/* Row 3: Date Fields */}
               <div className="grid grid-cols-4 gap-6">
                 <div className="space-y-2">
                   <Label className="text-purple-200">Data Date</Label>
@@ -1502,6 +1511,40 @@ export default function AdminSnapshot() {
                     data-testid="input-data-date-dm"
                   />
                 </div>
+                <div className="space-y-2">
+                  <Label className="text-purple-200">Print Date</Label>
+                  <Input
+                    value={printDate}
+                    onChange={(e) => setPrintDate(e.target.value)}
+                    placeholder="MM/DD/YYYY"
+                    className="bg-slate-900/50 border-purple-500/30 text-white placeholder:text-slate-500"
+                    data-testid="input-print-date-dm"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-purple-200">Mail Date</Label>
+                  <Input
+                    value={mailDate}
+                    onChange={(e) => setMailDate(e.target.value)}
+                    placeholder="MM/DD/YYYY"
+                    className="bg-slate-900/50 border-purple-500/30 text-white placeholder:text-slate-500"
+                    data-testid="input-mail-date-dm"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-purple-200">First Call</Label>
+                  <Input
+                    value={firstCallDate}
+                    onChange={(e) => setFirstCallDate(e.target.value)}
+                    placeholder="MM/DD/YYYY"
+                    className="bg-slate-900/50 border-purple-500/30 text-white placeholder:text-slate-500"
+                    data-testid="input-first-call-dm"
+                  />
+                </div>
+              </div>
+
+              {/* Row 4: Data Source & Vendors */}
+              <div className="grid grid-cols-4 gap-6">
                 <div className="space-y-2">
                   <Label className="text-purple-200">Data Source</Label>
                   <Input
@@ -1532,10 +1575,6 @@ export default function AdminSnapshot() {
                     data-testid="input-mail-vendor-dm"
                   />
                 </div>
-              </div>
-
-              {/* Row 4: Supply Vendor & Costs */}
-              <div className="grid grid-cols-4 gap-6">
                 <div className="space-y-2">
                   <Label className="text-purple-200">Supply Vendor</Label>
                   <Input
@@ -1546,6 +1585,10 @@ export default function AdminSnapshot() {
                     data-testid="input-supply-vendor-dm"
                   />
                 </div>
+              </div>
+
+              {/* Row 5: Costs & States */}
+              <div className="grid grid-cols-4 gap-6">
                 <div className="space-y-2">
                   <Label className="text-purple-200">Data Cost</Label>
                   <CurrencyInput
@@ -1576,10 +1619,6 @@ export default function AdminSnapshot() {
                     dataTestId="input-print-cost-dm"
                   />
                 </div>
-              </div>
-
-              {/* Row 5: Supply Cost */}
-              <div className="grid grid-cols-4 gap-6">
                 <div className="space-y-2">
                   <Label className="text-purple-200">Supply Cost</Label>
                   <CurrencyInput
@@ -1589,6 +1628,19 @@ export default function AdminSnapshot() {
                     id="supply-cost-dm"
                     dataTestId="input-supply-cost-dm"
                   />
+                </div>
+              </div>
+
+              {/* Row 6: States */}
+              <div className="grid grid-cols-4 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-purple-200">States</Label>
+                  <button
+                    className="w-full h-9 px-3 bg-slate-700/50 text-white border border-purple-500/30 hover:border-purple-500 rounded-md text-left transition-colors"
+                    data-testid="button-states-dashboard"
+                  >
+                    {selectedStates.length > 0 ? `${selectedStates.length} States` : 'Select States'}
+                  </button>
                 </div>
               </div>
 
