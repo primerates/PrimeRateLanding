@@ -1490,7 +1490,7 @@ export default function AdminSnapshot() {
                 </div>
               </div>
 
-              {/* Row 3: Data Details */}
+              {/* Row 3: Data Details & Vendors */}
               <div className="grid grid-cols-4 gap-6">
                 <div className="space-y-2">
                   <Label className="text-purple-200">Data Date</Label>
@@ -1512,10 +1512,6 @@ export default function AdminSnapshot() {
                     data-testid="input-data-source-dm"
                   />
                 </div>
-              </div>
-
-              {/* Row 4: Vendors */}
-              <div className="grid grid-cols-4 gap-6">
                 <div className="space-y-2">
                   <Label className="text-purple-200">Print Vendor</Label>
                   <Input
@@ -1536,6 +1532,10 @@ export default function AdminSnapshot() {
                     data-testid="input-mail-vendor-dm"
                   />
                 </div>
+              </div>
+
+              {/* Row 4: Supply Vendor & Costs */}
+              <div className="grid grid-cols-4 gap-6">
                 <div className="space-y-2">
                   <Label className="text-purple-200">Supply Vendor</Label>
                   <Input
@@ -1546,10 +1546,6 @@ export default function AdminSnapshot() {
                     data-testid="input-supply-vendor-dm"
                   />
                 </div>
-              </div>
-
-              {/* Row 5: Costs */}
-              <div className="grid grid-cols-4 gap-6">
                 <div className="space-y-2">
                   <Label className="text-purple-200">Data Cost</Label>
                   <CurrencyInput
@@ -1580,6 +1576,10 @@ export default function AdminSnapshot() {
                     dataTestId="input-print-cost-dm"
                   />
                 </div>
+              </div>
+
+              {/* Row 5: Supply Cost */}
+              <div className="grid grid-cols-4 gap-6">
                 <div className="space-y-2">
                   <Label className="text-purple-200">Supply Cost</Label>
                   <CurrencyInput
