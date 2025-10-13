@@ -37,6 +37,7 @@ export default function AdminLibrary() {
   const [pageBrightness, setPageBrightness] = useState(50); // 0-100 scale for page
   const [cardBrightness, setCardBrightness] = useState(50); // 0-100 scale for cards
   const [activeControl, setActiveControl] = useState<'page' | 'card'>('page'); // Which element to control
+  const [isSettingsSaved, setIsSettingsSaved] = useState(false); // Track if settings are saved
 
   // Form state
   const [firstName, setFirstName] = useState('');
@@ -76,14 +77,7 @@ export default function AdminLibrary() {
   const handleKeepSettings = () => {
     localStorage.setItem('library-page-brightness', pageBrightness.toString());
     localStorage.setItem('library-card-brightness', cardBrightness.toString());
-    // Visual feedback
-    const button = document.querySelector('[data-keep-settings]');
-    if (button) {
-      button.textContent = '✓ Saved';
-      setTimeout(() => {
-        button.textContent = 'Keep';
-      }, 1500);
-    }
+    setIsSettingsSaved(true);
   };
 
   const formatDateOfBirth = (value: string) => {
@@ -222,7 +216,10 @@ export default function AdminLibrary() {
                 {/* Picker Buttons */}
                 <div className="flex gap-1">
                   <button
-                    onClick={() => setActiveControl('page')}
+                    onClick={() => {
+                      setActiveControl('page');
+                      setIsSettingsSaved(false);
+                    }}
                     className={`px-2 py-1 text-xs font-medium rounded transition-all ${
                       activeControl === 'page'
                         ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
@@ -233,7 +230,10 @@ export default function AdminLibrary() {
                     Page
                   </button>
                   <button
-                    onClick={() => setActiveControl('card')}
+                    onClick={() => {
+                      setActiveControl('card');
+                      setIsSettingsSaved(false);
+                    }}
                     className={`px-2 py-1 text-xs font-medium rounded transition-all ${
                       activeControl === 'card'
                         ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
@@ -249,7 +249,7 @@ export default function AdminLibrary() {
                     data-testid="button-keep-settings"
                     data-keep-settings
                   >
-                    Keep
+                    {isSettingsSaved ? '✓' : 'Keep'}
                   </button>
                 </div>
                 
