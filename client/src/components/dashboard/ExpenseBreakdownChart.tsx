@@ -14,6 +14,8 @@ interface ExpenseBreakdownChartProps {
   setAreChartsMinimized: (value: boolean) => void;
   formatCurrency: (value: number) => string;
   CustomTooltip: any;
+  showCreateBatch?: boolean;
+  onShowBatchWarning?: () => void;
 }
 
 export function ExpenseBreakdownChart({
@@ -22,14 +24,22 @@ export function ExpenseBreakdownChart({
   areChartsMinimized,
   setAreChartsMinimized,
   formatCurrency,
-  CustomTooltip
+  CustomTooltip,
+  showCreateBatch = false,
+  onShowBatchWarning = () => {}
 }: ExpenseBreakdownChartProps) {
   return (
     <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl" data-testid="card-expense-breakdown">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xl font-bold text-white">{categoryFilter === 'financials' ? 'Expense' : 'Geography'}</h3>
         <button
-          onClick={() => setAreChartsMinimized(!areChartsMinimized)}
+          onClick={() => {
+            if (showCreateBatch && areChartsMinimized) {
+              onShowBatchWarning();
+            } else {
+              setAreChartsMinimized(!areChartsMinimized);
+            }
+          }}
           className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
           title={areChartsMinimized ? "Expand" : "Minimize"}
           data-testid="button-toggle-expense-chart"

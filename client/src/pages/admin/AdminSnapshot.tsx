@@ -1280,7 +1280,13 @@ export default function AdminSnapshot() {
               )}
               
               <button
-                onClick={() => setIsFiltersMinimized(!isFiltersMinimized)}
+                onClick={() => {
+                  if (showCreateBatch && isFiltersMinimized) {
+                    setShowBatchWarning(true);
+                  } else {
+                    setIsFiltersMinimized(!isFiltersMinimized);
+                  }
+                }}
                 className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
                 title={isFiltersMinimized ? "Expand" : "Minimize"}
                 data-testid="button-toggle-filters"
@@ -1362,6 +1368,8 @@ export default function AdminSnapshot() {
             setRevenueDetailView={setRevenueDetailView}
             formatCurrency={formatCurrency}
             CustomTooltip={CustomTooltip}
+            showCreateBatch={showCreateBatch}
+            onShowBatchWarning={() => setShowBatchWarning(true)}
           />
 
           <ExpenseBreakdownChart
@@ -1371,6 +1379,8 @@ export default function AdminSnapshot() {
             setAreChartsMinimized={setAreChartsMinimized}
             formatCurrency={formatCurrency}
             CustomTooltip={CustomTooltip}
+            showCreateBatch={showCreateBatch}
+            onShowBatchWarning={() => setShowBatchWarning(true)}
           />
         </div>
 
@@ -3236,6 +3246,8 @@ export default function AdminSnapshot() {
                     onClick={() => {
                       setShowCreateBatch(true);
                       setIsQueryCardMinimized(true); // Minimize Query card
+                      setIsFiltersMinimized(true); // Minimize Performance card
+                      setAreChartsMinimized(true); // Minimize Charts
                       setShowAddModal(false);
                     }}
                     className="w-full p-6 bg-gradient-to-br from-purple-500/20 to-pink-600/20 hover:from-purple-500/30 hover:to-pink-600/30 rounded-xl border border-purple-500/30 hover:border-purple-500/50 transition-all group"
