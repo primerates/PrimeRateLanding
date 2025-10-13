@@ -1515,7 +1515,7 @@ export default function AdminSnapshot() {
                     value={dataDate}
                     onChange={(e) => setDataDate(e.target.value)}
                     placeholder="MM/DD/YYYY"
-                    className="bg-slate-900/50 border-purple-500/30 text-white placeholder:text-slate-500"
+                    className="bg-slate-700/50 border-purple-500/30 text-white placeholder:text-slate-500 focus:border-purple-500"
                     data-testid="input-data-date-dm"
                   />
                 </div>
@@ -1525,7 +1525,7 @@ export default function AdminSnapshot() {
                     value={printDate}
                     onChange={(e) => setPrintDate(e.target.value)}
                     placeholder="MM/DD/YYYY"
-                    className="bg-slate-900/50 border-purple-500/30 text-white placeholder:text-slate-500"
+                    className="bg-slate-700/50 border-purple-500/30 text-white placeholder:text-slate-500 focus:border-purple-500"
                     data-testid="input-print-date-dm"
                   />
                 </div>
@@ -1535,7 +1535,7 @@ export default function AdminSnapshot() {
                     value={mailDate}
                     onChange={(e) => setMailDate(e.target.value)}
                     placeholder="MM/DD/YYYY"
-                    className="bg-slate-900/50 border-purple-500/30 text-white placeholder:text-slate-500"
+                    className="bg-slate-700/50 border-purple-500/30 text-white placeholder:text-slate-500 focus:border-purple-500"
                     data-testid="input-mail-date-dm"
                   />
                 </div>
@@ -1545,7 +1545,7 @@ export default function AdminSnapshot() {
                     value={firstCallDate}
                     onChange={(e) => setFirstCallDate(e.target.value)}
                     placeholder="MM/DD/YYYY"
-                    className="bg-slate-900/50 border-purple-500/30 text-white placeholder:text-slate-500"
+                    className="bg-slate-700/50 border-purple-500/30 text-white placeholder:text-slate-500 focus:border-purple-500"
                     data-testid="input-first-call-dm"
                   />
                 </div>
@@ -1559,7 +1559,7 @@ export default function AdminSnapshot() {
                 <div className="space-y-2">
                   <Label className="text-purple-200">Data Source</Label>
                   <Select value={dataSource} onValueChange={setDataSource}>
-                    <SelectTrigger data-testid="select-data-source-dm" className="bg-slate-900/50 text-white border-purple-500/30 focus:border-purple-500">
+                    <SelectTrigger data-testid="select-data-source-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
@@ -1571,7 +1571,7 @@ export default function AdminSnapshot() {
                 <div className="space-y-2">
                   <Label className="text-purple-200">Print Vendor</Label>
                   <Select value={printVendor} onValueChange={setPrintVendor}>
-                    <SelectTrigger data-testid="select-print-vendor-dm" className="bg-slate-900/50 text-white border-purple-500/30 focus:border-purple-500">
+                    <SelectTrigger data-testid="select-print-vendor-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
@@ -1583,7 +1583,7 @@ export default function AdminSnapshot() {
                 <div className="space-y-2">
                   <Label className="text-purple-200">Mail Vendor</Label>
                   <Select value={mailVendor} onValueChange={setMailVendor}>
-                    <SelectTrigger data-testid="select-mail-vendor-dm" className="bg-slate-900/50 text-white border-purple-500/30 focus:border-purple-500">
+                    <SelectTrigger data-testid="select-mail-vendor-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
@@ -1595,7 +1595,7 @@ export default function AdminSnapshot() {
                 <div className="space-y-2">
                   <Label className="text-purple-200">Supply Vendor</Label>
                   <Select value={supplyVendor} onValueChange={setSupplyVendor}>
-                    <SelectTrigger data-testid="select-supply-vendor-dm" className="bg-slate-900/50 text-white border-purple-500/30 focus:border-purple-500">
+                    <SelectTrigger data-testid="select-supply-vendor-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
