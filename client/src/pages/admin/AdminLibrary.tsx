@@ -149,8 +149,7 @@ export default function AdminLibrary() {
         </div>
 
         {/* Main Content - Borrower Card with Dashboard Theme */}
-        <div className="max-w-7xl mx-auto">
-          <Card className="bg-slate-800/50 backdrop-blur-xl border-l-4 border-l-purple-500 hover:border-purple-400 focus-within:border-purple-400 transition-all duration-200 shadow-2xl">
+        <Card className="bg-slate-800/50 backdrop-blur-xl border-l-4 border-l-purple-500 hover:border-purple-400 focus-within:border-purple-400 transition-all duration-200 shadow-2xl">
             <Collapsible open={isBorrowerOpen} onOpenChange={setIsBorrowerOpen}>
               <CardHeader className="border-b border-purple-500/20">
                 <div className="flex items-center justify-between">
@@ -538,7 +537,6 @@ export default function AdminLibrary() {
               </CollapsibleContent>
             </Collapsible>
           </Card>
-        </div>
       </div>
     </div>
   );
