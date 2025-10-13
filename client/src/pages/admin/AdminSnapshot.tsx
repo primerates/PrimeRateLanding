@@ -336,6 +336,23 @@ export default function AdminSnapshot() {
     }).format(value);
   };
 
+  // Auto-format date with slashes as user types (MM/DD/YYYY)
+  const handleDateFormat = (value: string) => {
+    // Remove all non-numeric characters
+    const numbers = value.replace(/\D/g, '');
+    
+    // Format as MM/DD/YYYY
+    let formatted = numbers;
+    if (numbers.length >= 3) {
+      formatted = numbers.slice(0, 2) + '/' + numbers.slice(2);
+    }
+    if (numbers.length >= 5) {
+      formatted = numbers.slice(0, 2) + '/' + numbers.slice(2, 4) + '/' + numbers.slice(4, 8);
+    }
+    
+    return formatted;
+  };
+
   const handleDateInput = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     let value = e.target.value.replace(/\D/g, '');
     if (value.length >= 2) {
@@ -1501,8 +1518,9 @@ export default function AdminSnapshot() {
                   <Label className="text-purple-200">Data Date</Label>
                   <Input
                     value={dataDate}
-                    onChange={(e) => setDataDate(e.target.value)}
+                    onChange={(e) => setDataDate(handleDateFormat(e.target.value))}
                     placeholder="MM/DD/YYYY"
+                    maxLength={10}
                     className="bg-slate-700/50 border-purple-500/30 text-white placeholder:text-slate-500 focus:border-purple-500"
                     data-testid="input-data-date-dm"
                   />
@@ -1511,8 +1529,9 @@ export default function AdminSnapshot() {
                   <Label className="text-purple-200">Print Date</Label>
                   <Input
                     value={printDate}
-                    onChange={(e) => setPrintDate(e.target.value)}
+                    onChange={(e) => setPrintDate(handleDateFormat(e.target.value))}
                     placeholder="MM/DD/YYYY"
+                    maxLength={10}
                     className="bg-slate-700/50 border-purple-500/30 text-white placeholder:text-slate-500 focus:border-purple-500"
                     data-testid="input-print-date-dm"
                   />
@@ -1521,8 +1540,9 @@ export default function AdminSnapshot() {
                   <Label className="text-purple-200">Mail Date</Label>
                   <Input
                     value={mailDate}
-                    onChange={(e) => setMailDate(e.target.value)}
+                    onChange={(e) => setMailDate(handleDateFormat(e.target.value))}
                     placeholder="MM/DD/YYYY"
+                    maxLength={10}
                     className="bg-slate-700/50 border-purple-500/30 text-white placeholder:text-slate-500 focus:border-purple-500"
                     data-testid="input-mail-date-dm"
                   />
@@ -1531,8 +1551,9 @@ export default function AdminSnapshot() {
                   <Label className="text-purple-200">First Call</Label>
                   <Input
                     value={firstCallDate}
-                    onChange={(e) => setFirstCallDate(e.target.value)}
+                    onChange={(e) => setFirstCallDate(handleDateFormat(e.target.value))}
                     placeholder="MM/DD/YYYY"
+                    maxLength={10}
                     className="bg-slate-700/50 border-purple-500/30 text-white placeholder:text-slate-500 focus:border-purple-500"
                     data-testid="input-first-call-dm"
                   />
