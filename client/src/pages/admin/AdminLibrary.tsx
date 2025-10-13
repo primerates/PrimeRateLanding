@@ -245,7 +245,7 @@ export default function AdminLibrary() {
                   </button>
                   <button
                     onClick={handleKeepSettings}
-                    className="px-2 py-1 text-xs font-medium rounded transition-all bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 shadow-md ml-1"
+                    className="px-2 py-1 text-xs font-medium rounded transition-all bg-gradient-to-r from-indigo-900 to-blue-900 text-white hover:from-indigo-800 hover:to-blue-800 shadow-md ml-1"
                     data-testid="button-keep-settings"
                     data-keep-settings
                   >
