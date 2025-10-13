@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
@@ -204,6 +204,7 @@ export default function AdminSnapshot() {
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [statesDialogOpen, setStatesDialogOpen] = useState(false);
   const [showPreview, setShowPreview] = useState(true);
+  const [batches, setBatches] = useState<any[]>([]);
   const [transactionDateRange, setTransactionDateRange] = useState({
     fromDate: '',
     toDate: ''
@@ -352,6 +353,14 @@ export default function AdminSnapshot() {
       supplyCost: '300'
     }
   ];
+
+  // Load batches from localStorage on component mount
+  useEffect(() => {
+    const storedBatches = localStorage.getItem('directMailBatches');
+    if (storedBatches) {
+      setBatches(JSON.parse(storedBatches));
+    }
+  }, []);
 
   const expenseData = categoryFilter === 'financials'
     ? [
@@ -596,9 +605,12 @@ export default function AdminSnapshot() {
     };
 
     const storedBatches = localStorage.getItem('directMailBatches');
-    const batches = storedBatches ? JSON.parse(storedBatches) : [];
-    const updatedBatches = [...batches, newBatch];
+    const existingBatches = storedBatches ? JSON.parse(storedBatches) : [];
+    const updatedBatches = [...existingBatches, newBatch];
     localStorage.setItem('directMailBatches', JSON.stringify(updatedBatches));
+    
+    // Update the batches state to refresh the UI immediately
+    setBatches(updatedBatches);
 
     setUploadStage('success');
     
@@ -726,7 +738,9 @@ export default function AdminSnapshot() {
 
   // Sorted batches for Batch List table
   const sortedBatches = useMemo(() => {
-    return [...mockBatches].sort((a: any, b: any) => {
+    // Combine mock batches with batches from localStorage
+    const allBatches = [...mockBatches, ...batches];
+    return allBatches.sort((a: any, b: any) => {
       let aVal: any;
       let bVal: any;
 
@@ -754,7 +768,7 @@ export default function AdminSnapshot() {
       if (aVal > bVal) return batchSortDirection === 'asc' ? 1 : -1;
       return 0;
     });
-  }, [batchSortColumn, batchSortDirection]);
+  }, [batchSortColumn, batchSortDirection, batches]);
 
   const handleDateInput = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     let value = e.target.value.replace(/\D/g, '');
