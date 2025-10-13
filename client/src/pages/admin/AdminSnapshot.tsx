@@ -2934,16 +2934,13 @@ export default function AdminSnapshot() {
                           />
                         </td>
                         <td className="py-3 px-2 relative">
-                          <div className="relative inline-block">
-                            <button
-                              onClick={() => setOpenActionMenu(openActionMenu === entry.id ? null : entry.id)}
-                              className="text-purple-300 hover:text-white transition-colors"
-                              data-testid={`button-action-menu-${entry.id}`}
-                            >
-                              <MoreVertical className="w-5 h-5" />
-                            </button>
-                            <AttachmentCountBadge transactionId={entry.id} transactionType="expense" />
-                          </div>
+                          <button
+                            onClick={() => setOpenActionMenu(openActionMenu === entry.id ? null : entry.id)}
+                            className="text-purple-300 hover:text-white transition-colors"
+                            data-testid={`button-action-menu-${entry.id}`}
+                          >
+                            <MoreVertical className="w-5 h-5" />
+                          </button>
                           
                           {/* Action Menu Popup */}
                           {openActionMenu === entry.id && (
@@ -3290,16 +3287,13 @@ export default function AdminSnapshot() {
                           />
                         </td>
                         <td className="py-3 px-2 relative">
-                          <div className="relative inline-block">
-                            <button
-                              onClick={() => setOpenActionMenu(openActionMenu === entry.id ? null : entry.id)}
-                              className="text-purple-300 hover:text-white transition-colors"
-                              data-testid={`button-revenue-action-menu-${entry.id}`}
-                            >
-                              <MoreVertical className="w-5 h-5" />
-                            </button>
-                            <AttachmentCountBadge transactionId={entry.id} transactionType="revenue" />
-                          </div>
+                          <button
+                            onClick={() => setOpenActionMenu(openActionMenu === entry.id ? null : entry.id)}
+                            className="text-purple-300 hover:text-white transition-colors"
+                            data-testid={`button-revenue-action-menu-${entry.id}`}
+                          >
+                            <MoreVertical className="w-5 h-5" />
+                          </button>
                           
                           {/* Action Menu Popup */}
                           {openActionMenu === entry.id && (
@@ -3763,32 +3757,17 @@ function AttachmentIndicator({
     },
   });
 
-  if (isLoading) return <div className="w-8 h-8"></div>;
-  if (attachments.length === 0) return <div className="w-8 h-8"></div>;
-
-  // Get file type icon for first attachment
-  const firstAttachment = attachments[0];
-  const isPDF = firstAttachment?.fileType?.includes('pdf');
+  if (isLoading) return null;
+  if (attachments.length === 0) return null;
   
   return (
     <button
       onClick={onOpenDialog}
-      className="group inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors cursor-pointer"
+      className="text-purple-400 hover:text-purple-300 transition-colors cursor-pointer font-semibold"
       data-testid={`button-attachment-indicator-${transactionId}`}
+      title={`${attachments.length} attachment${attachments.length > 1 ? 's' : ''}`}
     >
-      <div className="relative">
-        <Paperclip className="w-5 h-5" />
-        {attachments.length > 1 && (
-          <span className="absolute -top-1 -right-1 bg-purple-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-semibold">
-            {attachments.length}
-          </span>
-        )}
-      </div>
-      {isPDF && (
-        <span className="text-xs font-semibold text-purple-400 group-hover:text-purple-300">
-          PDF
-        </span>
-      )}
+      {attachments.length}
     </button>
   );
 }
