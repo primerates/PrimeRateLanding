@@ -1959,9 +1959,9 @@ export default function AdminSnapshot() {
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold text-white">New Batch</h3>
               <div className="flex items-center gap-3">
-                <div className="text-xs text-purple-300">
+                <button className="px-2 py-1 text-xs font-medium rounded transition-all bg-gradient-to-r from-indigo-900 to-blue-900 text-white hover:from-indigo-800 hover:to-blue-800 shadow-md">
                   {getCompletedBatchFieldsCount()} / 17 fields complete
-                </div>
+                </button>
                 <Button 
                   onClick={() => setStatesDialogOpen(true)}
                   size="sm"
