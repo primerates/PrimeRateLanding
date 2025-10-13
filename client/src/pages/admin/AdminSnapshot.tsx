@@ -130,6 +130,10 @@ export default function AdminSnapshot() {
   const [batchResults, setBatchResults] = useState<'show-all' | 'profitable' | 'loss'>('show-all');
   const [showBatchWarning, setShowBatchWarning] = useState(false);
   
+  // Batch List sorting state
+  const [batchSortColumn, setBatchSortColumn] = useState<string>('createdDate');
+  const [batchSortDirection, setBatchSortDirection] = useState<'asc' | 'desc'>('desc');
+  
   // Create New Batch card state (only shown when categoryFilter is 'direct-mail')
   const [showCreateBatch, setShowCreateBatch] = useState(false);
   const [batchNumber, setBatchNumber] = useState('');
@@ -253,6 +257,55 @@ export default function AdminSnapshot() {
     { name: 'Conv Jumbo', value: 141680, color: '#10b981' }
   ];
 
+  // Mock batch data for Batch List table
+  const mockBatches = [
+    {
+      id: '1',
+      createdDate: '10/05/2025',
+      batchNumber: 'B-1001',
+      batchTitle: 'VA Refinance Q4',
+      category: 'VA',
+      tenYearBond: '4.25',
+      parRate: '6.75',
+      records: 1250,
+      states: ['CA', 'TX', 'FL'],
+      dataCost: '5000',
+      mailCost: '3500',
+      printCost: '2000',
+      supplyCost: '500'
+    },
+    {
+      id: '2',
+      createdDate: '10/08/2025',
+      batchNumber: 'B-1002',
+      batchTitle: 'FHA Purchase Campaign',
+      category: 'FHA',
+      tenYearBond: '4.30',
+      parRate: '6.85',
+      records: 890,
+      states: ['NY', 'NJ', 'PA'],
+      dataCost: '4200',
+      mailCost: '2800',
+      printCost: '1500',
+      supplyCost: '400'
+    },
+    {
+      id: '3',
+      createdDate: '10/10/2025',
+      batchNumber: 'B-1003',
+      batchTitle: 'Conventional Jumbo',
+      category: 'Conventional Jumbo',
+      tenYearBond: '4.35',
+      parRate: '7.00',
+      records: 450,
+      states: ['CA', 'WA'],
+      dataCost: '3000',
+      mailCost: '2000',
+      printCost: '1200',
+      supplyCost: '300'
+    }
+  ];
+
   const expenseData = categoryFilter === 'financials'
     ? [
         { name: 'Marketing', value: 323435, color: '#ef4444' },
@@ -352,6 +405,48 @@ export default function AdminSnapshot() {
     
     return formatted;
   };
+
+  // Handle batch list sorting
+  const handleBatchSort = (column: string) => {
+    if (batchSortColumn === column) {
+      setBatchSortDirection(batchSortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setBatchSortColumn(column);
+      setBatchSortDirection('asc');
+    }
+  };
+
+  // Sorted batches for Batch List table
+  const sortedBatches = useMemo(() => {
+    return [...mockBatches].sort((a: any, b: any) => {
+      let aVal: any;
+      let bVal: any;
+
+      if (batchSortColumn === 'createdDate') {
+        aVal = new Date(a.createdDate).getTime();
+        bVal = new Date(b.createdDate).getTime();
+      } else if (batchSortColumn === 'records') {
+        aVal = a.records;
+        bVal = b.records;
+      } else if (batchSortColumn === 'states') {
+        aVal = a.states?.length || 0;
+        bVal = b.states?.length || 0;
+      } else if (batchSortColumn === 'cost') {
+        aVal = (parseInt(a.dataCost) + parseInt(a.mailCost) + parseInt(a.printCost) + parseInt(a.supplyCost));
+        bVal = (parseInt(b.dataCost) + parseInt(b.mailCost) + parseInt(b.printCost) + parseInt(b.supplyCost));
+      } else if (batchSortColumn === 'tenYearBond' || batchSortColumn === 'parRate') {
+        aVal = parseFloat(a[batchSortColumn] || '0');
+        bVal = parseFloat(b[batchSortColumn] || '0');
+      } else {
+        aVal = (a[batchSortColumn] || '').toLowerCase();
+        bVal = (b[batchSortColumn] || '').toLowerCase();
+      }
+
+      if (aVal < bVal) return batchSortDirection === 'asc' ? -1 : 1;
+      if (aVal > bVal) return batchSortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [batchSortColumn, batchSortDirection]);
 
   const handleDateInput = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     let value = e.target.value.replace(/\D/g, '');
@@ -1378,6 +1473,134 @@ export default function AdminSnapshot() {
           </TooltipProvider>
         )}
 
+        {/* Batch List Table - Only shown when Data Category is "Show All" */}
+        {categoryFilter === 'direct-mail' && dataCategory === 'Show All' && (
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+            <h3 className="text-xl font-bold text-white mb-6">Batch List</h3>
+            {sortedBatches.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-purple-300">No batches created yet</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse min-w-max">
+                  <thead>
+                    <tr className="border-b border-purple-500/30">
+                      <th 
+                        className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 cursor-pointer hover:bg-slate-700 transition-colors whitespace-nowrap"
+                        onClick={() => handleBatchSort('createdDate')}
+                        data-testid="sort-date"
+                      >
+                        <div className="flex items-center gap-2">
+                          Created
+                          <ArrowUpDown className="h-4 w-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 cursor-pointer hover:bg-slate-700 transition-colors whitespace-nowrap"
+                        onClick={() => handleBatchSort('batchNumber')}
+                        data-testid="sort-batch-number"
+                      >
+                        <div className="flex items-center gap-2">
+                          Batch #
+                          <ArrowUpDown className="h-4 w-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 cursor-pointer hover:bg-slate-700 transition-colors whitespace-nowrap"
+                        onClick={() => handleBatchSort('batchTitle')}
+                        data-testid="sort-batch-title"
+                      >
+                        <div className="flex items-center gap-2">
+                          Batch Title
+                          <ArrowUpDown className="h-4 w-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 cursor-pointer hover:bg-slate-700 transition-colors whitespace-nowrap"
+                        onClick={() => handleBatchSort('category')}
+                        data-testid="sort-category"
+                      >
+                        <div className="flex items-center gap-2">
+                          Category
+                          <ArrowUpDown className="h-4 w-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 cursor-pointer hover:bg-slate-700 transition-colors whitespace-nowrap"
+                        onClick={() => handleBatchSort('tenYearBond')}
+                        data-testid="sort-ten-year-bond"
+                      >
+                        <div className="flex items-center gap-2">
+                          10 Yr Bond
+                          <ArrowUpDown className="h-4 w-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 cursor-pointer hover:bg-slate-700 transition-colors whitespace-nowrap"
+                        onClick={() => handleBatchSort('parRate')}
+                        data-testid="sort-par-rate"
+                      >
+                        <div className="flex items-center gap-2">
+                          Par Rate
+                          <ArrowUpDown className="h-4 w-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 cursor-pointer hover:bg-slate-700 transition-colors whitespace-nowrap"
+                        onClick={() => handleBatchSort('records')}
+                        data-testid="sort-records"
+                      >
+                        <div className="flex items-center gap-2">
+                          Records
+                          <ArrowUpDown className="h-4 w-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 cursor-pointer hover:bg-slate-700 transition-colors whitespace-nowrap"
+                        onClick={() => handleBatchSort('states')}
+                        data-testid="sort-states"
+                      >
+                        <div className="flex items-center gap-2">
+                          States
+                          <ArrowUpDown className="h-4 w-4" />
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 cursor-pointer hover:bg-slate-700 transition-colors whitespace-nowrap"
+                        onClick={() => handleBatchSort('cost')}
+                        data-testid="sort-cost"
+                      >
+                        <div className="flex items-center gap-2">
+                          Total Cost
+                          <ArrowUpDown className="h-4 w-4" />
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sortedBatches.map((batch: any) => {
+                      const totalCost = parseInt(batch.dataCost) + parseInt(batch.mailCost) + parseInt(batch.printCost) + parseInt(batch.supplyCost);
+                      return (
+                        <tr key={batch.id} className="border-b border-purple-500/20 hover:bg-slate-700/30 transition-colors">
+                          <td className="p-3 text-white whitespace-nowrap">{batch.createdDate}</td>
+                          <td className="p-3 text-purple-300 whitespace-nowrap">{batch.batchNumber}</td>
+                          <td className="p-3 text-white whitespace-nowrap">{batch.batchTitle}</td>
+                          <td className="p-3 text-purple-300 whitespace-nowrap">{batch.category}</td>
+                          <td className="p-3 text-white whitespace-nowrap">{batch.tenYearBond}%</td>
+                          <td className="p-3 text-white whitespace-nowrap">{batch.parRate}%</td>
+                          <td className="p-3 text-purple-300 whitespace-nowrap">{batch.records.toLocaleString()}</td>
+                          <td className="p-3 text-white whitespace-nowrap">{batch.states.join(', ')}</td>
+                          <td className="p-3 text-green-400 whitespace-nowrap font-semibold">${totalCost.toLocaleString()}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Create New Batch Card - Only shown when Direct Mail category is selected and Add New Batch is clicked */}
         {categoryFilter === 'direct-mail' && showCreateBatch && (
