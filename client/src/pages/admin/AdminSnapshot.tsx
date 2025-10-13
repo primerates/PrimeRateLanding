@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical } from 'lucide-react';
+import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User } from 'lucide-react';
 
 export default function AdminSnapshot() {
   const [, setLocation] = useLocation();
@@ -12,6 +13,7 @@ export default function AdminSnapshot() {
   const [revenueDetailView, setRevenueDetailView] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [entryType, setEntryType] = useState<string | null>(null);
+  const [shortcutDropdownOpen, setShortcutDropdownOpen] = useState(false);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
   const [showRevenueForm, setShowRevenueForm] = useState(false);
   const [isRevenueFormMinimized, setIsRevenueFormMinimized] = useState(false);
@@ -127,6 +129,25 @@ export default function AdminSnapshot() {
     { name: 'VA', value: 137004 },
     { name: 'Jumbo', value: 48251 },
     { name: 'USDA', value: 20251 }
+  ];
+
+  // Dashboard shortcuts menu items
+  const dashboardMenuItems = [
+    // Row 1
+    { label: 'Lead', path: '/admin/add-client' },
+    { label: 'Quote', path: '/admin/quotes' },
+    { label: 'Loan Prep', path: '/admin/loan-prep' },
+    { label: 'Loan', path: '/admin/pipeline' },
+    { label: 'Funded', path: '/admin/funded' },
+    // Row 2
+    { label: 'Closed', path: '/admin/records' },
+    { label: 'Library', path: '/admin/library' },
+    { label: 'Marketing', path: '/admin/marketing' },
+    { label: 'Dashboard', path: '/admin/reports' },
+    // Row 3
+    { label: 'Vendors', path: '/admin/add-vendor' },
+    { label: 'Staff', path: '/admin/add-staff' },
+    { label: 'Settings', path: '/admin/settings' }
   ];
 
   const formatCurrency = (value: number) => {
@@ -380,27 +401,33 @@ export default function AdminSnapshot() {
         {/* Header with Back Button */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-black italic text-white mb-2" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="heading-analytics-dashboard">LOANVIEW GPT</h1>
-            <div className="flex items-center gap-2">
-              <p 
-                className="text-purple-300 cursor-pointer hover:text-purple-200 transition-colors"
-                onClick={() => setLocation('/admin/dashboard')}
-              >
-                Dashboard
-              </p>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setLocation('/admin/dashboard')}
-                className="text-purple-300 hover:text-white hover:bg-purple-500/20 h-6 w-6"
-                title="Back to Snapshot"
-                data-testid="button-back-to-dashboard"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-            </div>
+            <h1 className="text-xl font-black italic text-white" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="heading-analytics-dashboard">LOANVIEW GPT</h1>
           </div>
           <div className="flex items-center gap-3">
+            <DropdownMenu open={shortcutDropdownOpen} onOpenChange={setShortcutDropdownOpen}>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="p-2 bg-purple-500/20 hover:bg-purple-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all"
+                  data-testid="button-shortcut"
+                >
+                  <User className="h-5 w-5 text-purple-300" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                {dashboardMenuItems.map((item, index) => (
+                  <div key={item.path}>
+                    <DropdownMenuItem
+                      onClick={() => setLocation(item.path)}
+                      className="cursor-pointer hover:!bg-purple-500 hover:!text-white dark:hover:!bg-purple-600"
+                      data-testid={`shortcut-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+                    >
+                      {item.label}
+                    </DropdownMenuItem>
+                    {(index === 4 || index === 8) && <DropdownMenuSeparator />}
+                  </div>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
             <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 rounded-lg border border-purple-500/30">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
               <span className="text-purple-200 text-sm">Live</span>
