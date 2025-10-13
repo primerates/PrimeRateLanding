@@ -4034,11 +4034,12 @@ function AttachmentsDialog({
                       <Button
                         size="sm"
                         variant="ghost"
-                        onClick={() => window.open(`/api/transactions/${transactionId}/attachments/${attachment.id}/download`, '_blank')}
-                        data-testid={`button-download-${attachment.id}`}
+                        onClick={() => window.open(`/api/transactions/${transactionId}/attachments/${attachment.id}/view`, '_blank')}
+                        data-testid={`button-view-${attachment.id}`}
                         className="text-purple-300 hover:text-white"
+                        title="View in new tab"
                       >
-                        <Download className="w-4 h-4" />
+                        <FileText className="w-4 h-4" />
                       </Button>
                       <Button
                         size="sm"
@@ -4047,6 +4048,7 @@ function AttachmentsDialog({
                         disabled={deleteMutation.isPending}
                         data-testid={`button-delete-attachment-${attachment.id}`}
                         className="text-red-400 hover:text-red-300"
+                        title="Delete attachment"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>

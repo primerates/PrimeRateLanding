@@ -1556,6 +1556,38 @@ Return a JSON object with any/all relevant fields found. Include ANY field you f
     }
   });
 
+  // View/Download attachment
+  app.get("/api/transactions/:id/attachments/:attachmentId/view", async (req, res) => {
+    try {
+      const { attachmentId } = req.params;
+      
+      const attachment = await storage.getTransactionAttachment(attachmentId);
+      
+      if (!attachment) {
+        return res.status(404).json({
+          success: false,
+          message: "Attachment not found"
+        });
+      }
+
+      // Decode base64 file data
+      const fileBuffer = Buffer.from(attachment.fileData, 'base64');
+      
+      // Set headers to display in browser (not force download)
+      res.setHeader('Content-Type', attachment.fileType);
+      res.setHeader('Content-Disposition', `inline; filename="${attachment.fileName}"`);
+      res.setHeader('Content-Length', fileBuffer.length);
+      
+      res.send(fileBuffer);
+    } catch (error) {
+      console.error("View attachment error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to view attachment"
+      });
+    }
+  });
+
   // Delete an attachment
   app.delete("/api/transactions/:id/attachments/:attachmentId", async (req, res) => {
     try {

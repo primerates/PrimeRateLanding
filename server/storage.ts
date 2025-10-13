@@ -25,6 +25,7 @@ export interface IStorage {
   
   // Transaction Attachment methods
   uploadTransactionAttachment(attachment: InsertTransactionAttachment): Promise<TransactionAttachment>;
+  getTransactionAttachment(id: string): Promise<TransactionAttachment | undefined>;
   listTransactionAttachments(transactionId: string, transactionType: string): Promise<TransactionAttachment[]>;
   deleteTransactionAttachment(id: string): Promise<boolean>;
 }
@@ -213,6 +214,10 @@ export class MemStorage implements IStorage {
     };
     this.transactionAttachments.set(id, transactionAttachment);
     return transactionAttachment;
+  }
+
+  async getTransactionAttachment(id: string): Promise<TransactionAttachment | undefined> {
+    return this.transactionAttachments.get(id);
   }
 
   async listTransactionAttachments(transactionId: string, transactionType: string): Promise<TransactionAttachment[]> {
