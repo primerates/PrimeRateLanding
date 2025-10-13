@@ -162,7 +162,10 @@ export default function AdminLibrary() {
   // Calculate section title colors based on CARD brightness (for "Borrower" and "Current Residence")
   const getSectionTitleClasses = () => {
     if (!isLightMode) return 'bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent';
-    // In light mode, keep section titles dark/readable all the way to 0%
+    // In light mode, keep gradient at 15% or above, switch to dark text below 15%
+    if (cardBrightness >= 15) {
+      return 'bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent';
+    }
     return 'text-slate-800 font-bold';
   };
 
