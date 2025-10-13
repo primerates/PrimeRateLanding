@@ -127,6 +127,21 @@ export default function AdminSnapshot() {
   const [parRateAbove, setParRateAbove] = useState('');
   const [dataCategory, setDataCategory] = useState('Select');
   const [batchResults, setBatchResults] = useState<'show-all' | 'profitable' | 'loss'>('show-all');
+  
+  // Create New Batch card state (only shown when categoryFilter is 'direct-mail')
+  const [showCreateBatch, setShowCreateBatch] = useState(false);
+  const [batchNumber, setBatchNumber] = useState('');
+  const [batchTitle, setBatchTitle] = useState('');
+  const [tenYearBond, setTenYearBond] = useState('');
+  const [parRate, setParRate] = useState('');
+  const [category, setCategory] = useState('select');
+  const [dataType, setDataType] = useState('select');
+  const [delivery, setDelivery] = useState('select');
+  const [selectedStates, setSelectedStates] = useState<string[]>([]);
+  const [dataCost, setDataCost] = useState('');
+  const [mailCost, setMailCost] = useState('');
+  const [printCost, setPrintCost] = useState('');
+  const [supplyCost, setSupplyCost] = useState('');
   const [transactionDateRange, setTransactionDateRange] = useState({
     fromDate: '',
     toDate: ''
@@ -1303,6 +1318,184 @@ export default function AdminSnapshot() {
           </TooltipProvider>
         )}
 
+        {/* Create New Batch Card - Only shown when Direct Mail category is selected and Add New Batch is clicked */}
+        {categoryFilter === 'direct-mail' && showCreateBatch && (
+          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-white">Create New Batch</h3>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowCreateBatch(false)}
+                  className="px-4 py-2 bg-gradient-to-r from-red-500/20 to-pink-500/20 hover:from-red-500/30 hover:to-pink-500/30 rounded-lg border border-red-500/30 hover:border-red-500/50 text-red-300 hover:text-white transition-all text-sm font-semibold"
+                  data-testid="button-cancel-new-batch"
+                >
+                  Cancel New Batch
+                </button>
+              </div>
+            </div>
+            
+            {/* Separation line */}
+            <div className="border-t border-purple-500/30 mb-6"></div>
+            
+            <div className="space-y-6">
+              {/* Row 1: Batch Info */}
+              <div className="grid grid-cols-4 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-purple-200">Batch Number</Label>
+                  <Input
+                    value={batchNumber}
+                    onChange={(e) => setBatchNumber(e.target.value)}
+                    placeholder=""
+                    data-testid="input-batch-number-dm"
+                    className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-purple-200">Batch Title</Label>
+                  <Input
+                    value={batchTitle}
+                    onChange={(e) => setBatchTitle(e.target.value)}
+                    placeholder=""
+                    data-testid="input-batch-title-dm"
+                    className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-purple-200">10 Year Bond</Label>
+                  <Input
+                    value={tenYearBond}
+                    onChange={(e) => setTenYearBond(e.target.value)}
+                    placeholder=""
+                    data-testid="input-ten-year-bond-dm"
+                    className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-purple-200">Par Rate</Label>
+                  <Input
+                    value={parRate}
+                    onChange={(e) => setParRate(e.target.value)}
+                    placeholder=""
+                    data-testid="input-par-rate-dm"
+                    className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500"
+                  />
+                </div>
+              </div>
+
+              {/* Row 2: Categories */}
+              <div className="grid grid-cols-4 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-purple-200">Loan Category</Label>
+                  <Select value={category} onValueChange={setCategory}>
+                    <SelectTrigger data-testid="select-category-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      <SelectItem value="va">VA</SelectItem>
+                      <SelectItem value="va-jumbo">VA Jumbo</SelectItem>
+                      <SelectItem value="conventional">Conventional</SelectItem>
+                      <SelectItem value="conventional-jumbo">Conventional Jumbo</SelectItem>
+                      <SelectItem value="fha">FHA</SelectItem>
+                      <SelectItem value="second-loan">Second Loan</SelectItem>
+                      <SelectItem value="non-qm">Non-QM</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-purple-200">Data Category</Label>
+                  <Select value={dataType} onValueChange={setDataType}>
+                    <SelectTrigger data-testid="select-data-type-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      <SelectItem value="trigger">Trigger Data</SelectItem>
+                      <SelectItem value="monthly">Monthly Data</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-purple-200">Delivery</Label>
+                  <Select value={delivery} onValueChange={setDelivery}>
+                    <SelectTrigger data-testid="select-delivery-dm" className="bg-slate-700/50 text-white border-purple-500/30 focus:border-purple-500">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      <SelectItem value="mail">Mail</SelectItem>
+                      <SelectItem value="email">Email</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-purple-200">States</Label>
+                  <button
+                    className="w-full h-9 px-3 bg-slate-700/50 text-white border border-purple-500/30 hover:border-purple-500 rounded-md text-left transition-colors"
+                    data-testid="button-states-dashboard"
+                  >
+                    {selectedStates.length > 0 ? `${selectedStates.length} States` : 'Select States'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Row 3: Costs */}
+              <div className="grid grid-cols-4 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-purple-200">Data Cost</Label>
+                  <CurrencyInput
+                    value={dataCost}
+                    onChange={setDataCost}
+                    placeholder="$0"
+                    id="data-cost-dm"
+                    dataTestId="input-data-cost-dm"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-purple-200">Mail Cost</Label>
+                  <CurrencyInput
+                    value={mailCost}
+                    onChange={setMailCost}
+                    placeholder="$0"
+                    id="mail-cost-dm"
+                    dataTestId="input-mail-cost-dm"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-purple-200">Print Cost</Label>
+                  <CurrencyInput
+                    value={printCost}
+                    onChange={setPrintCost}
+                    placeholder="$0"
+                    id="print-cost-dm"
+                    dataTestId="input-print-cost-dm"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-purple-200">Supply Cost</Label>
+                  <CurrencyInput
+                    value={supplyCost}
+                    onChange={setSupplyCost}
+                    placeholder="$0"
+                    id="supply-cost-dm"
+                    dataTestId="input-supply-cost-dm"
+                  />
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <div className="flex justify-end pt-4">
+                <button
+                  className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold rounded-lg border border-purple-400/30 transition-all shadow-lg hover:shadow-purple-500/50"
+                  data-testid="button-create-batch"
+                >
+                  Create Batch
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Expense Entry Form */}
         {showExpenseForm && (
           <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl animate-in">
@@ -2034,7 +2227,8 @@ export default function AdminSnapshot() {
                 ) : (
                   <button
                     onClick={() => {
-                      setLocation('/admin/marketing');
+                      setShowCreateBatch(true);
+                      setIsQueryCardMinimized(true); // Minimize Query card
                       setShowAddModal(false);
                     }}
                     className="w-full p-6 bg-gradient-to-br from-purple-500/20 to-pink-600/20 hover:from-purple-500/30 hover:to-pink-600/30 rounded-xl border border-purple-500/30 hover:border-purple-500/50 transition-all group"
@@ -2043,7 +2237,7 @@ export default function AdminSnapshot() {
                     <div className="flex items-center justify-between">
                       <div className="text-left">
                         <h3 className="text-xl font-bold text-white mb-1">Add New Batch</h3>
-                        <p className="text-purple-300 text-sm">Record new marketing information</p>
+                        <p className="text-purple-300 text-sm">Create new direct mail campaign</p>
                       </div>
                       <TrendingUp className="w-8 h-8 text-purple-400 group-hover:scale-110 transition-transform" />
                     </div>
