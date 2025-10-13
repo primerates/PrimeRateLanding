@@ -210,6 +210,9 @@ export default function AdminSnapshot() {
     toDate: ''
   });
   const [openActionMenu, setOpenActionMenu] = useState<number | null>(null);
+  const [openBatchActionMenu, setOpenBatchActionMenu] = useState<string | null>(null);
+  const [deleteBatchId, setDeleteBatchId] = useState<string | null>(null);
+  const [showDeleteBatchModal, setShowDeleteBatchModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingExpenseId, setEditingExpenseId] = useState<number | null>(null);
   const [editingRevenueId, setEditingRevenueId] = useState<number | null>(null);
@@ -668,6 +671,32 @@ export default function AdminSnapshot() {
 
   const handleCancel = () => {
     setCancelDialogOpen(true);
+  };
+
+  const handleDeleteBatch = (batchId: string) => {
+    setDeleteBatchId(batchId);
+    setShowDeleteBatchModal(true);
+    setOpenBatchActionMenu(null);
+  };
+
+  const confirmDeleteBatch = () => {
+    if (!deleteBatchId) return;
+    
+    const storedBatches = localStorage.getItem('directMailBatches');
+    if (storedBatches) {
+      const existingBatches = JSON.parse(storedBatches);
+      const updatedBatches = existingBatches.filter((b: any) => b.id !== deleteBatchId);
+      localStorage.setItem('directMailBatches', JSON.stringify(updatedBatches));
+      setBatches(updatedBatches);
+    }
+    
+    setShowDeleteBatchModal(false);
+    setDeleteBatchId(null);
+    
+    toast({
+      title: "Batch Deleted",
+      description: "The batch has been removed successfully",
+    });
   };
 
   const handleScreenshare = () => {
@@ -1899,11 +1928,14 @@ export default function AdminSnapshot() {
                           <ArrowUpDown className="h-4 w-4" />
                         </div>
                       </th>
+                      <th className="text-left p-3 font-semibold bg-slate-700/50 text-purple-200 whitespace-nowrap">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {sortedBatches.map((batch: any) => {
-                      const totalCost = parseInt(batch.dataCost) + parseInt(batch.mailCost) + parseInt(batch.printCost) + parseInt(batch.supplyCost);
+                      const totalCost = (parseInt(batch.dataCost) || 0) + (parseInt(batch.mailCost) || 0) + (parseInt(batch.printCost) || 0) + (parseInt(batch.supplyCost) || 0);
                       const stateCount = batch.states?.length || 0;
                       return (
                         <tr key={batch.id} className="border-b border-purple-500/20 hover:bg-slate-700/30 transition-colors">
@@ -1927,6 +1959,28 @@ export default function AdminSnapshot() {
                             </button>
                           </td>
                           <td className="p-3 text-green-400 whitespace-nowrap font-semibold">${totalCost.toLocaleString()}</td>
+                          <td className="p-3 relative">
+                            <button
+                              onClick={() => setOpenBatchActionMenu(openBatchActionMenu === batch.id ? null : batch.id)}
+                              className="text-purple-300 hover:text-white transition-colors"
+                              data-testid={`button-batch-action-menu-${batch.id}`}
+                            >
+                              <MoreVertical className="w-5 h-5" />
+                            </button>
+                            
+                            {/* Action Menu Popup */}
+                            {openBatchActionMenu === batch.id && (
+                              <div className="absolute right-0 mt-2 w-32 bg-slate-800 rounded-lg border border-purple-500/30 shadow-xl z-50 overflow-hidden">
+                                <button
+                                  onClick={() => handleDeleteBatch(batch.id)}
+                                  className="w-full px-4 py-2 text-left text-red-400 hover:bg-red-500/20 transition-colors"
+                                  data-testid={`button-delete-batch-${batch.id}`}
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            )}
+                          </td>
                         </tr>
                       );
                     })}
@@ -3417,6 +3471,33 @@ export default function AdminSnapshot() {
                 data-testid="button-confirm-states"
               >
                 Confirm
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Delete Batch Confirmation Dialog */}
+        <Dialog open={showDeleteBatchModal} onOpenChange={setShowDeleteBatchModal}>
+          <DialogContent className="bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-white">Delete Batch?</DialogTitle>
+            </DialogHeader>
+            <p className="text-purple-200 pt-2">Are you sure you want to delete this batch? This action cannot be undone.</p>
+            <div className="flex justify-end gap-2 mt-4">
+              <Button
+                variant="outline"
+                onClick={() => setShowDeleteBatchModal(false)}
+                data-testid="button-cancel-delete-batch"
+                className="border-purple-500/30 text-purple-300 hover:bg-purple-500/10"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={confirmDeleteBatch}
+                className="bg-red-600 hover:bg-red-700 text-white border-0"
+                data-testid="button-confirm-delete-batch"
+              >
+                Delete
               </Button>
             </div>
           </DialogContent>
