@@ -125,6 +125,16 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 - **Drill-down Capabilities**: Click on "Direct Mail" to view state-by-state breakdown and loan program distribution
 - **Visual Design**: Dark gradient theme (slate-900 to purple-900) with glassmorphism cards and animated elements
 - **Expense & Revenue Logging**: Add entry functionality with transaction tracking, date filtering, sortable tables, action menus (edit/delete)
+**Transaction Attachments System**: Upload and manage receipts/invoices for expense and revenue transactions
+  - File upload support: PDF, JPG, PNG (max 5MB)
+  - Drag-and-drop or browse file selection
+  - Attachment count badges on transaction rows
+  - Download and delete functionality
+  - Secure storage with base64 encoding
+  - API Endpoints:
+    - `POST /api/transactions/:id/attachments` - Upload attachment
+    - `GET /api/transactions/:id/attachments` - List attachments
+    - `DELETE /api/transactions/:id/attachments/:attachmentId` - Delete attachment
 
 **Marketing Campaign Management** (integrated within Dashboard):
 - **Direct Mail Batch Creation**:
