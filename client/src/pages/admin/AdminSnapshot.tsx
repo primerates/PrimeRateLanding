@@ -1937,14 +1937,6 @@ export default function AdminSnapshot() {
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold text-white">New Batch</h3>
               <div className="flex items-center gap-3">
-                <Button 
-                  onClick={() => setStatesDialogOpen(true)}
-                  size="sm"
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white border-0"
-                  data-testid="button-states-batch"
-                >
-                  {selectedStates.length > 0 ? `${selectedStates.length} States` : 'States'}
-                </Button>
                 <Button
                   type="button"
                   variant="outline"
@@ -1958,6 +1950,14 @@ export default function AdminSnapshot() {
                 <div className="text-xs text-purple-300">
                   {getCompletedBatchFieldsCount()} / 17 fields complete
                 </div>
+                <Button 
+                  onClick={() => setStatesDialogOpen(true)}
+                  size="sm"
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white border-0"
+                  data-testid="button-states-batch"
+                >
+                  {selectedStates.length > 0 ? `${selectedStates.length} States` : 'States'}
+                </Button>
               </div>
             </div>
             
