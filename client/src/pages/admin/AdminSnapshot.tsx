@@ -1262,7 +1262,7 @@ export default function AdminSnapshot() {
               data-testid="button-add-entry"
             >
               <Plus className="w-5 h-5 text-white" />
-              <span className="text-white text-sm font-semibold">Add Entry</span>
+              <span className="text-white text-sm">Add Entry</span>
             </button>
           </div>
         </div>
