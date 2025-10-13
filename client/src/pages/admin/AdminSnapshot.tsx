@@ -422,18 +422,31 @@ export default function AdminSnapshot() {
         <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-bold text-white">Performance</h3>
-            <button
-              onClick={() => setIsFiltersMinimized(!isFiltersMinimized)}
-              className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
-              title={isFiltersMinimized ? "Expand" : "Minimize"}
-              data-testid="button-toggle-filters"
-            >
-              {isFiltersMinimized ? (
-                <Plus className="w-5 h-5 text-purple-300" />
-              ) : (
-                <Minus className="w-5 h-5 text-purple-300" />
-              )}
-            </button>
+            <div className="flex items-center gap-3">
+              <select 
+                value={timeFilter}
+                onChange={(e) => setTimeFilter(e.target.value)}
+                className="bg-transparent text-white px-3 py-1 rounded-lg focus:outline-none transition-colors cursor-pointer"
+                data-testid="select-time-filter"
+              >
+                <option value="today">Today</option>
+                <option value="mtd">Month to Date</option>
+                <option value="ytd">Year to Date</option>
+                <option value="custom">Custom Date Range</option>
+              </select>
+              <button
+                onClick={() => setIsFiltersMinimized(!isFiltersMinimized)}
+                className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                title={isFiltersMinimized ? "Expand" : "Minimize"}
+                data-testid="button-toggle-filters"
+              >
+                {isFiltersMinimized ? (
+                  <Plus className="w-5 h-5 text-purple-300" />
+                ) : (
+                  <Minus className="w-5 h-5 text-purple-300" />
+                )}
+              </button>
+            </div>
           </div>
 
           {!isFiltersMinimized && (
@@ -453,18 +466,6 @@ export default function AdminSnapshot() {
                     <option value="partners">Partners</option>
                   </select>
                 </div>
-                
-                <select 
-                  value={timeFilter}
-                  onChange={(e) => setTimeFilter(e.target.value)}
-                  className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
-                  data-testid="select-time-filter"
-                >
-                  <option value="today">Today</option>
-                  <option value="mtd">Month to Date</option>
-                  <option value="ytd">Year to Date</option>
-                  <option value="custom">Custom Date Range</option>
-                </select>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
