@@ -78,6 +78,7 @@ const IncomeTypes = ({
                             fieldPath={`${prefix}.incomeTypes.employment`}
                             label="Employment"
                             testId={`checkbox-${isCoBorrower ? 'coborrower-' : ''}employment`}
+                            preventUncheck={true}
                         />
                         
                         <IncomeTypeCheckbox

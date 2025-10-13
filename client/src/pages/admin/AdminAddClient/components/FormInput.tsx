@@ -12,6 +12,7 @@ interface FormInputProps {
   type?: string;
   maxLength?: number;
   required?: boolean;
+  readOnly?: boolean;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
@@ -26,6 +27,7 @@ const FormInput = ({
   type = "text",
   maxLength,
   required = false,
+  readOnly = false,
   onBlur
 }: FormInputProps) => {
   
@@ -47,6 +49,8 @@ const FormInput = ({
         onBlur={onBlur}
         placeholder={placeholder}
         maxLength={maxLength}
+        readOnly={readOnly}
+        className={readOnly ? 'bg-muted' : ''}
         data-testid={testId}
       />
     </div>
