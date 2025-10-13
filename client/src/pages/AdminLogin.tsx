@@ -7,7 +7,7 @@ import { Loader2, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { useBackground } from '@/contexts/BackgroundContext';
-import primeRateLogo from '@assets/Loanview GPT - Image Oct 12, 2025, 03_38_40 PM_1760308805575.png';
+import primeRateLogo from '@assets/Prime Rate Logo PNG_1759280639082.png';
 
 export default function AdminLogin() {
   const [location, setLocation] = useLocation();
