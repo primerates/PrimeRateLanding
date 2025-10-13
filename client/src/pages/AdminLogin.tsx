@@ -82,7 +82,7 @@ export default function AdminLogin() {
       {/* Left Side - Login Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-16 bg-gradient-to-r from-background via-background to-muted/20 relative">
         {/* Pink/Purple reflection glow from left border */}
-        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-pink-500/20 via-purple-500/10 to-transparent pointer-events-none"></div>
+        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-pink-500/10 via-purple-500/5 to-transparent pointer-events-none"></div>
         {/* Subtle background logo - top left */}
         <div className="absolute top-8 left-8 opacity-[0.15]">
           <img 
