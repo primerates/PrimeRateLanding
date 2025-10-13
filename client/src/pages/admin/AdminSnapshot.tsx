@@ -3,7 +3,7 @@ import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User } from 'lucide-react';
+import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Monitor } from 'lucide-react';
 
 export default function AdminSnapshot() {
   const [, setLocation] = useLocation();
@@ -14,6 +14,7 @@ export default function AdminSnapshot() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [entryType, setEntryType] = useState<string | null>(null);
   const [shortcutDropdownOpen, setShortcutDropdownOpen] = useState(false);
+  const [screenshareLoading, setScreenshareLoading] = useState(false);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
   const [showRevenueForm, setShowRevenueForm] = useState(false);
   const [isRevenueFormMinimized, setIsRevenueFormMinimized] = useState(false);
@@ -149,6 +150,13 @@ export default function AdminSnapshot() {
     { label: 'Staff', path: '/admin/add-staff' },
     { label: 'Settings', path: '/admin/settings' }
   ];
+
+  const handleScreenshare = () => {
+    setScreenshareLoading(true);
+    setTimeout(() => {
+      setScreenshareLoading(false);
+    }, 1000);
+  };
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -404,6 +412,19 @@ export default function AdminSnapshot() {
             <h1 className="text-xl font-black italic text-white" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="heading-analytics-dashboard">LOANVIEW GPT</h1>
           </div>
           <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 rounded-lg border border-purple-500/30">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-purple-200 text-sm">Live</span>
+            </div>
+            <button
+              onClick={handleScreenshare}
+              disabled={screenshareLoading}
+              className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 hover:bg-purple-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all disabled:opacity-50"
+              data-testid="button-screenshare"
+            >
+              <Monitor className={`h-4 w-4 text-purple-300 transition-transform duration-500 ${screenshareLoading ? 'animate-spin' : ''}`} />
+              <span className="text-purple-200 text-sm">{screenshareLoading ? 'Starting...' : 'Screenshare'}</span>
+            </button>
             <DropdownMenu open={shortcutDropdownOpen} onOpenChange={setShortcutDropdownOpen}>
               <DropdownMenuTrigger asChild>
                 <button
@@ -428,10 +449,6 @@ export default function AdminSnapshot() {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-            <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 rounded-lg border border-purple-500/30">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-purple-200 text-sm">Live</span>
-            </div>
             <button 
               onClick={() => {
                 setShowAddModal(true);
