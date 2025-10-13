@@ -1463,6 +1463,126 @@ Return a JSON object with any/all relevant fields found. Include ANY field you f
     }
   });
 
+  // Transaction Attachment Routes
+  
+  // Upload attachment to a transaction
+  app.post("/api/transactions/:id/attachments", upload.single('file'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ 
+          success: false,
+          message: "No file uploaded"
+        });
+      }
+
+      const { id } = req.params;
+      const { transactionType } = req.body;
+
+      if (!transactionType || (transactionType !== 'expense' && transactionType !== 'revenue')) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid transaction type. Must be 'expense' or 'revenue'"
+        });
+      }
+
+      // Validate file type
+      const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+      if (!allowedTypes.includes(req.file.mimetype)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid file type. Only PDF, JPG, and PNG files are allowed"
+        });
+      }
+
+      // Validate file size (5MB max)
+      const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+      if (req.file.size > maxSize) {
+        return res.status(400).json({
+          success: false,
+          message: "File too large. Maximum size is 5MB"
+        });
+      }
+
+      // Convert file buffer to base64
+      const fileData = req.file.buffer.toString('base64');
+
+      const attachment = await storage.uploadTransactionAttachment({
+        transactionId: id,
+        transactionType,
+        fileName: req.file.originalname,
+        fileType: req.file.mimetype,
+        fileSize: req.file.size.toString(),
+        fileData
+      });
+
+      res.json({
+        success: true,
+        data: attachment
+      });
+    } catch (error) {
+      console.error("Upload attachment error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to upload attachment"
+      });
+    }
+  });
+
+  // Get all attachments for a transaction
+  app.get("/api/transactions/:id/attachments", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { transactionType } = req.query;
+
+      if (!transactionType || (transactionType !== 'expense' && transactionType !== 'revenue')) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid transaction type. Must be 'expense' or 'revenue'"
+        });
+      }
+
+      const attachments = await storage.listTransactionAttachments(id, transactionType as string);
+      
+      res.json({
+        success: true,
+        data: attachments
+      });
+    } catch (error) {
+      console.error("List attachments error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to retrieve attachments"
+      });
+    }
+  });
+
+  // Delete an attachment
+  app.delete("/api/transactions/:id/attachments/:attachmentId", async (req, res) => {
+    try {
+      const { attachmentId } = req.params;
+      
+      const deleted = await storage.deleteTransactionAttachment(attachmentId);
+      
+      if (!deleted) {
+        return res.status(404).json({
+          success: false,
+          message: "Attachment not found"
+        });
+      }
+
+      res.json({
+        success: true,
+        message: "Attachment deleted successfully"
+      });
+    } catch (error) {
+      console.error("Delete attachment error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to delete attachment"
+      });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
