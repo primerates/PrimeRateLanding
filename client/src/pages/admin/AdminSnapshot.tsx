@@ -429,19 +429,6 @@ export default function AdminSnapshot() {
             <h1 className="text-xl font-black italic text-white" style={{ fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' }} data-testid="heading-analytics-dashboard">LOANVIEW GPT</h1>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 rounded-lg border border-purple-500/30">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-purple-200 text-sm">Live</span>
-            </div>
-            <button
-              onClick={handleScreenshare}
-              disabled={screenshareLoading}
-              className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 hover:bg-purple-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all disabled:opacity-50"
-              data-testid="button-screenshare"
-            >
-              <Monitor className={`h-4 w-4 text-purple-300 transition-transform duration-500 ${screenshareLoading ? 'animate-spin' : ''}`} />
-              <span className="text-purple-200 text-sm">{screenshareLoading ? 'Starting...' : 'Screenshare'}</span>
-            </button>
             <DropdownMenu open={shortcutDropdownOpen} onOpenChange={setShortcutDropdownOpen}>
               <DropdownMenuTrigger asChild>
                 <button
@@ -466,6 +453,19 @@ export default function AdminSnapshot() {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
+            <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 rounded-lg border border-purple-500/30">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-purple-200 text-sm">Live</span>
+            </div>
+            <button
+              onClick={handleScreenshare}
+              disabled={screenshareLoading}
+              className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 hover:bg-purple-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all disabled:opacity-50"
+              data-testid="button-screenshare"
+            >
+              <Monitor className={`h-4 w-4 text-purple-300 transition-transform duration-500 ${screenshareLoading ? 'animate-spin' : ''}`} />
+              <span className="text-purple-200 text-sm">{screenshareLoading ? 'Starting...' : 'Screenshare'}</span>
+            </button>
             <button 
               onClick={() => {
                 setShowAddModal(true);
@@ -483,7 +483,10 @@ export default function AdminSnapshot() {
         {/* Top Card - Filters and Metrics */}
         <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-white">Performance</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="text-xl font-bold text-white">Performance</h3>
+              <Filter className="w-5 h-5 text-purple-400" />
+            </div>
             <div className="flex items-center gap-3">
               <select 
                 value={timeFilter}
@@ -514,20 +517,17 @@ export default function AdminSnapshot() {
           {!isFiltersMinimized && (
             <>
               <div className="flex flex-wrap items-center gap-4 mb-6">
-                <div className="flex items-center gap-2">
-                  <Filter className="w-5 h-5 text-purple-400" />
-                  <select 
-                    value={entityFilter}
-                    onChange={(e) => setEntityFilter(e.target.value)}
-                    className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
-                    data-testid="select-entity-filter"
-                  >
-                    <option value="all">Show All</option>
-                    <option value="company">Company</option>
-                    <option value="branch">Branch</option>
-                    <option value="partners">Partners</option>
-                  </select>
-                </div>
+                <select 
+                  value={entityFilter}
+                  onChange={(e) => setEntityFilter(e.target.value)}
+                  className="bg-slate-700/50 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-500 transition-colors"
+                  data-testid="select-entity-filter"
+                >
+                  <option value="all">Show All</option>
+                  <option value="company">Company</option>
+                  <option value="branch">Branch</option>
+                  <option value="partners">Partners</option>
+                </select>
                 
                 <select 
                   value={categoryFilter}
