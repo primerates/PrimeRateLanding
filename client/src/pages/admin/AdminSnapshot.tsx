@@ -343,13 +343,12 @@ export default function AdminSnapshot() {
     { label: 'Funded', path: '/admin/funded' },
     // Row 2
     { label: 'Closed', path: '/admin/records' },
-    { label: 'Library', path: '/admin/library' },
-    { label: 'Marketing', path: '/admin/marketing' },
     { label: 'Dashboard', path: '/admin/reports' },
-    // Row 3
-    { label: 'Vendors', path: '/admin/add-vendor' },
-    { label: 'Staff', path: '/admin/add-staff' },
-    { label: 'Settings', path: '/admin/settings' }
+    { label: 'Settings', path: '/admin/settings' },
+    // Navigation options
+    { label: 'Back to Tiles', path: '/admin' },
+    { label: 'Back to Site', path: '/' },
+    { label: 'Log Out', path: '/logout' }
   ];
 
   const handleScreenshare = () => {
