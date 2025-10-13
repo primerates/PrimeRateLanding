@@ -7,7 +7,7 @@ import { Plus, Minus } from 'lucide-react';
 import { InsertClient } from '@shared/schema';
 import FormInput from './FormInput';
 import DateInput from './DateInput';
-import DeleteSocialSecurityDialog from '../dialogs/DeleteSocialSecurityDialog';
+import DeleteConfirmationDialog from '../dialogs/DeleteConfirmationDialog';
 
 interface SocialSecurityFormProps {
     isOpen: boolean;
@@ -85,13 +85,19 @@ const SocialSecurityForm = ({ isOpen, onOpenChange, onDeleteSocialSecurity }: So
                 </Collapsible>
             </Card>
 
-            <DeleteSocialSecurityDialog
+            <DeleteConfirmationDialog
                 isOpen={deleteDialog.isOpen}
                 onClose={() => setDeleteDialog({ isOpen: false })}
                 onConfirm={() => {
                     onDeleteSocialSecurity();
                     setDeleteDialog({ isOpen: false });
                 }}
+                title="Remove Social Security Income"
+                description="Are you sure you want to remove the Social Security income section? This will clear all entered data and hide the section. This action cannot be undone."
+                confirmButtonText="Remove"
+                testId="dialog-delete-social-security"
+                confirmButtonTestId="button-confirm-delete-social-security"
+                cancelButtonTestId="button-cancel-delete-social-security"
             />
         </>
     );

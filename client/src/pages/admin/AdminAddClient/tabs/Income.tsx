@@ -6,7 +6,7 @@ import IncomeTypes from '../components/IncomeTypes';
 import EmploymentForm from '../components/EmploymentForm';
 import SocialSecurityForm from '../components/SocialSecurityForm';
 import PropertyRentalDialog from '../dialogs/PropertyRentalDialog';
-import DeleteEmployerDialog from '../dialogs/DeleteEmployerDialog';
+import DeleteConfirmationDialog from '../dialogs/DeleteConfirmationDialog';
 import { InsertClient } from '@shared/schema';
 import { parseMonetaryValue, formatCurrency, calculateEmploymentDuration } from '../utils/formUtils';
 
@@ -294,10 +294,15 @@ const IncomeTab = ({ animations }: IncomeTabProps) => {
             />
 
             {/* Delete Employer Confirmation Dialog */}
-            <DeleteEmployerDialog
+            <DeleteConfirmationDialog
                 isOpen={deleteEmployerDialog.isOpen}
                 onClose={() => setDeleteEmployerDialog({ isOpen: false, cardId: '' })}
                 onConfirm={() => handleDeleteEmployer(deleteEmployerDialog.cardId)}
+                title="Delete Employer"
+                description="Are you sure you want to delete this employer? This action cannot be undone and will remove all associated employment information."
+                testId="dialog-delete-employer"
+                confirmButtonTestId="button-delete-employer-confirm"
+                cancelButtonTestId="button-delete-employer-cancel"
             />
         </>
     );
