@@ -132,13 +132,11 @@ export default function AdminDashboard() {
     { id: 'loan-prep', label: 'Loan Prep', icon: FileText, path: '/admin/loan-prep' },
     { id: 'pipeline', label: 'Loan', icon: LayoutDashboard, path: '/admin/pipeline' },
     { id: 'funded', label: 'Funded', icon: CheckCircle, path: '/admin/funded' },
-    // Row 2 (items 5-7)
+    // Row 2 (items 5-6)
     { id: 'records', label: 'Closed', icon: Archive, path: '/admin/records' },
     { id: 'reports', label: 'Dashboard', icon: BarChart3, path: '/admin/reports' },
-    { id: 'add-vendor', label: 'Vendors', icon: Building2, path: '/admin/add-vendor' },
-    // Row 3 (items 8+)
+    // Row 3 (items 7+)
     { id: 'library', label: 'Library', icon: FolderOpen, path: '/admin/library' },
-    { id: 'add-staff', label: 'Staff', icon: UserCheck, path: '/admin/add-staff' },
     { id: 'settings', label: 'Settings', icon: Settings, path: '/admin/add-comment' },
   ];
 
@@ -455,7 +453,7 @@ export default function AdminDashboard() {
               isRow2Visible ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'
             }`}
           >
-            {menuItems.slice(5, 8).map((item, index) => {
+            {menuItems.slice(5, 7).map((item, index) => {
               const Icon = item.icon;
               return (
                 <Card 
@@ -506,7 +504,7 @@ export default function AdminDashboard() {
               isRow3Visible ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'
             }`}
           >
-            {menuItems.slice(8).map((item, index) => {
+            {menuItems.slice(7).map((item, index) => {
               const Icon = item.icon;
               return (
                 <Card 

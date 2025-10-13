@@ -106,8 +106,8 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
 
 #### Dashboard Tiles
 - **Row 1**: Lead, Quote, Loan Prep, Loan, Funded (green left border on hover)
-- **Row 2**: Closed, Dashboard, Vendors (blue left border on hover)
-- **Row 3**: Library, Staff, Settings (purple left border on hover)
+- **Row 2**: Closed, Dashboard (blue left border on hover)
+- **Row 3**: Library, Settings (purple left border on hover)
 
 ### Snapshot Analytics Dashboard
 **Route**: `/admin/reports`
