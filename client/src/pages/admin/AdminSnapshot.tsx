@@ -1,9 +1,10 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useLocation } from 'wouter';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Monitor, ChevronDown, ChevronUp, Upload, CheckCircle, AlertCircle, FileText } from 'lucide-react';
+import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Filter, ArrowLeft, Plus, X, ArrowUpDown, Minus, MoreVertical, User, Monitor, ChevronDown, ChevronUp, Upload, CheckCircle, AlertCircle, FileText, Paperclip, Download, Trash2 } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -3694,7 +3695,261 @@ export default function AdminSnapshot() {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Attachments Dialog */}
+        <AttachmentsDialog
+          open={showAttachmentsDialog}
+          onClose={() => {
+            setShowAttachmentsDialog(false);
+            setSelectedTransaction(null);
+          }}
+          transactionId={selectedTransaction?.id}
+          transactionType={selectedTransaction?.type}
+        />
       </div>
     </div>
+  );
+}
+
+function AttachmentsDialog({ 
+  open, 
+  onClose, 
+  transactionId, 
+  transactionType 
+}: { 
+  open: boolean; 
+  onClose: () => void; 
+  transactionId?: string | number; 
+  transactionType?: 'expense' | 'revenue';
+}) {
+  const [isDragging, setIsDragging] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInputRef = useState<HTMLInputElement | null>(null)[0];
+
+  // Query to fetch attachments
+  const { data: attachments = [], isLoading, refetch } = useQuery({
+    queryKey: ['/api/transactions', transactionId, 'attachments'],
+    enabled: open && !!transactionId,
+  });
+
+  // Upload mutation
+  const uploadMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('transactionType', transactionType || 'expense');
+
+      const res = await fetch(`/api/transactions/${transactionId}/attachments`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Upload failed');
+      }
+
+      return res.json();
+    },
+    onSuccess: () => {
+      refetch();
+      setUploadError(null);
+    },
+    onError: (error: Error) => {
+      setUploadError(error.message);
+    },
+  });
+
+  // Delete mutation
+  const deleteMutation = useMutation({
+    mutationFn: async (attachmentId: number) => {
+      const res = await fetch(`/api/transactions/${transactionId}/attachments/${attachmentId}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) {
+        throw new Error('Delete failed');
+      }
+
+      return res.json();
+    },
+    onSuccess: () => {
+      refetch();
+    },
+  });
+
+  const handleFileSelect = (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
+    
+    // Validate file type
+    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+    if (!allowedTypes.includes(file.type)) {
+      setUploadError('Only PDF, JPG, and PNG files are allowed');
+      return;
+    }
+
+    // Validate file size (5MB max)
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      setUploadError('File size must be less than 5MB');
+      return;
+    }
+
+    uploadMutation.mutate(file);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    handleFileSelect(e.dataTransfer.files);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  };
+
+  const getFileIcon = (fileType: string) => {
+    if (fileType.includes('pdf')) return <FileText className="w-5 h-5 text-red-400" />;
+    if (fileType.includes('image')) return <FileText className="w-5 h-5 text-blue-400" />;
+    return <Paperclip className="w-5 h-5 text-purple-400" />;
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="bg-slate-800/95 backdrop-blur-xl border-purple-500/30 max-w-2xl">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-bold text-white flex items-center gap-2">
+            <Paperclip className="w-5 h-5" />
+            Manage Attachments
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-6 pt-4">
+          {/* Upload Dropzone */}
+          <div
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            className={`
+              border-2 border-dashed rounded-lg p-8 text-center transition-all cursor-pointer
+              ${isDragging 
+                ? 'border-purple-500 bg-purple-500/10' 
+                : 'border-purple-500/30 hover:border-purple-500/50'
+              }
+            `}
+            onClick={() => document.getElementById('file-upload')?.click()}
+            data-testid="dropzone-attachment-upload"
+          >
+            <input
+              id="file-upload"
+              type="file"
+              className="hidden"
+              accept=".pdf,.jpg,.jpeg,.png"
+              onChange={(e) => handleFileSelect(e.target.files)}
+              data-testid="input-file-upload"
+            />
+            
+            <Upload className="w-12 h-12 mx-auto mb-4 text-purple-300" />
+            <p className="text-white font-medium mb-2">
+              {uploadMutation.isPending ? 'Uploading...' : 'Drop files here or click to browse'}
+            </p>
+            <p className="text-sm text-purple-300">
+              Supported: PDF, JPG, PNG (max 5MB)
+            </p>
+          </div>
+
+          {/* Upload Error */}
+          {uploadError && (
+            <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-red-400" />
+              <p className="text-red-300 text-sm">{uploadError}</p>
+            </div>
+          )}
+
+          {/* Attachments List */}
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold text-purple-200 mb-3">
+              Attached Files ({attachments.length})
+            </h3>
+
+            {isLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+              </div>
+            ) : attachments.length === 0 ? (
+              <div className="text-center py-8 text-purple-300">
+                No attachments yet
+              </div>
+            ) : (
+              <div className="space-y-2 max-h-64 overflow-y-auto">
+                {attachments.map((attachment: any) => (
+                  <div
+                    key={attachment.id}
+                    className="bg-slate-700/50 rounded-lg p-3 flex items-center justify-between hover:bg-slate-700/70 transition-colors"
+                    data-testid={`attachment-item-${attachment.id}`}
+                  >
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      {getFileIcon(attachment.fileType)}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-white text-sm truncate">{attachment.fileName}</p>
+                        <p className="text-purple-300 text-xs">
+                          {formatFileSize(attachment.fileSize)} • {new Date(attachment.uploadedAt).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => window.open(`/api/transactions/${transactionId}/attachments/${attachment.id}/download`, '_blank')}
+                        data-testid={`button-download-${attachment.id}`}
+                        className="text-purple-300 hover:text-white"
+                      >
+                        <Download className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => deleteMutation.mutate(attachment.id)}
+                        disabled={deleteMutation.isPending}
+                        data-testid={`button-delete-attachment-${attachment.id}`}
+                        className="text-red-400 hover:text-red-300"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-2 mt-6">
+          <Button
+            variant="outline"
+            onClick={onClose}
+            data-testid="button-close-attachments"
+            className="border-purple-500/30 text-purple-300 hover:bg-purple-500/10"
+          >
+            Close
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
