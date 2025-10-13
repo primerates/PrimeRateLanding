@@ -505,3 +505,23 @@ export const mortgageDocumentDataSchema = z.object({
 });
 
 export type MortgageDocumentData = z.infer<typeof mortgageDocumentDataSchema>;
+
+// Transaction Attachments schema for receipt/invoice uploads
+export const transactionAttachments = pgTable("transaction_attachments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  transactionId: text("transaction_id").notNull(), // Links to expense/revenue entry ID
+  transactionType: text("transaction_type").notNull(), // "expense" or "revenue"
+  fileName: text("file_name").notNull(),
+  fileType: text("file_type").notNull(), // MIME type: "application/pdf", "image/jpeg", "image/png"
+  fileSize: varchar("file_size").notNull(), // In bytes
+  fileData: text("file_data").notNull(), // Base64 encoded file data
+  uploadedAt: varchar("uploaded_at").notNull(),
+});
+
+export const insertTransactionAttachmentSchema = createInsertSchema(transactionAttachments).omit({
+  id: true,
+  uploadedAt: true,
+});
+
+export type TransactionAttachment = typeof transactionAttachments.$inferSelect;
+export type InsertTransactionAttachment = z.infer<typeof insertTransactionAttachmentSchema>;
