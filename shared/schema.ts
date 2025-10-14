@@ -510,7 +510,7 @@ export type MortgageDocumentData = z.infer<typeof mortgageDocumentDataSchema>;
 export const transactionAttachments = pgTable("transaction_attachments", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   transactionId: text("transaction_id").notNull(), // Links to expense/revenue entry ID
-  transactionType: text("transaction_type").notNull(), // "expense" or "revenue"
+  transactionType: text("transaction_type").notNull(), // "expense", "revenue", or "staff"
   fileName: text("file_name").notNull(),
   fileType: text("file_type").notNull(), // MIME type: "application/pdf", "image/jpeg", "image/png"
   fileSize: varchar("file_size").notNull(), // In bytes
