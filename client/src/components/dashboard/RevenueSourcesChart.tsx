@@ -40,7 +40,7 @@ export function RevenueSourcesChart({
     <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl" data-testid="card-revenue-sources">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xl font-bold text-white">
-          {categoryFilter === 'financials' ? 'Revenue' : categoryFilter === 'staff' ? 'ROLE' : 'Activity'}
+          {categoryFilter === 'financials' ? 'Revenue' : categoryFilter === 'staff' ? 'Pipeline' : 'Activity'}
         </h3>
         <button
           onClick={() => {
