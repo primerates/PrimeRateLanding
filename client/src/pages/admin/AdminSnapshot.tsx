@@ -1579,7 +1579,7 @@ export default function AdminSnapshot() {
                 <div className="p-2 rounded-lg bg-indigo-500/20 border border-indigo-500/30">
                   <User className="w-5 h-5 text-indigo-400" />
                 </div>
-                <h2 className="text-2xl font-bold text-white">Search</h2>
+                <h2 className="text-xl font-bold text-white">Search</h2>
               </div>
               <button 
                 onClick={handleSearchStaff}
