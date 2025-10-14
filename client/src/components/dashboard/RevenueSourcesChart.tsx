@@ -68,11 +68,14 @@ export function RevenueSourcesChart({
         </button>
       </div>
       
-      {!areChartsMinimized && (
-        <>
-          {!revenueDetailView ? (
-            <>
-              <ResponsiveContainer width="100%" height={300}>
+      <div 
+        className={`transition-all duration-500 ease-in-out overflow-hidden ${
+          areChartsMinimized ? 'max-h-0 opacity-0' : 'max-h-[2000px] opacity-100'
+        }`}
+      >
+        {!revenueDetailView ? (
+          <div>
+            <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie
                     data={revenueData}
@@ -116,7 +119,7 @@ export function RevenueSourcesChart({
                   </div>
                 ))}
               </div>
-            </>
+          </div>
           ) : (
             <div>
               <button 
@@ -148,8 +151,7 @@ export function RevenueSourcesChart({
               </div>
             </div>
           )}
-        </>
-      )}
+      </div>
     </div>
   );
 }

@@ -60,9 +60,12 @@ export function ExpenseBreakdownChart({
         </button>
       </div>
       
-      {!areChartsMinimized && (
-        <>
-          <ResponsiveContainer width="100%" height={300}>
+      <div 
+        className={`transition-all duration-500 ease-in-out overflow-hidden ${
+          areChartsMinimized ? 'max-h-0 opacity-0' : 'max-h-[2000px] opacity-100'
+        }`}
+      >
+        <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
                 data={expenseData}
@@ -95,8 +98,7 @@ export function ExpenseBreakdownChart({
               </div>
             ))}
           </div>
-        </>
-      )}
+      </div>
     </div>
   );
 }
