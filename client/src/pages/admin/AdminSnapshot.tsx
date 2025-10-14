@@ -192,6 +192,9 @@ export default function AdminSnapshot() {
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [staffSortConfig, setStaffSortConfig] = useState<{ key: string | null; direction: 'asc' | 'desc' }>({ key: null, direction: 'asc' });
 
+  // Performance card title state
+  const [performanceCardTitle, setPerformanceCardTitle] = useState('Performance');
+
   // Mock staff data for search results
   const mockStaffData = [
     {
@@ -1505,8 +1508,61 @@ export default function AdminSnapshot() {
         <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 shadow-2xl">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
-              <h3 className="text-xl font-bold text-white">Performance</h3>
-              <Filter className="w-5 h-5 text-purple-400" />
+              <h3 className="text-xl font-bold text-white">{performanceCardTitle}</h3>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    className="flex items-center justify-center w-6 h-6 rounded-md hover:bg-purple-500/20 transition-colors"
+                    data-testid="button-performance-menu"
+                  >
+                    <Filter className="w-5 h-5 text-purple-400 hover:text-purple-300" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-48 bg-slate-800 border-purple-500/30">
+                  <DropdownMenuItem 
+                    onClick={() => setPerformanceCardTitle('Performance')}
+                    className="text-purple-200 hover:text-white hover:bg-purple-500/20 cursor-pointer"
+                    data-testid="menu-item-performance"
+                  >
+                    Performance
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => setPerformanceCardTitle('Dashboard')}
+                    className="text-purple-200 hover:text-white hover:bg-purple-500/20 cursor-pointer"
+                    data-testid="menu-item-dashboard"
+                  >
+                    Dashboard
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => setPerformanceCardTitle('Analytics')}
+                    className="text-purple-200 hover:text-white hover:bg-purple-500/20 cursor-pointer"
+                    data-testid="menu-item-analytics"
+                  >
+                    Analytics
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => setPerformanceCardTitle('Metrics')}
+                    className="text-purple-200 hover:text-white hover:bg-purple-500/20 cursor-pointer"
+                    data-testid="menu-item-metrics"
+                  >
+                    Metrics
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => setPerformanceCardTitle('Overview')}
+                    className="text-purple-200 hover:text-white hover:bg-purple-500/20 cursor-pointer"
+                    data-testid="menu-item-overview"
+                  >
+                    Overview
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => setPerformanceCardTitle('Insights')}
+                    className="text-purple-200 hover:text-white hover:bg-purple-500/20 cursor-pointer"
+                    data-testid="menu-item-insights"
+                  >
+                    Insights
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             <button
               onClick={() => {
