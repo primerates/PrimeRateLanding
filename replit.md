@@ -137,6 +137,11 @@ For all Excel/CSV data upload features, use sticky columns for key identifier co
   - Query Card, Batch List, and Create Batch cards only appear when categoryFilter = 'marketing' AND teamFilter = 'direct-mail'
   - Staff forms appear when categoryFilter = 'staff'
   - Revenue/Expense forms appear when categoryFilter = 'financials'
+- **Search Card (Staff Page)**: 
+  - Minimizable card with Plus/Minus button for expand/collapse (500ms smooth animation)
+  - Auto-minimizes when "Add Entry" staff forms open
+  - Shows warning popup if user attempts to expand while staff forms are active (same message as Access/Pipeline cards)
+  - Staff add-on cards must be closed before Search card can expand
 - **Revenue Sources Visualization**: Pie chart with detailed breakdown by source (Direct Mail, Lead Vendors, Social Media, Repeat Clients, Referrals)
 - **Expense Breakdown**: Pie chart categorizing expenses (Marketing, Staff, Vendors, Services, Supplies)
 - **Drill-down Capabilities**: Click on "Direct Mail" to view state-by-state breakdown and loan program distribution

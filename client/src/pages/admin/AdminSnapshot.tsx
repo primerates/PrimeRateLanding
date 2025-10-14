@@ -150,6 +150,7 @@ export default function AdminSnapshot() {
   const [showExpenseForm, setShowExpenseForm] = useState(false);
   const [showRevenueForm, setShowRevenueForm] = useState(false);
   const [showStaffForm, setShowStaffForm] = useState(false);
+  const [isSearchMinimized, setIsSearchMinimized] = useState(false);
   
   // Staff form state
   const [staffFirstName, setStaffFirstName] = useState('');
@@ -1581,17 +1582,42 @@ export default function AdminSnapshot() {
                 </div>
                 <h2 className="text-xl font-bold text-white">Search</h2>
               </div>
-              <button 
-                onClick={handleSearchStaff}
-                className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 hover:shadow-purple-500/50"
-                data-testid="button-search-staff"
-              >
-                Search Staff
-              </button>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={handleSearchStaff}
+                  className="px-3.5 py-1.5 text-sm rounded-lg font-medium transition-all text-white shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 hover:shadow-purple-500/50"
+                  data-testid="button-search-staff"
+                >
+                  Search Staff
+                </button>
+                <button
+                  onClick={() => {
+                    if (showStaffForm && isSearchMinimized) {
+                      setShowStaffWarning(true);
+                    } else {
+                      setIsSearchMinimized(!isSearchMinimized);
+                    }
+                  }}
+                  className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20 hover:from-purple-500/40 hover:to-pink-500/40 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all shadow-lg hover:shadow-purple-500/30"
+                  title={isSearchMinimized ? "Expand" : "Minimize"}
+                  data-testid="button-toggle-search"
+                >
+                  {isSearchMinimized ? (
+                    <Plus className="w-5 h-5 text-purple-300" />
+                  ) : (
+                    <Minus className="w-5 h-5 text-purple-300" />
+                  )}
+                </button>
+              </div>
             </div>
 
-            {/* Row 1: Area, Magnify, Rating, Performance */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            <div 
+              className={`transition-all duration-500 ease-in-out overflow-hidden ${
+                isSearchMinimized ? 'max-h-0 opacity-0' : 'max-h-[2000px] opacity-100'
+              }`}
+            >
+              {/* Row 1: Area, Magnify, Rating, Performance */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
               <div>
                 <label className="block text-sm font-medium mb-2 text-purple-300">
                   Area
@@ -1821,6 +1847,7 @@ export default function AdminSnapshot() {
                   Clear Filters
                 </button>
               </div>
+            </div>
             </div>
           </div>
         )}
@@ -4439,6 +4466,7 @@ export default function AdminSnapshot() {
                       setShowStaffForm(true);
                       setIsFiltersMinimized(true); // Minimize Performance card
                       setAreChartsMinimized(true); // Minimize Charts
+                      setIsSearchMinimized(true); // Minimize Search card
                       setShowAddModal(false);
                     }}
                     className="w-full p-6 bg-gradient-to-br from-purple-500/20 to-indigo-600/20 hover:from-purple-500/30 hover:to-indigo-600/30 rounded-xl border border-purple-500/30 hover:border-purple-500/50 transition-all group"
