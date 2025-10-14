@@ -1397,46 +1397,6 @@ export default function AdminSnapshot() {
               <span className="text-purple-200 text-sm">{screenshareLoading ? 'Starting...' : 'Screenshare'}</span>
             </button>
             
-            {/* Entity Filter Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  className="bg-purple-500/20 hover:bg-purple-500/40 text-white px-4 py-2 rounded-lg border border-purple-500/30 hover:border-purple-500/50 transition-all min-w-[140px] text-left flex items-center justify-between text-sm"
-                  data-testid="select-entity-filter"
-                >
-                  <span>
-                    {entityFilter === 'prime-rate' && 'Prime Rate'}
-                    {entityFilter === 'branch' && 'Branch'}
-                    {entityFilter === 'partners' && 'Partners'}
-                  </span>
-                  <ChevronDown className="h-4 w-4 ml-2" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-[140px] bg-slate-800/95 backdrop-blur-xl border-purple-500/30">
-                <DropdownMenuItem
-                  onClick={() => setEntityFilter('prime-rate')}
-                  className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                  data-testid="option-entity-prime-rate"
-                >
-                  Prime Rate
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => setEntityFilter('branch')}
-                  className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                  data-testid="option-entity-branch"
-                >
-                  Branch
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => setEntityFilter('partners')}
-                  className="cursor-pointer text-purple-200 hover:!bg-gradient-to-r hover:!from-purple-600 hover:!to-pink-600 hover:!text-white focus:!bg-gradient-to-r focus:!from-purple-600 focus:!to-pink-600 focus:!text-white transition-all"
-                  data-testid="option-entity-partners"
-                >
-                  Partners
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            
             <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 rounded-lg border border-purple-500/30">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
               <span className="text-purple-200 text-sm">Live</span>
