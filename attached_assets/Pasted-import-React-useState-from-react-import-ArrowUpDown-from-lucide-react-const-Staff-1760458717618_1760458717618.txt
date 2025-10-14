@@ -1,0 +1,368 @@
+import React, { useState } from 'react';
+import { ArrowUpDown } from 'lucide-react';
+
+const StaffResultsTable = () => {
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  
+  const staffData = [
+    {
+      id: 1,
+      name: 'John Smith',
+      area: 'Company',
+      magnify: 'MLO',
+      rating: 'Review',
+      performance: '+25%',
+      withCompany: '5 years',
+      compensation: 'W2',
+      earnings: 145000,
+      bonus: 25000,
+      licenseCount: 3,
+      loanVolume: 127,
+      fundingVolume: 32500000
+    },
+    {
+      id: 2,
+      name: 'Sarah Johnson',
+      area: 'Branch',
+      magnify: 'Processor',
+      rating: 'Attendance',
+      performance: '+42%',
+      withCompany: '3 years',
+      compensation: '1099',
+      earnings: 98000,
+      bonus: 15000,
+      licenseCount: 2,
+      loanVolume: 89,
+      fundingVolume: 18750000
+    },
+    {
+      id: 3,
+      name: 'Michael Chen',
+      area: 'Region',
+      magnify: 'MLO',
+      rating: 'Review',
+      performance: '+18%',
+      withCompany: '7 years',
+      compensation: 'W2',
+      earnings: 167000,
+      bonus: 35000,
+      licenseCount: 5,
+      loanVolume: 156,
+      fundingVolume: 45200000
+    },
+    {
+      id: 4,
+      name: 'Emily Davis',
+      area: 'Partner',
+      magnify: 'Team',
+      rating: 'Review',
+      performance: '+33%',
+      withCompany: '2 years',
+      compensation: 'W2',
+      earnings: 112000,
+      bonus: 18000,
+      licenseCount: 1,
+      loanVolume: 98,
+      fundingVolume: 24300000
+    },
+    {
+      id: 5,
+      name: 'Robert Martinez',
+      area: 'District',
+      magnify: 'MLO',
+      rating: 'Attendance',
+      performance: '-8%',
+      withCompany: '1 year',
+      compensation: '1099',
+      earnings: 78000,
+      bonus: 8000,
+      licenseCount: 2,
+      loanVolume: 54,
+      fundingVolume: 12100000
+    },
+    {
+      id: 6,
+      name: 'Jennifer Wilson',
+      area: 'State',
+      magnify: 'Processor',
+      rating: 'Review',
+      performance: '+51%',
+      withCompany: '4 years',
+      compensation: 'W2',
+      earnings: 128000,
+      bonus: 22000,
+      licenseCount: 4,
+      loanVolume: 142,
+      fundingVolume: 38900000
+    },
+    {
+      id: 7,
+      name: 'David Brown',
+      area: 'City',
+      magnify: 'MLO',
+      rating: 'Attendance',
+      performance: '+15%',
+      withCompany: '8 years',
+      compensation: '1099',
+      earnings: 189000,
+      bonus: 42000,
+      licenseCount: 6,
+      loanVolume: 198,
+      fundingVolume: 52300000
+    }
+  ];
+
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+  };
+
+  const handleSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedStaffData = [...staffData].sort((a, b) => {
+    if (!sortConfig.key) return 0;
+    
+    const aValue = a[sortConfig.key];
+    const bValue = b[sortConfig.key];
+    
+    if (typeof aValue === 'number' && typeof bValue === 'number') {
+      return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
+    }
+    
+    if (aValue < bValue) {
+      return sortConfig.direction === 'asc' ? -1 : 1;
+    }
+    if (aValue > bValue) {
+      return sortConfig.direction === 'asc' ? 1 : -1;
+    }
+    return 0;
+  });
+
+  return (
+    <div className={`min-h-screen p-6 transition-colors duration-300 ${
+      isDarkMode 
+        ? 'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900' 
+        : 'bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50'
+    }`}>
+      <div className="max-w-7xl mx-auto">
+        <div className={`backdrop-blur-xl rounded-2xl p-6 border shadow-2xl ${
+          isDarkMode 
+            ? 'bg-slate-800/50 border-purple-500/20' 
+            : 'bg-white/80 border-purple-200'
+        }`}>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+              Search Results ({sortedStaffData.length} staff members)
+            </h3>
+            <p className={`text-sm ${isDarkMode ? 'text-purple-300' : 'text-purple-600'}`}>
+              Click column headers to sort
+            </p>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-max">
+              <thead>
+                <tr className={`border-b ${isDarkMode ? 'border-purple-500/30' : 'border-purple-200'}`}>
+                  <th 
+                    onClick={() => handleSort('name')}
+                    className={`text-left py-3 px-4 cursor-pointer transition-colors min-w-[150px] ${
+                      isDarkMode ? 'text-purple-300 hover:text-purple-200' : 'text-purple-700 hover:text-purple-900'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      Name
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('area')}
+                    className={`text-left py-3 px-4 cursor-pointer transition-colors min-w-[120px] ${
+                      isDarkMode ? 'text-purple-300 hover:text-purple-200' : 'text-purple-700 hover:text-purple-900'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      Area
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('magnify')}
+                    className={`text-left py-3 px-4 cursor-pointer transition-colors min-w-[120px] ${
+                      isDarkMode ? 'text-purple-300 hover:text-purple-200' : 'text-purple-700 hover:text-purple-900'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      Magnify
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('rating')}
+                    className={`text-left py-3 px-4 cursor-pointer transition-colors min-w-[120px] ${
+                      isDarkMode ? 'text-purple-300 hover:text-purple-200' : 'text-purple-700 hover:text-purple-900'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      Rating
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('performance')}
+                    className={`text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] ${
+                      isDarkMode ? 'text-purple-300 hover:text-purple-200' : 'text-purple-700 hover:text-purple-900'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      Performance
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('withCompany')}
+                    className={`text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] ${
+                      isDarkMode ? 'text-purple-300 hover:text-purple-200' : 'text-purple-700 hover:text-purple-900'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      With Company
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('compensation')}
+                    className={`text-left py-3 px-4 cursor-pointer transition-colors min-w-[140px] ${
+                      isDarkMode ? 'text-purple-300 hover:text-purple-200' : 'text-purple-700 hover:text-purple-900'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      Compensation
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('earnings')}
+                    className={`text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] ${
+                      isDarkMode ? 'text-purple-300 hover:text-purple-200' : 'text-purple-700 hover:text-purple-900'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      Earnings
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('bonus')}
+                    className={`text-left py-3 px-4 cursor-pointer transition-colors min-w-[120px] ${
+                      isDarkMode ? 'text-purple-300 hover:text-purple-200' : 'text-purple-700 hover:text-purple-900'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      Bonus
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('licenseCount')}
+                    className={`text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] ${
+                      isDarkMode ? 'text-purple-300 hover:text-purple-200' : 'text-purple-700 hover:text-purple-900'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      License Count
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('loanVolume')}
+                    className={`text-left py-3 px-4 cursor-pointer transition-colors min-w-[130px] ${
+                      isDarkMode ? 'text-purple-300 hover:text-purple-200' : 'text-purple-700 hover:text-purple-900'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      Loan Volume
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th 
+                    onClick={() => handleSort('fundingVolume')}
+                    className={`text-left py-3 px-4 cursor-pointer transition-colors min-w-[150px] ${
+                      isDarkMode ? 'text-purple-300 hover:text-purple-200' : 'text-purple-700 hover:text-purple-900'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      Funding Volume
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedStaffData.map((staff) => (
+                  <tr 
+                    key={staff.id}
+                    className={`border-b transition-colors ${
+                      isDarkMode 
+                        ? 'border-slate-700/50 hover:bg-slate-700/30' 
+                        : 'border-slate-200 hover:bg-slate-50'
+                    }`}
+                  >
+                    <td className={`py-3 px-4 font-medium ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                      {staff.name}
+                    </td>
+                    <td className={`py-3 px-4 ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                      {staff.area}
+                    </td>
+                    <td className={`py-3 px-4 ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                      {staff.magnify}
+                    </td>
+                    <td className={`py-3 px-4 ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                      {staff.rating}
+                    </td>
+                    <td className={`py-3 px-4 ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                      {staff.performance}
+                    </td>
+                    <td className={`py-3 px-4 ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                      {staff.withCompany}
+                    </td>
+                    <td className={`py-3 px-4 ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                      {staff.compensation}
+                    </td>
+                    <td className="py-3 px-4 font-semibold text-emerald-500">
+                      {formatCurrency(staff.earnings)}
+                    </td>
+                    <td className="py-3 px-4 font-semibold text-emerald-500">
+                      {formatCurrency(staff.bonus)}
+                    </td>
+                    <td className={`py-3 px-4 ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                      {staff.licenseCount}
+                    </td>
+                    <td className={`py-3 px-4 ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                      {staff.loanVolume}
+                    </td>
+                    <td className="py-3 px-4 font-semibold text-emerald-500">
+                      {formatCurrency(staff.fundingVolume)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default StaffResultsTable;
